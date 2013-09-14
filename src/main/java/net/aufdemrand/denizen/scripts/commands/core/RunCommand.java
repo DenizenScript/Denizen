@@ -98,6 +98,10 @@ public class RunCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dNPC.class))
                 scriptEntry.setNPC((dNPC) arg.asType(dNPC.class));
 
+            // Catch invalid entry for 'as' argument
+            else if (arg.matchesPrefix("a, as"))
+                dB.echoDebug("Specified target was not attached. Value must contain a valid PLAYER or NPC object.");
+
             else if (arg.matchesPrefix("d, def, define, c, context"))
                 scriptEntry.addObject("definitions", arg.asType(dList.class));
 
@@ -151,7 +155,7 @@ public class RunCommand extends AbstractCommand {
                     scriptEntry.getElement("path").asString());
 
             // If it has a path
-        else if (scriptEntry.hasObject("path"))
+        else if (scriptEntry.hasObject("path") && scriptEntry.getObject("path") != null)
             entries = script.getContainer().getEntries(
                     scriptEntry.getPlayer(),
                     scriptEntry.getNPC(),
