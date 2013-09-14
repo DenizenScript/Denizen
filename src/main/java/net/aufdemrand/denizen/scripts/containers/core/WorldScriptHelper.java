@@ -65,6 +65,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -1469,6 +1472,21 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // entity explosion primes
+    // <entity> explosion primes
+    //
+    // @Triggers when an entity decides to explode.
+    // @Context
+    // <context.entity> returns the dEntity.
+    // <context.origin> returns an Element of the explosion's radius.
+    // <context.fire> returns an Element with a value of "true" if the explosion will create fire and "false" otherwise.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from deciding to explode.
+    //
+    // -->
     @EventHandler
     public void explosionPrimeEvent(ExplosionPrimeEvent event) {
 
@@ -1481,35 +1499,105 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("entity explosion primes",
-                        entity.getType().name() + " explosion primes"),
-                null, null, context);
+                 entity.getType().name() + " explosion primes"),
+                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // entity changes food level
+    // <entity> changes food level
+    //
+    // @Triggers when an entity's food level changes.
+    // @Context
+    // <context.entity> returns the dEntity.
+    // <context.food> returns an Element(Integer) of the entity's new food level.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity's food level from changing.
+    // Element(Double) to set the entity's new food level.
+    //
+    // -->
     @EventHandler
     public void foodLevelChange(FoodLevelChangeEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        Entity entity = event.getEntity();
+        dEntity entity = new dEntity(event.getEntity());
+        String entityType = entity.getEntityType().name();
 
-        context.put("entity", entity instanceof Player ?
-                new dPlayer((Player) entity) :
-                new dEntity(entity));
+        context.put("entity", entity);
+        context.put("food", new Element(event.getFoodLevel()));
 
         String determination = doEvents(Arrays.asList
-                (entity.getType().name() + " changes food level"),
-                null, null, context);
+                ("entity changes food level",
+                 entityType + " changes food level"),
+                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
         else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Double)) {
+                .matchesPrimitive(aH.PrimitiveType.Integer)) {
             event.setFoodLevel(aH.getIntegerFrom(determination));
         }
     }
+    
+    // <--[event]
+    // @Events
+    // horse jumps
+    // <type> horse jumps
+    //
+    // @Triggers when a horse jumps.
+    // @Context
+    // <context.entity> returns the dEntity of the horse.
+    // <context.variant> returns an Element of the horse's variant.
+    // <context.food> returns an Element(Float) of the jump's power.
+    //
+    // @Determine
+    // "CANCELLED" to stop the horse from jumping.
+    // Element(Double) to set the power of the jump.
+    //
+    // -->
+    @EventHandler
+    public void horseJump(HorseJumpEvent event) {
 
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity entity = new dEntity(event.getEntity());
+        String variant = event.getEntity().getVariant().name();
+
+        context.put("entity", entity);
+        context.put("variant", new Element(variant));
+        context.put("power", new Element(event.getPower()));
+
+        String determination = doEvents(Arrays.asList
+                ("horse jumps",
+                 variant + " jumps"),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (Argument.valueOf(determination)
+                .matchesPrimitive(aH.PrimitiveType.Float)) {
+            event.setPower(aH.getFloatFrom(determination));
+        }
+    }
+
+    // <--[event]
+    // @Events
+    // item despawns
+    // <item> despawns
+    //
+    // @Triggers when an item entity despawns.
+    // @Context
+    // <context.item> returns the dItem of the entity.
+    // <context.entity> returns the dEntity.
+    //
+    // @Determine
+    // "CANCELLED" to stop the item entity from despawning.
+    //
+    // -->
     @EventHandler
     public void itemDespawn(ItemDespawnEvent event) {
 
@@ -1536,6 +1624,20 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // item spawns
+    // <item> spawns
+    //
+    // @Triggers when an item entity spawns.
+    // @Context
+    // <context.item> returns the dItem of the entity.
+    // <context.entity> returns the dEntity.
+    //
+    // @Determine
+    // "CANCELLED" to stop the item entity from spawning.
+    //
+    // -->
     @EventHandler
     public void itemSpawn(ItemSpawnEvent event) {
 
@@ -1567,6 +1669,20 @@ public class WorldScriptHelper implements Listener {
     //   INVENTORY EVENTS
     /////////////////
 
+    // <--[event]
+    // @Events
+    // player (<click type>) clicks (<item>) in (<type>) inventory
+    //
+    // @Triggers when a player clicks in an inventory.
+    // @Context
+    // <context.item> returns the dItem the player has clicked on.
+    // <context.item> returns the dInventory.
+    // <context.click> returns an Element with the name of the click type.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from clicking.
+    //
+    // -->
     @EventHandler
     public void inventoryClickEvent(InventoryClickEvent event) {
 
@@ -1623,6 +1739,15 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // player closes (<type>) inventory
+    //
+    // @Triggers when a player closes an inventory.
+    // @Context
+    // <context.inventory> returns the dInventory.
+    //
+    // -->
     @EventHandler
     public void inventoryCloseEvent(InventoryCloseEvent event) {
 
@@ -1639,6 +1764,19 @@ public class WorldScriptHelper implements Listener {
                  null, player, context);
     }
 
+    // <--[event]
+    // @Events
+    // player drags (<item>) in (<type>) inventory
+    //
+    // @Triggers when a player drags in an inventory.
+    // @Context
+    // <context.item> returns the dItem the player has dragged.
+    // <context.item> returns the dInventory.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from dragging.
+    //
+    // -->
     @EventHandler
     public void inventoryDragEvent(InventoryDragEvent event) {
 
@@ -1689,6 +1827,18 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // player opens (<type>) inventory
+    //
+    // @Triggers when a player opens an inventory.
+    // @Context
+    // <context.inventory> returns the dInventory.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from opening the inventory.
+    //
+    // -->
     @EventHandler
     public void inventoryOpenEvent(InventoryOpenEvent event) {
 
@@ -2093,7 +2243,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a player drops an item.
     // @Context
-    // <context.item> returns a dItem of the item.
+    // <context.item> returns the dItem.
     // <context.entity> returns a dEntity of the item.
     // <context.location> returns a dLocation of the item's location.
     //
@@ -2336,6 +2486,19 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // player consumes item
+    // player consumes <item>
+    //
+    // @Triggers when a player consumes an item.
+    // @Context
+    // <context.item> returns the dItem.
+    //
+    // @Determine
+    // "CANCELLED" to stop the item from being consumed.
+    //
+    // -->
     @EventHandler
     public void playerItemConsume(PlayerItemConsumeEvent event) {
 
@@ -2392,7 +2555,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a player picks up an item.
     // @Context
-    // <context.item> returns a dItem of the item.
+    // <context.item> returns the dItem.
     // <context.entity> returns a dEntity of the item.
     // <context.location> returns a dLocation of the item's location.
     //
@@ -2526,7 +2689,6 @@ public class WorldScriptHelper implements Listener {
                  "player quit"),
                  null, event.getPlayer(), context);
 
-        // Handle determine message
         if (!determination.equals("none")) {
             event.setQuitMessage(determination);
         }
@@ -2558,12 +2720,95 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(events, null, event.getPlayer(), context);
 
-        // Handle determine message
         if (dLocation.matches(determination)) {
             dLocation location = dLocation.valueOf(determination);
 
             if (location != null) event.setRespawnLocation(location);
         }
+    }
+    
+    // <--[event]
+    // @Events
+    // player toggles flight
+    // player starts/stops flying
+    //
+    // @Triggers when a player starts or stops flying.
+    // @Context
+    // <context.state> returns an Element with a value of "true" if the player is now flying and "false" otherwise.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from toggling flying.
+    //
+    // -->
+    @EventHandler
+    public void playerToggleFlight(PlayerToggleFlightEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("state", new Element(event.isFlying()));
+
+        String determination = doEvents(Arrays.asList
+                ("player toggles flight",
+                 "player " + (event.isFlying() ? "starts" : "stops") + " flying"),
+                 null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // player toggles sneak
+    // player starts/stops sneaking
+    //
+    // @Triggers when a player starts or stops sneaking.
+    // @Context
+    // <context.state> returns an Element with a value of "true" if the player is now sneaking and "false" otherwise.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from toggling sneaking.
+    //
+    // -->
+    @EventHandler
+    public void playerToggleSneak(PlayerToggleSneakEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("state", new Element(event.isSneaking()));
+
+        String determination = doEvents(Arrays.asList
+                ("player toggles sneak",
+                 "player " + (event.isSneaking() ? "starts" : "stops") + " sneaking"),
+                 null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // player toggles sprint
+    // player starts/stops sprinting
+    //
+    // @Triggers when a player starts or stops sprinting.
+    // @Context
+    // <context.state> returns an Element with a value of "true" if the player is now sprinting and "false" otherwise.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from toggling sprinting.
+    //
+    // -->
+    @EventHandler
+    public void playerToggleSprint(PlayerToggleSprintEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("state", new Element(event.isSprinting()));
+
+        String determination = doEvents(Arrays.asList
+                ("player toggles sprint",
+                 "player " + (event.isSprinting() ? "starts" : "stops") + " sprinting"),
+                 null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
     }
 
 
@@ -2760,6 +3005,19 @@ public class WorldScriptHelper implements Listener {
     //   WEATHER EVENTS
     /////////////////
 
+    // <--[event]
+    // @Events
+    // lightning strikes (in <world>)
+    //
+    // @Triggers when lightning strikes in a world.
+    // @Context
+    // <context.world> returns the dWorld the lightning struck in.
+    // <context.reason> returns the dLocation where the lightning struck.
+    //
+    // @Determine
+    // "CANCELLED" to stop the lightning from striking.
+    //
+    // -->
     @EventHandler
     public void lightningStrike(LightningStrikeEvent event) {
 
@@ -2777,6 +3035,19 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // weather changes/rains/clears (in <world>)
+    //
+    // @Triggers when weather changes in a world.
+    // @Context
+    // <context.world> returns the dWorld the weather changed in.
+    // <context.weather> returns an Element with the name of the new weather.
+    //
+    // @Determine
+    // "CANCELLED" to stop the weather from changing.
+    //
+    // -->
     @EventHandler
     public void weatherChange(WeatherChangeEvent event) {
 
