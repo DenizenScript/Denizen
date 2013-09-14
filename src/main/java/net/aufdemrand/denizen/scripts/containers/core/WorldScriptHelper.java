@@ -2274,10 +2274,12 @@ public class WorldScriptHelper implements Listener {
         Player player = (Player) event.getWhoClicked();
         String type = event.getInventory().getType().name();
         String click = event.getClick().name();
+        String slotType = event.getSlotType().name();
 
         context.put("item", item);
         context.put("inventory", new dInventory(event.getInventory()));
         context.put("click", new Element(click));
+        context.put("slot_type", new Element(slotType));
 
         List<String> events = new ArrayList<String>();
         events.add("player clicks in inventory");

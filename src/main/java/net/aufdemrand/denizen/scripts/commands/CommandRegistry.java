@@ -800,7 +800,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)
         // @Required 1
         // @Stable Todo
-        // @Short Todo
+        // @Short Make an entity fly where its controller is looking or fly to waypoints.
         // @Author David Cernat
         // @Description
         // Todo
@@ -812,7 +812,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(FlyCommand.class,
-                "FLY", "fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
+                "FLY", "fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
 
         // <--[command]
         // @Name Follow
