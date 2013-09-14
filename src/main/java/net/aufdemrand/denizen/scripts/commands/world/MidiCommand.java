@@ -1,19 +1,13 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import java.io.File;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.midi.MidiUtil;
@@ -36,7 +30,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * midi "file:mariotheme" listeners:p@aufdemrand|p@Jeebiss
  * midi "file:clairdelune" location:200,63,200,world
  *
- * @author authorblues, David Cernat
+ * @author David Cernat
  */
 
 public class MidiCommand extends AbstractCommand {

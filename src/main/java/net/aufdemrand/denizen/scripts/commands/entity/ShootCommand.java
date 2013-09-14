@@ -68,7 +68,7 @@ public class ShootCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("gravity")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("gravity, g")) {
+                    && arg.matchesPrefix("gravity, g, velocity, v")) {
 
               scriptEntry.addObject("gravity", arg.asElement());
             }

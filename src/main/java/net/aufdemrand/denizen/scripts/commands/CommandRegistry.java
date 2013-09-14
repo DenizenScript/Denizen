@@ -668,7 +668,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 0
         // @Stable Todo
         // @Short Causes an explosion at the location.
-        // @Author Todo
+        // @Author Alain Blanquet
         // @Description
         // Todo
         // @Tags
@@ -1053,7 +1053,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Todo
         // @Short Sticks a leash on target entity, held by a fence post or another entity.
-        // @Author Todo
+        // @Author Alain Blanquet
         // @Description
         // Todo
         // @Tags
@@ -1148,7 +1148,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Stable
         // @Short Plays a midi file at a given location or to a list of players using note block sounds.
-        // @Author authorblues
+        // @Author David Cernat
         // @Description
         // This will fully load a midi song file stored in plugins/Denizen/midi/
         // The file must be a valid midi file with the extension .mid

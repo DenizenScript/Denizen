@@ -567,7 +567,7 @@ public class dEntity implements dObject {
                                     setSubtype("org.bukkit.entity.Sheep", "org.bukkit.DyeColor", "setColor", data1);
                                 }
 
-                                // Allow setting of skeleton types and their weapons
+                                // Allow setting of skeleton types
                                 else if (ent instanceof Skeleton) {
                                     setSubtype("org.bukkit.entity.Skeleton", "org.bukkit.entity.Skeleton$SkeletonType", "setSkeletonType", data1);
                                 }
@@ -1190,7 +1190,7 @@ public class dEntity implements dObject {
         // Returns if the entity is actually a NPC.
         // -->
         if (attribute.startsWith("is_npc")) {
-            return new Element(CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
+            return new Element(isNPC())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1201,7 +1201,7 @@ public class dEntity implements dObject {
         // Returns if the entity is a mob. This excludes players and NPCs.
         // -->
         if (attribute.startsWith("is_mob")) {
-            if (!(getBukkitEntity() instanceof Player) && !CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
+            if (!(getBukkitEntity() instanceof Player) && !isNPC())
                 return Element.TRUE.getAttribute(attribute.fulfill(1));
             else return Element.FALSE.getAttribute(attribute.fulfill(1));
         }

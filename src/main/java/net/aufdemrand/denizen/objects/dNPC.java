@@ -27,7 +27,6 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +55,13 @@ public class dNPC implements dObject {
             npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
             if (npc != null) return new dNPC(npc);
         }
+        else {
+            for (NPC test : CitizensAPI.getNPCRegistry()) {
+                if (test.getName().equalsIgnoreCase(string)) {
+                    return new dNPC(test);
+                }
+            }
+        }
 
         return null;
     }
@@ -67,6 +73,13 @@ public class dNPC implements dObject {
         if (aH.matchesInteger(string)) {
             npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
             if (npc != null) return true;
+        }
+        else {
+            for (NPC test : CitizensAPI.getNPCRegistry()) {
+                if (test.getName().equalsIgnoreCase(string)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
