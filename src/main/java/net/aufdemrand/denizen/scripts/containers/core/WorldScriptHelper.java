@@ -44,6 +44,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -51,6 +52,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -678,14 +680,14 @@ public class WorldScriptHelper implements Listener {
     // <entity> breaks
     // <entity> breaks because <cause>
     //
-    // @Triggers when a hanging block is broken.
+    // @Triggers when a hanging entity is broken.
     // @Context
-    // <context.cause> will return the cause of the block breaking.
-    // <context.entity> will return the entity that broke the hanging block, if any.
-    // <context.hanging> will return the hanging block as a dEntity.
+    // <context.cause> will return the cause of the entity breaking.
+    // <context.entity> will return the entity that broke the hanging entity, if any.
+    // <context.hanging> will return the hanging entity as a dEntity.
     //
     // @Determine
-    // "CANCELLED" to stop the hanging block from being broken.
+    // "CANCELLED" to stop the hanging entity from being broken.
     //
     // -->
     @EventHandler
@@ -718,14 +720,14 @@ public class WorldScriptHelper implements Listener {
             // <entity> breaks <hanging>
             // <entity> breaks <hanging> because <cause>
             //
-            // @Triggers when a hanging block is broken by an entity.
+            // @Triggers when a hanging entity is broken by an entity.
             // @Context
-            // <context.cause> will return the cause of the block breaking.
-            // <context.entity> will return the entity that broke the hanging block.
-            // <context.hanging> will return the hanging block as a dEntity.
+            // <context.cause> will return the cause of the entity breaking.
+            // <context.entity> will return the entity that broke the hanging entity.
+            // <context.hanging> will return the hanging entity as a dEntity.
             //
             // @Determine
-            // "CANCELLED" to stop the hanging block from being broken.
+            // "CANCELLED" to stop the hanging entity from being broken.
             //
             // -->
 
@@ -1359,7 +1361,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the entity from being targeted.
-    // dEntity to make the entity change targets to a different entity instead.
+    // dEntity to make the entity target a different entity instead.
     //
     // -->
     @EventHandler
@@ -1677,8 +1679,8 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("player opens inventory",
-                        "player opens " + type + " inventory"),
-                null, player, context);
+                 "player opens " + type + " inventory"),
+                 null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -1690,6 +1692,19 @@ public class WorldScriptHelper implements Listener {
     //   PLAYER EVENTS
     /////////////////
 
+    // <--[event]
+    // @Events
+    // player chats
+    //
+    // @Triggers when a player chats.
+    // @Context
+    // <context.message> will return the player's message as an Element.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from chatting.
+    // Element(String) to change the message.
+    //
+    // -->
     @EventHandler(priority = EventPriority.LOWEST)
     public void asyncPlayerChat(final AsyncPlayerChatEvent event) {
 
@@ -1725,28 +1740,49 @@ public class WorldScriptHelper implements Listener {
             event.setMessage(determination);
         }
     }
-
+    
+    // <--[event]
+    // @Events
+    // player animates (<animation>)
+    //
+    // @Triggers when a player performs an animation.
+    // @Context
+    // <context.animation> will return the name of the animation.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from animating.
+    //
+    // -->
     @EventHandler
-    public void syncPlayerChat(final PlayerChatEvent event) {
+    public void playerAnimation(PlayerAnimationEvent event) {
 
-        // Return if "Use asynchronous event" is true in config file
-        if (Settings.WorldScriptChatEventAsynchronous()) return;
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        String animation = event.getAnimationType().name();
+        context.put("animation", new Element(animation));
 
-        final Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getMessage()));
-
-        String determination = doEvents(Arrays.asList("player chats"),
-                null, event.getPlayer(), context);
+        String determination = doEvents(Arrays.asList
+                ("player animates",
+                 "player animates " + animation),
+                 null, event.getPlayer(), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        else if (!determination.equals("none")) {
-            event.setMessage(determination);
-        }
     }
 
+    // <--[event]
+    // @Events
+    // player enters bed
+    //
+    // @Triggers when a player enters a bed.
+    // @Context
+    // <context.location> will return the dLocation of the bed.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from entering the bed.
+    //
+    // -->
     @EventHandler
-    public void bedEnterEvent(PlayerBedEnterEvent event) {
+    public void playerBedEnter(PlayerBedEnterEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getBed().getLocation()));
@@ -1759,8 +1795,17 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // player leaves bed
+    //
+    // @Triggers when a player leaves a bed.
+    // @Context
+    // <context.location> will return the dLocation of the bed.
+    //
+    // -->
     @EventHandler
-    public void bedLeaveEvent(PlayerBedLeaveEvent event) {
+    public void playerBedLeave(PlayerBedLeaveEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getBed().getLocation()));
@@ -1770,6 +1815,20 @@ public class WorldScriptHelper implements Listener {
                 null, event.getPlayer(), context);
     }
 
+    // <--[event]
+    // @Events
+    // player empties bucket
+    //
+    // @Triggers when a player empties a bucket.
+    // @Context
+    // <context.item> will return the dItem of the bucket.
+    // <context.location> will return the dLocation of the block clicked with the bucket.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from emptying the bucket.
+    // dItem to set the item in the player's hand after the event.
+    //
+    // -->
     @EventHandler
     public void playerBucketEmpty(PlayerBucketEmptyEvent event) {
 
@@ -1784,13 +1843,27 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (!determination.equals("none")) {
+        if (dItem.matches(determination)) {
             ItemStack is = dItem.valueOf(determination).getItemStack();
             event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
         }
 
     }
 
+    // <--[event]
+    // @Events
+    // player fills bucket
+    //
+    // @Triggers when a player fills a bucket.
+    // @Context
+    // <context.item> will return the dItem of the bucket.
+    // <context.location> will return the dLocation of the block clicked with the bucket.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from filling the bucket.
+    // dItem to set the item in the player's hand after the event.
+    //
+    // -->
     @EventHandler
     public void playerBucketFill(PlayerBucketFillEvent event) {
 
@@ -1805,9 +1878,57 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (!determination.equals("none")) {
+        if (dItem.matches(determination)) {
             ItemStack is = dItem.valueOf(determination).getItemStack();
             event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
+        }
+    }
+
+    // <--[event]
+    // @Events
+    // player changes world
+    // player changes world from <world>
+    // player changes world to <world>
+    // player changes world from <world> to <world>
+    //
+    // @Triggers when a player moves to a different world.
+    // @Context
+    // <context.origin_world> will return the dWorld that the player was previously on. 
+    //
+    // -->
+    @EventHandler
+    public void playerChangedWorld(PlayerChangedWorldEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dWorld originWorld = new dWorld(event.getFrom());
+        dWorld destinationWorld = new dWorld(event.getPlayer().getWorld());
+        context.put("origin_world", originWorld);
+
+        doEvents(Arrays.asList
+                ("player changes world",
+                 "player changes world from " + originWorld.identify(),
+                 "player changes world to " + destinationWorld.identify(),
+                 "player changes world from " + originWorld.identify() +
+                        " to " + destinationWorld.identify()),
+                 null, event.getPlayer(), context);
+    }
+    
+    @EventHandler
+    public void playerChat(final PlayerChatEvent event) {
+
+        // Return if "Use asynchronous event" is true in config file
+        if (Settings.WorldScriptChatEventAsynchronous()) return;
+
+        final Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("message", new Element(event.getMessage()));
+
+        String determination = doEvents(Arrays.asList("player chats"),
+                null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (!determination.equals("none")) {
+            event.setMessage(determination);
         }
     }
 
@@ -1878,19 +1999,6 @@ public class WorldScriptHelper implements Listener {
     //
     // -->
     @EventHandler
-    public void playerChangedWorldEvent(PlayerChangedWorldEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld originWorld = new dWorld(event.getFrom());
-        context.put("origin_world", originWorld);
-
-        doEvents(Arrays.asList
-                ("player changes world",
-                 "player changes world from " + originWorld.identify()),
-                 null, event.getPlayer(), context);
-    }
-
-    @EventHandler
     public void playerCommandEvent(PlayerCommandPreprocessEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
@@ -1926,6 +2034,19 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // player dies
+    // player death
+    //
+    // @Triggers when a player dies.
+    // @Context
+    // <context.message> will return an Element of the death message. 
+    //
+    // @Determine
+    // Element(String) to change the death message.
+    //
+    // -->
     @EventHandler
     public void playerDeath(PlayerDeathEvent event) {
 
@@ -1934,19 +2055,67 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("player dies",
-                        "player death"),
-                null, event.getEntity(), context);
+                 "player death"),
+                 null, event.getEntity(), context);
 
         // Handle message
         if (!determination.equals("none")) {
             event.setDeathMessage(determination);
         }
     }
+    
+    // <--[event]
+    // @Events
+    // player drops item
+    // player drops <item>
+    //
+    // @Triggers when a player drops an item.
+    // @Context
+    // <context.item> will return a dItem of the item.
+    // <context.entity> will return a dEntity of the item.
+    // <context.location> will return a dLocation of the item's location.
+    //
+    // @Determine
+    // "CANCELLED" to stop the item from being dropped.
+    //
+    // -->
+    @EventHandler
+    public void playerDropItem(PlayerDropItemEvent event) {
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dItem item = new dItem(event.getItemDrop().getItemStack());
+        context.put("item", item);
+        context.put("entity", new dEntity(event.getItemDrop()));
+        context.put("location", new dLocation(event.getItemDrop().getLocation()));
 
+        List<String> events = new ArrayList<String>();
+
+        events.add("player drops item");
+        events.add("player drops " + item.identify());
+
+        String determination = doEvents(events, null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+
+    // <--[event]
+    // @Events
+    // player fishes (while <state>)
+    //
+    // @Triggers when a player uses a fishing rod.
+    // @Context
+    // <context.hook> will return a dItem of the hook.
+    // <context.state> will return an Element of the fishing state.
+    // <context.entity> will return a dEntity, dPlayer or dNPC of the entity being fished.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from fishing.
+    //
+    // -->
     @EventHandler
     public void playerFish(PlayerFishEvent event) {
 
-        Entity entity = event.getCaught();
+        dEntity entity = new dEntity(event.getCaught());
         String state = event.getState().name();
         dNPC npc = null;
 
@@ -1960,18 +2129,18 @@ public class WorldScriptHelper implements Listener {
 
         if (entity != null) {
 
-            String entityType = entity.getType().name();
+            String entityType = entity.getEntityType().name();
 
-            if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
-                npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+            if (entity.isNPC()) {
+                npc = DenizenAPI.getDenizenNPC(entity.getNPC());
                 context.put("entity", npc);
                 entityType = "npc";
             }
             else if (entity instanceof Player) {
-                context.put("entity", new dPlayer((Player) entity));
+                context.put("entity", new dPlayer(entity.getPlayer()));
             }
             else {
-                context.put("entity", new dEntity(entity));
+                context.put("entity", entity);
             }
 
             events.add("player fishes " + entityType);
@@ -1985,6 +2154,18 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // player changes gamemode (to <gamemode>)
+    //
+    // @Triggers when a player's gamemode is changed.
+    // @Context
+    // <context.gamemode> will return an Element of the gamemode.
+    //
+    // @Determine
+    // "CANCELLED" to stop the gamemode from being changed.
+    //
+    // -->
     @EventHandler
     public void playerGameModeChange(PlayerGameModeChangeEvent event) {
 
@@ -1993,8 +2174,8 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("player changes gamemode",
-                        "player changes gamemode to " + event.getNewGameMode().name()),
-                null, event.getPlayer(), context);
+                 "player changes gamemode to " + event.getNewGameMode().name()),
+                 null, event.getPlayer(), context);
 
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2158,7 +2339,7 @@ public class WorldScriptHelper implements Listener {
     }
 
     @EventHandler
-    public void playerMoveEvent(PlayerMoveEvent event) {
+    public void playerMove(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
         String name = dLocation.getSaved(event.getPlayer().getLocation());
@@ -2169,10 +2350,10 @@ public class WorldScriptHelper implements Listener {
 
             String determination = doEvents(Arrays.asList
                     ("player walks over notable",
-                            "player walks over " + name,
-                            "walked over notable",
-                            "walked over " + name),
-                    null, event.getPlayer(), context);
+                     "player walks over " + name,
+                     "walked over notable",
+                     "walked over " + name),
+                     null, event.getPlayer(), context);
 
             if (determination.toUpperCase().startsWith("CANCELLED") ||
                     determination.toUpperCase().startsWith("FROZEN"))
@@ -2180,6 +2361,23 @@ public class WorldScriptHelper implements Listener {
         }
     }
 
+    // <--[event]
+    // @Events
+    // player picks up item
+    // player picks up <item>
+    // player takes item
+    // player takes <item>
+    //
+    // @Triggers when a player picks up an item.
+    // @Context
+    // <context.item> will return a dItem of the item.
+    // <context.entity> will return a dEntity of the item.
+    // <context.location> will return a dLocation of the item's location.
+    //
+    // @Determine
+    // "CANCELLED" to stop the item from picked up.
+    //
+    // -->
     @EventHandler
     public void playerPickupItem(PlayerPickupItemEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
@@ -2191,8 +2389,8 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
 
         events.add("player picks up item");
-        events.add("player takes item");
         events.add("player picks up " + item.identify());
+        events.add("player takes item");
         events.add("player takes " + item.identify());
 
         String determination = doEvents(events, null, event.getPlayer(), context);
@@ -2201,8 +2399,21 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // player joins
+    // player join
+    //
+    // @Triggers when a player joins the server.
+    // @Context
+    // <context.message> will return an Element of the join message. 
+    //
+    // @Determine
+    // Element(String) to change the join message.
+    //
+    // -->
     @EventHandler
-    public void joinEvent(PlayerJoinEvent event) {
+    public void playerJoinEvent(PlayerJoinEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getJoinMessage()));
 
@@ -2217,44 +2428,79 @@ public class WorldScriptHelper implements Listener {
         }
     }
 
+    // <--[event]
+    // @Events
+    // player levels up (from <level>/to <level>)
+    //
+    // @Triggers when a player levels up.
+    // @Context
+    // <context.level> will return an Element of the player's new level.
+    //
+    // -->
     @EventHandler
-    public void levelChangeEvent(PlayerLevelChangeEvent event) {
+    public void playerLevelChange(PlayerLevelChangeEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("level", new Element(event.getNewLevel()));
 
         doEvents(Arrays.asList
                 ("player levels up",
-                        "player levels up to " + event.getNewLevel(),
-                        "player levels up from " + event.getOldLevel()),
-                null, event.getPlayer(), context);
+                 "player levels up to " + event.getNewLevel(),
+                 "player levels up from " + event.getOldLevel()),
+                 null, event.getPlayer(), context);
     }
 
+    // <--[event]
+    // @Events
+    // player logs in
+    // player login
+    //
+    // @Triggers when a player logs in to the server.
+    // @Context
+    // <context.hostname> will return an Element of the player's hostname. 
+    //
+    // @Determine
+    // "KICKED" to kick the player from the server.
+    //
+    // -->
     @EventHandler
-    public void loginEvent(PlayerLoginEvent event) {
+    public void playerLogin(PlayerLoginEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("hostname", new Element(event.getHostname()));
 
         String determination = doEvents(Arrays.asList
-                ("player logs in", "player login"),
-                null, event.getPlayer(), context);
+                ("player logs in",
+                 "player login"),
+                 null, event.getPlayer(), context);
 
-        // Handle determine kicked
         if (determination.toUpperCase().startsWith("KICKED"))
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination);
     }
 
+    // <--[event]
+    // @Events
+    // player quits
+    // player quit
+    //
+    // @Triggers when a player quit the server.
+    // @Context
+    // <context.message> will return an Element of the quit message. 
+    //
+    // @Determine
+    // Element(String) to change the quit message.
+    //
+    // -->
     @EventHandler
-    public void quitEvent(PlayerQuitEvent event) {
+    public void playerQuit(PlayerQuitEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getQuitMessage()));
 
         String determination = doEvents(Arrays.asList
                 ("player quits",
-                        "player quit"),
-                null, event.getPlayer(), context);
+                 "player quit"),
+                 null, event.getPlayer(), context);
 
         // Handle determine message
         if (!determination.equals("none")) {
@@ -2262,20 +2508,28 @@ public class WorldScriptHelper implements Listener {
         }
     }
 
+    // <--[event]
+    // @Events
+    // player respawns (at bed/elsewhere)
+    //
+    // @Triggers when a player respawns.
+    // @Context
+    // <context.location> will return a dLocation of the respawn location. 
+    //
+    // @Determine
+    // dLocation to change the respawn location.
+    //
+    // -->
     @EventHandler
-    public void respawnEvent(PlayerRespawnEvent event) {
+    public void playerRespawn(PlayerRespawnEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getRespawnLocation()));
 
         List<String> events = new ArrayList<String>();
         events.add("player respawns");
 
-        if (event.isBedSpawn()) {
-            events.add("player respawns at bed");
-        }
-        else {
-            events.add("player respawns elsewhere");
-        }
+        if (event.isBedSpawn()) events.add("player respawns at bed");
+        else                    events.add("player respawns elsewhere");
 
         String determination = doEvents(events, null, event.getPlayer(), context);
 
