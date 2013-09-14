@@ -1,13 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.ArrayList;
-import java.util.List;
-
+import java.util.LinkedHashMap;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -35,7 +34,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * @author Jeremy Schroeder
  */
 
-public class RandomCommand extends AbstractCommand {
+public class RandomCommand extends BracedCommand {
 
 
     @Override
@@ -43,7 +42,12 @@ public class RandomCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("possibilities")
+            if (arg.matches("{")) {
+                scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 0));
+                break;
+            }
+            
+            else if (!scriptEntry.hasObject("possibilities")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("possibilities", arg.asElement());
 
@@ -52,76 +56,64 @@ public class RandomCommand extends AbstractCommand {
 
         }
 
-        if (!scriptEntry.hasObject("possibilities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "POSSIBILITIES");
+        if (!scriptEntry.hasObject("braces")) {
+            if (!scriptEntry.hasObject("possibilities"))
+                throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "POSSIBILITIES");
 
-        if (scriptEntry.getElement("possibilities").asInt() <= 1)
-            throw new InvalidArgumentsException("Must randomly select more than one item.");
+            if (scriptEntry.getElement("possibilities").asInt() <= 1)
+                throw new InvalidArgumentsException("Must randomly select more than one item.");
 
-        if (scriptEntry.getResidingQueue().getQueueSize() < scriptEntry.getElement("possibilities").asInt())
-            throw new InvalidArgumentsException("Invalid Size! Random # must not be larger than the script!");
-
-        scriptEntry.addObject("queue", scriptEntry.getResidingQueue());
+            if (scriptEntry.getResidingQueue().getQueueSize() < scriptEntry.getElement("possibilities").asInt())
+                throw new InvalidArgumentsException("Invalid Size! Random # must not be larger than the script!");
+        }
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        int possibilities = scriptEntry.getElement("possibilities").asInt();
-        ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
+        int possibilities = 0;
+        ScriptQueue queue = scriptEntry.getResidingQueue();
+        ArrayList<ScriptEntry> bracedCommands = null;
+        
+        if (!scriptEntry.hasObject("braces")) {
+            possibilities = scriptEntry.getElement("possibilities").asInt();
+        }
+        else {
+            bracedCommands = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("RANDOM");
+            possibilities = bracedCommands.size();
+        }
 
         int selected = Utilities.getRandom().nextInt(possibilities);
-        List<ScriptEntry> keeping = new ArrayList<ScriptEntry>();
-        int bracketsEntered = 0;
-        boolean selectedBrackets = false;
 
         dB.echoDebug("...random number generator selected '%s'", String.valueOf(selected + 1));
 
-        for (int x = 0; x < possibilities; x++) {
+        if (bracedCommands == null) {
+            
+            ScriptEntry keeping = null;
+            
+            for (int x = 0; x < possibilities; x++) {
 
-            if (bracketsEntered > 0) {
-                if (queue.getEntry(0).getArguments().contains("}")) {
-                    dB.echoDebug("Leaving brackets...");
-                    bracketsEntered--;
-                }
-
-                if (selectedBrackets) {
-                    keeping.add(queue.getEntry(0));
+                if (x != selected) {
+                    dB.echoDebug("...removing '%s'", queue.getEntry(0).getCommandName());
                     queue.removeEntry(0);
-                    if (bracketsEntered == 0)
-                        selectedBrackets = false;
-                    continue;
                 }
 
-                if (x == selected) {
-                    selected++;
-                    queue.removeEntry(0);
-                    continue;
-                }
-            }
-
-            if (queue.getEntry(0).getArguments().contains("{")) {
-                dB.echoDebug("Found brackets...");
-                bracketsEntered++;
-                if (x == selected)
-                    selectedBrackets = true;
-            }
-
-            if (x != selected) {
-                dB.echoDebug("...removing '%s'", queue.getEntry(0).getCommandName());
-                queue.removeEntry(0);
-            }
-
-            else {
-                dB.echoDebug("...selected '%s'", queue.getEntry(0).getCommandName() + ": "
+                else {
+                    dB.echoDebug("...selected '%s'", queue.getEntry(0).getCommandName() + ": "
                         + queue.getEntry(0).getArguments());
-                keeping.add(queue.getEntry(0));
-                queue.removeEntry(0);
+                    keeping = queue.getEntry(0);
+                    queue.removeEntry(0);
+                }
+
             }
+
+            queue.injectEntry(keeping, 0);
 
         }
-
-        queue.injectEntries(keeping, 0);
+        else {
+            queue.injectEntry(bracedCommands.get(selected), 0);
+        }
     }
 }
