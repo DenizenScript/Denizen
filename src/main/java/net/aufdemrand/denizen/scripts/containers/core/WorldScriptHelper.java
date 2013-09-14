@@ -72,6 +72,8 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
@@ -2810,6 +2812,86 @@ public class WorldScriptHelper implements Listener {
     
     // <--[event]
     // @Events
+    // (old/new) chunk loads (in <world>)
+    //
+    // @Triggers when a chunk is loaded in a world.
+    // @Context
+    // <context.world> returns the dWorld the chunk is in.
+    // <context.reason> returns an Element with a value of "true" if the chunk is newly created and "false" otherwise.
+    // <context.entities> returns a dList of all the dEntities in the chunk.
+    //
+    // -->
+    @EventHandler
+    public void chunkLoad(ChunkLoadEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        String world = event.getWorld().getName();
+
+        ArrayList<dEntity> entities = new ArrayList<dEntity>();
+        
+        for (Entity entity : event.getChunk().getEntities()) {
+            entities.add(new dEntity(entity));
+        }
+        
+        context.put("world", new dWorld(event.getWorld()));
+        context.put("new", new Element(event.isNewChunk()));
+        context.put("entities", new dList(entities));
+        
+        List<String> events = new ArrayList<String>();
+        events.add("chunk loads");
+        events.add("chunk loads in " + world);
+        
+        if (event.isNewChunk()) {
+            events.add("new chunk loads");
+            events.add("new chunk loads in " + world);
+        }
+        else {
+            events.add("old chunk loads");
+            events.add("old chunk loads in " + world);
+        }
+        
+        doEvents(events, null, null, context);
+    }
+    
+    // <--[event]
+    // @Events
+    // chunk unloads (in <world>)
+    //
+    // @Triggers when a chunk is unloaded in a world.
+    // @Context
+    // <context.world> returns the dWorld the chunk is in.
+    // <context.entities> returns a dList of all the dEntities in the chunk.
+    //
+    // @Determine
+    // "CANCELLED" to stop the chunk from unloading.
+    //
+    // -->
+    @EventHandler
+    public void chunkUnload(ChunkUnloadEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        String world = event.getWorld().getName();
+
+        ArrayList<dEntity> entities = new ArrayList<dEntity>();
+        
+        for (Entity entity : event.getChunk().getEntities()) {
+            entities.add(new dEntity(entity));
+        }
+        
+        context.put("world", new dWorld(event.getWorld()));
+        context.put("entities", new dList(entities));
+        
+        String determination = doEvents(Arrays.asList
+                ("chunk unloads",
+                 "chunk unloads in " + world),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
     // portal created (in <world>) (because <reason>)
     //
     // @Triggers when a portal is created in a world.
@@ -2818,7 +2900,7 @@ public class WorldScriptHelper implements Listener {
     // <context.reason> returns an Element of the reason the portal was created.
     //
     // @Determine
-    // Element(String) to change the quit message.
+    // "CANCELLED" to stop the portal from being created.
     //
     // -->
     @EventHandler
@@ -2854,7 +2936,7 @@ public class WorldScriptHelper implements Listener {
     // <context.structure> returns an Element of the structure's type.
     //
     // @Determine
-    // Element(String) to change the quit message.
+    // "CANCELLED" to stop the structure from growing.
     //
     // -->
     @EventHandler
