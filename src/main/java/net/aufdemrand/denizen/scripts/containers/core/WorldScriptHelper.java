@@ -25,24 +25,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockCanBuildEvent;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockDispenseEvent;
-import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockGrowEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPistonEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.block.LeavesDecayEvent;
-import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -53,34 +36,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerBedLeaveEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerEggThrowEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerLevelChangeEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerShearEntityEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -91,7 +47,12 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.bukkit.event.world.SpawnChangeEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.event.world.WorldInitEvent;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldSaveEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 
@@ -960,21 +921,23 @@ public class WorldScriptHelper implements Listener {
             hour = hour + 6;
             // Get the hour
             if (hour >= 24) hour = hour - 24;
+            
+            dWorld currentWorld = new dWorld(world);
 
-            if (!current_time.containsKey(world.getName())
-                    || current_time.get(world.getName()) != hour) {
+            if (!current_time.containsKey(currentWorld.identify())
+                    || current_time.get(currentWorld.identify()) != hour) {
                 Map<String, dObject> context = new HashMap<String, dObject>();
 
                 context.put("time", new Element(hour));
-                context.put("world", new dWorld(world));
+                context.put("world", currentWorld);
 
                 doEvents(Arrays.asList
-                        ("time changes in " + world.getName(),
-                         String.valueOf(hour) + ":00 in " + world.getName(),
-                         "time " + String.valueOf(hour) + " in " + world.getName()),
+                        ("time changes in " + currentWorld.identify(),
+                         String.valueOf(hour) + ":00 in " + currentWorld.identify(),
+                         "time " + String.valueOf(hour) + " in " + currentWorld.identify()),
                          null, null, context);
 
-                current_time.put(world.getName(), hour);
+                current_time.put(currentWorld.identify(), hour);
             }
         }
     }
@@ -3838,13 +3801,13 @@ public class WorldScriptHelper implements Listener {
     public void lightningStrike(LightningStrikeEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        String world = event.getWorld().getName();
-        context.put("world", new dWorld(event.getWorld()));
+        dWorld world = new dWorld(event.getWorld());
+        context.put("world", world);
         context.put("location", new dLocation(event.getLightning().getLocation()));
 
         String determination = doEvents(Arrays.asList
                 ("lightning strikes",
-                 "lightning strikes in " + world),
+                 "lightning strikes in " + world.identify()),
                  null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -3868,22 +3831,22 @@ public class WorldScriptHelper implements Listener {
     public void weatherChange(WeatherChangeEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        String world = event.getWorld().getName();
-        context.put("world", new dWorld(event.getWorld()));
+        dWorld world = new dWorld(event.getWorld());
+        context.put("world", world);
 
         List<String> events = new ArrayList<String>();
         events.add("weather changes");
-        events.add("weather changes in " + world);
+        events.add("weather changes in " + world.identify());
 
         if (event.toWeatherState()) {
             context.put("weather", new Element("rain"));
             events.add("weather rains");
-            events.add("weather rains in " + world);
+            events.add("weather rains in " + world.identify());
         }
         else {
             context.put("weather", new Element("clear"));
             events.add("weather clears");
-            events.add("weather clears in " + world);
+            events.add("weather clears in " + world.identify());
         }
 
         String determination = doEvents(events, null, null, context);
@@ -3912,7 +3875,7 @@ public class WorldScriptHelper implements Listener {
     public void chunkLoad(ChunkLoadEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        String world = event.getWorld().getName();
+        dWorld world = new dWorld(event.getWorld());
 
         ArrayList<dEntity> entities = new ArrayList<dEntity>();
         
@@ -3920,21 +3883,21 @@ public class WorldScriptHelper implements Listener {
             entities.add(new dEntity(entity));
         }
         
-        context.put("world", new dWorld(event.getWorld()));
+        context.put("world", world);
         context.put("new", new Element(event.isNewChunk()));
         context.put("entities", new dList(entities));
         
         List<String> events = new ArrayList<String>();
         events.add("chunk loads");
-        events.add("chunk loads in " + world);
+        events.add("chunk loads in " + world.identify());
         
         if (event.isNewChunk()) {
             events.add("new chunk loads");
-            events.add("new chunk loads in " + world);
+            events.add("new chunk loads in " + world.identify());
         }
         else {
             events.add("old chunk loads");
-            events.add("old chunk loads in " + world);
+            events.add("old chunk loads in " + world.identify());
         }
         
         doEvents(events, null, null, context);
@@ -3957,7 +3920,7 @@ public class WorldScriptHelper implements Listener {
     public void chunkUnload(ChunkUnloadEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        String world = event.getWorld().getName();
+        dWorld world = new dWorld(event.getWorld());
 
         ArrayList<dEntity> entities = new ArrayList<dEntity>();
         
@@ -3965,12 +3928,12 @@ public class WorldScriptHelper implements Listener {
             entities.add(new dEntity(entity));
         }
         
-        context.put("world", new dWorld(event.getWorld()));
+        context.put("world", world);
         context.put("entities", new dList(entities));
         
         String determination = doEvents(Arrays.asList
                 ("chunk unloads",
-                 "chunk unloads in " + world),
+                 "chunk unloads in " + world.identify()),
                  null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -3994,21 +3957,48 @@ public class WorldScriptHelper implements Listener {
     public void portalCreate(PortalCreateEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        String world = event.getWorld().getName();
+        dWorld world = new dWorld(event.getWorld());
         String reason = event.getReason().name();
 
-        context.put("world", new dWorld(event.getWorld()));
+        context.put("world", world);
         context.put("reason", new Element(reason));
         
         String determination = doEvents(Arrays.asList
                 ("portal created",
                  "portal created because " + reason,
-                 "portal created in " + world,
-                 "portal created in " + world + " because " + reason),
+                 "portal created in " + world.identify(),
+                 "portal created in " + world.identify() + " because " + reason),
                  null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // spawn changes (in <world>)
+    //
+    // @Triggers when the world's spawn point changes.
+    // @Context
+    // <context.world> returns the dWorld that the spawn point changed in.
+    // <context.old_location> returns the dLocation of the old spawn point.
+    // <context.new_location> returns the dLocation of the new spawn point.
+    //
+    // -->
+    @EventHandler
+    public void spawnChange(SpawnChangeEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dWorld world = new dWorld(event.getWorld());
+
+        context.put("world", world);
+        context.put("old_location", new dLocation(event.getPreviousLocation()));
+        context.put("new_location", new dLocation(world.getWorld().getSpawnLocation()));
+        
+        doEvents(Arrays.asList
+                ("spawn changes",
+                 "spawn changes in " + world.identify()),
+                 null, null, context);
     }
 
     // <--[event]
@@ -4030,35 +4020,131 @@ public class WorldScriptHelper implements Listener {
     public void structureGrow(StructureGrowEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        String world = event.getWorld().getName();
+        dWorld world = new dWorld(event.getWorld());
         String treeType = event.getSpecies().name();
 
-        context.put("world", new dWorld(event.getWorld()));
+        context.put("world", world);
         context.put("location", new dLocation(event.getLocation()));
         context.put("structure", new Element(treeType));
 
         List<String> events = new ArrayList<String>();
         events.add("structure grows");
-        events.add("structure grows in " + world);
+        events.add("structure grows in " + world.identify());
         events.add(treeType + " grows");
-        events.add(treeType + " grows in " + world);
+        events.add(treeType + " grows in " + world.identify());
         
         if (event.isFromBonemeal()) {
             events.add("structure grows from bonemeal");
-            events.add("structure grows from bonemeal in " + world);
+            events.add("structure grows from bonemeal in " + world.identify());
             events.add(treeType + " grows from bonemeal");
-            events.add(treeType + " grows from bonemeal in " + world);
+            events.add(treeType + " grows from bonemeal in " + world.identify());
         }
         else {
             events.add("structure grows naturally");
-            events.add("structure grows naturally in " + world);
+            events.add("structure grows naturally in " + world.identify());
             events.add(treeType + " grows naturally");
-            events.add(treeType + " grows naturally in " + world);
+            events.add(treeType + " grows naturally in " + world.identify());
         }
         
         String determination = doEvents(events, null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // world initializes
+    // <world> initializes
+    //
+    // @Triggers when a world is initialized.
+    // @Context
+    // <context.world> returns the dWorld that was initialized.
+    //
+    // -->
+    @EventHandler
+    public void worldInit(WorldInitEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dWorld world = new dWorld(event.getWorld());
+
+        context.put("world", world);
+        
+        doEvents(Arrays.asList
+                ("world initializes",
+                 world.identify() + " initializes"),
+                 null, null, context);
+    }
+    
+    // <--[event]
+    // @Events
+    // world loads
+    // <world> loads
+    //
+    // @Triggers when a world is loaded.
+    // @Context
+    // <context.world> returns the dWorld that was loaded.
+    //
+    // -->
+    @EventHandler
+    public void worldLoad(WorldLoadEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dWorld world = new dWorld(event.getWorld());
+
+        context.put("world", world);
+        
+        doEvents(Arrays.asList
+                ("world loads",
+                 world.identify() + " loads"),
+                 null, null, context);
+    }
+    
+    // <--[event]
+    // @Events
+    // world saves
+    // <world> saves
+    //
+    // @Triggers when a world is saved.
+    // @Context
+    // <context.world> returns the dWorld that was saved.
+    //
+    // -->
+    @EventHandler
+    public void worldSave(WorldSaveEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dWorld world = new dWorld(event.getWorld());
+
+        context.put("world", world);
+        
+        doEvents(Arrays.asList
+                ("world saves",
+                 world.identify() + " saves"),
+                 null, null, context);
+    }
+    
+    // <--[event]
+    // @Events
+    // world unloads
+    // <world> unloads
+    //
+    // @Triggers when a world is unloaded.
+    // @Context
+    // <context.world> returns the dWorld that was unloaded.
+    //
+    // -->
+    @EventHandler
+    public void worldUnload(WorldUnloadEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dWorld world = new dWorld(event.getWorld());
+
+        context.put("world", world);
+        
+        doEvents(Arrays.asList
+                ("world unloads",
+                 world.identify() + " unloads"),
+                 null, null, context);
     }
 }
