@@ -77,7 +77,7 @@ public class WorldScriptHelper implements Listener {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
-
+    
 
     /////////////////////
     //   EVENT HANDLER
@@ -96,8 +96,7 @@ public class WorldScriptHelper implements Listener {
             for (String eventName : eventNames) {
 
                 // Check for event's name with and without dObject prefixes
-                if (!script.contains("EVENTS.ON " + eventName.toUpperCase()) &&
-                    !script.contains("EVENTS.ON " + eventName.toUpperCase().replaceAll("[eimw]@", "")))
+                if (!script.contains("EVENTS.ON " + eventName.toUpperCase()))
                     continue;
 
                 // Fetch script from Event

@@ -109,7 +109,7 @@ public class FlyCommand extends AbstractCommand {
                                 new ArrayList<dLocation>();
         
         // Set freeflight to true only if there are no destinations
-        final boolean freeflight = destinations.size() > 0;
+        final boolean freeflight = destinations.size() < 1;
                                 
         dEntity controller = (dEntity) scriptEntry.getObject("controller");
         
@@ -121,9 +121,14 @@ public class FlyCommand extends AbstractCommand {
             if (controller == null) {
                 for (dEntity entity : entities) {
                     if (entity.isPlayer()) {
-                        controller = entity;
-                        dB.report(getName(), "Flight control defaulting to " + controller);
-                        break;
+                        // If this player will be a rider on something, and will not
+                        // be at the bottom ridden by the other entities, set it as
+                        // the controller
+                        if (entities.get(entities.size() - 1) != entity) {
+                            controller = entity;
+                            dB.report(getName(), "Flight control defaulting to " + controller);
+                            break;
+                        }
                     }
                 }
             
@@ -190,7 +195,7 @@ public class FlyCommand extends AbstractCommand {
 
         // Get the last entity on the list
         final Entity entity = entities.get(entities.size() - 1).getBukkitEntity();
-        final LivingEntity finalController = controller.getLivingEntity();
+        final LivingEntity finalController = controller != null ? controller.getLivingEntity() : null;
         
         BukkitRunnable task = new BukkitRunnable() {
 
