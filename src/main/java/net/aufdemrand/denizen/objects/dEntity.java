@@ -708,7 +708,7 @@ public class dEntity implements dObject {
         // If the target is not null, cast it to an NMS EntityLiving
         // as well for one of the two methods below
         EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
-                                        : null;
+                                                : null;
 
         ((CraftCreature) entity).getHandle().
                 setGoalTarget(nmsTarget);
@@ -1128,13 +1128,13 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <e@entity.fire_ticks>
-        // @returns Element(Integer)
+        // @attribute <e@entity.fire_time>
+        // @returns Duration
         // @description
-        // Returns the number of ticks the entity will remain on fire
+        // Returns the duration for which the entity will remain on fire
         // -->
-        if (attribute.startsWith("fire_ticks"))
-            return new Element(entity.getFireTicks())
+        if (attribute.startsWith("fire_time"))
+            return new Duration(entity.getFireTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]

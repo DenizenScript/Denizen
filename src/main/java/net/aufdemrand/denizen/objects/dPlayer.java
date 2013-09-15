@@ -204,101 +204,167 @@ public class dPlayer implements dObject {
         if (attribute == null) return "null";
 
         if (player_name == null) return "null";
-
+        
+    /////////////////////
+    //   OFFLINE ATTRIBUTES
+    /////////////////
+    
+        /////////////////////
+        //   DEBUG ATTRIBUTES
+        /////////////////
+        
         // <--[tag]
-        // @attribute <p@player.entity>
-        // @returns dEntity
+        // @attribute <p@player.debug.log>
+        // @returns Element(Boolean)
         // @description
-        // returns the dEntity object of the player
+        // Debugs the player in the log and returns true.
         // -->
-        if (attribute.startsWith("entity"))
-            return new dEntity(getPlayerEntity())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("debug.log")) {
+            dB.log(debug());
+            return new Element(Boolean.TRUE.toString())
+                    .getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
-        // @attribute <p@player.has_played_before>
-        // @returns Element(boolean)
-        // @description
-        // returns true if the player has played before
-        // -->
-        if (attribute.startsWith("has_played_before"))
-            return new Element(getOfflinePlayer().hasPlayedBefore())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.is_op>
-        // @returns Element(boolean)
-        // @description
-        // returns true if the player has 'op status'
-        // -->
-        if (attribute.startsWith("is_op"))
-            return new Element(getOfflinePlayer().isOp())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.first_played>
-        // @returns Element(number)
-        // @description
-        // returns the 'System.currentTimeMillis()' of when the player
-        // first logged on. Will return '0' if player has never played.
-        // -->
-        if (attribute.startsWith("first_played"))
-            return new Element(getOfflinePlayer().getFirstPlayed())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.last_played>
-        // @returns Element(number)
-        // @description
-        // returns the 'System.currentTimeMillis()' of when the player
-        // was last seen. Will return '0' if player has never played.
-        // -->
-        if (attribute.startsWith("last_played"))
-            return new Element(getOfflinePlayer().getLastPlayed())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.is_banned>
-        // @returns Element(boolean)
-        // @description
-        // returns true if the player is banned
-        // -->
-        if (attribute.startsWith("is_banned"))
-            return new Element(getOfflinePlayer().isBanned())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.is_whitelisted>
-        // @returns Element(boolean)
-        // @description
-        // returns true if the player is whitelisted
-        // -->
-        if (attribute.startsWith("is_whitelisted"))
-            return new Element(getOfflinePlayer().isWhitelisted())
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("name") && !isOnline())
-            // This can be parsed later with more detail if the player is online, so only check for offline.
-            return new Element(player_name).getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.is_online>
-        // @returns Element(boolean)
-        // @description
-        // returns true if the player is currently online
-        // -->
-        if (attribute.startsWith("is_online"))
-            return new Element(isOnline()).getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.ip>
+        // @attribute <p@player.debug.no_color>
         // @returns Element
         // @description
-        // Returns the player's IP address.
+        // Returns the player's debug with no color.
         // -->
-        if (attribute.startsWith("ip"))
-            return new Element(getPlayerEntity().getAddress().getHostName()).getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("debug.no_color")) {
+            return new Element(ChatColor.stripColor(debug()))
+                    .getAttribute(attribute.fulfill(2));
+        }
 
+        // <--[tag]
+        // @attribute <p@player.debug>
+        // @returns Element
+        // @description
+        // Returns the player's debug.
+        // -->
+        if (attribute.startsWith("debug")) {
+            return new Element(debug())
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        // <--[tag]
+        // @attribute <p@player.prefix>
+        // @returns Element
+        // @description
+        // Returns the dObject's prefix.
+        // -->
+        if (attribute.startsWith("prefix"))
+            return new Element(prefix)
+                    .getAttribute(attribute.fulfill(1));
+        
+    
+        /////////////////////
+        //   DENIZEN ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <p@player.chat_history_list>
+        // @returns dList
+        // @description
+        // Returns a list of the last 10 things the player has said, less
+        // if the player hasn't said all that much.
+        // -->
+        if (attribute.startsWith("chat_history_list"))
+            return new dList(PlayerTags.playerChatHistory.get(player_name))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.chat_history>
+        // @returns Element
+        // @description
+        // returns the last thing the player said.
+        // -->
+        if (attribute.startsWith("chat_history")) {
+            int x = 1;
+            if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
+                x = attribute.getIntContext(1);
+            // No playerchathistory? Return null.
+            if (!PlayerTags.playerChatHistory.containsKey(player_name)) return "null";
+            else return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        // <--[tag]
+        // @attribute <p@player.flag[flag_name]>
+        // @returns Flag dList
+        // @description
+        // returns 'flag dList' of the player's flag_name specified.
+        // -->
+        if (attribute.startsWith("flag")) {
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else return "null";
+            attribute.fulfill(1);
+            if (attribute.startsWith("is_expired")
+                    || attribute.startsWith("isexpired"))
+                return new Element(!FlagManager.playerHasFlag(this, flag_name))
+                        .getAttribute(attribute.fulfill(1));
+            if (attribute.startsWith("size") && !FlagManager.playerHasFlag(this, flag_name))
+                return new Element(0).getAttribute(attribute.fulfill(1));
+            if (FlagManager.playerHasFlag(this, flag_name))
+                return new dList(DenizenAPI.getCurrentInstance().flagManager()
+                        .getPlayerFlag(getName(), flag_name))
+                        .getAttribute(attribute);
+            else return "null";
+        }
+        
+        
+        /////////////////////
+        //   ECONOMY ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <p@player.money>
+        // @returns Element(number)
+        // @description
+        // returns the amount of money the player has with the registered
+        // Economy system.
+        // -->
+
+        if (attribute.startsWith("money")) {
+            if(Depends.economy != null) {
+
+                // <--[tag]
+                // @attribute <p@player.money.currency_singular>
+                // @returns Element
+                // @description
+                // returns the 'singular currency' string, if supported by the
+                // registered Economy system.
+                // -->
+                if (attribute.startsWith("money.currency_singular"))
+                    return new Element(Depends.economy.currencyNameSingular())
+                            .getAttribute(attribute.fulfill(2));
+
+                // <--[tag]
+                // @attribute <p@player.money.currency>
+                // @returns Element
+                // @description
+                // returns the 'currency' string, if supported by the
+                // registered Economy system.
+                // -->
+                if (attribute.startsWith("money.currency"))
+                    return new Element(Depends.economy.currencyNamePlural())
+                            .getAttribute(attribute.fulfill(2));
+
+                return new Element(Depends.economy.getBalance(player_name))
+                        .getAttribute(attribute.fulfill(1));
+
+            } else {
+                dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                return null;
+            }
+        }
+        
+        
+        /////////////////////
+        //   ENTITY LIST ATTRIBUTES
+        /////////////////
+        
         // <--[tag]
         // @attribute <p@player.list>
         // @returns dList(dPlayer)
@@ -345,34 +411,21 @@ public class dPlayer implements dObject {
                 return new dList(players).getAttribute(attribute.fulfill(1));
             }
         }
+        
+        
+        /////////////////////
+        //   IDENTIFICATION ATTRIBUTES
+        /////////////////
 
-        // <--[tag]
-        // @attribute <p@player.chat_history_list>
-        // @returns dList
-        // @description
-        // Returns a list of the last 10 things the player has said, less
-        // if the player hasn't said all that much.
-        // -->
-        if (attribute.startsWith("chat_history_list"))
-            return new dList(PlayerTags.playerChatHistory.get(player_name))
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.chat_history>
-        // @returns Element
-        // @description
-        // returns the last thing the player said.
-        // -->
-        if (attribute.startsWith("chat_history")) {
-            int x = 1;
-            if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
-                x = attribute.getIntContext(1);
-            // No playerchathistory? Return null.
-            if (!PlayerTags.playerChatHistory.containsKey(player_name)) return "null";
-            else return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
+        if (attribute.startsWith("name") && !isOnline())
+            // This can be parsed later with more detail if the player is online, so only check for offline.
+            return new Element(player_name).getAttribute(attribute.fulfill(1));
+        
+        
+        /////////////////////
+        //   LOCATION ATTRIBUTES
+        /////////////////
+        
         // <--[tag]
         // @attribute <p@player.bed_spawn>
         // @returns dLocation
@@ -383,116 +436,173 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("bed_spawn"))
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
                     .getAttribute(attribute.fulfill(2));
-
+        
+        
+        /////////////////////
+        //   STATE ATTRIBUTES
+        /////////////////
+        
         // <--[tag]
-        // @attribute <p@player.money>
+        // @attribute <p@player.first_played>
         // @returns Element(number)
         // @description
-        // returns the amount of money the player has with the registered
-        // Economy system.
+        // returns the 'System.currentTimeMillis()' of when the player
+        // first logged on. Will return '0' if player has never played.
         // -->
-
-        if (attribute.startsWith("money")) {
-            if(Depends.economy != null) {
-
-                // <--[tag]
-                // @attribute <p@player.money.currency_singular>
-                // @returns Element
-                // @description
-                // returns the 'singular currency' string, if supported by the
-                // registered Economy system.
-                // -->
-                if (attribute.startsWith("money.currency_singular"))
-                    return new Element(Depends.economy.currencyNameSingular())
-                            .getAttribute(attribute.fulfill(2));
-
-                // <--[tag]
-                // @attribute <p@player.money.currency>
-                // @returns Element
-                // @description
-                // returns the 'currency' string, if supported by the
-                // registered Economy system.
-                // -->
-                if (attribute.startsWith("money.currency"))
-                    return new Element(Depends.economy.currencyNamePlural())
-                            .getAttribute(attribute.fulfill(2));
-
-                return new Element(Depends.economy.getBalance(player_name))
-                        .getAttribute(attribute.fulfill(1));
-
-            } else {
-                dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-                return null;
-            }
-        }
-
-        // <--[tag]
-        // @attribute <p@player.flag[flag_name]>
-        // @returns Flag dList
-        // @description
-        // returns 'flag dList' of the player's flag_name specified.
-        // -->
-        if (attribute.startsWith("flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return "null";
-            attribute.fulfill(1);
-            if (attribute.startsWith("is_expired")
-                    || attribute.startsWith("isexpired"))
-                return new Element(!FlagManager.playerHasFlag(this, flag_name))
-                        .getAttribute(attribute.fulfill(1));
-            if (attribute.startsWith("size") && !FlagManager.playerHasFlag(this, flag_name))
-                return new Element(0).getAttribute(attribute.fulfill(1));
-            if (FlagManager.playerHasFlag(this, flag_name))
-                return new dList(DenizenAPI.getCurrentInstance().flagManager()
-                        .getPlayerFlag(getName(), flag_name))
-                        .getAttribute(attribute);
-            else return "null";
-        }
-
-        if (!isOnline()) return new Element(identify()).getAttribute(attribute);
-
-        // Player is required to be online after this point...
-
-        // <--[tag]
-        // @attribute <p@player.xp.to_next_level>
-        // @returns Element(number)
-        // @description
-        // returns the amount of experience to the next level.
-        // -->
-        if (attribute.startsWith("xp.to_next_level"))
-            return new Element(getPlayerEntity().getExpToLevel())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.xp.total>
-        // @returns Element(number)
-        // @description
-        // returns the total amount of experience points.
-        // -->
-        if (attribute.startsWith("xp.total"))
-            return new Element(getPlayerEntity().getTotalExperience())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.xp.level>
-        // @returns Element(number)
-        // @description
-        // returns the number of levels the player has.
-        // -->
-        if (attribute.startsWith("xp.level"))
-            return new Element(getPlayerEntity().getLevel())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.xp>
-        // @returns Element(number)
-        // @description
-        // returns the percentage of experience points to the next level.
-        // -->
-        if (attribute.startsWith("xp"))
-            return new Element(getPlayerEntity().getExp() * 100)
+        if (attribute.startsWith("first_played"))
+            return new Element(getOfflinePlayer().getFirstPlayed())
                     .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <p@player.has_played_before>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the player has played before
+        // -->
+        if (attribute.startsWith("has_played_before"))
+            return new Element(getOfflinePlayer().hasPlayedBefore())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.is_banned>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the player is banned
+        // -->
+        if (attribute.startsWith("is_banned"))
+            return new Element(getOfflinePlayer().isBanned())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <p@player.is_online>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the player is currently online
+        // -->
+        if (attribute.startsWith("is_online"))
+            return new Element(isOnline()).getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <p@player.is_op>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the player has 'op status'
+        // -->
+        if (attribute.startsWith("is_op"))
+            return new Element(getOfflinePlayer().isOp())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.is_whitelisted>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the player is whitelisted
+        // -->
+        if (attribute.startsWith("is_whitelisted"))
+            return new Element(getOfflinePlayer().isWhitelisted())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <p@player.last_played>
+        // @returns Element(number)
+        // @description
+        // returns the 'System.currentTimeMillis()' of when the player
+        // was last seen. Will return '0' if player has never played.
+        // -->
+        if (attribute.startsWith("last_played"))
+            return new Element(getOfflinePlayer().getLastPlayed())
+                    .getAttribute(attribute.fulfill(1));
+        
+        
+    /////////////////////
+    //   ONLINE ATTRIBUTES
+    /////////////////
+        
+        // Player is required to be online after this point...
+        
+        /////////////////////
+        //   CITIZENS ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <p@player.selected_npc>
+        // @returns dNPC
+        // @description
+        // returns the dNPC that the player currently has selected with
+        // '/npc sel', null if no player selected.
+        // -->
+        if (attribute.startsWith("selected_npc")) {
+            if (getPlayerEntity().hasMetadata("selected"))
+                return dNPC.valueOf(getPlayerEntity().getMetadata("selected").get(0).asString())
+                    .getAttribute(attribute.fulfill(1));
+            else return "null";
+        }
+        
+        
+        /////////////////////
+        //   CONVERSION ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <p@player.entity>
+        // @returns dEntity
+        // @description
+        // returns the dEntity object of the player
+        // -->
+        if (attribute.startsWith("entity"))
+            return new dEntity(getPlayerEntity())
+                    .getAttribute(attribute.fulfill(1));
+        
+        
+        /////////////////////
+        //   IDENTIFICATION ATTRIBUTES
+        /////////////////
+
+        // <--[tag]
+        // @attribute <p@player.ip>
+        // @returns Element
+        // @description
+        // returns the player's IP address.
+        // -->
+        if (attribute.startsWith("ip") ||
+            attribute.startsWith("host_name"))
+            return new Element(getPlayerEntity().getAddress().getHostName())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <p@player.name.display>
+        // @returns Element
+        // @description
+        // returns the 'display name' of the player, which may contain
+        // prefixes and suffixes/color, etc.
+        // -->
+        if (attribute.startsWith("name.display"))
+            return new Element(getPlayerEntity().getDisplayName())
+                    .getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <p@player.name.list>
+        // @returns Element
+        // @description
+        // returns the name of the player as shown in the 'player list'.
+        // -->
+        if (attribute.startsWith("name.list"))
+            return new Element(getPlayerEntity().getPlayerListName())
+                    .getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <p@player.name>
+        // @returns Element
+        // @description
+        // returns the name of the player.
+        // -->
+        if (attribute.startsWith("name"))
+            return new Element(player_name).getAttribute(attribute.fulfill(1));
+        
+        
+        /////////////////////
+        //   INVENTORY ATTRIBUTES
+        /////////////////
 
         // <--[tag]
         // @attribute <p@player.equipment.boots>
@@ -575,80 +685,23 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("item_in_hand"))
             return new dItem(getPlayerEntity().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
-
+        
         // <--[tag]
-        // @attribute <p@player.name.display>
-        // @returns Element
+        // @attribute <p@player.item_on_cursor>
+        // @returns dItem
         // @description
-        // returns the 'display name' of the player, which may contain
-        // prefixes and suffixes/color, etc.
+        // returns a dItem that the player's cursor is on, if any. This includes
+        // chest interfaces, inventories, and hotbars, etc.
         // -->
-        if (attribute.startsWith("name.display"))
-            return new Element(getPlayerEntity().getDisplayName())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.name.list>
-        // @returns Element
-        // @description
-        // returns the name of the player as shown in the 'player list'.
-        // -->
-        if (attribute.startsWith("name.list"))
-            return new Element(getPlayerEntity().getPlayerListName())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.name>
-        // @returns Element
-        // @description
-        // returns the name of the player.
-        // -->
-        if (attribute.startsWith("name"))
-            return new Element(player_name).getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.compass.target>
-        // @returns dLocation
-        // @description
-        // returns a dLocation of the player's 'compass target'.
-        // -->
-        if (attribute.startsWith("compass_target"))
-            return new dLocation(getPlayerEntity().getCompassTarget())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.food_level.formatted>
-        // @returns Element
-        // @description
-        // returns a 'formatted' value of the player's current food level.
-        // May be 'starving', 'famished', 'parched, 'hungry' or 'healthy'
-        // -->
-        if (attribute.startsWith("food_level.formatted")) {
-            double maxHunger = getPlayerEntity().getMaxHealth();
-            if (attribute.hasContext(2))
-                maxHunger = attribute.getIntContext(2);
-            if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .10)
-                return new Element("starving").getAttribute(attribute.fulfill(2));
-            else if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .40)
-                return new Element("famished").getAttribute(attribute.fulfill(2));
-            else if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .75)
-                return new Element("parched").getAttribute(attribute.fulfill(2));
-            else if ((float) getPlayerEntity().getFoodLevel() / maxHunger < 1)
-                return new Element("hungry").getAttribute(attribute.fulfill(2));
-
-            else return new Element("healthy").getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <p@player.food_level>
-        // @returns Element(number)
-        // @description
-        // returns the current food level of the player.
-        // -->
-        if (attribute.startsWith("food_level"))
-            return new Element(getPlayerEntity().getFoodLevel())
+        if (attribute.startsWith("item_on_cursor"))
+            return new dItem(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
-
+        
+        
+        /////////////////////
+        //   PERMISSION ATTRIBUTES
+        /////////////////
+        
         // <--[tag]
         // @attribute <p@player.has_permission[permission.node]>
         // @returns Element(boolean)
@@ -725,7 +778,7 @@ public class dPlayer implements dObject {
                 return new Element(Depends.permissions.playerInGroup((World) null, player_name, group))
                         .getAttribute(attribute.fulfill(2));
 
-                // Permission in certain world
+            // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world"))
                 return new Element(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group))
                         .getAttribute(attribute.fulfill(2));
@@ -744,56 +797,79 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        
+        /////////////////////
+        //   LOCATION ATTRIBUTES
+        /////////////////
+        
         // <--[tag]
-        // @attribute <p@player.is_flying>
+        // @attribute <p@player.compass.target>
+        // @returns dLocation
+        // @description
+        // returns a dLocation of the player's 'compass target'.
+        // -->
+        if (attribute.startsWith("compass_target"))
+            return new dLocation(getPlayerEntity().getCompassTarget())
+                    .getAttribute(attribute.fulfill(2));
+        
+        
+        /////////////////////
+        //   STATE ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <p@player.allowed_flight>
         // @returns Element(boolean)
         // @description
-        // returns true if the player is currently flying, false otherwise
+        // returns true if the player is allowed to fly, and false otherwise
         // -->
-        if (attribute.startsWith("is_flying"))
-            return new Element(getPlayerEntity().isFlying())
+        if (attribute.startsWith("allowed_flight"))
+            return new Element(getPlayerEntity().getAllowFlight())
                     .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <p@player.fly_speed>
+        // @returns Element(Float)
+        // @description
+        // returns the speed the player can fly at
+        // -->
+        if (attribute.startsWith("fly_speed"))
+            return new Element(getPlayerEntity().getFlySpeed())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <p@player.food_level.formatted>
+        // @returns Element
+        // @description
+        // returns a 'formatted' value of the player's current food level.
+        // May be 'starving', 'famished', 'parched, 'hungry' or 'healthy'
+        // -->
+        if (attribute.startsWith("food_level.formatted")) {
+            double maxHunger = getPlayerEntity().getMaxHealth();
+            if (attribute.hasContext(2))
+                maxHunger = attribute.getIntContext(2);
+            if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .10)
+                return new Element("starving").getAttribute(attribute.fulfill(2));
+            else if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .40)
+                return new Element("famished").getAttribute(attribute.fulfill(2));
+            else if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .75)
+                return new Element("parched").getAttribute(attribute.fulfill(2));
+            else if ((float) getPlayerEntity().getFoodLevel() / maxHunger < 1)
+                return new Element("hungry").getAttribute(attribute.fulfill(2));
+
+            else return new Element("healthy").getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
-        // @attribute <p@player.is_sneaking>
-        // @returns Element(boolean)
+        // @attribute <p@player.food_level>
+        // @returns Element(number)
         // @description
-        // returns true if the player is currently sneaking, false otherwise
+        // returns the current food level of the player.
         // -->
-        if (attribute.startsWith("is_sneaking"))
-            return new Element(getPlayerEntity().isSneaking())
+        if (attribute.startsWith("food_level"))
+            return new Element(getPlayerEntity().getFoodLevel())
                     .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.is_blocking>
-        // @returns Element(boolean)
-        // @description
-        // returns true if the player is currently blocking, false otherwise
-        // -->
-        if (attribute.startsWith("is_blocking"))
-            return new Element(getPlayerEntity().isBlocking())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.is_sleeping>
-        // @returns Element(boolean)
-        // @description
-        // returns true if the player is currently sleeping, false otherwise
-        // -->
-        if (attribute.startsWith("is_sleeping"))
-            return new Element(getPlayerEntity().isSleeping())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.is_sprinting>
-        // @returns Element(boolean)
-        // @description
-        // returns true if the player is currently sprinting, false otherwise
-        // -->
-        if (attribute.startsWith("is_sprinting"))
-            return new Element(getPlayerEntity().isSprinting())
-                    .getAttribute(attribute.fulfill(1));
-
+        
         // <--[tag]
         // @attribute <p@player.gamemode.id>
         // @returns Element(number)
@@ -813,52 +889,57 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("gamemode"))
             return new Element(getPlayerEntity().getGameMode().name())
                     .getAttribute(attribute.fulfill(1));
-
+        
         // <--[tag]
-        // @attribute <p@player.item_on_cursor>
-        // @returns dItem
-        // @description
-        // returns a dItem that the player's cursor is on, if any. This includes
-        // chest interfaces, inventories, and hotbars, etc.
-        // -->
-        if (attribute.startsWith("item_on_cursor"))
-            return new dItem(getPlayerEntity().getItemOnCursor())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.selected_npc>
-        // @returns dNPC
-        // @description
-        // returns the dNPC that the player currently has selected with
-        // '/npc sel', null if no player selected.
-        // -->
-        if (attribute.startsWith("selected_npc")) {
-            if (getPlayerEntity().hasMetadata("selected"))
-                return dNPC.valueOf(getPlayerEntity().getMetadata("selected").get(0).asString())
-                    .getAttribute(attribute.fulfill(1));
-            else return "null";
-        }
-
-        // <--[tag]
-        // @attribute <p@player.allowed_flight>
+        // @attribute <p@player.is_blocking>
         // @returns Element(boolean)
         // @description
-        // returns true if the player is allowed to fly, and false otherwise
+        // returns true if the player is currently blocking, false otherwise
         // -->
-        if (attribute.startsWith("allowed_flight"))
-            return new Element(getPlayerEntity().getAllowFlight())
+        if (attribute.startsWith("is_blocking"))
+            return new Element(getPlayerEntity().isBlocking())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <p@player.is_flying>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the player is currently flying, false otherwise
+        // -->
+        if (attribute.startsWith("is_flying"))
+            return new Element(getPlayerEntity().isFlying())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <p@player.host_name>
-        // @returns Element
+        // @attribute <p@player.is_sleeping>
+        // @returns Element(boolean)
         // @description
-        // returns the player's 'host name'.
+        // returns true if the player is currently sleeping, false otherwise
         // -->
-        if (attribute.startsWith("host_name"))
-            return new Element(getPlayerEntity().getAddress().getHostName())
+        if (attribute.startsWith("is_sleeping"))
+            return new Element(getPlayerEntity().isSleeping())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <p@player.is_sneaking>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the player is currently sneaking, false otherwise
+        // -->
+        if (attribute.startsWith("is_sneaking"))
+            return new Element(getPlayerEntity().isSneaking())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <p@player.is_sprinting>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the player is currently sprinting, false otherwise
+        // -->
+        if (attribute.startsWith("is_sprinting"))
+            return new Element(getPlayerEntity().isSprinting())
+                    .getAttribute(attribute.fulfill(1));
+        
         // <--[tag]
         // @attribute <p@player.time_asleep>
         // @returns Duration
@@ -868,54 +949,68 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("time_asleep"))
             return new Duration(getPlayerEntity().getSleepTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
-
+        
         // <--[tag]
-        // @attribute <p@player.player_time>
-        // @returns Element
+        // @attribute <p@player.walk_speed>
+        // @returns Element(Float)
         // @description
-        // returns the time, specific to the player
+        // returns the speed the player can walk at
         // -->
-        if (attribute.startsWith("player_time"))
-            return new Element(getPlayerEntity().getPlayerTime())
+        if (attribute.startsWith("walk_speed"))
+            return new Element(getPlayerEntity().getWalkSpeed())
                     .getAttribute(attribute.fulfill(1));
-
+        
         // <--[tag]
-        // @attribute <p@player.player_time_offset>
-        // @returns Element
+        // @attribute <p@player.weather>
+        // @returns Element(String)
         // @description
-        // returns the player's 'offset' of time vs. the real time.
+        // returns the type of weather the player is experiencing.
         // -->
-        if (attribute.startsWith("player_time_offset"))
-            return new Element(getPlayerEntity().getPlayerTimeOffset())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.prefix>
-        // @returns Element
-        // @description
-        // Returns the dObject's prefix.
-        // -->
-        if (attribute.startsWith("prefix"))
-            return new Element(prefix)
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("debug.log")) {
-            dB.log(debug());
-            return new Element(Boolean.TRUE.toString())
+        if (attribute.startsWith("weather"))
+            return new Element(getPlayerEntity().getPlayerWeather().name())
                     .getAttribute(attribute.fulfill(2));
-        }
-
-        if (attribute.startsWith("debug.no_color")) {
-            return new Element(ChatColor.stripColor(debug()))
+        
+        // <--[tag]
+        // @attribute <p@player.xp.level>
+        // @returns Element(number)
+        // @description
+        // returns the number of levels the player has.
+        // -->
+        if (attribute.startsWith("xp.level"))
+            return new Element(getPlayerEntity().getLevel())
                     .getAttribute(attribute.fulfill(2));
-        }
+        
+        // <--[tag]
+        // @attribute <p@player.xp.to_next_level>
+        // @returns Element(number)
+        // @description
+        // returns the amount of experience to the next level.
+        // -->
+        if (attribute.startsWith("xp.to_next_level"))
+            return new Element(getPlayerEntity().getExpToLevel())
+                    .getAttribute(attribute.fulfill(2));
 
-        if (attribute.startsWith("debug")) {
-            return new Element(debug())
+        // <--[tag]
+        // @attribute <p@player.xp.total>
+        // @returns Element(number)
+        // @description
+        // returns the total amount of experience points.
+        // -->
+        if (attribute.startsWith("xp.total"))
+            return new Element(getPlayerEntity().getTotalExperience())
+                    .getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <p@player.xp>
+        // @returns Element(number)
+        // @description
+        // returns the percentage of experience points to the next level.
+        // -->
+        if (attribute.startsWith("xp"))
+            return new Element(getPlayerEntity().getExp() * 100)
                     .getAttribute(attribute.fulfill(1));
-        }
-
-        return new dEntity(getPlayerEntity()).getAttribute(attribute.fulfill(0));
+        
+        return new dEntity(getPlayerEntity()).getAttribute(attribute);
     }
 
 }
