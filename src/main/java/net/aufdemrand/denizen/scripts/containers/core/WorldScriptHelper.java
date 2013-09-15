@@ -31,6 +31,7 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
+import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -743,6 +744,43 @@ public class WorldScriptHelper implements Listener {
         else if (Argument.valueOf(determination)
                          .matchesPrimitive(aH.PrimitiveType.Integer)) {
             event.setBurnTime(aH.getIntegerFrom(determination));
+        }
+    }
+    
+    // <--[event]
+    // @Events
+    // player takes item from furnace
+    // player takes <item> from furnace
+    // player takes <material> from furnace
+    //
+    // @Triggers when a player takes an item from a furnace.
+    // @Context
+    // <context.location> returns the dLocation of the furnace.
+    // <context.item> returns the dItem taken out of the furnace.
+    //
+    // @Determine
+    // Element(Integer) to set the amount of experience the player will get.
+    //
+    // -->
+    @EventHandler
+    public void furnaceExtract(FurnaceExtractEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial itemMaterial = new dMaterial(event.getItemType());
+        dItem item = new dItem(itemMaterial, event.getItemAmount());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("item", item);
+
+        String determination = doEvents(Arrays.asList
+                ("player takes item from furnace",
+                 "player takes " + item.identify() + " from furnace",
+                 "player takes " + itemMaterial.identify() + " from furnace"),
+                 null, event.getPlayer(), context);
+
+        if (Argument.valueOf(determination)
+                .matchesPrimitive(aH.PrimitiveType.Integer)) {
+            event.setExpToDrop(aH.getIntegerFrom(determination));
         }
     }
     
@@ -1514,6 +1552,33 @@ public class WorldScriptHelper implements Listener {
         doEvents(Arrays.asList
                 ("entity enters portal",
                  entityType + " enters portal"),
+                 null, null, context);
+    }
+    
+    // <--[event]
+    // @Events
+    // entity exits portal
+    // <entity> exits portal
+    //
+    // @Triggers when an entity exits a portal.
+    // @Context
+    // <context.entity> returns the dEntity.
+    // <context.location> returns the dLocation of the portal block touched by the entity.
+    //
+    // -->
+    @EventHandler
+    public void entityPortalExit(EntityPortalExitEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity entity = new dEntity(event.getEntity());
+        String entityType = entity.getEntityType().name();
+
+        context.put("entity", entity);
+        context.put("location", new dLocation(event.getTo()));
+
+        doEvents(Arrays.asList
+                ("entity exits portal",
+                 entityType + " exits portal"),
                  null, null, context);
     }
 

@@ -797,7 +797,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Fly
-        // @Usage fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)
+        // @Usage fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)
         // @Required 1
         // @Stable Todo
         // @Short Make an entity fly where its controller is looking or fly to waypoints.

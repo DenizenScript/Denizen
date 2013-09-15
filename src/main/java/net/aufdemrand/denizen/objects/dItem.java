@@ -215,6 +215,10 @@ public class dItem implements dObject, Notable, Properties {
     public dItem(Material material, int qty) {
         item = new ItemStack(material, qty);
     }
+    
+    public dItem(dMaterial material, int qty) {
+        item = new ItemStack(material.getMaterial(), qty);
+    }
 
     public dItem(int type, int qty) {
         item = new ItemStack(type, qty);
