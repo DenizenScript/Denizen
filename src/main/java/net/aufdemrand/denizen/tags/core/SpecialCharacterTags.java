@@ -118,6 +118,15 @@ public class SpecialCharacterTags implements Listener {
        else if (event.getName().equalsIgnoreCase("&ns"))
            event.setReplaced(new Element("#").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&pc>
+           // @returns Element
+           // @description
+           // Returns a percent symbol: %
+           // -->
+       else if (event.getName().equalsIgnoreCase("&pc"))
+           event.setReplaced(new Element("%").getAttribute(attribute.fulfill(1)));
+
    }
 
 }
