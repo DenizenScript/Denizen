@@ -32,6 +32,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
@@ -334,6 +335,17 @@ public class dEntity implements dObject {
 
         return CitizensAPI.getNPCRegistry().getNPC(entity);
     }
+    
+    /**
+     * Get the dNPC corresponding to this entity
+     *
+     * @return  The dNPC
+     */
+
+    public dNPC getDenizenNPC() {
+
+        return new dNPC(getNPC());
+    }
 
     /**
      * Check whether this entity is an NPC
@@ -364,6 +376,37 @@ public class dEntity implements dObject {
 
     public boolean isPlayer() {
         return entity instanceof Player;
+    }
+    
+    /**
+     * Get this entity as a Projectile
+     *
+     * @return  true or false
+     */
+
+    public Projectile getProjectile() {
+        
+        return (Projectile) entity;
+    }
+    
+    /**
+     * Check whether this entity is a Projectile
+     *
+     * @return  true or false
+     */
+
+    public boolean isProjectile() {
+        return entity instanceof Projectile;
+    }
+    
+    /**
+     * Get this entity's shooter
+     *
+     * @return  true or false
+     */
+
+    public dEntity getShooter() {
+        return new dEntity(getProjectile().getShooter());
     }
 
     /**
