@@ -167,7 +167,7 @@ public class UtilTags implements Listener {
                     .getNPCSelector().getSelected(Bukkit.getConsoleSender())).getAttribute(attribute.fulfill(1)));
             return;
         }
-        
+
         // <--[tag]
         // @attribute <server.get_npcs_named[<name>]>
         // @returns dList(dNPC)

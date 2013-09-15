@@ -52,11 +52,11 @@ public class FlyCommand extends AbstractCommand {
 
                 scriptEntry.addObject("destinations", ((dList) arg.asType(dList.class)).filter(dLocation.class));
             }
-            
+
             else if (!scriptEntry.hasObject("controller")
                      && arg.matchesArgumentType(dPlayer.class)
                      && arg.matchesPrefix("controller, c")) {
-                
+
                scriptEntry.addObject("controller", (arg.asType(dPlayer.class)));
             }
 
@@ -71,7 +71,7 @@ public class FlyCommand extends AbstractCommand {
 
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
-            
+
             else if (!scriptEntry.hasObject("rotationThreshold")
                     && arg.matchesPrefix("rotationthreshold, rotation, r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
@@ -90,7 +90,7 @@ public class FlyCommand extends AbstractCommand {
         scriptEntry.defaultObject("origin",
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null,
                 scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null);
-        
+
         // Use a default speed and rotation threshold if they are not specified
         scriptEntry.defaultObject("speed", new Element(1.2));
         scriptEntry.defaultObject("rotationThreshold", new Element(45));
@@ -112,15 +112,15 @@ public class FlyCommand extends AbstractCommand {
         final List<dLocation> destinations = scriptEntry.hasObject("destinations") ?
                                 (List<dLocation>) scriptEntry.getObject("destinations") :
                                 new ArrayList<dLocation>();
-        
+
         // Set freeflight to true only if there are no destinations
         final boolean freeflight = destinations.size() < 1;
-                                
+
         dEntity controller = (dEntity) scriptEntry.getObject("controller");
-        
+
         // If freeflight is on, we need to do some checks
         if (freeflight) {
-            
+
             // If no controller was set, we need someone to control the
             // flying entities, so try to find a player in the entity list
             if (controller == null) {
@@ -136,26 +136,26 @@ public class FlyCommand extends AbstractCommand {
                         }
                     }
                 }
-            
+
                 // If the controller is still null, we cannot continue
                 if (controller == null) {
                     dB.report(getName(), "There is no one to control the flight's path!");
                     return;
                 }
             }
-            
+
             // Else, if the controller was set, we need to make sure
             // it is among the flying entities, and add it if it is not
             else {
                 boolean found = false;
-            
+
                 for (dEntity entity : entities) {
                     if (entity.identify().equals(controller.identify())) {
                         found = true;
                         break;
                     }
                 }
-                
+
                 // Add the controller to the entity list
                 if (!found) {
                     dB.report(getName(), "Adding controller " + controller + " to flying entities.");
@@ -203,7 +203,7 @@ public class FlyCommand extends AbstractCommand {
         // Get the last entity on the list
         final Entity entity = entities.get(entities.size() - 1).getBukkitEntity();
         final LivingEntity finalController = controller != null ? controller.getLivingEntity() : null;
-        
+
         BukkitRunnable task = new BukkitRunnable() {
 
             Location location = null;
@@ -216,7 +216,7 @@ public class FlyCommand extends AbstractCommand {
                     // If freeflight is on, and the flying entity
                     // is ridden by another entity, let it keep
                     // flying where the controller is looking
-                    
+
                     if (!entity.isEmpty() && finalController.isInsideVehicle()) {
                         location = finalController.getEyeLocation()
                                      .add(finalController.getEyeLocation().getDirection()

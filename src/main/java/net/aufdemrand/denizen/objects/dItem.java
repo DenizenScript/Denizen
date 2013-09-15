@@ -215,7 +215,7 @@ public class dItem implements dObject, Notable, Properties {
     public dItem(Material material, int qty) {
         item = new ItemStack(material, qty);
     }
-    
+
     public dItem(dMaterial material, int qty) {
         item = new ItemStack(material.getMaterial(), qty);
     }
@@ -227,7 +227,7 @@ public class dItem implements dObject, Notable, Properties {
     public dItem(ItemStack item) {
         this.item = item;
     }
-    
+
     public dItem(Item item) {
         this.item = item.getItemStack();
     }
@@ -383,7 +383,7 @@ public class dItem implements dObject, Notable, Properties {
 
         return containsLore("§0id:");
     }
-    
+
     public dMaterial getMaterial() {
         return new dMaterial(getItemStack().getType());
     }

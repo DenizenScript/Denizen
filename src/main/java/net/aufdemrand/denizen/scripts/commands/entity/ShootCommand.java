@@ -48,14 +48,14 @@ public class ShootCommand extends AbstractCommand {
                 else
                     dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
             }
-            
+
             else if (!scriptEntry.hasObject("destination")
                      && arg.matchesArgumentType(dLocation.class)
                      && arg.matchesPrefix("destination, d")) {
 
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
-            
+
             else if (!scriptEntry.hasObject("height")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)
                      && arg.matchesPrefix("height, h")) {
@@ -81,7 +81,7 @@ public class ShootCommand extends AbstractCommand {
 
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
-            
+
             else
                 dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
         }

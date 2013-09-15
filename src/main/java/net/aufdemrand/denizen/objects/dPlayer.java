@@ -204,15 +204,15 @@ public class dPlayer implements dObject {
         if (attribute == null) return "null";
 
         if (player_name == null) return "null";
-        
+
     /////////////////////
     //   OFFLINE ATTRIBUTES
     /////////////////
-    
+
         /////////////////////
         //   DEBUG ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.debug.log>
         // @returns Element(Boolean)
@@ -246,7 +246,7 @@ public class dPlayer implements dObject {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <p@player.prefix>
         // @returns Element
@@ -256,12 +256,12 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
-        
-    
+
+
         /////////////////////
         //   DENIZEN ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.chat_history_list>
         // @returns dList
@@ -288,7 +288,7 @@ public class dPlayer implements dObject {
             else return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <p@player.flag[flag_name]>
         // @returns Flag dList
@@ -312,12 +312,12 @@ public class dPlayer implements dObject {
                         .getAttribute(attribute);
             else return "null";
         }
-        
-        
+
+
         /////////////////////
         //   ECONOMY ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.money>
         // @returns Element(number)
@@ -359,12 +359,12 @@ public class dPlayer implements dObject {
                 return null;
             }
         }
-        
-        
+
+
         /////////////////////
         //   ENTITY LIST ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.list>
         // @returns dList(dPlayer)
@@ -411,8 +411,8 @@ public class dPlayer implements dObject {
                 return new dList(players).getAttribute(attribute.fulfill(1));
             }
         }
-        
-        
+
+
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
@@ -420,12 +420,12 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("name") && !isOnline())
             // This can be parsed later with more detail if the player is online, so only check for offline.
             return new Element(player_name).getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   LOCATION ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.bed_spawn>
         // @returns dLocation
@@ -436,12 +436,12 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("bed_spawn"))
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
                     .getAttribute(attribute.fulfill(2));
-        
-        
+
+
         /////////////////////
         //   STATE ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.first_played>
         // @returns Element(number)
@@ -452,7 +452,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("first_played"))
             return new Element(getOfflinePlayer().getFirstPlayed())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.has_played_before>
         // @returns Element(boolean)
@@ -472,7 +472,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("is_banned"))
             return new Element(getOfflinePlayer().isBanned())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.is_online>
         // @returns Element(boolean)
@@ -481,7 +481,7 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("is_online"))
             return new Element(isOnline()).getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.is_op>
         // @returns Element(boolean)
@@ -501,7 +501,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("is_whitelisted"))
             return new Element(getOfflinePlayer().isWhitelisted())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.last_played>
         // @returns Element(number)
@@ -512,19 +512,19 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("last_played"))
             return new Element(getOfflinePlayer().getLastPlayed())
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
     /////////////////////
     //   ONLINE ATTRIBUTES
     /////////////////
-        
+
         // Player is required to be online after this point...
-        if (!isOnline()) return new Element(identify()).getAttribute(attribute); 
-        
+        if (!isOnline()) return new Element(identify()).getAttribute(attribute);
+
         /////////////////////
         //   CITIZENS ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.selected_npc>
         // @returns dNPC
@@ -538,12 +538,12 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
             else return "null";
         }
-        
-        
+
+
         /////////////////////
         //   CONVERSION ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.entity>
         // @returns dEntity
@@ -553,8 +553,8 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("entity"))
             return new dEntity(getPlayerEntity())
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
@@ -569,7 +569,7 @@ public class dPlayer implements dObject {
             attribute.startsWith("host_name"))
             return new Element(getPlayerEntity().getAddress().getHostName())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.name.display>
         // @returns Element
@@ -599,8 +599,8 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("name"))
             return new Element(player_name).getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   INVENTORY ATTRIBUTES
         /////////////////
@@ -686,7 +686,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("item_in_hand"))
             return new dItem(getPlayerEntity().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.item_on_cursor>
         // @returns dItem
@@ -697,12 +697,12 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("item_on_cursor"))
             return new dItem(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   PERMISSION ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.has_permission[permission.node]>
         // @returns Element(boolean)
@@ -798,11 +798,11 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        
+
         /////////////////////
         //   LOCATION ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.compass.target>
         // @returns dLocation
@@ -812,12 +812,12 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("compass_target"))
             return new dLocation(getPlayerEntity().getCompassTarget())
                     .getAttribute(attribute.fulfill(2));
-        
-        
+
+
         /////////////////////
         //   STATE ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.allowed_flight>
         // @returns Element(boolean)
@@ -827,7 +827,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("allowed_flight"))
             return new Element(getPlayerEntity().getAllowFlight())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.fly_speed>
         // @returns Element(Float)
@@ -837,7 +837,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("fly_speed"))
             return new Element(getPlayerEntity().getFlySpeed())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.food_level.formatted>
         // @returns Element
@@ -870,7 +870,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("food_level"))
             return new Element(getPlayerEntity().getFoodLevel())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.gamemode.id>
         // @returns Element(number)
@@ -890,7 +890,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("gamemode"))
             return new Element(getPlayerEntity().getGameMode().name())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.is_blocking>
         // @returns Element(boolean)
@@ -900,7 +900,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("is_blocking"))
             return new Element(getPlayerEntity().isBlocking())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.is_flying>
         // @returns Element(boolean)
@@ -920,7 +920,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("is_sleeping"))
             return new Element(getPlayerEntity().isSleeping())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.is_sneaking>
         // @returns Element(boolean)
@@ -940,7 +940,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("is_sprinting"))
             return new Element(getPlayerEntity().isSprinting())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.time_asleep>
         // @returns Duration
@@ -950,7 +950,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("time_asleep"))
             return new Duration(getPlayerEntity().getSleepTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.walk_speed>
         // @returns Element(Float)
@@ -960,7 +960,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("walk_speed"))
             return new Element(getPlayerEntity().getWalkSpeed())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.weather>
         // @returns Element(String)
@@ -970,7 +970,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("weather"))
             return new Element(getPlayerEntity().getPlayerWeather().name())
                     .getAttribute(attribute.fulfill(2));
-        
+
         // <--[tag]
         // @attribute <p@player.xp.level>
         // @returns Element(number)
@@ -980,7 +980,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("xp.level"))
             return new Element(getPlayerEntity().getLevel())
                     .getAttribute(attribute.fulfill(2));
-        
+
         // <--[tag]
         // @attribute <p@player.xp.to_next_level>
         // @returns Element(number)
@@ -1010,7 +1010,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("xp"))
             return new Element(getPlayerEntity().getExp() * 100)
                     .getAttribute(attribute.fulfill(1));
-        
+
         return new dEntity(getPlayerEntity()).getAttribute(attribute);
     }
 

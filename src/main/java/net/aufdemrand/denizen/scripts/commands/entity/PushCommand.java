@@ -34,10 +34,10 @@ public class PushCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            
+
             if (!scriptEntry.hasObject("origin")
                 && arg.matchesPrefix("origin, o, source, shooter, s")) {
-                
+
                 if (arg.matchesArgumentType(dEntity.class))
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
                 else if (arg.matchesArgumentType(dLocation.class))
@@ -49,33 +49,33 @@ public class PushCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("destination")
                      && arg.matchesArgumentType(dLocation.class)
                      && arg.matchesPrefix("destination, d")) {
-                
+
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("duration")
                      && arg.matchesArgumentType(Duration.class)
                      && arg.matchesPrefix("duration, d")) {
-                
+
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
             else if (!scriptEntry.hasObject("speed")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)
                      && arg.matchesPrefix("speed, s")) {
-                
+
                 scriptEntry.addObject("speed", arg.asElement());
-            }  
+            }
 
             else if (!scriptEntry.hasObject("script")
                      && arg.matchesArgumentType(dScript.class)) {
-                
+
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
 
             else if (!scriptEntry.hasObject("entities")
                      && arg.matchesArgumentList(dEntity.class)) {
-                
+
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
@@ -96,10 +96,10 @@ public class PushCommand extends AbstractCommand {
         scriptEntry.defaultObject("duration", new Duration(40));
 
         // Check to make sure required arguments have been filled
-        
+
         if (!scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "entities");
-        
+
         if (!scriptEntry.hasObject("originEntity") && !scriptEntry.hasObject("originLocation"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "origin");
     }
@@ -114,7 +114,7 @@ public class PushCommand extends AbstractCommand {
                                    new dLocation(originEntity.getEyeLocation()
                                                .add(originEntity.getEyeLocation().getDirection())
                                                .subtract(0, 0.4, 0));
-        
+
         // If a living entity is doing the shooting, get its LivingEntity
         LivingEntity shooter = (originEntity != null && originEntity.isLivingEntity()) ? originEntity.getLivingEntity() : null;
 
@@ -135,7 +135,7 @@ public class PushCommand extends AbstractCommand {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dScript script = (dScript) scriptEntry.getObject("script");
-        
+
         final double speed = ((Element) scriptEntry.getElement("speed")).asDouble();
         final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
 
@@ -146,7 +146,7 @@ public class PushCommand extends AbstractCommand {
                              aH.debugObj("speed", speed) +
                              aH.debugObj("max ticks", maxTicks) +
                              (script != null ? aH.debugObj("script", script) : ""));
-            
+
         // If the shooter is an NPC, always rotate it to face the destination
         // of the projectile, but if the shooter is a player, only rotate him/her
         // if he/she is not looking in the correct general direction
@@ -164,23 +164,23 @@ public class PushCommand extends AbstractCommand {
 
             if (!entity.isSpawned()) entity.spawnAt(originLocation);
             else                     entity.teleport(originLocation);
-                
+
             // Only add to entityList after the entities have been
             // spawned, otherwise you'll get something like "e@skeleton"
             // instead of "e@57" on it
 
             entityList.add(entity.toString());
-                
+
             Rotation.faceLocation(entity.getBukkitEntity(), destination);
-                
+
             // If the current entity is a projectile, set its shooter
             // when applicable
-                
+
             if (entity.getBukkitEntity() instanceof Projectile && shooter != null) {
                 ((Projectile) entity.getBukkitEntity()).setShooter(shooter);
             }
         }
-        
+
         // Add entities to context so that the specific entities created/spawned
         // can be fetched.
         scriptEntry.addObject("shot_entities", entityList);
@@ -192,15 +192,15 @@ public class PushCommand extends AbstractCommand {
         // that the other entities will be mounted on it
 
         final dEntity lastEntity = entities.get(entities.size() - 1);
-        
+
         final Vector v2 = destination.toVector();
 
         BukkitRunnable task = new BukkitRunnable() {
             int runs = 0;
             public void run() {
-                
+
                 if (runs < maxTicks && lastEntity.isValid()) {
-                
+
                     Vector v1 = lastEntity.getLocation().toVector();
                     Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed);
 
@@ -223,7 +223,7 @@ public class PushCommand extends AbstractCommand {
                     this.cancel();
 
                     if (script != null) {
-                    
+
                         List<ScriptEntry> entries = script.getContainer().getBaseEntries(
                                 scriptEntry.getPlayer(),
                                 scriptEntry.getNPC());

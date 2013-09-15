@@ -147,7 +147,7 @@ public class dWorld implements dObject {
         // -->
         if (attribute.startsWith("entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
-            
+
             for (Entity entity : getWorld().getEntities()) {
                 entities.add(new dEntity(entity));
             }
@@ -164,7 +164,7 @@ public class dWorld implements dObject {
         // -->
         if (attribute.startsWith("living_entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
-            
+
             for (Entity entity : getWorld().getLivingEntities()) {
                 entities.add(new dEntity(entity));
             }
@@ -181,7 +181,7 @@ public class dWorld implements dObject {
         // -->
         if (attribute.startsWith("players")) {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
-            
+
             for (Player player : getWorld().getPlayers()) {
                 if (!CitizensAPI.getNPCRegistry().isNPC(player))
                     players.add(new dPlayer(player));
