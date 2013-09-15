@@ -648,7 +648,7 @@ public class dEntity implements dObject {
                                         : null;
 
         ((CraftCreature) entity).getHandle().
-            setGoalTarget(nmsTarget);
+                setGoalTarget(nmsTarget);
 
         ((CraftCreature) entity).getHandle().
                 setGoalTarget(((CraftLivingEntity) target).getHandle());
@@ -916,8 +916,8 @@ public class dEntity implements dObject {
         // Returns the dLocation of the entity.
         // -->
         if (attribute.startsWith("location")) {
-                return new dLocation(entity.getLocation())
-                        .getAttribute(attribute.fulfill(1));
+            return new dLocation(entity.getLocation())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

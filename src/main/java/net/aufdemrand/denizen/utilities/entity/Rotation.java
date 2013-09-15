@@ -118,7 +118,7 @@ public class Rotation {
 
         double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
                 from.toVector()).normalize()));
-
+        
         return (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
                 Math.abs(requiredYaw + 360 - currentYaw) < degreeLimit ||
                 Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit);
@@ -139,14 +139,7 @@ public class Rotation {
 
     public static boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
 
-        Location location = from.getLocation();
-
-        // Important! Need to subtract 90 from player yaws
-        if (from instanceof Player) {
-            location.setYaw(location.getYaw() - 90);
-        }
-
-        return isFacingLocation(location, at, degreeLimit);
+        return isFacingLocation(from.getLocation(), at, degreeLimit);
     }
 
 
@@ -164,7 +157,7 @@ public class Rotation {
 
     public static boolean isFacingEntity(Entity from, Entity at, float degreeLimit) {
 
-        return isFacingLocation(from, at.getLocation(), degreeLimit);
+        return isFacingLocation(from.getLocation(), at.getLocation(), degreeLimit);
     }
 
 
@@ -210,14 +203,12 @@ public class Rotation {
         } else if (dz < 0) {
             yaw = Math.PI;
         }
-        return (float) (-yaw * 180 / Math.PI - 90);
+        return (float) (-yaw * 180 / Math.PI);
     }
 
 
     /**
      * Converts a yaw to a cardinal direction name.
-     *
-     * Thanks to sk89qs
      *
      * @param  yaw  The yaw you want to get a cardinal direction from.
      *
@@ -228,23 +219,23 @@ public class Rotation {
         yaw = normalizeYaw(yaw);
         // Compare yaws, return closest direction.
         if (0 <= yaw && yaw < 22.5)
-            return "north";
-        else if (22.5 <= yaw && yaw < 67.5)
-            return "northeast";
-        else if (67.5 <= yaw && yaw < 112.5)
-            return "east";
-        else if (112.5 <= yaw && yaw < 157.5)
-            return "southeast";
-        else if (157.5 <= yaw && yaw < 202.5)
-            return "south";
-        else if (202.5 <= yaw && yaw < 247.5)
-            return "southwest";
-        else if (247.5 <= yaw && yaw < 292.5)
             return "west";
-        else if (292.5 <= yaw && yaw < 337.5)
+        else if (22.5 <= yaw && yaw < 67.5)
             return "northwest";
-        else if (337.5 <= yaw && yaw < 360.0)
+        else if (67.5 <= yaw && yaw < 112.5)
             return "north";
+        else if (112.5 <= yaw && yaw < 157.5)
+            return "northeast";
+        else if (157.5 <= yaw && yaw < 202.5)
+            return "east";
+        else if (202.5 <= yaw && yaw < 247.5)
+            return "southeast";
+        else if (247.5 <= yaw && yaw < 292.5)
+            return "south";
+        else if (292.5 <= yaw && yaw < 337.5)
+            return "southwest";
+        else if (337.5 <= yaw && yaw < 360.0)
+            return "west";
         else
             return null;
     }

@@ -2259,6 +2259,7 @@ public class WorldScriptHelper implements Listener {
     // <context.item> returns the dItem the player has clicked on.
     // <context.item> returns the dInventory.
     // <context.click> returns an Element with the name of the click type.
+    // <context.slot_type> returns an Element with the name of the slot type that was clicked.
     //
     // @Determine
     // "CANCELLED" to stop the player from clicking.
