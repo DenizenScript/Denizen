@@ -812,7 +812,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(FlyCommand.class,
-                "FLY", "fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
+                "FLY", "fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)", 1);
 
         // <--[command]
         // @Name Follow

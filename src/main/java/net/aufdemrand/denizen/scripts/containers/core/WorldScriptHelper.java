@@ -1588,10 +1588,10 @@ public class WorldScriptHelper implements Listener {
                     newProjectile.teleport(projectile.getLocation());
                 }
 
-                // Set the entity as the shooter of the projectile
-                if (newProjectile.getBukkitEntity() instanceof Projectile) {
-                    ((Projectile) newProjectile.getBukkitEntity())
-                            .setShooter((LivingEntity) entity);
+                // Set the entity as the shooter of the projectile,
+                // where applicable
+                if (newProjectile.isProjectile()) {
+                    newProjectile.setShooter(entity);
                 }
             }
 

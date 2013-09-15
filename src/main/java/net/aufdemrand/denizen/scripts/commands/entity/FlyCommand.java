@@ -71,6 +71,13 @@ public class FlyCommand extends AbstractCommand {
 
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
+            
+            else if (!scriptEntry.hasObject("rotationThreshold")
+                    && arg.matchesPrefix("rotationthreshold, rotation, r")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+
+               scriptEntry.addObject("rotationThreshold", arg.asElement());
+           }
 
             else if (!scriptEntry.hasObject("speed")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
@@ -80,17 +87,15 @@ public class FlyCommand extends AbstractCommand {
         }
 
         // Use the NPC or player's locations as the location if one is not specified
-
         scriptEntry.defaultObject("origin",
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null,
                 scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null);
         
-        // Use a default speed of 1.2 if one is not specified
-
+        // Use a default speed and rotation threshold if they are not specified
         scriptEntry.defaultObject("speed", new Element(1.2));
+        scriptEntry.defaultObject("rotationThreshold", new Element(45));
 
         // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
         if (!scriptEntry.hasObject("origin"))
@@ -159,7 +164,8 @@ public class FlyCommand extends AbstractCommand {
             }
         }
 
-        final Element speed = (Element) scriptEntry.getObject("speed");
+        final double speed = ((Element) scriptEntry.getObject("speed")).asDouble();
+        final float rotationThreshold = ((Element) scriptEntry.getObject("rotationThreshold")).asFloat();
         Boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
@@ -167,6 +173,7 @@ public class FlyCommand extends AbstractCommand {
                              aH.debugObj("origin", origin) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("speed", speed) +
+                             aH.debugObj("rotation threshold degrees", rotationThreshold) +
                              (freeflight ? aH.debugObj("controller", controller)
                                          : aH.debugObj("destinations", destinations.toString())));
 
@@ -236,14 +243,14 @@ public class FlyCommand extends AbstractCommand {
 
                     // To avoid excessive turbulence, only have the entity rotate
                     // when it really needs to
-                    if (!Rotation.isFacingLocation(entity, location, 50)) {
+                    if (!Rotation.isFacingLocation(entity, location, rotationThreshold)) {
 
                         Rotation.faceLocation(entity, location);
                     }
 
                     Vector v1 = entity.getLocation().toVector();
                     Vector v2 = location.toVector();
-                    Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed.asDouble());
+                    Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed);
 
                     entity.setVelocity(v3);
 

@@ -400,13 +400,23 @@ public class dEntity implements dObject {
     }
     
     /**
-     * Get this entity's shooter
+     * Get this Projectile entity's shooter
      *
      * @return  A dEntity of the shooter
      */
 
     public dEntity getShooter() {
         return new dEntity(getProjectile().getShooter());
+    }
+    
+    /**
+     * Set this Projectile entity's shooter
+     * 
+     */
+
+    public void setShooter(dEntity shooter) {
+        if (shooter.isLivingEntity())
+            getProjectile().setShooter(shooter.getLivingEntity());
     }
     
     /**
