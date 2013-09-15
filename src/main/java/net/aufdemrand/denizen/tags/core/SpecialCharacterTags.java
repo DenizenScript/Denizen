@@ -127,6 +127,24 @@ public class SpecialCharacterTags implements Listener {
        else if (event.getName().equalsIgnoreCase("&pc"))
            event.setReplaced(new Element("%").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&lt>
+           // @returns Element
+           // @description
+           // Returns a less than symbol: <
+           // -->
+       else if (event.getName().equalsIgnoreCase("&lt"))
+           event.setReplaced(new Element(String.valueOf((char)0x01)).getAttribute(attribute.fulfill(1)));
+
+           // <--[tag]
+           // @attribute <&gt>
+           // @returns Element
+           // @description
+           // Returns a greater than symbol: >
+           // -->
+       else if (event.getName().equalsIgnoreCase("&gt"))
+           event.setReplaced(new Element(String.valueOf((char)0x02)).getAttribute(attribute.fulfill(1)));
+
    }
 
 }

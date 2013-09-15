@@ -109,7 +109,6 @@ public class TagManager implements Listener {
         int[] positions = locateTag(arg);
         if (positions == null) return arg;
 
-        boolean changeBack = false;
         int failsafe = 0;
         do {
             // Just in case, do-loops make me nervous, but does implement a limit of 25 tags per argument.
@@ -119,9 +118,9 @@ public class TagManager implements Listener {
             else {
                 event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]), scriptEntry);
                 if (event.isInstant() != instant) {
-                    changeBack = true;
                     // Not the right type of tag, change out brackets so it doesn't get parsed again
-                    arg = arg.substring(0, positions[0]) + "{" + event.getReplaced() + "}" + arg.substring(positions[1] + 1, arg.length());
+                    arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
+                            + event.getReplaced() + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
                 } else {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
@@ -134,10 +133,8 @@ public class TagManager implements Listener {
             // Find new TAG
             positions = locateTag(arg);
         } while (positions != null || failsafe < 25);
-        // Change brackets back
-        if (changeBack) arg = arg.replace("{", "<").replace("}", ">");
         // Return argument with replacements
-
+        arg = arg.replace((char)0x01, '<').replace((char)0x02, '>');
         return arg;
     }
     // Match all < > brackets that don't contain < > inside them
