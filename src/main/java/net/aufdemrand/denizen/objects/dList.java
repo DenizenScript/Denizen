@@ -415,8 +415,8 @@ public class dList extends ArrayList<String> implements dObject {
         // with dList's identify() value.
 
         return (flag != null
-                ? new Element(flag.getLast().asString()).getAttribute(attribute.fulfill(0))
-                : new Element(identify()).getAttribute(attribute.fulfill(0)));
+                ? new Element(flag.getLast().asString()).getAttribute(attribute)
+                : new Element(identify()).getAttribute(attribute));
     }
 
 }

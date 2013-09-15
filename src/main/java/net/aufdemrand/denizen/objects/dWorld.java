@@ -446,7 +446,7 @@ public class dWorld implements dObject {
             return Duration.valueOf(getWorld().getWeatherDuration() + "t")
                     .getAttribute(attribute.fulfill(1));
 
-        return new Element(identify()).getAttribute(attribute.fulfill(0));
+        return new Element(identify()).getAttribute(attribute);
     }
 
 }

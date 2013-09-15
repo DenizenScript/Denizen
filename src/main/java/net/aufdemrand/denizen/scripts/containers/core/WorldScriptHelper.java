@@ -3705,98 +3705,84 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // vehicle collides
-    // <vehicle> collides
+    // vehicle collides with block
+    // vehicle collides with <material>
+    // <vehicle> collides with block
+    // <vehicle> collides with <material>
     //
-    // @Triggers when a vehicle collides.
+    // @Triggers when a vehicle collides with a block.
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
+    // <context.location> returns the dLocation of the block.
     //
     // -->
     @EventHandler
-    public void vehicleCollision(VehicleCollisionEvent event) {
+    public void vehicleBlockCollision(VehicleBlockCollisionEvent event) {
         
         Player player = null;
         dNPC npc = null;
 
         dEntity vehicle = new dEntity(event.getVehicle());
         String vehicleType = vehicle.getEntityType().name();
+        dMaterial material = new dMaterial(event.getBlock().getType());
         
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("vehicle", vehicle);
+        context.put("location", new dLocation(event.getBlock().getLocation()));
         
         List<String> events = new ArrayList<String>();
-        events.add("vehicle collides");
-        events.add(vehicleType + " collides");
+        events.add("vehicle collides with block");
+        events.add("vehicle collides with " + material.identify());
+        events.add(vehicleType + " collides with block");
+        events.add(vehicleType + " collides with " + material.identify());
         
-        // <--[event]
-        // @Events
-        // vehicle collides with block
-        // vehicle collides with <material>
-        // <vehicle> collides with block
-        // <vehicle> collides with <material>
-        //
-        // @Triggers when a vehicle collides with a block.
-        // @Context
-        // <context.vehicle> returns the dEntity of the vehicle.
-        // <context.location> returns the dLocation of the block.
-        //
-        // -->
-        if (event instanceof VehicleBlockCollisionEvent) {
-            
-            VehicleBlockCollisionEvent subEvent = (VehicleBlockCollisionEvent) event;
-            
-            dMaterial material = new dMaterial(subEvent.getBlock().getType());
-            context.put("location", new dLocation(subEvent.getBlock().getLocation()));
-            
-            events.add("vehicle collides with block");
-            events.add("vehicle collides with " + material.identify());
-            events.add(vehicleType + " collides with block");
-            events.add(vehicleType + " collides with " + material.identify());
-        }
+        doEvents(events, npc, player, context);
+    }
+    
+    // <--[event]
+    // @Events
+    // vehicle collides with entity
+    // vehicle collides with <entity>
+    // <vehicle> collides with entity
+    // <vehicle> collides with <entity>
+    //
+    // @Triggers when a vehicle collides with an entity.
+    // @Context
+    // <context.vehicle> returns the dEntity of the vehicle.
+    // <context.entity> returns the dEntity of the entity the vehicle has collided with.
+    //
+    // @Determine
+    // "CANCELLED" to stop the collision from happening.
+    // "NOPICKUP" to stop the vehicle from picking up the entity.
+    //
+    // -->
+    @EventHandler
+    public void vehicleEntityCollision(VehicleEntityCollisionEvent event) {
         
-        // <--[event]
-        // @Events
-        // vehicle collides with entity
-        // vehicle collides with <entity>
-        // <vehicle> collides with entity
-        // <vehicle> collides with <entity>
-        //
-        // @Triggers when a vehicle collides with an entity.
-        // @Context
-        // <context.vehicle> returns the dEntity of the vehicle.
-        // <context.entity> returns the dEntity of the entity the vehicle has collided with.
-        //
-        // @Determine
-        // "CANCELLED" to stop the collision from happening.
-        // "NOPICKUP" to stop the vehicle from picking up the entity.
-        //
-        // -->
-        if (event instanceof VehicleEntityCollisionEvent) {
-            
-            VehicleEntityCollisionEvent subEvent = (VehicleEntityCollisionEvent) event;
-            
-            dEntity entity = new dEntity(subEvent.getEntity());
-            String entityType = entity.getEntityType().name();
-            
-            events.add("vehicle collides with entity");
-            events.add("vehicle collides with " + entityType);
-            events.add(vehicleType + " collides with entity");
-            events.add(vehicleType + " collides with " + entityType);
-            
-            String determination = doEvents(events, npc, player, context);
-            
-            if (determination.toUpperCase().startsWith("CANCELLED"))
-                subEvent.setCancelled(true);
-            if (determination.toUpperCase().startsWith("NOPICKUP"))
-                subEvent.setPickupCancelled(true);
-        }
-        // Do these events separately because only VehicleEntityCollisionEvent
-        // can actually be cancelled
-        else {
+        Player player = null;
+        dNPC npc = null;
 
-            doEvents(events, npc, player, context);
-        }
+        dEntity vehicle = new dEntity(event.getVehicle());
+        String vehicleType = vehicle.getEntityType().name();
+        dEntity entity = new dEntity(event.getEntity());
+        String entityType = entity.getEntityType().name();
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("vehicle", vehicle);
+        context.put("entity", entity);
+        
+        List<String> events = new ArrayList<String>();
+        events.add("vehicle collides with entity");
+        events.add("vehicle collides with " + entityType);
+        events.add(vehicleType + " collides with entity");
+        events.add(vehicleType + " collides with " + entityType);
+            
+        String determination = doEvents(events, npc, player, context);
+            
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        if (determination.toUpperCase().startsWith("NOPICKUP"))
+                event.setPickupCancelled(true);
     }
     
     // <--[event]

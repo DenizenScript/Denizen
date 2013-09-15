@@ -400,7 +400,7 @@ public class Duration implements dObject {
                         .getAttribute(attribute.fulfill(1));
         }
 
-        return new Element(identify()).getAttribute(attribute.fulfill(0));
+        return new Element(identify()).getAttribute(attribute);
     }
 
 

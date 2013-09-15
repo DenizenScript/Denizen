@@ -1001,6 +1001,21 @@ public class dEntity implements dObject {
         
         
         /////////////////////
+        //   INVENTORY ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <e@entity.equipment>
+        // @returns dInventory
+        // @description
+        // Returns the dInventory of the entity.
+        // -->
+        if (attribute.startsWith("equipment")) {
+            return new dInventory(getLivingEntity()).getAttribute(attribute.fulfill(1));
+        }
+        
+        
+        /////////////////////
         //   LOCATION ATTRIBUTES
         /////////////////
 
@@ -1026,6 +1041,21 @@ public class dEntity implements dObject {
         if (attribute.startsWith("eye_location"))
             return new dLocation(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <e@entity.get_eye_height>
+        // @returns Element(Boolean)
+        // @description
+        // Returns the height of the entity's eyes above its location.
+        // -->
+        if (attribute.startsWith("get_eye_height")) {
+            if (isLivingEntity())
+                return new Element(getLivingEntity().getEyeHeight())
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new Element("null")
+                        .getAttribute(attribute.fulfill(1));
+        }
         
         // <--[tag]
         // @attribute <e@entity.location.cursor_on>
@@ -1086,16 +1116,6 @@ public class dEntity implements dObject {
         if (attribute.startsWith("can_pickup_items"))
             return new Element(getLivingEntity().getCanPickupItems())
                     .getAttribute(attribute.fulfill(1));
-        
-        // <--[tag]
-        // @attribute <e@entity.equipment>
-        // @returns dInventory
-        // @description
-        // Returns the dInventory of the entity.
-        // -->
-        if (attribute.startsWith("equipment")) {
-            return new dInventory(getLivingEntity()).getAttribute(attribute.fulfill(1));
-        }
         
         // <--[tag]
         // @attribute <e@entity.fall_distance>
@@ -1394,21 +1414,6 @@ public class dEntity implements dObject {
         }
         
         // <--[tag]
-        // @attribute <e@entity.get_eye_height>
-        // @returns Element(Boolean)
-        // @description
-        // Returns the height of the entity's eyes above its location.
-        // -->
-        if (attribute.startsWith("get_eye_height")) {
-            if (isLivingEntity())
-                return new Element(getLivingEntity().getEyeHeight())
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
-        }
-        
-        // <--[tag]
         // @attribute <e@entity.is_living>
         // @returns Element(Boolean)
         // @description
@@ -1474,7 +1479,7 @@ public class dEntity implements dObject {
             return new Element(entity instanceof Tameable)
                     .getAttribute(attribute.fulfill(1));
 
-        return new Element(identify()).getAttribute(attribute.fulfill(0));
+        return new Element(identify()).getAttribute(attribute);
     }
 
 }

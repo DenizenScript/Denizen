@@ -801,7 +801,7 @@ public class dItem implements dObject, Notable, Properties {
         }
 
 
-        return new Element(identify()).getAttribute(attribute.fulfill(0));
+        return new Element(identify()).getAttribute(attribute);
     }
 
 }
