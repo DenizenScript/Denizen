@@ -335,7 +335,7 @@ public class dEntity implements dObject {
 
         return CitizensAPI.getNPCRegistry().getNPC(entity);
     }
-    
+
     /**
      * Get the dNPC corresponding to this entity
      *
@@ -377,7 +377,7 @@ public class dEntity implements dObject {
     public boolean isPlayer() {
         return !isNPC() && entity instanceof Player;
     }
-    
+
     /**
      * Get this entity as a Projectile
      *
@@ -385,10 +385,10 @@ public class dEntity implements dObject {
      */
 
     public Projectile getProjectile() {
-        
+
         return (Projectile) entity;
     }
-    
+
     /**
      * Check whether this entity is a Projectile
      *
@@ -398,7 +398,7 @@ public class dEntity implements dObject {
     public boolean isProjectile() {
         return entity instanceof Projectile;
     }
-    
+
     /**
      * Get this Projectile entity's shooter
      *
@@ -406,27 +406,30 @@ public class dEntity implements dObject {
      */
 
     public dEntity getShooter() {
-        return new dEntity(getProjectile().getShooter());
+        if (isProjectile() && hasShooter())
+            return new dEntity(getProjectile().getShooter());
+        else
+            return null;
     }
-    
+
     /**
      * Set this Projectile entity's shooter
-     * 
+     *
      */
 
     public void setShooter(dEntity shooter) {
-        if (shooter.isLivingEntity())
+        if (isProjectile() && shooter.isLivingEntity())
             getProjectile().setShooter(shooter.getLivingEntity());
     }
-    
+
     /**
      * Check whether this entity has a shooter.
      *
      * @return  true or false
      */
-    
+
     public boolean hasShooter() {
-        return getProjectile().getShooter() != null;
+        return isProjectile() && getProjectile().getShooter() != null;
     }
 
     /**
@@ -869,7 +872,7 @@ public class dEntity implements dObject {
             dB.echoDebug("dEntity has returned null.");
             return "null";
         }
-        
+
         /////////////////////
         //   DEBUG ATTRIBUTES
         /////////////////
@@ -907,7 +910,7 @@ public class dEntity implements dObject {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.prefix>
         // @returns Element
@@ -917,7 +920,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.type>
         // @returns Element
@@ -928,12 +931,12 @@ public class dEntity implements dObject {
             return new Element(getObjectType())
                     .getAttribute(attribute.fulfill(1));
         }
-        
-        
+
+
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <e@entity.custom_id>
         // @returns dScript/Element
@@ -949,7 +952,7 @@ public class dEntity implements dObject {
                 return new Element(entity.getType().name())
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.custom_name>
         // @returns Element
@@ -961,7 +964,7 @@ public class dEntity implements dObject {
             if (getLivingEntity().getCustomName() == null) return "null";
             return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.eid>
         // @returns Element(Number)
@@ -988,7 +991,7 @@ public class dEntity implements dObject {
             return new Element(entity.getType().getName())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.uuid>
         // @returns Element
@@ -998,12 +1001,12 @@ public class dEntity implements dObject {
         if (attribute.startsWith("uuid"))
             return new Element(entity.getUniqueId().toString())
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   INVENTORY ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <e@entity.equipment>
         // @returns dInventory
@@ -1013,8 +1016,8 @@ public class dEntity implements dObject {
         if (attribute.startsWith("equipment")) {
             return new dInventory(getLivingEntity()).getAttribute(attribute.fulfill(1));
         }
-        
-        
+
+
         /////////////////////
         //   LOCATION ATTRIBUTES
         /////////////////
@@ -1031,7 +1034,7 @@ public class dEntity implements dObject {
                 return new Element(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
             }
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.eye_location>
         // @returns dLocation
@@ -1041,7 +1044,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("eye_location"))
             return new dLocation(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.get_eye_height>
         // @returns Element(Boolean)
@@ -1056,7 +1059,7 @@ public class dEntity implements dObject {
                 return new Element("null")
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.location.cursor_on>
         // @returns dLocation
@@ -1090,7 +1093,7 @@ public class dEntity implements dObject {
             return new dLocation(entity.getLocation())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.world>
         // @returns dWorld
@@ -1101,12 +1104,12 @@ public class dEntity implements dObject {
             return new dWorld(entity.getWorld())
                     .getAttribute(attribute.fulfill(1));
         }
-        
-        
+
+
         /////////////////////
         //   STATE ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <e@entity.can_pickup_items>
         // @returns Element(Boolean)
@@ -1116,7 +1119,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("can_pickup_items"))
             return new Element(getLivingEntity().getCanPickupItems())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.fall_distance>
         // @returns Element(Float)
@@ -1126,7 +1129,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("fall_distance"))
             return new Element(entity.getFallDistance())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.fire_time>
         // @returns Duration
@@ -1136,7 +1139,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("fire_time"))
             return new Duration(entity.getFireTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.get_leash_holder>
         // @returns dPlayer
@@ -1151,7 +1154,7 @@ public class dEntity implements dObject {
             else return new Element("null")
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.get_owner>
         // @returns dPlayer
@@ -1166,7 +1169,7 @@ public class dEntity implements dObject {
                 return new Element("null")
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.get_passenger>
         // @returns dEntity
@@ -1196,7 +1199,7 @@ public class dEntity implements dObject {
             else return new Element("null")
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.has_effect[<effect>]>
         // @returns Element(Boolean)
@@ -1214,7 +1217,7 @@ public class dEntity implements dObject {
             else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.health.formatted>
         // @returns Element
@@ -1237,7 +1240,7 @@ public class dEntity implements dObject {
 
             else return new Element("healthy").getAttribute(attribute.fulfill(2));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.health.max>
         // @returns Element(Number)
@@ -1271,7 +1274,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("health"))
             return new Element(getLivingEntity().getHealth())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.is_empty>
         // @returns Element(Boolean)
@@ -1281,7 +1284,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("is_empty"))
             return new Element(entity.isEmpty())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.is_inside_vehicle>
         // @returns Element(Boolean)
@@ -1291,7 +1294,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("is_inside_vehicle"))
             return new Element(entity.isInsideVehicle())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.is_leashed>
         // @returns Element(Boolean)
@@ -1306,7 +1309,7 @@ public class dEntity implements dObject {
                 return Element.FALSE
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.is_on_ground>
         // @returns Element(Boolean)
@@ -1316,7 +1319,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("is_on_ground"))
             return new Element(entity.isOnGround())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.is_persistent>
         // @returns Element(Boolean)
@@ -1331,7 +1334,7 @@ public class dEntity implements dObject {
                 return Element.FALSE
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.is_tamed>
         // @returns Element(Boolean)
@@ -1347,7 +1350,7 @@ public class dEntity implements dObject {
                 return Element.FALSE
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.killer>
         // @returns dPlayer
@@ -1367,7 +1370,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("last_damage.amount"))
             return new Element(getLivingEntity().getLastDamage())
                     .getAttribute(attribute.fulfill(2));
-        
+
         // <--[tag]
         // @attribute <e@entity.last_damage.cause>
         // @returns Element
@@ -1377,7 +1380,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("last_damage.cause"))
             return new Element(entity.getLastDamageCause().getCause().name())
                     .getAttribute(attribute.fulfill(2));
-        
+
         // <--[tag]
         // @attribute <e@entity.last_damage.duration>
         // @returns Duration
@@ -1387,7 +1390,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("last_damage.duration"))
             return new Duration((long) getLivingEntity().getNoDamageTicks())
                     .getAttribute(attribute.fulfill(2));
-        
+
         // <--[tag]
         // @attribute <e@entity.time_lived>
         // @returns Duration
@@ -1397,12 +1400,12 @@ public class dEntity implements dObject {
         if (attribute.startsWith("time_lived"))
             return new Duration(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   TYPE ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <e@entity.entity_type>
         // @returns Element
@@ -1412,7 +1415,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("entity_type")) {
             return new Element(entity_type.name()).getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.is_living>
         // @returns Element(Boolean)
@@ -1423,7 +1426,7 @@ public class dEntity implements dObject {
             return new Element(isLivingEntity())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.is_mob>
         // @returns Element(Boolean)
@@ -1435,7 +1438,7 @@ public class dEntity implements dObject {
                 return Element.TRUE.getAttribute(attribute.fulfill(1));
             else return Element.FALSE.getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.is_npc>
         // @returns Element(Boolean)
@@ -1446,7 +1449,7 @@ public class dEntity implements dObject {
             return new Element(isNPC())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.is_player>
         // @returns Element(Boolean)
@@ -1457,7 +1460,7 @@ public class dEntity implements dObject {
             return new Element(isPlayer())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.is_projectile>
         // @returns Element(Boolean)
@@ -1468,7 +1471,7 @@ public class dEntity implements dObject {
             return new Element(isProjectile())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.is_tameable>
         // @returns Element(Boolean)
