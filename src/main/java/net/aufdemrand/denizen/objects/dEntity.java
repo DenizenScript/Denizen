@@ -916,21 +916,8 @@ public class dEntity implements dObject {
         // Returns the dLocation of the entity.
         // -->
         if (attribute.startsWith("location")) {
-
-            if (entity instanceof Player) {
-                // Important for player yaw and direction!
-                //
-                // A player's true yaw is always 90 less than the one given by
-                // Bukkit's location.getYaw(), so correct it here
-
-                dLocation location = new dLocation(entity.getLocation());
-                location.setYaw(location.getYaw() - 90);
-                return location.getAttribute(attribute.fulfill(1));
-            }
-            else {
                 return new dLocation(entity.getLocation())
                         .getAttribute(attribute.fulfill(1));
-            }
         }
 
         // <--[tag]
