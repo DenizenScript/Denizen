@@ -169,7 +169,7 @@ public class dMaterial implements dObject {
 
     @Override
     public String identify() {
-        return "m@" + material.name();
+        return "m@" + material.name().toLowerCase();
     }
 
     @Override

@@ -381,7 +381,7 @@ public class dEntity implements dObject {
     /**
      * Get this entity as a Projectile
      *
-     * @return  true or false
+     * @return  The Projectile
      */
 
     public Projectile getProjectile() {
@@ -402,11 +402,21 @@ public class dEntity implements dObject {
     /**
      * Get this entity's shooter
      *
-     * @return  true or false
+     * @return  A dEntity of the shooter
      */
 
     public dEntity getShooter() {
         return new dEntity(getProjectile().getShooter());
+    }
+    
+    /**
+     * Check whether this entity has a shooter.
+     *
+     * @return  true or false
+     */
+    
+    public boolean hasShooter() {
+        return getProjectile().getShooter() != null;
     }
 
     /**

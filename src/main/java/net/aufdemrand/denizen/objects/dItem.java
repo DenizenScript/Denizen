@@ -482,9 +482,8 @@ public class dItem implements dObject, Notable, Properties {
             }
         }
 
-        // Else, return the material name and data
-        return "i@" + item.getType().name().toLowerCase()
-                + (item.getData().getData() != 0 ? ":" + item.getData().getData() : "");
+        // Else, return the material name
+        return "i@" + item.getType().name().toLowerCase();
     }
 
     @Override
