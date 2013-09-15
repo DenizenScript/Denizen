@@ -1327,7 +1327,7 @@ public class WorldScriptHelper implements Listener {
                 if (player == null) player = subPlayer;
             }
             
-            // If the damager is a projectile, adds its shooter (which can be null)
+            // If the damager is a projectile, add its shooter (which can be null)
             // to the context
             else if (damager.isProjectile()) {
                 dEntity shooter = damager.getShooter();
@@ -2047,7 +2047,6 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity of the projectile.
     // <context.shooter> returns the dEntity of the shooter, if there is one.
-    // <context.location> returns the dLocation of the block hit.
     //
     // -->
     @EventHandler
@@ -2063,7 +2062,6 @@ public class WorldScriptHelper implements Listener {
 
         context.put("entity", entity);
         context.put("shooter", shooter);
-        context.put("location", new dLocation(entity.getLocation()));
 
         if (shooter.isNPC()) {
             npc = shooter.getDenizenNPC();

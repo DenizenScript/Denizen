@@ -167,6 +167,21 @@ public class UtilTags implements Listener {
                     .getNPCSelector().getSelected(Bukkit.getConsoleSender())).getAttribute(attribute.fulfill(1)));
             return;
         }
+        
+        // <--[tag]
+        // @attribute <server.get_npcs_named[<name>]>
+        // @returns dList(dNPC)
+        // @description
+        // Returns a dList of dNPCs with a certain name.
+        // -->
+        if (attribute.startsWith("get_npcs_named") && attribute.hasContext(1)) {
+            ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+            for (NPC npc : CitizensAPI.getNPCRegistry())
+                if (npc.getName().equalsIgnoreCase(attribute.getContext(1)))
+                    npcs.add(dNPC.mirrorCitizensNPC(npc));
+            event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+            return;
+        }
 
         // <--[tag]
         // @attribute <server.list_npcs>
