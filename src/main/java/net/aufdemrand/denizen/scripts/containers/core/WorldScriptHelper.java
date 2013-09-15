@@ -3802,7 +3802,7 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // vehicle created
-    // <vehicle> crated
+    // <vehicle> created
     //
     // @Triggers when a vehicle is created.
     // @Context
