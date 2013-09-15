@@ -1471,7 +1471,7 @@ public class WorldScriptHelper implements Listener {
 
             // If the damager is a projectile, add its shooter (which can be null)
             // to the context
-            else if (damager.isProjectile()) {
+            else if (damager.hasShooter()) {
                 dEntity shooter = damager.getShooter();
                 context.put("shooter", shooter.getDenizenObject());
             }
