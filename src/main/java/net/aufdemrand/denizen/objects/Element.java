@@ -555,6 +555,8 @@ public class Element implements dObject {
                 ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]) - 1;
             else
                 ending_index = element.length();
+            if (beginning_index < 0) beginning_index = 0;
+            if (ending_index > element.length()) ending_index = element.length();
             return new Element(element.substring(beginning_index, ending_index))
                     .getAttribute(attribute.fulfill(1));
         }
