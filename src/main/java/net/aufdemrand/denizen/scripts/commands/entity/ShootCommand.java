@@ -26,7 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 /**
- * Shoots an entity like a bow.
+ * Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a surface.
  *
  * @author David Cernat
  */
@@ -39,38 +39,35 @@ public class ShootCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("origin")
-                     && arg.matchesPrefix("origin, o, source, shooter, s")) {
+                && arg.matchesPrefix("origin, o, source, shooter, s")) {
 
                 if (arg.matchesArgumentType(dEntity.class))
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
                 else if (arg.matchesArgumentType(dLocation.class))
                     scriptEntry.addObject("originLocation", arg.asType(dLocation.class));
+                else
+                    dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
             }
-
-            else if (!scriptEntry.hasObject("entities")
-                     && arg.matchesArgumentList(dEntity.class)) {
-
-                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
-            }
-
+            
             else if (!scriptEntry.hasObject("destination")
-                     && arg.matchesArgumentType(dLocation.class)) {
+                     && arg.matchesArgumentType(dLocation.class)
+                     && arg.matchesPrefix("destination, d")) {
 
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
-
+            
             else if (!scriptEntry.hasObject("height")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)
                      && arg.matchesPrefix("height, h")) {
 
-               scriptEntry.addObject("height", arg.asElement());
+                scriptEntry.addObject("height", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("gravity")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("gravity, g, velocity, v")) {
+                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                     && arg.matchesPrefix("gravity, g, velocity, v")) {
 
-              scriptEntry.addObject("gravity", arg.asElement());
+                scriptEntry.addObject("gravity", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("script")
@@ -78,6 +75,15 @@ public class ShootCommand extends AbstractCommand {
 
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
+
+            else if (!scriptEntry.hasObject("entities")
+                     && arg.matchesArgumentList(dEntity.class)) {
+
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+            }
+            
+            else
+                dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
         }
 
         // Use the NPC or player's locations as the origin if one is not specified
@@ -104,8 +110,6 @@ public class ShootCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // Get objects
-
         dEntity originEntity = (dEntity) scriptEntry.getObject("originEntity");
         dLocation originLocation = scriptEntry.hasObject("originLocation") ?
                                    (dLocation) scriptEntry.getObject("originLocation") :
@@ -114,7 +118,6 @@ public class ShootCommand extends AbstractCommand {
                                                .subtract(0, 0.4, 0));
 
         // If a living entity is doing the shooting, get its LivingEntity
-
         LivingEntity shooter = (originEntity != null && originEntity.isLivingEntity()) ? originEntity.getLivingEntity() : null;
 
         // If there is no destination set, but there is a shooter, get a point
@@ -139,7 +142,6 @@ public class ShootCommand extends AbstractCommand {
         Element gravity = (Element) scriptEntry.getObject("gravity");
 
         // Report to dB
-
         dB.report(getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("destination", destination) +
@@ -147,21 +149,16 @@ public class ShootCommand extends AbstractCommand {
                              aH.debugObj("gravity", gravity) +
                              (script != null ? aH.debugObj("script", script.identify()) : ""));
 
-        // Keep a dList of entities that can be called using %shot_entities%
+        // Keep a dList of entities that can be called using <entry[name].shot_entities>
         // later in the script queue
 
         final dList entityList = new dList();
 
         // Go through all the entities, spawning/teleporting and rotating them
-
         for (dEntity entity : entities) {
 
-            if (!entity.isSpawned()) {
-                entity.spawnAt(originLocation);
-            }
-            else {
-                entity.teleport(originLocation);
-            }
+            if (!entity.isSpawned())  entity.spawnAt(originLocation);
+            else                      entity.teleport(originLocation);
 
             // Only add to entityList after the entities have been
             // spawned, otherwise you'll get something like "e@skeleton"
@@ -181,7 +178,6 @@ public class ShootCommand extends AbstractCommand {
 
         // Add entities to context so that the specific entities created/spawned
         // can be fetched.
-
         scriptEntry.addObject("shot_entities", entityList);
 
         Position.mount(Conversion.convert(entities));

@@ -1,16 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import net.aufdemrand.denizen.objects.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;

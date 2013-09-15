@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Conversion;
@@ -20,14 +21,13 @@ import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 /**
- * Fly on top of an entity in the direction you are looking, unless
- * a list of locations is specified, in which case the entity flies
- * towards them.
+ * Make an entity fly where its controller is looking,
+ * or - alternatively - make it fly between different destinations.
  *
  * @author David Cernat
  */
@@ -49,25 +49,32 @@ public class FlyCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("destinations")
                      && arg.matchesPrefix("destination, destinations, d")) {
-                // Entity arg
+
                 scriptEntry.addObject("destinations", ((dList) arg.asType(dList.class)).filter(dLocation.class));
+            }
+            
+            else if (!scriptEntry.hasObject("controller")
+                     && arg.matchesArgumentType(dPlayer.class)
+                     && arg.matchesPrefix("controller, c")) {
+                
+               scriptEntry.addObject("controller", (arg.asType(dPlayer.class)));
             }
 
             else if (!scriptEntry.hasObject("origin")
                      && arg.matchesArgumentType(dLocation.class)) {
-                // Location arg
-                scriptEntry.addObject("origin", arg.asType(dLocation.class).setPrefix("origin"));
+
+                scriptEntry.addObject("origin", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("entities")
                      && arg.matchesArgumentList(dEntity.class)) {
-                // Entity arg
+
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
             else if (!scriptEntry.hasObject("speed")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
-                // Add value
+
                 scriptEntry.addObject("speed", arg.asElement());
             }
         }
@@ -77,7 +84,7 @@ public class FlyCommand extends AbstractCommand {
         scriptEntry.defaultObject("origin",
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null,
                 scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null);
-
+        
         // Use a default speed of 1.2 if one is not specified
 
         scriptEntry.defaultObject("speed", new Element(1.2));
@@ -100,6 +107,57 @@ public class FlyCommand extends AbstractCommand {
         final List<dLocation> destinations = scriptEntry.hasObject("destinations") ?
                                 (List<dLocation>) scriptEntry.getObject("destinations") :
                                 new ArrayList<dLocation>();
+        
+        // Set freeflight to true only if there are no destinations
+        final boolean freeflight = destinations.size() < 1;
+                                
+        dEntity controller = (dEntity) scriptEntry.getObject("controller");
+        
+        // If freeflight is on, we need to do some checks
+        if (freeflight) {
+            
+            // If no controller was set, we need someone to control the
+            // flying entities, so try to find a player in the entity list
+            if (controller == null) {
+                for (dEntity entity : entities) {
+                    if (entity.isPlayer()) {
+                        // If this player will be a rider on something, and will not
+                        // be at the bottom ridden by the other entities, set it as
+                        // the controller
+                        if (entities.get(entities.size() - 1) != entity) {
+                            controller = entity;
+                            dB.report(getName(), "Flight control defaulting to " + controller);
+                            break;
+                        }
+                    }
+                }
+            
+                // If the controller is still null, we cannot continue
+                if (controller == null) {
+                    dB.report(getName(), "There is no one to control the flight's path!");
+                    return;
+                }
+            }
+            
+            // Else, if the controller was set, we need to make sure
+            // it is among the flying entities, and add it if it is not
+            else {
+                boolean found = false;
+            
+                for (dEntity entity : entities) {
+                    if (entity.identify().equals(controller.identify())) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                // Add the controller to the entity list
+                if (!found) {
+                    dB.report(getName(), "Adding controller " + controller + " to flying entities.");
+                    entities.add(0, controller);
+                }
+            }
+        }
 
         final Element speed = (Element) scriptEntry.getObject("speed");
         Boolean cancel = scriptEntry.hasObject("cancel");
@@ -109,7 +167,8 @@ public class FlyCommand extends AbstractCommand {
                              aH.debugObj("origin", origin) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("speed", speed) +
-                             (destinations.size() > 0 ? aH.debugObj("destinations", destinations.toString()) : ""));
+                             (freeflight ? aH.debugObj("controller", controller)
+                                         : aH.debugObj("destinations", destinations.toString())));
 
         // Mount or dismount all of the entities
         if (cancel.equals(false)) {
@@ -132,18 +191,12 @@ public class FlyCommand extends AbstractCommand {
 
             // Go no further if we are dismounting entities
             return;
-
         }
 
         // Get the last entity on the list
         final Entity entity = entities.get(entities.size() - 1).getBukkitEntity();
-
-        // Get the attached player
-        final Player player = scriptEntry.getPlayer().getPlayerEntity();
-
-        // Set freeflight to true only if there are no destinations
-        final boolean freeflight = destinations.size() > 0;
-
+        final LivingEntity finalController = controller != null ? controller.getLivingEntity() : null;
+        
         BukkitRunnable task = new BukkitRunnable() {
 
             Location location = null;
@@ -153,9 +206,18 @@ public class FlyCommand extends AbstractCommand {
 
                 if (freeflight) {
 
-                    location = player.getEyeLocation()
-                                     .add(player.getEyeLocation().getDirection()
+                    // If freeflight is on, and the flying entity
+                    // is ridden by another entity, let it keep
+                    // flying where the controller is looking
+                    
+                    if (!entity.isEmpty() && finalController.isInsideVehicle()) {
+                        location = finalController.getEyeLocation()
+                                     .add(finalController.getEyeLocation().getDirection()
                                      .multiply(30));
+                    }
+                    else {
+                        flying = false;
+                    }
                 }
                 else {
 
@@ -163,18 +225,14 @@ public class FlyCommand extends AbstractCommand {
                     // as there are destinations left
 
                     if (destinations.size() > 0) {
-
                         location = destinations.get(0);
                     }
                     else {
-
                         flying = false;
                     }
                 }
 
-                if (flying &&
-                        entity.isValid() &&
-                        (!entity.isEmpty())) {
+                if (flying && entity.isValid()) {
 
                     // To avoid excessive turbulence, only have the entity rotate
                     // when it really needs to

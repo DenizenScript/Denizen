@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.scripts.requirements;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;

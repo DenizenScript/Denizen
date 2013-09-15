@@ -223,6 +223,10 @@ public class dItem implements dObject, Notable, Properties {
     public dItem(ItemStack item) {
         this.item = item;
     }
+    
+    public dItem(Item item) {
+        this.item = item.getItemStack();
+    }
 
 
     /////////////////////
@@ -375,8 +379,12 @@ public class dItem implements dObject, Notable, Properties {
 
         return containsLore("§0id:");
     }
+    
+    public dMaterial getMaterial() {
+        return new dMaterial(getItemStack().getType());
+    }
 
-    public String getMaterial() {
+    public String getMaterialName() {
         return getItemStack().getType().name().toLowerCase();
     }
 
@@ -643,8 +651,7 @@ public class dItem implements dObject, Notable, Properties {
         // Returns the material corresponding to the item
         // -->
         if (attribute.startsWith("material"))
-            return new dMaterial(getItemStack().getType())
-                    .getAttribute(attribute.fulfill(1));
+            return getMaterial().getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <i@item.display>

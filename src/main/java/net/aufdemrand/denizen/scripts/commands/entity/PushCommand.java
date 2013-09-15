@@ -5,29 +5,27 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Moves entities through the air from an origin to a destination.
  * The origin can optionally be an entity that will look at the
  * object it is moving.
  *
- * @author David Cernat, mcmonkey
+ * @author David Cernat
  */
 
 public class PushCommand extends AbstractCommand {
@@ -36,168 +34,208 @@ public class PushCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            
             if (!scriptEntry.hasObject("origin")
                 && arg.matchesPrefix("origin, o, source, shooter, s")) {
+                
                 if (arg.matchesArgumentType(dEntity.class))
-                    scriptEntry.addObject("origin", arg.asType(dEntity.class));
+                    scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
                 else if (arg.matchesArgumentType(dLocation.class))
-                    scriptEntry.addObject("originlocation", arg.asType(dLocation.class));
+                    scriptEntry.addObject("originLocation", arg.asType(dLocation.class));
                 else
                     dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
             }
 
             else if (!scriptEntry.hasObject("destination")
-                    && arg.matchesPrefix("destination, dest")
-                    && arg.matchesArgumentType(dLocation.class))
+                     && arg.matchesArgumentType(dLocation.class)
+                     && arg.matchesPrefix("destination, d")) {
+                
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesPrefix("duration, d")
-                    && arg.matchesArgumentType(Duration.class))
+                     && arg.matchesArgumentType(Duration.class)
+                     && arg.matchesPrefix("duration, d")) {
+                
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrefix("speed, s")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                     && arg.matchesPrefix("speed, s")) {
+                
                 scriptEntry.addObject("speed", arg.asElement());
+            }  
 
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesPrefix("script")
-                    && arg.matchesArgumentType(dScript.class))
+                     && arg.matchesArgumentType(dScript.class)) {
+                
                 scriptEntry.addObject("script", arg.asType(dScript.class));
+            }
 
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class))
+                     && arg.matchesArgumentList(dEntity.class)) {
+                
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+            }
 
             else
                 dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
         }
 
-        if (!scriptEntry.hasObject("origin") && !scriptEntry.hasObject("originlocation")) {
-            dEntity origin = (scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() :
-                            (scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null));
-            if (origin == null)
-                throw new InvalidArgumentsException(Messages.ERROR_INVALID_ENTITY, "origin");
-            scriptEntry.addObject("origin", origin);
+        // Use the NPC or player's locations as the origin if one is not specified
+
+        if (!scriptEntry.hasObject("originLocation")) {
+
+            scriptEntry.defaultObject("originEntity",
+                    scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() : null,
+                    scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null);
         }
 
-        if (!scriptEntry.hasObject("speed"))
-            scriptEntry.addObject("speed", new Element("1.5"));
-        if (!scriptEntry.hasObject("duration"))
-            scriptEntry.addObject("duration", new Duration((long)80));
+        scriptEntry.defaultObject("speed", new Element(1.5));
+        scriptEntry.defaultObject("duration", new Duration(40));
 
-        if ((!scriptEntry.hasObject("entities")))
+        // Check to make sure required arguments have been filled
+        
+        if (!scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "entities");
+        
+        if (!scriptEntry.hasObject("originEntity") && !scriptEntry.hasObject("originLocation"))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "origin");
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dLocation origin = null;
-        if (scriptEntry.hasObject("originlocation"))
-            origin = (dLocation)scriptEntry.getObject("location");
+        dEntity originEntity = (dEntity) scriptEntry.getObject("originEntity");
+        dLocation originLocation = scriptEntry.hasObject("originLocation") ?
+                                   (dLocation) scriptEntry.getObject("originLocation") :
+                                   new dLocation(originEntity.getEyeLocation()
+                                               .add(originEntity.getEyeLocation().getDirection())
+                                               .subtract(0, 0.4, 0));
+        
+        // If a living entity is doing the shooting, get its LivingEntity
+        LivingEntity shooter = (originEntity != null && originEntity.isLivingEntity()) ? originEntity.getLivingEntity() : null;
 
-        dEntity shooter = null;
-        LivingEntity shooterEntity = null;
-        if (scriptEntry.hasObject("origin")) {
-            shooter = (dEntity)scriptEntry.getObject("origin");
-            shooterEntity = shooter.getLivingEntity();
-            origin = new dLocation(shooterEntity.getEyeLocation().subtract(0, 0.4, 0));
+        // If there is no destination set, but there is a shooter, get a point
+        // in front of the shooter and set it as the destination
+
+        final dLocation destination = scriptEntry.hasObject("destination") ?
+                                      (dLocation) scriptEntry.getObject("destination") :
+                                      (shooter != null ? new dLocation(shooter.getEyeLocation()
+                                                               .add(shooter.getEyeLocation().getDirection()
+                                                               .multiply(30)))
+                                                       : null);
+
+        if (destination == null) {
+            dB.report(getName(), "No destination specified!");
+            return;
         }
 
-        if (shooter == null && origin == null) {
-            throw new CommandExecutionException(Messages.ERROR_INVALID_ENTITY, "origin");
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        final dScript script = (dScript) scriptEntry.getObject("script");
+        
+        final double speed = ((Element) scriptEntry.getElement("speed")).asDouble();
+        final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
+
+        // Report to dB
+        dB.report(getName(), aH.debugObj("origin", shooter) +
+                             aH.debugObj("entities", entities.toString()) +
+                             aH.debugObj("destination", destination) +
+                             aH.debugObj("speed", speed) +
+                             aH.debugObj("max ticks", maxTicks) +
+                             (script != null ? aH.debugObj("script", script) : ""));
+            
+        // If the shooter is an NPC, always rotate it to face the destination
+        // of the projectile, but if the shooter is a player, only rotate him/her
+        // if he/she is not looking in the correct general direction
+
+        if (shooter != null && (originEntity.isNPC() || !Rotation.isFacingLocation(shooter, destination, 45)))
+                Rotation.faceLocation(shooter, destination);
+
+        // Keep a dList of entities that can be called using <entry[name].pushed_entities>
+        // later in the script queue
+
+        final dList entityList = new dList();
+
+        // Go through all the entities, spawning/teleporting and rotating them
+        for (dEntity entity : entities) {
+
+            if (!entity.isSpawned()) entity.spawnAt(originLocation);
+            else                     entity.teleport(originLocation);
+                
+            // Only add to entityList after the entities have been
+            // spawned, otherwise you'll get something like "e@skeleton"
+            // instead of "e@57" on it
+
+            entityList.add(entity.toString());
+                
+            Rotation.faceLocation(entity.getBukkitEntity(), destination);
+                
+            // If the current entity is a projectile, set its shooter
+            // when applicable
+                
+            if (entity.getBukkitEntity() instanceof Projectile && shooter != null) {
+                ((Projectile) entity.getBukkitEntity()).setShooter(shooter);
+            }
         }
-            dLocation destination;
-            if (scriptEntry.hasObject("destination"))
-                destination = (dLocation)scriptEntry.getObject("destination");
-            else {
-                if (shooterEntity != null)
-                    destination = new dLocation(shooterEntity.getEyeLocation().add(shooterEntity.getEyeLocation().getDirection().multiply(40)));
-                else
-                    destination = new dLocation(origin.add(40, 0, 0));
-                dB.echoDebug("Defaulting destination.");
-            }
+        
+        // Add entities to context so that the specific entities created/spawned
+        // can be fetched.
+        scriptEntry.addObject("shot_entities", entityList);
 
-            List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-            Element speed = scriptEntry.getElement("speed");
-            final dScript script;
-            if (scriptEntry.hasObject("script"))
-                script = (dScript)scriptEntry.getObject("script");
-            else
-                script = null;
-            final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
+        Position.mount(Conversion.convert(entities));
 
-            // Report to dB
-            dB.report(getName(), aH.debugObj("origin", shooter) +
-                    aH.debugObj("entities", entities.toString()) +
-                    aH.debugObj("destination", destination) +
-                    aH.debugObj("speed", speed) +
-                    (script != null ? aH.debugObj("script", script) : ""));
+        // Get the entity at the bottom of the entity list, because
+        // only its gravity should be affected and tracked considering
+        // that the other entities will be mounted on it
 
-            // If the shooter is an NPC, always rotate it to face the destination
-            // of the projectile, but if the shooter is a player, only rotate him/her
-            // if he/she is not looking in the correct general direction
+        final dEntity lastEntity = entities.get(entities.size() - 1);
+        
+        final Vector v2 = destination.toVector();
 
-            if (shooter != null && (shooter.isNPC() || !Rotation.isFacingLocation(shooterEntity, destination, 45)))
-                Rotation.faceLocation(shooterEntity, destination);
+        BukkitRunnable task = new BukkitRunnable() {
+            int runs = 0;
+            public void run() {
+                
+                if (runs < maxTicks && lastEntity.isValid()) {
+                
+                    Vector v1 = lastEntity.getLocation().toVector();
+                    Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed);
 
+                    lastEntity.setVelocity(v3);
+                    runs++;
 
-            // Go through all the entities, spawning/teleporting and rotating them
-            for (dEntity entity : entities) {
-                if (!entity.isSpawned())
-                    entity.spawnAt(origin);
-                else
-                    entity.teleport(origin);
-                Rotation.faceLocation(entity.getBukkitEntity(), destination);
-                if (entity.getBukkitEntity() instanceof Projectile && shooter != null)
-                    ((Projectile) entity.getBukkitEntity()).setShooter(shooter.getLivingEntity());
-            }
-
-            Position.mount(Conversion.convert(entities));
-
-            // Only use the last projectile in the task below
-            final Entity lastEntity = entities.get(entities.size() - 1).getBukkitEntity();
-            final Vector v2 = destination.toVector();
-            final double fireSpeed = speed.asDouble();
-
-            BukkitRunnable task = new BukkitRunnable() {
-                int runs = 0;
-                public void run() {
-                    if (runs < maxTicks && lastEntity.isValid()) {
-                        Vector v1 = lastEntity.getLocation().toVector();
-                        Vector v3 = v2.clone().subtract(v1).normalize().multiply(fireSpeed);
-
-                        lastEntity.setVelocity(v3);
-                        runs++;
-
-                        if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
-                                && Math.abs(v2.getZ() - v1.getZ()) < 2) {
-                            runs = maxTicks;
-                        }
-
-                        if (lastEntity.getLocation().add(v3).getBlock().getType() != Material.AIR) {
-                            runs = maxTicks;
-                        }
+                    // Check if the entity is close to its destination
+                    if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
+                        && Math.abs(v2.getZ() - v1.getZ()) < 2) {
+                        runs = maxTicks;
                     }
-                    else {
-                        this.cancel();
-                        runs = 0;
 
-                        if (script != null) {
-                            Map<String, String> context = new HashMap<String, String>();
-                            context.put("1", new dLocation(lastEntity.getLocation()).identify());
-                            context.put("2", new dEntity(lastEntity).identify());
-
-                            ((TaskScriptContainer) script.getContainer()).setSpeed(new Duration(0))
-                                    .runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
-                        }
-
+                    // Check if the entity has collided with something
+                    // using the most basic possible calculation
+                    if (lastEntity.getLocation().add(v3).getBlock().getType() != Material.AIR) {
+                        runs = maxTicks;
                     }
                 }
-            };
+                else {
+                    this.cancel();
+
+                    if (script != null) {
+                    
+                        List<ScriptEntry> entries = script.getContainer().getBaseEntries(
+                                scriptEntry.getPlayer(),
+                                scriptEntry.getNPC());
+                        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
+                        queue.addDefinition("location", lastEntity.getLocation().identify());
+                        queue.addDefinition("shot_entities", entityList.toString());
+                        queue.addDefinition("last_entity", lastEntity.identify());
+                        queue.start();
+                    }
+                }
+            }
+        };
         task.runTaskTimer(denizen, 0, 2);
     }
 }

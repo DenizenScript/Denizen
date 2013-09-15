@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -144,9 +146,11 @@ public class dWorld implements dObject {
         // Returns a list of entities in this world.
         // -->
         if (attribute.startsWith("entities")) {
-            List<String> entities = new ArrayList<String>();
-            for (Entity entity : getWorld().getEntities())
-                entities.add("e@" + entity.getEntityId());
+            ArrayList<dEntity> entities = new ArrayList<dEntity>();
+            
+            for (Entity entity : getWorld().getEntities()) {
+                entities.add(new dEntity(entity));
+            }
 
             return new dList(entities)
                     .getAttribute(attribute.fulfill(1));
@@ -159,9 +163,11 @@ public class dWorld implements dObject {
         // Returns a list of living entities in this world.
         // -->
         if (attribute.startsWith("living_entities")) {
-            List<String> entities = new ArrayList<String>();
-            for (LivingEntity entity : getWorld().getLivingEntities())
-                entities.add("e@" + entity.getEntityId());
+            ArrayList<dEntity> entities = new ArrayList<dEntity>();
+            
+            for (Entity entity : getWorld().getLivingEntities()) {
+                entities.add(new dEntity(entity));
+            }
 
             return new dList(entities)
                     .getAttribute(attribute.fulfill(1));
@@ -174,9 +180,12 @@ public class dWorld implements dObject {
         // Returns a list of online players in this world.
         // -->
         if (attribute.startsWith("players")) {
-            List<String> players = new ArrayList<String>();
-            for (Player player : getWorld().getPlayers())
-                players.add("p@" + player.getName());
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            
+            for (Player player : getWorld().getPlayers()) {
+                if (!CitizensAPI.getNPCRegistry().isNPC(player))
+                    players.add(new dPlayer(player));
+            }
 
             return new dList(players)
                     .getAttribute(attribute.fulfill(1));
