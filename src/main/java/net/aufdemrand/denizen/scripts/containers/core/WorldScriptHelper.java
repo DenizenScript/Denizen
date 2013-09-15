@@ -29,6 +29,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
@@ -41,9 +42,13 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
+import org.bukkit.event.vehicle.VehicleCollisionEvent;
+import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -980,31 +985,31 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // hanging breaks
     // hanging breaks because <cause>
-    // <entity> breaks
-    // <entity> breaks because <cause>
+    // <hanging> breaks
+    // <hanging> breaks because <cause>
     //
-    // @Triggers when a hanging entity is broken.
+    // @Triggers when a hanging entity (painting or itemframe) is broken.
     // @Context
     // <context.cause> returns the cause of the entity breaking.
     // <context.entity> returns the dEntity that broke the hanging entity, if any.
-    // <context.hanging> returns the hanging entity as a dEntity.
+    // <context.hanging> returns the dEntity of the hanging.
     //
     // @Determine
-    // "CANCELLED" to stop the hanging entity from being broken.
+    // "CANCELLED" to stop the hanging from being broken.
     //
     // -->
     @EventHandler
     public void hangingBreak(HangingBreakEvent event) {
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
         Player player = null;
         dNPC npc = null;
-
-        String hangingType = event.getEntity().getType().name();
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity hanging = new dEntity(event.getEntity());
+        String hangingType = hanging.getEntityType().name();
         String cause =  event.getCause().name();
 
-        context.put("hanging", new dEntity(event.getEntity()));
+        context.put("hanging", hanging);
         context.put("cause", new Element(cause));
 
         List<String> events = new ArrayList<String>();
@@ -1059,6 +1064,39 @@ public class WorldScriptHelper implements Listener {
         }
 
         String determination = doEvents(events, npc, player, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // player places hanging
+    // player places <hanging>
+    //
+    // @Triggers when a hanging entity (painting or itemframe) is placed.
+    // @Context
+    // <context.hanging> returns the dEntity of the hanging.
+    // <context.location> returns the dLocation of the block the hanging was placed on.
+    //
+    // @Determine
+    // "CANCELLED" to stop the hanging from being placed.
+    //
+    // -->
+    @EventHandler
+    public void hangingPlace(HangingPlaceEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity hanging = new dEntity(event.getEntity());
+        String hangingType = hanging.getEntityType().name();
+
+        context.put("hanging", hanging);
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+
+        String determination = doEvents(Arrays.asList
+                ("player places hanging",
+                 "player places " + hangingType),
+                 null, event.getPlayer(), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -3667,6 +3705,131 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // vehicle collides
+    // <vehicle> collides
+    //
+    // @Triggers when a vehicle collides.
+    // @Context
+    // <context.vehicle> returns the dEntity of the vehicle.
+    //
+    // -->
+    @EventHandler
+    public void vehicleCollision(VehicleCollisionEvent event) {
+        
+        Player player = null;
+        dNPC npc = null;
+
+        dEntity vehicle = new dEntity(event.getVehicle());
+        String vehicleType = vehicle.getEntityType().name();
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("vehicle", vehicle);
+        
+        List<String> events = new ArrayList<String>();
+        events.add("vehicle collides");
+        events.add(vehicleType + " collides");
+        
+        // <--[event]
+        // @Events
+        // vehicle collides with block
+        // vehicle collides with <material>
+        // <vehicle> collides with block
+        // <vehicle> collides with <material>
+        //
+        // @Triggers when a vehicle collides with a block.
+        // @Context
+        // <context.vehicle> returns the dEntity of the vehicle.
+        // <context.location> returns the dLocation of the block.
+        //
+        // -->
+        if (event instanceof VehicleBlockCollisionEvent) {
+            
+            VehicleBlockCollisionEvent subEvent = (VehicleBlockCollisionEvent) event;
+            
+            dMaterial material = new dMaterial(subEvent.getBlock().getType());
+            context.put("location", new dLocation(subEvent.getBlock().getLocation()));
+            
+            events.add("vehicle collides with block");
+            events.add("vehicle collides with " + material.identify());
+            events.add(vehicleType + " collides with block");
+            events.add(vehicleType + " collides with " + material.identify());
+        }
+        
+        // <--[event]
+        // @Events
+        // vehicle collides with entity
+        // vehicle collides with <entity>
+        // <vehicle> collides with entity
+        // <vehicle> collides with <entity>
+        //
+        // @Triggers when a vehicle collides with an entity.
+        // @Context
+        // <context.vehicle> returns the dEntity of the vehicle.
+        // <context.entity> returns the dEntity of the entity the vehicle has collided with.
+        //
+        // @Determine
+        // "CANCELLED" to stop the collision from happening.
+        // "NOPICKUP" to stop the vehicle from picking up the entity.
+        //
+        // -->
+        if (event instanceof VehicleEntityCollisionEvent) {
+            
+            VehicleEntityCollisionEvent subEvent = (VehicleEntityCollisionEvent) event;
+            
+            dEntity entity = new dEntity(subEvent.getEntity());
+            String entityType = entity.getEntityType().name();
+            
+            events.add("vehicle collides with entity");
+            events.add("vehicle collides with " + entityType);
+            events.add(vehicleType + " collides with entity");
+            events.add(vehicleType + " collides with " + entityType);
+            
+            String determination = doEvents(events, npc, player, context);
+            
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                subEvent.setCancelled(true);
+            if (determination.toUpperCase().startsWith("NOPICKUP"))
+                subEvent.setPickupCancelled(true);
+        }
+        // Do these events separately because only VehicleEntityCollisionEvent
+        // can actually be cancelled
+        else {
+
+            doEvents(events, npc, player, context);
+        }
+    }
+    
+    // <--[event]
+    // @Events
+    // vehicle created
+    // <vehicle> crated
+    //
+    // @Triggers when a vehicle is created.
+    // @Context
+    // <context.vehicle> returns the dEntity of the vehicle.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from entering the vehicle.
+    //
+    // -->
+    @EventHandler
+    public void vehicleCreate(VehicleCreateEvent event) {
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+
+        dEntity vehicle = new dEntity(event.getVehicle());
+        String vehicleType = vehicle.getEntityType().name();
+        
+        context.put("vehicle", vehicle);
+
+        doEvents(Arrays.asList
+                ("vehicle created",
+                 vehicleType + " created"),
+                 null, null, context);
+    }
+    
+    // <--[event]
+    // @Events
     // vehicle damaged
     // <vehicle> damaged
     // entity damages vehicle
@@ -3674,7 +3837,7 @@ public class WorldScriptHelper implements Listener {
     // entity damages <vehicle>
     // <entity> damages <vehicle>
     //
-    // @Triggers when an entity damages a vehicle.
+    // @Triggers when a vehicle is damaged.
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
     // <context.entity> returns the dEntity of the attacking entity.
