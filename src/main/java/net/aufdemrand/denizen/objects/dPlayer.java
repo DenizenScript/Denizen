@@ -519,6 +519,7 @@ public class dPlayer implements dObject {
     /////////////////
         
         // Player is required to be online after this point...
+        if (!isOnline()) return new Element(identify()).getAttribute(attribute); 
         
         /////////////////////
         //   CITIZENS ATTRIBUTES
