@@ -342,7 +342,7 @@ public class Element implements dObject {
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
 
-        
+
         /////////////////////
         //   INITIALIZATION ATTRIBUTES
         /////////////////
@@ -358,7 +358,7 @@ public class Element implements dObject {
             return new Element(Double.valueOf(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.int[<#>]>
         // @returns Element(Integer)
@@ -369,93 +369,6 @@ public class Element implements dObject {
         if (attribute.startsWith("int")
                 && attribute.hasContext(1)) {
             return new Element(Math.round(Double.valueOf(attribute.getContext(1))))
-                    .getAttribute(attribute.fulfill(1));
-        }
-        
-        
-        /////////////////////
-        //   MATH ATTRIBUTES
-        /////////////////
-
-        // <--[tag]
-        // @attribute <element.abs>
-        // @returns Element(Number)
-        // @description
-        // Returns the absolute value of the element.
-        // -->
-        if (attribute.startsWith("abs")) {
-            return new Element(Math.abs(asDouble()))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <element.add[<#>]>
-        // @returns Element(Number)
-        // @description
-        // Returns the element plus a number.
-        // -->
-        if (attribute.startsWith("add")
-                && attribute.hasContext(1)) {
-            return new Element(asDouble() + aH.getDoubleFrom(attribute.getContext(1)))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <element.div[<#>]>
-        // @returns Element(Number)
-        // @description
-        // Returns the element divided by a number.
-        // -->
-        if (attribute.startsWith("div")
-                && attribute.hasContext(1)) {
-            return new Element(asDouble() / aH.getDoubleFrom(attribute.getContext(1)))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <element.mod[<#>]>
-        // @returns Element(Number)
-        // @description
-        // Returns the remainder of the element divided by a number.
-        // -->
-        if (attribute.startsWith("mod")
-                && attribute.hasContext(1)) {
-            return new Element(asDouble() % aH.getDoubleFrom(attribute.getContext(1)))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <element.mul[<#>]>
-        // @returns Element(Number)
-        // @description
-        // Returns the element multiplied by a number.
-        // -->
-        if (attribute.startsWith("mul")
-                && attribute.hasContext(1)) {
-            return new Element(asDouble() * aH.getDoubleFrom(attribute.getContext(1)))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <element.sqrt>
-        // @returns Element(Number)
-        // @description
-        // Returns the square root of the element.
-        // -->
-        if (attribute.startsWith("sqrt")) {
-            return new Element(Math.sqrt(asDouble()))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <element.sub[<#>]>
-        // @returns Element(Number)
-        // @description
-        // Returns the element minus a number.
-        // -->
-        if (attribute.startsWith("sub")
-                && attribute.hasContext(1)) {
-            return new Element(asDouble() - aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -627,7 +540,6 @@ public class Element implements dObject {
         if (attribute.startsWith("strip_color"))
             return new Element(ChatColor.stripColor(element)).getAttribute(attribute.fulfill(1));
 
-
         // <--[tag]
         // @attribute <element.substring[<#>(,<#>)]>
         // @returns Element
@@ -644,6 +556,93 @@ public class Element implements dObject {
             else
                 ending_index = element.length();
             return new Element(element.substring(beginning_index, ending_index))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+
+        /////////////////////
+        //   MATH ATTRIBUTES
+        /////////////////
+
+        // <--[tag]
+        // @attribute <element.abs>
+        // @returns Element(Number)
+        // @description
+        // Returns the absolute value of the element.
+        // -->
+        if (attribute.startsWith("abs")) {
+            return new Element(Math.abs(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <element.add[<#>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the element plus a number.
+        // -->
+        if (attribute.startsWith("add")
+                && attribute.hasContext(1)) {
+            return new Element(asDouble() + aH.getDoubleFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <element.div[<#>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the element divided by a number.
+        // -->
+        if (attribute.startsWith("div")
+                && attribute.hasContext(1)) {
+            return new Element(asDouble() / aH.getDoubleFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <element.mod[<#>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the remainder of the element divided by a number.
+        // -->
+        if (attribute.startsWith("mod")
+                && attribute.hasContext(1)) {
+            return new Element(asDouble() % aH.getDoubleFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <element.mul[<#>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the element multiplied by a number.
+        // -->
+        if (attribute.startsWith("mul")
+                && attribute.hasContext(1)) {
+            return new Element(asDouble() * aH.getDoubleFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <element.sqrt>
+        // @returns Element(Number)
+        // @description
+        // Returns the square root of the element.
+        // -->
+        if (attribute.startsWith("sqrt")) {
+            return new Element(Math.sqrt(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <element.sub[<#>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the element minus a number.
+        // -->
+        if (attribute.startsWith("sub")
+                && attribute.hasContext(1)) {
+            return new Element(asDouble() - aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
 
