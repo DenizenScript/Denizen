@@ -1,8 +1,29 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.Argument;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
@@ -20,15 +41,61 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockCanBuildEvent;
+import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.*;
-import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreeperPowerEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityPortalEnterEvent;
+import org.bukkit.event.entity.EntityPortalExitEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.EntityTameEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.entity.EntityUnleashEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.HorseJumpEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.PigZapEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.SheepDyeWoolEvent;
+import org.bukkit.event.entity.SheepRegrowWoolEvent;
+import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
@@ -40,10 +107,36 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerEggThrowEvent;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
-import org.bukkit.event.vehicle.VehicleCollisionEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -61,15 +154,6 @@ import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 @SuppressWarnings("deprecation")
 public class WorldScriptHelper implements Listener {
@@ -935,7 +1019,7 @@ public class WorldScriptHelper implements Listener {
             Bukkit.getServer().shutdown();
     }
 
-    private Map<String, Integer> current_time = new HashMap<String, Integer>();
+    private final Map<String, Integer> current_time = new HashMap<String, Integer>();
 
     // <--[event]
     // @Events
@@ -1043,15 +1127,10 @@ public class WorldScriptHelper implements Listener {
 
             dEntity entity = new dEntity(subEvent.getRemover());
             String entityType = entity.getEntityType().name();
-            context.put("entity", entity);
+            context.put("entity", entity.getDenizenObject());
 
-            if (entity.isNPC()) {
-                npc = entity.getDenizenNPC();
-                entityType = "npc";
-            }
-            else if (entity.isPlayer()) {
-                player = entity.getPlayer();
-            }
+            if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+            else if (entity.isPlayer()) player = entity.getPlayer();
 
             events.add("entity breaks hanging");
             events.add("entity breaks hanging because " + cause);
@@ -1206,7 +1285,7 @@ public class WorldScriptHelper implements Listener {
         dMaterial oldMaterial = new dMaterial(event.getBlock().getType());
         dMaterial newMaterial = new dMaterial(event.getTo());
 
-        context.put("entity", entity);
+        context.put("entity", entity.getDenizenObject());
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("old_material", oldMaterial);
         context.put("new_material", newMaterial);
@@ -1248,7 +1327,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
 
-        context.put("entity", new dEntity(entity));
+        context.put("entity", new dEntity(entity).getDenizenObject());
         context.put("duration", new Duration((long) event.getDuration()));
 
         String determination = doEvents(Arrays.asList
@@ -1290,17 +1369,12 @@ public class WorldScriptHelper implements Listener {
         String entityType = entity.getEntityType().name();
         String cause = event.getCause().name();
 
+        context.put("entity", entity.getDenizenObject());
         context.put("damage", new Element(event.getDamage()));
         context.put("cause", new Element(event.getCause().name()));
-        context.put("entity", entity);
 
-        if (entity.isNPC()) {
-            npc = entity.getDenizenNPC();
-            entityType = "npc";
-        }
-        else if (entity.isPlayer()) {
-            player = entity.getPlayer();
-        }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         boolean isFatal = false;
 
@@ -1378,7 +1452,7 @@ public class WorldScriptHelper implements Listener {
 
             dEntity damager = new dEntity(subEvent.getDamager());
             String damagerType = damager.getEntityType().name();
-            context.put("damager", damager);
+            context.put("damager", damager.getDenizenObject());
 
             if (damager.isNPC()) {
                 subNPC = damager.getDenizenNPC();
@@ -1398,8 +1472,8 @@ public class WorldScriptHelper implements Listener {
             // If the damager is a projectile, add its shooter (which can be null)
             // to the context
             else if (damager.isProjectile()) {
-                dEntity shooter = damager.hasShooter() ? damager.getShooter() : null;
-                context.put("shooter", shooter);
+                dEntity shooter = damager.getShooter();
+                context.put("shooter", shooter.getDenizenObject());
             }
 
             events.add("entity damaged by entity");
@@ -1489,12 +1563,12 @@ public class WorldScriptHelper implements Listener {
     public void entityExplode(EntityExplodeEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        Entity entity = event.getEntity();
+        dEntity entity = new dEntity(event.getEntity());
+        String entityType = entity.getEntityType().name();
 
-        if (entity == null) return;
-
-        context.put("entity", new dEntity(entity));
+        context.put("entity", entity.getDenizenObject());
         context.put("location", new dLocation(event.getLocation()));
+
         String blocks = "";
         for (Block block : event.blockList()) {
             blocks = blocks + new dLocation(block.getLocation()) + "|";
@@ -1503,7 +1577,7 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("entity explodes",
-                 entity.getType().name() + " explodes"),
+                 entityType + " explodes"),
                  null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1529,6 +1603,9 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityRegainHealth(EntityRegainHealthEvent event) {
 
+        Player player = null;
+        dNPC npc = null;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
@@ -1536,19 +1613,10 @@ public class WorldScriptHelper implements Listener {
 
         context.put("reason", new Element(event.getRegainReason().name()));
         context.put("amount", new Element(event.getAmount()));
+        context.put("entity", entity.getDenizenObject());
 
-        Player player = null;
-        dNPC npc = null;
-
-        context.put("entity", entity);
-
-        if (entity.isNPC()) {
-            npc = entity.getDenizenNPC();
-            entityType = "npc";
-        }
-        else if (entity.isPlayer()) {
-            player = entity.getPlayer();
-        }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity heals",
@@ -1580,17 +1648,23 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityPortalEnter(EntityPortalEnterEvent event) {
 
+        Player player = null;
+        dNPC npc = null;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
 
-        context.put("entity", entity);
         context.put("location", new dLocation(event.getLocation()));
+        context.put("entity", entity.getDenizenObject());
+
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         doEvents(Arrays.asList
                 ("entity enters portal",
                  entityType + " enters portal"),
-                 null, null, context);
+                 npc, player, context);
     }
 
     // <--[event]
@@ -1607,17 +1681,23 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityPortalExit(EntityPortalExitEvent event) {
 
+        Player player = null;
+        dNPC npc = null;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
 
-        context.put("entity", entity);
         context.put("location", new dLocation(event.getTo()));
+        context.put("entity", entity.getDenizenObject());
+
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         doEvents(Arrays.asList
                 ("entity exits portal",
                  entityType + " exits portal"),
-                 null, null, context);
+                 npc, player, context);
     }
 
     // <--[event]
@@ -1649,15 +1729,10 @@ public class WorldScriptHelper implements Listener {
 
         context.put("bow", bow);
         context.put("projectile", projectile);
-        context.put("entity", entity);
+        context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) {
-            npc = entity.getDenizenNPC();
-            entityType = "npc";
-        }
-        else if (entity.isPlayer()) {
-            player = entity.getPlayer();
-        }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity shoots bow",
@@ -1796,15 +1871,10 @@ public class WorldScriptHelper implements Listener {
 
             dEntity target = new dEntity(event.getTarget());
             String targetType = target.getEntityType().name();
-            context.put("target", target);
+            context.put("target", target.getDenizenObject());
 
-            if (target.isNPC()) {
-                npc = target.getDenizenNPC();
-                targetType = "npc";
-            }
-            else if (target.isPlayer()) {
-                player = target.getPlayer();
-            }
+            if (target.isNPC()) { npc = target.getDenizenNPC(); targetType = "npc"; }
+            else if (target.isPlayer()) player = target.getPlayer();
 
             events.add("entity targets entity");
             events.add("entity targets entity because " + reason);
@@ -1831,6 +1901,7 @@ public class WorldScriptHelper implements Listener {
                 final dEntity newTarget = dEntity.valueOf(determination);
 
                 Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                    @Override
                     public void run() {
                         entity.target(newTarget.getLivingEntity());
                     }
@@ -1856,18 +1927,24 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityTeleport(EntityTeleportEvent event) {
 
+        Player player = null;
+        dNPC npc = null;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
 
-        context.put("entity", entity);
         context.put("origin", new dLocation(event.getFrom()));
         context.put("destination", new dLocation(event.getTo()));
+        context.put("entity", entity.getDenizenObject());
+
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity teleports",
                  entityType + " teleports"),
-                 null, null, context);
+                 npc, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -1892,7 +1969,7 @@ public class WorldScriptHelper implements Listener {
         String entityType = entity.getEntityType().name();
         String reason = event.getReason().name();
 
-        context.put("entity", entity);
+        context.put("entity", entity.getDenizenObject());
         context.put("reason", new Element(reason));
 
         doEvents(Arrays.asList
@@ -1955,17 +2032,23 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void foodLevelChange(FoodLevelChangeEvent event) {
 
+        Player player = null;
+        dNPC npc = null;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
 
-        context.put("entity", entity);
         context.put("food", new Element(event.getFoodLevel()));
+        context.put("entity", entity.getDenizenObject());
+
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity changes food level",
                  entityType + " changes food level"),
-                 null, null, context);
+                 npc, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -1996,14 +2079,14 @@ public class WorldScriptHelper implements Listener {
     public void horseJump(HorseJumpEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
         String variant = event.getEntity().getVariant().name();
         String color = event.getEntity().getColor().name();
+        dEntity entity = new dEntity(event.getEntity());
 
-        context.put("entity", entity);
         context.put("variant", new Element(variant));
-        context.put("variant", new Element(variant));
+        context.put("color", new Element(color));
         context.put("power", new Element(event.getPower()));
+        context.put("entity", entity);
 
         String determination = doEvents(Arrays.asList
                 ("horse jumps",
@@ -2132,12 +2215,15 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // projectile hits block
+    // projectile hits <material>
     // <projectile> hits block
+    // <projectile> hits <material>
     //
     // @Triggers when a projectile hits a block.
     // @Context
-    // <context.entity> returns the dEntity of the projectile.
+    // <context.projectile> returns the dEntity of the projectile.
     // <context.shooter> returns the dEntity of the shooter, if there is one.
+    // <context.location> returns the dLocation of the block that was hit.
     //
     // -->
     @EventHandler
@@ -2146,36 +2232,64 @@ public class WorldScriptHelper implements Listener {
         Player player = null;
         dNPC npc = null;
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
-        dEntity shooter = entity.getShooter();
+        dEntity projectile = new dEntity(event.getEntity());
 
-        context.put("entity", entity);
-        context.put("shooter", shooter);
-
-        if (shooter != null && shooter.isNPC()) {
-            npc = shooter.getDenizenNPC();
-        }
-        if (shooter != null && shooter.isPlayer()) {
-            player = shooter.getPlayer();
-        }
-
-        Block hit = null;
-        BlockIterator bi = new BlockIterator(entity.getLocation().getWorld(), entity.getLocation().toVector(), entity.getLocation().getDirection().normalize(), 0, 4);
+        Block block = null;
+        BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(), projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
         while(bi.hasNext()) {
-            hit = bi.next();
-            if(hit.getTypeId() != 0) {
+            block = bi.next();
+            if(block.getTypeId() != 0) {
                 break;
             }
         }
 
-        doEvents(Arrays.asList
-                ("projectile hits block",
-                 entityType + " hits block",
-                 "projectile hits " + hit.getType().name(),
-                 entityType + " hits " + hit.getType().name()),
-                 npc, player, context);
+        String entityType = projectile.getEntityType().name();
+        dEntity shooter = projectile.getShooter();
+        dMaterial material = new dMaterial(block.getType());
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("projectile", projectile);
+        context.put("location", new dLocation(block.getLocation()));
+        context.put("shooter", shooter.getDenizenObject());
+
+        List<String> events = new ArrayList<String>();
+        events.add("projectile hits block");
+        events.add("projectile hits " + material.identify());
+        events.add(entityType + " hits block");
+        events.add(entityType + " hits " + material.identify());
+
+        if (shooter != null) {
+
+            // <--[event]
+            // @Events
+            // entity shoots block
+            // entity shoots <material>
+            // entity shoots <material> with <projectile>
+            // <entity> shoots block
+            // <entity> shoots <material>
+            // <entity> shoots <material> with <projectile>
+            //
+            // @Triggers when a projectile shot by an entity hits a block.
+            // @Context
+            // <context.projectile> returns the dEntity of the projectile.
+            // <context.shooter> returns the dEntity of the shooter, if there is one.
+            // <context.location> returns the dLocation of the block that was hit.
+            //
+            // -->
+            String shooterType = shooter.getEntityType().name();
+
+            if (shooter.isNPC()) { npc = shooter.getDenizenNPC(); shooterType = "npc"; }
+            else if (shooter.isPlayer()) player = shooter.getPlayer();
+
+            events.add("entity shoots block");
+            events.add("entity shoots block with " + entityType);
+            events.add("entity shoots " + material.identify() + " with " + entityType);
+            events.add(shooterType + " shoots block");
+            events.add(shooterType + " shoots block with " + entityType);
+            events.add(shooterType + " shoots " + material.identify() + " with " + entityType);
+        }
+
+        doEvents(events, npc, player, context);
     }
 
     // <--[event]
@@ -2304,7 +2418,7 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
 
-        Player player = (Player) event.getEnchanter();
+        Player player = event.getEnchanter();
         dItem item = new dItem(event.getItem());
 
         context.put("location", new dLocation(event.getEnchantBlock().getLocation()));
@@ -2613,6 +2727,7 @@ public class WorldScriptHelper implements Listener {
         context.put("message", new Element(event.getMessage()));
 
         Callable<String> call = new Callable<String>() {
+            @Override
             public String call() {
                 return doEvents(Arrays.asList("player chats"),
                         null, event.getPlayer(), context);
@@ -3068,12 +3183,9 @@ public class WorldScriptHelper implements Listener {
 
             dEntity entity = new dEntity(event.getCaught());
             String entityType = entity.getEntityType().name();
-            context.put("entity", entity);
+            context.put("entity", entity.getDenizenObject());
 
-            if (entity.isNPC()) {
-                npc = entity.getDenizenNPC();
-                entityType = "npc";
-            }
+            if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
 
             events.add("player fishes " + entityType);
             events.add("player fishes " + entityType + " while " + state);
@@ -3206,12 +3318,9 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getRightClicked().getLocation()));
-        context.put("entity", entity);
+        context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) {
-            npc = entity.getDenizenNPC();
-            entityType = "npc";
-        }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
 
         List<String> events = new ArrayList<String>();
         events.add("player right clicks entity");
@@ -3769,7 +3878,10 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("vehicle", vehicle);
-        context.put("entity", entity);
+        context.put("entity", entity.getDenizenObject());
+
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         List<String> events = new ArrayList<String>();
         events.add("vehicle collides with entity");
@@ -3854,7 +3966,7 @@ public class WorldScriptHelper implements Listener {
 
             dEntity entity = new dEntity(event.getAttacker());
             String entityType = entity.getEntityType().name();
-            context.put("entity", entity);
+            context.put("entity", entity.getDenizenObject());
 
             if (entity.isPlayer()) {
                 player = entity.getPlayer();
@@ -3920,7 +4032,7 @@ public class WorldScriptHelper implements Listener {
 
             dEntity entity = new dEntity(event.getAttacker());
             String entityType = entity.getEntityType().name();
-            context.put("entity", entity);
+            context.put("entity", entity.getDenizenObject());
 
             if (entity.isPlayer()) {
                 player = entity.getPlayer();
@@ -3973,14 +4085,10 @@ public class WorldScriptHelper implements Listener {
         String entityType = entity.getEntityType().name();
 
         context.put("vehicle", vehicle);
-        context.put("entity", entity);
+        context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) {
-            npc = entity.getDenizenNPC();
-        }
-        else if (entity.isPlayer()) {
-            player = entity.getPlayer();
-        }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity enters vehicle",
@@ -4024,14 +4132,10 @@ public class WorldScriptHelper implements Listener {
         String entityType = entity.getEntityType().name();
 
         context.put("vehicle", vehicle);
-        context.put("entity", entity);
+        context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) {
-            npc = entity.getDenizenNPC();
-        }
-        else if (entity.isPlayer()) {
-            player = entity.getPlayer();
-        }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity exits vehicle",

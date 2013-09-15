@@ -311,9 +311,30 @@ public class dEntity implements dObject {
         return entity_type;
     }
 
+    public dObject getDenizenObject() {
+
+        if (this == null) return null;
+
+        if (isNPC()) return new dNPC(getNPC());
+        else if (isPlayer()) return new dPlayer(getPlayer());
+        else return this;
+    }
+
+    /**
+     * Get the Bukkit entity corresponding to this dEntity
+     *
+     * @return  The NPC
+     */
+
     public Entity getBukkitEntity() {
         return entity;
     }
+
+    /**
+     * Get the living entity corresponding to this dEntity
+     *
+     * @return  The living entity
+     */
 
     public LivingEntity getLivingEntity() {
         if (entity instanceof LivingEntity)
@@ -321,12 +342,18 @@ public class dEntity implements dObject {
         else return null;
     }
 
+    /**
+     * Check whether this dEntity is a living entity
+     *
+     * @return  true or false
+     */
+
     public boolean isLivingEntity() {
         return (entity instanceof LivingEntity);
     }
 
     /**
-     * Get the NPC corresponding to this entity
+     * Get the NPC corresponding to this dEntity
      *
      * @return  The NPC
      */
@@ -337,7 +364,7 @@ public class dEntity implements dObject {
     }
 
     /**
-     * Get the dNPC corresponding to this entity
+     * Get the dNPC corresponding to this dEntity
      *
      * @return  The dNPC
      */
@@ -348,7 +375,7 @@ public class dEntity implements dObject {
     }
 
     /**
-     * Check whether this entity is an NPC
+     * Check whether this dEntity is an NPC
      *
      * @return  true or false
      */
@@ -358,7 +385,7 @@ public class dEntity implements dObject {
     }
 
     /**
-     * Get the Player corresponding to this entity
+     * Get the Player corresponding to this dEntity
      *
      * @return  The Player
      */
@@ -369,7 +396,7 @@ public class dEntity implements dObject {
     }
 
     /**
-     * Check whether this entity is a Player
+     * Check whether this dEntity is a Player
      *
      * @return  true or false
      */
@@ -379,7 +406,7 @@ public class dEntity implements dObject {
     }
 
     /**
-     * Get this entity as a Projectile
+     * Get this dEntity as a Projectile
      *
      * @return  The Projectile
      */
@@ -390,7 +417,7 @@ public class dEntity implements dObject {
     }
 
     /**
-     * Check whether this entity is a Projectile
+     * Check whether this dEntity is a Projectile
      *
      * @return  true or false
      */
