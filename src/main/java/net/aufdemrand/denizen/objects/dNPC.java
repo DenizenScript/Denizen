@@ -388,7 +388,7 @@ public class dNPC implements dObject {
             return new dInventory(getEntity()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute  <npc.is_spawned>
+        // @attribute <npc.is_spawned>
         // @returns Element(boolean)
         // @description
         // returns 'true' if the NPC is spawned, otherwise 'false'.
