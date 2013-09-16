@@ -66,6 +66,7 @@ public class RepeatCommand extends BracedCommand {
             queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
             scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(incr + 1));
             queue.addDefinition("value", String.valueOf(incr + 1));
+            queue.getAllDefinitions().putAll(scriptEntry.getResidingQueue().getAllDefinitions());
             queue.addEntries(newEntries);
             queue.start();
         }
