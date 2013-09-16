@@ -311,9 +311,17 @@ public class dEntity implements dObject {
         return entity_type;
     }
 
+    /**
+     * Get the dObject that most accurately describes this entity,
+     * useful for automatically saving dEntities to contexts as
+     * dNPCs and dPlayers
+     *
+     * @return  The NPC
+     */
+
     public dObject getDenizenObject() {
 
-        if (this == null) return null;
+        if (entity == null) return null;
 
         if (isNPC()) return new dNPC(getNPC());
         else if (isPlayer()) return new dPlayer(getPlayer());

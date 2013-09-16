@@ -1,19 +1,25 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.aufdemrand.denizen.objects.aH.Argument;
+import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 
 public class Element implements dObject {
 
     public final static Element TRUE = new Element(Boolean.TRUE);
     public final static Element FALSE = new Element(Boolean.FALSE);
+
+    final static Pattern VALUE_PATTERN =
+            Pattern.compile("el@val(?:ue)?\\[([^\\[\\]]+)\\].*",
+                    Pattern.CASE_INSENSITIVE);
 
     /**
      *
@@ -25,6 +31,20 @@ public class Element implements dObject {
     public static Element valueOf(String string) {
         if (string == null) return null;
 
+        Matcher m = VALUE_PATTERN.matcher(string);
+
+        // Allow construction of elements with el@val[<value>]
+        if (m.matches()) {
+            String value = m.group(1);
+            Argument arg = Argument.valueOf(value);
+
+            if (arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                return new Element(aH.getIntegerFrom(value));
+            else if (arg.matchesPrimitive(aH.PrimitiveType.Double))
+                return new Element(aH.getDoubleFrom(value));
+            else return new Element(value);
+        }
+
         return new Element(string);
     }
 
@@ -32,7 +52,7 @@ public class Element implements dObject {
         return string != null;
     }
 
-    private String element;
+    private final String element;
 
     public Element(String string) {
         this.prefix = "element";
@@ -341,36 +361,6 @@ public class Element implements dObject {
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
-
-
-        /////////////////////
-        //   INITIALIZATION ATTRIBUTES
-        /////////////////
-
-        // <--[tag]
-        // @attribute <element.double[<#>]>
-        // @returns Element(Double)
-        // @description
-        // Returns a double from the value inside the brackets
-        // -->
-        if (attribute.startsWith("double")
-                && attribute.hasContext(1)) {
-            return new Element(Double.valueOf(attribute.getContext(1)))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <element.int[<#>]>
-        // @returns Element(Integer)
-        // @description
-        // Returns an integer from the value inside the brackets, useful
-        // whenever <element.as_int> cannot be used.
-        // -->
-        if (attribute.startsWith("int")
-                && attribute.hasContext(1)) {
-            return new Element(Math.round(Double.valueOf(attribute.getContext(1))))
-                    .getAttribute(attribute.fulfill(1));
-        }
 
 
         /////////////////////

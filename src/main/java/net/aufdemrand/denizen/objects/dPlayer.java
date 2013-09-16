@@ -1,5 +1,10 @@
 package net.aufdemrand.denizen.objects;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
@@ -13,11 +18,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 public class dPlayer implements dObject {
 
@@ -521,6 +521,7 @@ public class dPlayer implements dObject {
         // Player is required to be online after this point...
         if (!isOnline()) return new Element(identify()).getAttribute(attribute);
 
+
         /////////////////////
         //   CITIZENS ATTRIBUTES
         /////////////////
@@ -849,13 +850,13 @@ public class dPlayer implements dObject {
             double maxHunger = getPlayerEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHunger = attribute.getIntContext(2);
-            if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .10)
+            if (getPlayerEntity().getFoodLevel() / maxHunger < .10)
                 return new Element("starving").getAttribute(attribute.fulfill(2));
-            else if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .40)
+            else if (getPlayerEntity().getFoodLevel() / maxHunger < .40)
                 return new Element("famished").getAttribute(attribute.fulfill(2));
-            else if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .75)
+            else if (getPlayerEntity().getFoodLevel() / maxHunger < .75)
                 return new Element("parched").getAttribute(attribute.fulfill(2));
-            else if ((float) getPlayerEntity().getFoodLevel() / maxHunger < 1)
+            else if (getPlayerEntity().getFoodLevel() / maxHunger < 1)
                 return new Element("hungry").getAttribute(attribute.fulfill(2));
 
             else return new Element("healthy").getAttribute(attribute.fulfill(2));
