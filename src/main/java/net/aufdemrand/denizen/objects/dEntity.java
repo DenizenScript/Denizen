@@ -441,7 +441,7 @@ public class dEntity implements dObject {
      */
 
     public dEntity getShooter() {
-        if (isProjectile() && hasShooter())
+        if (hasShooter())
             return new dEntity(getProjectile().getShooter());
         else
             return null;

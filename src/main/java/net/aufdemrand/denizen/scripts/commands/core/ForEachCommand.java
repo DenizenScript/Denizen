@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -34,7 +35,7 @@ public class ForEachCommand extends BracedCommand {
         if (!scriptEntry.hasObject("list"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LIST");
 
-        scriptEntry.addObject("entries", getBracedCommands(scriptEntry, 1));
+        scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
 
     }
 
@@ -44,7 +45,7 @@ public class ForEachCommand extends BracedCommand {
 
         // Get objects
         dList list = (dList) scriptEntry.getObject("list");
-        ArrayList<ScriptEntry> entries = (ArrayList<ScriptEntry>) scriptEntry.getObject("entries");
+        ArrayList<ScriptEntry> bracedSections = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("FOREACH");
 
         // Report to dB
         dB.report(getName(), list.debug() );
@@ -54,11 +55,11 @@ public class ForEachCommand extends BracedCommand {
             if (scriptEntry.getResidingQueue().getWasCleared())
                 return;
             ArrayList<ScriptEntry> newEntries = (ArrayList<ScriptEntry>) new ArrayList<ScriptEntry>();
-            for (ScriptEntry entr: entries) {
+            for (ScriptEntry entry : bracedSections) {
                 try {
-                    ScriptEntry toadd = entr.clone();
-                    toadd.getObjects().clear();
-                    newEntries.add(toadd);
+                    ScriptEntry toAdd = entry.clone();
+                    toAdd.getObjects().clear();
+                    newEntries.add(toAdd);
                 }
                 catch (Throwable e) {
                     e.printStackTrace();
