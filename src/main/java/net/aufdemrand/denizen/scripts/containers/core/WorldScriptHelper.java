@@ -1378,7 +1378,7 @@ public class WorldScriptHelper implements Listener {
 
         boolean isFatal = false;
 
-        if (entity.isValid()) {
+        if (entity.isValid() && entity.isLivingEntity()) {
             if (event.getDamage() >= entity.getLivingEntity().getHealth()) {
                 isFatal = true;
             }
