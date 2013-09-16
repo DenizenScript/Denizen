@@ -2250,7 +2250,6 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("projectile", projectile);
         context.put("location", new dLocation(block.getLocation()));
-        context.put("shooter", shooter.getDenizenObject());
 
         List<String> events = new ArrayList<String>();
         events.add("projectile hits block");
@@ -2259,6 +2258,7 @@ public class WorldScriptHelper implements Listener {
         events.add(entityType + " hits " + material.identify());
 
         if (shooter != null) {
+            context.put("shooter", shooter.getDenizenObject());
 
             // <--[event]
             // @Events
