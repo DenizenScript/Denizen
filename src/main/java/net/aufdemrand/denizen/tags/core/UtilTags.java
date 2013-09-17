@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
@@ -33,8 +34,14 @@ public class UtilTags implements Listener {
     @EventHandler
     public void mathTags(ReplaceableTagEvent event) {
         if (!event.matches("math, m")) return;
-        Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
-        event.setReplaced(String.valueOf(evaluation));
+        try {
+            Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
+            event.setReplaced(String.valueOf(evaluation));
+        }
+        catch (Exception e) {
+            dB.echoError("Invalid math tag!");
+            event.setReplaced("0.0");
+        }
     }
 
     @EventHandler
