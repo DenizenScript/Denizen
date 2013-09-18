@@ -17,6 +17,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.util.Anchor;
@@ -295,6 +296,34 @@ public class dNPC implements dObject {
         if (attribute.startsWith("name"))
             return new Element(ChatColor.stripColor(getName()))
                     .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <npc.list_traits>
+        // @returns dList
+        // @description
+        // Returns a dList of all of the NPC's trait names.
+        // -->
+        if (attribute.startsWith("list_traits")) {
+            List<String> list = new ArrayList<String>();
+            for (Trait trait : getCitizen().getTraits())
+                list.add(trait.getName());
+            return new dList(list).getAttribute(attribute.fulfill(1));
+        }
+        
+        // <--[tag]
+        // @attribute <npc.has_trait[<trait>]>
+        // @returns Element(boolean)
+        // @description
+        // Returns whether or not the NPC has a specified trait.
+        // -->
+        if (attribute.startsWith("has_trait")) {
+            if (attribute.hasContext(1)) {
+                Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(attribute.getContext(1));
+                if (trait != null)
+                    return new Element(getCitizen().hasTrait(trait))
+                            .getAttribute(attribute.fulfill(1));
+            }
+        }
 
         // <--[tag]
         // @attribute <npc.anchor.list>
@@ -307,7 +336,7 @@ public class dNPC implements dObject {
             List<String> list = new ArrayList<String>();
             for (Anchor anchor : getCitizen().getTrait(Anchors.class).getAnchors())
                 list.add(anchor.getName());
-            return new dList(list).getAttribute(attribute.fulfill(1));
+            return new dList(list).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
