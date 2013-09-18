@@ -33,6 +33,7 @@ public class ScriptRegistry {
         _registerType("world", WorldScriptContainer.class);
         _registerType("format", FormatScriptContainer.class);
         _registerType("inventory", InventoryScriptContainer.class);
+        _registerType("player listener", PlayerListenerScriptContainer.class);
     }
 
     public static boolean containsScript(String id) {
@@ -47,7 +48,7 @@ public class ScriptRegistry {
             if (entry.getValue() == scriptContainerType)
                 type = entry.getKey();
         }
-        return type != null && (script.getType().equalsIgnoreCase(type));
+        return type != null && (script.getContainerType().equalsIgnoreCase(type));
     }
 
     public static void _buildCoreYamlScriptContainers(FileConfiguration yamlScripts) {

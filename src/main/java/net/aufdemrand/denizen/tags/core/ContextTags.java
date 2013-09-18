@@ -47,7 +47,7 @@ public class ContextTags implements Listener {
         }
 
         else if (type.equalsIgnoreCase("TYPE")) {
-            event.setReplaced(script.getType());
+            event.setReplaced(script.getContainerType());
         }
 
         else if (type.equalsIgnoreCase("SPEED")) {

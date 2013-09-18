@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
  * The dScript Argument Helper will aid you in parsing and formatting arguments from a
  * dScript argument string (such as those found in a ScriptEntry.getArguments() method).
@@ -20,16 +21,43 @@ import java.util.regex.Pattern;
  */
 public class aH {
 
+
+    ////////////////////
+    // Patterns and Enumerations
+    /////////////////
+
     public enum PrimitiveType { Float, Double, Integer, Boolean, String, Word, Percentage }
 
     final static Pattern floatPrimitive =
             Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
 
+    // <--[language]
+    // @name number
+    // @description
+    // Many arguments in Denizen require the use of a 'number', or 'double'. Sometimes referred to as #.# or <number>,
+    // this kind of hint can generally be filled with any reasonable positive or negative number with or without a
+    // decimal point. Numbers can be verified with the 'if' commands' 'matches' functionality.
+    // For example: - if <number> matches double ... will return true if <number> is a valid number.
+    //
+    // Denizen uses the regular expression pattern (-)?(?:(?:\d+)|)(?:(?:\.\d+)|) for number matching.
+    // -->
     final static Pattern doublePrimitive =
             Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
 
+    // <--[language]
+    // @name percentage
+    // @description
+    // Promotes the usage of a 'percentage' format to be used in applicable arguments. The 'percentage' in Denizen is
+    // much like the 'number', except arguments which utilize percentages instead of numbers can also include a %.
+    // Percentage arguments can generally be filled with any reasonable positive or negative number with or without a
+    // decimal point and/or percentage sign. Argument hints and other usages will typically refer to a percentage as
+    // #.#% or <percentage>. Percentages can be verified with the 'if' commands' 'matches' functionality.
+    // For example: - if <percentage> matches percentage ... will return true if <percentage> is a valid percentage.
+    //
+    // Denizen uses the regular expression pattern (?:(?:\d+)|)(?:(?:\.\d+)|)(%)? for percentage matching.
+    // -->
     final static Pattern percentagePrimitive =
-            Pattern.compile("(?:(?:\\d+)|)(?:(?:\\.\\d+)|)(%|)");
+            Pattern.compile("(?:(?:\\d+)|)(?:(?:\\.\\d+)|)(%)?");
 
     final static Pattern integerPrimitive =
             Pattern.compile("(-)?\\d+");
@@ -39,6 +67,11 @@ public class aH {
 
     final static Pattern wordPrimitive =
             Pattern.compile("\\w+");
+
+
+    ////////////////////
+    // Argument Object
+    //////////////////
 
     public static class Argument {
         public String raw_value;
@@ -64,13 +97,16 @@ public class aH {
             // dB.log("Constructed Argument: " + prefix + ":" + value);
         }
 
+
         public static Argument valueOf(String string) {
             return new Argument(string);
         }
 
+
         public boolean startsWith(String string) {
             return value.toLowerCase().startsWith(string.toLowerCase());
         }
+
 
         public boolean hasPrefix() {
             return has_prefix;
@@ -82,6 +118,7 @@ public class aH {
             return valueOf(prefix);
         }
 
+
         public boolean matches(String values) {
             for (String value : values.split(","))
                 if (value.trim().equalsIgnoreCase(this.value))
@@ -90,13 +127,16 @@ public class aH {
             return false;
         }
 
+
         public void replaceValue(String string) {
             value = string;
         }
 
+
         public String getValue() {
             return value;
         }
+
 
         public boolean matchesEnum(Enum[] values) {
             for (Enum value : values)
@@ -106,6 +146,7 @@ public class aH {
             return false;
         }
 
+
         public boolean matchesPrefix(String values) {
             if (!hasPrefix()) return false;
             for (String value : values.split(","))
@@ -114,6 +155,7 @@ public class aH {
 
             return false;
         }
+
 
         public boolean matchesPrimitive(PrimitiveType argumentType) {
             if (value == null) return false;
@@ -144,6 +186,7 @@ public class aH {
             return false;
         }
 
+
         public boolean matchesArgumentType(Class<? extends dObject> dClass) {
 
             try {
@@ -155,6 +198,7 @@ public class aH {
             return false;
         }
 
+
         // Check if this argument matches a dList of a certain dObject
         public boolean matchesArgumentList(Class<? extends dObject> dClass) {
 
@@ -162,6 +206,7 @@ public class aH {
 
             return list.filter(dClass) != null;
         }
+
 
         public Element asElement() {
             return new Element(prefix, value);
@@ -191,6 +236,12 @@ public class aH {
             return null;
         }
     }
+
+
+
+    /////////////////
+    // Static Methods
+    ///////////////
 
 
     /**
