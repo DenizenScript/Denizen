@@ -46,7 +46,7 @@ public class dNPC implements dObject {
         ////////
         // Match NPC id
 
-        string = string.replace("n@", "");
+        string = string.toUpperCase().replace("N@", "");
         NPC npc;
         if (aH.matchesInteger(string)) {
             if (dNPCRegistry.denizenNPCs.containsKey(aH.getIntegerFrom(string)))
@@ -55,6 +55,9 @@ public class dNPC implements dObject {
             npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
             if (npc != null) return new dNPC(npc);
         }
+
+        ////////
+        // Match NPC name
         else {
             for (NPC test : CitizensAPI.getNPCRegistry()) {
                 if (test.getName().equalsIgnoreCase(string)) {
@@ -68,7 +71,7 @@ public class dNPC implements dObject {
 
 
     public static boolean matches(String string) {
-        string = string.replace("n@", "");
+        string = string.toUpperCase().replace("N@", "");
         NPC npc;
         if (aH.matchesInteger(string)) {
             npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
@@ -120,6 +123,10 @@ public class dNPC implements dObject {
 
     public dEntity getDenizenEntity() {
         try {
+            // Try to spawn the NPC if necessary
+            if (!getCitizen().isSpawned()) {
+                getCitizen().spawn(getCitizen().getStoredLocation());
+            }
             return new dEntity(getCitizen().getBukkitEntity());
         } catch (NullPointerException e) {
             dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. Has this NPC been removed?");

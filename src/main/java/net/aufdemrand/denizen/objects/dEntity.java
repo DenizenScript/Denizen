@@ -145,12 +145,15 @@ public class dEntity implements dObject {
 
             // NPC entity
             if (entityGroup.matches("N@")) {
-                NPC returnable = CitizensAPI.getNPCRegistry()
-                        .getById(Integer.valueOf(m.group(2)));
 
-                if (returnable != null) return new dEntity(returnable.getBukkitEntity());
-                else dB.echoError("Invalid NPC! '" + entityGroup
-                        + "' could not be found. Has it been despawned or killed?");
+                dNPC npc = dNPC.valueOf(string);
+
+                if (npc != null) {
+
+                    return npc.getDenizenEntity();
+                }
+                else dB.echoError("NPC '" + string
+                        + "' does not exist!");
             }
 
             // Player entity
@@ -316,7 +319,7 @@ public class dEntity implements dObject {
      * useful for automatically saving dEntities to contexts as
      * dNPCs and dPlayers
      *
-     * @return  The NPC
+     * @return  The dObject
      */
 
     public dObject getDenizenObject() {

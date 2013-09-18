@@ -1,8 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import java.util.List;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
@@ -12,13 +20,12 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
+
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import java.util.List;
 
 /**
  * Moves entities through the air from an origin to a destination.
@@ -93,7 +100,7 @@ public class PushCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("speed", new Element(1.5));
-        scriptEntry.defaultObject("duration", new Duration(40));
+        scriptEntry.defaultObject("duration", new Duration(20));
 
         // Check to make sure required arguments have been filled
 
@@ -136,7 +143,7 @@ public class PushCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dScript script = (dScript) scriptEntry.getObject("script");
 
-        final double speed = ((Element) scriptEntry.getElement("speed")).asDouble();
+        final double speed = scriptEntry.getElement("speed").asDouble();
         final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
 
         // Report to dB
@@ -183,7 +190,7 @@ public class PushCommand extends AbstractCommand {
 
         // Add entities to context so that the specific entities created/spawned
         // can be fetched.
-        scriptEntry.addObject("shot_entities", entityList);
+        scriptEntry.addObject("pushed_entities", entityList);
 
         Position.mount(Conversion.convert(entities));
 
@@ -197,6 +204,7 @@ public class PushCommand extends AbstractCommand {
 
         BukkitRunnable task = new BukkitRunnable() {
             int runs = 0;
+            @Override
             public void run() {
 
                 if (runs < maxTicks && lastEntity.isValid()) {
@@ -229,7 +237,7 @@ public class PushCommand extends AbstractCommand {
                                 scriptEntry.getNPC());
                         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
                         queue.addDefinition("location", lastEntity.getLocation().identify());
-                        queue.addDefinition("shot_entities", entityList.toString());
+                        queue.addDefinition("pushed_entities", entityList.toString());
                         queue.addDefinition("last_entity", lastEntity.identify());
                         queue.start();
                     }
