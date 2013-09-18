@@ -56,6 +56,7 @@ import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
@@ -64,6 +65,8 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
@@ -499,14 +502,48 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block spreads
-    // <block> spreads
+    // block forms
+    // <block> forms
+    //
+    // @Triggers when a block is formed based on world conditions,
+    //           e.g. when snow forms in a snow storm or ice forms
+    //           in a snowy biome
+    // @Context
+    // <context.location> returns the dLocation the block.
+    // <context.material> returns the dMaterial of the block.
+    //
+    // @Determine
+    // "CANCELLED" to stop the block from forming.
+    //
+    // -->
+    @EventHandler
+    public void blockForm(BlockFormEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("material", material);
+
+        String determination = doEvents(Arrays.asList
+                ("block forms",
+                 material.identify() + " forms"),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+
+    // <--[event]
+    // @Events
+    // liquid spreads
+    // <liquid block> spreads
     //
     // @Triggers when a liquid block spreads.
     // @Context
     // <context.destination> returns the dLocation the block spread to.
     // <context.location> returns the dLocation the block spread from.
-    // <context.type> returns the dMaterial of the block that spread.
+    // <context.material> returns the dMaterial of the block that spread.
     //
     // @Determine
     // "CANCELLED" to stop the block from spreading.
@@ -523,7 +560,7 @@ public class WorldScriptHelper implements Listener {
         context.put("material", material);
 
         String determination = doEvents(Arrays.asList
-                ("block spreads",
+                ("liquid spreads",
                  material.identify() + " spreads"),
                  null, null, context);
 
@@ -536,7 +573,9 @@ public class WorldScriptHelper implements Listener {
     // block grows
     // <block> grows
     //
-    // @Triggers when a block grows naturally in the world.
+    // @Triggers when a block grows naturally in the world,
+    //           e.g. when wheat, sugar canes, cactuses,
+    //           watermelons or pumpkins grow
     // @Context
     // <context.location> returns the dLocation the block.
     // <context.material> returns the dMaterial of the block.
@@ -730,15 +769,15 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block powered
-    // <block> powered
-    // block unpowered
-    // <block> unpowered
+    // block powers
+    // <block> powers
+    // block unpowers
+    // <block> unpowers
     //
     // @Triggers when a block is (un)powered.
     // @Context
     // <context.location> returns the dLocation of the block that was (un)powered.
-    // <context.type> returns the dMaterial of the block that was (un)powered.
+    // <context.material> returns the dMaterial of the block that was (un)powered.
     //
     // @Determine
     // "CANCELLED" to stop the block from being (un)powered.
@@ -756,10 +795,14 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
 
         if (event.getNewCurrent() > 0) {
+            events.add("block powers");
+            events.add(material.identify() + " powers");
             events.add("block powered");
             events.add(material.identify() + " powered");
         }
         else {
+            events.add("block unpowers");
+            events.add(material.identify() + " unpowers");
             events.add("block unpowered");
             events.add(material.identify() + " unpowered");
         }
@@ -768,6 +811,39 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setNewCurrent(event.getOldCurrent());
+    }
+
+    // <--[event]
+    // @Events
+    // block grows
+    // <block> grows
+    //
+    // @Triggers when a block spreads based on world conditions,
+    //           e.g. when fire spreads, when mushrooms spread
+    // @Context
+    // <context.location> returns the dLocation the block.
+    // <context.material> returns the dMaterial of the block.
+    //
+    // @Determine
+    // "CANCELLED" to stop the block from growing.
+    //
+    // -->
+    @EventHandler
+    public void blockSpread(BlockSpreadEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("material", material);
+
+        String determination = doEvents(Arrays.asList
+                ("block spreads",
+                 material.identify() + " spreads"),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
     }
 
     // <--[event]
@@ -793,6 +869,47 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("brewing stand brews"),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+
+    // <--[event]
+    // @Events
+    // entity forms block
+    // entity forms <block>
+    // <entity> forms block
+    // <entity> forms <block>
+    //
+    // @Triggers when a block is formed by an entity,
+    //           e.g. when a snowman forms snow
+    // @Context
+    // <context.location> returns the dLocation the block.
+    // <context.material> returns the dMaterial of the block.
+    // <context.entity> returns the dEntity that formed the block.
+    //
+    // @Determine
+    // "CANCELLED" to stop the block from forming.
+    //
+    // -->
+    @EventHandler
+    public void entityBlockForm(EntityBlockFormEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
+        dEntity entity = new dEntity(event.getEntity());
+        String entityType = entity.getEntityType().name();
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("material", material);
+        context.put("entity", entity.getDenizenObject());
+
+        String determination = doEvents(Arrays.asList
+                ("entity forms block",
+                 "entity forms " + material.identify(),
+                 entityType + " forms block",
+                 entityType + " forms " + material.identify()),
                  null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
