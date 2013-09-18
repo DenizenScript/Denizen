@@ -48,12 +48,31 @@ public class CommandRegistry implements dRegistry {
 
     @Override
     public <T extends RegistrationableInstance> T get(Class<T> clazz) {
-        if (classes.containsKey(clazz)) return (T) clazz.cast(instances.get(classes.get(clazz)));
+        if (classes.containsKey(clazz)) return clazz.cast(instances.get(classes.get(clazz)));
         else return null;
     }
 
     @Override
     public void registerCoreMembers() {
+
+        // <--[command]
+        // @Name Age
+        // @Usage age [<entity>|...] (adult/baby/<age>) (lock)
+        // @Required 1
+        // @Stable Todo
+        // @Short Sets the ages of a list of entities, optionally locking them in those ages.
+        // @Author David Cernat
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
+        registerCoreMember(AgeCommand.class,
+                "AGE", "age [<entity>|...] (adult/baby/<age>) (lock)", 1);
 
         // <--[command]
         // @Name Anchor
@@ -1796,7 +1815,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(TimeCommand.class,
                 "TIME", "time [type:{global}/player] [<value>] (world:<name>)", 1);
-        
+
         // <--[command]
         // @Name Trait
         // @Usage trait (state:true/false/{toggle}) [<trait>]

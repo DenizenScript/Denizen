@@ -23,6 +23,7 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
@@ -478,6 +479,27 @@ public class dEntity implements dObject {
 
     public boolean hasShooter() {
         return isProjectile() && getProjectile().getShooter() != null;
+    }
+
+    /**
+     * Get this dEntity as an Ageable
+     *
+     * @return  The Ageable
+     */
+
+    public Ageable getAgeable() {
+
+        return (Ageable) entity;
+    }
+
+    /**
+     * Check whether this dEntity is an Ageable
+     *
+     * @return  true or false
+     */
+
+    public boolean isAgeable() {
+        return entity instanceof Ageable;
     }
 
     /**

@@ -166,7 +166,7 @@ public class FlyCommand extends AbstractCommand {
 
         final double speed = ((Element) scriptEntry.getObject("speed")).asDouble();
         final float rotationThreshold = ((Element) scriptEntry.getObject("rotationThreshold")).asFloat();
-        Boolean cancel = scriptEntry.hasObject("cancel");
+        boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
         dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
@@ -178,7 +178,7 @@ public class FlyCommand extends AbstractCommand {
                                          : aH.debugObj("destinations", destinations.toString())));
 
         // Mount or dismount all of the entities
-        if (cancel.equals(false)) {
+        if (cancel == false) {
 
             // Go through all the entities, spawning/teleporting them
             for (dEntity entity : entities) {

@@ -815,8 +815,8 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block grows
-    // <block> grows
+    // block spreads
+    // <block> spreads
     //
     // @Triggers when a block spreads based on world conditions,
     //           e.g. when fire spreads, when mushrooms spread
