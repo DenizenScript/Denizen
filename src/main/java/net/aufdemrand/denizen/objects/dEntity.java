@@ -148,10 +148,8 @@ public class dEntity implements dObject {
 
                 dNPC npc = dNPC.valueOf(string);
 
-                if (npc != null) {
-
-                    return npc.getDenizenEntity();
-                }
+                if (npc != null)
+                    return new dEntity(npc.getCitizen());
                 else dB.echoError("NPC '" + string
                         + "' does not exist!");
             }
@@ -298,6 +296,17 @@ public class dEntity implements dObject {
         } else dB.echoError("Entity_type referenced is null!");
     }
 
+    public dEntity(NPC npc) {
+        if (npc != null) {
+            this.npc = npc;
+
+            if (npc.isSpawned()) {
+                this.entity = npc.getBukkitEntity();
+            }
+        } else dB.echoError("NPC referenced is null!");
+
+    }
+
 
     /////////////////////
     //   INSTANCE FIELDS/METHODS
@@ -309,6 +318,7 @@ public class dEntity implements dObject {
     private String data1 = null;
     private String data2 = null;
     private DespawnedEntity despawned_entity = null;
+    private NPC npc = null;
 
     public EntityType getEntityType() {
         return entity_type;
@@ -371,7 +381,7 @@ public class dEntity implements dObject {
 
     public NPC getNPC() {
 
-        return CitizensAPI.getNPCRegistry().getNPC(entity);
+        return npc;
     }
 
     /**
@@ -382,7 +392,7 @@ public class dEntity implements dObject {
 
     public dNPC getDenizenNPC() {
 
-        return new dNPC(getNPC());
+        return new dNPC(npc);
     }
 
     /**
@@ -392,7 +402,7 @@ public class dEntity implements dObject {
      */
 
     public boolean isNPC() {
-        return CitizensAPI.getNPCRegistry().isNPC(entity);
+        return npc != null;
     }
 
     /**
@@ -543,7 +553,10 @@ public class dEntity implements dObject {
         if (entity != null && isUnique()) entity.teleport(location);
 
         else {
-            if (entity_type != null) {
+            if (npc != null)
+                npc.spawn(location);
+
+            else if (entity_type != null) {
                 if (despawned_entity != null) {
                     // If entity had a custom_script, use the script to rebuild the base entity.
                     if (despawned_entity.custom_script != null)

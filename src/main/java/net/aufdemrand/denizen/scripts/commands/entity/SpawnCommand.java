@@ -105,12 +105,7 @@ public class SpawnCommand extends AbstractCommand {
                         Utilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt());
             }
 
-            if (!entity.isSpawned()) {
-                entity.spawnAt(loc);
-            }
-            else {
-                entity.teleport(loc);
-            }
+            entity.spawnAt(loc);
 
             // Only add to entityList after the entities have been
             // spawned, otherwise you'll get something like "e@skeleton"

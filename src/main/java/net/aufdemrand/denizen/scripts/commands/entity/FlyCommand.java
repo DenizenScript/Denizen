@@ -182,13 +182,7 @@ public class FlyCommand extends AbstractCommand {
 
             // Go through all the entities, spawning/teleporting them
             for (dEntity entity : entities) {
-
-                if (!entity.isSpawned()) {
-                    entity.spawnAt(origin);
-                }
-                else {
-                    entity.teleport(origin);
-                }
+                entity.spawnAt(origin);
             }
 
             Position.mount(Conversion.convert(entities));

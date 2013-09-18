@@ -123,10 +123,6 @@ public class dNPC implements dObject {
 
     public dEntity getDenizenEntity() {
         try {
-            // Try to spawn the NPC if necessary
-            if (!getCitizen().isSpawned()) {
-                getCitizen().spawn(getCitizen().getStoredLocation());
-            }
             return new dEntity(getCitizen().getBukkitEntity());
         } catch (NullPointerException e) {
             dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. Has this NPC been removed?");

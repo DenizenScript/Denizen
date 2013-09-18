@@ -156,9 +156,7 @@ public class ShootCommand extends AbstractCommand {
 
         // Go through all the entities, spawning/teleporting and rotating them
         for (dEntity entity : entities) {
-
-            if (!entity.isSpawned())  entity.spawnAt(originLocation);
-            else                      entity.teleport(originLocation);
+            entity.spawnAt(originLocation);
 
             // Only add to entityList after the entities have been
             // spawned, otherwise you'll get something like "e@skeleton"

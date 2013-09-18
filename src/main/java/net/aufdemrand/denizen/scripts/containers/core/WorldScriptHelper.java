@@ -1758,13 +1758,7 @@ public class WorldScriptHelper implements Listener {
 
             // Go through all the entities, spawning/teleporting them
             for (dEntity newProjectile : newProjectiles) {
-
-                if (!newProjectile.isSpawned()) {
-                    newProjectile.spawnAt(projectile.getLocation());
-                }
-                else {
-                    newProjectile.teleport(projectile.getLocation());
-                }
+                newProjectile.spawnAt(projectile.getLocation());
 
                 // Set the entity as the shooter of the projectile,
                 // where applicable

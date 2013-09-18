@@ -84,13 +84,7 @@ public class MountCommand extends AbstractCommand {
 
             // Go through all the entities, spawning/teleporting them
             for (dEntity entity : entities) {
-
-                if (!entity.isSpawned()) {
-                    entity.spawnAt(location);
-                }
-                else {
-                    entity.teleport(location);
-                }
+                entity.spawnAt(location);
             }
 
             Position.mount(Conversion.convert(entities));
