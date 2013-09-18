@@ -1796,6 +1796,26 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(TimeCommand.class,
                 "TIME", "time [type:{global}/player] [<value>] (world:<name>)", 1);
+        
+        // <--[command]
+        // @Name Trait
+        // @Usage trait (state:true/false/{toggle}) [<trait>]
+        // @Required 1
+        // @Stable Stable
+        // @Short Adds or removes a trait from an NPC.
+        // @Author Morphan1
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
+        registerCoreMember(TraitCommand.class,
+                "TRAIT", "trait (state:true/false/{toggle}) [<trait>]", 1);
+
 
         // <--[command]
         // @Name Trigger
