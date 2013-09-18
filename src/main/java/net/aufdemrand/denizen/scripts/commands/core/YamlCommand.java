@@ -208,13 +208,16 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
                 return;
 
-            } else
+            }
+            else {
                 event.setReplaced(new Element(value).getAttribute(attribute.fulfill(1)));
+                return;
+            }
         }
 
         // <--[tag]
         // @attribute <yaml[<id>].list_keys[<path>]>
-        // @returns Element
+        // @returns dList
         // @description
         // Returns a dList of all the keys at the path.
         // -->
@@ -228,18 +231,16 @@ public class YamlCommand extends AbstractCommand implements Listener {
             Set<String> keys = section.getKeys(false);
             if (keys == null) {
                 dB.echoDebug("YAML tag '" + event.raw_tag + "' has returned null.");
-                event.setReplaced("null");
+                event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
                 return;
 
             } else {
                 ArrayList<String> list = new ArrayList<String>();
                 list.addAll(keys);
                 event.setReplaced(new dList(list).getAttribute(attribute.fulfill(1)));
+                return;
             }
         }
-
-        // Got this far? Invalid attribute.
-        dB.echoError("YAML tag '" + event.raw_tag + "' has an invalid attribute. Tag replacement aborted.");
 
     }
 
