@@ -92,8 +92,14 @@ public class ExecuteCommand extends AbstractCommand {
                                 .getTrait(CurrentLocation.class).getLocation());
                 should_despawn = true;
             }
-            if (scriptEntry.getNPC().getEntity().getType() != EntityType.PLAYER)
-                throw new CommandExecutionException("Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
+            if (!scriptEntry.getNPC().isSpawned()) {
+                dB.echoError("Cannot EXECUTE AS_NPC unless the NPC is Spawned.");
+                return;
+            }
+            if (scriptEntry.getNPC().getEntity().getType() != EntityType.PLAYER) {
+                dB.echoError("Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
+                return;
+            }
             ((Player) scriptEntry.getNPC().getEntity()).setOp(true);
             ((Player) scriptEntry.getNPC().getEntity()).performCommand(command);
             ((Player) scriptEntry.getNPC().getEntity()).setOp(false);
