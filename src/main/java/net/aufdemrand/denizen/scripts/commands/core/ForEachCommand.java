@@ -69,6 +69,7 @@ public class ForEachCommand extends BracedCommand {
             queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
             scriptEntry.getResidingQueue().addDefinition("value", value);
             queue.addDefinition("value", value);
+            queue.getAllDefinitions().putAll(scriptEntry.getResidingQueue().getAllDefinitions());
             queue.addEntries(newEntries);
             queue.start();
         }
