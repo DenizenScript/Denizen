@@ -14,75 +14,77 @@ import net.citizensnpcs.api.trait.Trait;
 
 public class TraitCommand extends AbstractCommand {
 
-    private enum Toggle { TOGGLE, TRUE, FALSE }
+    private enum Toggle { TOGGLE, TRUE, FALSE, ON, OFF }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            
+
             if (!scriptEntry.hasObject("state")
                     && arg.matchesPrefix("state, s")
                     && arg.matchesEnum(Toggle.values()))
-                scriptEntry.addObject("state", Toggle.valueOf(arg.getValue()));
-            
+                scriptEntry.addObject("state", new Element(arg.getValue().toUpperCase()));
+
             else if (!scriptEntry.hasObject("trait"))
                 scriptEntry.addObject("trait", new Element(arg.getValue()));
-            
+
         }
-        
+
         if (!scriptEntry.hasObject("trait"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "TRAIT");
-        
+
         if (!scriptEntry.hasNPC())
             throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
-        
-        scriptEntry.defaultObject("state", Toggle.TOGGLE);
-        
+
+        scriptEntry.defaultObject("state", new Element("TOGGLE"));
+
     }
-    
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        Toggle toggle = (Toggle) scriptEntry.getObject("state");
+        Element toggle = scriptEntry.getElement("state");
         Element traitName = scriptEntry.getElement("trait");
         NPC npc = scriptEntry.getNPC().getCitizen();
-        
-        dB.echoApproval("Executing '" + getName() + "': "
-                + "Trait='" + traitName.debug() + "', "
-                + "Toggle='" + toggle.toString() + "', "
-                + "NPC='" + scriptEntry.getNPC().identify() + "'");
-        
+
+        dB.report(getName(),
+                    traitName.debug() +
+                    toggle.debug() +
+                    scriptEntry.getNPC().debug());
+
         Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());
-        
+
         if (trait == null)
             throw new CommandExecutionException("Trait not found: " + traitName.asString());
-        
-        switch (toggle) {
-        
+
+        switch (Toggle.valueOf(toggle.asString())) {
+
             case TRUE:
+            case ON:
                 if (npc.hasTrait(trait))
-                    dB.echoDebug("NPC already has trait '" + traitName.asString() + "'");
+                    dB.echoError("NPC already has trait '" + traitName.asString() + "'");
                 else
                     npc.addTrait(trait);
                 break;
-                
+
             case FALSE:
+            case OFF:
                 if (!npc.hasTrait(trait))
-                    dB.echoDebug("NPC does not have trait '" + traitName.asString() + "'");
+                    dB.echoError("NPC does not have trait '" + traitName.asString() + "'");
                 else
                     npc.removeTrait(trait);
                 break;
-                
+
             case TOGGLE:
                 if (npc.hasTrait(trait))
                     npc.removeTrait(trait);
                 else
                     npc.addTrait(trait);
                 break;
-            
+
         }
-        
+
     }
 
 }
