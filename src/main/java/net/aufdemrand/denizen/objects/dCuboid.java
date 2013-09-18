@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -282,8 +283,8 @@ public class dCuboid implements dObject, Notable {
         dList list = new dList();
 
         for (int x = 0; x != x_distance + 1; x++) {
-            for (int y = 0; y != y_distance + 1; y++) {
-                for (int z = 0; z != z_distance + 1; z++) {
+            for (int z = 0; z != z_distance + 1; z++) {
+                for (int y = 0; y != y_distance + 1; y++) {
                     loc = new dLocation(loc_1.clone()
                             .add(x, y, z));
                     if (!filter.isEmpty()) {
@@ -303,7 +304,8 @@ public class dCuboid implements dObject, Notable {
 
     /**
      * Returns a dList of dLocations with 2 vertical blocks of air
-     * that are safe for players and similar entities to spawn in
+     * that are safe for players and similar entities to spawn in,
+     * but ignoring blocks in midair
      *
      * @return  The dList
      */
@@ -311,19 +313,29 @@ public class dCuboid implements dObject, Notable {
     public dList getSpawnableBlocks() {
         dLocation loc;
         dList list = new dList();
+        boolean midair;
 
         for (int x = 0; x != x_distance + 1; x++) {
-            for (int y = 0; y != y_distance; y++) {
-                for (int z = 0; z != z_distance + 1; z++) {
+            for (int z = 0; z != z_distance + 1; z++) {
+                midair = false;
+                for (int y = 0; y != y_distance; y++) {
+
                     loc = new dLocation(loc_1.clone()
                             .add(x, y, z));
+
                     if (loc.getBlock().getType().equals(Material.AIR)
                         && loc.clone().add(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
 
                         // Get the center of the block, so the entity won't suffocate
                         // inside the edges for a couple of seconds
-                        loc.add(0.5, 0, 0.5);
-                        list.add(loc.identify());
+                        if (!midair) {
+                            loc.add(0.5, 0, 0.5);
+                            list.add(loc.identify());
+                        }
+                        midair = true;
+                    }
+                    else {
+                        midair = false;
                     }
                 }
             }
