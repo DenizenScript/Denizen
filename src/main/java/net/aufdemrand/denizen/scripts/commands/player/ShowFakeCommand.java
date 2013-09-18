@@ -18,7 +18,7 @@ public class ShowFakeCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        dList locations = new dList("");
+        dList locations = new dList();
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {

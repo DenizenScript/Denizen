@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 public class dCuboid implements dObject, Notable {
@@ -204,7 +205,7 @@ public class dCuboid implements dObject, Notable {
         //  |     |
         //  +-----+
 
-        dList list = new dList("");
+        dList list = new dList();
 
         for (int y = loc_1.getBlockY(); y <= loc_1.getBlockY() + y_distance; y++) {
             list.add(new dLocation(loc_1.getWorld(),
@@ -278,13 +279,13 @@ public class dCuboid implements dObject, Notable {
 
     public dList getBlocks() {
         dLocation loc;
-        dList list = new dList("");
+        dList list = new dList();
 
         for (int x = 0; x != x_distance + 1; x++) {
             for (int y = 0; y != y_distance + 1; y++) {
                 for (int z = 0; z != z_distance + 1; z++) {
                     loc = new dLocation(loc_1.clone()
-                            .add((double) x, (double) y, (double) z));
+                            .add(x, y, z));
                     if (!filter.isEmpty()) {
                         // Check filter
                         for (dObject material : filter)
@@ -293,6 +294,37 @@ public class dCuboid implements dObject, Notable {
                                 list.add(loc.identify());
                     } else
                         list.add(loc.identify());
+                }
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * Returns a dList of dLocations with 2 vertical blocks of air
+     * that are safe for players and similar entities to spawn in
+     *
+     * @return  The dList
+     */
+
+    public dList getSpawnableBlocks() {
+        dLocation loc;
+        dList list = new dList();
+
+        for (int x = 0; x != x_distance + 1; x++) {
+            for (int y = 0; y != y_distance; y++) {
+                for (int z = 0; z != z_distance + 1; z++) {
+                    loc = new dLocation(loc_1.clone()
+                            .add(x, y, z));
+                    if (loc.getBlock().getType().equals(Material.AIR)
+                        && loc.clone().add(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
+
+                        // Get the center of the block, so the entity won't suffocate
+                        // inside the edges for a couple of seconds
+                        loc.add(0.5, 0, 0.5);
+                        list.add(loc.identify());
+                    }
                 }
             }
         }
@@ -410,6 +442,16 @@ String prefix = "Cuboid";
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <cu@cuboid.get_spawnable_blocks>
+        // @returns dList(dLocation)
+        // @description Returns each dLocation within the dCuboid that is
+        //              safe for players or similar entities to spawn in
+        // -->
+        if (attribute.startsWith("get_spawnable_blocks"))
+            return new dList(getSpawnableBlocks())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <cu@cuboid.get_outline>
         // @returns dList(dLocation)
         // @description Returns each block location on the outline of the dCuboid.
@@ -440,6 +482,15 @@ String prefix = "Cuboid";
         }
 
         // <--[tag]
+        // @attribute <cu@cuboid.max>
+        // @returns dLocation
+        // @description Returns the highest-numbered corner location.
+        // -->
+        if (attribute.startsWith("max")) {
+            return loc_2.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <cu@cuboid.min>
         // @returns dLocation
         // @description Returns the lowest-numbered corner location.
@@ -448,14 +499,7 @@ String prefix = "Cuboid";
             return loc_1.getAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <cu@cuboid.max>
-        // @returns dLocation
-        // @description Returns the highest-numbered corner location.
-        // -->
-        if (attribute.startsWith("max")) {
-            return loc_2.getAttribute(attribute.fulfill(1));
-        }
+
 
         return new Element(identify()).getAttribute(attribute);
     }
