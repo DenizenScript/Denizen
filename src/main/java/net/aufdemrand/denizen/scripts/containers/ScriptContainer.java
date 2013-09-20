@@ -38,7 +38,7 @@ public class ScriptContainer {
     //     - ...
     //   parent key:
     //     child key: value
-    //  </code>
+    // </code>
     //
     // And here's a container, put into a more familiar context:
     //
