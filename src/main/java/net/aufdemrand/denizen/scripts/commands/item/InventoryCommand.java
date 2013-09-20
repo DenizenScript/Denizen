@@ -71,7 +71,7 @@ public class InventoryCommand extends AbstractCommand {
             !scriptEntry.hasObject("destinationLocation") &&
             !scriptEntry.hasObject("destinationInventory")) {
             if (scriptEntry.hasPlayer())
-                scriptEntry.addObject("destinationEntity", scriptEntry.getPlayer().getDenizenEntity());
+                scriptEntry.addObject("destinationInventory", new dInventory(scriptEntry.getPlayer().getPlayerEntity()));
             else
                 throw new InvalidArgumentsException("Must specify a destination inventory!");
         }
