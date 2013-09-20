@@ -20,7 +20,7 @@ public class PacketHelper {
     public static NameplateHandler getNameplateHandler() {
          return npHandler;
     }
-    
+
     public static InvisibleLoreHandler getInvisibleLoreHandler() {
         return ilHandler;
     }

@@ -31,7 +31,7 @@ import com.comphenix.protocol.wrappers.nbt.NbtList;
 import com.comphenix.protocol.wrappers.nbt.NbtType;
 
 public class InvisibleLoreHandler {
-    
+
     public Denizen denizen;
     public ProtocolManager protocolManager;
 
@@ -48,7 +48,7 @@ public class InvisibleLoreHandler {
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 try {
-                    
+
                     switch (packet.getID()) {
 
                         case 0x67:
@@ -64,9 +64,9 @@ public class InvisibleLoreHandler {
                                 encodeLore(smArray.read(i));
                             }
                             break;
-                            
+
                     }
-                    
+
                 } catch (FieldAccessException ex) {}
             }
 
@@ -145,7 +145,7 @@ public class InvisibleLoreHandler {
         }
         return stacks;
     }
-    
+
     public ItemStack encodeLore(ItemStack stack) {
         if (stack != null) {
             if (stack.hasItemMeta() && stack.getItemMeta().hasLore()) {

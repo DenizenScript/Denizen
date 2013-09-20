@@ -53,10 +53,10 @@ public abstract class BracedCommand extends AbstractCommand {
 
         // Loop through the arguments of each entry
         List<aH.Argument> argList = aH.interpret(entry.getArguments());
-        
+
         // Set the variable to use for naming braced command lists; the first should be the command name
         String bracesName = scriptEntry.getCommandName();
-        
+
         for (int i = startArg; i < argList.size(); i++) {
             aH.Argument arg = argList.get(i);
             if (hyperdebug) dB.echoDebug("Arg found: " + arg.raw_value);
@@ -124,7 +124,7 @@ public abstract class BracedCommand extends AbstractCommand {
                 newCommand = true;
                 if (hyperdebug) dB.echoDebug("Assuming following is a new command");
             }
-            
+
             // Add to the name of the braced command list
             else if (bracesEntered == 0) {
                 bracesName += arg.raw_value;
@@ -140,7 +140,7 @@ public abstract class BracedCommand extends AbstractCommand {
 
         scriptEntry.getResidingQueue().removeEntry(0);
         return bracedSections;
-        
+
     }
 
 }

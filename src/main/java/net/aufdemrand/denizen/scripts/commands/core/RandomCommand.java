@@ -46,7 +46,7 @@ public class RandomCommand extends BracedCommand {
                 scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 0));
                 break;
             }
-            
+
             else if (!scriptEntry.hasObject("possibilities")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("possibilities", arg.asElement());
@@ -76,7 +76,7 @@ public class RandomCommand extends BracedCommand {
         int possibilities = 0;
         ScriptQueue queue = scriptEntry.getResidingQueue();
         ArrayList<ScriptEntry> bracedCommands = null;
-        
+
         if (!scriptEntry.hasObject("braces")) {
             possibilities = scriptEntry.getElement("possibilities").asInt();
         }
@@ -90,9 +90,9 @@ public class RandomCommand extends BracedCommand {
         dB.echoDebug("...random number generator selected '%s'", String.valueOf(selected + 1));
 
         if (bracedCommands == null) {
-            
+
             ScriptEntry keeping = null;
-            
+
             for (int x = 0; x < possibilities; x++) {
 
                 if (x != selected) {

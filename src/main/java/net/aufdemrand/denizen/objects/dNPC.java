@@ -299,7 +299,7 @@ public class dNPC implements dObject {
         if (attribute.startsWith("name"))
             return new Element(ChatColor.stripColor(getName()))
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <npc.list_traits>
         // @returns dList
@@ -312,7 +312,7 @@ public class dNPC implements dObject {
                 list.add(trait.getName());
             return new dList(list).getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <npc.has_trait[<trait>]>
         // @returns Element(boolean)
