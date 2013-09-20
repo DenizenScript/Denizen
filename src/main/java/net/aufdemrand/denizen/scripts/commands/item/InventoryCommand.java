@@ -2,12 +2,10 @@ package net.aufdemrand.denizen.scripts.commands.item;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
@@ -28,13 +26,13 @@ public class InventoryCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
                 // add Action
-                scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
+                scriptEntry.addObject("action", new Element(arg.getValue().toUpperCase()));
             }
 
             else if (!scriptEntry.hasObject("originEntity") &&
                 !scriptEntry.hasObject("originLocation") &&
                 !scriptEntry.hasObject("originInventory") &&
-                arg.matchesPrefix("origin, o, source, s, items, i, from, f")) {
+                arg.matchesPrefix("origin, o, source, s, items, item, i, from, f")) {
 
                 // Is entity
                 if (arg.matchesArgumentType(dEntity.class))
@@ -50,7 +48,7 @@ public class InventoryCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("destinationEntity") &&
                      !scriptEntry.hasObject("destinationLocation") &&
                      !scriptEntry.hasObject("destinationInventory") &&
-                     arg.matchesPrefix("destination, d, target, to, t")) {
+                     arg.matchesPrefix("destination, dest, d, target, to, t")) {
 
                 // Is entity
                 if (arg.matchesArgumentType(dEntity.class))
@@ -71,15 +69,19 @@ public class InventoryCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("destinationEntity") &&
             !scriptEntry.hasObject("destinationLocation") &&
-            !scriptEntry.hasObject("destinationInventory"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "DESTINATION");
+            !scriptEntry.hasObject("destinationInventory")) {
+            if (scriptEntry.hasPlayer())
+                scriptEntry.addObject("destinationEntity", scriptEntry.getPlayer().getDenizenEntity());
+            else
+                throw new InvalidArgumentsException("Must specify a destination inventory!");
+        }
     }
 
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects
-        Action action = (Action) scriptEntry.getObject("action");
+        Element action = scriptEntry.getElement("action");
 
         dEntity originEntity = (dEntity) scriptEntry.getObject("originEntity");
         dLocation originLocation = (dLocation) scriptEntry.getObject("originLocation");
@@ -106,9 +108,17 @@ public class InventoryCommand extends AbstractCommand {
             else if (destinationEntity != null) {
                 destination = new dInventory(destinationEntity.getLivingEntity());
             }
+            else {
+                return;
+            }
         }
 
-        switch (action) {
+        dB.report(getName(),
+                destination.debug()
+                + (origin != null?origin.debug():"")
+                + action.debug());
+
+        switch (Action.valueOf(action.asString())) {
 
             // Make the attached player open the destination inventory
             case OPEN:

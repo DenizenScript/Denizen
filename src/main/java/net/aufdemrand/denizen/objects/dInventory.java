@@ -686,7 +686,7 @@ public class dInventory implements dObject, Notable {
     }
 
     public String debug() {
-        return null;
+        return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
     }
 
     public String identify() {
