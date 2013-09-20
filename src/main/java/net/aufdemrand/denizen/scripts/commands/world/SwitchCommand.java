@@ -10,10 +10,10 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.minecraft.server.v1_6_R2.Block;
+import net.minecraft.server.v1_6_R3.Block;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

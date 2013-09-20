@@ -21,11 +21,11 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.util.Anchor;
-import net.minecraft.server.v1_6_R2.EntityLiving;
+import net.minecraft.server.v1_6_R3.EntityLiving;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
