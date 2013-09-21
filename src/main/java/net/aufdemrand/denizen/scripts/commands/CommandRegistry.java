@@ -519,11 +519,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name DisplayItem
-        // @Usage displayitem (remove) [<item>] [<location>] (duration:<value>)
+        // @Usage displayitem [<item>] [<location>] (duration:<value>)
         // @Required 2
         // @Stable Todo
         // @Short Makes a non-touchable item spawn for players to view.
-        // @Author Todo
+        // @Author aufdemrand, mcmonkey
         // @Description
         // Todo
         // @Tags
@@ -534,7 +534,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(DisplayItemCommand.class,
-                "DISPLAYITEM", "displayitem (remove) [<item>] [<location>] (duration:<value>)", 2);
+                "DISPLAYITEM", "displayitem [<item>] [<location>] (duration:<value>)", 2);
 
         // <--[command]
         // @Name Drop
