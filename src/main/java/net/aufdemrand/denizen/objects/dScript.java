@@ -52,11 +52,13 @@ public class dScript implements dObject {
     /////////////
 
     // <--[language]
-    // @name s@script_name
+    // @name s@
     // @description
-    // s@script_name refers to the object type and identifier of a dScript. The 's@' is notation for Denizen's Object
+    // s@ refers to the object type of a dScript. The 's@' is notation for Denizen's Object
     // Fetcher. The only valid constructor for a dScript is the name of the script container that it should be
-    // associated with. For example, if my script container is called
+    // associated with. For example, if my script container is called 'cool_script', the dScript object for that script
+    // would be able to be referenced (fetched) with s@cool_script.
+    // -->
 
 
     final public static Pattern CONTAINER_PATTERN = Pattern.compile("(s@|)(.+)",
