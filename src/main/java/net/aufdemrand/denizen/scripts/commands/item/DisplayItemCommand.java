@@ -29,13 +29,16 @@ public class DisplayItemCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesArgumentType(Duration.class))
+            if (arg.matchesArgumentType(Duration.class)
+                    && !scriptEntry.hasObject("duration"))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
 
-            else if (arg.matchesArgumentType(dLocation.class))
+            else if (arg.matchesArgumentType(dLocation.class)
+                    && !scriptEntry.hasObject("location"))
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-            else if (arg.matchesArgumentType(dItem.class))
+            else if (arg.matchesArgumentType(dItem.class)
+                    && !scriptEntry.hasObject("item"))
                 scriptEntry.addObject("item", arg.asType(dItem.class));
 
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
@@ -55,12 +58,10 @@ public class DisplayItemCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // Get objects from ScriptEntry
         dItem item = (dItem) scriptEntry.getObject("item");
         Duration duration = (Duration) scriptEntry.getObject("duration");
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
-        // Report to dB
         dB.report(getName(),
                 item.debug()
                 + duration.debug()
