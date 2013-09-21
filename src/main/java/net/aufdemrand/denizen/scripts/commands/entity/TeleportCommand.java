@@ -16,7 +16,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 /**
  * Teleports a list of entities to a location.
  *
- * @author David Cernat
+ * @author David Cernat, aufdemrand
  */
 
 public class TeleportCommand extends AbstractCommand {

@@ -20,7 +20,7 @@ import org.bukkit.entity.LeashHitch;
 /**
  * Leashes a list of entities to another entity.
  *
- * @author Alain Blanquet
+ * @author Alain Blanquet, mcmonkey
  */
 
 public class LeashCommand extends AbstractCommand {

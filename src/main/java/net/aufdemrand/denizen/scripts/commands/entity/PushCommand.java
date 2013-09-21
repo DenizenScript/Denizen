@@ -32,7 +32,7 @@ import org.bukkit.util.Vector;
  * The origin can optionally be an entity that will look at the
  * object it is moving.
  *
- * @author David Cernat
+ * @author David Cernat, mcmonkey
  */
 
 public class PushCommand extends AbstractCommand {

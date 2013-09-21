@@ -51,7 +51,6 @@ public class ModifyBlockCommand extends AbstractCommand{
 
             if (arg.matchesArgumentType(dLocation.class)){
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
-                dB.echoDebug("...location set to: " + scriptEntry.getObject("location"));
             }
 
             else if (!scriptEntry.hasObject("material")
@@ -63,14 +62,12 @@ public class ModifyBlockCommand extends AbstractCommand{
                     && arg.matchesPrefix("radius, r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("radius", new Element(arg.getValue()));
-                dB.echoDebug("...radius set to " + scriptEntry.getObject("radius"));
             }
 
             else if (!scriptEntry.hasObject("height")
                     && arg.matchesPrefix("height, h")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("height", new Element(arg.getValue()));
-                dB.echoDebug("...height set to " + scriptEntry.getObject("height"));
 
             }
 
@@ -78,7 +75,6 @@ public class ModifyBlockCommand extends AbstractCommand{
                     && arg.matchesPrefix("depth, d")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("depth", new Element(arg.getValue()));
-                dB.echoDebug("...depth set to " + scriptEntry.getObject("depth"));
 
             }
         }
@@ -101,11 +97,6 @@ public class ModifyBlockCommand extends AbstractCommand{
         final int radius = scriptEntry.getElement("radius").asInt();
         final int height = scriptEntry.getElement("height").asInt();
         final int depth = scriptEntry.getElement("depth").asInt();
-
-        if (location == null || material == null){
-            dB.echoDebug("...can not exectue");
-            return;
-        }
 
         World world = location.getWorld();
         Block startBlock = location.getBlock();

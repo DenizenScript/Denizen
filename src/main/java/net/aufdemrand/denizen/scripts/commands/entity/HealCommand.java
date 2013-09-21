@@ -17,7 +17,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 /**
  * Heals an entity.
  *
- * @author Jeremy Schroeder, Mason Adkins, Morphan1
+ * @author Jeremy Schroeder, Mason Adkins, Morphan1, mcmonkey
  */
 
 public class HealCommand extends AbstractCommand {

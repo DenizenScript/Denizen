@@ -16,7 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 /**
  * Controls entity heads.
  *
- * @author Jeremy Schroeder
+ * @author Jeremy Schroeder, mcmonkey
  *
  */
 
@@ -91,65 +91,5 @@ public class LookCommand extends AbstractCommand {
         }
     }
 
-
-
-
-    /*
-
-        else if (lookWhere.equals("LEFT")) {
-            theDenizen.lookClose(false);
-            theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() - (float) 80;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
-        }
-
-        else if (lookWhere.equals("RIGHT")) {
-            theDenizen.lookClose(false);
-            theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() + (float) 80;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
-        }
-
-        else if (lookWhere.equals("UP")) {
-            theDenizen.lookClose(false);
-            theDenizen.getHandle().pitch = theDenizen.getHandle().pitch - (float) 60;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
-        }
-
-        else if (lookWhere.equals("DOWN")) {
-            theDenizen.lookClose(false);
-            theDenizen.getHandle().pitch = theDenizen.getHandle().pitch + (float) 40;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
-        }
-
-        else if (lookWhere.equals("BACK")) {
-            theDenizen.lookClose(false);
-            theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() - 180;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
-        }
-
-        else if (lookWhere.equals("SOUTH")) {
-            theDenizen.lookClose(false);
-            theDenizen.getHandle().yaw = 0;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
-        }
-
-        else if (lookWhere.equals("WEST")) {
-            theDenizen.lookClose(false);
-            theDenizen.getHandle().yaw = 90;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
-        }
-
-        else if (lookWhere.equals("NORTH")) {
-            theDenizen.lookClose(false);
-            theDenizen.getHandle().yaw = 180;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
-        }
-
-        else if (lookWhere.equals("EAST")) {
-            theDenizen.lookClose(false);
-            theDenizen.getHandle().yaw = 270;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
-        }
-
-*/
 }
 

@@ -17,7 +17,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 /**
  * Hurts an entity.
  *
- * @author Jeremy Schroeder, Mason Adkins, Morphan1
+ * @author Jeremy Schroeder, Mason Adkins, Morphan1, mcmonkey
  */
 
 public class HurtCommand extends AbstractCommand {
