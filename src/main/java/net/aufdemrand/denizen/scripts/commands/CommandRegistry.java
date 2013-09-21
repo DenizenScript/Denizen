@@ -299,8 +299,8 @@ public class CommandRegistry implements dRegistry {
         // @Usage chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
         // @Required 1
         // @Stable Todo
-        // @Short Todo
-        // @Author Todo
+        // @Short Keeps a chunk actively loaded and allowing NPC activity.
+        // @Author aufdemrand
         // @Description
         // Todo
         // @Tags
