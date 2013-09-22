@@ -31,6 +31,14 @@ public class UtilTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
+    // <--[tag]
+    // @attribute <math:<calculationhere>>
+    // @returns Element(Number)
+    // @description
+    // Returns a calculcated result of the math placed after the :
+    // EG <math:1+1> or <math:sin(<npc.id>)>.
+    // To get an int value, you will need to do <el@val[<math:calc>].asint>
+    // -->
     @EventHandler
     public void mathTags(ReplaceableTagEvent event) {
         if (!event.matches("math, m")) return;

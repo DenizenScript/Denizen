@@ -3066,7 +3066,7 @@ public class WorldScriptHelper implements Listener {
     // @Code
     // # +--------------------
     // # | On Command Event tutorial
-    //
+    // # |
     // # | Denizen contains the ability to run script entries in the form
     // # | of a Bukkit /command. Here's an example script that shows basic usage.
     //
