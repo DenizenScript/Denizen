@@ -270,6 +270,9 @@ public class dEntity implements dObject {
         if (entity != null) {
             this.entity = entity;
             this.entity_type = entity.getType();
+            if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                this.npc = CitizensAPI.getNPCRegistry().getNPC(entity);
+            }
         } else dB.echoError("Entity referenced is null!");
     }
 
