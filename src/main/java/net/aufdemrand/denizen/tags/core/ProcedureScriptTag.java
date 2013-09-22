@@ -50,8 +50,8 @@ public class ProcedureScriptTag implements Listener {
     //   - if <player.money> < 3 determine false
     //   # The determine above will immediately end the procedure and return false
     //
-    //   # If the player has more than 15 (75%) health, he doesn't need a heal so determine false
-    //   - if <player.health> > 15 determine false
+    //   # If the player has more than 75% health, he doesn't need a heal so determine false
+    //   - if <player.health.percentage> > 75 determine false
     //
     //   # This example shouldn't get too complex, so
     //   # If it passed the money and health requirements:
