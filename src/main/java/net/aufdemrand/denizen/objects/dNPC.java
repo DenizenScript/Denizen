@@ -568,7 +568,7 @@ public class dNPC implements dObject {
                     : "null");
 
         return (getEntity() != null
-                ? new dEntity(getEntity()).getAttribute(attribute)
+                ? new dEntity(getCitizen()).getAttribute(attribute)
                 : new Element(identify()).getAttribute(attribute));
 
     }
