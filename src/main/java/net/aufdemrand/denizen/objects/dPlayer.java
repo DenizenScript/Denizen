@@ -873,6 +873,26 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <p@player.oxygen.max>
+        // @returns Element(number)
+        // @description
+        // returns how much air the player can have.
+        // -->
+        if (attribute.startsWith("oxygen.max"))
+            return new Element(getPlayerEntity().getMaximumAir())
+                    .getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <p@player.oxygen>
+        // @returns Element(number)
+        // @description
+        // returns how much air the player has.
+        // -->
+        if (attribute.startsWith("oxygen"))
+            return new Element(getPlayerEntity().getRemainingAir())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <p@player.gamemode.id>
         // @returns Element(number)
         // @description
