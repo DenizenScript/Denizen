@@ -3446,7 +3446,7 @@ public class WorldScriptHelper implements Listener {
                 itemMaterial.identify());
 
         if (entity.getBukkitEntity() instanceof ItemFrame) {
-            dItem itemFrame = new dItem(((ItemFrame) entity).getItem());
+            dItem itemFrame = new dItem(((ItemFrame) entity.getBukkitEntity()).getItem());
             dMaterial itemFrameMaterial = itemFrame.getMaterial();
             context.put("itemframe", itemFrame);
 
