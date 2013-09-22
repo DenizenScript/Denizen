@@ -177,7 +177,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <n@npc.script>
         // @Usage
         // Todo
         // @Example
@@ -209,8 +209,8 @@ public class CommandRegistry implements dRegistry {
         // @Name Break
         // @Usage break [<location>] (entity:<entity>) (radius:<#.#>)
         // @Required 1
-        // @Stable stable
-        // @Short Breaks a block.
+        // @Stable unstable
+        // @Short Makes the NPC walk over and break a block. (Doesn't work!)
         // @Author aufdemrand
         // @Description
         // Todo
@@ -234,7 +234,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <e@entity.fire_time>
         // @Usage
         // Todo
         // @Example
@@ -268,8 +268,6 @@ public class CommandRegistry implements dRegistry {
         // - if <p@Player.has_effect[jump]> {
         //   - potion jump remove <player>
         //   }
-        //
-        // @Example TODO
         //
         // -->
         registerCoreMember(CastCommand.class,
@@ -323,7 +321,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <p@player.compass.target>
         // @Usage
         // Todo
         // @Example
@@ -336,7 +334,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Cooldown
         // @Usage cooldown [<duration>] (global) (s:<script>)
         // @Required 1
-        // @Stable Stable
+        // @Stable stable
         // @Short Temporarily disables a script-container from meeting requirements.
         // @Author aufdemrand
         //
@@ -350,9 +348,9 @@ public class CommandRegistry implements dRegistry {
         // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
         //
         // @Tags
-        // <s@script_name.cooled_down[player]> will return whether the script is cooled down
-        // <s@script_name.cooldown> will return the duration of the cooldown in progress.
-        // <s@requirements.check> will also check script cooldown, as well as any requirements.
+        // <s@script.cooled_down[<player>]> will return whether the script is cooled down
+        // <s@script.cooldown[<player>]> will return the duration of the cooldown in progress.
+        // <s@script.requirements[<player>].check[<path>]> will check script cooldown, as well as any requirements.
         //
         // @Usage
         // Use to keep the current interact script from meeting requirements.
@@ -384,7 +382,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <l@location.block. * >
         // @Usage
         // Todo
         // @Example
@@ -404,7 +402,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <server.list_worlds>
         // @Usage
         // Todo
         // @Example
@@ -418,7 +416,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Define
         // @Usage define [<id>] [<value>]
         // @Required 2
-        // @Stable 1.0
+        // @Stable stable
         // @Short Creates a temporary variable inside a script queue.
         // @Author aufdemrand
         //
@@ -436,6 +434,8 @@ public class CommandRegistry implements dRegistry {
         // Definitions are also resolved before replaceable tags, meaning you can use them within tags, even as an
         // attribute. ie. <%player%.name>
         //
+        // @Tags
+        // %DefinedItem%
         // @Usage
         // Use to make complex tags look less complex, and scripts more readable.
         // - narrate 'You invoke your power of notice...'
@@ -486,7 +486,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Disengage
         // @Usage disengage (npc:<npc>)
         // @Required 0
-        // @Stable 1.0
+        // @Stable stable
         // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command.
         // @Author aufdemrand
         //
@@ -502,8 +502,8 @@ public class CommandRegistry implements dRegistry {
         // NPCs that are interacted with while engaged will fire an 'on unavailable' assignment
         // script-container action.
         //
-        // @See Engage Command
-        //
+        // @Tags
+        // none
         // @Usage
         // Use to reenable a NPC's triggers, disabled via 'engage'.
         // - engage
@@ -559,7 +559,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Engage
         // @Usage engage (<duration>) (npc:<npc>)
         // @Required 0
-        // @Stable 1.0
+        // @Stable stable
         // @Short Temporarily disables a NPCs toggled interact script-container triggers.
         // @Author aufdemrand
         //
@@ -634,7 +634,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <e@entity.equipment>
         // @Usage
         // Todo
         // @Example
@@ -672,7 +672,10 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <p@player.xp>
+        // <p@player.xp.to_next_level>
+        // <p@player.xp.total>
+        // <p@player.xp.level>
         // @Usage
         // Todo
         // @Example
@@ -729,7 +732,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <p@player.food_level>
+        // <p@player.food_level.formatted>
         // @Usage
         // Todo
         // @Example
@@ -805,7 +809,9 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <p@player.flag[<flag>]>
+        // <n@npc.flag[<flag>]>
+        // <global.flag[<flag>]>
         // @Usage
         // Todo
         // @Example
@@ -864,6 +870,8 @@ public class CommandRegistry implements dRegistry {
         // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
         // that item. To call the value of the item while in the loop, you can use %value%.
         //
+        // @Tags
+        // None
         // @Usage
         // Use to run commands on multiple items.
         // - foreach li@e@123|n@424|p@BobBarker {
@@ -871,7 +879,7 @@ public class CommandRegistry implements dRegistry {
         //   }
         //
         // @Example
-        //
+        // Todo
         // -->
         registerCoreMember(ForEachCommand.class,
                 "FOREACH", "foreach [<object>|...] [<commands>]", 2);
@@ -886,7 +894,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <p@player.money>
         // @Usage
         // Todo
         // @Example
@@ -905,7 +913,9 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <p@player.in_group[<group>]>
+        // <p@player.in_group[<group>].global>
+        // <p@player.in_group[<group>].world>
         // @Usage
         // Todo
         // @Example
@@ -943,7 +953,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <e@entity.health>
         // @Usage
         // Todo
         // @Example
@@ -962,7 +972,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <e@entity.health>
+        // <e@entity.health.max>
         // @Usage
         // Todo
         // @Example
@@ -981,7 +992,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <e@entity.health>
         // @Usage
         // Todo
         // @Example
@@ -1079,7 +1090,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <e@entity.is_leashed>
+        // <e@entity.get_leash_holder>
         // @Usage
         // Todo
         // @Example
@@ -1136,7 +1148,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <l@location.yaw>
+        // <l@location.pitch>
         // @Usage
         // Todo
         // @Example
@@ -1202,7 +1215,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <e@entity.get_vehicle>
+        // <e@entity.is_inside_vehicle>
         // @Usage
         // Todo
         // @Example
@@ -1221,7 +1235,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <l@location.block.material>
         // @Usage
         // Todo
         // @Example
@@ -1297,7 +1311,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <p@player.oxygen>
+        // <p@player.oxygen.max>
         // @Usage
         // Todo
         // @Example
@@ -1316,7 +1331,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <n@npc.navigator>
         // @Usage
         // Todo
         // @Example
@@ -1373,7 +1388,9 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <p@player.has_permission[permission.node]>
+        // <p@player.has_permission[permission.node].global>
+        // <p@player.has_permission[permission.node].world>
         // @Usage
         // Todo
         // @Example
@@ -1487,7 +1504,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <n@npc.is_spawned>
         // @Usage
         // Todo
         // @Example
@@ -1506,7 +1523,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <n@npc.name>
+        // <n@npc.name.nickname>
         // @Usage
         // Todo
         // @Example
@@ -1698,7 +1716,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <l@location.block.sign_contents>
         // @Usage
         // Todo
         // @Example
@@ -1717,7 +1735,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <n@npc.is_spawned>
+        // <util.entity_is_spawned[<entity>]>
         // @Usage
         // Todo
         // @Example
@@ -1794,7 +1813,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <p@player.item_in_hand>
+        // <p@player.money>
         // @Usage
         // Todo
         // @Example
@@ -1813,7 +1833,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <e@entity.location>
         // @Usage
         // Todo
         // @Example
@@ -1832,7 +1852,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <w@world.time>
+        // <w@world.time.period>
         // @Usage
         // Todo
         // @Example
@@ -1851,7 +1872,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <n@npc.has_trait[<trait>]>
+        // <n@npc.list_traits>
         // @Usage
         // Todo
         // @Example
@@ -1953,7 +1975,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <npc.navigator. * >
         // @Usage
         // Todo
         // @Example
@@ -1991,7 +2013,9 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <yaml[<idname>].contains[<path>]>
+        // <yaml[<idname>].read[<path>]>
+        // <yaml[<idname>].list_keys[<path>]>
         // @Usage
         // Todo
         // @Example
