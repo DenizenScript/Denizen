@@ -81,7 +81,8 @@ public class ProcedureScriptTag implements Listener {
     //       - chat "All patched up!"
     //       }
     //
-    //
+    // -->
+
    @EventHandler
     public void procedureTag(ReplaceableTagEvent event) {
        // <--[tag]
