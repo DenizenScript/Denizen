@@ -968,8 +968,12 @@ public class CommandHandler {
             desc = "For testing purposes only, use at your own risk!", modifiers = { "report" },
             min = 1, max = 3, permission = "denizen.basic")
     public void text(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        TriggerTrait trait = npc.getTrait(TriggerTrait.class);
-        trait.report();
+        if (npc == null)
+            dB.echoError("No selected NPC!");
+        else {
+            TriggerTrait trait = npc.getTrait(TriggerTrait.class);
+            trait.report();
+        }
     }
 
     @Command(
