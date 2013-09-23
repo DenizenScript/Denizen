@@ -1680,6 +1680,9 @@ public class WorldScriptHelper implements Listener {
     public void entityExplode(EntityExplodeEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
+        if (event.getEntity() == null) {
+            return; // Fix for other plugins doing weird stuff.
+        }
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
 
