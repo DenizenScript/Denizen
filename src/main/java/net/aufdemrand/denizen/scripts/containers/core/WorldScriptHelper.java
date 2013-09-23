@@ -1087,6 +1087,9 @@ public class WorldScriptHelper implements Listener {
 
         Player player = event.getPlayer();
         Block block = event.getBlock();
+        if (block == null || !(block.getState() instanceof Sign)) {
+            return; // Fix error induced by dark magic.
+        }
         Sign sign = (Sign) block.getState();
         dMaterial material = new dMaterial(block.getType());
 
