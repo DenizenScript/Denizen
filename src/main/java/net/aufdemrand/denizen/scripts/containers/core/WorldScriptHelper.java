@@ -2436,8 +2436,14 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        else if (DyeColor.valueOf(determination) != null)
-            event.setColor(DyeColor.valueOf(determination));
+        else if (determination.equals(determination.toUpperCase())) {
+            try {
+                event.setColor(DyeColor.valueOf(determination));
+            }
+            catch (IllegalArgumentException e) {
+                dB.echoError("Unknown dye color " + determination);
+            }
+        }
     }
 
     // <--[event]
@@ -3066,7 +3072,7 @@ public class WorldScriptHelper implements Listener {
     // @Code
     // # +--------------------
     // # | On Command Event tutorial
-    //
+    // # |
     // # | Denizen contains the ability to run script entries in the form
     // # | of a Bukkit /command. Here's an example script that shows basic usage.
     //

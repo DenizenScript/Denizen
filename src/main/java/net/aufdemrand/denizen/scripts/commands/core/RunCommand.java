@@ -31,10 +31,10 @@ public class RunCommand extends AbstractCommand {
     // @Code
     // # +--------------------
     // # | Using Local Scripts tutorial
-    //
+    // # |
     // # | Since Script Containers are stored inside Denizen on a global level,
     // # | the problem of duplicate container names can become a problem.
-    //
+    // # |
     // # | Using local scripts can be a good way to avoid situations by cutting
     // # | down on the amount of total script containers needed by allowing task utility
     // # | scripts to be included in other containers, or grouped together in a single

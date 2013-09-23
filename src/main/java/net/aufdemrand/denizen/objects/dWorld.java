@@ -228,7 +228,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.sea_level>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the level of the sea
         // -->
@@ -298,7 +298,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.ambient_spawn_limit>
-        // @returns Element(integer)
+        // @returns Element(Number)
         // @description
         // Returns the number of ambient mobs that can spawn in a chunk in this world
         // -->
@@ -308,7 +308,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.animal_spawn_limit>
-        // @returns Element(integer)
+        // @returns Element(Number)
         // @description
         // Returns the number of animals that can spawn in a chunk in this world.
         // -->
@@ -338,7 +338,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.max_height>
-        // @returns Element(integer)
+        // @returns Element(Number)
         // @description
         // Returns the maximum height of this world.
         // -->
@@ -348,7 +348,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.monster_spawn_limit>
-        // @returns Element(integer)
+        // @returns Element(Number)
         // @description
         // Returns the number of monsters that can spawn in a chunk in this world.
         // -->
@@ -358,7 +358,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.ticks_per_animal_spawn>
-        // @returns Element(long)
+        // @returns Element(Number)
         // @description
         // Returns the world's ticks per animal spawn value
         // -->
@@ -368,7 +368,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.ticks_per_monster_spawn>
-        // @returns Element(long)
+        // @returns Element(Number)
         // @description
         // Returns the world's ticks per monster spawn value
         // -->
@@ -378,7 +378,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.water_animal_spawn_limit>
-        // @returns Element(integer)
+        // @returns Element(Number)
         // @description
         // Returns the number of water animals that can spawn in a chunk in this world
         // -->
@@ -413,12 +413,24 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.time>
-        // @returns Element(long)
+        // @returns Element(Number)
         // @description
         // returns the current time in ticks
         // -->
         if (attribute.startsWith("time"))
             return new Element(getWorld().getTime())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <w@world.moon_phase>
+        // @returns Element(Number)
+        // @description
+        // returns the current phase of the moon, as
+        // an integer from 1 to 8
+        // -->
+        if (attribute.startsWith("moon_phase")
+                || attribute.startsWith("moonphase"))
+            return new Element((int)((getWorld().getFullTime() / 24000) % 8) + 1)
                     .getAttribute(attribute.fulfill(1));
 
 
