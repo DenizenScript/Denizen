@@ -31,6 +31,7 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.TraitInfo;
 
 import org.bukkit.Bukkit;
@@ -328,35 +329,23 @@ public class Denizen extends JavaPlugin {
         if (citizens == null)
             citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
 
-        // /EX command for console
-        if (!(sender instanceof Player) &&
-                cmdName.equalsIgnoreCase("ex")) {
+        if (cmdName.equalsIgnoreCase("ex")) {
             List<String> entries = new ArrayList<String>();
             String entry = "";
             for (String arg : args)
                 entry = entry + arg + " ";
 
-            entries.add(entry);
-            InstantQueue queue = InstantQueue.getQueue(null);
-            List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                    null, null);
-
-            queue.addEntries(scriptEntries);
-            queue.start();
-            return true;
-
-        } else if ((sender instanceof Player) &&
-                cmdName.equalsIgnoreCase("ex")) {
-            List<String> entries = new ArrayList<String>();
-            String entry = "";
-            for (String arg : args)
-                entry = entry + arg + " ";
+            if (entry.length() < 2) {
+                sender.sendMessage("/ex <dCommand> (arguments)");
+                return true;
+            }
 
             entries.add(entry);
             InstantQueue queue = InstantQueue.getQueue(null);
+            NPC npc = citizens.getNPCSelector().getSelected(sender);
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                    dPlayer.mirrorBukkitPlayer((Player) sender),
-                    dPlayer.mirrorBukkitPlayer((Player) sender).getSelectedNPC());
+                    (sender instanceof Player)?dPlayer.mirrorBukkitPlayer((Player) sender):null,
+                    npc != null ? new dNPC(npc) : null);
 
             queue.addEntries(scriptEntries);
             queue.start();
