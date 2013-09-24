@@ -188,8 +188,10 @@ public class RunCommand extends AbstractCommand {
             try { definition_names = script.getContainer().getString("definitions").split("\\|"); }
             catch (Exception e) { }
             for (String definition : definitions) {
-                queue.addDefinition(definition_names != null && definition_names.length >= x ?
-                        definition_names[x - 1].trim() : String.valueOf(x), definition);
+                String name = definition_names != null && definition_names.length >= x ?
+                        definition_names[x - 1].trim() : String.valueOf(x);
+                queue.addDefinition(name, definition);
+                dB.echoDebug("Adding definition " + name + " as " + definition);
                 x++;
             }
         }
