@@ -45,7 +45,12 @@ public class ForEachCommand extends BracedCommand {
 
         // Get objects
         dList list = (dList) scriptEntry.getObject("list");
-        ArrayList<ScriptEntry> bracedSections = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("FOREACH");
+        ArrayList<ScriptEntry> bracedCommands = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("FOREACH");
+        if (bracedCommands == null || bracedCommands.isEmpty()) {
+            dB.echoError("Empty braces!");
+            return;
+        }
+
 
         // Report to dB
         dB.report(getName(), list.debug() );
@@ -54,8 +59,8 @@ public class ForEachCommand extends BracedCommand {
         for (String value : list) {
             if (scriptEntry.getResidingQueue().getWasCleared())
                 return;
-            ArrayList<ScriptEntry> newEntries = (ArrayList<ScriptEntry>) new ArrayList<ScriptEntry>();
-            for (ScriptEntry entry : bracedSections) {
+            ArrayList<ScriptEntry> newEntries = new ArrayList<ScriptEntry>();
+            for (ScriptEntry entry : bracedCommands) {
                 try {
                     ScriptEntry toAdd = entry.clone();
                     toAdd.getObjects().clear();

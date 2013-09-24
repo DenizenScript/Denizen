@@ -43,6 +43,10 @@ public class RepeatCommand extends BracedCommand {
         // Get objects
         Element qty = scriptEntry.getElement("qty");
         ArrayList<ScriptEntry> bracedCommands = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("REPEAT");
+        if (bracedCommands == null || bracedCommands.isEmpty()) {
+            dB.echoError("Empty braces!");
+            return;
+        }
 
         // Report to dB
         dB.report(getName(), qty.debug());
@@ -51,7 +55,7 @@ public class RepeatCommand extends BracedCommand {
         for (int incr = 0; incr < qty.asInt(); incr++) {
             if (scriptEntry.getResidingQueue().getWasCleared())
                 return;
-            ArrayList<ScriptEntry> newEntries = (ArrayList<ScriptEntry>) new ArrayList<ScriptEntry>();
+            ArrayList<ScriptEntry> newEntries = new ArrayList<ScriptEntry>();
             for (ScriptEntry entry: bracedCommands) {
                 try {
                     ScriptEntry toAdd = entry.clone();
