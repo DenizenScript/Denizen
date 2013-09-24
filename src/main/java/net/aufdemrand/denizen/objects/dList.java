@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.ChatColor;
@@ -359,15 +360,33 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.random>
+        // @attribute <li@list.random[#]>
         // @returns Element
         // @description
         // gets a random item in the list and returns it as an Element.
+        // Optionally, add [#] to get a list of multiple randomly chosen elements.
         // -->
         if (attribute.startsWith("random")) {
-            if (!this.isEmpty())
-                return new Element(this.get(new Random().nextInt(this.size())))
-                    .getAttribute(attribute.fulfill(1));
+            if (!this.isEmpty()) {
+                if (attribute.hasContext(1)) {
+                    int count = Integer.valueOf(attribute.getContext(1));
+                    int times = 0;
+                    ArrayList<String> available = new ArrayList<String>();
+                    available.addAll(this);
+                    dList toReturn = new dList();
+                    while (!available.isEmpty() && times < count) {
+                        int random = Utilities.getRandom().nextInt(available.size());
+                        toReturn.add(available.get(random));
+                        available.remove(random);
+                        times++;
+                    }
+                    return toReturn.getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return new Element(this.get(Utilities.getRandom().nextInt(this.size())))
+                        .getAttribute(attribute.fulfill(1));
+                }
+            }
         }
 
         // FLAG Specific Attributes
