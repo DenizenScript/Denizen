@@ -2623,7 +2623,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a player drags in an inventory.
     // @Context
     // <context.item> returns the dItem the player has dragged.
-    // <context.item> returns the dInventory.
+    // <context.inventory> returns the dInventory.
     //
     // @Determine
     // "CANCELLED" to stop the player from dragging.
