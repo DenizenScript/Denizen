@@ -636,38 +636,6 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block moves
-    // <block> moves
-    //
-    // @Triggers when a block moves.
-    // @Context
-    // <context.location> returns the dLocation the block moved to.
-    // <context.material> returns the dMaterial of the block that moved.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from being moved.
-    //
-    // -->
-    @EventHandler
-    public void blockPhysics(BlockPhysicsEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-
-        String determination = doEvents(Arrays.asList
-                ("block moves",
-                 material.identify() + " moves"),
-                 null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // piston extends
     // <block> extends
     //
