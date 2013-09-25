@@ -108,7 +108,8 @@ public abstract class BracedCommand extends AbstractCommand {
                             if (hyperdebug) dB.echoError(e.getMessage());
                         }
                     }
-                    bracedSections.put(bracesName, bracesSection);
+                    if (hyperdebug) dB.echoDebug("Adding section " + bracesName);
+                    bracedSections.put(bracesName.toUpperCase(), bracesSection);
                     bracesName = "";
                 }
             }
