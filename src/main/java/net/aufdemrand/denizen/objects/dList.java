@@ -237,6 +237,28 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.formatted>
+        // @returns Element
+        // @description
+        // returns formatted list useful for display in quests, messages, etc.
+        // -->
+        if (attribute.startsWith("formatted")) {
+            if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
+            StringBuilder dScriptArg = new StringBuilder();
+
+            for (int n = 0; n < this.size(); n++) {
+
+                dScriptArg.append(this.get(n).replaceAll("\\w\\w?@", ""));
+
+                if (n == this.size() - 2) dScriptArg.append(" and ");
+                else                      dScriptArg.append(", ");
+            }
+
+            return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.size>
         // @returns Element(Number)
         // @description
