@@ -69,7 +69,7 @@ public class TeleportCommand extends AbstractCommand {
         for (dEntity entity : entities) {
             // Call a Bukkit event for compatibility with "on entity teleports"
             // world event and other plugins
-            Bukkit.getPluginManager().callEvent(new EntityTeleportEvent(entity.getBukkitEntity(), entity.getLocation(), location));
+            if (entity.isSpawned()) Bukkit.getPluginManager().callEvent(new EntityTeleportEvent(entity.getBukkitEntity(), entity.getLocation(), location));
             entity.spawnAt(location);
         }
     }

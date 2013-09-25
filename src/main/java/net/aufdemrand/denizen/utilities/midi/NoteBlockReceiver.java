@@ -5,12 +5,14 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.bukkit.Location;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import com.google.common.collect.Maps;
 
@@ -23,18 +25,18 @@ public class NoteBlockReceiver implements Receiver
 {
     private static final float VOLUME_RANGE = 10.0f;
 
-    private final Set<Player> listeners;
-    private final Location location;
+    private final List<dEntity> listeners;
+    private dLocation location;
     private final Map<Integer, Integer> channelPatches;
 
-    public NoteBlockReceiver(Set<Player> listeners) throws InvalidMidiDataException, IOException
+    public NoteBlockReceiver(List<dEntity> entities) throws InvalidMidiDataException, IOException
     {
-        this.listeners = listeners;
+        this.listeners = entities;
         this.location = null;
         this.channelPatches = Maps.newHashMap();
     }
 
-    public NoteBlockReceiver(Location location) throws InvalidMidiDataException, IOException
+    public NoteBlockReceiver(dLocation location) throws InvalidMidiDataException, IOException
     {
         this.listeners = null;
         this.location = location;
@@ -90,16 +92,29 @@ public class NoteBlockReceiver implements Receiver
 
             location.getWorld().playSound(location, instrument, volume, pitch);
         }
-        else {
-            for (Player player : listeners)
-                player.playSound(player.getLocation(), instrument, volume, pitch);
+        else if (listeners != null) {
+            for (dEntity entity : listeners) {
+                if (entity.isSpawned()) {
+                    if (entity.isPlayer()) {
+                        entity.getPlayer().playSound(entity.getLocation(), instrument, volume, pitch);
+                    }
+                    else {
+                        entity.getWorld().playSound(entity.getLocation(), instrument, volume, pitch);
+                    }
+                }
+                else {
+                    dB.echoError("Cannot play midi for unspawned entity " + entity);
+                    this.close();
+                }
+            }
         }
     }
 
     @Override
     public void close()
     {
-        listeners.clear();
+        if (listeners != null) listeners.clear();
+        if (location != null) location = null;
         channelPatches.clear();
     }
 }

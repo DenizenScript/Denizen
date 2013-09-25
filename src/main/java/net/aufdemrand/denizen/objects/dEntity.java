@@ -573,6 +573,20 @@ public class dEntity implements dObject {
         }
     }
 
+    /**
+     * Gets the world of this entity
+     *
+     * @return  The entity's world
+     */
+
+    public World getWorld() {
+
+        if (!isGeneric()) {
+            return entity.getWorld();
+        }
+        return null;
+    }
+
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
         if (entity != null && isUnique()) entity.teleport(location);
