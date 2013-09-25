@@ -1,71 +1,61 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 
 /**
- * Sets an NPC or player's head to that of a specific player's skin.
+ * Makes players or NPCs wear a specific player's head.
  *
  * @author David Cernat
  */
 
 public class HeadCommand extends AbstractCommand {
 
-    private enum TargetType { NPC, PLAYER }
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        TargetType targetType = TargetType.NPC;
-        Integer duration = null;
-        String skin = null;
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        for (String arg : scriptEntry.getArguments()) {
-            // If argument is a duration
-            if (aH.matchesDuration(arg)) {
-                duration = aH.getIntegerFrom(arg);
-                dB.echoDebug("...head duration set to '%s'.", arg);
+            if (!scriptEntry.hasObject("entities")
+                && arg.matchesArgumentList(dEntity.class)) {
+
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
-            else if (aH.matchesArg("PLAYER", arg)) {
-                targetType = TargetType.PLAYER;
-                dB.echoDebug("...will affect the player!");
+            else if (!scriptEntry.hasObject("skin")
+                     && (arg.matchesPrefix("skin, s"))) {
+
+               scriptEntry.addObject("skin", arg.asElement());
             }
-
-            else if (aH.matchesValueArg("skin", arg, ArgumentType.String)) {
-                skin = aH.getStringFrom(arg);
-                dB.echoDebug("...will have " + skin + "'s head");
-
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
-        // If TARGET is NPC/PLAYER and no NPC/PLAYER available, throw exception.
-        if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
-        else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
-
-        scriptEntry.addObject("target", targetType)
-                   .addObject("skin", skin);
+        // Use player or NPC as default entity
+        scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
+                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        TargetType target = (TargetType) scriptEntry.getObject("target");
-        String skin = (String) scriptEntry.getObject("skin");
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        String skin = ((Element) scriptEntry.getObject("skin")).asString().replaceAll("[pP]@", "");
 
         // Create head item with chosen skin
         ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
@@ -73,18 +63,23 @@ public class HeadCommand extends AbstractCommand {
         ((SkullMeta) itemMeta).setOwner(skin);
         item.setItemMeta(itemMeta);
 
-        if (target.name().equals("NPC")) {
-            NPC npc = scriptEntry.getNPC().getCitizen();
+        // Report to dB
+        dB.report(getName(), aH.debugObj("entities", entities.toString()) +
+                             aH.debugObj("skin", "p@" + skin));
 
-            if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);
-            Equipment trait = npc.getTrait(Equipment.class);
-            trait.set(1, item);
+        for (dEntity entity : entities) {
+            if (entity.isNPC()) {
+                if (!entity.getNPC().hasTrait(Equipment.class))
+                    entity.getNPC().addTrait(Equipment.class);
+                Equipment trait = entity.getNPC().getTrait(Equipment.class);
+                trait.set(1, item);
+            }
+            else if (entity.isPlayer()) {
+                entity.getPlayer().getInventory().setHelmet(item);
+            }
+            else {
+                dB.echoError(getName(), "No players or NPCs have been specified!");
+            }
         }
-        else {
-            Player player = scriptEntry.getPlayer().getPlayerEntity();
-            player.getInventory().setHelmet(item);
-        }
-
     }
-
 }

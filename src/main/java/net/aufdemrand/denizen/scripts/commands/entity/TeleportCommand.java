@@ -48,7 +48,7 @@ public class TeleportCommand extends AbstractCommand {
             }
         }
 
-        // Check to make sure required arguments have been filled
+        // Use player or NPC as default entity
         scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
                                               (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
 
