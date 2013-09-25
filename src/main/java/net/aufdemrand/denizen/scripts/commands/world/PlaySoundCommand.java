@@ -59,16 +59,17 @@ public class PlaySoundCommand extends AbstractCommand {
                 }
             }
 
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+
         }
 
         if (!scriptEntry.hasObject("sound"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SOUND");
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
-        if (!scriptEntry.hasObject("volume"))
-            scriptEntry.addObject("volume", new Element(1));
-        if (!scriptEntry.hasObject("pitch"))
-            scriptEntry.addObject("pitch", new Element(1));
+
+        scriptEntry.defaultObject("volume", new Element(1));
+        scriptEntry.defaultObject("pitch", new Element(1));
 
     }
 

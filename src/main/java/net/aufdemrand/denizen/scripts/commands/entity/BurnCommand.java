@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -37,15 +38,16 @@ public class BurnCommand extends AbstractCommand {
 
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
-        // Check to make sure required arguments have been filled
-
-        if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+        // Use the NPC or the Player as the default entity
+        scriptEntry.defaultObject("entities",
+                (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
+                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
 
         // Use default duration if one is not specified
-
         scriptEntry.defaultObject("duration", Duration.valueOf("5s"));
     }
 

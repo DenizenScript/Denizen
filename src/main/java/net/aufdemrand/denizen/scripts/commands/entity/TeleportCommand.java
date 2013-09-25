@@ -46,6 +46,8 @@ public class TeleportCommand extends AbstractCommand {
                 // NPC arg for compatibility with old scripts
                 scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use player or NPC as default entity

@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *
  * Set the time in the world to a number of ticks.
  *
+ * @author David Cernat
  */
 public class TimeCommand extends AbstractCommand {
 
@@ -25,22 +26,24 @@ public class TimeCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
-                    && arg.matchesEnum(Type.values())) {
-                // add type
+                && arg.matchesEnum(Type.values())) {
+
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
             }
 
             else if (!scriptEntry.hasObject("value")
-                    && arg.matchesArgumentType(Duration.class)) {
-                // add value
+                     && arg.matchesArgumentType(Duration.class)) {
+
                 scriptEntry.addObject("value", arg.asType(Duration.class));
             }
 
             else if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                // add world
+                     && arg.matchesArgumentType(dWorld.class)) {
+
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
+
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check to make sure required arguments have been filled

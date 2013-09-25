@@ -68,15 +68,15 @@ public class ModifyBlockCommand extends AbstractCommand{
                     && arg.matchesPrefix("height, h")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("height", new Element(arg.getValue()));
-
             }
 
             else if (!scriptEntry.hasObject("depth")
                     && arg.matchesPrefix("depth, d")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("depth", new Element(arg.getValue()));
-
             }
+
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         if (!scriptEntry.hasObject("material"))

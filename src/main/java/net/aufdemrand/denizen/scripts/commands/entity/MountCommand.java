@@ -48,6 +48,8 @@ public class MountCommand extends AbstractCommand {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use the NPC or player's locations as the location if one is not specified

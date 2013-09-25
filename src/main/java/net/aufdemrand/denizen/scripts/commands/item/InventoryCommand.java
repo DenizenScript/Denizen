@@ -60,6 +60,8 @@ public class InventoryCommand extends AbstractCommand {
                 else if (arg.matchesArgumentType(dInventory.class))
                     scriptEntry.addObject("destinationInventory", arg.asType(dInventory.class));
             }
+
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check to make sure required arguments have been filled

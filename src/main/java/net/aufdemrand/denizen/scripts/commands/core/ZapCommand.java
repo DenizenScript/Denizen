@@ -78,6 +78,8 @@ public class ZapCommand extends AbstractCommand implements Listener{
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Add default script if none was specified.

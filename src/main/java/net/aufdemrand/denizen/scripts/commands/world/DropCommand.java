@@ -6,6 +6,8 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 
@@ -75,8 +77,7 @@ public class DropCommand extends AbstractCommand {
                 // Quantity arg
                 scriptEntry.addObject("qty", arg.asElement().setPrefix("qty"));
 
-
-            else dB.echoError("Unhandled argument: '" + arg.raw_value + "'");
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Make sure all required arguments are met

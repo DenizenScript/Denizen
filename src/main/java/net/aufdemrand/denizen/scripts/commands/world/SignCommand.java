@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dList;
@@ -10,6 +11,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -33,22 +35,24 @@ public class SignCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values()))
-                // add Type
+
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
 
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
-                // Location arg
+
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
 
             else if (!scriptEntry.hasObject("text")
                     && arg.matchesArgumentType(dList.class))
-                // add text
+
                 scriptEntry.addObject("text", arg.asType(dList.class));
 
             else if (!scriptEntry.hasObject("direction")
                     && arg.matchesPrefix("direction, dir"))
                 scriptEntry.addObject("direction", arg.asElement());
+
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check to make sure required arguments have been filled
@@ -57,9 +61,7 @@ public class SignCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a Sign location!");
 
         // Default to SIGN_POST type
-
-        if (!scriptEntry.hasObject("type"))
-            scriptEntry.addObject("type", Type.SIGN_POST);
+        scriptEntry.defaultObject("type", Type.SIGN_POST);
     }
 
     @SuppressWarnings("unchecked")

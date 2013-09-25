@@ -48,7 +48,7 @@ public class NarrateCommand extends AbstractCommand {
                 scriptEntry.addObject("targets", ((dList)arg.asType(dList.class)).filter(dPlayer.class));
             }
 
-            // Use raw_value as to not accidentely strip a value before any :'s.
+            // Use raw_value as to not accidentally strip a value before any :'s.
             else {
                 if (!scriptEntry.hasObject("text"))
                     scriptEntry.addObject("text", new Element(arg.raw_value));

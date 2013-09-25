@@ -45,19 +45,13 @@ public class HeadCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dEntity.class))
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
 
-            else
-                dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use the NPC or the Player as the default entity
-        if (!scriptEntry.hasObject("entities")) {
-            if (scriptEntry.hasNPC())
-                scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
-            else if (scriptEntry.hasPlayer())
-                scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
-            else
-                throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "ENTITIES");
-        }
+        scriptEntry.defaultObject("entities",
+                (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
+                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
 
         if (!scriptEntry.hasObject("skin"))
             throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "SKIN");
@@ -73,7 +67,7 @@ public class HeadCommand extends AbstractCommand {
         // Report to dB
         dB.report(getName(),
                 aH.debugObj("entities", entities.toString()) +
-                        skin.debug());
+                skin.debug());
 
         // Create head item with chosen skin
         ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
@@ -92,7 +86,7 @@ public class HeadCommand extends AbstractCommand {
                 entity.getPlayer().getInventory().setHelmet(item);
             }
             else {
-                dB.echoError("No players or NPCs have been specified!");
+                dB.report(getName(), entity.debug() + " is not a player or an NPC!");
             }
         }
     }

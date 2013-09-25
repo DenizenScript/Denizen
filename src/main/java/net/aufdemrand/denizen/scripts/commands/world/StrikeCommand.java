@@ -26,6 +26,8 @@ public class StrikeCommand extends AbstractCommand {
             else if (arg.matches("no_damage") || arg.matches("nodamage"))
                 scriptEntry.addObject("damage", Element.FALSE);
 
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+
         }
 
         // Check required args

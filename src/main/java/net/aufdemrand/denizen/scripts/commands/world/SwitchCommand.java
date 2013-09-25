@@ -54,25 +54,27 @@ public class SwitchCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException  {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
             if (!scriptEntry.hasObject("location") &&
                     arg.matchesArgumentType(dLocation.class))
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+
             else if (!scriptEntry.hasObject("duration") &&
                     arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+
             else if (!scriptEntry.hasObject("state") &&
                     arg.matchesEnum(SwitchState.values()))
                 scriptEntry.addObject("switchstate", new Element(arg.getValue().toUpperCase()));
-            else
-                dB.echoError("Unknown argument " + arg.raw_value);
+
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION, "location");
-        if (!scriptEntry.hasObject("duration"))
-            scriptEntry.addObject("duration", new Duration(0));
-        if (!scriptEntry.hasObject("switchstate"))
-            scriptEntry.addObject("switchstate", new Element("TOGGLE"));
+
+        scriptEntry.defaultObject("duration", new Duration(0));
+        scriptEntry.defaultObject("switchstate", new Element("TOGGLE"));
     }
 
     @Override

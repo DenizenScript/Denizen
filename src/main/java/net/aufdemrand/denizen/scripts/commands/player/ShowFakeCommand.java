@@ -37,6 +37,8 @@ public class ShowFakeCommand extends AbstractCommand {
 
             else if (arg.matchesArgumentType(dMaterial.class))
                 scriptEntry.addObject("material", arg.asType(dMaterial.class));
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         if (locations.isEmpty())

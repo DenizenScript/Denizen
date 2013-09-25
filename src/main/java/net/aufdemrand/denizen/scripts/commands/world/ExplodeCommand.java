@@ -27,14 +27,14 @@ public class ExplodeCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
-                // Location arg
+
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("power")
                     && arg.matchesPrimitive(aH.PrimitiveType.Float)
                     && arg.matchesPrefix("power, p")) {
-                // Add value
+
                 scriptEntry.addObject("power", arg.asElement());
             }
 
@@ -49,10 +49,11 @@ public class ExplodeCommand extends AbstractCommand {
 
                 scriptEntry.addObject("fire", "");
             }
+
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use default values if necessary
-
         scriptEntry.defaultObject("power", new Element(1.0));
         scriptEntry.defaultObject("location",
                 scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,

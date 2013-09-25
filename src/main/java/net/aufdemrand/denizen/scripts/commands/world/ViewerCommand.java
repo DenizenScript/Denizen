@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -72,6 +73,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
                     && arg.matchesPrefix("direction, dir"))
                 scriptEntry.addObject("direction", arg.asElement());
 
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
 
@@ -100,7 +102,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         Action action = (Action) scriptEntry.getObject("action");
         Type type = scriptEntry.hasObject("type") ? (Type) scriptEntry.getObject("type") : null;
         Display display = scriptEntry.hasObject("display") ? (Display) scriptEntry.getObject("display") : null;
-        final String id = (String) scriptEntry.getObject("id").toString();
+        final String id = scriptEntry.getObject("id").toString();
         if (viewers.containsKey(id)) scriptEntry.setPlayer(dPlayer.valueOf(viewers.get(id).getContent().split("; ")[1]));
         dLocation location = scriptEntry.hasObject("location") ? (dLocation) scriptEntry.getObject("location") : null;
         String content = scriptEntry.hasObject("display") ? display.toString() + "; " + scriptEntry.getPlayer().getName() : null;

@@ -68,8 +68,7 @@ public class AnchorCommand extends AbstractCommand {
                 // add location (for ADD)
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-
-            else dB.echoError("Unhandled argument: '" + arg.raw_value + '\'');
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
 

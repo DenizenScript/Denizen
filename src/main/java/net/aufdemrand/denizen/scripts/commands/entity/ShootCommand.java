@@ -82,8 +82,7 @@ public class ShootCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
-            else
-                dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use the NPC or player's locations as the origin if one is not specified

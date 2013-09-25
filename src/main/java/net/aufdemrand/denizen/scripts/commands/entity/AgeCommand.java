@@ -54,6 +54,8 @@ public class AgeCommand extends AbstractCommand {
 
                 scriptEntry.addObject("lock", "");
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check to make sure required arguments have been filled

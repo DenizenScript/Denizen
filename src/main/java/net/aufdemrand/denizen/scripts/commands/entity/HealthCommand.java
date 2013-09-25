@@ -25,12 +25,16 @@ public class HealthCommand extends AbstractCommand  {
                     throw new InvalidArgumentsException(dB.Messages.ERROR_NO_PLAYER);
                 scriptEntry.addObject("target", arg.asElement());
             }
-            if (!scriptEntry.hasObject("qty")
+
+            else if (!scriptEntry.hasObject("qty")
                   && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                   scriptEntry.addObject("qty", arg.asElement());
-            if (!scriptEntry.hasObject("action")
+
+            else if (!scriptEntry.hasObject("action")
                 && arg.matchesPrefix("state"))
                     scriptEntry.addObject("action", arg.asElement());
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
 

@@ -42,6 +42,8 @@ public class HealCommand extends AbstractCommand {
                 // Entity arg
                 scriptEntry.addObject("entities", Arrays.asList(arg.asType(dEntity.class)));
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         if (!scriptEntry.hasObject("amount"))

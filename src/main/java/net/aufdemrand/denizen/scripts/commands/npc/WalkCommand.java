@@ -40,6 +40,7 @@ public class WalkCommand extends AbstractCommand {
                     && arg.matches("auto_range"))
                 scriptEntry.addObject("auto_range", Element.TRUE);
 
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
 

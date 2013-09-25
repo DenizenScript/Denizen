@@ -35,20 +35,20 @@ public class SpawnCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("entities")
                 && arg.matchesArgumentList(dEntity.class)) {
-                // Entity arg
+
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
             else if (!scriptEntry.hasObject("location")
                      && arg.matchesArgumentType(dLocation.class)) {
-                // Location arg
+
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("target")
                      && arg.matchesArgumentType(dEntity.class)
                      && arg.matchesPrefix("target")) {
-                // Entity arg
+
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
 
@@ -56,16 +56,16 @@ public class SpawnCommand extends AbstractCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("spread", arg.asElement());
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use the NPC or player's locations as the location if one is not specified
-
         scriptEntry.defaultObject("location",
                 scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
 
         // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
 

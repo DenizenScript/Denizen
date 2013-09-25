@@ -20,17 +20,15 @@ public class CompassCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
              if (!scriptEntry.hasObject("location")
-                  && arg.matchesArgumentType(dLocation.class))
-                  scriptEntry.addObject("location", arg.asType(dLocation.class));
+                 && arg.matchesArgumentType(dLocation.class))
+                 scriptEntry.addObject("location", arg.asType(dLocation.class));
 
+             else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
-
         // Check for required information
-
          if (!scriptEntry.hasObject("location"))
               throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "LOCATION");
-
     }
 
 

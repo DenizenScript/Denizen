@@ -6,6 +6,8 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -28,11 +30,10 @@ public class CreateWorldCommand extends AbstractCommand /* implements dExternal 
             else if (!scriptEntry.hasObject("world_name"))
                 scriptEntry.addObject("world_name", arg.asElement());
 
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
-
         // Check for required information
-
         if (!scriptEntry.hasObject("world_name"))
             throw new InvalidArgumentsException("Must specify a world name.");
     }
