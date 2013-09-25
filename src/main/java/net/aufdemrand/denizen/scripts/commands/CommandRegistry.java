@@ -926,8 +926,8 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Head
-        // @Usage head [<entity>|...] [skin:<player>]
-        // @Required 2
+        // @Usage head (<entity>|...) [skin:<player>]
+        // @Required 1
         // @Stable Todo
         // @Short Makes players or NPCs wear a specific player's head.
         // @Author David Cernat
@@ -941,7 +941,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(HeadCommand.class,
-                "HEAD", "head [<entity>|...] [skin:<player>]", 2);
+                "HEAD", "head (<entity>|...) [skin:<player>]", 1);
 
         // <--[command]
         // @Name Heal

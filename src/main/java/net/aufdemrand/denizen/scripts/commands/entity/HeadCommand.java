@@ -32,22 +32,35 @@ public class HeadCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("entities")
-                && arg.matchesArgumentList(dEntity.class)) {
+            if (!scriptEntry.hasObject("skin")
+                    && (arg.matchesPrefix("skin, s")))
+                scriptEntry.addObject("skin", arg.asElement());
 
+            else if (!scriptEntry.hasObject("entities")
+                    && arg.matches("PLAYER")
+                    && scriptEntry.hasPlayer())
+                scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
+
+            else if (!scriptEntry.hasObject("entities")
+                    && arg.matchesArgumentList(dEntity.class))
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
-            }
 
-            else if (!scriptEntry.hasObject("skin")
-                     && (arg.matchesPrefix("skin, s"))) {
-
-               scriptEntry.addObject("skin", arg.asElement());
-            }
+            else
+                dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
-        // Use player or NPC as default entity
-        scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
-                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
+        // Use the NPC or the Player as the default entity
+        if (!scriptEntry.hasObject("entities")) {
+            if (scriptEntry.hasNPC())
+                scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
+            else if (scriptEntry.hasPlayer())
+                scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
+            else
+                throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "ENTITIES");
+        }
+
+        if (!scriptEntry.hasObject("skin"))
+            throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "SKIN");
     }
 
     @SuppressWarnings("unchecked")
@@ -55,17 +68,18 @@ public class HeadCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        String skin = ((Element) scriptEntry.getObject("skin")).asString().replaceAll("[pP]@", "");
+        Element skin = scriptEntry.getElement("skin");
+
+        // Report to dB
+        dB.report(getName(),
+                aH.debugObj("entities", entities.toString()) +
+                        skin.debug());
 
         // Create head item with chosen skin
         ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
         ItemMeta itemMeta = item.getItemMeta();
-        ((SkullMeta) itemMeta).setOwner(skin);
+        ((SkullMeta) itemMeta).setOwner(skin.asString().replaceAll("[pP]@", ""));
         item.setItemMeta(itemMeta);
-
-        // Report to dB
-        dB.report(getName(), aH.debugObj("entities", entities.toString()) +
-                             aH.debugObj("skin", "p@" + skin));
 
         for (dEntity entity : entities) {
             if (entity.isNPC()) {
@@ -78,7 +92,7 @@ public class HeadCommand extends AbstractCommand {
                 entity.getPlayer().getInventory().setHelmet(item);
             }
             else {
-                dB.echoError(getName(), "No players or NPCs have been specified!");
+                dB.echoError("No players or NPCs have been specified!");
             }
         }
     }
