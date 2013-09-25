@@ -436,13 +436,17 @@ public class Element implements dObject {
         // @attribute <element.after[<string>]>
         // @returns Element
         // @description
-        // Returns the portion of an element after a specified string. ie. <el@hello world.after[hello ]> returns 'world'.
+        // Returns the portion of an element after a specified string. ie. <el@helloWorld.after[hello]> returns 'World'.
         // -->
         // Get the substring after a certain text
         if (attribute.startsWith("after")) {
             String delimiter = attribute.getContext(1);
-            return new Element(element.substring
+            if (element.contains(delimiter))
+                return new Element(element.substring
                     (element.indexOf(delimiter) + delimiter.length()))
+                    .getAttribute(attribute.fulfill(1));
+            else
+                return new Element(element)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -455,9 +459,13 @@ public class Element implements dObject {
         // Get the substring before a certain text
         if (attribute.startsWith("before")) {
             String delimiter = attribute.getContext(1);
-            return new Element(element.substring
+            if (element.contains(delimiter))
+                return new Element(element.substring
                     (0, element.indexOf(delimiter)))
                     .getAttribute(attribute.fulfill(1));
+            else
+                return new Element(element)
+                        .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
