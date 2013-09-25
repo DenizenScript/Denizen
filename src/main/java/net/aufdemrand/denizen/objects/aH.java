@@ -202,7 +202,7 @@ public class aH {
         // Check if this argument matches a dList of a certain dObject
         public boolean matchesArgumentList(Class<? extends dObject> dClass) {
 
-            dList list = new dList(this.getValue());
+            dList list = new dList(this.getValue().replace("li@", ""));
 
             return list.filter(dClass) != null;
         }
