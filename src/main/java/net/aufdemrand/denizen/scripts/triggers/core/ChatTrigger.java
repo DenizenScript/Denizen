@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerChatEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -120,11 +121,15 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         String replacementText = null;
         String regexId = null;
         String regexMessage = null;
-        Map<String, String> idMap = script.getIdMapFor(ChatTrigger.class, denizenPlayer);
+
+        // Use TreeMap to preserve order of chat triggers
+        TreeMap<String, String> idMap = new TreeMap<String, String>();
+        idMap.putAll(script.getIdMapFor(ChatTrigger.class, denizenPlayer));
 
         if (!idMap.isEmpty()) {
             // Iterate through the different id entries in the step's chat trigger
             for (Map.Entry<String, String> entry : idMap.entrySet()) {
+
                 // Check if the chat trigger specified in the specified id's 'trigger:' key
                 // matches the text the player has said
                 Matcher matcher = triggerPattern.matcher(entry.getValue());
@@ -132,8 +137,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                     if (!script.checkSpecificTriggerScriptRequirementsFor(ChatTrigger.class,
                             denizenPlayer, npc, entry.getKey())) continue;
                     String keyword = TagManager.tag(denizenPlayer, npc, matcher.group().replace("/", ""));
-                    // Check if the trigger is REGEX
-                    if(isKeywordRegex(keyword)) {
+                    // Check if the trigger is REGEX, but only if we don't have a REGEX
+                    // match already (thus using alphabetical priority for triggers)
+                    if(regexId == null && isKeywordRegex(keyword)) {
                         Pattern    pattern = Pattern.compile(keyword.substring(6));
                         Matcher m = pattern.matcher(message);
                         if (m.find()) {
