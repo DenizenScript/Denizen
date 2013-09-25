@@ -319,8 +319,12 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("find")) {
             if (attribute.hasContext(1)) {
-                for (int i = 0;i < size();i++) {
+                for (int i = 0; i < size(); i++) {
                     if (get(i).equalsIgnoreCase(attribute.getContext(1)))
+                        return new Element(i + 1).getAttribute(attribute.fulfill(1));
+                }
+                for (int i = 0; i < size(); i++) {
+                    if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
                         return new Element(i + 1).getAttribute(attribute.fulfill(1));
                 }
                 return new Element(-1).getAttribute(attribute.fulfill(1));
