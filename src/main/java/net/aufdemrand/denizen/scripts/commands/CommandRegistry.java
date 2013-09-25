@@ -68,8 +68,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(AgeCommand.class,
                 "AGE", "age [<entity>|...] (adult/baby/<age>) (lock)", 1);
@@ -123,8 +121,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(AnimateCommand.class,
                 "ANIMATE", "animate [<entity>|...] [animation:<name>]", 1);
@@ -141,8 +137,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(AnimateChestCommand.class,
@@ -161,8 +155,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(AnnounceCommand.class,
                 "ANNOUNCE", "announce [\"<text>\"] (to_ops) (to_flagged:<flag>)", 1);
@@ -179,8 +171,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <n@npc.script>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(AssignmentCommand.class,
@@ -199,8 +189,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(AttackCommand.class,
                 "ATTACK", "attack (cancel) (<entity>|...) (target:<entity>)", 0);
@@ -218,8 +206,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(BreakCommand.class,
                 "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
@@ -236,8 +222,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <e@entity.fire_time>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(BurnCommand.class,
@@ -286,8 +270,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ChatCommand.class,
                 "CHAT", "chat [\"<text>\"] (targets:<entity>|...)", 1);
@@ -305,8 +287,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ChunkLoadCommand.class,
                 "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<location>] (duration:<value>)", 1);
@@ -323,8 +303,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <p@player.compass.target>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(CompassCommand.class,
@@ -365,8 +343,6 @@ public class CommandRegistry implements dRegistry {
         // Use the 'global' argument to indicate the script to be on cooldown for all players.
         // - cooldown global 24h s:s@daily_treasure_offering
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(CooldownCommand.class,
                 "COOLDOWN", "cooldown [<duration>] (global) (s:<script>)", 1);
@@ -385,8 +361,6 @@ public class CommandRegistry implements dRegistry {
         // <l@location.block. * >
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(CopyBlockCommand.class,
                 "COPYBLOCK", "copyblock [location:<location>] [to:<location>]", 1);
@@ -404,8 +378,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <server.list_worlds>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(CreateWorldCommand.class,
@@ -456,8 +428,6 @@ public class CommandRegistry implements dRegistry {
         // - run 'new_task' d:hello|world
         // 'new_task' now has some definitions, %1% and %2%, that contains the contents specified, 'hello' and 'world'.
         //
-        // @Example
-        //
         // -->
         registerCoreMember(DefineCommand.class,
                 "DEFINE", "define [<id>] [<value>]", 2);
@@ -475,8 +445,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(DetermineCommand.class,
@@ -512,7 +480,6 @@ public class CommandRegistry implements dRegistry {
         // - wait 5s
         // - disengage
         //
-        // @Example
         // -->
         registerCoreMember(DisengageCommand.class,
                 "DISENGAGE", "disengage (npc:<npc>)", 0);
@@ -530,8 +497,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(DisplayItemCommand.class,
                 "DISPLAYITEM", "displayitem [<item>] [<location>] (duration:<value>)", 2);
@@ -548,8 +513,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(DropCommand.class,
@@ -599,8 +562,6 @@ public class CommandRegistry implements dRegistry {
         // - take quest_item
         // - flag player finished_quests:->:super_quest
         //
-        // @Example
-        //
         // -->
         registerCoreMember(EngageCommand.class,
                 "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
@@ -617,8 +578,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(EngraveCommand.class,
@@ -637,8 +596,6 @@ public class CommandRegistry implements dRegistry {
         // <e@entity.equipment>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(EquipCommand.class,
                 "EQUIP", "equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
@@ -655,8 +612,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(ExecuteCommand.class,
@@ -678,8 +633,6 @@ public class CommandRegistry implements dRegistry {
         // <p@player.xp.level>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ExperienceCommand.class,
                 "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
@@ -697,8 +650,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ExplodeCommand.class,
                 "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
@@ -715,8 +666,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(FailCommand.class,
@@ -736,8 +685,6 @@ public class CommandRegistry implements dRegistry {
         // <p@player.food_level.formatted>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(FeedCommand.class,
                 "FEED", "feed (amt:<#>) (target:<entity>|...)", 0);
@@ -754,8 +701,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(FinishCommand.class,
@@ -774,8 +719,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(FireworkCommand.class,
                 "FIREWORK", "firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
@@ -792,8 +735,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(FishCommand.class,
@@ -814,8 +755,6 @@ public class CommandRegistry implements dRegistry {
         // <global.flag[<flag>]>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(FlagCommand.class,
                 "FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
@@ -833,8 +772,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(FlyCommand.class,
                 "FLY", "fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)", 1);
@@ -851,8 +788,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(FollowCommand.class,
@@ -878,8 +813,6 @@ public class CommandRegistry implements dRegistry {
         //   - announce "There's something at <%value%.location>!"
         //   }
         //
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ForEachCommand.class,
                 "FOREACH", "foreach [<object>|...] [<commands>]", 2);
@@ -896,8 +829,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <p@player.money>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(GiveCommand.class,
@@ -918,8 +849,6 @@ public class CommandRegistry implements dRegistry {
         // <p@player.in_group[<group>].world>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(GroupCommand.class,
                 "GROUP", "group [add/remove] [<group>] (world:<name>)", 2);
@@ -937,8 +866,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(HeadCommand.class,
                 "HEAD", "head (<entity>|...) [skin:<player>]", 1);
@@ -955,8 +882,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <e@entity.health>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(HealCommand.class,
@@ -976,8 +901,6 @@ public class CommandRegistry implements dRegistry {
         // <e@entity.health.max>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(HealthCommand.class,
                 "HEALTH", "health (target:player/{npc}) [<#>]", 1);
@@ -995,8 +918,6 @@ public class CommandRegistry implements dRegistry {
         // <e@entity.health>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(HurtCommand.class,
                 "HURT", "hurt (<#.#>) (<entity>|...)", 0);
@@ -1013,8 +934,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(IfCommand.class,
@@ -1035,8 +954,6 @@ public class CommandRegistry implements dRegistry {
         // <location.inventory>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(InventoryCommand.class,
                 "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (destination:<inventory>) (origin:<inventory>)", 1);
@@ -1053,8 +970,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(InjectCommand.class,
@@ -1074,8 +989,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
@@ -1094,8 +1007,6 @@ public class CommandRegistry implements dRegistry {
         // <e@entity.get_leash_holder>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(LeashCommand.class,
                 "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
@@ -1113,8 +1024,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ListenCommand.class,
                 "LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)", 2);
@@ -1131,8 +1040,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(LogCommand.class,
@@ -1152,8 +1059,6 @@ public class CommandRegistry implements dRegistry {
         // <l@location.pitch>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(LookCommand.class,
                 "LOOK", "look (<entity>|...) [<location>] (duration:<duration>)", 1);
@@ -1171,8 +1076,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(LookcloseCommand.class,
@@ -1199,8 +1102,6 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Use to play a midi song file at a given location to the specified player
         // - midi file:Mysong <server.list_online_players>
-        // @Example
-        // Todo
         // -->
         registerCoreMember(MidiCommand.class,
                 "MIDI", "midi [file:<name>] (<location>/<player>|...) (tempo:<#.#>)", 1);
@@ -1219,8 +1120,6 @@ public class CommandRegistry implements dRegistry {
         // <e@entity.is_inside_vehicle>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(MountCommand.class,
                 "MOUNT", "mount (cancel) [<entity>|...] (<location>)", 0);
@@ -1237,8 +1136,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <l@location.block.material>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(ModifyBlockCommand.class,
@@ -1257,8 +1154,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(NameplateCommand.class,
                 "NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
@@ -1276,8 +1171,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(NarrateCommand.class,
                 "NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
@@ -1294,8 +1187,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(NoteCommand.class,
@@ -1315,8 +1206,6 @@ public class CommandRegistry implements dRegistry {
         // <p@player.oxygen.max>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(OxygenCommand.class,
                 "OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
@@ -1333,8 +1222,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <n@npc.navigator>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(PauseCommand.class,
@@ -1353,8 +1240,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(PlayEffectCommand.class,
                 "PLAYEFFECT", "playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)", 2);
@@ -1371,8 +1256,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(PlaySoundCommand.class,
@@ -1393,8 +1276,6 @@ public class CommandRegistry implements dRegistry {
         // <p@player.has_permission[permission.node].world>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(PermissionCommand.class,
                 "PERMISSION", "permission [add/remove] [permission] (player:<name>) (group:<name>) (world:<name>)", 2);
@@ -1411,8 +1292,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(PoseCommand.class,
@@ -1437,8 +1316,6 @@ public class CommandRegistry implements dRegistry {
         // Use to launch an entity into the air
         // - push cow
         //
-        // @Example
-        // Todo
         // -->
         registerCoreMember(PushCommand.class,
                 "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>)", 1);
@@ -1455,8 +1332,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(QueueCommand.class,
@@ -1488,8 +1363,6 @@ public class CommandRegistry implements dRegistry {
         //   - narrate "hey"
         //   }
         //
-        // @Example
-        // Todo
         // -->
         registerCoreMember(RandomCommand.class,
                 "RANDOM", "random [<#>/{braced commands}]", 1);
@@ -1506,8 +1379,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <n@npc.is_spawned>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(RemoveCommand.class,
@@ -1527,8 +1398,6 @@ public class CommandRegistry implements dRegistry {
         // <n@npc.name.nickname>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(RenameCommand.class,
                 "RENAME", "rename [<npc>] [<name>]", 1);
@@ -1545,8 +1414,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(RepeatCommand.class,
@@ -1565,8 +1432,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ResetCommand.class,
                 "RESET", "reset [fails/finishes/cooldown] (script:<name>)", 1);
@@ -1583,8 +1448,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(RunCommand.class,
@@ -1604,8 +1467,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(RuntaskCommand.class,
                 "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
@@ -1622,8 +1483,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(ScoreboardCommand.class,
@@ -1642,8 +1501,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ScribeCommand.class,
                 "SCRIBE", "scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
@@ -1660,8 +1517,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(ShootCommand.class,
@@ -1680,8 +1535,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ShowFakeCommand.class,
                 "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);
@@ -1698,8 +1551,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(SignCommand.class,
@@ -1719,8 +1570,6 @@ public class CommandRegistry implements dRegistry {
         // <l@location.block.sign_contents>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(SitCommand.class,
                 "SIT", "sit (<location>)", 0);
@@ -1738,8 +1587,6 @@ public class CommandRegistry implements dRegistry {
         // <n@npc.is_spawned>
         // <util.entity_is_spawned[<entity>]>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(SpawnCommand.class,
@@ -1759,8 +1606,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(StandCommand.class,
                 "STAND", "stand", 0);
@@ -1778,8 +1623,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(StrikeCommand.class,
                 "STRIKE", "strike (no_damage) [<location>]", 1);
@@ -1796,8 +1639,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(SwitchCommand.class,
@@ -1817,8 +1658,6 @@ public class CommandRegistry implements dRegistry {
         // <p@player.money>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(TakeCommand.class,
                 "TAKE", "take [money/iteminhand/<item>|...] (qty:<#>) (from:<inventory>)", 1);
@@ -1835,8 +1674,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <e@entity.location>
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(TeleportCommand.class,
@@ -1856,8 +1693,6 @@ public class CommandRegistry implements dRegistry {
         // <w@world.time.period>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(TimeCommand.class,
                 "TIME", "time [type:{global}/player] [<value>] (world:<name>)", 1);
@@ -1876,8 +1711,6 @@ public class CommandRegistry implements dRegistry {
         // <n@npc.list_traits>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(TraitCommand.class,
                 "TRAIT", "trait (state:true/false/{toggle}) [<trait>]", 1);
@@ -1895,8 +1728,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(TriggerCommand.class,
@@ -1921,8 +1752,6 @@ public class CommandRegistry implements dRegistry {
         // Create a sign that shows the location of a player on a wall
         // - viewer player:ThatGuy create 113,76,-302,world id:PlayerLoc1 type:wall_sign display:location
         //
-        // @Example
-        // Todo
         // -->
         registerCoreMember(ViewerCommand.class,
                 "VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)", 2);
@@ -1939,8 +1768,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(VulnerableCommand.class,
@@ -1959,8 +1786,6 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(WaitCommand.class,
                 "WAIT", "wait (<duration>) (queue:<name>)", 0);
@@ -1978,8 +1803,6 @@ public class CommandRegistry implements dRegistry {
         // <npc.navigator. * >
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(WalkCommand.class,
                 "WALK, WALKTO", "walk [<location>] (speed:<#>) (auto_range)", 1);
@@ -1996,8 +1819,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(WeatherCommand.class,
@@ -2018,8 +1839,6 @@ public class CommandRegistry implements dRegistry {
         // <yaml[<idname>].list_keys[<path>]>
         // @Usage
         // Todo
-        // @Example
-        // Todo
         // -->
         registerCoreMember(YamlCommand.class,
                 "YAML", "yaml [load/create/savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 1);
@@ -2036,8 +1855,6 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
-        // @Example
         // Todo
         // -->
         registerCoreMember(ZapCommand.class,
