@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.midi.MidiUtil;
-import net.aufdemrand.denizen.utilities.midi.NoteBlockReceiver;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
@@ -39,7 +38,13 @@ public class MidiCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            if (!scriptEntry.hasObject("location") &&
+
+            if (!scriptEntry.hasObject("cancel")
+                 && (arg.matches("cancel") || arg.matches("stop")))
+
+                scriptEntry.addObject("cancel", "");
+
+            else if (!scriptEntry.hasObject("location") &&
                 arg.matchesArgumentType(dLocation.class))
 
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
@@ -68,8 +73,10 @@ public class MidiCommand extends AbstractCommand {
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
-        // Check required args
-        if (!scriptEntry.hasObject("file"))
+        // Produce error if there is no file and the "cancel" argument was
+        // not used
+        if (!scriptEntry.hasObject("file")
+            && !scriptEntry.hasObject("cancel"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "FILE");
 
         if (!scriptEntry.hasObject("location")) {
@@ -84,9 +91,10 @@ public class MidiCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        File file = new File(scriptEntry.getElement("file").asString());
+        boolean cancel = scriptEntry.hasObject("cancel");
+        File file = !cancel ? new File(scriptEntry.getElement("file").asString()) : null;
 
-        if (!file.exists()) {
+        if (!cancel && !file.exists()) {
             dB.echoError("Invalid file " + scriptEntry.getElement("file").asString());
             return;
         }
@@ -96,17 +104,28 @@ public class MidiCommand extends AbstractCommand {
         float tempo = (float) scriptEntry.getElement("tempo").asDouble();
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("file", file.getPath()) +
+        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
+                             (file != null ? aH.debugObj("file", file.getPath()) : "") +
                              (entities != null ? aH.debugObj("entities", entities.toString()) : "") +
                              (location != null ? location.debug() : "") +
                              aH.debugObj("tempo", tempo));
 
         // Play the midi
-        if (location != null) {
-            MidiUtil.playMidi(file, tempo, location);
+        if (cancel == false) {
+            if (location != null) {
+                MidiUtil.playMidi(file, tempo, location);
+            }
+            else {
+                MidiUtil.playMidi(file, tempo, entities);
+            }
         }
         else {
-            MidiUtil.playMidi(file, tempo, entities);
+            if (location != null) {
+                MidiUtil.stopMidi(location.identify());
+            }
+            else {
+                MidiUtil.stopMidi(entities);
+            }
         }
     }
 }

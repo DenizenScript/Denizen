@@ -59,7 +59,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Age
         // @Usage age [<entity>|...] (adult/baby/<age>) (lock)
         // @Required 1
-        // @Stable Todo
+        // @Stable stable
         // @Short Sets the ages of a list of entities, optionally locking them in those ages.
         // @Author David Cernat
         // @Description
@@ -77,7 +77,7 @@ public class CommandRegistry implements dRegistry {
 
         // @Usage anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]
         // @Required 2
-        // @Stable Stable
+        // @Stable stable
         // @Short Controls a NPC's Anchor Trait.
         // @Author aufdemrand
 
@@ -112,7 +112,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Animate
         // @Usage animate [<entity>|...] [animation:<name>]
         // @Required 1
-        // @Stable Todo
+        // @Stable stable
         // @Short Makes a list of entities perform a certain animation.
         // @Author David Cernat
         // @Description
@@ -129,7 +129,7 @@ public class CommandRegistry implements dRegistry {
         // @Name AnimateChest
         // @Usage animatechest [<location>] ({open}/close) (sound:{true}/false)
         // @Required 1
-        // @Stable Unstable
+        // @Stable unstable
         // @Short Makes a chest open or close.
         // @Author Todo
         // @Description
@@ -180,7 +180,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Attack
         // @Usage attack (cancel) (<entity>|...) (target:<entity>)
         // @Required 0
-        // @Stable unstable
+        // @Stable stable
         // @Short Makes a list of entities attack a target.
         // @Author David Cernat
         // @Description
@@ -641,7 +641,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Explode
         // @Usage explode (power:<#.#>) (<location>) (fire) (breakblocks)
         // @Required 0
-        // @Stable Todo
+        // @Stable stable
         // @Short Causes an explosion at the location.
         // @Author Alain Blanquet
         // @Description
@@ -763,7 +763,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Fly
         // @Usage fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)
         // @Required 1
-        // @Stable Todo
+        // @Stable stable
         // @Short Make an entity fly where its controller is looking or fly to waypoints.
         // @Author David Cernat
         // @Description
@@ -857,7 +857,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Head
         // @Usage head (<entity>|...) [skin:<player>]
         // @Required 1
-        // @Stable Todo
+        // @Stable stable
         // @Short Makes players or NPCs wear a specific player's head.
         // @Author David Cernat
         // @Description
@@ -943,7 +943,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Inventory
         // @Usage inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (destination:<inventory>) (origin:<inventory>)
         // @Required 1
-        // @Stable unstable
+        // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
         // @Author David Cernat, morphan1
         // @Description
@@ -1083,9 +1083,9 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Midi
-        // @Usage midi [file:<name>] (<location>/<player>|...) (tempo:<#.#>)
+        // @Usage midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>)
         // @Required 1
-        // @Stable Stable
+        // @Stable stable
         // @Short Plays a midi file at a given location or to a list of players using note block sounds.
         // @Author David Cernat
         // @Description
@@ -1104,13 +1104,13 @@ public class CommandRegistry implements dRegistry {
         // - midi file:Mysong <server.list_online_players>
         // -->
         registerCoreMember(MidiCommand.class,
-                "MIDI", "midi [file:<name>] (<location>/<player>|...) (tempo:<#.#>)", 1);
+                "MIDI", "midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>)", 1);
 
         // <--[command]
         // @Name Mount
         // @Usage mount (cancel) [<entity>|...] (<location>)
         // @Required 0
-        // @Stable unstable
+        // @Stable stable
         // @Short Mounts one entity onto another.
         // @Author David Cernat
         // @Description
@@ -1543,7 +1543,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Sign
         // @Usage sign (type:{sign_post}/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
         // @Required 1
-        // @Stable unstable
+        // @Stable stable
         // @Short Modifies a sign.
         // @Author David Cernat
         // @Description
@@ -1578,7 +1578,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Spawn
         // @Usage spawn [<entity>|...] (<location>) (target:<entity>)
         // @Required 1
-        // @Stable Todo
+        // @Stable stable
         // @Short Spawns an entity.
         // @Author David Cernat
         // @Description

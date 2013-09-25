@@ -78,6 +78,12 @@ public class MidiUtil
         }
     }
 
+    public static void stopMidi(List<dEntity> entities) {
+        for (dEntity entity : entities) {
+            stopMidi(entity.identify());
+        }
+    }
+
     // provided by github.com/sk89q/craftbook
     private static final int[] instruments = {
         0, 0, 0, 0, 0, 0, 0, 5, //   8
