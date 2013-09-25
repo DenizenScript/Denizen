@@ -25,7 +25,7 @@ public class NoteBlockReceiver implements Receiver
 {
     private static final float VOLUME_RANGE = 10.0f;
 
-    private final List<dEntity> listeners;
+    private List<dEntity> listeners;
     private dLocation location;
     private final Map<Integer, Integer> channelPatches;
 
@@ -113,7 +113,7 @@ public class NoteBlockReceiver implements Receiver
     @Override
     public void close()
     {
-        if (listeners != null) listeners.clear();
+        if (listeners != null) listeners = null;
         if (location != null) location = null;
         channelPatches.clear();
     }

@@ -1426,6 +1426,17 @@ public class dEntity implements dObject {
         }
 
         // <--[tag]
+        // @attribute <e@entity.is_spawned>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the entity is spawned. Else, returns false.
+        // -->
+        if (attribute.startsWith("is_spawned")) {
+            return new Element(isSpawned())
+                        .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.is_tamed>
         // @returns Element(Boolean)
         // @description
