@@ -122,7 +122,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         String regexId = null;
         String regexMessage = null;
 
-        // Use TreeMap to preserve order of chat triggers
+        // Use TreeMap to sort chat triggers alphabetically
         TreeMap<String, String> idMap = new TreeMap<String, String>();
         idMap.putAll(script.getIdMapFor(ChatTrigger.class, denizenPlayer));
 

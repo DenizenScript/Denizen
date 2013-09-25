@@ -3,6 +3,9 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.event.entity.EntityTeleportEvent;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
@@ -64,6 +67,9 @@ public class TeleportCommand extends AbstractCommand {
                              aH.debugObj("entities", entities.toString()));
 
         for (dEntity entity : entities) {
+            // Call a Bukkit event for compatibility with "on entity teleports"
+            // world event and other plugins
+            Bukkit.getPluginManager().callEvent(new EntityTeleportEvent(entity.getBukkitEntity(), entity.getLocation(), location));
             entity.spawnAt(location);
         }
     }

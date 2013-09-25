@@ -2003,7 +2003,7 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity.
     // <context.origin> returns the dLocation the entity teleported from.
-    // <context.entity> returns the dLocation the entity teleported to.
+    // <context.destination> returns the dLocation the entity teleported to.
     //
     // @Determine
     // "CANCELLED" to stop the entity from teleporting.
