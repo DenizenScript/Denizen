@@ -702,8 +702,7 @@ public class dInventory implements dObject, Notable {
         // @attribute <in@inventory.contains[<item>].qty[<#>]>
         // @returns Element(Number)
         // @description
-        // Check if the inventory contains a certain quantity (1 by default) of an item
-        // and return true or false
+        // Returns whether the inventory contains a certain quantity (1 by default) of an item.
         // -->
         if (attribute.startsWith("contains")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
@@ -741,7 +740,7 @@ public class dInventory implements dObject, Notable {
         // @description
         // Returns the combined quantity of itemstacks that match an item if
         // one if specified, or the combined quantity of all itemstacks
-        // if one is not
+        // if one is not.
         // -->
         if (attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
@@ -756,7 +755,7 @@ public class dInventory implements dObject, Notable {
         // @attribute <in@inventory.size>
         // @returns Element(Number)
         // @description
-        // Return the number of slots in the inventory
+        // Return the number of slots in the inventory.
         // -->
         if (attribute.startsWith("size"))
             return new Element(getSize())
@@ -767,7 +766,7 @@ public class dInventory implements dObject, Notable {
         // @returns Element(Number)
         // @description
         // Returns the number of itemstacks that match an item if one is
-        // specified, or the number of all itemstacks if one is not
+        // specified, or the number of all itemstacks if one is not.
         // -->
         if (attribute.startsWith("stacks"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
@@ -782,7 +781,7 @@ public class dInventory implements dObject, Notable {
         // @attribute <in@inventory.type>
         // @returns Element
         // @description
-        // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE")
+        // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
         // -->
         if (attribute.startsWith("type"))
             return new Element(getInventory().getType().name())
@@ -793,7 +792,7 @@ public class dInventory implements dObject, Notable {
         // @returns dInventory(Equipment)
         // @description
         // Returns the equipment of an inventory. If the inventory has no
-        // equipment (Generally, if it's not alive), this returns null.
+        // equipment (Generally, if it's not alive), returns null.
         // -->
         if (attribute.startsWith("equipment")) {
             if (getInventory() instanceof PlayerInventory) {

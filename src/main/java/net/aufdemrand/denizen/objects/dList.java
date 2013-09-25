@@ -221,7 +221,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.as_cslist>
         // @returns Element
         // @description
-        // returns 'comma-separated' list of the contents of this dList.
+        // returns the list in a cleaner format, separated by commas.
         // -->
         if (attribute.startsWith("ascslist")
                 || attribute.startsWith("as_cslist")) {
@@ -240,7 +240,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.formatted>
         // @returns Element
         // @description
-        // returns formatted list useful for display in quests, messages, etc.
+        // returns the list in a human-readable format.
         // -->
         if (attribute.startsWith("formatted")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
@@ -262,7 +262,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.size>
         // @returns Element(Number)
         // @description
-        // returns the size of the list
+        // returns the size of the list.
         // -->
         if (attribute.startsWith("size"))
             return new Element(size()).getAttribute(attribute.fulfill(1));
@@ -271,7 +271,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.is_empty>
         // @returns Element(Boolean)
         // @description
-        // returns whether the list is empty
+        // returns whether the list is empty.
         // -->
         if (attribute.startsWith("is_empty"))
             return new Element(isEmpty()).getAttribute(attribute.fulfill(1));
@@ -406,7 +406,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.random[#]>
         // @returns Element
         // @description
-        // gets a random item in the list and returns it as an Element.
+        // Gets a random item in the list and returns it as an Element.
         // Optionally, add [#] to get a list of multiple randomly chosen elements.
         // -->
         if (attribute.startsWith("random")) {
@@ -464,7 +464,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <fl@flag_name.as_list>
         // @returns dList
         // @description
-        // returns a dList containing the items in the flag
+        // returns a dList containing the items in the flag.
         // -->
         if (flag != null && (attribute.startsWith("as_list")
                 || attribute.startsWith("aslist")))

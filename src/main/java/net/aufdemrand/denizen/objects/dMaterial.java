@@ -68,7 +68,7 @@ public class dMaterial implements dObject {
     /**
      * Determine whether a string is a valid material.
      *
-     * @param string  the string
+     * @param arg  the string
      * @return  true if matched, otherwise false
      *
      */
@@ -137,7 +137,7 @@ public class dMaterial implements dObject {
 
     public boolean matchesMaterialData(MaterialData data) {
         if (hasData())
-            return (material == data.getItemType() && data.equals(data.getData()));
+            return (material == data.getItemType() && data.getData() == data.getData());
         else return material == data.getItemType();
     }
 
@@ -191,7 +191,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.has_gravity>
         // @returns Element(boolean)
         // @description
-        // Returns true if the material is affected by gravity
+        // Returns whether the material is affected by gravity.
         // -->
         if (attribute.startsWith("has_gravity"))
             return new Element(material.hasGravity())
@@ -201,7 +201,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.id>
         // @returns Element(integer)
         // @description
-        // Returns the material's ID
+        // Returns the material's ID.
         // -->
         if (attribute.startsWith("id"))
             return new Element(material.getId())
@@ -211,7 +211,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.is_block>
         // @returns Element(boolean)
         // @description
-        // Returns true if the material is a placeable block
+        // Returns whether the material is a placeable block.
         // -->
         if (attribute.startsWith("is_block"))
             return new Element(material.isBlock())
@@ -221,7 +221,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.is_burnable>
         // @returns Element(boolean)
         // @description
-        // Returns true if the material is a block and can burn away
+        // Returns whether the material is a block that can burn away.
         // -->
         if (attribute.startsWith("is_burnable"))
             return new Element(material.isBurnable())
@@ -231,7 +231,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.is_edible>
         // @returns Element(boolean)
         // @description
-        // Returns true if the material is edible
+        // Returns whether the material is edible.
         // -->
         if (attribute.startsWith("is_edible"))
             return new Element(material.isEdible())
@@ -241,7 +241,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.is_flammable>
         // @returns Element(boolean)
         // @description
-        // Returns true if the material is a block and can catch fire
+        // Returns whether the material is a block that can catch fire.
         // -->
         if (attribute.startsWith("is_flammable"))
             return new Element(material.isFlammable())
@@ -251,7 +251,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.is_occluding>
         // @returns Element(boolean)
         // @description
-        // Returns true if the material is a block and completely blocks vision
+        // Returns whether the material is a block that completely blocks vision.
         // -->
         if (attribute.startsWith("is_occluding"))
             return new Element(material.isOccluding())
@@ -261,7 +261,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.is_record>
         // @returns Element(boolean)
         // @description
-        // Returns true if the material is a playable music disc
+        // Returns whether the material is a playable music disc.
         // -->
         if (attribute.startsWith("is_record"))
             return new Element(material.isRecord())
@@ -271,7 +271,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.is_solid>
         // @returns Element(boolean)
         // @description
-        // Returns true if the material is a block and solid (cannot be passed through)
+        // Returns whether the material is a block that is solid (cannot be walked through).
         // -->
         if (attribute.startsWith("is_solid"))
             return new Element(material.isSolid())
@@ -281,7 +281,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.is_transparent>
         // @returns Element(boolean)
         // @description
-        // Returns true if the material is a block and does not block any light
+        // Returns whether the material is a block that does not block any light.
         // -->
         if (attribute.startsWith("is_transparent"))
             return new Element(material.isTransparent())
@@ -291,7 +291,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.max_durability>
         // @returns Element(integer)
         // @description
-        // Returns the maximum durability of this material
+        // Returns the maximum durability of this material.
         // -->
         if (attribute.startsWith("max_durability"))
             return new Element(material.getMaxDurability())
@@ -301,7 +301,7 @@ public class dMaterial implements dObject {
         // @attribute <m@material.max_stack_size>
         // @returns Element(integer)
         // @description
-        // Returns the maximum amount of this material that can be held in a stack
+        // Returns the maximum amount of this material that can be held in a stack.
         // -->
         if (attribute.startsWith("max_stack_size"))
             return new Element(material.getMaxStackSize())

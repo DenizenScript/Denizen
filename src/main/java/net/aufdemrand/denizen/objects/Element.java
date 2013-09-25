@@ -248,8 +248,7 @@ public class Element implements dObject {
         // @attribute <element.as_list>
         // @returns dList
         // @description
-        // Returns the element as a list. Lists are sometimes prefixed with li@ and are
-        // always separated by the pipe character (|)
+        // Returns the element as a list.
         // -->
         if (attribute.startsWith("aslist")
                 || attribute.startsWith("as_list"))
@@ -371,7 +370,7 @@ public class Element implements dObject {
         // @attribute <element.contains[<string>]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the element contains a specified string, case in-sensitive. Can use
+        // Returns whether the element contains a specified string, case insensitive. Can use
         // regular expression by prefixing the string with regex:
         // -->
         if (attribute.startsWith("contains")) {
@@ -438,7 +437,6 @@ public class Element implements dObject {
         // @description
         // Returns the portion of an element after a specified string. ie. <el@helloWorld.after[hello]> returns 'World'.
         // -->
-        // Get the substring after a certain text
         if (attribute.startsWith("after")) {
             String delimiter = attribute.getContext(1);
             if (element.contains(delimiter))
@@ -456,7 +454,6 @@ public class Element implements dObject {
         // @description
         // Returns the portion of an element before a specified string.
         // -->
-        // Get the substring before a certain text
         if (attribute.startsWith("before")) {
             String delimiter = attribute.getContext(1);
             if (element.contains(delimiter))
