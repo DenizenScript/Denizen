@@ -1438,7 +1438,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Rotate
-        // @Usage rotate (<entity>|...) (<yaw>) (<pitch>) (<duration>) (<frequency>)
+        // @Usage rotate (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (frequency:<duration>)
         // @Required 1
         // @Stable stable
         // @Short Rotates a list of entities.
@@ -1450,7 +1450,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(RotateCommand.class,
-                "ROTATE", "rotate (<entity>|...) (<yaw>) (<pitch>) (<duration>) (<frequency>)", 0);
+                "ROTATE", "rotate (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (frequency:<duration>)", 0);
 
         // <--[command]
         // @Name Run

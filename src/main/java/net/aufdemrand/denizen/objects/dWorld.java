@@ -139,7 +139,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.entities>
-        // @returns dList(dPlayer)
+        // @returns dList(dEntity)
         // @description
         // Returns a list of entities in this world.
         // -->
@@ -156,7 +156,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.living_entities>
-        // @returns dList(dPlayer)
+        // @returns dList(dEntity)
         // @description
         // Returns a list of living entities in this world.
         // -->

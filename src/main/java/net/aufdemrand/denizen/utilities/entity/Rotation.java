@@ -211,27 +211,27 @@ public class Rotation {
      * @return  The name of the cardinal direction as a String.
      */
 
-    public static String getCardinal(double yaw) {
-        yaw = normalizeYaw((float) yaw);
+    public static String getCardinal(float yaw) {
+        yaw = normalizeYaw(yaw);
         // Compare yaws, return closest direction.
         if (0 <= yaw && yaw < 22.5)
-            return "west";
-        else if (22.5 <= yaw && yaw < 67.5)
-            return "northwest";
-        else if (67.5 <= yaw && yaw < 112.5)
-            return "north";
-        else if (112.5 <= yaw && yaw < 157.5)
-            return "northeast";
-        else if (157.5 <= yaw && yaw < 202.5)
-            return "east";
-        else if (202.5 <= yaw && yaw < 247.5)
-            return "southeast";
-        else if (247.5 <= yaw && yaw < 292.5)
             return "south";
-        else if (292.5 <= yaw && yaw < 337.5)
+        else if (22.5 <= yaw && yaw < 67.5)
             return "southwest";
-        else if (337.5 <= yaw && yaw < 360.0)
+        else if (67.5 <= yaw && yaw < 112.5)
             return "west";
+        else if (112.5 <= yaw && yaw < 157.5)
+            return "northwest";
+        else if (157.5 <= yaw && yaw < 202.5)
+            return "north";
+        else if (202.5 <= yaw && yaw < 247.5)
+            return "northeast";
+        else if (247.5 <= yaw && yaw < 292.5)
+            return "east";
+        else if (292.5 <= yaw && yaw < 337.5)
+            return "southeast";
+        else if (337.5 <= yaw && yaw < 360.0)
+            return "south";
         else
             return null;
     }

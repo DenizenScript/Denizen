@@ -120,10 +120,11 @@ public class RotateCommand extends AbstractCommand {
 
                 if (ticks < maxTicks) {
                     for (dEntity entity : entities) {
-
-                        Rotation.rotate(entity.getBukkitEntity(),
-                                        Rotation.normalizeYaw(entity.getLocation().getYaw() + yaw),
-                                        entity.getLocation().getPitch() + pitch);
+                        if (entity.isSpawned()) {
+                            Rotation.rotate(entity.getBukkitEntity(),
+                                    Rotation.normalizeYaw(entity.getLocation().getYaw() + yaw),
+                                    entity.getLocation().getPitch() + pitch);
+                        }
                     }
                     ticks = (int) (ticks + frequency.getTicks());
                 }
