@@ -129,6 +129,9 @@ public class RotateCommand extends AbstractCommand {
             if (cancel) rotatingEntities.remove(entity.getUUID());
             else        rotatingEntities.add(entity.getUUID());
 
+        // Go no further if we are canceling a rotation
+        if (cancel) return;
+
         // Run a task that will keep rotating the entities
         BukkitRunnable task = new BukkitRunnable() {
             int ticks = 0;
