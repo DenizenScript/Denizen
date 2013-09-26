@@ -2,8 +2,11 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -29,14 +32,28 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class RotateCommand extends AbstractCommand {
 
+    public static Set<UUID> rotatingEntities = new HashSet<UUID>();
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)
-                    && arg.matchesPrefix("duration, d")) {
+            if (!scriptEntry.hasObject("cancel")
+                && (arg.matches("cancel") || arg.matches("stop"))) {
+
+                    scriptEntry.addObject("cancel", "");
+            }
+
+            else if (!scriptEntry.hasObject("infinite")
+                     && arg.matches("infinite")) {
+
+                    scriptEntry.addObject("infinite", "");
+            }
+
+            else if (!scriptEntry.hasObject("duration")
+                     && arg.matchesArgumentType(Duration.class)
+                     && arg.matchesPrefix("duration, d")) {
 
                scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
@@ -49,15 +66,15 @@ public class RotateCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("yaw")
-                    && arg.matchesPrefix("yaw, y, rotation, r")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+                     && arg.matchesPrefix("yaw, y, rotation, r")
+                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
 
                scriptEntry.addObject("yaw", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("pitch")
-                    && arg.matchesPrefix("pitch, p, tilt, t")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+                     && arg.matchesPrefix("pitch, p, tilt, t")
+                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
 
                scriptEntry.addObject("pitch", arg.asElement());
             }
@@ -93,40 +110,65 @@ public class RotateCommand extends AbstractCommand {
         final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final Duration duration = (Duration) scriptEntry.getObject("duration");
         final Duration frequency = (Duration) scriptEntry.getObject("frequency");
-        final float yaw = ((Element) scriptEntry.getObject("yaw")).asFloat();
-        final float pitch = ((Element) scriptEntry.getObject("pitch")).asFloat();
+        final Element yaw = (Element) scriptEntry.getObject("yaw");
+        final Element pitch = (Element) scriptEntry.getObject("pitch");
+        boolean cancel = scriptEntry.hasObject("cancel");
+        final boolean infinite = scriptEntry.hasObject("infinite");
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("entities", entities.toString()) +
-                             duration.debug() +
-                             frequency.debug());
+        dB.report(getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+                             aH.debugObj("entities", entities.toString()) +
+                             (infinite ? aH.debugObj("duration", "infinite") : duration.debug()) +
+                             frequency.debug() +
+                             yaw.debug() +
+                             pitch.debug());
 
-        // Go through all the entities, removing those that
-        // are not spawned
-        Collection<dEntity> unspawnedEntities = new LinkedList<dEntity>();
+        // Add entities to the rotatingEntities list or remove
+        // them from it
         for (dEntity entity : entities)
-            if (!entity.isSpawned())
-                unspawnedEntities.add(entity);
-
-        for (dEntity unspawnedEntity : unspawnedEntities)
-            entities.remove(unspawnedEntity);
+            if (cancel) rotatingEntities.remove(entity.getUUID());
+            else        rotatingEntities.add(entity.getUUID());
 
         // Run a task that will keep rotating the entities
         BukkitRunnable task = new BukkitRunnable() {
             int ticks = 0;
             int maxTicks = duration.getTicksAsInt();
+
+            // Track how many entities are left to rotate, and cancel
+            // the task if there are none
+            int entitiesLeft = entities.size();
+            Collection<dEntity> unusedEntities = new LinkedList<dEntity>();
+
             @Override
             public void run() {
 
-                if (ticks < maxTicks) {
+                if (infinite || ticks < maxTicks) {
                     for (dEntity entity : entities) {
-                        if (entity.isSpawned()) {
+                        if (entity.isSpawned() && rotatingEntities.contains(entity.getUUID())) {
                             Rotation.rotate(entity.getBukkitEntity(),
-                                    Rotation.normalizeYaw(entity.getLocation().getYaw() + yaw),
-                                    entity.getLocation().getPitch() + pitch);
+                                    Rotation.normalizeYaw(entity.getLocation().getYaw() + yaw.asFloat()),
+                                    entity.getLocation().getPitch() + pitch.asFloat());
+                        }
+                        else {
+                            rotatingEntities.remove(entity.getUUID());
+                            entitiesLeft--;
+                            unusedEntities.add(entity);
                         }
                     }
-                    ticks = (int) (ticks + frequency.getTicks());
+
+                    if (entitiesLeft == 0) {
+                        this.cancel();
+                    }
+                    else {
+
+                        // Remove any entities that are no longer spawned
+                        if (unusedEntities.size() > 0) {
+                            for (dEntity unusedEntity : unusedEntities)
+                                entities.remove(unusedEntity);
+                            unusedEntities.clear();
+                        }
+                        ticks = (int) (ticks + frequency.getTicks());
+                    }
                 }
                 else this.cancel();
             }

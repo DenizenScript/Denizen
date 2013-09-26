@@ -1450,7 +1450,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(RotateCommand.class,
-                "ROTATE", "rotate (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (frequency:<duration>)", 0);
+                "ROTATE", "rotate (cancel) (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (infinite/frequency:<duration>)", 0);
 
         // <--[command]
         // @Name Run

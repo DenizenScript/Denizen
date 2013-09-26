@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -270,6 +271,7 @@ public class dEntity implements dObject {
     public dEntity(Entity entity) {
         if (entity != null) {
             this.entity = entity;
+            this.uuid = entity.getUniqueId();
             this.entity_type = entity.getType();
             if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
                 this.npc = CitizensAPI.getNPCRegistry().getNPC(entity);
@@ -307,6 +309,7 @@ public class dEntity implements dObject {
 
             if (npc.isSpawned()) {
                 this.entity = npc.getBukkitEntity();
+                this.uuid = entity.getUniqueId();
             }
         } else dB.echoError("NPC referenced is null!");
 
@@ -324,9 +327,20 @@ public class dEntity implements dObject {
     private String data2 = null;
     private DespawnedEntity despawned_entity = null;
     private NPC npc = null;
+    private UUID uuid = null;
 
     public EntityType getEntityType() {
         return entity_type;
+    }
+
+    /**
+     * Returns the unique UUID of this entity
+     *
+     * @return  The UUID
+     */
+
+    public UUID getUUID() {
+        return uuid;
     }
 
     /**
@@ -593,8 +607,11 @@ public class dEntity implements dObject {
         if (entity != null && isUnique()) entity.teleport(location);
 
         else {
-            if (npc != null)
+            if (npc != null) {
                 npc.spawn(location);
+                entity = npc.getBukkitEntity();
+                uuid = entity.getUniqueId();
+            }
 
             else if (entity_type != null) {
                 if (despawned_entity != null) {
@@ -619,6 +636,8 @@ public class dEntity implements dObject {
 
                         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
                         npc.spawn(location);
+                        entity = npc.getBukkitEntity();
+                        uuid = entity.getUniqueId();
                     }
                     else if (entity_type.name().matches("FALLING_BLOCK")) {
 
@@ -657,11 +676,13 @@ public class dEntity implements dObject {
                         // This is currently the only way to spawn a falling block
                         ent = location.getWorld().spawnFallingBlock(location, material, materialData);
                         entity = ent;
+                        uuid = entity.getUniqueId();
                     }
                     else {
 
                         ent = location.getWorld().spawnEntity(location, entity_type);
                         entity = ent;
+                        uuid = entity.getUniqueId();
 
                         if (entity_type.name().matches("PIG_ZOMBIE")) {
 
@@ -766,7 +787,7 @@ public class dEntity implements dObject {
     }
 
     public boolean isSpawned() {
-        return entity != null;
+        return entity != null && isValid();
     }
 
     public boolean isValid() {
@@ -925,8 +946,8 @@ public class dEntity implements dObject {
         if (entity != null) {
             if (isNPC())
                 return "n@" + getNPC().getId();
-            else if (entity instanceof Player)
-                return "p@" + ((Player) entity).getName();
+            else if (isPlayer())
+                return "p@" + getPlayer().getName();
         }
 
         // Check if entity is a 'saved entity'
@@ -1090,7 +1111,7 @@ public class dEntity implements dObject {
         // Returns the permanent unique ID of the entity.
         // -->
         if (attribute.startsWith("uuid"))
-            return new Element(entity.getUniqueId().toString())
+            return new Element(getUUID().toString())
                     .getAttribute(attribute.fulfill(1));
 
 
