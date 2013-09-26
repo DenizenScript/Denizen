@@ -1382,7 +1382,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(RemoveCommand.class,
-                "REMOVE", "remove [<entity>|...] (region:<name>)", 0);
+                "REMOVE", "remove [<entity>|...] (<world>) (region:<name>)", 0);
 
         // <--[command]
         // @Name Rename
@@ -1435,6 +1435,22 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ResetCommand.class,
                 "RESET", "reset [fails/finishes/cooldown] (script:<name>)", 1);
+
+        // <--[command]
+        // @Name Rotate
+        // @Usage rotate (<entity>|...) (<yaw>) (<pitch>) (<duration>) (<frequency>)
+        // @Required 1
+        // @Stable stable
+        // @Short Rotates a list of entities.
+        // @Author David Cernat
+        // @Description
+        // Todo
+        // @Tags
+        // @Usage
+        // Todo
+        // -->
+        registerCoreMember(RotateCommand.class,
+                "ROTATE", "rotate (<entity>|...) (<yaw>) (<pitch>) (<duration>) (<frequency>)", 0);
 
         // <--[command]
         // @Name Run
@@ -1579,12 +1595,12 @@ public class CommandRegistry implements dRegistry {
         // @Usage spawn [<entity>|...] (<location>) (target:<entity>)
         // @Required 1
         // @Stable stable
-        // @Short Spawns an entity.
+        // @Short Spawns a list of entities at a certain location.
         // @Author David Cernat
         // @Description
         // Todo
         // @Tags
-        // <n@npc.is_spawned>
+        // <e@entity.is_spawned>
         // <util.entity_is_spawned[<entity>]>
         // @Usage
         // Todo

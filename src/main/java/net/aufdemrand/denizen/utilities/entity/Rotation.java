@@ -24,13 +24,11 @@ public class Rotation {
      * @param pitch The new pitch of the entity.
      */
 
-    public static void rotate(Entity entity, float yaw, float pitch)
-    {
+    public static void rotate(Entity entity, float yaw, float pitch) {
         // If this entity is a real player instead of a player type NPC,
         // it will appear to be online
 
-        if (entity instanceof Player && ((Player) entity).isOnline())
-        {
+        if (entity instanceof Player && ((Player) entity).isOnline()) {
             Location location = entity.getLocation();
             location.setYaw(yaw);
             location.setPitch(pitch);
@@ -42,15 +40,13 @@ public class Rotation {
             return;
         }
 
-        if (entity instanceof LivingEntity)
-        {
-            NMS.look((LivingEntity)entity, yaw, pitch);
+        if (entity instanceof LivingEntity) {
+            NMS.look((LivingEntity) entity, yaw, pitch);
         }
-        else
-        {
+        else {
             net.minecraft.server.v1_6_R3.Entity handle = ((CraftEntity) entity).getHandle();
-            handle.yaw = (float) yaw;
-            handle.pitch = (float) pitch;
+            handle.yaw = yaw;
+            handle.pitch = pitch;
         }
     }
 
@@ -170,8 +166,8 @@ public class Rotation {
      * @return  The normalized yaw.
      */
 
-    public static double normalizeYaw(double yaw) {
-        yaw = (yaw - 90) % 360;
+    public static float normalizeYaw(float yaw) {
+        yaw = yaw  % 360;
         if (yaw < 0) yaw += 360.0;
         return yaw;
     }
@@ -216,7 +212,7 @@ public class Rotation {
      */
 
     public static String getCardinal(double yaw) {
-        yaw = normalizeYaw(yaw);
+        yaw = normalizeYaw((float) yaw);
         // Compare yaws, return closest direction.
         if (0 <= yaw && yaw < 22.5)
             return "west";
