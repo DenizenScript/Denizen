@@ -55,13 +55,6 @@ public class UtilTags implements Listener {
     @EventHandler
     public void queueTags(ReplaceableTagEvent event) {
 
-        // <--[tag]
-        // @attribute <q>
-        // @returns Queuestat
-        // @description
-        // Returns "q" (or "queue" if you spell it out)... Pretty useless by itself.
-        // [See <q.id>, <q.stats>, <q.size>, and <q.definitions>]
-        // -->
         if (!event.matches("queue, q")) return;
         Attribute attribute =
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
@@ -118,7 +111,7 @@ public class UtilTags implements Listener {
         // @attribute <server.flag[<name>]>
         // @returns Flag dList
         // @description
-        // Returns a "Flag dList" of the server flag specified.
+        // returns the specified flag from the server.
         // -->
         if (attribute.startsWith("flag")) {
             String flag_name;
@@ -128,26 +121,12 @@ public class UtilTags implements Listener {
                 return;
             }
             attribute.fulfill(1);
-
-            // <--[tag]
-            // @attribute <server.flag[<name>].is_expired>
-            // @returns Element(Boolean)
-            // @description
-            // Returns true if the flag specified is expired. Else, returns false.
-            // -->
             if (attribute.startsWith("is_expired")
                     || attribute.startsWith("isexpired")) {
                 event.setReplaced(new Element(!FlagManager.serverHasFlag(flag_name))
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }
-
-            // <--[tag]
-            // @attribute <server.flag[<name>].size>
-            // @returns Element(Number)
-            // @description
-            // Returns the size of the Flag dList. If the flag doesn't exist, returns 0.
-            // -->
             if (attribute.startsWith("size") && !FlagManager.serverHasFlag(flag_name)) {
                 event.setReplaced(new Element(0).getAttribute(attribute.fulfill(1)));
                 return;
@@ -187,7 +166,7 @@ public class UtilTags implements Listener {
         // @attribute <server.get_npcs_named[<name>]>
         // @returns dList(dNPC)
         // @description
-        // Returns a dList of dNPCs with a certain name.
+        // Returns a list of NPCs with a certain name.
         // -->
         if (attribute.startsWith("get_npcs_named") && attribute.hasContext(1)) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
@@ -202,7 +181,7 @@ public class UtilTags implements Listener {
         // @attribute <server.list_npcs>
         // @returns dList(dNPC)
         // @description
-        // Returns a dList of dNPCs currently in the Citizens NPC Registry.
+        // Returns a list of all NPCs.
         // -->
         if (attribute.startsWith("list_npcs")) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
@@ -216,7 +195,7 @@ public class UtilTags implements Listener {
         // @attribute <server.list_worlds>
         // @returns dList(dWorld)
         // @description
-        // Returns a dList of all worlds.
+        // Returns a list of all worlds.
         // -->
         if (attribute.startsWith("list_worlds")) {
             ArrayList<dWorld> worlds = new ArrayList<dWorld>();
@@ -393,6 +372,7 @@ public class UtilTags implements Listener {
             // @returns Element
             // @description
             // Returns all text in text1 after the first occurrence of text2.
+            // (Deprecated in favor of <el@element.after[<text>]>)
             // -->
             if (subType.equalsIgnoreCase("AFTER")) {
                 from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
@@ -403,6 +383,7 @@ public class UtilTags implements Listener {
             // @returns Element
             // @description
             // Returns all text in text1 before the first occurrence of text2.
+            // (Deprecated in favor of <element.before[<text>]>)
             // -->
             if (subType.equalsIgnoreCase("BEFORE")) {
                 to = text.toUpperCase().indexOf(subTypeContext) + 1;
@@ -413,6 +394,7 @@ public class UtilTags implements Listener {
             // @returns Element
             // @description
             // Returns all text in between the 2 points in the text.
+            // (Deprecated in favor of <element.substring[<#>(,<#>)]>)
             // -->
             try {
                 if (subType.equalsIgnoreCase("FROM"))
@@ -438,6 +420,7 @@ public class UtilTags implements Listener {
         // @returns Element
         // @description
         // Returns the text with all instances of fromText replaced as toText.
+        // (Deprecated in favor of <el@element.replace[<text>].with[<text>]>)
         // -->
         else if (type.equalsIgnoreCase("REPLACE")) {
             String item_to_replace = event.getTypeContext();
