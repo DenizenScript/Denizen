@@ -210,25 +210,10 @@ public class dWorld implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <w@world.highest_block>
-        // @returns dLocation
-        // @description
-        // returns the location of the highest non-air block.
-        // -->
-        if (attribute.startsWith("highest_block")) {
-            // TODO: finish
-            int x = 1;
-            int z = 1;
-
-            return new dLocation(getWorld().getHighestBlockAt(x, z).getLocation())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <w@world.sea_level>
         // @returns Element(Number)
         // @description
-        // returns the level of the sea
+        // returns the level of the sea.
         // -->
         if (attribute.startsWith("sea_level"))
             return new Element(getWorld().getSeaLevel())
@@ -243,7 +228,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.name>
         // @returns Element
         // @description
-        // returns the name of the world
+        // returns the name of the world.
         // -->
         if (attribute.startsWith("name"))
             return new Element(getWorld().getName())
@@ -253,7 +238,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.seed>
         // @returns Element
         // @description
-        // returns the world seed
+        // returns the world seed.
         // -->
         if (attribute.startsWith("seed"))
             return new Element(getWorld().getSeed())
@@ -298,7 +283,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.ambient_spawn_limit>
         // @returns Element(Number)
         // @description
-        // Returns the number of ambient mobs that can spawn in a chunk in this world
+        // Returns the number of ambient mobs that can spawn in a chunk in this world.
         // -->
         if (attribute.startsWith("ambient_spawn_limit"))
             return new Element(getWorld().getAmbientSpawnLimit())
@@ -328,7 +313,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.difficulty>
         // @returns Element
         // @description
-        // returns the name of the difficulty level
+        // returns the name of the difficulty level.
         // -->
         if (attribute.startsWith("difficulty"))
             return new Element(getWorld().getDifficulty().name())
@@ -358,7 +343,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.ticks_per_animal_spawn>
         // @returns Element(Number)
         // @description
-        // Returns the world's ticks per animal spawn value
+        // Returns the world's ticks per animal spawn value.
         // -->
         if (attribute.startsWith("ticks_per_animal_spawn"))
             return new Element(getWorld().getTicksPerAnimalSpawns() )
@@ -368,7 +353,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.ticks_per_monster_spawn>
         // @returns Element(Number)
         // @description
-        // Returns the world's ticks per monster spawn value
+        // Returns the world's ticks per monster spawn value.
         // -->
         if (attribute.startsWith("ticks_per_monster_spawn"))
             return new Element(getWorld().getTicksPerMonsterSpawns() )
@@ -378,7 +363,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.water_animal_spawn_limit>
         // @returns Element(Number)
         // @description
-        // Returns the number of water animals that can spawn in a chunk in this world
+        // Returns the number of water animals that can spawn in a chunk in this world.
         // -->
         if (attribute.startsWith("water_animal_spawn_limit"))
             return new Element(getWorld().getWaterAnimalSpawnLimit())
@@ -389,12 +374,11 @@ public class dWorld implements dObject {
         //   TIME ATTRIBUTES
         /////////////////
 
-        // Return "day", "night", "dawn" or "dusk"
         // <--[tag]
         // @attribute <w@world.time.period>
         // @returns Element
         // @description
-        // returns the time as day, night, dawn, or dusk
+        // returns the time as 'day', 'night', 'dawn', or 'dusk'.
         // -->
         if (attribute.startsWith("time.period")) {
 
@@ -413,7 +397,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.time>
         // @returns Element(Number)
         // @description
-        // returns the current time in ticks
+        // returns the current time in ticks.
         // -->
         if (attribute.startsWith("time"))
             return new Element(getWorld().getTime())
@@ -423,8 +407,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.moon_phase>
         // @returns Element(Number)
         // @description
-        // returns the current phase of the moon, as
-        // an integer from 1 to 8
+        // returns the current phase of the moon, as an integer from 1 to 8.
         // -->
         if (attribute.startsWith("moon_phase")
                 || attribute.startsWith("moonphase"))
@@ -440,7 +423,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.has_storm>
         // @returns Element(boolean)
         // @description
-        // returns whether there is currently a storm in this world
+        // returns whether there is currently a storm in this world.
         // -->
         if (attribute.startsWith("has_storm"))
             return new Element(getWorld().hasStorm())
@@ -450,7 +433,7 @@ public class dWorld implements dObject {
         // @attribute <w@world.weather_duration>
         // @returns Element
         // @description
-        // Returns the duration of storms
+        // Returns the duration of storms.
         // -->
         if (attribute.startsWith("weather_duration"))
             return Duration.valueOf(getWorld().getWeatherDuration() + "t")

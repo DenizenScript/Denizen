@@ -541,7 +541,7 @@ public class dItem implements dObject, Notable, Properties {
         // @attribute <i@item.identify>
         // @returns Element
         // @description
-        // Returns a valid identification for the item
+        // Returns a valid identification for the item.
         // -->
         if (attribute.startsWith("identify")) {
             return new Element(identify())
@@ -574,13 +574,10 @@ public class dItem implements dObject, Notable, Properties {
         // @description
         // Returns the data value of the material of the item.
         // -->
-        if (attribute.startsWith("data")) {
-            dB.log(getItemStack().getData().getData() + " <-- data");
-
+        if (attribute.startsWith("data"))
             return new Element((int) getItemStack().getData().getData())
                     .getAttribute(attribute.fulfill(1));
 
-        }
         // <--[tag]
         // @attribute <i@item.durability>
         // @returns Element(Number)
@@ -595,7 +592,7 @@ public class dItem implements dObject, Notable, Properties {
         // @attribute <i@item.repairable>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the item can be repaired. Otherwise, returns false.
+        // Returns whether the item can be repaired.
         // -->
         if (attribute.startsWith("repairable"))
             return new Element(isRepairable())
@@ -649,9 +646,9 @@ public class dItem implements dObject, Notable, Properties {
 
         // <--[tag]
         // @attribute <i@item.material>
-        // @returns Element
+        // @returns dMaterial
         // @description
-        // Returns the material corresponding to the item
+        // Returns the material corresponding to the item.
         // -->
         if (attribute.startsWith("material"))
             return getMaterial().getAttribute(attribute.fulfill(1));
@@ -660,7 +657,7 @@ public class dItem implements dObject, Notable, Properties {
         // @attribute <i@item.display>
         // @returns Element
         // @description
-        // Returns the display name of the item, as set by API or an 'anvil'.
+        // Returns the display name of the item, as set by plugin or an anvil.
         // -->
         if (attribute.startsWith("display"))
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasDisplayName())
@@ -671,7 +668,7 @@ public class dItem implements dObject, Notable, Properties {
         // @attribute <i@item.enchantments>
         // @returns dList
         // @description
-        // Returns a list of bukkit enchantment names on the item.
+        // Returns a list of enchantments on the item.
         // -->
         if (attribute.startsWith("enchantments")) {
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
@@ -723,7 +720,7 @@ public class dItem implements dObject, Notable, Properties {
                 // @attribute <i@item.book.get_page[<#>]>
                 // @returns Element
                 // @description
-                // Returns the page specified from the book as an element.
+                // Returns the page specified from the book as an element. Note: Item must be a 'written_book'.
                 // -->
                 if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
                     return new Element(bookInfo.getPage(attribute.getIntContext(1)))
@@ -733,7 +730,7 @@ public class dItem implements dObject, Notable, Properties {
                 // @attribute <i@item.book.pages>
                 // @returns dList
                 // @description
-                // Returns the pages of the book as a dList.
+                // Returns the pages of the book as a dList. Note: Item must be a 'written_book'.
                 // -->
                 if (attribute.startsWith("pages"))
                     return new dList(bookInfo.getPages())
@@ -749,7 +746,7 @@ public class dItem implements dObject, Notable, Properties {
         // @attribute <i@item.scriptname>
         // @returns Element
         // @description
-        // Returns the script name of the item if it was created by an item script-container..
+        // Returns the script name of the item if it was created by an item script.
         // -->
         if (attribute.startsWith("scriptname")) // Note: Update this when the id: is stored less stupidly!
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {

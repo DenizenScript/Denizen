@@ -41,6 +41,7 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class dEntity implements dObject {
@@ -1031,8 +1032,8 @@ public class dEntity implements dObject {
         // @attribute <e@entity.custom_id>
         // @returns dScript/Element
         // @description
-        // If the entity has a script ID, returns the dScript of that
-        // ID. Else, returns the name of the entity type.
+        // If the entity has a script ID, returns the dScript of that ID.
+        // Otherwise, returns the name of the entity type.
         // -->
         if (attribute.startsWith("custom_id")) {
             if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id"))
@@ -1047,8 +1048,8 @@ public class dEntity implements dObject {
         // @attribute <e@entity.custom_name>
         // @returns Element
         // @description
-        // If the entity has a custom name, returns the name as an
-        // Element. Else, returns null.
+        // If the entity has a custom name, returns the name as an Element.
+        // Otherwise, returns null.
         // -->
         if (attribute.startsWith("custom_name")) {
             if (getLivingEntity().getCustomName() == null) return "null";
@@ -1059,7 +1060,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.eid>
         // @returns Element(Number)
         // @description
-        // Returns the entity's Bukkit entity ID
+        // Returns the entity's temporary server entity ID.
         // -->
         if (attribute.startsWith("eid"))
             return new Element(entity.getEntityId())
@@ -1086,7 +1087,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.uuid>
         // @returns Element
         // @description
-        // Returns a unique ID for the entity.
+        // Returns the permanent unique ID of the entity.
         // -->
         if (attribute.startsWith("uuid"))
             return new Element(entity.getUniqueId().toString())
@@ -1116,7 +1117,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.can_see[<entity>]>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity can see the other entity.
+        // Returns whether the entity can see the specified other entity.
         // -->
         if (attribute.startsWith("can_see")) {
             if (attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
@@ -1129,7 +1130,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.eye_location>
         // @returns dLocation
         // @description
-        // returns a dLocation of the entity's eyes.
+        // returns the location of the entity's eyes.
         // -->
         if (attribute.startsWith("eye_location"))
             return new dLocation(getEyeLocation())
@@ -1154,7 +1155,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.location.cursor_on>
         // @returns dLocation
         // @description
-        // Returns the dLocation of where the entity is looking.
+        // Returns the location of the block the entity is looking at.
         // -->
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
@@ -1167,7 +1168,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.location.standing_on>
         // @returns dLocation
         // @description
-        // Returns the dLocation of what the entity is standing on.
+        // Returns the location of what the entity is standing on.
         // -->
         if (attribute.startsWith("location.standing_on"))
             return new dLocation(entity.getLocation().add(0, -1, 0))
@@ -1177,7 +1178,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.location>
         // @returns dLocation
         // @description
-        // Returns the dLocation of the entity.
+        // Returns the location of the entity.
         // -->
         if (attribute.startsWith("location")) {
             return new dLocation(entity.getLocation())
@@ -1204,7 +1205,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.can_pickup_items>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity can pick up items. Else, returns false.
+        // Returns whether the entity can pick up items.
         // -->
         if (attribute.startsWith("can_pickup_items"))
             return new Element(getLivingEntity().getCanPickupItems())
@@ -1264,8 +1265,8 @@ public class dEntity implements dObject {
         // @attribute <e@entity.get_passenger>
         // @returns dEntity
         // @description
-        // If the entity has a passenger, returns the passenger as a
-        // dEntity. Else, returns null.
+        // If the entity has a passenger, returns the passenger as a dEntity.
+        // Otherwise, returns null.
         // -->
         if (attribute.startsWith("get_passenger")) {
             if (!entity.isEmpty())
@@ -1279,8 +1280,8 @@ public class dEntity implements dObject {
         // @attribute <e@entity.get_vehicle>
         // @returns dEntity
         // @description
-        // If the entity is in a vehicle, returns the vehicle as a
-        // dEntity. Else, returns null.
+        // If the entity is in a vehicle, returns the vehicle as a dEntity.
+        // Otherwise, returns null.
         // -->
         if (attribute.startsWith("get_vehicle")) {
             if (entity.isInsideVehicle())
@@ -1294,15 +1295,14 @@ public class dEntity implements dObject {
         // @attribute <e@entity.has_effect[<effect>]>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity has an effect. If no effect is
-        // specified, returns true if the entity has any effect. Else,
-        // returns false.
+        // Returns whether the entity has a specified effect.
+        // If no effect is specified, returns whether the entity has any effect.
         // -->
         if (attribute.startsWith("has_effect")) {
             Boolean returnElement = false;
             if (attribute.hasContext(1))
                 for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
-                    if (effect.getType().equals(org.bukkit.potion.PotionType.valueOf(attribute.getContext(1))))
+                    if (effect.getType().equals(PotionEffectType.getByName(attribute.getContext(1))))
                         returnElement = true;
             else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
@@ -1312,7 +1312,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.health.formatted>
         // @returns Element
         // @description
-        // Returns a 'formatted' value of the player's current health level.
+        // Returns a formatted value of the player's current health level.
         // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
         // -->
         if (attribute.startsWith("health.formatted")) {
@@ -1369,7 +1369,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_empty>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity is empty, false if it has a passenger.
+        // Returns whether the entity does not have a passenger.
         // -->
         if (attribute.startsWith("is_empty"))
             return new Element(entity.isEmpty())
@@ -1379,7 +1379,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_inside_vehicle>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity is inside a vehicle. Else, returns false.
+        // Returns whether the entity is inside a vehicle.
         // -->
         if (attribute.startsWith("is_inside_vehicle"))
             return new Element(entity.isInsideVehicle())
@@ -1389,7 +1389,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_leashed>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity is leashed, false otherwise.
+        // Returns whether the entity is leashed.
         // -->
         if (attribute.startsWith("is_leashed")) {
             if (isLivingEntity())
@@ -1404,7 +1404,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_on_ground>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity is supported by a block, false otherwise.
+        // Returns whether the entity is supported by a block.
         // -->
         if (attribute.startsWith("is_on_ground"))
             return new Element(entity.isOnGround())
@@ -1414,7 +1414,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_persistent>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity will despawn when far away from players.
+        // Returns whether the entity will despawn when far away from players.
         // -->
         if (attribute.startsWith("is_persistent")) {
             if (isLivingEntity())
@@ -1429,7 +1429,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_spawned>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity is spawned. Else, returns false.
+        // Returns whether the entity is spawned.
         // -->
         if (attribute.startsWith("is_spawned")) {
             return new Element(isSpawned())
@@ -1440,8 +1440,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_tamed>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity is tamed. Else, returns false.
-        // This will also return false if the entity is not tameable.
+        // Returns whether the entity has been tamed.
         // -->
         if (attribute.startsWith("is_tamed")) {
             if (entity instanceof Tameable)
@@ -1521,7 +1520,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_living>
         // @returns Element(Boolean)
         // @description
-        // Returns if the entity is a living entity.
+        // Returns whether the entity is a living entity.
         // -->
         if (attribute.startsWith("is_living")) {
             return new Element(isLivingEntity())
@@ -1532,7 +1531,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_mob>
         // @returns Element(Boolean)
         // @description
-        // Returns if the entity is a mob. This excludes players and NPCs.
+        // Returns whether the entity is a mob (Not a player or NPC).
         // -->
         if (attribute.startsWith("is_mob")) {
             if (!isPlayer() && !isNPC())
@@ -1544,7 +1543,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_npc>
         // @returns Element(Boolean)
         // @description
-        // Returns if the entity is an NPC.
+        // Returns whether the entity is an NPC.
         // -->
         if (attribute.startsWith("is_npc")) {
             return new Element(isNPC())
@@ -1555,7 +1554,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_player>
         // @returns Element(Boolean)
         // @description
-        // Returns if the entity is a player.
+        // Returns whether the entity is a player.
         // -->
         if (attribute.startsWith("is_player")) {
             return new Element(isPlayer())
@@ -1566,7 +1565,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_projectile>
         // @returns Element(Boolean)
         // @description
-        // Returns if the entity is a projectile.
+        // Returns whether the entity is a projectile.
         // -->
         if (attribute.startsWith("is_projectile")) {
             return new Element(isProjectile())
@@ -1577,7 +1576,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_tameable>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the entity is tameable. Else, returns false.
+        // Returns whether the entity is tameable.
         // -->
         if (attribute.startsWith("is_tameable"))
             return new Element(entity instanceof Tameable)
