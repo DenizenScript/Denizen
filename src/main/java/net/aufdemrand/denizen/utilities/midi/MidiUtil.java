@@ -48,8 +48,8 @@ public class MidiUtil
             // If there is already a midi file being played for one of the entities,
             // stop playing it
             for (dEntity entity : entities) {
-                stopMidi(entity.identify());
-                receivers.put(entity.identify(), receiver);
+                stopMidi(entity.getUUID().toString());
+                receivers.put(entity.getUUID().toString(), receiver);
             }
 
             startSequencer(file, tempo, receiver);
@@ -80,7 +80,7 @@ public class MidiUtil
 
     public static void stopMidi(List<dEntity> entities) {
         for (dEntity entity : entities) {
-            stopMidi(entity.identify());
+            stopMidi(entity.getUUID().toString());
         }
     }
 

@@ -134,15 +134,18 @@ public class RotateCommand extends AbstractCommand {
             int ticks = 0;
             int maxTicks = duration.getTicksAsInt();
 
-            // Track how many entities are left to rotate, and cancel
-            // the task if there are none
-            int entitiesLeft = entities.size();
+            // Track entities that are no longer used, to remove them from
+            // the regular list
             Collection<dEntity> unusedEntities = new LinkedList<dEntity>();
 
             @Override
             public void run() {
 
-                if (infinite || ticks < maxTicks) {
+                if (entities.isEmpty()) {
+                    this.cancel();
+                }
+
+                else if (infinite || ticks < maxTicks) {
                     for (dEntity entity : entities) {
                         if (entity.isSpawned() && rotatingEntities.contains(entity.getUUID())) {
                             Rotation.rotate(entity.getBukkitEntity(),
@@ -151,24 +154,19 @@ public class RotateCommand extends AbstractCommand {
                         }
                         else {
                             rotatingEntities.remove(entity.getUUID());
-                            entitiesLeft--;
                             unusedEntities.add(entity);
                         }
                     }
 
-                    if (entitiesLeft == 0) {
-                        this.cancel();
-                    }
-                    else {
-
-                        // Remove any entities that are no longer spawned
-                        if (unusedEntities.size() > 0) {
-                            for (dEntity unusedEntity : unusedEntities)
-                                entities.remove(unusedEntity);
-                            unusedEntities.clear();
+                    // Remove any entities that are no longer spawned
+                    if (!unusedEntities.isEmpty()) {
+                        for (dEntity unusedEntity : unusedEntities) {
+                            entities.remove(unusedEntity);
                         }
-                        ticks = (int) (ticks + frequency.getTicks());
+                        unusedEntities.clear();
                     }
+
+                    ticks = (int) (ticks + frequency.getTicks());
                 }
                 else this.cancel();
             }
