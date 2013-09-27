@@ -152,30 +152,30 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         //Type BREAK
         if (type == BlockType.BREAK) {
             dB.log("...BREAK listener");
-        	//if catch-all specified, count it!
-        	if (blocks.contains("*")) {
-        		blocks_so_far++;
+            //if catch-all specified, count it!
+            if (blocks.contains("*")) {
+                blocks_so_far++;
                 dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
-                		+ " broke a(n) " + event.getBlock().getType().toString() 
-                		+ ".");
+                        + " broke a(n) " + event.getBlock().getType().toString()
+                        + ".");
                 check();
-        		return;
-        	}
-        	
-        	//check if block is specified and if so, count it!
-        	for (String item_value : blocks) {
-        		dB.log("...checking value: " + item_value);
-        		dMaterial mat = dMaterial.valueOf(item_value);
-        		
-        		if (event.getBlock().getState().getType() == mat.getMaterial() &&
-        				event.getBlock().getState().getData().equals(mat.getMaterialData())){
-        			blocks_so_far++;
+                return;
+            }
+            
+            //check if block is specified and if so, count it!
+            for (String item_value : blocks) {
+                dB.log("...checking value: " + item_value);
+                dMaterial mat = dMaterial.valueOf(item_value);
+                
+                if (event.getBlock().getState().getType() == mat.getMaterial() &&
+                        event.getBlock().getState().getData().equals(mat.getMaterialData())){
+                    blocks_so_far++;
                     dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
-                    		+ " broke a(n) " + event.getBlock().getType().toString() 
-                    		+ ".");
+                            + " broke a(n) " + event.getBlock().getType().toString()
+                            + ".");
                     check();
-        		}
-        	}
+                }
+            }
         }
     }
 
@@ -196,35 +196,35 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
         //Type COLLECT
         if (type == BlockType.COLLECT) {
-        	
-        	//if catch-all specified, count it!
-        	if (blocks.contains("*")) {
-        		blocks_so_far++;
+            
+            //if catch-all specified, count it!
+            if (blocks.contains("*")) {
+                blocks_so_far++;
                 dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
-                		+ " collected a(n) " + event.getItem().getItemStack().getType().toString() 
-                		+ ".");
+                        + " collected a(n) " + event.getItem().getItemStack().getType().toString()
+                        + ".");
                 check();
-        		return;
-        	}
-        	
-        	//check if block is specified and if so, count it!
-        	for (String item_value : blocks) {
-        		dMaterial mat = dMaterial.valueOf(item_value);
-        		
-        		if (event.getItem().getItemStack().getType() == mat.getMaterial() &&
-        				event.getItem().getItemStack().getData().equals(mat.getMaterialData())){
-        			//If the specific item has been collected before, dont count it
+                return;
+            }
+            
+            //check if block is specified and if so, count it!
+            for (String item_value : blocks) {
+                dMaterial mat = dMaterial.valueOf(item_value);
+                
+                if (event.getItem().getItemStack().getType() == mat.getMaterial() &&
+                        event.getItem().getItemStack().getData().equals(mat.getMaterialData())){
+                    //If the specific item has been collected before, dont count it
                     if (itemsCollected.contains(event.getItem().getEntityId()))
                         return;
                     else itemsCollected.add(event.getItem().getEntityId());
-        			
+                    
                     blocks_so_far++;
                     dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
-                    		+ " collected a(n) " + event.getItem().getItemStack().getType().toString() 
-                    		+ ".");
+                            + " collected a(n) " + event.getItem().getItemStack().getType().toString()
+                            + ".");
                     check();
-        		}
-        	}
+                }
+            }
         }
     }
 
@@ -243,29 +243,29 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
         //Type COLLECT
         if (type == BlockType.COLLECT) {
-        	//if catch-all specified, count it!
-        	if (blocks.contains("*")) {
-        		blocks_so_far++;
-        		dB.echoDebug(ChatColor.YELLOW + "// " 
-                		+ player.getName() + " collected a " 
-                		+ event.getBucket().name() + ".");
+            //if catch-all specified, count it!
+            if (blocks.contains("*")) {
+                blocks_so_far++;
+                dB.echoDebug(ChatColor.YELLOW + "// "
+                        + player.getName() + " collected a "
+                        + event.getBucket().name() + ".");
                 check();
-        		return;
-        	}
-        	
-        	//check if block is specified and if so, count it!
-        	for (String item_value : blocks) {
-        		dMaterial mat = dMaterial.valueOf(item_value);
-        		
-        		if (event.getBucket() == mat.getMaterial()){
-        			blocks_so_far++;
-                    dB.echoDebug(ChatColor.YELLOW + "// " 
-                    		+ player.getName() + " collected a " 
-                    		+ event.getBucket().name() + ".");
+                return;
+            }
+            
+            //check if block is specified and if so, count it!
+            for (String item_value : blocks) {
+                dMaterial mat = dMaterial.valueOf(item_value);
+                
+                if (event.getBucket() == mat.getMaterial()){
+                    blocks_so_far++;
+                    dB.echoDebug(ChatColor.YELLOW + "// "
+                            + player.getName() + " collected a "
+                            + event.getBucket().name() + ".");
 
                     check();
-        		}
-        	}
+                }
+            }
         }
     }
 
@@ -286,29 +286,29 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         //Type BUILD
         if (type == BlockType.BUILD) {
 
-        	//if catch-all specified, count it!
-        	if (blocks.contains("*")) {
-        		blocks_so_far++;
+            //if catch-all specified, count it!
+            if (blocks.contains("*")) {
+                blocks_so_far++;
                 dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
-                		+ " placed a(n) " + event.getBlock().getType().toString() 
-                		+ ".");
+                        + " placed a(n) " + event.getBlock().getType().toString()
+                        + ".");
                 check();
-        		return;
-        	}
-        	
-        	//check if block is specified and if so, count it!
-        	for (String item_value : blocks) {
-        		dMaterial mat = dMaterial.valueOf(item_value);
-        		
-        		if (event.getBlock().getState().getType() == mat.getMaterial() &&
-        				event.getBlock().getState().getData().equals(mat.getMaterialData())){
-        			blocks_so_far++;
+                return;
+            }
+            
+            //check if block is specified and if so, count it!
+            for (String item_value : blocks) {
+                dMaterial mat = dMaterial.valueOf(item_value);
+                
+                if (event.getBlock().getState().getType() == mat.getMaterial() &&
+                        event.getBlock().getState().getData().equals(mat.getMaterialData())){
+                    blocks_so_far++;
                     dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
-                    		+ " placed a(n) " + event.getBlock().getType().toString() 
-                    		+ ".");
+                            + " placed a(n) " + event.getBlock().getType().toString()
+                            + ".");
                     check();
-        		}
-        	}
+                }
+            }
         }
     }
 
