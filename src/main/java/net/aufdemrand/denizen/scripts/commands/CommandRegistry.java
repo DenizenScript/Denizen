@@ -1521,7 +1521,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Usage shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>)
+        // @Usage shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>)
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air up to a certain height.
@@ -1534,7 +1534,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>)", 1);
 
         // <--[command]
         // @Name ShowFake

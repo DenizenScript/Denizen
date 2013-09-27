@@ -51,34 +51,38 @@ public class ShootCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("destination")
                      && arg.matchesArgumentType(dLocation.class)
-                     && arg.matchesPrefix("destination, d"))
+                     && arg.matchesPrefix("destination, d")) {
+
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("height")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                     && arg.matchesPrefix("height, h"))
+                     && arg.matchesPrefix("height, h")) {
+
                 scriptEntry.addObject("height", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("gravity")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                     && arg.matchesPrefix("gravity, g, velocity, v"))
-                scriptEntry.addObject("gravity", arg.asElement());
+                     && arg.matchesPrefix("gravity, g, velocity, v")) {
 
-            else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("speed, s"))
-                scriptEntry.addObject("speed", arg.asElement());
+                scriptEntry.addObject("gravity", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("script")
-                     && arg.matchesArgumentType(dScript.class))
+                     && arg.matchesArgumentType(dScript.class)) {
+
                 scriptEntry.addObject("script", arg.asType(dScript.class));
+            }
 
             else if (!scriptEntry.hasObject("entities")
-                     && arg.matchesArgumentList(dEntity.class))
-                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+                     && arg.matchesArgumentList(dEntity.class)) {
 
-            else
-                dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+            }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use the NPC or player's locations as the origin if one is not specified
@@ -133,18 +137,16 @@ public class ShootCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dScript script = (dScript) scriptEntry.getObject("script");
 
-        Element height = scriptEntry.getElement("height");
-        Element gravity = scriptEntry.getElement("gravity");
-        Element speed = scriptEntry.getElement("speed");
+        double height = ((Element) scriptEntry.getObject("height")).asDouble();
+        Element gravity = (Element) scriptEntry.getObject("gravity");
 
         // Report to dB
         dB.report(getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                              aH.debugObj("entities", entities.toString()) +
-                             destination.debug() +
-                             height.debug() +
-                             (gravity != null ? gravity.debug(): "") +
-                             (speed != null ? speed.debug(): "") +
-                             (script != null ? script.debug() : ""));
+                             aH.debugObj("destination", destination) +
+                             aH.debugObj("height", height) +
+                             aH.debugObj("gravity", gravity) +
+                             (script != null ? aH.debugObj("script", script.identify()) : ""));
 
         // Keep a dList of entities that can be called using <entry[name].shot_entities>
         // later in the script queue
@@ -192,7 +194,7 @@ public class ShootCommand extends AbstractCommand {
                 if (defaultGravity.name().equals(entityType)) {
 
                     gravity = new Element(defaultGravity.getGravity());
-                    dB.echoDebug("Gravity: " + gravity);
+                    dB.echoApproval("Gravity: " + gravity);
                 }
             }
 
@@ -202,16 +204,11 @@ public class ShootCommand extends AbstractCommand {
             }
         }
 
-        if (speed == null) {
-            Vector v1 = lastEntity.getLocation().toVector();
-            Vector v2 = destination.toVector();
-            Vector v3 = Velocity.calculate(v1, v2, gravity.asDouble(), height.asDouble());
-            lastEntity.setVelocity(v3);
-        }
-        else {
-            lastEntity.setVelocity(originLocation.getDirection().multiply(speed.asDouble()));
-        }
+        Vector v1 = lastEntity.getLocation().toVector();
+        Vector v2 = destination.toVector();
+        Vector v3 = Velocity.calculate(v1, v2, gravity.asDouble(), height);
 
+        lastEntity.setVelocity(v3);
 
         // A task used to trigger a script if the entity is no longer
         // being shot, when the script argument is used
