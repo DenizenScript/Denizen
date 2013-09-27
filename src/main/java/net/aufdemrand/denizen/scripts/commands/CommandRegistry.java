@@ -977,7 +977,6 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Invisible
-        // @Deprecated This functionality can now be achieved with the Trait command.
         // @Usage invisible [player/npc] [state:true/false/toggle]
         // @Required 2
         // @Stable unstable
@@ -1065,7 +1064,6 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name LookClose
-        // @Deprecated This functionality can now be achieved with the Trait command.
         // @Usage lookclose [state:true/false]
         // @Required 1
         // @Stable unstable
@@ -1574,11 +1572,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Sit
-        // @Deprecated This functionality can now be achieved with the Trait command.
         // @Usage sit (<location>)
         // @Required 0
         // @Stable unstable
-        // @Short Causes the NPC to sit.
+        // @Short Causes the NPC to sit. (Does not currently work!)
         // @Author Todo
         // @Description
         // Todo
@@ -1610,11 +1607,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Stand
-        // @Deprecated This functionality can now be achieved with the Trait command.
         // @Usage stand
         // @Required 0
         // @Stable unstable
-        // @Short Causes the NPC to stand.
+        // @Short Causes the NPC to stand. (Does not currently work!)
         // @Author Todo
         // @Description
         // Todo
