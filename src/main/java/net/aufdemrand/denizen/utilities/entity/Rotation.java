@@ -75,7 +75,7 @@ public class Rotation {
             yaw = yaw + (Math.abs(180 - yaw) * 2);
         }
 
-        rotate(from, (float) yaw - 90, (float) pitch);
+        rotate(from, (float) yaw, (float) pitch);
     }
 
 
