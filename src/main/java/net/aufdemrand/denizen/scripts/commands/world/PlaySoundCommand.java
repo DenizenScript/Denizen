@@ -52,11 +52,7 @@ public class PlaySoundCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("sound")
                     && arg.matchesPrimitive(aH.PrimitiveType.String)) {
-                try {
-                    scriptEntry.addObject("sound", Sound.valueOf(arg.asElement().asString().toUpperCase()));
-                } catch (Exception e) {
-                    dB.echoError("Invalid sound!");
-                }
+                    scriptEntry.addObject("sound", arg.asElement());
             }
 
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
@@ -76,21 +72,22 @@ public class PlaySoundCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // Extract objects from ScriptEntry
-        Location location = (Location) scriptEntry.getObject("location");
-        Sound sound = (Sound) scriptEntry.getObject("sound");
-        Float volume = ((Element) scriptEntry.getObject("volume")).asFloat();
-        Float pitch = ((Element) scriptEntry.getObject("pitch")).asFloat();
+        dLocation location = (dLocation) scriptEntry.getObject("location");
+        Element sound = scriptEntry.getElement("sound");
+        Element volume = scriptEntry.getElement("volume");
+        Element pitch = scriptEntry.getElement("pitch");
 
-        // Debugger
-        dB.echoApproval("Executing '" + getName() + "': "
-                + "Location='" + location.getX() + "," + location.getY()
-                + "," + location.getZ() + "," + location.getWorld().getName() + "', "
-                + "Sound='" + sound.toString() + ", "
-                + "Volume/Pitch='" + volume + "/" + pitch + "'");
+        dB.report(getName(),
+                location.debug() +
+                sound.debug() +
+                volume.debug() +
+                pitch.debug());
 
-        // Play the sound
-        location.getWorld().playSound(location, sound, volume, pitch);
+        try {
+            location.getWorld().playSound(location, Sound.valueOf(sound.asString().toUpperCase()), volume.asFloat(), pitch.asFloat());
+        } catch (Exception e) {
+            dB.echoError("Invalid sound!");
+        }
     }
 
 }
