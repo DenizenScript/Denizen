@@ -55,8 +55,10 @@ public class TraitCommand extends AbstractCommand {
 
         Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());
 
-        if (trait == null)
-            throw new CommandExecutionException("Trait not found: " + traitName.asString());
+        if (trait == null) {
+            dB.echoError("Trait not found: " + traitName.asString());
+            return;
+        }
 
         switch (Toggle.valueOf(toggle.asString())) {
 
