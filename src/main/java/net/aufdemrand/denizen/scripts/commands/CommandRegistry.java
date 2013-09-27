@@ -1808,7 +1808,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Walk, WalkTo
-        // @Usage walkto [<location>] (speed:<#>) (auto_range)
+        // @Usage walk [<location>] (speed:<#>) (auto_range)
         // @Required 1
         // @Stable stable
         // @Short Causes the NPC to walk to another location.
