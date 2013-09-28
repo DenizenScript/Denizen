@@ -503,7 +503,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Drop
-        // @Usage drop [<item>/<entity>/<xp>] [<location>] (qty:<#>)
+        // @Usage drop [<item>/<entity>/xp] [<location>] (qty:<#>)
         // @Required 1
         // @Stable stable
         // @Short Drops an item for players to pick up.
@@ -516,7 +516,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(DropCommand.class,
-                "DROP", "drop [<item>/<entity>/<xp>] [<location>] (qty:<#>)", 1);
+                "DROP", "drop [<item>/<entity>/xp] [<location>] (qty:<#>)", 1);
 
         // <--[command]
         // @Name Engage
