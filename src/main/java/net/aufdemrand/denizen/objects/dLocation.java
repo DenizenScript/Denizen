@@ -507,7 +507,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers())
-                    if (Utilities.checkLocation(this, player.getLocation(), radius))
+                    if (!player.isDead() && Utilities.checkLocation(this, player.getLocation(), radius))
                         found.add(new dPlayer(player));
 
                 Collections.sort(found, new Comparator<dPlayer>() {
