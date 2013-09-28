@@ -436,6 +436,17 @@ public class dEntity implements dObject {
     }
 
     /**
+     * Get the dPlayer corresponding to this dEntity
+     *
+     * @return  The dPlayer
+     */
+
+    public dPlayer getDenizenPlayer() {
+
+        return new dPlayer(getPlayer());
+    }
+
+    /**
      * Check whether this dEntity is a Player
      *
      * @return  true or false

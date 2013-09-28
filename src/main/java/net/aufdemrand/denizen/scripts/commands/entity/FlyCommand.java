@@ -57,7 +57,8 @@ public class FlyCommand extends AbstractCommand {
                      && arg.matchesArgumentType(dPlayer.class)
                      && arg.matchesPrefix("controller, c")) {
 
-               scriptEntry.addObject("controller", (arg.asType(dPlayer.class)));
+               // Check if it matches a dPlayer, but save it as a dEntity
+               scriptEntry.addObject("controller", (arg.asType(dEntity.class)));
             }
 
             else if (!scriptEntry.hasObject("origin")
