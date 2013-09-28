@@ -483,13 +483,16 @@ public class Element implements dObject {
 
             String replace = attribute.getContext(1);
             String replacement = "";
-            if (attribute.startsWith("with", 2)) {
-                if (attribute.hasContext(2)) replacement = attribute.getContext(2);
-                attribute.fulfill(1);
+            attribute.fulfill(1);
+            if (attribute.startsWith("with")) {
+                if (attribute.hasContext(1)) {
+                    replacement = attribute.getContext(1);
+                    attribute.fulfill(1);
+                }
             }
 
             return new Element(element.replace(replace, replacement))
-                        .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute);
         }
 
         // <--[tag]
