@@ -108,9 +108,9 @@ public class dLocation extends org.bukkit.Location implements dObject {
         List<String> loclist = new ArrayList<String>();
         for (Map.Entry<String, dLocation> entry : uniqueObjects.entrySet())
             loclist.add(entry.getKey() + ";"
-                    + entry.getValue().getBlockX()
+                    + (entry.getValue().getBlockX() + 0.5)
                     + "," + entry.getValue().getBlockY()
-                    + "," + entry.getValue().getBlockZ()
+                    + "," + (entry.getValue().getBlockZ() + 0.5)
                     + "," + entry.getValue().getYaw()
                     + "," + entry.getValue().getPitch()
                     + "," + entry.getValue().getWorld().getName());

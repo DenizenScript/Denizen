@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
