@@ -2317,6 +2317,9 @@ public class WorldScriptHelper implements Listener {
         Player player = null;
         dNPC npc = null;
 
+        if (event.getEntity() == null)
+            return;
+
         dEntity projectile = new dEntity(event.getEntity());
 
         Block block = null;
@@ -2327,6 +2330,9 @@ public class WorldScriptHelper implements Listener {
                 break;
             }
         }
+
+        if (block == null)
+            return;
 
         String entityType = projectile.getEntityType().name();
         dEntity shooter = projectile.getShooter();
@@ -2363,8 +2369,12 @@ public class WorldScriptHelper implements Listener {
             // -->
             String shooterType = shooter.getEntityType().name();
 
-            if (shooter.isNPC()) { npc = shooter.getDenizenNPC(); shooterType = "npc"; }
-            else if (shooter.isPlayer()) player = shooter.getPlayer();
+            if (shooter.isNPC()) {
+                npc = shooter.getDenizenNPC(); shooterType = "npc";
+            }
+            else if (shooter.isPlayer()) {
+                player = shooter.getPlayer();
+            }
 
             events.add("entity shoots block");
             events.add("entity shoots block with " + entityType);
