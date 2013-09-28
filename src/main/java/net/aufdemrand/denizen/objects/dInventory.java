@@ -708,17 +708,19 @@ public class dInventory implements dObject, Notable {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
 
                 int qty = 1;
+                int attribs = 1;
 
                 if (attribute.getAttribute(2).startsWith("qty") &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {
 
                     qty = attribute.getIntContext(2);
+                    attribs = 2;
                 }
 
                 return new Element(getInventory().containsAtLeast
                         (dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
-                        .getAttribute(attribute.fulfill(qty == 1 ? 1 : 2));
+                        .getAttribute(attribute.fulfill(attribs));
             }
         }
 
