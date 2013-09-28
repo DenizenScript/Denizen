@@ -551,7 +551,7 @@ public class dEntity implements dObject {
 
     public dLocation getLocation() {
 
-        if (!isGeneric()) {
+        if (isUnique() && entity != null) {
             return new dLocation(entity.getLocation());
         }
 

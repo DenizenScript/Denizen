@@ -2322,6 +2322,9 @@ public class WorldScriptHelper implements Listener {
 
         dEntity projectile = new dEntity(event.getEntity());
 
+        if (projectile.getLocation() == null)
+            return; // No, I can't explain how or why this would ever happen... nonetheless, it appears it does happen sometimes.
+
         Block block = null;
         BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(), projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
         while(bi.hasNext()) {
