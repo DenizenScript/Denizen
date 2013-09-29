@@ -66,7 +66,7 @@ public abstract class BracedCommand extends AbstractCommand {
             if (arg.matches("{")) {
                 bracesEntered++;
                 newCommand = false;
-                waitingForDash = true;
+                waitingForDash = bracesEntered == 1;
                 if (hyperdebug) dB.echoDebug("Opened brace; " + String.valueOf(bracesEntered) + " now");
                 if (bracesEntered > 1) {
                     commandList.get(commandList.lastKey()).add(arg.raw_value);
