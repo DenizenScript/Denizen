@@ -9,9 +9,7 @@ import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.commands.core.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
 import net.aufdemrand.denizen.scripts.commands.player.*;
-import net.aufdemrand.denizen.scripts.commands.server.AnnounceCommand;
-import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
-import net.aufdemrand.denizen.scripts.commands.server.ScoreboardCommand;
+import net.aufdemrand.denizen.scripts.commands.server.*;
 import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.npc.*;
 import net.aufdemrand.denizen.scripts.commands.world.*;
@@ -146,7 +144,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Announce
-        // @Usage announce ["<text>"] (to_ops) (to_flagged:<flag>)
+        // @Usage announce ["<text>"] (to_ops) (to_flagged:<flag>) (format:<name>)
         // @Required 1
         // @Stable stable
         // @Short Announces a message for everyone online to read.
@@ -159,7 +157,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(AnnounceCommand.class,
-                "ANNOUNCE", "announce [\"<text>\"] (to_ops) (to_flagged:<flag>)", 1);
+                "ANNOUNCE", "announce [\"<text>\"] (to_ops) (to_flagged:<flag>) (format:<name>)", 1);
 
         // <--[command]
         // @Name Assignment
