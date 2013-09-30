@@ -85,6 +85,7 @@ public class AgeCommand extends AbstractCommand {
         // Go through all the entities and set their ages
         for (dEntity entity : entities) {
             if (entity.isSpawned()) {
+
                 if (entity.isAgeable()) {
                     if (ageType != null) {
                         if (ageType.equals(ageType.BABY))
@@ -95,14 +96,17 @@ public class AgeCommand extends AbstractCommand {
 
                     if (lock) entity.getAgeable().setAgeLock(true);
                 }
+
+                // Zombies are not ageable, but can be babies
                 else if (entity.getBukkitEntity() instanceof Zombie) {
                     if (ageType.equals(ageType.BABY))
                         ((Zombie) entity.getBukkitEntity()).setBaby(true);
                     else
                         ((Zombie) entity.getBukkitEntity()).setBaby(false);
                 }
+
                 else {
-                    dB.report(getName(), entity + " is not ageable!");
+                    dB.echoError(entity.identify() + " is not ageable!");
                 }
             }
         }

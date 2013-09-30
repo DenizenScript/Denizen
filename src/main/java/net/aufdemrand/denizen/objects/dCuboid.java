@@ -457,7 +457,7 @@ String prefix = "Cuboid";
         // @attribute <cu@cuboid.get_spawnable_blocks>
         // @returns dList(dLocation)
         // @description Returns each dLocation within the dCuboid that is
-        //              safe for players or similar entities to spawn in
+        // safe for players or similar entities to spawn in
         // -->
         if (attribute.startsWith("get_spawnable_blocks"))
             return new dList(getSpawnableBlocks())

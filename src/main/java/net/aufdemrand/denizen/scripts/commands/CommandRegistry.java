@@ -59,11 +59,12 @@ public class CommandRegistry implements dRegistry {
         // @Name Age
         // @Usage age [<entity>|...] (adult/baby/<age>) (lock)
         // @Required 1
-        // @Stable Todo
+        // @Stable 1.0
         // @Short Sets the ages of a list of entities, optionally locking them in those ages.
         // @Author David Cernat
         // @Description
-        // Todo
+        // Some living entity types are 'ageable' which can affect an entities ability to breed, or whether they appear
+        // as a baby or an adult. Using the 'age' command allows modification of an entity's age.
         // @Tags
         // Todo
         // @Usage
@@ -106,6 +107,7 @@ public class CommandRegistry implements dRegistry {
         // Use to make a NPC walk to or walk near a saved anchor.
         // - anchor walkto i:waypoint_1
         // - anchor walknear i:waypoint_2 r:5
+
         // -->
         registerCoreMember(AnchorCommand.class,
                 "ANCHOR", "anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]", 2);
@@ -249,28 +251,26 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Stable
         // @Short Casts a potion effect to a list of entities.
-        // @Author aufdemrand/Jeebiss/Morphan1
-        //
+        // @Author aufdemrand, Jeebiss, Morphan1
+
         // @Description
         // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
         // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
-        //
+
         // @Tags
         // <e@entity.has_effect[<effect>]> will return true if the entity has an effect.
-        //
+
         // @Usage
         // Use to apply an effect to an entity
         // - potion jump <player> d:120 p:3
         // - narrate "You have been given the temporary ability to jump like a kangaroo."
-        //
+
         // @Usage
         // Use to remove an effect from an entity
         // - if <p@Player.has_effect[jump]> {
         //   - potion jump remove <player>
         //   }
-        //
-        // @Example TODO
-        //
+
         // -->
         registerCoreMember(CastCommand.class,
                 "CAST, POTION", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)", 1);
@@ -339,7 +339,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable Stable
         // @Short Temporarily disables a script-container from meeting requirements.
         // @Author aufdemrand
-        //
+
         // @Description
         // Cools down a script-container. If an interact-container, when on cooldown, scripts will not pass a
         // requirements check allowing the next highest priority script to trigger. If any other type of script, a
@@ -348,27 +348,25 @@ public class CommandRegistry implements dRegistry {
         // a valid link to a dPlayer if using player-type cooldown.
         //
         // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
-        //
+
         // @Tags
         // <s@script_name.cooled_down[player]> will return whether the script is cooled down
         // <s@script_name.cooldown> will return the duration of the cooldown in progress.
         // <s@requirements.check> will also check script cooldown, as well as any requirements.
-        //
+
         // @Usage
         // Use to keep the current interact script from meeting requirements.
         // - cooldown 20m
-        //
+
         // @Usage
         // Use to keep a player from activating a script for a specified duration.
         // - cooldown 11h s:s@bonus_script
         // - cooldown 5s s:s@hit_indicator
-        //
+
         // @Usage
         // Use the 'global' argument to indicate the script to be on cooldown for all players.
         // - cooldown global 24h s:s@daily_treasure_offering
-        //
-        // @Example TODO
-        //
+
         // -->
         registerCoreMember(CooldownCommand.class,
                 "COOLDOWN", "cooldown [<duration>] (global) (s:<script>)", 1);
