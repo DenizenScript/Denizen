@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *
  * Set the weather in the world.
  *
+ * @author David Cernat
  */
 public class WeatherCommand extends AbstractCommand {
 
@@ -28,19 +29,21 @@ public class WeatherCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
-                    && arg.matchesEnum(Type.values()))
-                // add type
+                && arg.matchesEnum(Type.values()))
+
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
 
             else if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class))
-                // add value
+                     && arg.matchesArgumentType(dWorld.class))
+
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
 
             else if (!scriptEntry.hasObject("value")
-                    && arg.matchesEnum(Value.values()))
-                // add value
+                     && arg.matchesEnum(Value.values()))
+
                 scriptEntry.addObject("value", arg.asElement());
+
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check to make sure required arguments have been filled
@@ -50,7 +53,6 @@ public class WeatherCommand extends AbstractCommand {
 
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary
-
         scriptEntry.defaultObject("world",
                 scriptEntry.hasNPC() ? new dWorld(scriptEntry.getNPC().getWorld()) : null,
                 scriptEntry.hasPlayer() ? new dWorld(scriptEntry.getPlayer().getWorld()) : null,
@@ -68,11 +70,11 @@ public class WeatherCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(getName(), aH.debugObj("type", type.name()) +
-                (type.name().equalsIgnoreCase("player") ?
-                        aH.debugObj("player", scriptEntry.getPlayer()) : "") +
-                (type.name().equalsIgnoreCase("global") ?
-                                aH.debugObj("world", world) : "") +
-                aH.debugObj("value", value));
+                             (type.name().equalsIgnoreCase("player") ?
+                             aH.debugObj("player", scriptEntry.getPlayer()) : "") +
+                             (type.name().equalsIgnoreCase("global") ?
+                             aH.debugObj("world", world) : "") +
+                             aH.debugObj("value", value));
 
         switch(value) {
             case SUNNY:

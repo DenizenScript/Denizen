@@ -636,38 +636,6 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block moves
-    // <block> moves
-    //
-    // @Triggers when a block moves.
-    // @Context
-    // <context.location> returns the dLocation the block moved to.
-    // <context.material> returns the dMaterial of the block that moved.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from being moved.
-    //
-    // -->
-    @EventHandler
-    public void blockPhysics(BlockPhysicsEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-
-        String determination = doEvents(Arrays.asList
-                ("block moves",
-                 material.identify() + " moves"),
-                 null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // piston extends
     // <block> extends
     //
@@ -1087,6 +1055,9 @@ public class WorldScriptHelper implements Listener {
 
         Player player = event.getPlayer();
         Block block = event.getBlock();
+        if (block == null || !(block.getState() instanceof Sign)) {
+            return; // Fix error induced by dark magic.
+        }
         Sign sign = (Sign) block.getState();
         dMaterial material = new dMaterial(block.getType());
 
@@ -1680,6 +1651,9 @@ public class WorldScriptHelper implements Listener {
     public void entityExplode(EntityExplodeEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
+        if (event.getEntity() == null) {
+            return; // Fix for other plugins doing weird stuff.
+        }
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
 
@@ -2029,7 +2003,7 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity.
     // <context.origin> returns the dLocation the entity teleported from.
-    // <context.entity> returns the dLocation the entity teleported to.
+    // <context.destination> returns the dLocation the entity teleported to.
     //
     // @Determine
     // "CANCELLED" to stop the entity from teleporting.
@@ -2343,7 +2317,13 @@ public class WorldScriptHelper implements Listener {
         Player player = null;
         dNPC npc = null;
 
+        if (event.getEntity() == null)
+            return;
+
         dEntity projectile = new dEntity(event.getEntity());
+
+        if (projectile.getLocation() == null)
+            return; // No, I can't explain how or why this would ever happen... nonetheless, it appears it does happen sometimes.
 
         Block block = null;
         BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(), projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
@@ -2353,6 +2333,9 @@ public class WorldScriptHelper implements Listener {
                 break;
             }
         }
+
+        if (block == null)
+            return;
 
         String entityType = projectile.getEntityType().name();
         dEntity shooter = projectile.getShooter();
@@ -2389,8 +2372,12 @@ public class WorldScriptHelper implements Listener {
             // -->
             String shooterType = shooter.getEntityType().name();
 
-            if (shooter.isNPC()) { npc = shooter.getDenizenNPC(); shooterType = "npc"; }
-            else if (shooter.isPlayer()) player = shooter.getPlayer();
+            if (shooter.isNPC()) {
+                npc = shooter.getDenizenNPC(); shooterType = "npc";
+            }
+            else if (shooter.isPlayer()) {
+                player = shooter.getPlayer();
+            }
 
             events.add("entity shoots block");
             events.add("entity shoots block with " + entityType);
@@ -2436,8 +2423,14 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        else if (DyeColor.valueOf(determination) != null)
-            event.setColor(DyeColor.valueOf(determination));
+        else if (determination.equals(determination.toUpperCase())) {
+            try {
+                event.setColor(DyeColor.valueOf(determination));
+            }
+            catch (IllegalArgumentException e) {
+                dB.echoError("Unknown dye color " + determination);
+            }
+        }
     }
 
     // <--[event]
@@ -2643,7 +2636,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a player drags in an inventory.
     // @Context
     // <context.item> returns the dItem the player has dragged.
-    // <context.item> returns the dInventory.
+    // <context.inventory> returns the dInventory.
     //
     // @Determine
     // "CANCELLED" to stop the player from dragging.
@@ -3066,7 +3059,7 @@ public class WorldScriptHelper implements Listener {
     // @Code
     // # +--------------------
     // # | On Command Event tutorial
-    //
+    // # |
     // # | Denizen contains the ability to run script entries in the form
     // # | of a Bukkit /command. Here's an example script that shows basic usage.
     //
@@ -3446,7 +3439,7 @@ public class WorldScriptHelper implements Listener {
                 itemMaterial.identify());
 
         if (entity.getBukkitEntity() instanceof ItemFrame) {
-            dItem itemFrame = new dItem(((ItemFrame) entity).getItem());
+            dItem itemFrame = new dItem(((ItemFrame) entity.getBukkitEntity()).getItem());
             dMaterial itemFrameMaterial = itemFrame.getMaterial();
             context.put("itemframe", itemFrame);
 

@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
  */
 public class NameplateCommand extends AbstractCommand {
 
-    /* Example usge:
+    /* Example usage:
      * - NAMEPLATE COLOR:RED
      * - NAMEPLATE COLOR:GOLD PLAYER:Notch
      *

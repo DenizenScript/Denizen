@@ -48,6 +48,8 @@ public class RemoveCommand extends AbstractCommand {
 
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check to make sure required arguments have been filled

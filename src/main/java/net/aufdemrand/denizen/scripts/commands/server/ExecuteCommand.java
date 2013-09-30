@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
+import net.aufdemrand.denizen.objects.Element;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.trait.CurrentLocation;
 import org.bukkit.entity.EntityType;
@@ -20,78 +21,76 @@ public class ExecuteCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        String command = null;
-        Type executeType = null;
-
         // Parse arguments
-        for (String arg : scriptEntry.getArguments()) {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (aH.matchesArg("ASPLAYER, AS_PLAYER", arg))
-                executeType = Type.AS_PLAYER;
+            if (arg.matches("ASPLAYER, AS_PLAYER, PLAYER")
+                    && !scriptEntry.hasObject("type")) {
+                if (!scriptEntry.hasPlayer())
+                    throw new InvalidArgumentsException("Must have a Player link when using AS_PLAYER.");
+                scriptEntry.addObject("type", new Element("AS_PLAYER"));
+            }
 
-            else if (aH.matchesArg("ASOPPLAYER, ASOP, AS_OP, AS_OP_PLAYER", arg))
-                executeType = Type.AS_OP;
+            else if (arg.matches("ASOPPLAYER, ASOP, AS_OP, AS_OP_PLAYER, OP")
+                    && !scriptEntry.hasObject("type")) {
+                if (!scriptEntry.hasPlayer())
+                    throw new InvalidArgumentsException("Must have a Player link when using AS_OP.");
+                scriptEntry.addObject("type", new Element("AS_OP"));
+            }
 
-            else if (aH.matchesArg("ASNPC, AS_NPC", arg))
-                executeType = Type.AS_NPC;
+            else if (arg.matches("ASNPC, AS_NPC, NPC")
+                    && !scriptEntry.hasObject("type")) {
+                if (!scriptEntry.hasNPC())
+                    throw new InvalidArgumentsException("Must have a NPC link when using AS_NPC.");
+                scriptEntry.addObject("type", new Element("AS_NPC"));
+            }
 
-            else if (aH.matchesArg("ASSERVER, AS_SERVER", arg))
-                executeType = Type.AS_SERVER;
+            else if (arg.matches("ASSERVER, AS_SERVER, SERVER")
+                    && !scriptEntry.hasObject("type"))
+                scriptEntry.addObject("type", new Element("AS_SERVER"));
 
-            else command = arg;
+            else if (!scriptEntry.hasObject("command"))
+                scriptEntry.addObject("command", new Element(arg.raw_value));
+
+            else
+                throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
-        if (executeType == null)
+        if (!scriptEntry.hasObject("type"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EXECUTE_TYPE");
 
-        if (executeType == Type.AS_NPC && scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException("Must have a NPC link when using AS_NPC.");
-
-        if ((executeType == Type.AS_OP || executeType == Type.AS_PLAYER)
-                && scriptEntry.getPlayer() == null)
-            throw new InvalidArgumentsException("Must have a Player link when using AS_OP or AS_PLAYER.");
-
-        if (command == null)
+        if (!scriptEntry.hasObject("command"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "COMMAND_TEXT");
-
-        scriptEntry.addObject("command", command)
-                .addObject("type", executeType);
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        String command = (String) scriptEntry.getObject("command");
-        Type type = (Type) scriptEntry.getObject("type");
+        Element cmd = scriptEntry.getElement("command");
+        Element type = scriptEntry.getElement("type");
 
         // Report to dB
         dB.report(getName(),
-                aH.debugObj("Type", type.toString())
-                        + aH.debugObj("Command", command));
+                type.debug()
+                + cmd.debug());
 
-        switch (type) {
+        String command = cmd.asString();
+
+        switch (Type.valueOf(type.asString())) {
 
         case AS_PLAYER:
             scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
             return;
 
         case AS_OP:
-            boolean isOp = false;
-            if (scriptEntry.getPlayer().getPlayerEntity().isOp()) isOp = true;
+            boolean isOp = scriptEntry.getPlayer().getPlayerEntity().isOp();
             if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(true);
             scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
             if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(false);
             return;
 
         case AS_NPC:
-            boolean should_despawn = false;
-            if (!scriptEntry.getNPC().isSpawned()) {
-                scriptEntry.getNPC().getCitizen()
-                        .spawn(scriptEntry.getNPC().getCitizen()
-                                .getTrait(CurrentLocation.class).getLocation());
-                should_despawn = true;
-            }
             if (!scriptEntry.getNPC().isSpawned()) {
                 dB.echoError("Cannot EXECUTE AS_NPC unless the NPC is Spawned.");
                 return;
@@ -103,7 +102,6 @@ public class ExecuteCommand extends AbstractCommand {
             ((Player) scriptEntry.getNPC().getEntity()).setOp(true);
             ((Player) scriptEntry.getNPC().getEntity()).performCommand(command);
             ((Player) scriptEntry.getNPC().getEntity()).setOp(false);
-            if (should_despawn) scriptEntry.getNPC().getCitizen().despawn(DespawnReason.PLUGIN);
             return;
 
         case AS_SERVER:

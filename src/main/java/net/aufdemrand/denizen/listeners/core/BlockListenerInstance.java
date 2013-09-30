@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
@@ -150,13 +151,30 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
         //Type BREAK
         if (type == BlockType.BREAK) {
-            //If the block matches, count it!!
-            if (blocks.contains(event.getBlock().getType().name().toLowerCase())
-                || blocks.contains(String.valueOf(event.getBlock().getTypeId()))
-                || blocks.contains("*")) {
+            dB.log("...BREAK listener");
+            //if catch-all specified, count it!
+            if (blocks.contains("*")) {
+                blocks_so_far++;
+                dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                        + " broke a(n) " + event.getBlock().getType().toString()
+                        + ".");
+                check();
+                return;
+            }
+            
+            //check if block is specified and if so, count it!
+            for (String item_value : blocks) {
+                dB.log("...checking value: " + item_value);
+                dMaterial mat = dMaterial.valueOf(item_value);
+                
+                if (event.getBlock().getState().getType() == mat.getMaterial() &&
+                        event.getBlock().getState().getData().equals(mat.getMaterialData())){
                     blocks_so_far++;
-                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " broke a " + event.getBlock().getType().toString() + ".");
+                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                            + " broke a(n) " + event.getBlock().getType().toString()
+                            + ".");
                     check();
+                }
             }
         }
     }
@@ -178,18 +196,34 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
         //Type COLLECT
         if (type == BlockType.COLLECT) {
-            //If the block matches, count it!!
-            if (blocks.contains(event.getItem().getItemStack().getType().name().toLowerCase())
-                || blocks.contains(String.valueOf(event.getItem().getItemStack().getTypeId()))
-                || blocks.contains("*")) {
+            
+            //if catch-all specified, count it!
+            if (blocks.contains("*")) {
+                blocks_so_far++;
+                dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                        + " collected a(n) " + event.getItem().getItemStack().getType().toString()
+                        + ".");
+                check();
+                return;
+            }
+            
+            //check if block is specified and if so, count it!
+            for (String item_value : blocks) {
+                dMaterial mat = dMaterial.valueOf(item_value);
+                
+                if (event.getItem().getItemStack().getType() == mat.getMaterial() &&
+                        event.getItem().getItemStack().getData().equals(mat.getMaterialData())){
                     //If the specific item has been collected before, dont count it
                     if (itemsCollected.contains(event.getItem().getEntityId()))
                         return;
                     else itemsCollected.add(event.getItem().getEntityId());
-
-                    blocks_so_far = blocks_so_far + event.getItem().getItemStack().getAmount();
-                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " collected a " + event.getItem().getItemStack().getType().toString() + ".");
+                    
+                    blocks_so_far++;
+                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                            + " collected a(n) " + event.getItem().getItemStack().getType().toString()
+                            + ".");
                     check();
+                }
             }
         }
     }
@@ -209,13 +243,28 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
         //Type COLLECT
         if (type == BlockType.COLLECT) {
-            //If the block matches, count it!!
-            if (blocks.contains(event.getBucket().name().toLowerCase())
-                || blocks.contains(String.valueOf(event.getBucket().name().toUpperCase()))
-                || blocks.contains("*")) {
+            //if catch-all specified, count it!
+            if (blocks.contains("*")) {
+                blocks_so_far++;
+                dB.echoDebug(ChatColor.YELLOW + "// "
+                        + player.getName() + " collected a "
+                        + event.getBucket().name() + ".");
+                check();
+                return;
+            }
+            
+            //check if block is specified and if so, count it!
+            for (String item_value : blocks) {
+                dMaterial mat = dMaterial.valueOf(item_value);
+                
+                if (event.getBucket() == mat.getMaterial()){
                     blocks_so_far++;
-                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " collected a " + event.getBucket().name() + ".");
+                    dB.echoDebug(ChatColor.YELLOW + "// "
+                            + player.getName() + " collected a "
+                            + event.getBucket().name() + ".");
+
                     check();
+                }
             }
         }
     }
@@ -237,18 +286,28 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         //Type BUILD
         if (type == BlockType.BUILD) {
 
-            //If the block matches, count it!!
-            if (blocks.contains(event.getBlock().getType().name().toLowerCase())
-                || blocks.contains(String.valueOf(event.getBlock().getTypeId()))
-                || blocks.contains("*")) {
-
-                    //If a block has already been placed at that location, dont count it.
-                    if (blocksPlaced.contains(event.getBlock().getLocation()))
-                        return;
-                    else blocksPlaced.add(event.getBlock().getLocation());
+            //if catch-all specified, count it!
+            if (blocks.contains("*")) {
+                blocks_so_far++;
+                dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                        + " placed a(n) " + event.getBlock().getType().toString()
+                        + ".");
+                check();
+                return;
+            }
+            
+            //check if block is specified and if so, count it!
+            for (String item_value : blocks) {
+                dMaterial mat = dMaterial.valueOf(item_value);
+                
+                if (event.getBlock().getState().getType() == mat.getMaterial() &&
+                        event.getBlock().getState().getData().equals(mat.getMaterialData())){
                     blocks_so_far++;
-                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " placed a " + event.getBlock().getType().toString() + ".");
+                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                            + " placed a(n) " + event.getBlock().getType().toString()
+                            + ".");
                     check();
+                }
             }
         }
     }

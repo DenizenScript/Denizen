@@ -2,7 +2,9 @@ package net.aufdemrand.denizen.utilities.midi;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
@@ -10,9 +12,10 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequencer;
 
-import org.bukkit.Location;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 /**
  * Utility for playing midi files for players to hear.
@@ -21,6 +24,8 @@ import org.bukkit.entity.Player;
  */
 public class MidiUtil
 {
+    public static Map<String, Receiver> receivers = new HashMap<String, Receiver>();
+
     public static void startSequencer(File file, float tempo, Receiver receiver)
             throws InvalidMidiDataException, IOException, MidiUnavailableException
     {
@@ -36,48 +41,47 @@ public class MidiUtil
         sequencer.start();
     }
 
-    public static void playMidi(File file, float tempo, Set<Player> listeners)
-            throws InvalidMidiDataException, IOException, MidiUnavailableException
+    public static void playMidi(File file, float tempo, List<dEntity> entities)
     {
-        NoteBlockReceiver noteblockRecv = new NoteBlockReceiver(listeners);
-        startSequencer(file, tempo, noteblockRecv);
+        try {
+            NoteBlockReceiver receiver = new NoteBlockReceiver(entities);
+            // If there is already a midi file being played for one of the entities,
+            // stop playing it
+            for (dEntity entity : entities) {
+                stopMidi(entity.getUUID().toString());
+                receivers.put(entity.getUUID().toString(), receiver);
+            }
+
+            startSequencer(file, tempo, receiver);
+        }
+        catch (Exception e) { e.printStackTrace(); }
     }
 
-    public static void playMidi(File file, float tempo, Location location)
-            throws InvalidMidiDataException, IOException, MidiUnavailableException
+    public static void playMidi(File file, float tempo, dLocation location)
     {
-        NoteBlockReceiver noteblockRecv = new NoteBlockReceiver(location);
-        startSequencer(file, tempo, noteblockRecv);
+        try {
+            NoteBlockReceiver receiver = new NoteBlockReceiver(location);
+            // If there is already a midi file being played for this location,
+            // stop playing it
+            stopMidi(location.identify());
+            receivers.put(location.identify(), receiver);
+
+            startSequencer(file, tempo, receiver);
+        }
+        catch (Exception e) { e.printStackTrace(); }
     }
 
-    public static boolean playMidiQuietly(File file, float tempo, Set<Player> listeners)
-    {
-        try { MidiUtil.playMidi(file, tempo, listeners); }
-        catch (MidiUnavailableException e) { e.printStackTrace(); return false; }
-        catch (InvalidMidiDataException e) { e.printStackTrace(); return false; }
-        catch (IOException e) { e.printStackTrace(); return false; }
-
-        return true;
+    public static void stopMidi(String object) {
+        if (receivers.containsKey(object)) {
+            receivers.get(object).close();
+            receivers.remove(object);
+        }
     }
 
-    public static boolean playMidiQuietly(File file, float tempo, Location location)
-    {
-        try { MidiUtil.playMidi(file, tempo, location); }
-        catch (MidiUnavailableException e) { e.printStackTrace(); return false; }
-        catch (InvalidMidiDataException e) { e.printStackTrace(); return false; }
-        catch (IOException e) { e.printStackTrace(); return false; }
-
-        return true;
-    }
-
-    public static boolean playMidiQuietly(File file, Set<Player> listeners)
-    {
-        return playMidiQuietly(file, 1.0f, listeners);
-    }
-
-    public static boolean playMidiQuietly(File file, Location location)
-    {
-        return playMidiQuietly(file, 1.0f, location);
+    public static void stopMidi(List<dEntity> entities) {
+        for (dEntity entity : entities) {
+            stopMidi(entity.getUUID().toString());
+        }
     }
 
     // provided by github.com/sk89q/craftbook

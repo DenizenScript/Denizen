@@ -50,7 +50,6 @@ public class QueueCommand extends AbstractCommand {
 
     }
 
-    @SuppressWarnings("incomplete-switch")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 

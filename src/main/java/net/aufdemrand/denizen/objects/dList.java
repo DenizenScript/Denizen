@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.ChatColor;
@@ -220,7 +221,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.as_cslist>
         // @returns Element
         // @description
-        // returns 'comma-separated' list of the contents of this dList.
+        // returns the list in a cleaner format, separated by commas.
         // -->
         if (attribute.startsWith("ascslist")
                 || attribute.startsWith("as_cslist")) {
@@ -236,10 +237,32 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.formatted>
+        // @returns Element
+        // @description
+        // returns the list in a human-readable format.
+        // -->
+        if (attribute.startsWith("formatted")) {
+            if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
+            StringBuilder dScriptArg = new StringBuilder();
+
+            for (int n = 0; n < this.size(); n++) {
+
+                dScriptArg.append(this.get(n).replaceAll("\\w\\w?@", ""));
+
+                if (n == this.size() - 2) dScriptArg.append(" and ");
+                else                      dScriptArg.append(", ");
+            }
+
+            return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.size>
         // @returns Element(Number)
         // @description
-        // returns the size of the list
+        // returns the size of the list.
         // -->
         if (attribute.startsWith("size"))
             return new Element(size()).getAttribute(attribute.fulfill(1));
@@ -248,7 +271,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.is_empty>
         // @returns Element(Boolean)
         // @description
-        // returns whether the list is empty
+        // returns whether the list is empty.
         // -->
         if (attribute.startsWith("is_empty"))
             return new Element(isEmpty()).getAttribute(attribute.fulfill(1));
@@ -309,6 +332,27 @@ public class dList extends ArrayList<String> implements dObject {
             return new Element(item).getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <li@list.find[<element>]>
+        // @returns Element(Number)
+        // @description
+        // returns the numbered location of an element within a list,
+        // or -1 if the list does not contain that item.
+        // -->
+        if (attribute.startsWith("find")) {
+            if (attribute.hasContext(1)) {
+                for (int i = 0; i < size(); i++) {
+                    if (get(i).equalsIgnoreCase(attribute.getContext(1)))
+                        return new Element(i + 1).getAttribute(attribute.fulfill(1));
+                }
+                for (int i = 0; i < size(); i++) {
+                    if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
+                        return new Element(i + 1).getAttribute(attribute.fulfill(1));
+                }
+                return new Element(-1).getAttribute(attribute.fulfill(1));
+            }
+        }
+
         if (attribute.startsWith("last")) {
             return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
         }
@@ -359,15 +403,33 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.random>
+        // @attribute <li@list.random[#]>
         // @returns Element
         // @description
-        // gets a random item in the list and returns it as an Element.
+        // Gets a random item in the list and returns it as an Element.
+        // Optionally, add [#] to get a list of multiple randomly chosen elements.
         // -->
         if (attribute.startsWith("random")) {
-            if (!this.isEmpty())
-                return new Element(this.get(new Random().nextInt(this.size())))
-                    .getAttribute(attribute.fulfill(1));
+            if (!this.isEmpty()) {
+                if (attribute.hasContext(1)) {
+                    int count = Integer.valueOf(attribute.getContext(1));
+                    int times = 0;
+                    ArrayList<String> available = new ArrayList<String>();
+                    available.addAll(this);
+                    dList toReturn = new dList();
+                    while (!available.isEmpty() && times < count) {
+                        int random = Utilities.getRandom().nextInt(available.size());
+                        toReturn.add(available.get(random));
+                        available.remove(random);
+                        times++;
+                    }
+                    return toReturn.getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return new Element(this.get(Utilities.getRandom().nextInt(this.size())))
+                        .getAttribute(attribute.fulfill(1));
+                }
+            }
         }
 
         // FLAG Specific Attributes
@@ -402,7 +464,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <fl@flag_name.as_list>
         // @returns dList
         // @description
-        // returns a dList containing the items in the flag
+        // returns a dList containing the items in the flag.
         // -->
         if (flag != null && (attribute.startsWith("as_list")
                 || attribute.startsWith("aslist")))

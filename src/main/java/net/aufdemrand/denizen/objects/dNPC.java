@@ -284,7 +284,7 @@ public class dNPC implements dObject {
         // @attribute <npc.name.nickname>
         // @returns Element
         // @description
-        // returns the NPC's nickname provided by the nickname trait, or null if the NPC does not have the nickname trait.
+        // returns the NPC's display name.
         // -->
         if (attribute.startsWith("name.nickname"))
             return new Element(getCitizen().hasTrait(NicknameTrait.class) ? getCitizen().getTrait(NicknameTrait.class)
@@ -304,7 +304,7 @@ public class dNPC implements dObject {
         // @attribute <npc.list_traits>
         // @returns dList
         // @description
-        // Returns a dList of all of the NPC's trait names.
+        // Returns a list of all of the NPC's traits.
         // -->
         if (attribute.startsWith("list_traits")) {
             List<String> list = new ArrayList<String>();
@@ -317,7 +317,7 @@ public class dNPC implements dObject {
         // @attribute <npc.has_trait[<trait>]>
         // @returns Element(boolean)
         // @description
-        // Returns whether or not the NPC has a specified trait.
+        // Returns whether the NPC has a specified trait.
         // -->
         if (attribute.startsWith("has_trait")) {
             if (attribute.hasContext(1)) {
@@ -332,7 +332,7 @@ public class dNPC implements dObject {
         // @attribute <npc.anchor.list>
         // @returns dList
         // @description
-        // returns a dList of anchor names currently assigned to the NPC.
+        // returns a list of anchor names currently assigned to the NPC.
         // -->
         if (attribute.startsWith("anchor.list")
                 || attribute.startsWith("anchors.list")) {
@@ -346,7 +346,7 @@ public class dNPC implements dObject {
         // @attribute <npc.has_anchors>
         // @returns Element(boolean)
         // @description
-        // returns true if the NPC has anchors assigned, false otherwise.
+        // returns whether the NPC has anchors assigned.
         // -->
         if (attribute.startsWith("has_anchors")) {
             return (new Element(getCitizen().getTrait(Anchors.class).getAnchors().size() > 0))
@@ -357,7 +357,7 @@ public class dNPC implements dObject {
         // @attribute <npc.anchor[name]>
         // @returns dLocation
         // @description
-        // returns a dLocation associated with the specified anchor, or 'null' if it doesn't exist.
+        // returns the location associated with the specified anchor, or null if it doesn't exist.
         // -->
         if (attribute.startsWith("anchor")) {
             if (attribute.hasContext(1)
@@ -371,7 +371,7 @@ public class dNPC implements dObject {
         // @attribute <npc.flag[flag_name]>
         // @returns Flag dList
         // @description
-        // returns 'flag dList' of the NPC's flag_name specified.
+        // returns the specified flag from the NPC.
         // -->
          if (attribute.startsWith("flag")) {
             String flag_name;
@@ -395,7 +395,7 @@ public class dNPC implements dObject {
         // @attribute <npc.id>
         // @returns Element(number)
         // @description
-        // returns the NPC's 'npcid' provided by Citizens.
+        // returns the NPC's ID number.
         // -->
         if (attribute.startsWith("id"))
             return new Element(getId()).getAttribute(attribute.fulfill(1));
@@ -414,7 +414,6 @@ public class dNPC implements dObject {
         // @returns dInventory
         // @description
         // Returns the dInventory of the NPC.
-        // NOTE: This currently only works with player-type NPCs.
         // -->
         if (attribute.startsWith("inventory"))
             return new dInventory(getEntity()).getAttribute(attribute.fulfill(1));
@@ -423,7 +422,7 @@ public class dNPC implements dObject {
         // @attribute <npc.is_spawned>
         // @returns Element(boolean)
         // @description
-        // returns 'true' if the NPC is spawned, otherwise 'false'.
+        // returns whether the NPC is spawned.
         // -->
         if (attribute.startsWith("is_spawned"))
             return new Element(isSpawned()).getAttribute(attribute.fulfill(1));
@@ -460,7 +459,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.is_navigating>
         // @returns Element(boolean)
         // @description
-        // returns true if the NPC is currently navigating, false otherwise.
+        // returns whether the NPC is currently navigating.
         // -->
         if (attribute.startsWith("navigator.is_navigating"))
             return new Element(getNavigator().isNavigating()).getAttribute(attribute.fulfill(2));
@@ -479,7 +478,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.range>
         // @returns Element(number)
         // @description
-        // returns the maximum pathfinding range
+        // returns the maximum pathfinding range.
         // -->
         if (attribute.startsWith("navigator.range"))
             return new Element(getNavigator().getLocalParameters().range())
@@ -489,7 +488,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.attack_strategy>
         // @returns Element
         // @description
-        // returns the NPC's attack strategy
+        // returns the NPC's attack strategy.
         // -->
         if (attribute.startsWith("navigator.attack_strategy"))
             return new Element(getNavigator().getLocalParameters().attackStrategy().toString())
@@ -499,7 +498,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.speed_modifier>
         // @returns Element(number)
         // @description
-        // returns the NPC movement speed modifier
+        // returns the NPC movement speed modifier.
         // -->
         if (attribute.startsWith("navigator.speed_modifier"))
             return new Element(getNavigator().getLocalParameters().speedModifier())
@@ -509,7 +508,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.base_speed>
         // @returns Element(number)
         // @description
-        // returns the base navigation speed
+        // returns the base navigation speed.
         // -->
         if (attribute.startsWith("navigator.base_speed"))
             return new Element(getNavigator().getLocalParameters().baseSpeed())
@@ -519,7 +518,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.avoid_water>
         // @returns Element(boolean)
         // @description
-        // returns whether the NPC will avoid water
+        // returns whether the NPC will avoid water.
         // -->
         if (attribute.startsWith("navigator.avoid_water"))
             return new Element(getNavigator().getLocalParameters().avoidWater())
@@ -529,7 +528,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.target_location>
         // @returns dLocation
         // @description
-        // returns the location the NPC is curently navigating towards
+        // returns the location the NPC is curently navigating towards.
         // -->
         if (attribute.startsWith("navigator.target_location"))
             return (getNavigator().getTargetAsLocation() != null
@@ -540,7 +539,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.is_fighting>
         // @returns Element(boolean)
         // @description
-        // returns whether the NPC is in combat
+        // returns whether the NPC is in combat.
         // -->
         if (attribute.startsWith("navigator.is_fighting"))
             return new Element(getNavigator().getEntityTarget().isAggressive())
@@ -550,7 +549,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.target_type>
         // @returns Element
         // @description
-        // returns the entity type of the target
+        // returns the entity type of the target.
         // -->
         if (attribute.startsWith("navigator.target_type"))
             return new Element(getNavigator().getTargetType().toString())
@@ -560,7 +559,7 @@ public class dNPC implements dObject {
         // @attribute <npc.navigator.target_entity>
         // @returns dEntity
         // @description
-        // returns the entity being targeted
+        // returns the entity being targeted.
         // -->
         if (attribute.startsWith("navigator.target_entity"))
             return (getNavigator().getEntityTarget().getTarget() != null
@@ -568,7 +567,7 @@ public class dNPC implements dObject {
                     : "null");
 
         return (getEntity() != null
-                ? new dEntity(getEntity()).getAttribute(attribute)
+                ? new dEntity(getCitizen()).getAttribute(attribute)
                 : new Element(identify()).getAttribute(attribute));
 
     }

@@ -20,8 +20,7 @@ import net.aufdemrand.denizen.utilities.Velocity;
 import net.aufdemrand.denizen.utilities.entity.Gravity;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
+
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -63,13 +62,6 @@ public class ShootCommand extends AbstractCommand {
                 scriptEntry.addObject("height", arg.asElement());
             }
 
-            else if (!scriptEntry.hasObject("gravity")
-                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                     && arg.matchesPrefix("gravity, g, velocity, v")) {
-
-                scriptEntry.addObject("gravity", arg.asElement());
-            }
-
             else if (!scriptEntry.hasObject("script")
                      && arg.matchesArgumentType(dScript.class)) {
 
@@ -82,8 +74,15 @@ public class ShootCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
-            else
-                dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
+            // Don't document this argument; it is for debug purposes only
+            else if (!scriptEntry.hasObject("gravity")
+                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                     && arg.matchesPrefix("gravity, g")) {
+
+                scriptEntry.addObject("gravity", arg.asElement());
+            }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use the NPC or player's locations as the origin if one is not specified
@@ -117,18 +116,14 @@ public class ShootCommand extends AbstractCommand {
                                                .add(originEntity.getEyeLocation().getDirection())
                                                .subtract(0, 0.4, 0));
 
-        // If a living entity is doing the shooting, get its LivingEntity
-        LivingEntity shooter = (originEntity != null && originEntity.isLivingEntity()) ? originEntity.getLivingEntity() : null;
-
         // If there is no destination set, but there is a shooter, get a point
         // in front of the shooter and set it as the destination
-
         final dLocation destination = scriptEntry.hasObject("destination") ?
                                       (dLocation) scriptEntry.getObject("destination") :
-                                      (shooter != null ? new dLocation(shooter.getEyeLocation()
-                                                               .add(shooter.getEyeLocation().getDirection()
+                                      (originEntity != null ? new dLocation(originEntity.getEyeLocation()
+                                                               .add(originEntity.getEyeLocation().getDirection()
                                                                .multiply(30)))
-                                                       : null);
+                                                            : null);
 
         if (destination == null) {
             dB.report(getName(), "No destination specified!");
@@ -147,7 +142,7 @@ public class ShootCommand extends AbstractCommand {
                              aH.debugObj("destination", destination) +
                              aH.debugObj("height", height) +
                              aH.debugObj("gravity", gravity) +
-                             (script != null ? aH.debugObj("script", script.identify()) : ""));
+                             (script != null ? script.debug() : ""));
 
         // Keep a dList of entities that can be called using <entry[name].shot_entities>
         // later in the script queue
@@ -161,16 +156,14 @@ public class ShootCommand extends AbstractCommand {
             // Only add to entityList after the entities have been
             // spawned, otherwise you'll get something like "e@skeleton"
             // instead of "e@57" on it
-
             entityList.add(entity.toString());
 
             Rotation.faceLocation(entity.getBukkitEntity(), destination);
 
             // If the current entity is a projectile, set its shooter
             // when applicable
-
-            if (entity.getBukkitEntity() instanceof Projectile && shooter != null) {
-                ((Projectile) entity.getBukkitEntity()).setShooter(shooter);
+            if (entity.isProjectile() && originEntity != null) {
+                entity.setShooter(originEntity);
             }
         }
 
@@ -183,7 +176,6 @@ public class ShootCommand extends AbstractCommand {
         // Get the entity at the bottom of the entity list, because
         // only its gravity should be affected and tracked considering
         // that the other entities will be mounted on it
-
         final dEntity lastEntity = entities.get(entities.size() - 1);
 
         if (gravity == null) {
@@ -195,7 +187,7 @@ public class ShootCommand extends AbstractCommand {
                 if (defaultGravity.name().equals(entityType)) {
 
                     gravity = new Element(defaultGravity.getGravity());
-                    dB.echoApproval("Gravity: " + gravity);
+                    dB.echoDebug("Gravity: " + gravity);
                 }
             }
 
@@ -213,7 +205,6 @@ public class ShootCommand extends AbstractCommand {
 
         // A task used to trigger a script if the entity is no longer
         // being shot, when the script argument is used
-
         BukkitRunnable task = new BukkitRunnable() {
 
             boolean flying = true;
@@ -221,17 +212,14 @@ public class ShootCommand extends AbstractCommand {
 
             public void run() {
 
-                // If the entity is no longer valid, stop the task
-
-                if (!lastEntity.isValid()) {
+                // If the entity is no longer spawned, stop the task
+                if (!lastEntity.isSpawned()) {
                     flying = false;
                 }
 
                 // Else, if the entity is no longer traveling through
                 // the air, stop the task
-
                 else if (lastVelocity != null) {
-
                     if (lastVelocity.distance
                             (lastEntity.getBukkitEntity().getVelocity()) < 0.05) {
                         flying = false;
@@ -240,14 +228,13 @@ public class ShootCommand extends AbstractCommand {
 
                 // Stop the task and run the script if conditions
                 // are met
-
                 if (!flying) {
 
                     this.cancel();
 
-                    List<ScriptEntry> entries = script.getContainer().getBaseEntries(
-                            scriptEntry.getPlayer(),
-                            scriptEntry.getNPC());
+                    List<ScriptEntry> entries = script.getContainer().getBaseEntries
+                            (scriptEntry.getPlayer(),
+                             scriptEntry.getNPC());
                     ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
                     queue.addDefinition("location", lastEntity.getLocation().identify());
                     queue.addDefinition("shot_entities", entityList.toString());
@@ -261,9 +248,7 @@ public class ShootCommand extends AbstractCommand {
         };
 
         // Run the task above if a script argument was specified
-
         if (script != null) {
-
             task.runTaskTimer(denizen, 0, 2);
         }
     }

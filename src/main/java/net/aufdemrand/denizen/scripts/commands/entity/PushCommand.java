@@ -22,8 +22,6 @@ import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -32,7 +30,7 @@ import org.bukkit.util.Vector;
  * The origin can optionally be an entity that will look at the
  * object it is moving.
  *
- * @author David Cernat
+ * @author David Cernat, mcmonkey
  */
 
 public class PushCommand extends AbstractCommand {
@@ -86,8 +84,7 @@ public class PushCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
-            else
-                dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use the NPC or player's locations as the origin if one is not specified
@@ -122,18 +119,14 @@ public class PushCommand extends AbstractCommand {
                                                .add(originEntity.getEyeLocation().getDirection())
                                                .subtract(0, 0.4, 0));
 
-        // If a living entity is doing the shooting, get its LivingEntity
-        LivingEntity shooter = (originEntity != null && originEntity.isLivingEntity()) ? originEntity.getLivingEntity() : null;
-
         // If there is no destination set, but there is a shooter, get a point
         // in front of the shooter and set it as the destination
-
         final dLocation destination = scriptEntry.hasObject("destination") ?
                                       (dLocation) scriptEntry.getObject("destination") :
-                                      (shooter != null ? new dLocation(shooter.getEyeLocation()
-                                                               .add(shooter.getEyeLocation().getDirection()
+                                      (originEntity != null ? new dLocation(originEntity.getEyeLocation()
+                                                               .add(originEntity.getEyeLocation().getDirection()
                                                                .multiply(30)))
-                                                       : null);
+                                                            : null);
 
         if (destination == null) {
             dB.report(getName(), "No destination specified!");
@@ -147,23 +140,15 @@ public class PushCommand extends AbstractCommand {
         final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("origin", shooter) +
+        dB.report(getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("destination", destination) +
                              aH.debugObj("speed", speed) +
                              aH.debugObj("max ticks", maxTicks) +
-                             (script != null ? aH.debugObj("script", script) : ""));
-
-        // If the shooter is an NPC, always rotate it to face the destination
-        // of the projectile, but if the shooter is a player, only rotate him/her
-        // if he/she is not looking in the correct general direction
-
-        if (shooter != null && (originEntity.isNPC() || !Rotation.isFacingLocation(shooter, destination, 45)))
-                Rotation.faceLocation(shooter, destination);
+                             (script != null ? script.debug() : ""));
 
         // Keep a dList of entities that can be called using <entry[name].pushed_entities>
         // later in the script queue
-
         final dList entityList = new dList();
 
         // Go through all the entities, spawning/teleporting and rotating them
@@ -173,16 +158,14 @@ public class PushCommand extends AbstractCommand {
             // Only add to entityList after the entities have been
             // spawned, otherwise you'll get something like "e@skeleton"
             // instead of "e@57" on it
-
             entityList.add(entity.toString());
 
             Rotation.faceLocation(entity.getBukkitEntity(), destination);
 
             // If the current entity is a projectile, set its shooter
             // when applicable
-
-            if (entity.getBukkitEntity() instanceof Projectile && shooter != null) {
-                ((Projectile) entity.getBukkitEntity()).setShooter(shooter);
+            if (entity.isProjectile() && originEntity != null) {
+                entity.setShooter(originEntity);
             }
         }
 
@@ -195,7 +178,6 @@ public class PushCommand extends AbstractCommand {
         // Get the entity at the bottom of the entity list, because
         // only its gravity should be affected and tracked considering
         // that the other entities will be mounted on it
-
         final dEntity lastEntity = entities.get(entities.size() - 1);
 
         final Vector v2 = destination.toVector();

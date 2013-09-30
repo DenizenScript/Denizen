@@ -5,12 +5,15 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.bukkit.Location;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import com.google.common.collect.Maps;
 
@@ -23,20 +26,21 @@ public class NoteBlockReceiver implements Receiver
 {
     private static final float VOLUME_RANGE = 10.0f;
 
-    private final Set<Player> listeners;
-    private final Location location;
+    private List<dEntity> entities;
+    private dLocation location;
     private final Map<Integer, Integer> channelPatches;
+    private Collection<dEntity> unusedEntities = new LinkedList<dEntity>();
 
-    public NoteBlockReceiver(Set<Player> listeners) throws InvalidMidiDataException, IOException
+    public NoteBlockReceiver(List<dEntity> entities) throws InvalidMidiDataException, IOException
     {
-        this.listeners = listeners;
+        this.entities = entities;
         this.location = null;
         this.channelPatches = Maps.newHashMap();
     }
 
-    public NoteBlockReceiver(Location location) throws InvalidMidiDataException, IOException
+    public NoteBlockReceiver(dLocation location) throws InvalidMidiDataException, IOException
     {
-        this.listeners = null;
+        this.entities = null;
         this.location = location;
         this.channelPatches = Maps.newHashMap();
     }
@@ -90,16 +94,37 @@ public class NoteBlockReceiver implements Receiver
 
             location.getWorld().playSound(location, instrument, volume, pitch);
         }
-        else {
-            for (Player player : listeners)
-                player.playSound(player.getLocation(), instrument, volume, pitch);
+        else if (entities != null && !entities.isEmpty()) {
+            for (dEntity entity : entities) {
+                if (entity.isSpawned()) {
+                    if (entity.isPlayer()) {
+                        entity.getPlayer().playSound(entity.getLocation(), instrument, volume, pitch);
+                    }
+                    else {
+                        entity.getWorld().playSound(entity.getLocation(), instrument, volume, pitch);
+                    }
+                }
+                else {
+                    unusedEntities.add(entity);
+                }
+            }
+
+            // Remove any entities that are no longer spawned
+            if (!unusedEntities.isEmpty()) {
+                for (dEntity unusedEntity : unusedEntities) {
+                    entities.remove(unusedEntity);
+                }
+                unusedEntities.clear();
+            }
         }
+        else this.close();
     }
 
     @Override
     public void close()
     {
-        listeners.clear();
+        if (entities != null) entities = null;
+        if (location != null) location = null;
         channelPatches.clear();
     }
 }

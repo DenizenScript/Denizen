@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -219,7 +218,7 @@ public class dScript implements dObject {
         // @returns Element
         // @description
         // Returns the type of script container that is associated with this dScript object. For example: 'task', or
-        // 'world'
+        // 'world'.
         // -->
         if (attribute.startsWith("type"))
             return new Element(container.getContainerType())
@@ -229,7 +228,7 @@ public class dScript implements dObject {
         // @attribute <s@script.cooled_down[<player>]>
         // @returns Element(Boolean)
         // @description
-        // Returns true if the script is currently cooled down for the player, otherwise returns false. Any global
+        // Returns whether the script is currently cooled down for the player. Any global
         // cooldown present on the script will also be taken into account. Not specifying a player will result in
         // using the attached player available in the script entry. Not having a valid player will result in 'null'.
         // -->
@@ -246,8 +245,7 @@ public class dScript implements dObject {
         // @attribute <s@script.requirements[<player>].check[<path>]>
         // @returns Element
         // @description
-        // Returns true if the player specified (defaults to current) has the
-        // requirement. Otherwise, returns false.
+        // Returns whether the player specified (defaults to current) has the requirement.
         // -->
         if (attribute.startsWith("requirements.check")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))

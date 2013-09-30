@@ -43,14 +43,13 @@ public class PlayEffectCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
-                // Location arg
+
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("effect") &&
                      !scriptEntry.hasObject("particleeffect")) {
 
-                // Add effect
                 if (arg.matchesEnum(Effect.values())) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
                 }
@@ -63,34 +62,35 @@ public class PlayEffectCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("visibility")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("visibility, v, radius, r")) {
-                // Add value
+
                 scriptEntry.addObject("visibility", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("data")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("data, d")) {
-                // Add value
+
                 scriptEntry.addObject("data", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)
                     && arg.matchesPrefix("qty, q")) {
-                // Add value
+
                 scriptEntry.addObject("qty", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("offset")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("offset, o")) {
-                // Add value
+
                 scriptEntry.addObject("offset", arg.asElement());
             }
+
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use default values if necessary
-
         scriptEntry.defaultObject("location",
                 scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);

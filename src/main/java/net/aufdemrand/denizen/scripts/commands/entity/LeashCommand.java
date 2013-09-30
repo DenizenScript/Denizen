@@ -20,7 +20,7 @@ import org.bukkit.entity.LeashHitch;
 /**
  * Leashes a list of entities to another entity.
  *
- * @author Alain Blanquet
+ * @author Alain Blanquet, mcmonkey
  */
 
 public class LeashCommand extends AbstractCommand {
@@ -31,30 +31,28 @@ public class LeashCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cancel")
-                    && arg.matches("cancel, stop")) {
+                && arg.matches("cancel, stop")) {
                 scriptEntry.addObject("cancel", "");
             }
 
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class)) {
+                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
             else if (!scriptEntry.hasObject("holder")
-                    && arg.matchesArgumentType(dEntity.class)
-                    && arg.matchesPrefix("holder, h")) {
-                scriptEntry.addObject("holder", arg.asType(dEntity.class));
-            }
+                     && arg.matchesPrefix("holder, h")) {
 
-            else if (!scriptEntry.hasObject("holder")
-                        && arg.matchesArgumentType(dLocation.class)
-                        && arg.matchesPrefix("holder, h")) {
+                if (arg.matchesArgumentType(dEntity.class))
+                    scriptEntry.addObject("holder", arg.asType(dEntity.class));
+                else if (arg.matchesArgumentType(dLocation.class))
                     scriptEntry.addObject("holder", arg.asType(dLocation.class));
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
 

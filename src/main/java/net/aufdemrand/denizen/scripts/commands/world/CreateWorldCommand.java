@@ -6,24 +6,14 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
-/**
- * Your command!
- * This class is a template for a Command in Denizen.
- *
- * If loading externally, implement dExternal and its load() method.
- *
- * @author Jeremy Schroeder
- */
 public class CreateWorldCommand extends AbstractCommand /* implements dExternal */ {
 
-    // @Override
-    // public void load() {
-    //     activate().as("MyCommand").withOptions("mycommand [#] [l@location]", 2);
-    // }
 
 
     @Override
@@ -40,30 +30,22 @@ public class CreateWorldCommand extends AbstractCommand /* implements dExternal 
             else if (!scriptEntry.hasObject("world_name"))
                 scriptEntry.addObject("world_name", arg.asElement());
 
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
-
         // Check for required information
-
         if (!scriptEntry.hasObject("world_name"))
             throw new InvalidArgumentsException("Must specify a world name.");
     }
 
 
+    // TODO: Rewrite this entire everything, make it make sense.
+    // TODO: At time of writing this todo, commandfile was full of Template stuff 0.o
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // Fetch required objects
-
-        // Element required_integer = (Element) scriptEntry.getObject("required_integer");
-        // dLocation required_location = (dLocation) scriptEntry.getObject("required_lcoation");
-
-
         // Debug the execution
-
         // dB.report(getName(), required_integer.debug() + required_location.debug());
-
-        // Do the execution
 
         World world;
 

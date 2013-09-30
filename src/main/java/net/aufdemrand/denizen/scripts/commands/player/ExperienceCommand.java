@@ -16,7 +16,7 @@ public class ExperienceCommand extends AbstractCommand {
     private enum Type { SET, GIVE, TAKE }
 
     /**
-     * @author alkarin
+     * with help from author: alkarin
      * https://github.com/alkarinv/BattleArena/blob/master/src/mc/alk/arena/util/ExpUtil.java
      */
     public static int getTotalExperience(Player p){return getTotalExperience(p.getLevel(),p.getExp());}

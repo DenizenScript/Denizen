@@ -98,6 +98,8 @@ public class CastCommand extends AbstractCommand{
 
             }
 
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+
         }
 
         // No targets specified, let's use defaults if available

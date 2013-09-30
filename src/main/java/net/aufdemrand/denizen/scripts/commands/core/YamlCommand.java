@@ -81,8 +81,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     arg.matchesPrefix("ID")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
-            else
-                dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check for required arguments

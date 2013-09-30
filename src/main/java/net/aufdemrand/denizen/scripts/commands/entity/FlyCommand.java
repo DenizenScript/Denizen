@@ -57,7 +57,8 @@ public class FlyCommand extends AbstractCommand {
                      && arg.matchesArgumentType(dPlayer.class)
                      && arg.matchesPrefix("controller, c")) {
 
-               scriptEntry.addObject("controller", (arg.asType(dPlayer.class)));
+               // Check if it matches a dPlayer, but save it as a dEntity
+               scriptEntry.addObject("controller", (arg.asType(dEntity.class)));
             }
 
             else if (!scriptEntry.hasObject("origin")
@@ -84,6 +85,8 @@ public class FlyCommand extends AbstractCommand {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use the NPC or player's locations as the location if one is not specified

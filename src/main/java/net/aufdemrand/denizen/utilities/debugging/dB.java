@@ -249,7 +249,7 @@ public class dB {
 
     public static void echoError(Messages message, String arg) {
         if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + String.format(message.toString(), arg));
+        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + String.format(message.toString(), arg));
     }
 
     public static void echoError(String message, String arg) {
@@ -303,8 +303,8 @@ public class dB {
     }
 
     private static String trimMessage(String message) {
-        if (message.length() > 256)
-            message = message.substring(0, 255) + "... *snip*";
+        if (message.length() > 512)
+            message = message.substring(0, 511) + "... *snip*";
         return message;
     }
 

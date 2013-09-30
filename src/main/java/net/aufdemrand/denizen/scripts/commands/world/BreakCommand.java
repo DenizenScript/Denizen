@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import java.util.Arrays;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -9,6 +11,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.npc.ai.BlockBreaker;
 
 /**
@@ -36,22 +39,17 @@ public class BreakCommand extends AbstractCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Double))
                 scriptEntry.addObject("radius", arg.asElement());
 
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Make sure location and entity were fulfilled
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException("Must specify a location!");
 
-        if (!scriptEntry.hasObject("entity")) {
-            if (scriptEntry.getPlayer() != null && scriptEntry.getPlayer().isOnline())
-                scriptEntry.addObject("entity", new dEntity(scriptEntry.getPlayer().getPlayerEntity()));
-
-            else if (scriptEntry.getNPC() != null && scriptEntry.getNPC().isSpawned())
-                scriptEntry.addObject("entity", new dEntity(scriptEntry.getNPC().getEntity()));
-
-            else throw new InvalidArgumentsException("Must specify an entity!");
-
-        }
+        // Use the NPC or the Player as the default entity
+        scriptEntry.defaultObject("entities",
+                (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
+                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
 
         scriptEntry.defaultObject("radius", new Element(1));
 

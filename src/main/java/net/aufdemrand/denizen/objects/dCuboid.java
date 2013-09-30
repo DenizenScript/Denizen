@@ -447,7 +447,8 @@ String prefix = "Cuboid";
         // <--[tag]
         // @attribute <cu@cuboid.get_blocks>
         // @returns dList(dLocation)
-        // @description Returns each block location within the dCuboid.
+        // @description
+        // Returns each block location within the dCuboid.
         // -->
         if (attribute.startsWith("get_blocks"))
             return new dList(getBlocks())
@@ -456,8 +457,9 @@ String prefix = "Cuboid";
         // <--[tag]
         // @attribute <cu@cuboid.get_spawnable_blocks>
         // @returns dList(dLocation)
-        // @description Returns each dLocation within the dCuboid that is
-        // safe for players or similar entities to spawn in
+        // @description
+        // Returns each dLocation within the dCuboid that is
+        // safe for players or similar entities to spawn in.
         // -->
         if (attribute.startsWith("get_spawnable_blocks"))
             return new dList(getSpawnableBlocks())
@@ -466,7 +468,8 @@ String prefix = "Cuboid";
         // <--[tag]
         // @attribute <cu@cuboid.get_outline>
         // @returns dList(dLocation)
-        // @description Returns each block location on the outline of the dCuboid.
+        // @description
+        // Returns each block location on the outline of the dCuboid.
         // -->
         if (attribute.startsWith("get_outline"))
             return new dList(getOutline())
@@ -475,7 +478,8 @@ String prefix = "Cuboid";
         // <--[tag]
         // @attribute <cu@cuboid.filter>
         // @returns dList(dLocation)
-        // @description Returns the block locations from the dCuboid's filter.
+        // @description
+        // Returns the block locations from the dCuboid's filter.
         // -->
         if (attribute.startsWith("filter"))
             return new dList(filter)
@@ -484,8 +488,8 @@ String prefix = "Cuboid";
         // <--[tag]
         // @attribute <cu@cuboid.is_within[<location>]>
         // @returns Element(Boolean)
-        // @description Returns true if the dCuboid is within the location.
-        // Otherwise, returns false.
+        // @description
+        // Returns whether if the dCuboid is within the location.
         // -->
         if (attribute.startsWith("is_within")) {
             dLocation loc = dLocation.valueOf(attribute.getContext(1));
@@ -496,7 +500,8 @@ String prefix = "Cuboid";
         // <--[tag]
         // @attribute <cu@cuboid.max>
         // @returns dLocation
-        // @description Returns the highest-numbered corner location.
+        // @description
+        // Returns the highest-numbered corner location.
         // -->
         if (attribute.startsWith("max")) {
             return loc_2.getAttribute(attribute.fulfill(1));
@@ -505,7 +510,8 @@ String prefix = "Cuboid";
         // <--[tag]
         // @attribute <cu@cuboid.min>
         // @returns dLocation
-        // @description Returns the lowest-numbered corner location.
+        // @description
+        // Returns the lowest-numbered corner location.
         // -->
         if (attribute.startsWith("min")) {
             return loc_1.getAttribute(attribute.fulfill(1));

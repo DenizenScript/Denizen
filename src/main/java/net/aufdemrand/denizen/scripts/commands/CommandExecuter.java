@@ -123,7 +123,7 @@ public class CommandExecuter {
 
                 // Fill player/off-line player
                 if (arg.matchesPrefix("player") && !if_ignore) {
-                    dB.echoDebug("...replacing the linked player.");
+                    dB.echoDebug("...replacing the linked player with " + arg.getValue());
                     String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
                     dPlayer player = dPlayer.valueOf(value);
                     if (player == null || !player.isValid()) {
@@ -135,7 +135,7 @@ public class CommandExecuter {
 
                 // Fill NPCID/NPC argument
                 else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
-                    dB.echoDebug("...replacing the linked NPC.");
+                    dB.echoDebug("...replacing the linked NPC with " + arg.getValue());
                     String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
                     dNPC npc = dNPC.valueOf(value);
                     if (npc == null || !npc.isValid()) {

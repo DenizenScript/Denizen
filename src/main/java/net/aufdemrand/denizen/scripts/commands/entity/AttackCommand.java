@@ -48,20 +48,19 @@ public class AttackCommand extends AbstractCommand {
                 // Entity dList arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Use the player as the target if one is not specified
-
         scriptEntry.defaultObject("target",
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null);
 
         // Use the NPC as the attacking entity if one is not specified
-
         scriptEntry.defaultObject("entities",
                 scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null);
 
         // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
 

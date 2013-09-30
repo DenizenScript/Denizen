@@ -17,7 +17,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 /**
  * Heals an entity.
  *
- * @author Jeremy Schroeder, Mason Adkins, Morphan1
+ * @author Jeremy Schroeder, Mason Adkins, Morphan1, mcmonkey
  */
 
 public class HealCommand extends AbstractCommand {
@@ -42,6 +42,8 @@ public class HealCommand extends AbstractCommand {
                 // Entity arg
                 scriptEntry.addObject("entities", Arrays.asList(arg.asType(dEntity.class)));
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         if (!scriptEntry.hasObject("amount"))

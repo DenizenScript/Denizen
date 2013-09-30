@@ -3,6 +3,9 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.event.entity.EntityTeleportEvent;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
@@ -16,7 +19,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 /**
  * Teleports a list of entities to a location.
  *
- * @author David Cernat
+ * @author David Cernat, aufdemrand
  */
 
 public class TeleportCommand extends AbstractCommand {
@@ -43,9 +46,11 @@ public class TeleportCommand extends AbstractCommand {
                 // NPC arg for compatibility with old scripts
                 scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
             }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
-        // Check to make sure required arguments have been filled
+        // Use player or NPC as default entity
         scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
                                               (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
 
@@ -63,7 +68,13 @@ public class TeleportCommand extends AbstractCommand {
         dB.report(getName(), aH.debugObj("location", location) +
                              aH.debugObj("entities", entities.toString()));
 
+        if (location == null)
+            return;
+
         for (dEntity entity : entities) {
+            // Call a Bukkit event for compatibility with "on entity teleports"
+            // world event and other plugins
+            if (entity.isSpawned()) Bukkit.getPluginManager().callEvent(new EntityTeleportEvent(entity.getBukkitEntity(), entity.getLocation(), location));
             entity.spawnAt(location);
         }
     }

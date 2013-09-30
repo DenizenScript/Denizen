@@ -52,7 +52,7 @@ public class RandomCommand extends BracedCommand {
                 scriptEntry.addObject("possibilities", arg.asElement());
 
             else
-                throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
+                throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
 
         }
 
