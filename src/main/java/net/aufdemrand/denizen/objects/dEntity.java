@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.objects.properties.EntityInfected;
+import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -52,10 +52,10 @@ public class dEntity implements dObject {
     /////////////////
 
     final static Pattern entity_by_id = Pattern.compile("(n@|e@|p@)(.+)",
-                    Pattern.CASE_INSENSITIVE);
+            Pattern.CASE_INSENSITIVE);
 
     final static Pattern entity_with_data = Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
-                    Pattern.CASE_INSENSITIVE);
+            Pattern.CASE_INSENSITIVE);
 
 
     /////////////////////
@@ -834,7 +834,7 @@ public class dEntity implements dObject {
         // If the target is not null, cast it to an NMS EntityLiving
         // as well for one of the two methods below
         EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
-                                                : null;
+                : null;
 
         ((CraftCreature) entity).getHandle().
                 setGoalTarget(nmsTarget);
@@ -882,6 +882,10 @@ public class dEntity implements dObject {
         }
     }
 
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
+
 
     // Used to store some information about a livingEntity while it's despawned
     private class DespawnedEntity {
@@ -904,6 +908,32 @@ public class dEntity implements dObject {
         }
     }
 
+
+
+
+    ///////////////
+    // Properties
+    ////////////
+
+    private List<Property> entity_properties = new ArrayList<Property>();
+
+    public String describe() {
+
+        StringBuilder properties = new StringBuilder();
+
+        for (Property property : entity_properties)
+            properties.append(property.getPropertyString());
+
+        return identify() + '[' + properties.toString() + ']';
+    }
+
+    public boolean isZombie() {
+        return EntityInfected.describes(this);
+    }
+
+    public EntityInfected getZombie() {
+        return EntityInfected.getFrom(this);
+    }
 
 
     //////////////////////////////
@@ -1275,7 +1305,7 @@ public class dEntity implements dObject {
                         .getAttribute(attribute.fulfill(1));
             }
             else return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1305,7 +1335,7 @@ public class dEntity implements dObject {
                 return new dEntity(entity.getPassenger())
                         .getAttribute(attribute.fulfill(1));
             else return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1320,7 +1350,7 @@ public class dEntity implements dObject {
                 return new dEntity(entity.getVehicle())
                         .getAttribute(attribute.fulfill(1));
             else return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1336,7 +1366,7 @@ public class dEntity implements dObject {
                 for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
                     if (effect.getType().equals(PotionEffectType.getByName(attribute.getContext(1))))
                         returnElement = true;
-            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
+                    else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }
 
@@ -1465,7 +1495,7 @@ public class dEntity implements dObject {
         // -->
         if (attribute.startsWith("is_spawned")) {
             return new Element(isSpawned())
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

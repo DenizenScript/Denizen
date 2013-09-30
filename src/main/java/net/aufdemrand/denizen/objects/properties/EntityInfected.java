@@ -104,16 +104,17 @@ public class EntityInfected implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <e@infectable_entity.as_zombie.is_locked>
+        // @attribute <e@infectable_entity.is_infected>
         // @returns Element(Boolean)
         // @description
-        // Returns 'true' if the entity is 'age locked', otherwise false.
+        // Returns 'true' if the entity is 'infected', otherwise false.
+        // Currently only 'Zombie' or 'Villager' entities can be infected.
         // -->
         if (attribute.startsWith("is_infected"))
             return new Element(isInfected())
                     .getAttribute(attribute.fulfill(1));
 
-        return new Element(infected.identify()).getAttribute(attribute);
+        return null;
     }
 
 }
