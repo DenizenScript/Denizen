@@ -57,7 +57,7 @@ public class CommandRegistry implements dRegistry {
         // @Name Age
         // @Usage age [<entity>|...] (adult/baby/<age>) (lock)
         // @Required 1
-        // @Stable 1.0
+        // @Stable stable
         // @Short Sets the ages of a list of entities, optionally locking them in those ages.
         // @Author David Cernat
         // @Description
