@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.EntityInfected;
+import net.aufdemrand.denizen.objects.properties.EntityProfessional;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
@@ -125,7 +126,9 @@ public class dEntity implements dObject {
 
             // When selecting a random entity type, ignore invalid or inappropriate ones
             while (randomType == null ||
-                    randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$")) {
+                    randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL" +
+                            "|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING" +
+                            "|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$")) {
 
                 randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
             }
@@ -137,7 +140,6 @@ public class dEntity implements dObject {
         // Match @object format
 
         // Make sure string matches what this interpreter can accept.
-
 
         Matcher m;
         m = entity_by_id.matcher(string);
@@ -915,25 +917,35 @@ public class dEntity implements dObject {
     // Properties
     ////////////
 
-    private List<Property> entity_properties = new ArrayList<Property>();
+    private List<Property> properties = new ArrayList<Property>();
 
     public String describe() {
+        properties.clear();
 
-        StringBuilder properties = new StringBuilder();
+        StringBuilder property_string = new StringBuilder();
 
-        for (Property property : entity_properties)
-            properties.append(property.getPropertyString());
+        for (Property property : properties)
+            property_string.append(property.getPropertyString());
 
-        return identify() + '[' + properties.toString() + ']';
+        return identify() + '[' + property_string.toString() + ']';
     }
 
-    public boolean isZombie() {
+    public boolean isInfected() {
         return EntityInfected.describes(this);
     }
 
-    public EntityInfected getZombie() {
+    public EntityInfected getInfected() {
         return EntityInfected.getFrom(this);
     }
+
+    public boolean isProfessional() {
+        return EntityProfessional.describes(this);
+    }
+
+    public EntityProfessional getProfessional() {
+        return EntityProfessional.getFrom(this);
+    }
+
 
 
     //////////////////////////////

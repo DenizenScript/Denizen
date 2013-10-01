@@ -36,7 +36,7 @@ public class HungerTrait extends Trait implements Listener {
      */
     @Override public void run() {
         if (!listening) return;
-        // We'll only actually calculate Hunger-loss once per second
+        // We'll only actually calculate hunger-loss once per second
         count++;
         if (count >= 20) {
             // Reset counter

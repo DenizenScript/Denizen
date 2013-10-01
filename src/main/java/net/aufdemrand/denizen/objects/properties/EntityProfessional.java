@@ -7,17 +7,17 @@ import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 
-public class EntityProfession implements Property {
+public class EntityProfessional implements Property {
 
 
     public static boolean describes(dEntity entity) {
         return entity.getEntityType() == EntityType.VILLAGER;
     }
 
-    public static EntityProfession getFrom(dEntity entity) {
+    public static EntityProfessional getFrom(dEntity entity) {
         if (!describes(entity)) return null;
 
-        else return new EntityProfession(entity);
+        else return new EntityProfessional(entity);
     }
 
 
@@ -25,7 +25,7 @@ public class EntityProfession implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityProfession(dEntity entity) {
+    private EntityProfessional(dEntity entity) {
         professional = entity;
     }
 

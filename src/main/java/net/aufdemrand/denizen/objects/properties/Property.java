@@ -9,4 +9,5 @@ public interface Property {
     public String getPropertyId();
 
     public String getAttributes(Attribute attribute);
+
 }
