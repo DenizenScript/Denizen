@@ -18,21 +18,21 @@ import org.bukkit.ChatColor;
 // Elements are simple objects that contain either a boolean (true/false),
 // string, or number value. Their main usage is within the replaceable tag
 // system, often times returned from the use of another tag that isn't returning
-// a specific object type, such as a location or entity. For example, 
+// a specific object type, such as a location or entity. For example,
 // <player.name> or <li@item|item2|item3.as_cslist> will both return Elements.
-
+//
 // Pluses to the Element system is the ability to utilize its attributes that
-// can provide a range of funtionality that should be familiar from any other
+// can provide a range of functionality that should be familiar from any other
 // programming language, such as 'to_uppercase', 'split', 'replace', 'contains',
-// as_int, any many more. See 'el@element' tags for more information.
-
-// While information fetched from other tags resulting in an Element is often 
-// times automatically handled, it may be desireable to utilize element 
+// as_int, any many more. See 'element' tags for more information.
+//
+// While information fetched from other tags resulting in an Element is often
+// times automatically handled, it may be desirable to utilize element
 // attributes from strings/numbers/etc. that aren't already an element object.
 // To accomplish this, the object fetcher can be used to create a new element.
-// Element has a constructor, el@val[element_value], that will allow the 
-// creation of a new element. For example: <el@val[This is a test.].to_uppercase>
-// will result in the value 'THIS IS A TEST.' Note that while other objects often 
+// Element has a constructor, el@val[element_value], that will allow the
+// creation of a new element. For example: <el@val[This_is_a_test.].to_uppercase>
+// will result in the value 'THIS_IS_A_TEST.' Note that while other objects often
 // return their object identifier (el@, li@, e@, etc.), elements do not.
 
 // -->

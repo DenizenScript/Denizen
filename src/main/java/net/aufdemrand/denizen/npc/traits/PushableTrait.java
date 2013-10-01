@@ -18,20 +18,20 @@ import org.bukkit.event.Listener;
 // <--[language]
 // @name Pushable Trait
 // @description
-// By default, NPCs created will allow players to 'clip' them, or go right through. This is to
+// By default, NPCs created will allow players to 'noclip' them, or go right through. This is to
 // avoid NPCs moving from their set location, but often times, this behavior may be undesired.
 // The pushable trait allows NPCs to move when collided with, and optionally return to their
 // original location after a specified amount of time.
-
+//
 // To enable the trait, use the '/npc pushable' command on any selected NPC. Once the trait is
-// enabled, the -r option can be used to toggle returnable, and the --delay # can be used to
-// specify the number of seconds before the npc returns.
-
+// enabled, the '-r' option can be used to toggle returnable, and the '--delay #' option can be
+// used to specify the number of seconds before the npc returns.
+//
 // Care should be taken when allowing NPCs to be pushable. Allowing NPCs to be pushed around
 // complex structures can result in stuck NPCs. If the NPC is stuck, it may not return. Keeping
 // a small delay, in situations like this, can be a good trade-off. Typically the lower the
 // delay, the shorter distance a Player is able to push the NPC. The default delay is 2 seconds.
-
+//
 // The pushable trait also implements some actions that can be used in assignment scripts.
 // This includes 'on push' and 'on push return'.
 

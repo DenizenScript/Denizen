@@ -161,12 +161,12 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 check();
                 return;
             }
-            
+
             //check if block is specified and if so, count it!
             for (String item_value : blocks) {
                 dB.log("...checking value: " + item_value);
                 dMaterial mat = dMaterial.valueOf(item_value);
-                
+
                 if (event.getBlock().getState().getType() == mat.getMaterial() &&
                         event.getBlock().getState().getData().equals(mat.getMaterialData())){
                     blocks_so_far++;
@@ -196,7 +196,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
         //Type COLLECT
         if (type == BlockType.COLLECT) {
-            
+
             //if catch-all specified, count it!
             if (blocks.contains("*")) {
                 blocks_so_far++;
@@ -206,18 +206,18 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 check();
                 return;
             }
-            
+
             //check if block is specified and if so, count it!
             for (String item_value : blocks) {
                 dMaterial mat = dMaterial.valueOf(item_value);
-                
+
                 if (event.getItem().getItemStack().getType() == mat.getMaterial() &&
                         event.getItem().getItemStack().getData().equals(mat.getMaterialData())){
                     //If the specific item has been collected before, dont count it
                     if (itemsCollected.contains(event.getItem().getEntityId()))
                         return;
                     else itemsCollected.add(event.getItem().getEntityId());
-                    
+
                     blocks_so_far++;
                     dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
                             + " collected a(n) " + event.getItem().getItemStack().getType().toString()
@@ -252,11 +252,11 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 check();
                 return;
             }
-            
+
             //check if block is specified and if so, count it!
             for (String item_value : blocks) {
                 dMaterial mat = dMaterial.valueOf(item_value);
-                
+
                 if (event.getBucket() == mat.getMaterial()){
                     blocks_so_far++;
                     dB.echoDebug(ChatColor.YELLOW + "// "
@@ -295,11 +295,11 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 check();
                 return;
             }
-            
+
             //check if block is specified and if so, count it!
             for (String item_value : blocks) {
                 dMaterial mat = dMaterial.valueOf(item_value);
-                
+
                 if (event.getBlock().getState().getType() == mat.getMaterial() &&
                         event.getBlock().getState().getData().equals(mat.getMaterialData())){
                     blocks_so_far++;

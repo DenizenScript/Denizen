@@ -53,7 +53,7 @@ public class CommandRegistry implements dRegistry {
     @Override
     public void registerCoreMembers() {
 
-		
+        
         // <--[command]
         // @Name Age
         // @Usage age [<entity>|...] (adult/baby/<age>) (lock)
@@ -61,34 +61,34 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Sets the ages of a list of entities, optionally locking them in those ages.
         // @Author David Cernat
-        
-		// @Description
+
+        // @Description
         // Some living entity types are 'ageable' which can affect an entities ability to breed, or whether they appear
         // as a baby or an adult. Using the 'age' command allows modification of an entity's age. Specify an entity and
-		// either 'baby', 'adult', or an integer age to set the age of an entity. Using the 'lock' argument will
-		// keep the entity from increasing its age automatically. NPCs which use ageable entity types can also be
-		// specified.
-        
-		// @Tags
+        // either 'baby', 'adult', or an integer age to set the age of an entity. Using the 'lock' argument will
+        // keep the entity from increasing its age automatically. NPCs which use ageable entity types can also be
+        // specified.
+
+        // @Tags
         // Todo
-        
-		// @Usage
+
+        // @Usage
         // Use to make an ageable entity a permanant baby.
-		// - age e@50 baby lock
-		
-		// @Usage
-		// Use to make a baby entity an adult.
-		// - age n@puppy adult
-		
-		// @Usage
-		// Use to mature an animals so that it is old enough to breed.
-		// - age <player.location.find.entities.within[20]> 10
-		
+        // - age e@50 baby lock
+        
+        // @Usage
+        // Use to make a baby entity an adult.
+        // - age n@puppy adult
+        
+        // @Usage
+        // Use to mature an animals so that it is old enough to breed.
+        // - age <player.location.find.entities.within[20]> 10
+        
         // -->
         registerCoreMember(AgeCommand.class,
                 "AGE", "age [<entity>|...] (adult/baby/<age>) (lock)", 1);
 
-				
+                
         // <--[command]
         // @Name Anchor
 
@@ -126,7 +126,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(AnchorCommand.class,
                 "ANCHOR", "anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]", 2);
 
-				
+                
         // <--[command]
         // @Name Animate
         // @Usage animate [<entity>|...] [animation:<name>]
@@ -134,31 +134,31 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Makes a list of entities perform a certain animation.
         // @Author David Cernat
-        
-		// @Description
+
+        // @Description
         // Minecraft implements several player and entity animations which the animate command can use, just
-		// specify an entity and an animation.
-		
-		// Player animations require a Player-type entity or NPC. Available player animations include: 
-		// ARM_SWING, CRIT, HURT, and MAGIC_CRIT
-		
-		// All entities, regardless of type, can utilize the 'hurt' animation. Additionally, wolf entities
-		// and NPCs can also use: WOLF_SMOKE, WOLF_HEARTS, and WOLF_SHAKE. Sheep entities and NPCs also have
-		// available the SHEEP_EAT animation.
-		
-		// @Usage
+        // specify an entity and an animation.
+        
+        // Player animations require a Player-type entity or NPC. Available player animations include:
+        // ARM_SWING, CRIT, HURT, and MAGIC_CRIT
+        
+        // All entities, regardless of type, can utilize the 'hurt' animation. Additionally, wolf entities
+        // and NPCs can also use: WOLF_SMOKE, WOLF_HEARTS, and WOLF_SHAKE. Sheep entities and NPCs also have
+        // available the SHEEP_EAT animation.
+        
+        // @Usage
         // Use to make a player appear to get hurt.
-		// - animate <player> animation:hurt
-		
-		// @Usage
-		// Use to make a wolf NPC shake
-		// - animate '<n@aufdemrand's wolf>' animation:wolf_shake
-				
+        // - animate <player> animation:hurt
+        
+        // @Usage
+        // Use to make a wolf NPC shake
+        // - animate '<n@aufdemrand's wolf>' animation:wolf_shake
+                
         // -->
         registerCoreMember(AnimateCommand.class,
                 "ANIMATE", "animate [<entity>|...] [animation:<name>]", 1);
 
-				
+                
         // <--[command]
         // @Name AnimateChest
         // @Usage animatechest [<location>] ({open}/close) (sound:{true}/false)
@@ -176,7 +176,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false)", 1);
 
-				
+                
         // <--[command]
         // @Name Announce
         // @Usage announce ["<text>"] (to_ops/to_flagged:<flag_name>) (format:<name>)
@@ -184,32 +184,32 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Announces a message for everyone online to read.
         // @Author aufdemrand
-        
-		// @Description
+
+        // @Description
         // Announce sends a raw message to players. Simply using announce with text will send
-		// the message to all online players. Specifing the 'to_ops' argument will narrow down the players
-		// in which the message is sent to ops only. Alternatively, using the 'to_flagged' value argument
-		// will send the message to players only if the specified flag does not equal true. Announce can also
-		// utilize a format script with the 'format' argument. See the format script-container for more
-		// information.
-        
+        // the message to all online players. Specifing the 'to_ops' argument will narrow down the players
+        // in which the message is sent to ops only. Alternatively, using the 'to_flagged' value argument
+        // will send the message to players only if the specified flag does not equal true. Announce can also
+        // utilize a format script with the 'format' argument. See the format script-container for more
+        // information.
+
         // @Usage
         // Use to send an important message to your players.
-		// - announce 'Warning! This server will restart in 5 minutes!'
-		
-		// @Usage
-		// Use to send a message to a specific 'group' of players.
-		// - announce to_flagged:clan_subang '[<player.name>] Best clan ever!'
+        // - announce 'Warning! This server will restart in 5 minutes!'
         
-		// @Usage
-		// Use to easily send a message to all online ops.
-		// - announce to_ops '<player.name> requires help!'
-		
-		// -->
+        // @Usage
+        // Use to send a message to a specific 'group' of players.
+        // - announce to_flagged:clan_subang '[<player.name>] Best clan ever!'
+
+        // @Usage
+        // Use to easily send a message to all online ops.
+        // - announce to_ops '<player.name> requires help!'
+        
+        // -->
         registerCoreMember(AnnounceCommand.class,
                 "ANNOUNCE", "announce [\"<text>\"] (to_ops/to_flagged:<flag_name>) (format:<name>)", 1);
 
-				
+                
         // <--[command]
         // @Name Assignment
         // @Usage assignment [{set}/remove] (script:<name>)
