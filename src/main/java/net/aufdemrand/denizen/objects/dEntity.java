@@ -948,17 +948,17 @@ public class dEntity implements dObject {
                 return "n@" + getNPC().getId();
             else if (isPlayer())
                 return "p@" + getPlayer().getName();
-        }
 
 //        // Check if entity is a 'notable entity'
 //        if (isSaved(this))
 //            return "e@" + getSaved(this);
 
-        else if (isSpawned())
-            return "e@" + entity.getEntityId();
+            else if (isSpawned())
+                return "e@" + entity.getEntityId();
+        }
 
-            // Check if an entity_type is available
-        else if (entity_type != null)
+        // Check if an entity_type is available
+        if (entity_type != null)
             return "e@" + entity_type.name();
 
         return "null";
