@@ -1,5 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.citizensnpcs.api.ai.TargetType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -24,89 +28,80 @@ import net.citizensnpcs.api.npc.NPC;
 public class FeedCommand extends AbstractCommand {
 
     @Override
-    public void onEnable() {
-        // nothing to do here
-    }
-
-    /* FEED (AMT:#) (TARGET:NPC|PLAYER) */
-
-    /*
-     * Arguments: [] - Required, () - Optional
-     * (AMT:#) 1-20, usually.
-     * (TARGET:NPC|PLAYER) Specifies which object is the target of the feeding effects.
-     *          Default: Player, unless not available
-     *
-     * Example Usage:
-     * FEED AMT:20 TARGET:NPC
-     * FEED AMT:5
-     * FEED
-     *
-     */
-
-    private enum TargetType { NPC, PLAYER }
-
-    private int amount;
-    private LivingEntity target;
-    private TargetType targetType;
-
-    @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Must reset ALL private variables, else information left over from last time
-        // might be used.
-        targetType = TargetType.PLAYER;
-        amount = Integer.MAX_VALUE;
-        // Set target to Player by default, if available
-        if (scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer().getPlayerEntity();
-        else target = null;
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            if (arg.matchesPrimitive(aH.PrimitiveType.Integer)
+                    && !scriptEntry.hasObject("amount"))
+                scriptEntry.addObject("amount", arg.asElement());
 
-        for (String arg : scriptEntry.getArguments()) {
+            else if (arg.matchesArgumentType(dPlayer.class)
+                    && !scriptEntry.hasObject("targetplayer")
+                    && !scriptEntry.hasObject("targetnpc"))
+                scriptEntry.addObject("targetplayer", arg.asType(dPlayer.class));
 
-            if (aH.matchesQuantity(arg) || aH.matchesValueArg("amt", arg, ArgumentType.Integer)) {
-                amount = aH.getIntegerFrom(arg);
-                dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(amount));
+            else if (arg.matchesArgumentType(dNPC.class)
+                    && !scriptEntry.hasObject("targetplayer")
+                    && !scriptEntry.hasObject("targetnpc"))
+                scriptEntry.addObject("targetnpc", arg.asType(dNPC.class));
 
-            } else if (aH.matchesValueArg("target", arg, ArgumentType.String)) {
-                try {
-                    targetType = TargetType.valueOf(aH.getStringFrom(arg));
-                    dB.echoDebug("TARGET to FEED: " + targetType.name());
-                } catch (Exception e) {
-                    dB.echoError("Invalid TARGET! Valid: NPC, PLAYER");
-                }
+            // Backwards compatibility
+            else if (arg.matches("NPC")
+                    && !scriptEntry.hasObject("targetplayer")
+                    && !scriptEntry.hasObject("targetnpc")
+                    && scriptEntry.hasNPC())
+                scriptEntry.addObject("targetnpc", scriptEntry.getNPC());
 
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else if (arg.matches("PLAYER")
+                    && !scriptEntry.hasObject("targetplayer")
+                    && !scriptEntry.hasObject("targetnpc")
+                    && scriptEntry.hasPlayer())
+                scriptEntry.addObject("targetplayer", scriptEntry.getPlayer());
+
+            else
+                dB.echoError(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
-        // If TARGET is NPC/PLAYER and no NPC/PLAYER available, throw exception.
-        if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
-        else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
-        // If TARGET is NPC, set entity.
-        else if (targetType == TargetType.NPC) target = scriptEntry.getNPC().getEntity();
+        if (!scriptEntry.hasObject("targetplayer") &&
+                !scriptEntry.hasObject("targetnpc")) {
+            if (scriptEntry.hasPlayer())
+                scriptEntry.addObject("targetplayer", scriptEntry.getPlayer());
+            else if (scriptEntry.hasNPC())
+                scriptEntry.addObject("targetnpc", scriptEntry.getNPC());
+            else
+                throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+        }
 
+        if (!scriptEntry.hasObject("amount"))
+            scriptEntry.addObject("amount", new Element(9999));
     }
-
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // Target is a NPC
-        if (CitizensAPI.getNPCRegistry().isNPC(target)) {
-            NPC npc = CitizensAPI.getNPCRegistry().getNPC(target);
-            if (!npc.hasTrait(HungerTrait.class)) throw new CommandExecutionException("This NPC does not have the HungerTrait enabled! Use /trait hunger");
-            // Set hunger level to zero
-            if (amount == Integer.MAX_VALUE) npc.getTrait(HungerTrait.class).setHunger(0.00);
-            // else, feed NPC
-            else npc.getTrait(HungerTrait.class).feed(amount);
+        dPlayer player = (dPlayer) scriptEntry.getObject("targetplayer");
+        dNPC npc = (dNPC) scriptEntry.getObject("targetnpc");
+        Element amount = scriptEntry.getElement("amount");
 
-        // Target is a Player
-        } else {
-           // Set to max food level
-           if (amount == Integer.MAX_VALUE) ((Player) target).setFoodLevel(20);
-           // else, increase food levels
-           else ((Player) target).setFoodLevel(((Player) target).getFoodLevel() + amount);
+        dB.report(getName(),
+                (player == null?"": player.debug())
+                +(npc == null?"":npc.debug())
+                +amount.debug());
+
+        if (npc != null) {
+            if (!npc.getCitizen().hasTrait(HungerTrait.class)) {
+                dB.echoError("This NPC does not have the HungerTrait enabled! Use /trait hunger");
+                return;
+            }
+            npc.getCitizen().getTrait(HungerTrait.class).feed(amount.asInt());
         }
-
+        else if (player != null) {
+            if (95999 - player.getPlayerEntity().getFoodLevel() < amount.asInt()) // Setting hunger too high = error
+                amount = new Element(95999 - player.getPlayerEntity().getFoodLevel());
+            player.getPlayerEntity().setFoodLevel(player.getPlayerEntity().getFoodLevel() + amount.asInt());
+        }
+        else {
+            dB.echoError("No target?"); // Mostly just here to quiet code analyzers.
+        }
     }
-
-
 }
