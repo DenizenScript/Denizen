@@ -72,7 +72,6 @@ public class AgeCommand extends AbstractCommand {
     //   lore:
     //   - "This wand reeks of old age."
     //
-    // </code>
 
     // -->
 
