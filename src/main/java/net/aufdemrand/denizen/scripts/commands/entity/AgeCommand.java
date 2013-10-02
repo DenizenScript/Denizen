@@ -55,7 +55,7 @@ public class AgeCommand extends AbstractCommand {
     //     - age <c.entity>
     //
     //
-    // # Define items used
+    // # Build item script containers
     // baby_wand:
     //   type: item
     //

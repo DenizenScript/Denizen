@@ -53,7 +53,7 @@ public class CommandRegistry implements dRegistry {
     @Override
     public void registerCoreMembers() {
 
-        
+
         // <--[command]
         // @Name Age
         // @Usage age [<entity>|...] (adult/baby/<age>) (lock)
@@ -75,20 +75,20 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Use to make an ageable entity a permanant baby.
         // - age e@50 baby lock
-        
+
         // @Usage
         // Use to make a baby entity an adult.
         // - age n@puppy adult
-        
+
         // @Usage
         // Use to mature an animals so that it is old enough to breed.
         // - age <player.location.find.entities.within[20]> 10
-        
+
         // -->
         registerCoreMember(AgeCommand.class,
                 "AGE", "age [<entity>|...] (adult/baby/<age>) (lock)", 1);
 
-                
+
         // <--[command]
         // @Name Anchor
 
@@ -126,7 +126,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(AnchorCommand.class,
                 "ANCHOR", "anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]", 2);
 
-                
+
         // <--[command]
         // @Name Animate
         // @Usage animate [<entity>|...] [animation:<name>]
@@ -138,27 +138,27 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Minecraft implements several player and entity animations which the animate command can use, just
         // specify an entity and an animation.
-        
+
         // Player animations require a Player-type entity or NPC. Available player animations include:
         // ARM_SWING, CRIT, HURT, and MAGIC_CRIT
-        
+
         // All entities, regardless of type, can utilize the 'hurt' animation. Additionally, wolf entities
         // and NPCs can also use: WOLF_SMOKE, WOLF_HEARTS, and WOLF_SHAKE. Sheep entities and NPCs also have
         // available the SHEEP_EAT animation.
-        
+
         // @Usage
         // Use to make a player appear to get hurt.
         // - animate <player> animation:hurt
-        
+
         // @Usage
         // Use to make a wolf NPC shake
         // - animate '<n@aufdemrand's wolf>' animation:wolf_shake
-                
+
         // -->
         registerCoreMember(AnimateCommand.class,
                 "ANIMATE", "animate [<entity>|...] [animation:<name>]", 1);
 
-                
+
         // <--[command]
         // @Name AnimateChest
         // @Usage animatechest [<location>] ({open}/close) (sound:{true}/false)
@@ -176,7 +176,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false)", 1);
 
-                
+
         // <--[command]
         // @Name Announce
         // @Usage announce ["<text>"] (to_ops/to_flagged:<flag_name>) (format:<name>)
@@ -196,7 +196,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Use to send an important message to your players.
         // - announce 'Warning! This server will restart in 5 minutes!'
-        
+
         // @Usage
         // Use to send a message to a specific 'group' of players.
         // - announce to_flagged:clan_subang '[<player.name>] Best clan ever!'
@@ -204,12 +204,12 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Use to easily send a message to all online ops.
         // - announce to_ops '<player.name> requires help!'
-        
+
         // -->
         registerCoreMember(AnnounceCommand.class,
                 "ANNOUNCE", "announce [\"<text>\"] (to_ops/to_flagged:<flag_name>) (format:<name>)", 1);
 
-                
+
         // <--[command]
         // @Name Assignment
         // @Usage assignment [{set}/remove] (script:<name>)
@@ -227,22 +227,49 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(AssignmentCommand.class,
                 "ASSIGNMENT", "assignment [{set}/remove] (script:<name>)", 1);
 
+
         // <--[command]
         // @Name Attack
-        // @Usage attack (cancel) (<entity>|...) (target:<entity>)
+        // @Usage attack (<entity>|...) (target:<entity>/cancel)
         // @Required 0
         // @Stable stable
-        // @Short Makes a list of entities attack a target.
+        // @Short Makes an entity, or list of entities, attack a target.
         // @Author David Cernat
+
         // @Description
-        // Todo
+        // By itself, the 'attack' command will act as a NPC command in the sense that an attached
+        // NPC will attack the attached player, or specified target. It can also accept a specified entity,
+        // or list of entities, to fulfill the command, just specify a 'fetchable' entity object. This includes
+        // player objects (dPlayers) and NPC objects (dNPCs). To specify the target, prefix the entity
+        // object with 'target:' or 't:'.
+        //
+        // To cancel an attack, use the 'cancel' argument instead of specifying a target.
+
         // @Tags
-        // Todo
+        // <n@npc.navigator.is_fighting> will return true if the NPC is currently attacking
+        // <n@npc.navigator.attack_strategy> will return the name of the current strategy
+        // <n@npc.navigator.target_entity> will return the entity object of the current target
+
         // @Usage
-        // Todo
+        // Use to make a NPC attack a player in an interact script.
+        // - attack
+
+        // @Usage
+        // Use to make a NPC attack a nearby entity.
+        // - attack target:<npc.location.find.living_entities.within[10].random>
+
+        // @Usage
+        // Use to make a specific entity attack an entity, including players or npcs.
+        // - attack <player.location.find.living_entities.within[10].random> target:<player>
+
+        // @Usage
+        // Use to stop an attack
+        // - attack n@Herobrine stop
+
         // -->
         registerCoreMember(AttackCommand.class,
-                "ATTACK", "attack (cancel) (<entity>|...) (target:<entity>)", 0);
+                "ATTACK", "attack (<entity>|...) (target:<entity>/cancel)", 0);
+
 
         // <--[command]
         // @Name Break
@@ -261,6 +288,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(BreakCommand.class,
                 "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
 
+
         // <--[command]
         // @Name Burn
         // @Usage burn [<entity>|...] (duration:<value>)
@@ -269,14 +297,29 @@ public class CommandRegistry implements dRegistry {
         // @Short Sets a list of entities on fire.
         // @Author David Cernat
         // @Description
-        // Todo
+        // Burn will set a list of entities on fire. Just specify a list of entities (or a single entity) and
+        // optionally, a duration. Normal mobs and players will see damage afflicted, but NPCs will block damage
+        // from a burn unless 'vulnerable'. Since this command sets the total time of fire, it can also be used
+        // to cancel fire on a burning entity by specifying a duration of 0. Specifying no duration will result
+        // in a 5 second burn.
+
         // @Tags
-        // <e@entity.fire_time>
+        // <e@entity.fire_time> will show the duration of the burn on the entity
+
         // @Usage
-        // Todo
+        // Use to set an entity on fire.
+        // - burn <player> duration:10s
+        // - narrate 'You are on fire!'
+
+        // @Usage
+        // Use to cancel fire on entities.
+        // - burn <player.location.find.living_entities.within[10]> duration:0
+        // - narrate 'You have cast a spell of reduce burn!'
+
         // -->
         registerCoreMember(BurnCommand.class,
                 "BURN", "burn [<entity>|...] (duration:<value>)", 1);
+
 
         // <--[command]
         // @Name Cast, Potion
@@ -315,15 +358,44 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Causes the NPC to send a chat message to nearby players.
         // @Author aufdemrand
+
         // @Description
-        // Todo
-        // @Tags
-        // Todo
+        // Chat uses a NPCs SpeechController provided by Citizens2, typically inside 'interact' or 'task'
+        // script-containers. Typically there is already player and NPC context inside a queue that is using
+        // the 'chat' command. In this case, only a text string is required. Alternatively, target entities
+        // can be specified to have the NPC chat to a different target/targets.
+        //
+        // Chat from a NPC is formatted by the settings present in Citizens' config.yml. Players being chatted
+        // to see a slightly different message than surrounding players. By default, a 'chat' will allow other
+        // players nearby to also see the conversation. For example:
+        // <code>
+        // - chat 'Hello!'
+        // </code>
+        // The player being chatted to, by default the attached Player to the script queue, will see a message
+        // 'Jack says to you, Hello!', however surrounding entities will see something along the lines of
+        // 'Jack says to aufdemrand, Hello!'. The format for this is configurable.
+        //
+        // If sending messages to the Player without any surrounding entities hearing the message is desireable,
+        // it is often times recommended to instead use the 'narrate' command. Alternatively, on a server-wide scale,
+        // the configuration node for the 'max range' can be set to 0, however this is discouraged.
+
         // @Usage
-        // Todo
+        // Use to emulate a NPC talking out loud to a Player within an interact script-container.
+        // - chat "Hello, <player.name>! Nice day, eh?"
+
+        // @Usage
+        // Use to have a NPC talk to a group of individuals.
+        // - flag <npc> talk_targets:!
+        // - foreach <npc.location.find.living_entities.within[6]> {
+        //     - if <%value%.is_player> && <%value%.flag[clan_initiate]>
+        //       flag <npc> talk_targets:->:%value%
+        //   }
+        // - chat targets:<npc.flag[talk_targets].as_list> "Welcome, initiate!"
+
         // -->
         registerCoreMember(ChatCommand.class,
                 "CHAT", "chat [\"<text>\"] (targets:<entity>|...)", 1);
+
 
         // <--[command]
         // @Name ChunkLoad
@@ -331,7 +403,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Keeps a chunk actively loaded and allowing NPC activity.
-        // @Author aufdemrand, mcmonkey
+        // @Author spaceemotion, mcmonkey
         // @Description
         // Todo
         // @Tags
@@ -341,6 +413,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ChunkLoadCommand.class,
                 "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<location>] (duration:<value>)", 1);
+
 
         // <--[command]
         // @Name Compass
@@ -358,6 +431,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(CompassCommand.class,
                 "COMPASS", "compass [<location>]", 1);
+
 
         // <--[command]
         // @Name Cooldown
@@ -442,7 +516,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Creates a temporary variable inside a script queue.
         // @Author aufdemrand
-        //
+
         // @Description
         // Definitions are queue-level (or script-level) 'variables' that can be used throughout a script, once
         // defined, by using %'s around the definition id/name. Definitions are only valid on the current queue and are
@@ -456,9 +530,7 @@ public class CommandRegistry implements dRegistry {
         //
         // Definitions are also resolved before replaceable tags, meaning you can use them within tags, even as an
         // attribute. ie. <%player%.name>
-        //
-        // @Tags
-        // %DefinedItem%
+
         // @Usage
         // Use to make complex tags look less complex, and scripts more readable.
         // - narrate 'You invoke your power of notice...'
@@ -466,19 +538,19 @@ public class CommandRegistry implements dRegistry {
         // - define blocks '<player.flag[noticeable_blocks>'
         // - narrate '[NOTICE] You have noticed <player.location.find.blocks[%blocks%].within[%range].size>
         // blocks in the area that may be of interest.'
-        //
+
         // @Usage
         // Use to keep the value of a replaceable tag that you might use many times within a single script. Definitions
         // can be faster and cleaner than reusing a replaceable tag over and over.
         // - define arg1 <c.args.get[1]>
         // - if %arg1% == hello narrate 'Hello!'
         // - if %arg1% == goodbye narrate 'Goodbye!'
-        //
+
         // @Usage
         // Use to pass some important information (arguments) on to another queue.
         // - run 'new_task' d:hello|world
         // 'new_task' now has some definitions, %1% and %2%, that contains the contents specified, 'hello' and 'world'.
-        //
+
         // -->
         registerCoreMember(DefineCommand.class,
                 "DEFINE", "define [<id>] [<value>]", 2);
@@ -501,6 +573,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(DetermineCommand.class,
                 "DETERMINE", "determine [<value>]", 1);
 
+
         // <--[command]
         // @Name Disengage
         // @Usage disengage (npc:<npc>)
@@ -508,7 +581,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command.
         // @Author aufdemrand
-        //
+
         // @Description
         // Re-enables any toggled triggers that have been disabled by disengage. Using
         // disengage inside scripts must have a NPC to reference, or one may be specified
@@ -520,9 +593,7 @@ public class CommandRegistry implements dRegistry {
         //
         // NPCs that are interacted with while engaged will fire an 'on unavailable' assignment
         // script-container action.
-        //
-        // @Tags
-        // none
+
         // @Usage
         // Use to reenable a NPC's triggers, disabled via 'engage'.
         // - engage
@@ -530,16 +601,17 @@ public class CommandRegistry implements dRegistry {
         // - walkto <player.location>
         // - wait 5s
         // - disengage
-        //
+
         // -->
         registerCoreMember(DisengageCommand.class,
                 "DISENGAGE", "disengage (npc:<npc>)", 0);
+
 
         // <--[command]
         // @Name DisplayItem
         // @Usage displayitem [<item>] [<location>] (duration:<value>)
         // @Required 2
-        // @Stable Todo
+        // @Stable unstable
         // @Short Makes a non-touchable item spawn for players to view.
         // @Author aufdemrand, mcmonkey
         // @Description
@@ -552,22 +624,39 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(DisplayItemCommand.class,
                 "DISPLAYITEM", "displayitem [<item>] [<location>] (duration:<value>)", 2);
 
+
         // <--[command]
         // @Name Drop
-        // @Usage drop [<item>/<entity>/xp] [<location>] (qty:<#>)
+        // @Usage drop [<item>/<entity_type>/xp] [<location>] (qty:<#>)
         // @Required 1
         // @Stable stable
-        // @Short Drops an item for players to pick up.
+        // @Short Drops an item, entity, or experience orb on a location.
         // @Author aufdemrand
+
         // @Description
-        // Todo
-        // @Tags
-        // Todo
+        // To drop an item, just specify a valid item object. To drop
+        // an entity, specify a generic entity object. Drop can also reward players
+        // with experience orbs by using the 'xp' argument.
+        //
+        // For all three usages, you can optionally specify an integer with 'qty:'
+        // prefix to drop multiple items/entities/xp.
+
         // @Usage
-        // Todo
+        // Use to drop some loot around the player.
+        // - drop i@gold_nugget <cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2.2]>.get_spawnable_blocks.random>
+
+        // @Usage
+        // Use to reward a player
+        // - drop xp qty:500 <player.location>
+
+        // @Usage
+        // Use to drop a nasty surpise (exploding TNT)
+        // - drop e@primed_tnt <player.location>
+
         // -->
         registerCoreMember(DropCommand.class,
-                "DROP", "drop [<item>/<entity>/xp] [<location>] (qty:<#>)", 1);
+                "DROP", "drop [<item>/<entity_type>/xp] [<location>] (qty:<#>)", 1);
+
 
         // <--[command]
         // @Name Engage
@@ -617,6 +706,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(EngageCommand.class,
                 "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
 
+
         // <--[command]
         // @Name Engrave
         // @Usage engrave (set/remove)
@@ -633,6 +723,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(EngraveCommand.class,
                 "ENGRAVE", "engrave (set/remove)", 0);
+
 
         // <--[command]
         // @Name Equip
@@ -651,6 +742,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(EquipCommand.class,
                 "EQUIP", "equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
 
+
         // <--[command]
         // @Name Execute
         // @Usage execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]
@@ -667,6 +759,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ExecuteCommand.class,
                 "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]", 2);
+
 
         // <--[command]
         // @Name Experience
@@ -688,6 +781,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ExperienceCommand.class,
                 "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
 
+
         // <--[command]
         // @Name Explode
         // @Usage explode (power:<#.#>) (<location>) (fire) (breakblocks)
@@ -705,6 +799,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ExplodeCommand.class,
                 "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
 
+
         // <--[command]
         // @Name Fail
         // @Usage fail (script:<name>)
@@ -721,6 +816,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(FailCommand.class,
                 "FAIL", "fail (script:<name>)", 0);
+
 
         // <--[command]
         // @Name Feed
@@ -740,6 +836,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(FeedCommand.class,
                 "FEED", "feed (amt:<#>) (target:<entity>|...)", 0);
 
+
         // <--[command]
         // @Name Finish
         // @Usage finish (script:<name>)
@@ -756,6 +853,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(FinishCommand.class,
                 "FINISH", "finish (script:<name>)", 0);
+
 
         // <--[command]
         // @Name Firework
@@ -774,6 +872,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(FireworkCommand.class,
                 "FIREWORK", "firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
 
+
         // <--[command]
         // @Name Fish
         // @Usage fish (catchfish) (stop) (<location>) (catchpercent:<#>)
@@ -790,6 +889,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(FishCommand.class,
                 "FISH", "fish (catchfish) (stop) (<location>) (catchpercent:<#>)", 1);
+
 
         // <--[command]
         // @Name Flag
@@ -810,6 +910,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(FlagCommand.class,
                 "FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
 
+
         // <--[command]
         // @Name Fly
         // @Usage fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)
@@ -826,6 +927,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(FlyCommand.class,
                 "FLY", "fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)", 1);
+
 
         // <--[command]
         // @Name Follow
@@ -844,6 +946,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(FollowCommand.class,
                 "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
 
+
         // <--[command]
         // @Name ForEach
         // @Usage foreach [<object>|...] [<commands>]
@@ -851,22 +954,28 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Loops through a dList, running a set of commands for each item.
         // @Author Morphan1, mcmonkey
-        //
+
         // @Description
         // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
-        // that item. To call the value of the item while in the loop, you can use %value%.
-        //
-        // @Tags
-        // None
+        // that list entry. To call the value of the entry while in the loop, you can use %value%.
+
         // @Usage
-        // Use to run commands on multiple items.
+        // Use to run commands for 'each entry' in a list of objects/elements.
         // - foreach li@e@123|n@424|p@BobBarker {
-        //   - announce "There's something at <%value%.location>!"
+        //     - announce "There's something at <%value%.location>!"
         //   }
-        //
+
+        // @Usage
+        // Use to iterate through entries in any tag that returns a list
+        // - foreach <server.list_online_players> {
+        //	   - narrate "Thanks for coming to our server! Here's a bonus $50.00!"
+        //     - give %value% money qty:50
+        //   }
+
         // -->
         registerCoreMember(ForEachCommand.class,
                 "FOREACH", "foreach [<object>|...] [<commands>]", 2);
+
 
         // <--[command]
         // @Name Give
@@ -884,6 +993,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/<item>|...] (qty:<#>) (engrave) (to:<inventory>)", 1);
+
 
         // <--[command]
         // @Name Group
@@ -904,6 +1014,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(GroupCommand.class,
                 "GROUP", "group [add/remove] [<group>] (world:<name>)", 2);
 
+
         // <--[command]
         // @Name Head
         // @Usage head (<entity>|...) [skin:<player>]
@@ -921,6 +1032,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(HeadCommand.class,
                 "HEAD", "head (<entity>|...) [skin:<player>]", 1);
 
+
         // <--[command]
         // @Name Heal
         // @Usage heal (<#.#>) (<entity>|...)
@@ -937,6 +1049,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(HealCommand.class,
                 "HEAL", "heal (<#.#>) (<entity>|...)", 0);
+
 
         // <--[command]
         // @Name Health
@@ -956,6 +1069,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(HealthCommand.class,
                 "HEALTH", "health (target:player/{npc}) [<#>]", 1);
 
+
         // <--[command]
         // @Name Hurt
         // @Usage hurt (<#.#>) (<entity>|...)
@@ -973,6 +1087,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(HurtCommand.class,
                 "HURT", "hurt (<#.#>) (<entity>|...)", 0);
 
+
         // <--[command]
         // @Name If
         // @Usage if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)
@@ -989,6 +1104,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(IfCommand.class,
                 "IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
+
 
         // <--[command]
         // @Name Inventory
@@ -1009,6 +1125,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(InventoryCommand.class,
                 "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (destination:<inventory>) (origin:<inventory>)", 1);
 
+
         // <--[command]
         // @Name Inject
         // @Usage inject (locally) [<script>] (path:<name>) (instantly)
@@ -1026,6 +1143,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(InjectCommand.class,
                 "INJECT", "inject (locally) [<script>] (path:<name>) (instantly)", 1);
 
+
         // <--[command]
         // @Name Invisible
         // @Usage invisible [player/npc] [state:true/false/toggle]
@@ -1042,6 +1160,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
+
 
         // <--[command]
         // @Name Leash
@@ -1061,6 +1180,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(LeashCommand.class,
                 "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
 
+
         // <--[command]
         // @Name Listen
         // @Usage listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
@@ -1078,6 +1198,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ListenCommand.class,
                 "LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)", 2);
 
+
         // <--[command]
         // @Name Log
         // @Usage log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]
@@ -1094,6 +1215,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(LogCommand.class,
                 "LOG", "log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]", 2);
+
 
         // <--[command]
         // @Name Look
@@ -1113,6 +1235,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(LookCommand.class,
                 "LOOK", "look (<entity>|...) [<location>] (duration:<duration>)", 1);
 
+
         // <--[command]
         // @Name LookClose
         // @Usage lookclose [state:true/false]
@@ -1130,6 +1253,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(LookcloseCommand.class,
                 "LOOKCLOSE", "lookclose [state:true/false]", 1);
 
+
         // <--[command]
         // @Name Midi
         // @Usage midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>)
@@ -1137,23 +1261,25 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Plays a midi file at a given location or to a list of players using note block sounds.
         // @Author David Cernat
+
         // @Description
-        // This will fully load a midi song file stored in plugins/Denizen/midi/
-        // The file must be a valid midi file with the extension .mid
-        // It will continuously play the song as noteblock songs at the given location or group of players until the song ends.
-        // By default, this will play for the connected player only.
-        // @Tags
-        // None.
+        // This will fully load a midi song file stored in the '../plugins/Denizen/midi/' folder. The file 
+        // must be a valid midi file with the extension '.mid'. It will continuously play the song as
+        // noteblock songs at the given location or group of players until the song ends. If no location or
+        // entitiy is specified, by default this will play for the attached player.
+
         // @Usage
         // Use to play a midi song file at a given location
         // - midi file:Mysong <player.location>
-        //
+
         // @Usage
         // Use to play a midi song file at a given location to the specified player
         // - midi file:Mysong <server.list_online_players>
+
         // -->
         registerCoreMember(MidiCommand.class,
                 "MIDI", "midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>)", 1);
+
 
         // <--[command]
         // @Name Mount
@@ -1173,6 +1299,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(MountCommand.class,
                 "MOUNT", "mount (cancel) [<entity>|...] (<location>)", 0);
 
+
         // <--[command]
         // @Name ModifyBlock
         // @Usage modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)
@@ -1189,6 +1316,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ModifyBlockCommand.class,
                 "MODIFYBLOCK", "modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)", 2);
+
 
         // <--[command]
         // @Name Nameplate
@@ -1207,6 +1335,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(NameplateCommand.class,
                 "NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
 
+
         // <--[command]
         // @Name Narrate
         // @Usage narrate ["<text>"] (targets:<player>|...) (format:<name>)
@@ -1224,6 +1353,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(NarrateCommand.class,
                 "NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
 
+
         // <--[command]
         // @Name Note
         // @Usage note [<Notable dObject>] [as:<name>]
@@ -1240,6 +1370,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(NoteCommand.class,
                 "NOTE", "note [<Notable dObject>] [as:<name>]", 2);
+
 
         // <--[command]
         // @Name Oxygen
@@ -1259,6 +1390,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(OxygenCommand.class,
                 "OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
 
+
         // <--[command]
         // @Name Pause
         // @Usage pause [waypoints/navigation]
@@ -1275,6 +1407,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(PauseCommand.class,
                 "PAUSE", "pause [waypoints/navigation]", 1);
+
 
         // <--[command]
         // @Name PlayEffect
@@ -1293,6 +1426,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(PlayEffectCommand.class,
                 "PLAYEFFECT", "playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)", 2);
 
+
         // <--[command]
         // @Name PlaySound
         // @Usage playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
@@ -1309,6 +1443,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(PlaySoundCommand.class,
                 "PLAYSOUND", "playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
+
 
         // <--[command]
         // @Name Permission
@@ -1329,6 +1464,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(PermissionCommand.class,
                 "PERMISSION", "permission [add/remove] [permission] (player:<name>) (group:<name>) (world:<name>)", 2);
 
+
         // <--[command]
         // @Name Pose
         // @Usage pose (player/npc) [id:<name>]
@@ -1345,6 +1481,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(PoseCommand.class,
                 "POSE", "pose (player/npc) [id:<name>]", 1);
+
 
         // <--[command]
         // @Name Push
@@ -1369,6 +1506,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(PushCommand.class,
                 "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>)", 1);
 
+
         // <--[command]
         // @Name Queue
         // @Usage queue (queue:<id>) [clear/pause/resume/delay:<#>]
@@ -1386,6 +1524,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(QueueCommand.class,
                 "QUEUE", "queue (queue:<id>) [clear/pause/resume/delay:<#>]", 1);
 
+
         // <--[command]
         // @Name Random
         // @Usage random [<#>/{braced commands}]
@@ -1395,15 +1534,14 @@ public class CommandRegistry implements dRegistry {
         // @Author aufdemrand, morphan1
         // @Description
         // Todo
-        // @Tags
-        // Todo
+
         // @Usage
         // Use to choose randomly from the following commands
         // - random 3
         // - narrate "hi"
         // - narrate "hello"
         // - narrate "hey"
-        //
+
         // @Usage
         // Use to choose randomly from a braced set of commands
         // - random {
@@ -1411,10 +1549,11 @@ public class CommandRegistry implements dRegistry {
         //   - narrate "hello"
         //   - narrate "hey"
         //   }
-        //
+
         // -->
         registerCoreMember(RandomCommand.class,
                 "RANDOM", "random [<#>/{braced commands}]", 1);
+
 
         // <--[command]
         // @Name Remove
@@ -1432,6 +1571,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(RemoveCommand.class,
                 "REMOVE", "remove [<entity>|...] (<world>) (region:<name>)", 0);
+
 
         // <--[command]
         // @Name Rename
@@ -1451,6 +1591,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(RenameCommand.class,
                 "RENAME", "rename [<npc>] [<name>]", 1);
 
+
         // <--[command]
         // @Name Repeat
         // @Usage repeat [<amount>] [<commands>]
@@ -1467,6 +1608,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(RepeatCommand.class,
                 "REPEAT", "repeat [<amount>] [<commands>]", 1);
+
 
         // <--[command]
         // @Name Reset
@@ -1485,6 +1627,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ResetCommand.class,
                 "RESET", "reset [fails/finishes/cooldown] (script:<name>)", 1);
 
+
         // <--[command]
         // @Name Rotate
         // @Usage rotate (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (frequency:<duration>)
@@ -1500,6 +1643,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(RotateCommand.class,
                 "ROTATE", "rotate (cancel) (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (infinite/frequency:<duration>)", 0);
+
 
         // <--[command]
         // @Name Run
@@ -1518,9 +1662,10 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(RunCommand.class,
                 "RUN", "run (locally) [<script>] (path:<name>) (as:<player>/<npc>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)", 1);
 
+
         // <--[command]
         // @Name RunTask
-        // @Deprecated This has been replaced by the Run command.
+        // @Deprecated This has been replaced by the 'run' and 'inject' commands.
         // @Usage runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)
         // @Required 1
         // @Stable unstable
@@ -1535,6 +1680,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(RuntaskCommand.class,
                 "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
+
 
         // <--[command]
         // @Name Scoreboard
@@ -1553,6 +1699,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ScoreboardCommand.class,
                 "SCOREBOARD", "scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)", 1);
 
+
         // <--[command]
         // @Name Scribe
         // @Usage scribe [script:<name>] (give/drop/equip) (<item>) (<location>)
@@ -1569,6 +1716,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ScribeCommand.class,
                 "SCRIBE", "scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
+
 
         // <--[command]
         // @Name Shoot
@@ -1587,6 +1735,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ShootCommand.class,
                 "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>)", 1);
 
+
         // <--[command]
         // @Name ShowFake
         // @Usage showfake [<material>] [<location>|...] (d:<duration>{10s})
@@ -1603,6 +1752,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ShowFakeCommand.class,
                 "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);
+
 
         // <--[command]
         // @Name Sign
@@ -1621,6 +1771,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(SignCommand.class,
                 "SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>] (direction:n/e/w/s)", 1);
 
+
         // <--[command]
         // @Name Sit
         // @Usage sit (<location>)
@@ -1637,6 +1788,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(SitCommand.class,
                 "SIT", "sit (<location>)", 0);
+
 
         // <--[command]
         // @Name Spawn
@@ -1656,6 +1808,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(SpawnCommand.class,
                 "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>)", 1);
 
+
         // <--[command]
         // @Name Stand
         // @Usage stand
@@ -1672,6 +1825,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(StandCommand.class,
                 "STAND", "stand", 0);
+
 
         // <--[command]
         // @Name Strike
