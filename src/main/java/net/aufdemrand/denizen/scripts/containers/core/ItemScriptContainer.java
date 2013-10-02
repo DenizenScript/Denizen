@@ -20,6 +20,36 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemScriptContainer extends ScriptContainer {
 
+    // <--[language]
+    // @name Item Script Containers
+    // @description
+    // Item script containers are an easy way to pre-define custom items for use within scripts. Item
+    // scripts work with the dItem object, and can be fetched with the Object Fetcher by using the
+    // dItem constructor i@item_script_name. Example:
+    // - drop <player.location> i@super_dooper_diamond
+    //
+    // The following is the format for the container. All keys are optional.
+    // <code>
+    // Item Script Name:
+    //   type: item
+    //
+    //   display name: custom name
+    //   lore:
+    //   - item
+    //   - ...
+    //   enchantments:
+    //   - enchantment_name:level
+    //   - ...
+    //   recipe:
+    //   - m@material|m@material|m@material
+    //   - m@material|m@material|m@material
+    //   - m@material|m@material|m@material
+    //   bound: true                           # Bound items cannot be dropped
+    //   color: c@color                        # Only colorable items (such as leather)
+    //   book: book_script_name                # Only i@written_book types
+    //
+    // -->
+
     dNPC npc = null;
     dPlayer player = null;
     public boolean bound = false;
@@ -131,7 +161,7 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set Book
             if (contains("BOOK")) {
                 BookScriptContainer book = ScriptRegistry
-                        .getScriptContainerAs(getString("BOOK"), BookScriptContainer.class);
+                        .getScriptContainerAs(getString("BOOK").replace("s@", ""), BookScriptContainer.class);
 
                 stack = book.writeBookTo(stack, player, npc);
             }

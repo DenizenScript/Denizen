@@ -91,12 +91,12 @@ public class AgeCommand extends AbstractCommand {
                 if (entity.isAgeable()) {
                     if (ageType != null) {
                         if (ageType.equals(ageType.BABY))
-                            entity.getAgeable().setBaby();
-                        else entity.getAgeable().setAdult();
+                            entity.getAgeable().setBaby(true);
+                        else entity.getAgeable().setBaby(false);
                     }
                     else entity.getAgeable().setAge(age);
 
-                    if (lock) entity.getAgeable().setAgeLock(true);
+                    if (lock) entity.getAgeable().setLock(true);
                 }
 
                 // Zombies are not ageable, but can be babies

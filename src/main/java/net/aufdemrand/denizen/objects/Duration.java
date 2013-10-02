@@ -19,6 +19,11 @@ import java.util.regex.Pattern;
  */
 public class Duration implements dObject {
 
+
+    /////////////////////
+    //   STATIC METHODS AND FIELDS
+    /////////////////
+
     // Use regex pattern matching to easily determine if a string
     // value is a valid Duration.
     final static Pattern match =
@@ -31,6 +36,19 @@ public class Duration implements dObject {
     // Define a 'ZERO' Duration
     final public static Duration ZERO = new Duration(0);
 
+
+    /////////////////////
+    //   OBJECT FETCHER
+    /////////////////
+
+    // <--[language]
+    // @name d@
+    // @description
+    // d@ refers to the object type of a 'Duration'. The 'd@' is notation for Denizen's Object
+    // Fetcher. The only valid constructor for a dWorld is the name of the world it should be
+    // associated with. For example, to reference the world named 'world1', use w@world1.
+    // World names are case insensitive.
+    // -->
 
     /**
      * Gets a Duration Object from a dScript argument. Durations must be a positive

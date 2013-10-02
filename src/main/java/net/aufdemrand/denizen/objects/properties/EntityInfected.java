@@ -99,7 +99,7 @@ public class EntityInfected implements Property {
     ////////
 
     @Override
-    public String getAttributes(Attribute attribute) {
+    public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return "null";
 

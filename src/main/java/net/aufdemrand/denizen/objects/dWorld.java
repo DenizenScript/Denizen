@@ -16,12 +16,32 @@ import java.util.Map;
 
 public class dWorld implements dObject {
 
+
+    /////////////////////
+    //   STATIC METHODS
+    /////////////////
+
     static Map<String, dWorld> worlds = new HashMap<String, dWorld>();
 
     public static dWorld mirrorBukkitWorld(World world) {
+        if (world == null) return null;
         if (worlds.containsKey(world.getName())) return worlds.get(world.getName());
         else return new dWorld(world);
     }
+
+
+    /////////////////////
+    //   OBJECT FETCHER
+    /////////////////
+
+    // <--[language]
+    // @name w@
+    // @description
+    // w@ refers to the object type of a dWorld. The 'w@' is notation for Denizen's Object
+    // Fetcher. The only valid constructor for a dWorld is the name of the world it should be
+    // associated with. For example, to reference the world named 'world1', use w@world1.
+    // World names are case insensitive.
+    // -->
 
     @ObjectFetcher("w")
     public static dWorld valueOf(String string) {
