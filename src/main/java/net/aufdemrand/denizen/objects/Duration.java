@@ -19,6 +19,30 @@ import java.util.regex.Pattern;
  */
 public class Duration implements dObject {
 
+    // <--[language]
+    // @name Duration
+    // @description
+    // Durations are a unified and convenient way to get a 'unit of time' throughout Denizen.
+    // Many commands and features that require a duration can be satisfied by specifying a number
+    // and unit of time, especially command arguments that are prefixed 'duration:', etc. The d@
+    // object fetcher notation can also be used, and is encouraged. The unit of time can be specified
+    // by using one of the following: T=ticks, M=minutes, S=seconds, H=hours, D=days. Not using a unit
+    // will imply seconds. Examples: d@10s, d@50m, d@1d, d@20.
+    //
+    // Specifying a range of duration will result in a randomly selected duration that is
+    // in between the range specified. The smaller value should be first. Examples:
+    // d@10s-25s, d@1m-2m.
+    //
+    // See 'd@duration' tags for an explanation of duration attributes.
+    // -->
+
+    // <--[language]
+    // @name Tick
+    // @description
+    // A 'tick' is usually referred to as 1/20th of a second, the speed at which CraftBukkit updates
+    // its various server events.
+    // -->
+
 
     /////////////////////
     //   STATIC METHODS AND FIELDS
@@ -45,9 +69,10 @@ public class Duration implements dObject {
     // @name d@
     // @description
     // d@ refers to the object type of a 'Duration'. The 'd@' is notation for Denizen's Object
-    // Fetcher. The only valid constructor for a dWorld is the name of the world it should be
-    // associated with. For example, to reference the world named 'world1', use w@world1.
-    // World names are case insensitive.
+    // Fetcher. Durations must be a positive number or range of numbers followed optionally by
+    // a unit of time, and prefixed by d@. Examples: d@3s, d@1d, d@10s-20s.
+    //
+    // See also 'Duration'
     // -->
 
     /**
@@ -61,6 +86,8 @@ public class Duration implements dObject {
     @ObjectFetcher("d")
     public static Duration valueOf(String string) {
         if (string == null) return null;
+
+        string = string.replace("d@", "");
 
         // Pick a duration between a high and low number if there is a '-' present.
         if (string.indexOf("-") > 0
@@ -126,13 +153,9 @@ public class Duration implements dObject {
     }
 
 
-    // The amount of seconds in the duration.
-    private double seconds;
-
-
-    // Duration's default dObject prefix.
-    private String prefix = "Duration";
-
+    /////////////////////
+    //   CONSTRUCTORS
+    /////////////////
 
     /**
      * Creates a duration object when given number of seconds.
@@ -144,7 +167,6 @@ public class Duration implements dObject {
         if (this.seconds < 0) this.seconds = 0;
     }
 
-
     /**
      * Creates a duration object when given number of seconds.
      *
@@ -155,7 +177,6 @@ public class Duration implements dObject {
         if (this.seconds < 0) this.seconds = 0;
     }
 
-
     /**
      * Creates a duration object when given number of Bukkit ticks.
      *
@@ -165,6 +186,19 @@ public class Duration implements dObject {
         this.seconds = ticks / 20;
         if (this.seconds < 0) this.seconds = 0;
     }
+
+
+    /////////////////////
+    //   INSTANCE FIELDS/METHODS
+    /////////////////
+
+
+    // The amount of seconds in the duration.
+    private double seconds;
+
+
+    // Duration's default dObject prefix.
+    private String prefix = "Duration";
 
 
     /**
@@ -233,11 +267,14 @@ public class Duration implements dObject {
     }
 
 
+    /////////////////////
+    //   dObject Methods
+    /////////////////
+
     @Override
     public String getPrefix() {
         return prefix;
     }
-
 
     @Override
     public String debug() {
@@ -246,19 +283,16 @@ public class Duration implements dObject {
                 + ChatColor.DARK_GRAY + "'  ";
     }
 
-
-    // Durations are not unique, cannot be saved or persisted.
     @Override
     public boolean isUnique() {
+        // Durations are not unique, cannot be saved or persisted.
         return false;
     }
-
 
     @Override
     public String getObjectType() {
         return "duration";
     }
-
 
     /**
      * Return the value of this Duration. This will also return a
@@ -284,7 +318,6 @@ public class Duration implements dObject {
         else return seconds + "s";
     }
 
-
     /**
      * Acts just like identify().
      *
@@ -294,7 +327,6 @@ public class Duration implements dObject {
     public String toString() {
         return identify();
     }
-
 
     @Override
     public dObject setPrefix(String prefix) {

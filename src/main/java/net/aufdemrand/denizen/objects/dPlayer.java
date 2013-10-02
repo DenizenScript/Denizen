@@ -96,7 +96,7 @@ public class dPlayer implements dObject {
 
 
     /////////////////////
-    //   STATIC CONSTRUCTORS
+    //   CONSTRUCTORS
     /////////////////
 
     public dPlayer(OfflinePlayer player) {

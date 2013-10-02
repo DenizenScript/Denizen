@@ -29,7 +29,7 @@ public class InjectCommand extends AbstractCommand {
     // @Code
     // # +-----------------------------------
     // # | Script Injection tutorial
-    // # |
+    //
     // # | Script injection is an alternative way to run task scripts. Pluses include the ability
     // # | to use and modify established definitions and context contained in the script. Check out
     // # | this example on some simple ways to use script injection.

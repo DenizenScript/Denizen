@@ -47,6 +47,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //   bound: true                           # Bound items cannot be dropped
     //   color: c@color                        # Only colorable items (such as leather)
     //   book: book_script_name                # Only i@written_book types
+    // </code>
     //
     // -->
 

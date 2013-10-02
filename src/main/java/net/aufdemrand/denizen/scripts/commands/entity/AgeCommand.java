@@ -20,8 +20,62 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *
  * @author David Cernat
  */
-
 public class AgeCommand extends AbstractCommand {
+
+    // <--[example]
+    // @name Age Command and Item Script/Item Event Example
+    // @description
+    // This script shows a very small example that utilizes the Age Command with the use
+    // of some items scripts and item events. Use /ex give i@aged_wand or /ex give i@baby_wand
+    // and right click an entity.
+
+    // @code
+    // # +--------------------
+    // # | Age Command and Item Script/Item Event Example
+    //
+    // # | This script shows a very small example that utilizes the Age Command with the use
+    // # | of some items scripts and item events. Use /ex give i@aged_wand or /ex give i@baby_wand
+    // # | and right click an entity.
+    //
+    // Age Wands Handler:
+    //   type: world
+    //
+    //   events:
+    //
+    //     # Check for the player right clicking entities with the baby_wand item
+    //     on player right clicks entity with i@baby_wand:
+    //
+    //     # Play an effect, and run the age command on the entity
+    //     - playeffect <c.entity.location> effect:mob_spell qty:100 data:1 offset:0.5
+    //     - age <c.entity> baby
+    //
+    //     # ...and again for the aged_wand item
+    //     on player right clicks entity with i@aged_wand:
+    //     - playeffect <c.entity.location> effect:mob_spell qty:200 data:0 offset:0.5
+    //     - age <c.entity>
+    //
+    //
+    // # Define items used
+    // baby_wand:
+    //   type: item
+    //
+    //   material: blaze_rod
+    //   display name: a baby wand
+    //   lore:
+    //   - "This wand is smooth as a baby's bottom."
+    //
+    // aged_wand:
+    //   type: item
+    //
+    //   material: bone
+    //   display name: an aged wand
+    //   lore:
+    //   - "This wand reeks of old age."
+    //
+    // </code>
+
+    // -->
+
 
     private enum AgeType { ADULT, BABY }
 
