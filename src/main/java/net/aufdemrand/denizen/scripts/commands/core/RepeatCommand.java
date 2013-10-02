@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
@@ -13,6 +14,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class RepeatCommand extends BracedCommand {
@@ -67,6 +69,9 @@ public class RepeatCommand extends BracedCommand {
                 }
             }
             ScriptQueue queue = new InstantQueue(queueId);
+            for (Map.Entry<String, dObject> entry : scriptEntry.getResidingQueue().getAllContext().entrySet()) {
+                queue.addContext(entry.getKey(), entry.getValue());
+            }
             queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
             scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(incr + 1));
             queue.addDefinition("value", String.valueOf(incr + 1));
