@@ -20,8 +20,61 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *
  * @author David Cernat
  */
-
 public class AgeCommand extends AbstractCommand {
+
+    // <--[example]
+    // @Title Age Command and Item Script/Item Event Example
+    // @Description
+    // This script shows a very small example that utilizes the Age Command with the use
+    // of some items scripts and item events. Use /ex give i@aged_wand or /ex give i@baby_wand
+    // and right click an entity.
+
+    // @Code
+    // # +--------------------
+    // # | Age Command and Item Script/Item Event Example
+    //
+    // # | This script shows a very small example that utilizes the Age Command with the use
+    // # | of some items scripts and item events. Use /ex give i@aged_wand or /ex give i@baby_wand
+    // # | and right click an entity.
+    //
+    // Age Wands Handler:
+    //   type: world
+    //
+    //   events:
+    //
+    //     # Check for the player right clicking entities with the baby_wand item
+    //     on player right clicks entity with i@baby_wand:
+    //
+    //     # Play an effect, and run the age command on the entity
+    //     - playeffect <c.entity.location> effect:mob_spell qty:100 data:1 offset:0.5
+    //     - age <c.entity> baby
+    //
+    //     # ...and again for the aged_wand item
+    //     on player right clicks entity with i@aged_wand:
+    //     - playeffect <c.entity.location> effect:mob_spell qty:200 data:0 offset:0.5
+    //     - age <c.entity>
+    //
+    //
+    // # Build item script containers
+    // baby_wand:
+    //   type: item
+    //
+    //   material: blaze_rod
+    //   display name: a baby wand
+    //   lore:
+    //   - "This wand is smooth as a baby's bottom."
+    //
+    // aged_wand:
+    //   type: item
+    //
+    //   material: bone
+    //   display name: an aged wand
+    //   lore:
+    //   - "This wand reeks of old age."
+    //
+
+    // -->
+
 
     private enum AgeType { ADULT, BABY }
 
@@ -87,24 +140,28 @@ public class AgeCommand extends AbstractCommand {
         // Go through all the entities and set their ages
         for (dEntity entity : entities) {
             if (entity.isSpawned()) {
+
                 if (entity.isAgeable()) {
                     if (ageType != null) {
                         if (ageType.equals(ageType.BABY))
-                            entity.getAgeable().setBaby();
-                        else entity.getAgeable().setAdult();
+                            entity.getAgeable().setBaby(true);
+                        else entity.getAgeable().setBaby(false);
                     }
                     else entity.getAgeable().setAge(age);
 
-                    if (lock) entity.getAgeable().setAgeLock(true);
+                    if (lock) entity.getAgeable().setLock(true);
                 }
+
+                // Zombies are not ageable, but can be babies
                 else if (entity.getBukkitEntity() instanceof Zombie) {
                     if (ageType.equals(ageType.BABY))
                         ((Zombie) entity.getBukkitEntity()).setBaby(true);
                     else
                         ((Zombie) entity.getBukkitEntity()).setBaby(false);
                 }
+
                 else {
-                    dB.report(getName(), entity + " is not ageable!");
+                    dB.echoError(entity.identify() + " is not ageable!");
                 }
             }
         }

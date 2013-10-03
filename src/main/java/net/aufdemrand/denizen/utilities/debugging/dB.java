@@ -303,8 +303,8 @@ public class dB {
     }
 
     private static String trimMessage(String message) {
-        if (message.length() > 256)
-            message = message.substring(0, 255) + "... *snip*";
+        if (message.length() > 512)
+            message = message.substring(0, 511) + "... *snip*";
         return message;
     }
 

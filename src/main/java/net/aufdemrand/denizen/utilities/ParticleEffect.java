@@ -21,6 +21,17 @@ import org.bukkit.entity.Player;
 */
 public enum ParticleEffect {
 
+    // <--[language]
+    // @name Particle Effects
+    // @description
+    // The following is a list of particle effects that can be used with the 'playeffect' command:
+    // HUGE_EXPLOSION, LARGE_EXPLODE, FIREWORKS_SPARK, BUBBLE, SUSPEND, DEPTH_SUSPEND, TOWN_AURA,
+    // CRIT, MAGIC_CRIT, MOB_SPELL, MOB_SPELL_AMBIENT, SPELL, INSTANT_SPELL, WITCH_MAGIC, NOTE,
+    // PORTAL, ENCHANTMENT_TABLE, EXPLODE, FLAME, LAVA, FOOTSTEP, SPLASH, LARGE_SMOKE, CLOUD, RED_DUST,
+    // SNOWBALL_POOF, DRIP_WATER, DRIP_LAVA, SNOW_SHOVEL, SLIME, HEART, ANGRY_VILLAGER, HAPPY_VILLAGER,
+    // RANDOM
+    // -->
+
     HUGE_EXPLOSION("hugeexplosion", 0),
     LARGE_EXPLODE("largeexplode", 1),
     FIREWORKS_SPARK("fireworksSpark", 2),

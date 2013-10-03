@@ -25,9 +25,9 @@ public class ScriptContainer {
     // probably have more specific names, just remember that no matter how complicated a script, this basic structure
     // still applies.
     //
-    // It’s important to keep in mind that all child keys, including all the main keys of the script, must line up with
+    // It's important to keep in mind that all child keys, including all the main keys of the script, must line up with
     // one another, hierarchically. If you are familiar with YAML, great, because all script containers use it at the
-    // core. Every value, in one way or another, belongs to some kind of ‘key’. To define a key, use a string value plus
+    // core. Every value, in one way or another, belongs to some kind of 'key'. To define a key, use a string value plus
     // a colon (:). Keys can have a single value, a list value, or own another key:
     //
     // <code>

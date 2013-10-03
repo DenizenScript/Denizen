@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
@@ -313,29 +314,21 @@ public class dCuboid implements dObject, Notable {
     public dList getSpawnableBlocks() {
         dLocation loc;
         dList list = new dList();
-        boolean midair;
 
         for (int x = 0; x != x_distance + 1; x++) {
             for (int z = 0; z != z_distance + 1; z++) {
-                midair = false;
                 for (int y = 0; y != y_distance; y++) {
 
                     loc = new dLocation(loc_1.clone()
                             .add(x, y, z));
 
-                    if (loc.getBlock().getType().equals(Material.AIR)
-                        && loc.clone().add(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
-
+                    if (SafeBlock.blockIsSafe(loc.getBlock().getType())
+                        && SafeBlock.blockIsSafe(loc.clone().add(0, 1, 0).getBlock().getType())
+                        && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()) {
                         // Get the center of the block, so the entity won't suffocate
                         // inside the edges for a couple of seconds
-                        if (!midair) {
-                            loc.add(0.5, 0, 0.5);
-                            list.add(loc.identify());
-                        }
-                        midair = true;
-                    }
-                    else {
-                        midair = false;
+                        loc.add(0.5, 0, 0.5);
+                        list.add(loc.identify());
                     }
                 }
             }
@@ -459,7 +452,7 @@ String prefix = "Cuboid";
         // @returns dList(dLocation)
         // @description
         // Returns each dLocation within the dCuboid that is
-        // safe for players or similar entities to spawn in
+        // safe for players or similar entities to spawn in.
         // -->
         if (attribute.startsWith("get_spawnable_blocks"))
             return new dList(getSpawnableBlocks())

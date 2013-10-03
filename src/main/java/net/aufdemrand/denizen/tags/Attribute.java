@@ -17,7 +17,8 @@ import java.util.regex.Pattern;
 
 public class Attribute {
 
-    // TODO: Make this private. It's public right now to enable easy debugging.
+    public static String RETURN_NULL = "null";
+
     public List<String> attributes;
 
     ScriptEntry scriptEntry;

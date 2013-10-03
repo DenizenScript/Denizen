@@ -2,12 +2,14 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
@@ -71,6 +73,9 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             ScriptQueue queue = new InstantQueue(queueId);
+            for (Map.Entry<String, dObject> entry : scriptEntry.getResidingQueue().getAllContext().entrySet()) {
+                queue.addContext(entry.getKey(), entry.getValue());
+            }
             queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
             scriptEntry.getResidingQueue().addDefinition("value", value);
             queue.addDefinition("value", value);

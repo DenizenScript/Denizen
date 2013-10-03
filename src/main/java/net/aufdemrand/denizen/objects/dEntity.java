@@ -1,11 +1,13 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.objects.properties.EntityAge;
+import net.aufdemrand.denizen.objects.properties.EntityInfected;
+import net.aufdemrand.denizen.objects.properties.EntityProfessional;
+import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -52,46 +54,10 @@ public class dEntity implements dObject {
     /////////////////
 
     final static Pattern entity_by_id = Pattern.compile("(n@|e@|p@)(.+)",
-                    Pattern.CASE_INSENSITIVE);
+            Pattern.CASE_INSENSITIVE);
 
     final static Pattern entity_with_data = Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
-                    Pattern.CASE_INSENSITIVE);
-
-
-    /////////////////////
-    //   STATIC METHODS
-    /////////////////
-
-    public static Map<String, dEntity> uniqueObjects = new HashMap<String, dEntity>();
-
-    public static boolean isSaved(String id) {
-        return uniqueObjects.containsKey(id.toUpperCase());
-    }
-
-    public static boolean isSaved(dEntity entity) {
-        return uniqueObjects.containsValue(entity);
-    }
-
-    public static dEntity getSaved(String id) {
-        if (uniqueObjects.containsKey(id.toUpperCase()))
-            return uniqueObjects.get(id.toUpperCase());
-        else return null;
-    }
-
-    public static String getSaved(dEntity entity) {
-        for (Map.Entry<String, dEntity> i : uniqueObjects.entrySet())
-            if (i.getValue() == entity) return i.getKey();
-        return null;
-    }
-
-    public static void saveAs(dEntity entity, String id) {
-        if (entity == null) return;
-        uniqueObjects.put(id.toUpperCase(), entity);
-    }
-
-    public static void remove(String id) {
-        uniqueObjects.remove(id.toUpperCase());
-    }
+            Pattern.CASE_INSENSITIVE);
 
 
     //////////////////
@@ -125,7 +91,9 @@ public class dEntity implements dObject {
 
             // When selecting a random entity type, ignore invalid or inappropriate ones
             while (randomType == null ||
-                    randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$")) {
+                    randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL" +
+                            "|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING" +
+                            "|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$")) {
 
                 randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
             }
@@ -137,7 +105,6 @@ public class dEntity implements dObject {
         // Match @object format
 
         // Make sure string matches what this interpreter can accept.
-
 
         Matcher m;
         m = entity_by_id.matcher(string);
@@ -190,8 +157,8 @@ public class dEntity implements dObject {
                     if (entity != null) return new dEntity(entity);
                 }
 
-                else if (isSaved(m.group(2)))
-                    return getSaved(m.group(2));
+//                else if (isSaved(m.group(2)))
+//                    return getSaved(m.group(2));
             }
         }
 
@@ -511,27 +478,6 @@ public class dEntity implements dObject {
     }
 
     /**
-     * Get this dEntity as an Ageable
-     *
-     * @return  The Ageable
-     */
-
-    public Ageable getAgeable() {
-
-        return (Ageable) entity;
-    }
-
-    /**
-     * Check whether this dEntity is an Ageable
-     *
-     * @return  true or false
-     */
-
-    public boolean isAgeable() {
-        return entity instanceof Ageable;
-    }
-
-    /**
      * Whether this entity identifies as a generic
      * entity type, for instance "e@cow", instead of
      * a spawned entity
@@ -802,17 +748,11 @@ public class dEntity implements dObject {
     }
 
     public boolean isValid() {
-
         return entity.isValid();
     }
 
     public void remove() {
         entity.remove();
-    }
-
-    public dEntity rememberAs(String id) {
-        dEntity.saveAs(this, id);
-        return this;
     }
 
     public void teleport(Location location) {
@@ -834,7 +774,7 @@ public class dEntity implements dObject {
         // If the target is not null, cast it to an NMS EntityLiving
         // as well for one of the two methods below
         EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
-                                                : null;
+                : null;
 
         ((CraftCreature) entity).getHandle().
                 setGoalTarget(nmsTarget);
@@ -882,6 +822,10 @@ public class dEntity implements dObject {
         }
     }
 
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
+
 
     // Used to store some information about a livingEntity while it's despawned
     private class DespawnedEntity {
@@ -906,9 +850,71 @@ public class dEntity implements dObject {
 
 
 
-    //////////////////////////////
-    //  DSCRIPT ARGUMENT METHODS
-    /////////////////////////
+    public int comparesTo(dEntity entity) {
+        // If provided is unique, and both are the same unique entity, return 1.
+        if (entity.isUnique() && entity.identify().equals(identify())) return 1;
+
+        // If provided isn't unique...
+        if (!entity.isUnique()) {
+            // Return 1 if this object isn't unique either, but matches
+            if (!isUnique() && entity.identify().equals(identify()))
+                return 1;
+            // Return 1 if the provided object isn't unique, but whose entity_type
+            // matches this object, even if this object is unique.
+            if (entity_type == entity.entity_type) return 1;
+        }
+
+        return 0;
+    }
+
+
+
+    ///////////////
+    // Properties
+    ////////////
+
+    private List<Property> properties = new ArrayList<Property>();
+
+    public String describe() {
+        properties.clear();
+
+        StringBuilder property_string = new StringBuilder();
+
+        for (Property property : properties)
+            property_string.append(property.getPropertyString());
+
+        return identify() + '[' + property_string.toString() + ']';
+    }
+
+    public boolean isInfected() {
+        return EntityInfected.describes(this);
+    }
+
+    public EntityInfected getInfected() {
+        return EntityInfected.getFrom(this);
+    }
+
+    public boolean isProfessional() {
+        return EntityProfessional.describes(this);
+    }
+
+    public EntityProfessional getProfessional() {
+        return EntityProfessional.getFrom(this);
+    }
+
+    public boolean isAgeable() {
+        return EntityAge.describes(this);
+    }
+
+    public EntityAge getAgeable() {
+        return EntityAge.getFrom(this);
+    }
+
+
+
+    /////////////////////
+    //  dObject Methods
+    ///////////////////
 
     private String prefix = "Entity";
 
@@ -933,23 +939,6 @@ public class dEntity implements dObject {
         return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
     }
 
-    public int comparesTo(dEntity entity) {
-        // If provided is unique, and both are the same unique entity, return 1.
-        if (entity.isUnique() && entity.identify().equals(identify())) return 1;
-
-        // If provided isn't unique...
-        if (!entity.isUnique()) {
-            // Return 1 if this object isn't unique either, but matches
-            if (!isUnique() && entity.identify().equals(identify()))
-                return 1;
-            // Return 1 if the provided object isn't unique, but whose entity_type
-            // matches this object, even if this object is unique.
-            if (entity_type == entity.entity_type) return 1;
-        }
-
-        return 0;
-    }
-
     @Override
     public String identify() {
 
@@ -959,18 +948,17 @@ public class dEntity implements dObject {
                 return "n@" + getNPC().getId();
             else if (isPlayer())
                 return "p@" + getPlayer().getName();
+
+//        // Check if entity is a 'notable entity'
+//        if (isSaved(this))
+//            return "e@" + getSaved(this);
+
+            else if (isSpawned())
+                return "e@" + entity.getEntityId();
         }
 
-        // Check if entity is a 'saved entity'
-        if (isSaved(this))
-            return "e@" + getSaved(this);
-
-
-        else if (isSpawned())
-            return "e@" + entity.getEntityId();
-
-            // Check if an entity_type is available
-        else if (entity_type != null)
+        // Check if an entity_type is available
+        if (entity_type != null)
             return "e@" + entity_type.name();
 
         return "null";
@@ -983,7 +971,7 @@ public class dEntity implements dObject {
 
     @Override
     public boolean isUnique() {
-        return (isPlayer() || isNPC() || isSaved(this) || isSpawned());
+        return (isPlayer() || isNPC() || isSpawned());  // || isSaved()
     }
 
     @Override
@@ -1275,7 +1263,7 @@ public class dEntity implements dObject {
                         .getAttribute(attribute.fulfill(1));
             }
             else return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1305,7 +1293,7 @@ public class dEntity implements dObject {
                 return new dEntity(entity.getPassenger())
                         .getAttribute(attribute.fulfill(1));
             else return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1320,7 +1308,7 @@ public class dEntity implements dObject {
                 return new dEntity(entity.getVehicle())
                         .getAttribute(attribute.fulfill(1));
             else return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1336,7 +1324,7 @@ public class dEntity implements dObject {
                 for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
                     if (effect.getType().equals(PotionEffectType.getByName(attribute.getContext(1))))
                         returnElement = true;
-            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
+                    else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }
 
@@ -1465,7 +1453,7 @@ public class dEntity implements dObject {
         // -->
         if (attribute.startsWith("is_spawned")) {
             return new Element(isSpawned())
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1614,7 +1602,34 @@ public class dEntity implements dObject {
             return new Element(entity instanceof Tameable)
                     .getAttribute(attribute.fulfill(1));
 
+
+
+        /////////////////////
+        //   PROPERTY ATTRIBUTES
+        /////////////////
+
+        if (attribute.startsWith("infected")) {
+            if (EntityInfected.describes(this))
+                return EntityInfected.getFrom(this)
+                        .getAttribute(attribute.fulfill(1));
+            else return Attribute.RETURN_NULL;
+        }
+
+        if (attribute.startsWith("professional")) {
+            if (EntityProfessional.describes(this))
+                return EntityProfessional.getFrom(this)
+                        .getAttribute(attribute.fulfill(1));
+            else return Attribute.RETURN_NULL;
+        }
+
+
+
+
+
+
         return new Element(identify()).getAttribute(attribute);
     }
+
+
 
 }

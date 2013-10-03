@@ -54,7 +54,7 @@ public class DropCommand extends AbstractCommand {
 
 
             else if (!scriptEntry.hasObject("action")
-                    && arg.matchesPrefix("experience, exp, xp"))
+                    && arg.matches("experience, exp, xp"))
                 // Experience arg
                 scriptEntry.addObject("action", new Element(Action.DROP_EXP.toString()).setPrefix("action"));
 
