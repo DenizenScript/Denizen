@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
@@ -321,8 +322,8 @@ public class dCuboid implements dObject, Notable {
                     loc = new dLocation(loc_1.clone()
                             .add(x, y, z));
 
-                    if (loc.getBlock().getType().equals(Material.AIR)
-                        && loc.clone().add(0, 1, 0).getBlock().getType().equals(Material.AIR)
+                    if (SafeBlock.blockIsSafe(loc.getBlock().getType())
+                        && SafeBlock.blockIsSafe(loc.clone().add(0, 1, 0).getBlock().getType())
                         && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()) {
                         // Get the center of the block, so the entity won't suffocate
                         // inside the edges for a couple of seconds
