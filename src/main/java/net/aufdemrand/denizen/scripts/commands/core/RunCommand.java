@@ -191,7 +191,7 @@ public class RunCommand extends AbstractCommand {
                 String name = definition_names != null && definition_names.length >= x ?
                         definition_names[x - 1].trim() : String.valueOf(x);
                 queue.addDefinition(name, definition);
-                dB.echoDebug("Adding definition " + name + " as " + definition);
+                dB.echoDebug("Adding definition %" + name + "% as " + definition);
                 x++;
             }
         }
