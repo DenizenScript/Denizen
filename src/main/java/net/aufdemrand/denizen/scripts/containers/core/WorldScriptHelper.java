@@ -60,7 +60,6 @@ import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -3384,15 +3383,22 @@ public class WorldScriptHelper implements Listener {
 
         if (event.hasBlock()) {
             Block block = event.getClickedBlock();
+            dMaterial blockMaterial = new dMaterial(block.getType());
             context.put("location", new dLocation(block.getLocation()));
 
-            interaction = interaction + " " + block.getType().name();
-            events.add(interaction);
+            events.add(interaction + " block");
+            events.add(interaction + " " + blockMaterial.identify());
 
             if (event.hasItem()) {
-                events.add(interaction + " with item");
-                events.add(interaction + " with " + item.identify());
-                events.add(interaction + " with " + itemMaterial.identify());
+                events.add(interaction + " block with item");
+                events.add(interaction + " block with " + item.identify());
+                events.add(interaction + " block with " + itemMaterial.identify());
+                events.add(interaction + " " + blockMaterial.identify() +
+                                         " with item");
+                events.add(interaction + " " + blockMaterial.identify() +
+                                         " with " + item.identify());
+                events.add(interaction + " " + blockMaterial.identify() +
+                                         " with " + itemMaterial.identify());
             }
         }
 
