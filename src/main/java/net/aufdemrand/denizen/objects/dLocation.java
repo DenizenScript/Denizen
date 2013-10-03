@@ -107,6 +107,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public static void _saveLocations() {
         List<String> loclist = new ArrayList<String>();
         for (Map.Entry<String, dLocation> entry : uniqueObjects.entrySet())
+            // Save locations in the horizontal centers of blocks
             loclist.add(entry.getKey() + ";"
                     + (entry.getValue().getBlockX() + 0.5)
                     + "," + entry.getValue().getBlockY()
@@ -690,12 +691,12 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     if (attribute.getAttribute(3).startsWith("multiworld"))
                         return new Element(Math.sqrt(
                                 Math.pow(this.getX() - toLocation.getX(), 2) +
-                                        Math.pow(toLocation.getZ() - toLocation.getZ(), 2)))
+                                Math.pow(this.getZ() - toLocation.getZ(), 2)))
                                 .getAttribute(attribute.fulfill(3));
                     else if (this.getWorld() == toLocation.getWorld())
                         return new Element(Math.sqrt(
                                 Math.pow(this.getX() - toLocation.getX(), 2) +
-                                        Math.pow(toLocation.getZ() - toLocation.getZ(), 2)))
+                                Math.pow(this.getZ() - toLocation.getZ(), 2)))
                                 .getAttribute(attribute.fulfill(2));
                 }
 
