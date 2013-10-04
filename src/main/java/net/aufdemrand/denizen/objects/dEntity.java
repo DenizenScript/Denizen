@@ -276,6 +276,7 @@ public class dEntity implements dObject {
 
             if (npc.isSpawned()) {
                 this.entity = npc.getBukkitEntity();
+                this.entity_type = npc.getBukkitEntity().getType();
                 this.uuid = entity.getUniqueId();
             }
         } else dB.echoError("NPC referenced is null!");
