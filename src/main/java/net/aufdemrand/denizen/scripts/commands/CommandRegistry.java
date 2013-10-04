@@ -968,7 +968,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Use to iterate through entries in any tag that returns a list
         // - foreach <server.list_online_players> {
-        //	   - narrate "Thanks for coming to our server! Here's a bonus $50.00!"
+        //       - narrate "Thanks for coming to our server! Here's a bonus $50.00!"
         //     - give %value% money qty:50
         //   }
 
@@ -1263,7 +1263,7 @@ public class CommandRegistry implements dRegistry {
         // @Author David Cernat
 
         // @Description
-        // This will fully load a midi song file stored in the '../plugins/Denizen/midi/' folder. The file 
+        // This will fully load a midi song file stored in the '../plugins/Denizen/midi/' folder. The file
         // must be a valid midi file with the extension '.mid'. It will continuously play the song as
         // noteblock songs at the given location or group of players until the song ends. If no location or
         // entitiy is specified, by default this will play for the attached player.
