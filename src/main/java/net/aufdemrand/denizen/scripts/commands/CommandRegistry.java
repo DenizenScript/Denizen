@@ -2062,7 +2062,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Zap
-        // @Usage zap (<script>:)[<step>] (<duration>)
+        // @Usage zap (<script>) [<step>] (<duration>)
         // @Required 0
         // @Stable stable
         // @Short Changes the current script step.
@@ -2075,7 +2075,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(ZapCommand.class,
-                "ZAP", "zap (<script>:)[<step>] (<duration>)", 0);
+                "ZAP", "zap (<script>) [<step>] (<duration>)", 0);
 
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
