@@ -86,7 +86,10 @@ public class HeadCommand extends AbstractCommand {
                 entity.getPlayer().getInventory().setHelmet(item);
             }
             else {
-                dB.report(getName(), entity.debug() + " is not a player or an NPC!");
+                if (entity.isLivingEntity() && entity.getLivingEntity().getEquipment() != null)
+                    entity.getLivingEntity().getEquipment().setHelmet(item);
+                else
+                    dB.echoError(entity.identify() + " is not a living entity!");
             }
         }
     }

@@ -31,7 +31,7 @@ commands:
 permissions:
   denizen.*:
     description: Gives access to Denizen commands
-    default: false
+    default: op
     children:
       denizen.basic: true
       denizen.notable: true
@@ -56,7 +56,7 @@ permissions:
       denizen.npc.pushable: true
   denizen.npc.*:
     description: Gives access to the /npc commands added by Denizen
-    default: false
+    default: op
     children:
       denizen.npc.health: true
       denizen.npc.sneak: true
