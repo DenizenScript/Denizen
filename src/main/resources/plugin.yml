@@ -31,8 +31,44 @@ commands:
 permissions:
   denizen.*:
     description: Gives access to Denizen commands
+    default: false
     children:
       denizen.basic: true
       denizen.notable: true
+      denizen.notable.basic: true
+      denizen.repo: true
       denizen.flag: true
       denizen.dscript: true
+      denizen.ex: true
+      denizen.debug: true
+      denizen.npc.health: true
+      denizen.npc.sneak: true
+      denizen.npc.effect: true
+      denizen.npc.fish: true
+      denizen.npc.sleep: true
+      denizen.npc.stand: true
+      denizen.npc.sit: true
+      denizen.npc.nameplate: true
+      denizen.npc.nickname: true
+      denizen.npc.trigger: true
+      denizen.npc.assign: true
+      denizen.npc.constants: true
+      denizen.npc.pushable: true
+  denizen.npc.*:
+    description: Gives access to the /npc commands added by Denizen
+    default: false
+    children:
+      denizen.npc.health: true
+      denizen.npc.sneak: true
+      denizen.npc.effect: true
+      denizen.npc.fish: true
+      denizen.npc.sleep: true
+      denizen.npc.stand: true
+      denizen.npc.sit: true
+      denizen.npc.nameplate: true
+      denizen.npc.nickname: true
+      denizen.npc.trigger: true
+      denizen.npc.assign: true
+      denizen.npc.constants: true
+      denizen.npc.pushable: true
+      

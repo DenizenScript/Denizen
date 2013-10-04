@@ -72,7 +72,7 @@ public class CommandHandler {
      */
     @Command(
             aliases = { "npc" }, usage = "pushable -t (-r) (--delay #)", desc = "Makes a NPC pushable.",
-            flags = "rt", modifiers = { "pushable", "push" }, min = 1, max = 2, permission = "npc.pushable")
+            flags = "rt", modifiers = { "pushable", "push" }, min = 1, max = 2, permission = "denizen.npc.pushable")
     @Requirements(selected = true, ownership = true)
     public void pushable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(PushableTrait.class)) npc.addTrait(PushableTrait.class);
@@ -152,7 +152,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "constant --set|remove name --value constant value",
             desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constants", "constant", "cons" },
-            min = 1, max = 3, permission = "npc.constants")
+            min = 1, max = 3, permission = "denizen.npc.constants")
     @Requirements(selected = true, ownership = true)
     public void constants(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
@@ -191,7 +191,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "assignment --set assignment_name (-r)",
             desc = "Controls the assignment for an NPC.", flags = "r", modifiers = { "assignment", "assign" },
-            min = 1, max = 3, permission = "npc.assign")
+            min = 1, max = 3, permission = "denizen.npc.assign")
     @Requirements(selected = true, ownership = true)
     public void assignment(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(AssignmentTrait.class)) npc.addTrait(AssignmentTrait.class);
@@ -237,7 +237,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "trigger [trigger name] [(--cooldown [seconds])|(--radius [radius])|(-t)]",
             desc = "Controls the various triggers for an NPC.", flags = "t", modifiers = { "trigger", "tr" },
-            min = 1, max = 3, permission = "npc.trigger")
+            min = 1, max = 3, permission = "denizen.npc.trigger")
     @Requirements(selected = true, ownership = true)
     public void trigger(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
@@ -284,7 +284,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "nickname [--set nickname]",
             desc = "Gives the NPC a nickname, used with a Denizen-compatible Speech Engine.", modifiers = { "nickname", "nick", "ni" },
-            min = 1, max = 3, permission = "npc.nickname")
+            min = 1, max = 3, permission = "denizen.npc.nickname")
     @Requirements(selected = true, ownership = true)
     public void nickname(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(NicknameTrait.class)) npc.addTrait(NicknameTrait.class);
@@ -310,7 +310,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "nameplate [--color color]",
             desc = "Sets the namepalte color of the NPC.", modifiers = { "nameplate", "nametag", "np", "nt" },
-            min = 1, max = 3, permission = "npc.nameplate")
+            min = 1, max = 3, permission = "denizen.npc.nameplate")
     @Requirements(selected = true, ownership = true)
     public void nameplate(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(NameplateTrait.class)) npc.addTrait(NameplateTrait.class);
@@ -348,7 +348,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "sit (--location x,y,z,world) (--anchor anchor_name) (-c)",
             desc = "Makes the NPC sit.", flags = "c", modifiers = { "sit" },
-            min = 1, max = 3, permission = "npc.sit")
+            min = 1, max = 3, permission = "denizen.npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
@@ -387,7 +387,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "stand",
             desc = "Makes the NPC stand.", modifiers = { "stand" },
-            min = 1, max = 3, permission = "npc.stand")
+            min = 1, max = 3, permission = "denizen.npc.stand")
     @Requirements(selected = true, ownership = true)
     public void standing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
@@ -421,7 +421,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "sleep (--location x,y,z,world) (--anchor anchor_name)",
             desc = "Makes the NPC sleep.", modifiers = { "sleep" },
-            min = 1, max = 3, permission = "npc.sleep")
+            min = 1, max = 3, permission = "denizen.npc.sleep")
     @Requirements(selected = true, ownership = true)
     public void sleeping(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(SleepingTrait.class)) npc.addTrait(SleepingTrait.class);
@@ -454,7 +454,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "wakeup",
             desc = "Makes the NPC wake up.", modifiers = { "wakeup" },
-            min = 1, max = 3, permission = "npc.sleep")
+            min = 1, max = 3, permission = "denizen.npc.sleep")
     @Requirements(selected = true, ownership = true)
     public void wakingup(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(SleepingTrait.class)) npc.addTrait(SleepingTrait.class);
@@ -476,7 +476,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "fish (--location x,y,z,world) (--anchor anchor_name) (-c)",
             desc = "Makes the NPC fish, casting at the given location.", flags = "c, f", modifiers = { "fish" },
-            min = 1, max = 3, permission = "npc.fish")
+            min = 1, max = 3, permission = "denizen.npc.fish")
     @Requirements(selected = true, ownership = true)
     public void startFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(FishingTrait.class)) npc.addTrait(FishingTrait.class);
@@ -521,7 +521,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "stopfishing",
             desc = "Makes the NPC stop fishing.", modifiers = { "stopfishing" },
-            min = 1, max = 3, permission = "npc.fish")
+            min = 1, max = 3, permission = "denizen.npc.fish")
     @Requirements(selected = true, ownership = true)
     public void stopFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(FishingTrait.class)) npc.addTrait(FishingTrait.class);
@@ -543,7 +543,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "effect (--play effect_name) (--delay #) (-d)",
             desc = "Sets the NPC particle effect.", modifiers = { "effect" }, flags = "d",
-            min = 1, max = 3, permission = "npc.effect")
+            min = 1, max = 3, permission = "denizen.npc.effect")
     @Requirements(selected = true, ownership = true)
     public void playEffect(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
@@ -589,7 +589,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "sneak",
             desc = "Makes the NPC crouch.", flags = "", modifiers = { "sneak", "crouch" },
-            min = 1, max = 3, permission = "npc.sneak")
+            min = 1, max = 3, permission = "denizen.npc.sneak")
     @Requirements(selected = true, ownership = true)
     public void sneaking(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
@@ -614,7 +614,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "health --set # (-r)",
             desc = "Sets the max health for an NPC.", modifiers = { "health", "he", "hp" },
-            min = 1, max = 3, permission = "npc.health")
+            min = 1, max = 3, permission = "denizen.npc.health")
     @Requirements(selected = true, ownership = true)
     public void health(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
@@ -982,7 +982,7 @@ public class CommandHandler {
             // Even though different arguments will be combined into one
             // if they are delimited by quotes, their max number is checked
             // before that, so it needs to be high
-            min = 2, max = 20, permission = "notable.basic")
+            min = 2, max = 20, permission = "denizen.notable.basic")
     public void addnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
         new dLocation(((Player) sender).getLocation()).rememberAs(args.getString(1));
@@ -992,7 +992,7 @@ public class CommandHandler {
     @Command(
             aliases = { "notable" }, usage = "list",
             desc = "Lists all notables", modifiers = { "list" },
-            min = 1, max = 1, permission = "notable.basic")
+            min = 1, max = 1, permission = "denizen.notable.basic")
     public void listnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
         Messaging.send(sender, dLocation.uniqueObjects.toString());
