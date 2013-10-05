@@ -75,6 +75,8 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Use to make an ageable entity a permanant baby.
         // - age e@50 baby lock
+        // ...or a mature adult.
+        // - age e@50 adult lock
 
         // @Usage
         // Use to make a baby entity an adult.
@@ -1708,9 +1710,77 @@ public class CommandRegistry implements dRegistry {
                 "SCOREBOARD", "scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)", 1);
 
 
+        /**
+         * <p>Scribes information to a Book from a dScript 'Book-type Script' or a Book ItemStack.</p>
+         *
+         * <b>dScript Usage:</b><br>
+         * <pre>Scribe [SCRIPT:book_script] (GIVE|{DROP}|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)</pre>
+         *
+         * <ol><tt>Arguments: [] - Required () - Optional  {} - Default</ol></tt>
+         *
+         * <ol><tt>[SCRIPT:book_script]</tt><br>
+         *         The name of the 'Book Script'. See below for format.</ol>
+         *
+         * <ol><tt>[GIVE|{DROP}|EQUIP]</tt><br>
+         *         What to do with the book after it is written. If not specified, it will default
+         *         to dropping the book near the NPC. Note: When using BOOK with an 'ITEMSTACK.name',
+         *         no default action is set allowing other commands to modify the book.</ol>
+         *
+         * <ol><tt>(LOCATION:x,y,z,world)</tt><br>
+         *         When using DROP, a location may be specified. Default location, if unspecified,
+         *         is the attached NPC.</ol>
+         *
+         * <ol><tt>(ITEM:ITEMSTACK.name)</tt><br>
+         *         Allows the use of a specific BOOK created with a 'saved ITEMSTACK' from the NEW
+         *         command. If not specified, a new book will be used.</ol>
+         *
+         *
+         * <br><b>Sample Book Script:</b><br>
+         * <ol><pre>
+         * "Cosmos Book":<br>
+         *   Type: Book<br>
+         *   Title: Cosmos, a Personal Voyage<br>
+         *   Author: Carl Sagan<br>
+         *   Text:<br>
+         *   - Every one of us is, in the cosmic perspective, precious. If a human disagrees with<br>
+         *     you, let him live. In a hundred billion galaxies, you will not find another<br>
+         *   - The nitrogen in our DNA, the calcium in our teeth, the iron in our blood, the <br>
+         *     carbon in our apple pies were made in the interiors of collapsing stars. We are <br>
+         *     made of starstuff.<br>
+         * </pre></ol>
+         *
+         * <p>Note: ScribeCommand also implements a replaceable tag for &#60;P>, which creates a new
+         * paragraph in a written book's text.</p>
+         *
+         * <br><b>Example Usage:</b><br>
+         * <ol><tt>
+         *  - SCRIBE SCRIPT:Cosmos DROP<br>
+         *  - SCRIBE ITEM:ITEMSTACK.ImportantBook 'SCRIPT:Spellbook of Haste'<br>
+         * </ol></tt>
+         *
+         * <br><b>Extended Usage:</b><br>
+         * <ol><tt>
+         *  Script: <br>
+         *  - ENGAGE NOW DURATION:10 <br>
+         *  - LOOKCLOSE TOGGLE:TRUE DURATION:10 <br>
+         *  - CHAT 'Use this book with care, as it is very powerful and could cause great harm<br>
+         *    if put into the wrong hands!' <br>
+         *  - WAIT 2 <br>
+         *  - ^ANIMATE ANIMATION:ARM_SWING <br>
+         *  - ^NEW ITEMSTACK ITEM:book ID:&#60;PLAYER.NAME>s_enchanted_spellbook<br>
+         *  - ^SCRIBE ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook SCRIPT:silk_touch_description <br>
+         *  - ^ENCHANT ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook ENCHANTMENT:SILKTOUCH<br>
+         *  - ^LORE ADD ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook 'A spell of Silk-touch, level 1'<br>
+         *  - DROP ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook<br>
+         *  - NARRATE '&#60;NPC.NAME> drops an old book.' <br>
+         * </ol></tt>
+         *
+         * @author Mason Adkins
+         */
+
         // <--[command]
         // @Name Scribe
-        // @Usage scribe [script:<name>] (give/drop/equip) (<item>) (<location>)
+        // @Usage scribe [script:<name>] (give/drop <location>/equip/<item>)
         // @Required 1
         // @Stable Todo
         // @Short Writes to a book.
@@ -1723,7 +1793,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(ScribeCommand.class,
-                "SCRIBE", "scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
+                "SCRIBE", "scribe [<script>] (<item>/give/equip/{drop <location>})", 1);
 
 
         // <--[command]
