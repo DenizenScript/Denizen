@@ -26,7 +26,6 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_6_R3.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_6_R3.entity.CraftLivingEntity;
-import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
@@ -42,6 +41,7 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
@@ -487,7 +487,7 @@ public class dEntity implements dObject {
      */
 
     public boolean isGeneric() {
-        return identify().matches("e@\\D+");
+        return !isUnique();
     }
 
     /**
@@ -1120,14 +1120,94 @@ public class dEntity implements dObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <e@entity.equipment.boots>
+        // @returns dItem
+        // @description
+        // returns the item the entity is wearing as boots, or null
+        // if none.
+        // -->
+        if (attribute.startsWith("equipment.boots")) {
+            if (getLivingEntity().getEquipment().getBoots() != null) {
+                return new dItem(getLivingEntity().getEquipment().getBoots())
+                        .getAttribute(attribute.fulfill(2));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.equipment.chestplate>
+        // @returns dItem
+        // @description
+        // returns the item the entity is wearing as a chestplate, or null
+        // if none.
+        // -->
+        else if (attribute.startsWith("equipment.chestplate") ||
+                 attribute.startsWith("equipment.chest")) {
+            if (getLivingEntity().getEquipment().getChestplate() != null) {
+                return new dItem(getLivingEntity().getEquipment().getChestplate())
+                        .getAttribute(attribute.fulfill(2));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.equipment.helmet>
+        // @returns dItem
+        // @description
+        // returns the item the entity is wearing as a helmet, or null
+        // if none.
+        // -->
+        else if (attribute.startsWith("equipment.helmet") ||
+                 attribute.startsWith("equipment.head")) {
+            if (getLivingEntity().getEquipment().getHelmet() != null) {
+                return new dItem(getLivingEntity().getEquipment().getHelmet())
+                        .getAttribute(attribute.fulfill(2));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.equipment.leggings>
+        // @returns dItem
+        // @description
+        // returns the item the entity is wearing as leggings, or null
+        // if none.
+        // -->
+        else if (attribute.startsWith("equipment.leggings") ||
+                 attribute.startsWith("equipment.legs")) {
+            if (getLivingEntity().getEquipment().getLeggings() != null) {
+                return new dItem(getLivingEntity().getEquipment().getLeggings())
+                        .getAttribute(attribute.fulfill(2));
+            }
+        }
+
+        // <--[tag]
         // @attribute <e@entity.equipment>
         // @returns dInventory
         // @description
-        // Returns the dInventory of the entity.
+        // returns a dInventory containing the entity's equipment.
         // -->
-        if (attribute.startsWith("equipment")) {
-            return new dInventory(getLivingEntity()).getAttribute(attribute.fulfill(1));
+        else if (attribute.startsWith("equipment")) {
+            // The only way to return correct size for dInventory
+            // created from equipment is to use a CRAFTING type
+            // that has the expected 4 slots
+            if (isPlayer()) {
+                return new dInventory(InventoryType.CRAFTING).add(getPlayer().getInventory().getArmorContents())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else {
+                return new dInventory(getLivingEntity())
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
+
+        // <--[tag]
+        // @attribute <e@entity.item_in_hand>
+        // @returns dItem
+        // @description
+        // returns the item the entity is holding, or null
+        // if none.
+        // -->
+        if (attribute.startsWith("item_in_hand"))
+            return new dItem(getLivingEntity().getEquipment().getItemInHand())
+                    .getAttribute(attribute.fulfill(1));
 
 
         /////////////////////

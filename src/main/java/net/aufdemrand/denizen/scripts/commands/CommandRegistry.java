@@ -727,10 +727,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Equip
-        // @Usage equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
+        // @Usage equip [<entity>|...] (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
         // @Required 1
-        // @Stable unstable
-        // @Short Equips an item into the chosen inventory slot of the player or NPC.
+        // @Stable stable
+        // @Short Equips items and armor on a list of entities.
         // @Author Todo
         // @Description
         // Todo
@@ -740,7 +740,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(EquipCommand.class,
-                "EQUIP", "equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
+                "EQUIP", "equip [<entity>|...] (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
 
 
         // <--[command]

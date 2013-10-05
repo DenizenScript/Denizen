@@ -146,11 +146,16 @@ public class TakeCommand extends AbstractCommand{
             case ITEM:
                 for (dItem item : items) {
                     ItemStack is = item.getItemStack();
-                    if (is.getItemMeta() instanceof BookMeta)
-                        inventory.removeBook(is);
                     is.setAmount(qty.asInt());
 
-                    if (!inventory.getInventory().removeItem(is).isEmpty())
+                    // Remove books with a certain title even if they
+                    // are not identical to an item script, to allow
+                    // books that update
+                    if (is.getItemMeta() instanceof BookMeta) {
+                        if (((BookMeta) is.getItemMeta()).hasTitle())
+                            inventory.removeBook(is);
+                    }
+                    else if (!inventory.getInventory().removeItem(is).isEmpty())
                         dB.echoError("Inventory does not contain at least " + qty.asInt() + " of " + item.identify() +
                                 "... Taking as much as possible...");
                 }

@@ -694,6 +694,11 @@ public class dInventory implements dObject, Notable {
                 ? holderIdentifier : (holderType + '[' + holderIdentifier + ']'));
     }
 
+    @Override
+    public String toString() {
+        return identify();
+    }
+
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return null;

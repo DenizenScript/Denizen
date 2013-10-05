@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * Teleports a list of entities to a location.
@@ -50,6 +51,9 @@ public class TeleportCommand extends AbstractCommand {
             else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
+        if (!scriptEntry.hasObject("location"))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+
         // Use player or NPC as default entity
         scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
                                               (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
@@ -67,9 +71,6 @@ public class TeleportCommand extends AbstractCommand {
         // Report to dB
         dB.report(getName(), aH.debugObj("location", location) +
                              aH.debugObj("entities", entities.toString()));
-
-        if (location == null)
-            return;
 
         for (dEntity entity : entities) {
             // Call a Bukkit event for compatibility with "on entity teleports"

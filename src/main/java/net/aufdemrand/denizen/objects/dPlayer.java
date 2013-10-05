@@ -613,67 +613,6 @@ public class dPlayer implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.equipment.boots>
-        // @returns dItem
-        // @description
-        // returns the item the player is wearing as boots, or null
-        // if none.
-        // -->
-        if (attribute.startsWith("equipment.boots"))
-            if (getPlayerEntity().getInventory().getBoots() != null)
-                return new dItem(getPlayerEntity().getInventory().getBoots())
-                        .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.equipment.chestplate>
-        // @returns dItem
-        // @description
-        // returns the item the player is wearing as a chestplate, or null
-        // if none.
-        // -->
-        if (attribute.startsWith("equipment.chestplate"))
-            if (getPlayerEntity().getInventory().getChestplate() != null)
-                return new dItem(getPlayerEntity().getInventory().getChestplate())
-                        .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.equipment.helmet>
-        // @returns dItem
-        // @description
-        // returns the item the player is wearing as a helmet, or null
-        // if none.
-        // -->
-        if (attribute.startsWith("equipment.helmet"))
-            if (getPlayerEntity().getInventory().getHelmet() != null)
-                return new dItem(getPlayerEntity().getInventory().getHelmet())
-                        .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.equipment.leggings>
-        // @returns dItem
-        // @description
-        // returns the item the player is wearing as leggings, or null
-        // if none.
-        // -->
-        if (attribute.startsWith("equipment.leggings"))
-            if (getPlayerEntity().getInventory().getLeggings() != null)
-                return new dItem(getPlayerEntity().getInventory().getLeggings())
-                        .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <p@player.equipment>
-        // @returns dInventory
-        // @description
-        // returns a dInventory containing the player's equipment.
-        // -->
-        if (attribute.startsWith("equipment"))
-            // The only way to return correct size for dInventory
-            // created from equipment is to use a CRAFTING type
-            // that has the expected 4 slots
-            return new dInventory(InventoryType.CRAFTING).add(getPlayerEntity().getInventory().getArmorContents())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <p@player.inventory>
         // @returns dInventory
         // @description
@@ -681,17 +620,6 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("inventory"))
             return new dInventory(getPlayerEntity().getInventory())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.item_in_hand>
-        // @returns dItem
-        // @description
-        // returns the item the player is holding, or null
-        // if none.
-        // -->
-        if (attribute.startsWith("item_in_hand"))
-            return new dItem(getPlayerEntity().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]

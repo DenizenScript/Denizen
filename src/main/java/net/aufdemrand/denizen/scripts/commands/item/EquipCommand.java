@@ -1,57 +1,89 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.bukkit.entity.Player;
-
+import org.bukkit.entity.LivingEntity;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 
+/**
+ * Equip entities with items and armor.
+ *
+ * @author David Cernat
+ */
+
 public class EquipCommand extends AbstractCommand{
 
-    private enum TargetType { NPC, PLAYER }
-
     @Override
-    public void parseArgs(ScriptEntry scriptEntry)
-            throws InvalidArgumentsException {
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        TargetType targetType = TargetType.NPC;
         Map<String, dItem> equipment = new HashMap<String,dItem>();
 
-        for (String arg : scriptEntry.getArguments()) {
+        // Initialize necessary fields
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (aH.matchesValueArg("ITEMINHAND, HAND, HOLDING", arg, ArgumentType.String)) {
-                equipment.put("hand", getItem(arg));
+            if (!scriptEntry.hasObject("entities")
+                && arg.matchesArgumentList(dEntity.class)) {
+
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
-            else if (aH.matchesValueArg("HEAD, HELMET", arg, ArgumentType.String)) {
-                equipment.put("head", getItem(arg));
+
+            else if (arg.matchesArgumentType(dItem.class)
+                     && arg.matchesPrefix("head, helmet")) {
+                equipment.put("head", dItem.valueOf(arg.getValue()));
             }
-            else if (aH.matchesValueArg("CHEST, CHESTPLATE", arg, ArgumentType.String)) {
-                equipment.put("chest", getItem(arg));
+
+            else if (arg.matchesArgumentType(dItem.class)
+                     && arg.matchesPrefix("chest, chestplate")) {
+                equipment.put("chest", dItem.valueOf(arg.getValue()));
             }
-            else if (aH.matchesValueArg("LEGS, LEGGINGS", arg, ArgumentType.String)) {
-                equipment.put("legs", getItem(arg));
+
+            else if (arg.matchesArgumentType(dItem.class)
+                     && arg.matchesPrefix("legs, leggings")) {
+                equipment.put("legs", dItem.valueOf(arg.getValue()));
             }
-            else if (aH.matchesValueArg("BOOTS, FEET", arg, ArgumentType.String)) {
-                equipment.put("boots", getItem(arg));
+
+            else if (arg.matchesArgumentType(dItem.class)
+                     && arg.matchesPrefix("boots, feet")) {
+                equipment.put("boots", dItem.valueOf(arg.getValue()));
             }
-            else if (aH.matchesArg("PLAYER", arg)) {
-                targetType = TargetType.PLAYER;
-                dB.echoDebug("... will be equipped by the player!");
+
+            // Default to item in hand if no prefix is used
+            else if (arg.matchesArgumentType(dItem.class)) {
+               equipment.put("hand", dItem.valueOf(arg.getValue()));
             }
+
+            else if (arg.matches("player") && scriptEntry.hasPlayer()) {
+                // Player arg for compatibility with old scripts
+                scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
+            }
+
+            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
+        // Make sure at least one equipment argument was used
+        if (equipment.isEmpty())
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EQUIPMENT");
+
         scriptEntry.addObject("equipment", equipment);
-        scriptEntry.addObject("targetType", targetType);
+
+        // Use player or NPC as default entity
+        scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
+                                              (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
+
     }
 
     @SuppressWarnings("unchecked")
@@ -60,73 +92,48 @@ public class EquipCommand extends AbstractCommand{
             throws CommandExecutionException {
 
         Map<String, dItem> equipment = (Map<String, dItem>) scriptEntry.getObject("equipment");
-        TargetType targetType = (TargetType) scriptEntry.getObject("targetType");
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 
-        if (targetType.toString().equals("NPC")) {
+        // Report to dB
+        dB.report(getName(), aH.debugObj("entities", entities.toString()) +
+                             aH.debugObj("equipment", equipment.toString()));
 
-            NPC npc = scriptEntry.getNPC().getCitizen();
+        for (dEntity entity : entities) {
 
-            if (npc != null) {
+            if (entity.isGeneric()) {
+                dB.echoError("Cannot equip generic entity " + entity.identify() + "!");
+            }
+            else if (entity.isNPC()) {
 
-                if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);
+                NPC npc = entity.getNPC();
 
-                Equipment trait = npc.getTrait(Equipment.class);
+                if (npc != null) {
 
-                if (equipment.get("hand") != null) {
-                    trait.set(0, equipment.get("hand").getItemStack());
+                    if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);
+                    Equipment trait = npc.getTrait(Equipment.class);
+
+                    if (equipment.get("hand")  != null) trait.set(0, equipment.get("hand").getItemStack());
+                    if (equipment.get("head")  != null) trait.set(1, equipment.get("head").getItemStack());
+                    if (equipment.get("chest") != null) trait.set(2, equipment.get("chest").getItemStack());
+                    if (equipment.get("legs")  != null) trait.set(3, equipment.get("legs").getItemStack());
+                    if (equipment.get("boots") != null) trait.set(4, equipment.get("boots").getItemStack());
                 }
-                if (equipment.get("head") != null) {
-                    trait.set(1, equipment.get("head").getItemStack());
-                }
-                if (equipment.get("chest") != null) {
-                    trait.set(2, equipment.get("chest").getItemStack());
-                }
-                if (equipment.get("legs") != null) {
-                    trait.set(3, equipment.get("legs").getItemStack());
-                }
-                if (equipment.get("boots") != null) {
-                    trait.set(4, equipment.get("boots").getItemStack());
+
+            }
+            else {
+
+                LivingEntity livingEntity = entity.getLivingEntity();
+
+                if (livingEntity != null) {
+
+                    if (equipment.get("hand")  != null) livingEntity.getEquipment().setItemInHand(equipment.get("hand").getItemStack());
+                    if (equipment.get("head")  != null) livingEntity.getEquipment().setHelmet(equipment.get("head").getItemStack());
+                    if (equipment.get("chest") != null) livingEntity.getEquipment().setChestplate(equipment.get("chest").getItemStack());
+                    if (equipment.get("legs")  != null) livingEntity.getEquipment().setLeggings(equipment.get("legs").getItemStack());
+                    if (equipment.get("boots") != null) livingEntity.getEquipment().setBoots(equipment.get("boots").getItemStack());
                 }
             }
         }
-        else {
-
-            Player player = scriptEntry.getPlayer().getPlayerEntity();
-
-            if (player != null) {
-
-                if (equipment.get("hand") != null) {
-                    player.getInventory().setItemInHand(equipment.get("hand").getItemStack());
-                }
-                if (equipment.get("head") != null) {
-                    player.getInventory().setHelmet(equipment.get("head").getItemStack());
-                }
-                if (equipment.get("chest") != null) {
-                    player.getInventory().setChestplate(equipment.get("chest").getItemStack());
-                }
-                if (equipment.get("legs") != null) {
-                    player.getInventory().setLeggings(equipment.get("legs").getItemStack());
-                }
-                if (equipment.get("boots") != null) {
-                    player.getInventory().setBoots(equipment.get("boots").getItemStack());
-                }
-            }
-        }
-
-    }
-
-    public dItem getItem(String arg) {
-
-        arg = "ITEM:" + aH.getStringFrom(arg);
-
-        if (aH.matchesItem(arg)) {
-            return (aH.getItemFrom(arg));
-        }
-        else {
-            dB.echoApproval("Invalid item " + arg + "!");
-        }
-
-        return null;
     }
 
 }
