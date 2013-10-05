@@ -81,8 +81,8 @@ public class EquipCommand extends AbstractCommand{
         scriptEntry.addObject("equipment", equipment);
 
         // Use player or NPC as default entity
-        scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
-                                              (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
+        scriptEntry.defaultObject("entities", (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null),
+                                              (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null));
 
     }
 

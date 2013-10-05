@@ -727,7 +727,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Equip
-        // @Usage equip [<entity>|...] (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
+        // @Usage equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
         // @Required 1
         // @Stable stable
         // @Short Equips items and armor on a list of entities.
@@ -740,7 +740,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(EquipCommand.class,
-                "EQUIP", "equip [<entity>|...] (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
+                "EQUIP", "equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
 
 
         // <--[command]
