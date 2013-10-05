@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.scripts.commands.item;
+package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.Arrays;
 import java.util.HashMap;
