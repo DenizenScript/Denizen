@@ -161,7 +161,7 @@ public class dItem implements dObject, Notable, Properties {
                     stack = new dItem(Integer.valueOf(material));
                 }
                 else {
-                    stack = new dItem(Material.valueOf(material));
+                    stack = new dItem(dMaterial.valueOf(material).getMaterial());
                 }
 
                 if (m.group(2) != null) {
@@ -487,7 +487,7 @@ public class dItem implements dObject, Notable, Properties {
         }
 
         // Else, return the material name
-        return "i@" + item.getType().name().toLowerCase();
+        return "i@" + dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identify().replace("m@", "");
     }
 
     @Override

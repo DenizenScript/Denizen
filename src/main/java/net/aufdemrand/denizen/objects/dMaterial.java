@@ -36,8 +36,14 @@ public class dMaterial implements dObject {
         MAGENTA_CLAY, LIGHT_BLUE_CLAY, YELLOW_CLAY, LIME_CLAY, PINK_CLAY, GRAY_CLAY, LIGHT_GRAY_CLAY,
         CYAN_CLAY, PURPLE_CLAY, BLUE_CLAY, BROWN_CLAY, GREEN_CLAY, RED_CLAY, BLACK_CLAY, NATURAL_COAL,
         CHARCOAL, OAK_PLANKS, SPRUCE_PLANKS, BIRCH_PLANKS, JUNGLE_PLANKS, OAK_SAPLING, SPRUCE_SAPLING,
-        BIRCH_SAPLING, JUNGLE_SAPLING, OAK_LEAVES, SPRUCE_LEAVES, BIRCH_LEAVES, JUNGLE_LEAVES,
-        NATURAL_SANDSTONE, CHISELED_SANDSTONE, SMOOTH_SANDSTONE }
+        BIRCH_SAPLING, JUNGLE_SAPLING, OAK_LEAVES, SPRUCE_LEAVES, BIRCH_LEAVES, JUNGLE_LEAVES, OAK_LOG,
+        SPRUCE_LOG, BIRCH_LOG, JUNGLE_LOG, NATURAL_SANDSTONE, CHISELED_SANDSTONE, SMOOTH_SANDSTONE,
+        STONE_BRICK, MOSSY_STONE_BRICK, CRACKED_STONE_BRICK, CHISELED_STONE_BRICK, INK, RED_DYE,
+        GREEN_DYE, COCOA_BEANS, LAPIS_LAZULI, PURPLE_DYE, CYAN_DYE, LIGHT_GRAY_DYE, GRAY_DYE,
+        PINK_DYE, LIME_DYE, YELLOW_DYE, LIGHT_BLUE_DYE, MAGENTA_DYE, ORANGE_DYE, BONE_MEAL, TALL_GRASS,
+        FERN, SHRUB, EMPTY_POT, POTTED_POPPY, POTTED_DAISY, POTTED_OAK_SAPLING, POTTED_SPRUCE_SAPLING,
+        POTTED_BIRCH_SAPLING, POTTED_JUNGLE_SAPLING, POTTED_RED_MUSHROOM, POTTED_BROWN_MUSHROOM,
+        POTTED_CACTUS, POTTED_SHRUB, POTTED_FERN }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
@@ -111,9 +117,56 @@ public class dMaterial implements dObject {
     public final static dMaterial BIRCH_LEAVES = dMaterial.valueOf("m@leaves,2").forceIdentifyAs("BIRCH_LEAVES");
     public final static dMaterial JUNGLE_LEAVES = dMaterial.valueOf("m@leaves,3").forceIdentifyAs("JUNGLE_LEAVES");
 
+    // TODO: Need to find a way to handle horizontal logs/etc. Should they be a different material?
+    public final static dMaterial OAK_LOG = dMaterial.valueOf("m@log,0").forceIdentifyAs("OAK_LOG");
+    public final static dMaterial SPRUCE_LOG = dMaterial.valueOf("m@log,1").forceIdentifyAs("SPRUCE_LOG");
+    public final static dMaterial BIRCH_LOG = dMaterial.valueOf("m@log,2").forceIdentifyAs("BIRCH_LOG");
+    public final static dMaterial JUNGLE_LOG = dMaterial.valueOf("m@log,3").forceIdentifyAs("JUNGLE_LOG");
+
     public final static dMaterial NATURAL_SANDSTONE = dMaterial.valueOf("m@sandstone,0").forceIdentifyAs("NATURAL_SANDSTONE");
     public final static dMaterial CHISELED_SANDSTONE = dMaterial.valueOf("m@sandstone,1").forceIdentifyAs("CHISELED_SANDSTONE");
     public final static dMaterial SMOOTH_SANDSTONE = dMaterial.valueOf("m@sandstone,2").forceIdentifyAs("SMOOTH_SANDSTONE");
+
+    public final static dMaterial STONE_BRICK = dMaterial.valueOf("m@smooth_brick,0").forceIdentifyAs("STONE_BRICK");
+    public final static dMaterial MOSSY_STONE_BRICK = dMaterial.valueOf("m@smooth_brick,1").forceIdentifyAs("MOSSY_STONE_BRICK");
+    public final static dMaterial CRACKED_STONE_BRICK = dMaterial.valueOf("m@smooth_brick,2").forceIdentifyAs("CRACKED_STONE_BRICK");
+    public final static dMaterial CHISELED_STONE_BRICK = dMaterial.valueOf("m@smooth_brick,3").forceIdentifyAs("CHISELED_STONE_BRICK");
+
+    public final static dMaterial INK = dMaterial.valueOf("m@ink_sack,0").forceIdentifyAs("INK");
+    public final static dMaterial RED_DYE = dMaterial.valueOf("m@ink_sack,1").forceIdentifyAs("RED_DYE");
+    public final static dMaterial GREEN_DYE = dMaterial.valueOf("m@ink_sack,2").forceIdentifyAs("GREEN_DYE");
+    public final static dMaterial COCOA_BEANS = dMaterial.valueOf("m@ink_sack,3").forceIdentifyAs("COCOA_BEANS");
+    public final static dMaterial LAPIS_LAZULI = dMaterial.valueOf("m@ink_sack,4").forceIdentifyAs("LAPIS_LAZULI");
+    public final static dMaterial PURPLE_DYE = dMaterial.valueOf("m@ink_sack,5").forceIdentifyAs("PURPLE_DYE");
+    public final static dMaterial CYAN_DYE = dMaterial.valueOf("m@ink_sack,6").forceIdentifyAs("CYAN_DYE");
+    public final static dMaterial LIGHT_GRAY_DYE = dMaterial.valueOf("m@ink_sack,7").forceIdentifyAs("LIGHT_GRAY_DYE");
+    public final static dMaterial GRAY_DYE = dMaterial.valueOf("m@ink_sack,8").forceIdentifyAs("GRAY_DYE");
+    public final static dMaterial PINK_DYE = dMaterial.valueOf("m@ink_sack,9").forceIdentifyAs("PINK_DYE");
+    public final static dMaterial LIME_DYE = dMaterial.valueOf("m@ink_sack,10").forceIdentifyAs("LIME_DYE");
+    public final static dMaterial YELLOW_DYE = dMaterial.valueOf("m@ink_sack,11").forceIdentifyAs("YELLOW_DYE");
+    public final static dMaterial LIGHT_BLUE_DYE = dMaterial.valueOf("m@ink_sack,12").forceIdentifyAs("LIGHT_BLUE_DYE");
+    public final static dMaterial MAGENTA_DYE = dMaterial.valueOf("m@ink_sack,13").forceIdentifyAs("MAGENTA_DYE");
+    public final static dMaterial ORANGE_DYE = dMaterial.valueOf("m@ink_sack,14").forceIdentifyAs("ORANGE_DYE");
+    public final static dMaterial BONE_MEAL = dMaterial.valueOf("m@ink_sack,15").forceIdentifyAs("BONE_MEAL");
+
+    public final static dMaterial TALL_GRASS = dMaterial.valueOf("m@long_grass,1").forceIdentifyAs("TALL_GRASS");
+    public final static dMaterial FERN = dMaterial.valueOf("m@long_grass,1").forceIdentifyAs("FERN");
+    public final static dMaterial SHRUB = dMaterial.valueOf("m@long_grass,0").forceIdentifyAs("SHRUB");
+
+    public final static dMaterial EMPTY_POT = dMaterial.valueOf("m@flower_pot,0").forceIdentifyAs("EMPTY_POT");
+    public final static dMaterial POTTED_POPPY = dMaterial.valueOf("m@flower_pot,1").forceIdentifyAs("POTTED_POPPY");
+    public final static dMaterial POTTED_DAISY = dMaterial.valueOf("m@flower_pot,2").forceIdentifyAs("POTTED_DAISY");
+    public final static dMaterial POTTED_OAK_SAPLING = dMaterial.valueOf("m@flower_pot,3").forceIdentifyAs("POTTED_OAK_SAPLING");
+    public final static dMaterial POTTED_SPRUCE_SAPLING = dMaterial.valueOf("m@flower_pot,4").forceIdentifyAs("POTTED_SPRUCE_SAPLING");
+    public final static dMaterial POTTED_BIRCH_SAPLING = dMaterial.valueOf("m@flower_pot,5").forceIdentifyAs("POTTED_BIRCH_SAPLING");
+    public final static dMaterial POTTED_JUNGLE_SAPLING = dMaterial.valueOf("m@flower_pot,6").forceIdentifyAs("POTTED_JUNGLE_SAPLING");
+    public final static dMaterial POTTED_RED_MUSHROOM = dMaterial.valueOf("m@flower_pot,7").forceIdentifyAs("POTTED_RED_MUSHROOM");
+    public final static dMaterial POTTED_BROWN_MUSHROOM = dMaterial.valueOf("m@flower_pot,8").forceIdentifyAs("POTTED_BROWN_MUSHROOM");
+    public final static dMaterial POTTED_CACTUS = dMaterial.valueOf("m@flower_pot,9").forceIdentifyAs("POTTED_CACTUS");
+    public final static dMaterial POTTED_SHRUB = dMaterial.valueOf("m@flower_pot,10").forceIdentifyAs("POTTED_SHRUB");
+    public final static dMaterial POTTED_FERN = dMaterial.valueOf("m@flower_pot,11").forceIdentifyAs("POTTED_FERN");
+
+
 
     // TODO: Add bricks, potions, logs, etc.
 

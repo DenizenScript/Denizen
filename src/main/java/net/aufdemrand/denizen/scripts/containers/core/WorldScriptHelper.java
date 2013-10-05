@@ -3383,7 +3383,7 @@ public class WorldScriptHelper implements Listener {
 
         if (event.hasBlock()) {
             Block block = event.getClickedBlock();
-            dMaterial blockMaterial = new dMaterial(block.getType());
+            dMaterial blockMaterial = dMaterial.getMaterialFrom(block.getType(), block.getData());
             context.put("location", new dLocation(block.getLocation()));
 
             events.add(interaction + " block");
