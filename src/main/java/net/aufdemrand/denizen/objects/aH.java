@@ -235,6 +235,10 @@ public class aH {
 
             return null;
         }
+
+        public void reportUnhandled() {
+            dB.echoDebug("Unhandled argument: " + raw_value);
+        }
     }
 
 
