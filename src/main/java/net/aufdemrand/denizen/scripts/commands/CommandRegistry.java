@@ -1711,8 +1711,6 @@ public class CommandRegistry implements dRegistry {
 
 
         /**
-         * <p>Scribes information to a Book from a dScript 'Book-type Script' or a Book ItemStack.</p>
-         *
          * <b>dScript Usage:</b><br>
          * <pre>Scribe [SCRIPT:book_script] (GIVE|{DROP}|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)</pre>
          *
@@ -1775,20 +1773,24 @@ public class CommandRegistry implements dRegistry {
          *  - NARRATE '&#60;NPC.NAME> drops an old book.' <br>
          * </ol></tt>
          *
-         * @author Mason Adkins
          */
+        // TODO: Combine the above outdated information with the new meta tags below
 
         // <--[command]
         // @Name Scribe
-        // @Usage scribe [script:<name>] (give/drop <location>/equip/<item>)
+        // @Usage scribe [<script>] (<item>/give/equip/{drop <location>})
         // @Required 1
         // @Stable Todo
-        // @Short Writes to a book.
-        // @Author Jeebiss
+        // @Short Writes information to a book from a book-type script or a book item.
+        // @Author Jeebiss, aufdemrand
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <i@item.book.author>
+        // <i@item.book.title>
+        // <i@item.book.page_count>
+        // <i@item.book.get_page[<#>]>
+        // <i@item.book.pages>
         // @Usage
         // Todo
         // -->

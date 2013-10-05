@@ -237,7 +237,7 @@ public class aH {
         }
 
         public void reportUnhandled() {
-            dB.echoDebug("Unhandled argument: " + raw_value);
+            dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, raw_value);
         }
     }
 

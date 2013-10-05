@@ -23,13 +23,13 @@ public class ScribeCommand extends AbstractCommand implements Listener {
     // <--[example]
     // @Name Book scripts and the scribe command example
     // @Description
-    // Use the following example to get the basics on book scripts, tags, and
-    // the scribe command.
+    // Use the following example to learn the basics on book scripts, tags,
+    // and the scribe command.
 
     // @Code
     // # +-----------------------------------
     // # | Book Meta Tester
-    //
+    // # |
     // # | Use /gettestbook, then /testbook to check if you are holding the book.
     //
     // Book Meta Tester:
@@ -210,8 +210,20 @@ public class ScribeCommand extends AbstractCommand implements Listener {
      */
     @EventHandler
     public void paragraph(ReplaceableTagEvent e) {
+        // <--[tag]
+        // @attribute <P>
+        // @returns Element
+        // @description
+        // Returns a paragraph, for use in books.
+        // -->
         if (e.matches("P")) {
             e.setReplaced("\n \u00A7r \n");
+        // <--[tag]
+        // @attribute <N>
+        // @returns Element
+        // @description
+        // Returns a newline symbol, for use in books.
+        // -->
         } else if (e.matches("N")) {
             e.setReplaced("\n");
         }
