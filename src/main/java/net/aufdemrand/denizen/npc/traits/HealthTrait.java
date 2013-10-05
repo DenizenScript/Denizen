@@ -289,7 +289,7 @@ public class HealthTrait extends Trait implements Listener {
             npc.getNavigator().cancelNavigation();
             // Reset health now to avoid the death from happening instantly
             setHealth();
-            // Play animation
+            // Play animation (TODO)
             // playDeathAnimation(npc.getBukkitEntity());
 
         }
@@ -308,24 +308,25 @@ public class HealthTrait extends Trait implements Listener {
 
     }
 
-
-    public void playDeathAnimation(LivingEntity entity) {
-        entity.playEffect(EntityEffect.DEATH);
-        dMaterial mat = new dMaterial(Material.WOOL, 14);
-
-        for (dPlayer player : Utilities.getClosestPlayers(entity.getLocation(), 10)) {
-            for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 3, 65))
-                new FakeBlock(player, new dLocation(block.getLocation()),
-                        mat, Duration.valueOf("10-20s"));
-        }
-
-        ParticleEffect.CRIT.play(entity.getEyeLocation(), .2f, .2f, .2f, 0, 3500);
-
-        for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 2, 5)) {
-            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.BONE)).setPickupDelay(Integer.MAX_VALUE);
-            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE, 1, (short) 14)).setPickupDelay(Integer.MAX_VALUE);
-        }
-    }
+//  TODO: Figure something out here. Minecraft 'death effect' is too buggy to use anymore.
+//
+//    public void playDeathAnimation(LivingEntity entity) {
+//        entity.playEffect(EntityEffect.DEATH);
+//        dMaterial mat = new dMaterial(Material.WOOL, 14);
+//
+//        for (dPlayer player : Utilities.getClosestPlayers(entity.getLocation(), 10)) {
+//            for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 3, 65))
+//                new FakeBlock(player, new dLocation(block.getLocation()),
+//                        mat, Duration.valueOf("10-20s"));
+//        }
+//
+//        ParticleEffect.CRIT.play(entity.getEyeLocation(), .2f, .2f, .2f, 0, 3500);
+//
+//        for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 2, 5)) {
+//            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.BONE)).setPickupDelay(Integer.MAX_VALUE);
+//            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE, 1, (short) 14)).setPickupDelay(Integer.MAX_VALUE);
+//        }
+//    }
 
 
 }

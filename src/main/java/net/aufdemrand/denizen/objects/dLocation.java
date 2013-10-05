@@ -623,7 +623,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns the Bukkit material name of the block at the location.
         // -->
         if (attribute.startsWith("block.material"))
-            return new dMaterial(getBlock().getType()).getAttribute(attribute.fulfill(2));
+            return dMaterial.getMaterialFrom(getBlock().getType(), getBlock().getData()).getAttribute(attribute.fulfill(2));
 
 
         // <--[tag]

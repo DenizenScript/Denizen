@@ -385,7 +385,7 @@ public class dItem implements dObject, Notable, Properties {
     }
 
     public dMaterial getMaterial() {
-        return new dMaterial(getItemStack().getType());
+        return dMaterial.getMaterialFrom(getItemStack().getType(), getItemStack().getData().getData());
     }
 
     public String getMaterialName() {
@@ -574,9 +574,10 @@ public class dItem implements dObject, Notable, Properties {
         // @description
         // Returns the data value of the material of the item.
         // -->
-        if (attribute.startsWith("data"))
-            return new Element((int) getItemStack().getData().getData())
+        if (attribute.startsWith("data")) {
+            return new Element(getItemStack().getData().getData())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <i@item.durability>

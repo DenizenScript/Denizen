@@ -1703,10 +1703,12 @@ public class dEntity implements dObject {
             else return Attribute.RETURN_NULL;
         }
 
-
-
-
-
+        if (attribute.startsWith("age")) {
+            if (EntityAge.describes(this))
+                return EntityAge.getFrom(this)
+                .getAttribute(attribute.fulfill(1));
+            else return Attribute.RETURN_NULL;
+        }
 
         return new Element(identify()).getAttribute(attribute);
     }

@@ -262,6 +262,8 @@ public class Denizen extends JavaPlugin {
             //
         }
 
+        dMaterial._initialize();
+
         ws_helper.serverStartEvent();
     }
 

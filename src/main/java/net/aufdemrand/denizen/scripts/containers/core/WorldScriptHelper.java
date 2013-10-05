@@ -264,7 +264,7 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         Block block = event.getBlock();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(block.getLocation()));
         context.put("material", material);
@@ -332,7 +332,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         String determination = doEvents(Arrays.asList
                 ("block burns",
@@ -365,8 +365,8 @@ public class WorldScriptHelper implements Listener {
     public void blockCanBuild(BlockCanBuildEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial oldMaterial = new dMaterial(event.getBlock().getType());
-        dMaterial newMaterial = new dMaterial(event.getMaterial());
+        dMaterial oldMaterial = dMaterial.getMaterialFrom(event.getBlock().getType());
+        dMaterial newMaterial = dMaterial.getMaterialFrom(event.getMaterial());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("old_material", oldMaterial);
@@ -406,7 +406,7 @@ public class WorldScriptHelper implements Listener {
     public void blockDamage(BlockDamageEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -445,7 +445,7 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getItem());
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("item", item);
@@ -485,7 +485,7 @@ public class WorldScriptHelper implements Listener {
     public void blockFade(BlockFadeEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -519,7 +519,7 @@ public class WorldScriptHelper implements Listener {
     public void blockForm(BlockFormEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -552,7 +552,7 @@ public class WorldScriptHelper implements Listener {
     public void blockFromTo(BlockFromToEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("destination", new dLocation(event.getToBlock().getLocation()));
@@ -587,7 +587,7 @@ public class WorldScriptHelper implements Listener {
     public void blockGrow(BlockGrowEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -619,7 +619,7 @@ public class WorldScriptHelper implements Listener {
     public void blockIgnite(BlockIgniteEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -652,7 +652,7 @@ public class WorldScriptHelper implements Listener {
     public void blockPistonExtend(BlockPistonExtendEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -687,7 +687,7 @@ public class WorldScriptHelper implements Listener {
     public void blockPistonRetract(BlockPistonRetractEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("retract_location", new dLocation(event.getRetractLocation()));
@@ -720,7 +720,7 @@ public class WorldScriptHelper implements Listener {
     public void blockPlace(BlockPlaceEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -754,7 +754,7 @@ public class WorldScriptHelper implements Listener {
     public void blockRedstone(BlockRedstoneEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -799,7 +799,7 @@ public class WorldScriptHelper implements Listener {
     public void blockSpread(BlockSpreadEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -864,7 +864,7 @@ public class WorldScriptHelper implements Listener {
     public void entityBlockForm(EntityBlockFormEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
 
@@ -939,7 +939,7 @@ public class WorldScriptHelper implements Listener {
     public void furnaceExtract(FurnaceExtractEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial itemMaterial = new dMaterial(event.getItemType());
+        dMaterial itemMaterial = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         dItem item = new dItem(itemMaterial, event.getItemAmount());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
@@ -1016,7 +1016,7 @@ public class WorldScriptHelper implements Listener {
     public void leavesDecay(LeavesDecayEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -1058,7 +1058,7 @@ public class WorldScriptHelper implements Listener {
             return; // Fix error induced by dark magic.
         }
         Sign sign = (Sign) block.getState();
-        dMaterial material = new dMaterial(block.getType());
+        dMaterial material = dMaterial.getMaterialFrom(block.getType(), block.getData());
 
         context.put("old", new dList(Arrays.asList(sign.getLines())));
         context.put("new", new dList(Arrays.asList(event.getLines())));
@@ -1369,8 +1369,8 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
-        dMaterial oldMaterial = new dMaterial(event.getBlock().getType());
-        dMaterial newMaterial = new dMaterial(event.getTo());
+        dMaterial oldMaterial = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        dMaterial newMaterial = dMaterial.getMaterialFrom(event.getTo()); // Not able to get DATA here?
 
         context.put("entity", entity.getDenizenObject());
         context.put("location", new dLocation(event.getBlock().getLocation()));
@@ -2338,7 +2338,7 @@ public class WorldScriptHelper implements Listener {
 
         String entityType = projectile.getEntityType().name();
         dEntity shooter = projectile.getShooter();
-        dMaterial material = new dMaterial(block.getType());
+        dMaterial material = dMaterial.getMaterialFrom(block.getType(), block.getData());
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("projectile", projectile);
@@ -3949,7 +3949,7 @@ public class WorldScriptHelper implements Listener {
 
         dEntity vehicle = new dEntity(event.getVehicle());
         String vehicleType = vehicle.getEntityType().name();
-        dMaterial material = new dMaterial(event.getBlock().getType());
+        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("vehicle", vehicle);
