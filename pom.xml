@@ -130,7 +130,13 @@
 		<defaultGoal>clean package install</defaultGoal>
 		<resources>
 			<resource>
-				<targetPath>.</targetPath>
+				<filtering>false</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>*.mid</include>
+				</includes>
+			</resource>
+			<resource>
 				<filtering>true</filtering>
 				<directory>${basedir}/src/main/resources</directory>
 				<includes>

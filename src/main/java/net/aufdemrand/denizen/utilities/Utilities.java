@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -451,7 +452,7 @@ public class Utilities {
      * Check if a block location equals another location.
      * @param block The block location to check for.
      * @param location The location to check against.
-     * @return Whether or not the block location eqauls the location.
+     * @return Whether or not the block location equals the location.
      */
 
     public static boolean isBlock(Location block, Location location) {
@@ -467,5 +468,51 @@ public class Utilities {
                 > 0) return false;
 
         return true;
+    }
+
+    /**
+     * Extract a file from a zip or jar.
+     * @param jarFile The zip/jar file to use
+     * @param fileName Which file to extract
+     * @param destDir Where to extract it to
+     */
+    public static void extractFile(File jarFile, String fileName, String destDir) {
+        java.util.jar.JarFile jar = null;
+        try {
+            jar = new java.util.jar.JarFile(jarFile);
+            java.util.Enumeration myEnum = jar.entries();
+            while (myEnum.hasMoreElements()) {
+                java.util.jar.JarEntry file = (java.util.jar.JarEntry) myEnum.nextElement();
+                if (file.getName().equalsIgnoreCase(fileName)) {
+                    java.io.File f = new java.io.File(destDir + "/" + file.getName());
+                    if (file.isDirectory()) {
+                        continue;
+                    }
+                    java.io.InputStream is = jar.getInputStream(file);
+                    java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
+                    while (is.available() > 0)
+                        fos.write(is.read());
+                    fos.close();
+                    is.close();
+                    return;
+                }
+            }
+            dB.echoError(fileName + " not found in the jar!");
+        }
+        catch (IOException e) {
+            if (dB.showStackTraces)
+                e.printStackTrace();
+        }
+        finally {
+            if (jar != null) {
+                try {
+                    jar.close();
+                }
+                catch (IOException e) {
+                    if (dB.showStackTraces)
+                        e.printStackTrace();
+                }
+            }
+        }
     }
 }

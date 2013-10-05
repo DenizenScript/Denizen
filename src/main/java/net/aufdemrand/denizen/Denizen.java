@@ -25,6 +25,7 @@ import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.ObjectFetcher;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -162,6 +163,17 @@ public class Denizen extends JavaPlugin {
         // Populate config.yml if it doesn't yet exist.
         saveDefaultConfig();
         reloadConfig();
+
+        // Ensure the Scripts and Midi folder exist
+        new File(System.getProperty("user.dir") + "/plugins/Denizen/Scripts").mkdirs();
+        new File(System.getProperty("user.dir") + "/plugins/Denizen/Midi").mkdirs();
+
+        // Ensure the example Denizen.mid sound file is available
+        if (!new File(System.getProperty("user.dir") + "/plugins/Denizen/Midi/Denizen.mid").exists()) {
+            String sourceFile = Denizen.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+            dB.echoDebug("Denizen.mid not found, extracting from " + sourceFile);
+            Utilities.extractFile(new File(sourceFile), "Denizen.mid", System.getProperty("user.dir") + "/plugins/Denizen/Midi/");
+        }
 
         // Warn if configuration is outdated / too new
         if (!getConfig().isSet("Config.Version") ||
