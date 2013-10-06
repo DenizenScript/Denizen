@@ -50,8 +50,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Denizen extends JavaPlugin {
     public final static int configVersion = 4;
     public static String versionTag = null;
-
     private boolean startedSuccessful = false;
+
 
     private CommandHandler commandHandler;
 
@@ -104,7 +104,6 @@ public class Denizen extends JavaPlugin {
     /*
      * Denizen Managers
      */
-
     private FlagManager flagManager = new FlagManager(this);
     private TagManager tagManager = new TagManager(this);
     private NotableManager notableManager = new NotableManager();
@@ -121,14 +120,12 @@ public class Denizen extends JavaPlugin {
         return notableManager;
     }
 
-
-
     public Depends depends = new Depends();
+
 
     /*
      * Sets up Denizen on start of the craftbukkit server.
      */
-
     @Override
     public void onEnable() {
         // Activate dependencies
@@ -232,8 +229,6 @@ public class Denizen extends JavaPlugin {
 
         dB.echoDebug(DebugElement.Footer);
 
-
-
         try {
             // Initialize the ObjectFetcher
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
@@ -256,21 +251,21 @@ public class Denizen extends JavaPlugin {
             NotableManager.registerWithObjectFetcher(dCuboid.class);   // cuboid
             NotableManager._initialize();
 
-        } catch (IOException e) {
-            //
-        } catch (ClassNotFoundException e) {
-            //
+        } catch (Exception e) {
+            // Shit!
         }
 
+        // Initialize non-standard dMaterials
         dMaterial._initialize();
 
+        // Fire the 'on Server Start' world event
         ws_helper.serverStartEvent();
     }
+
 
     /*
      * Unloads Denizen on shutdown of the craftbukkit server.
      */
-
     @Override
     public void onDisable() {
         if(!startedSuccessful) return;
@@ -299,10 +294,10 @@ public class Denizen extends JavaPlugin {
         saveSaves();
     }
 
+
     /*
      * Reloads, retrieves and saves progress information Denizen/saves.yml.
      */
-
     private FileConfiguration savesConfig = null;
     private File savesConfigFile = null;
 
@@ -337,6 +332,10 @@ public class Denizen extends JavaPlugin {
         }
     }
 
+
+    /*
+     * Use Citizens' Command API to handle commands
+     */
     Citizens citizens;
 
     @Override
@@ -344,6 +343,7 @@ public class Denizen extends JavaPlugin {
         if (citizens == null)
             citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
 
+        // ...except this one :) /ex command
         if (cmdName.equalsIgnoreCase("ex")) {
             List<String> entries = new ArrayList<String>();
             String entry = "";
