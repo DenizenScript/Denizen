@@ -704,12 +704,12 @@ public class dInventory implements dObject, Notable {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <in@inventory.contains.display[(strict:)<element>](.qty[<#>])>
+        // @attribute <in@inventory.contains.display[(strict:)<element>]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the inventory contains a certain quantity (1 by default) of an item
-        // with the specified display name. Use 'strict:' in front of the search element to
-        // ensure the display name is EXACTLY the search element, otherwise the searching will only
+        // Returns whether the inventory contains an item with the specified display
+        // name. Use 'strict:' in front of the search element to ensure the display
+        // name is EXACTLY the search element, otherwise the searching will only
         // check if the search element is contained in the display name.
         // -->
         if (attribute.startsWith("contains.display")) {
@@ -723,6 +723,15 @@ public class dInventory implements dObject, Notable {
                     search_string = search_string.replace("strict:", "");
                 }
 
+                // <--[tag]
+                // @attribute <in@inventory.contains.display[(strict:)<element>].qty[<#>]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item with the
+                // specified display name. Use 'strict:' in front of the search element to ensure
+                // the display name is EXACTLY the search element, otherwise the searching will only
+                // check if the search element is contained in the display name.
+                // -->
                 if (attribute.getAttribute(3).startsWith("qty") &&
                         attribute.hasContext(3) &&
                         aH.matchesInteger(attribute.getContext(3))) {
@@ -754,16 +763,22 @@ public class dInventory implements dObject, Notable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains[<item>].qty[<#>]>
+        // @attribute <in@inventory.contains[<item>]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the inventory contains a certain quantity (1 by default) of an item.
+        // Returns whether the inventory contains an item.
         // -->
         if (attribute.startsWith("contains")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
                 int qty = 1;
                 int attribs = 1;
 
+                // <--[tag]
+                // @attribute <in@inventory.contains[<item>].qty[<#>]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item.
+                // -->
                 if (attribute.getAttribute(2).startsWith("qty") &&
                         attribute.hasContext(2) &&
                         aH.matchesInteger(attribute.getContext(2))) {
