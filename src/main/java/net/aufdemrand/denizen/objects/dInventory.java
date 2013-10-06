@@ -727,7 +727,7 @@ public class dInventory implements dObject, Notable {
                         attribute.hasContext(3) &&
                         aH.matchesInteger(attribute.getContext(3))) {
 
-                    qty = attribute.getIntContext(2);
+                    qty = attribute.getIntContext(3);
                     attribs = 3;
                 }
 
@@ -735,13 +735,13 @@ public class dInventory implements dObject, Notable {
 
                 if (strict) {
                     for (ItemStack item : getContents()) {
-                        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                                 item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string))
                             found_items++;
                     }
                 } else {
                     for (ItemStack item : getContents()) {
-                        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                                 item.getItemMeta().getDisplayName().toLowerCase()
                                         .contains(search_string.toLowerCase()))
                             found_items++;
