@@ -2,6 +2,7 @@ package net.aufdemrand.denizen;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -162,14 +163,15 @@ public class Denizen extends JavaPlugin {
         reloadConfig();
 
         // Ensure the Scripts and Midi folder exist
-        new File(System.getProperty("user.dir") + "/plugins/Denizen/scripts").mkdirs();
-        new File(System.getProperty("user.dir") + "/plugins/Denizen/midi").mkdirs();
+        String directory = URLDecoder.decode(System.getProperty("user.dir"));
+        new File(directory + "/plugins/Denizen/scripts").mkdirs();
+        new File(directory + "/plugins/Denizen/midi").mkdirs();
 
         // Ensure the example Denizen.mid sound file is available
-        if (!new File(System.getProperty("user.dir") + "/plugins/Denizen/midi/Denizen.mid").exists()) {
-            String sourceFile = Denizen.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+        if (!new File(directory + "/plugins/Denizen/midi/Denizen.mid").exists()) {
+            String sourceFile = URLDecoder.decode(Denizen.class.getProtectionDomain().getCodeSource().getLocation().getFile());
             dB.echoDebug("Denizen.mid not found, extracting from " + sourceFile);
-            Utilities.extractFile(new File(sourceFile), "Denizen.mid", System.getProperty("user.dir") + "/plugins/Denizen/midi/");
+            Utilities.extractFile(new File(sourceFile), "Denizen.mid", directory + "/plugins/Denizen/midi/");
         }
 
         // Warn if configuration is outdated / too new
