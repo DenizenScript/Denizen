@@ -43,7 +43,8 @@ public class dMaterial implements dObject {
         PINK_DYE, LIME_DYE, YELLOW_DYE, LIGHT_BLUE_DYE, MAGENTA_DYE, ORANGE_DYE, BONE_MEAL, TALL_GRASS,
         FERN, SHRUB, EMPTY_POT, POTTED_POPPY, POTTED_DAISY, POTTED_OAK_SAPLING, POTTED_SPRUCE_SAPLING,
         POTTED_BIRCH_SAPLING, POTTED_JUNGLE_SAPLING, POTTED_RED_MUSHROOM, POTTED_BROWN_MUSHROOM,
-        POTTED_CACTUS, POTTED_SHRUB, POTTED_FERN }
+        POTTED_CACTUS, POTTED_SHRUB, POTTED_FERN, SKELETON_SKULL, WITHERSKELETON_SKULL, ZOMBIE_SKULL,
+        HUMAN_SKULL, CREEPER_SKULL }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
@@ -150,7 +151,7 @@ public class dMaterial implements dObject {
     public final static dMaterial BONE_MEAL = new dMaterial(Material.INK_SACK, 15).forceIdentifyAs("BONE_MEAL");
 
     public final static dMaterial SHRUB = new dMaterial(Material.LONG_GRASS, 0).forceIdentifyAs("SHRUB");
-    public final static dMaterial TALL_GRASS = new dMaterial(Material.LONG_GRASS ,1).forceIdentifyAs("TALL_GRASS");
+    public final static dMaterial TALL_GRASS = new dMaterial(Material.LONG_GRASS, 1).forceIdentifyAs("TALL_GRASS");
     public final static dMaterial FERN = new dMaterial(Material.LONG_GRASS, 2).forceIdentifyAs("FERN");
 
     public final static dMaterial EMPTY_POT = new dMaterial(Material.FLOWER_POT, 0).forceIdentifyAs("EMPTY_POT");
@@ -165,6 +166,12 @@ public class dMaterial implements dObject {
     public final static dMaterial POTTED_CACTUS = new dMaterial(Material.FLOWER_POT, 9).forceIdentifyAs("POTTED_CACTUS");
     public final static dMaterial POTTED_SHRUB = new dMaterial(Material.FLOWER_POT, 10).forceIdentifyAs("POTTED_SHRUB");
     public final static dMaterial POTTED_FERN = new dMaterial(Material.FLOWER_POT, 11).forceIdentifyAs("POTTED_FERN");
+
+    public final static dMaterial SKELETON_SKULL = new dMaterial(Material.SKULL_ITEM, 0).forceIdentifyAs("SKELETON_SKULL");
+    public final static dMaterial WITHERSKELETON_SKULL = new dMaterial(Material.SKULL_ITEM, 1).forceIdentifyAs("WITHERSKELETON_SKULL");
+    public final static dMaterial ZOMBIE_SKULL = new dMaterial(Material.SKULL_ITEM, 2).forceIdentifyAs("ZOMBIE_SKULL");
+    public final static dMaterial HUMAN_SKULL = new dMaterial(Material.SKULL_ITEM, 3).forceIdentifyAs("HUMAN_SKULL");
+    public final static dMaterial CREEPER_SKULL = new dMaterial(Material.SKULL_ITEM, 4).forceIdentifyAs("CREEPER_SKULL");
 
 
 
