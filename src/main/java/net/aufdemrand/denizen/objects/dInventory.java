@@ -105,8 +105,8 @@ public class dInventory implements dObject, Notable {
             if (t.equalsIgnoreCase("npc")) {
                 // Check if the NPC ID specified is valid
                 if (dNPC.matches((h.startsWith("n@") ? h : "n@" + h))
-                && (dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Player
-                || dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Horse))
+                        && (dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Player
+                        || dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Horse))
                     return new dInventory(dNPC.valueOf(h).getEntity());
             }
             else if (t.equalsIgnoreCase("player")) {
@@ -117,7 +117,7 @@ public class dInventory implements dObject, Notable {
             else if (t.equalsIgnoreCase("entity")) {
                 // Check if the entity ID specified is valid and the entity is living
                 if (dEntity.matches((h.startsWith("e@") ? h : "e@" + h))
-                       && dEntity.valueOf((h.startsWith("e@") ? h : "e@" + h)).isLivingEntity())
+                        && dEntity.valueOf((h.startsWith("e@") ? h : "e@" + h)).isLivingEntity())
                     return new dInventory(dEntity.valueOf((h.startsWith("e@") ? h : "e@" + h)).getLivingEntity());
             }
             else if (t.equalsIgnoreCase("location")) {
@@ -140,7 +140,7 @@ public class dInventory implements dObject, Notable {
                             .getEquipment().getArmorContents());
                 }
                 else if (dEntity.matches(h) && dEntity.valueOf(h).isLivingEntity()
-                            && dEntity.valueOf(h).isSpawned()) {
+                        && dEntity.valueOf(h).isSpawned()) {
                     return new dInventory(InventoryType.CRAFTING, t, h).add(dEntity.valueOf(h).getLivingEntity()
                             .getEquipment().getArmorContents());
                 }
@@ -592,7 +592,7 @@ public class dInventory implements dObject, Notable {
                 BookMeta invMeta = (BookMeta) invStack.getItemMeta();
 
                 if (invMeta.getAuthor().equalsIgnoreCase(bookMeta.getAuthor())
-                    && invMeta.getTitle().equalsIgnoreCase(bookMeta.getTitle())) {
+                        && invMeta.getTitle().equalsIgnoreCase(bookMeta.getTitle())) {
 
                     // Make sure we don't remove more books than we
                     // need to
@@ -704,20 +704,69 @@ public class dInventory implements dObject, Notable {
         if (attribute == null) return null;
 
         // <--[tag]
+        // @attribute <in@inventory.contains.display[(strict:)<element>](.qty[<#>])>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory contains a certain quantity (1 by default) of an item
+        // with the specified display name. Use 'strict:' in front of the search element to
+        // ensure the display name is EXACTLY the search element, otherwise the searching will only
+        // check if the search element is contained in the display name.
+        // -->
+        if (attribute.startsWith("contains.display")) {
+            if (attribute.hasContext(2)) {
+                int qty = 1;
+                int attribs = 2;
+                String search_string = attribute.getContext(2);
+                boolean strict = false;
+                if (search_string.startsWith("strict:")) {
+                    strict = true;
+                    search_string = search_string.replace("strict:", "");
+                }
+
+                if (attribute.getAttribute(3).startsWith("qty") &&
+                        attribute.hasContext(3) &&
+                        aH.matchesInteger(attribute.getContext(3))) {
+
+                    qty = attribute.getIntContext(2);
+                    attribs = 3;
+                }
+
+                int found_items = 0;
+
+                if (strict) {
+                    for (ItemStack item : getContents()) {
+                        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                                item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string))
+                            found_items++;
+                    }
+                } else {
+                    for (ItemStack item : getContents()) {
+                        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                                item.getItemMeta().getDisplayName().toLowerCase()
+                                        .contains(search_string.toLowerCase()))
+                            found_items++;
+                    }
+                }
+
+                return (found_items >= qty ? Element.TRUE.getAttribute(attribute.fulfill(attribs))
+                        : Element.FALSE.getAttribute(attribute.fulfill(attribs)));
+            }
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.contains[<item>].qty[<#>]>
-        // @returns Element(Number)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the inventory contains a certain quantity (1 by default) of an item.
         // -->
         if (attribute.startsWith("contains")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-
                 int qty = 1;
                 int attribs = 1;
 
                 if (attribute.getAttribute(2).startsWith("qty") &&
-                    attribute.hasContext(2) &&
-                    aH.matchesInteger(attribute.getContext(2))) {
+                        attribute.hasContext(2) &&
+                        aH.matchesInteger(attribute.getContext(2))) {
 
                     qty = attribute.getIntContext(2);
                     attribs = 2;
@@ -752,11 +801,11 @@ public class dInventory implements dObject, Notable {
         if (attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
                 return new Element(count
-                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), false))
-                    .getAttribute(attribute.fulfill(1));
+                        (dItem.valueOf(attribute.getContext(1)).getItemStack(), false))
+                        .getAttribute(attribute.fulfill(1));
             else
                 return new Element(count(null, false))
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <in@inventory.size>
@@ -778,11 +827,11 @@ public class dInventory implements dObject, Notable {
         if (attribute.startsWith("stacks"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
                 return new Element(count
-                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), true))
-                    .getAttribute(attribute.fulfill(1));
+                        (dItem.valueOf(attribute.getContext(1)).getItemStack(), true))
+                        .getAttribute(attribute.fulfill(1));
             else
                 return new Element(count(null, true))
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <in@inventory.type>
@@ -808,14 +857,14 @@ public class dInventory implements dObject, Notable {
                     if (inventory.getHolder() instanceof Player)
                         identifier = "n@" + CitizensAPI.getNPCRegistry().getNPC((LivingEntity) getInventory().getHolder()).getId();
                     else return new Element("null")
-                                .getAttribute(attribute.fulfill(1));
+                            .getAttribute(attribute.fulfill(1));
                 }
                 else if (inventory.getHolder() instanceof Player)
                     identifier = "p@" + ((Player) getInventory().getHolder()).getName();
                 else if (inventory.getHolder() instanceof LivingEntity)
                     identifier = "e@" + ((Player) getInventory().getHolder()).getEntityId();
                 else return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
+                            .getAttribute(attribute.fulfill(1));
 
                 return new dInventory(InventoryType.CRAFTING, "equipment", identifier)
                         .add(((PlayerInventory) getInventory()).getArmorContents())
@@ -823,8 +872,8 @@ public class dInventory implements dObject, Notable {
             }
             else if (getInventory() instanceof HorseInventory) {
                 return new dInventory(InventoryType.CRAFTING, "equipment",
-                    (getInventory().getHolder() != null ? "e@" + String.valueOf(((LivingEntity) getInventory().getHolder()).getEntityId())
-                     : getInventory().getName()))
+                        (getInventory().getHolder() != null ? "e@" + String.valueOf(((LivingEntity) getInventory().getHolder()).getEntityId())
+                                : getInventory().getName()))
                         .getAttribute(attribute.fulfill(1));
             }
         }

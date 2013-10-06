@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
-public class CreateWorldCommand extends AbstractCommand /* implements dExternal */ {
+public class CreateWorldCommand extends AbstractCommand {
 
 
 
@@ -30,7 +30,7 @@ public class CreateWorldCommand extends AbstractCommand /* implements dExternal 
             else if (!scriptEntry.hasObject("world_name"))
                 scriptEntry.addObject("world_name", arg.asElement());
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Check for required information

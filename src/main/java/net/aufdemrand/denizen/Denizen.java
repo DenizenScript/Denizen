@@ -187,7 +187,6 @@ public class Denizen extends JavaPlugin {
 
         // Create the command script handler for listener
         WorldScriptHelper ws_helper = new WorldScriptHelper();
-
         ItemScriptHelper is_helper = new ItemScriptHelper();
 
         // Register traits
@@ -248,7 +247,7 @@ public class Denizen extends JavaPlugin {
             ObjectFetcher._initialize();
 
             // Initialize the NotableManager
-            NotableManager.registerWithObjectFetcher(dCuboid.class);   // cuboid
+            NotableManager.registerWithNotableManager(dCuboid.class);   // cuboid
             NotableManager._initialize();
 
         } catch (Exception e) {

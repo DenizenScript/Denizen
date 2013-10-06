@@ -177,7 +177,7 @@ public class NotableManager {
     public static void _initialize() throws IOException, ClassNotFoundException {
         objects.clear();
 
-        for (Class dClass : fetchable_objects)
+        for (Class dClass : notable_objects)
             for (Method method : dClass.getMethods())
                 if (method.isAnnotationPresent(net.aufdemrand.denizen.objects.notable.Note.class)) {
                     String[] identifiers = method.getAnnotation(net.aufdemrand.denizen.objects.notable.Note.class).value().split(",");
@@ -186,10 +186,10 @@ public class NotableManager {
                 }
     }
 
-    private static ArrayList<Class> fetchable_objects = new ArrayList<Class>();
+    private static ArrayList<Class> notable_objects = new ArrayList<Class>();
 
-    public static void registerWithObjectFetcher(Class notable) {
-        fetchable_objects.add(notable);
+    public static void registerWithNotableManager(Class notable) {
+        notable_objects.add(notable);
     }
 
     public static boolean canFetch(Class notable) {

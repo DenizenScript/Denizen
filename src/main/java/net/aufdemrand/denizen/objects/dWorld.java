@@ -239,6 +239,16 @@ public class dWorld implements dObject {
             return new Element(getWorld().getSeaLevel())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <w@world.spawn_location>
+        // @returns Element(Number)
+        // @description
+        // returns the spawn location of the world.
+        // -->
+        if (attribute.startsWith("spawn_location"))
+            return new dLocation(getWorld().getSpawnLocation())
+                    .getAttribute(attribute.fulfill(1));
+
 
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
