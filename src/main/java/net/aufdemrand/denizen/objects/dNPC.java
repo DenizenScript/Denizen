@@ -2,10 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
-import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizen.npc.traits.HealthTrait;
-import net.aufdemrand.denizen.npc.traits.NicknameTrait;
-import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
@@ -389,6 +386,26 @@ public class dNPC implements dObject {
                         .getNPCFlag(getId(), flag_name))
                         .getAttribute(attribute);
             else return "null";
+        }
+
+        // <--[tag]
+        // @attribute <npc.constant[constant_name]>
+        // @returns Element
+        // @description
+        // returns the specified constant from the NPC.
+        // -->
+        if (attribute.startsWith("constant")) {
+            String constant_name;
+            if (attribute.hasContext(1)) {
+                if (getCitizen().hasTrait(ConstantsTrait.class)
+                    && getCitizen().getTrait(ConstantsTrait.class).getConstant(attribute.getContext(1)) != null) {
+                    return new Element(getCitizen().getTrait(ConstantsTrait.class)
+                    .getConstant(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return "null";
+                }
+            }
         }
 
         // <--[tag]
