@@ -3949,7 +3949,6 @@ public class WorldScriptHelper implements Listener {
 
         dEntity vehicle = new dEntity(event.getVehicle());
         String vehicleType = vehicle.getEntityType().name();
-        dB.echoApproval(event.getBlock().getType().name());
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         Map<String, dObject> context = new HashMap<String, dObject>();
