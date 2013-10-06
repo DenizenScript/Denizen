@@ -3944,6 +3944,9 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void vehicleBlockCollision(VehicleBlockCollisionEvent event) {
 
+        // Bukkit seems to be triggering collision on air.. let's filter that out.
+        if (event.getBlock().getType() == Material.AIR) return;
+
         Player player = null;
         dNPC npc = null;
 
