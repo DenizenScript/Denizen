@@ -50,8 +50,8 @@ public class HeadCommand extends AbstractCommand {
 
         // Use the NPC or the Player as the default entity
         scriptEntry.defaultObject("entities",
-                (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
-                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
+                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null),
+                (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null));
 
         if (!scriptEntry.hasObject("skin"))
             throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "SKIN");

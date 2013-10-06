@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 public class ScribeCommand extends AbstractCommand implements Listener {
 
     // <--[example]
-    // @Name Book scripts and the scribe command example
+    // @Title Book scripts and the scribe command example
     // @Description
     // Use the following example to learn the basics on book scripts, tags,
     // and the scribe command.
