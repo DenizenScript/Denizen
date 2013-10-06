@@ -162,14 +162,14 @@ public class Denizen extends JavaPlugin {
         reloadConfig();
 
         // Ensure the Scripts and Midi folder exist
-        new File(System.getProperty("user.dir") + "/plugins/Denizen/Scripts").mkdirs();
-        new File(System.getProperty("user.dir") + "/plugins/Denizen/Midi").mkdirs();
+        new File(System.getProperty("user.dir") + "/plugins/Denizen/scripts").mkdirs();
+        new File(System.getProperty("user.dir") + "/plugins/Denizen/midi").mkdirs();
 
         // Ensure the example Denizen.mid sound file is available
-        if (!new File(System.getProperty("user.dir") + "/plugins/Denizen/Midi/Denizen.mid").exists()) {
+        if (!new File(System.getProperty("user.dir") + "/plugins/Denizen/midi/Denizen.mid").exists()) {
             String sourceFile = Denizen.class.getProtectionDomain().getCodeSource().getLocation().getFile();
             dB.echoDebug("Denizen.mid not found, extracting from " + sourceFile);
-            Utilities.extractFile(new File(sourceFile), "Denizen.mid", System.getProperty("user.dir") + "/plugins/Denizen/Midi/");
+            Utilities.extractFile(new File(sourceFile), "Denizen.mid", System.getProperty("user.dir") + "/plugins/Denizen/midi/");
         }
 
         // Warn if configuration is outdated / too new
