@@ -18,7 +18,7 @@ public class dMaterial implements dObject {
     final static Pattern materialPattern = Pattern.compile("(?:m@)?(\\w+)[,:]?(\\d+)?", Pattern.CASE_INSENSITIVE);
 
     // Will be called a lot, no need to construct/deconstruct.
-    public final static dMaterial AIR = dMaterial.valueOf("m@air");
+    public final static dMaterial AIR = new dMaterial(Material.AIR);
 
 
     /////////////////
@@ -48,127 +48,127 @@ public class dMaterial implements dObject {
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
 
-    public final static dMaterial WHITE_WOOL = dMaterial.valueOf("m@wool,0").forceIdentifyAs("WHITE_WOOL");
-    public final static dMaterial ORANGE_WOOL = dMaterial.valueOf("m@wool,1").forceIdentifyAs("ORANGE_WOOL");
-    public final static dMaterial MAGENTA_WOOL = dMaterial.valueOf("m@wool,2").forceIdentifyAs("MAGENTA_WOOL");
-    public final static dMaterial LIGHT_BLUE_WOOL = dMaterial.valueOf("m@wool,3").forceIdentifyAs("LIGHT_BLUE_WOOL");
-    public final static dMaterial YELLOW_WOOL = dMaterial.valueOf("m@wool,4").forceIdentifyAs("YELLOW_WOOL");
-    public final static dMaterial LIME_WOOL = dMaterial.valueOf("m@wool,5").forceIdentifyAs("LIME_WOOL");
-    public final static dMaterial PINK_WOOL = dMaterial.valueOf("m@wool,6").forceIdentifyAs("PINK_WOOL");
-    public final static dMaterial GRAY_WOOL = dMaterial.valueOf("m@wool,7").forceIdentifyAs("GRAY_WOOL");
-    public final static dMaterial LIGHT_GRAY_WOOL = dMaterial.valueOf("m@wool,8").forceIdentifyAs("LIGHT_GRAY_WOOL");
-    public final static dMaterial CYAN_WOOL = dMaterial.valueOf("m@wool,9").forceIdentifyAs("CYAN_WOOL");
-    public final static dMaterial PURPLE_WOOL = dMaterial.valueOf("m@wool,10").forceIdentifyAs("PURPLE_WOOL");
-    public final static dMaterial BLUE_WOOL = dMaterial.valueOf("m@wool,11").forceIdentifyAs("BLUE_WOOL");
-    public final static dMaterial BROWN_WOOL = dMaterial.valueOf("m@wool,12").forceIdentifyAs("BROWN_WOOL");
-    public final static dMaterial GREEN_WOOL = dMaterial.valueOf("m@wool,13").forceIdentifyAs("GREEN_WOOL");
-    public final static dMaterial RED_WOOL = dMaterial.valueOf("m@wool,14").forceIdentifyAs("RED_WOOL");
-    public final static dMaterial BLACK_WOOL = dMaterial.valueOf("m@wool,15").forceIdentifyAs("BLACK_WOOL");
+    public final static dMaterial WHITE_WOOL = new dMaterial(Material.WOOL, 0).forceIdentifyAs("WHITE_WOOL");
+    public final static dMaterial ORANGE_WOOL = new dMaterial(Material.WOOL, 1).forceIdentifyAs("ORANGE_WOOL");
+    public final static dMaterial MAGENTA_WOOL = new dMaterial(Material.WOOL, 2).forceIdentifyAs("MAGENTA_WOOL");
+    public final static dMaterial LIGHT_BLUE_WOOL = new dMaterial(Material.WOOL, 3).forceIdentifyAs("LIGHT_BLUE_WOOL");
+    public final static dMaterial YELLOW_WOOL = new dMaterial(Material.WOOL, 4).forceIdentifyAs("YELLOW_WOOL");
+    public final static dMaterial LIME_WOOL = new dMaterial(Material.WOOL, 5).forceIdentifyAs("LIME_WOOL");
+    public final static dMaterial PINK_WOOL = new dMaterial(Material.WOOL, 6).forceIdentifyAs("PINK_WOOL");
+    public final static dMaterial GRAY_WOOL = new dMaterial(Material.WOOL, 7).forceIdentifyAs("GRAY_WOOL");
+    public final static dMaterial LIGHT_GRAY_WOOL = new dMaterial(Material.WOOL, 8).forceIdentifyAs("LIGHT_GRAY_WOOL");
+    public final static dMaterial CYAN_WOOL = new dMaterial(Material.WOOL, 9).forceIdentifyAs("CYAN_WOOL");
+    public final static dMaterial PURPLE_WOOL = new dMaterial(Material.WOOL, 10).forceIdentifyAs("PURPLE_WOOL");
+    public final static dMaterial BLUE_WOOL = new dMaterial(Material.WOOL, 11).forceIdentifyAs("BLUE_WOOL");
+    public final static dMaterial BROWN_WOOL = new dMaterial(Material.WOOL, 12).forceIdentifyAs("BROWN_WOOL");
+    public final static dMaterial GREEN_WOOL = new dMaterial(Material.WOOL, 13).forceIdentifyAs("GREEN_WOOL");
+    public final static dMaterial RED_WOOL = new dMaterial(Material.WOOL, 14).forceIdentifyAs("RED_WOOL");
+    public final static dMaterial BLACK_WOOL = new dMaterial(Material.WOOL, 15).forceIdentifyAs("BLACK_WOOL");
 
-    public final static dMaterial WHITE_CARPET = dMaterial.valueOf("m@carpet,0").forceIdentifyAs("WHITE_CARPET");
-    public final static dMaterial ORANGE_CARPET = dMaterial.valueOf("m@carpet,1").forceIdentifyAs("ORANGE_CARPET");
-    public final static dMaterial MAGENTA_CARPET = dMaterial.valueOf("m@carpet,2").forceIdentifyAs("MAGENTA_CARPET");
-    public final static dMaterial LIGHT_BLUE_CARPET = dMaterial.valueOf("m@carpet,3").forceIdentifyAs("LIGHT_BLUE_CARPET");
-    public final static dMaterial YELLOW_CARPET = dMaterial.valueOf("m@carpet,4").forceIdentifyAs("YELLOW_CARPET");
-    public final static dMaterial LIME_CARPET = dMaterial.valueOf("m@carpet,5").forceIdentifyAs("LIME_CARPET");
-    public final static dMaterial PINK_CARPET = dMaterial.valueOf("m@carpet,6").forceIdentifyAs("PINK_CARPET");
-    public final static dMaterial GRAY_CARPET = dMaterial.valueOf("m@carpet,7").forceIdentifyAs("GRAY_CARPET");
-    public final static dMaterial LIGHT_GRAY_CARPET = dMaterial.valueOf("m@carpet,8").forceIdentifyAs("LIGHT_GRAY_CARPET");
-    public final static dMaterial CYAN_CARPET = dMaterial.valueOf("m@carpet,9").forceIdentifyAs("CYAN_CARPET");
-    public final static dMaterial PURPLE_CARPET = dMaterial.valueOf("m@carpet,10").forceIdentifyAs("PURPLE_CARPET");
-    public final static dMaterial BLUE_CARPET = dMaterial.valueOf("m@carpet,11").forceIdentifyAs("BLUE_CARPET");
-    public final static dMaterial BROWN_CARPET = dMaterial.valueOf("m@carpet,12").forceIdentifyAs("BROWN_CARPET");
-    public final static dMaterial GREEN_CARPET = dMaterial.valueOf("m@carpet,13").forceIdentifyAs("GREEN_CARPET");
-    public final static dMaterial RED_CARPET =  dMaterial.valueOf("m@carpet,14").forceIdentifyAs("RED_CARPET");
-    public final static dMaterial BLACK_CARPET = dMaterial.valueOf("m@carpet,15").forceIdentifyAs("BLACK_CARPET");
+    public final static dMaterial WHITE_CARPET = new dMaterial(Material.CARPET, 0).forceIdentifyAs("WHITE_CARPET");
+    public final static dMaterial ORANGE_CARPET = new dMaterial(Material.CARPET, 1).forceIdentifyAs("ORANGE_CARPET");
+    public final static dMaterial MAGENTA_CARPET = new dMaterial(Material.CARPET, 2).forceIdentifyAs("MAGENTA_CARPET");
+    public final static dMaterial LIGHT_BLUE_CARPET = new dMaterial(Material.CARPET, 3).forceIdentifyAs("LIGHT_BLUE_CARPET");
+    public final static dMaterial YELLOW_CARPET = new dMaterial(Material.CARPET, 4).forceIdentifyAs("YELLOW_CARPET");
+    public final static dMaterial LIME_CARPET = new dMaterial(Material.CARPET, 5).forceIdentifyAs("LIME_CARPET");
+    public final static dMaterial PINK_CARPET = new dMaterial(Material.CARPET, 6).forceIdentifyAs("PINK_CARPET");
+    public final static dMaterial GRAY_CARPET = new dMaterial(Material.CARPET, 7).forceIdentifyAs("GRAY_CARPET");
+    public final static dMaterial LIGHT_GRAY_CARPET = new dMaterial(Material.CARPET, 8).forceIdentifyAs("LIGHT_GRAY_CARPET");
+    public final static dMaterial CYAN_CARPET = new dMaterial(Material.CARPET, 9).forceIdentifyAs("CYAN_CARPET");
+    public final static dMaterial PURPLE_CARPET = new dMaterial(Material.CARPET, 10).forceIdentifyAs("PURPLE_CARPET");
+    public final static dMaterial BLUE_CARPET = new dMaterial(Material.CARPET, 11).forceIdentifyAs("BLUE_CARPET");
+    public final static dMaterial BROWN_CARPET = new dMaterial(Material.CARPET, 12).forceIdentifyAs("BROWN_CARPET");
+    public final static dMaterial GREEN_CARPET = new dMaterial(Material.CARPET, 13).forceIdentifyAs("GREEN_CARPET");
+    public final static dMaterial RED_CARPET =  new dMaterial(Material.CARPET, 14).forceIdentifyAs("RED_CARPET");
+    public final static dMaterial BLACK_CARPET = new dMaterial(Material.CARPET, 15).forceIdentifyAs("BLACK_CARPET");
 
-    public final static dMaterial WHITE_CLAY = dMaterial.valueOf("m@clay,0").forceIdentifyAs("WHITE_CLAY");
-    public final static dMaterial ORANGE_CLAY = dMaterial.valueOf("m@clay,1").forceIdentifyAs("ORANGE_CLAY");
-    public final static dMaterial MAGENTA_CLAY = dMaterial.valueOf("m@clay,2").forceIdentifyAs("MAGENTA_CLAY");
-    public final static dMaterial LIGHT_BLUE_CLAY = dMaterial.valueOf("m@clay,3").forceIdentifyAs("LIGHT_BLUE_CLAY");
-    public final static dMaterial YELLOW_CLAY = dMaterial.valueOf("m@clay,4").forceIdentifyAs("YELLOW_CLAY");
-    public final static dMaterial LIME_CLAY = dMaterial.valueOf("m@clay,5").forceIdentifyAs("LIME_CLAY");
-    public final static dMaterial PINK_CLAY = dMaterial.valueOf("m@clay,6").forceIdentifyAs("PINK_CLAY");
-    public final static dMaterial GRAY_CLAY = dMaterial.valueOf("m@clay,7").forceIdentifyAs("GRAY_CLAY");
-    public final static dMaterial LIGHT_GRAY_CLAY = dMaterial.valueOf("m@clay,8").forceIdentifyAs("LIGHT_GRAY_CLAY");
-    public final static dMaterial CYAN_CLAY = dMaterial.valueOf("m@clay,9").forceIdentifyAs("CYAN_CLAY");
-    public final static dMaterial PURPLE_CLAY = dMaterial.valueOf("m@clay,10").forceIdentifyAs("PURPLE_CLAY");
-    public final static dMaterial BLUE_CLAY = dMaterial.valueOf("m@clay,11").forceIdentifyAs("BLUE_CLAY");
-    public final static dMaterial BROWN_CLAY = dMaterial.valueOf("m@clay,12").forceIdentifyAs("BROWN_CLAY");
-    public final static dMaterial GREEN_CLAY = dMaterial.valueOf("m@clay,13").forceIdentifyAs("GREEN_CLAY");
-    public final static dMaterial RED_CLAY = dMaterial.valueOf("m@clay,14").forceIdentifyAs("RED_CLAY");
-    public final static dMaterial BLACK_CLAY = dMaterial.valueOf("m@clay,15").forceIdentifyAs("BLACK_CLAY");
+    public final static dMaterial WHITE_CLAY = new dMaterial(Material.CLAY, 0).forceIdentifyAs("WHITE_CLAY");
+    public final static dMaterial ORANGE_CLAY = new dMaterial(Material.CLAY, 1).forceIdentifyAs("ORANGE_CLAY");
+    public final static dMaterial MAGENTA_CLAY = new dMaterial(Material.CLAY, 2).forceIdentifyAs("MAGENTA_CLAY");
+    public final static dMaterial LIGHT_BLUE_CLAY = new dMaterial(Material.CLAY, 3).forceIdentifyAs("LIGHT_BLUE_CLAY");
+    public final static dMaterial YELLOW_CLAY = new dMaterial(Material.CLAY, 4).forceIdentifyAs("YELLOW_CLAY");
+    public final static dMaterial LIME_CLAY = new dMaterial(Material.CLAY, 5).forceIdentifyAs("LIME_CLAY");
+    public final static dMaterial PINK_CLAY = new dMaterial(Material.CLAY, 6).forceIdentifyAs("PINK_CLAY");
+    public final static dMaterial GRAY_CLAY = new dMaterial(Material.CLAY, 7).forceIdentifyAs("GRAY_CLAY");
+    public final static dMaterial LIGHT_GRAY_CLAY = new dMaterial(Material.CLAY, 8).forceIdentifyAs("LIGHT_GRAY_CLAY");
+    public final static dMaterial CYAN_CLAY = new dMaterial(Material.CLAY, 9).forceIdentifyAs("CYAN_CLAY");
+    public final static dMaterial PURPLE_CLAY = new dMaterial(Material.CLAY, 10).forceIdentifyAs("PURPLE_CLAY");
+    public final static dMaterial BLUE_CLAY = new dMaterial(Material.CLAY, 11).forceIdentifyAs("BLUE_CLAY");
+    public final static dMaterial BROWN_CLAY = new dMaterial(Material.CLAY, 12).forceIdentifyAs("BROWN_CLAY");
+    public final static dMaterial GREEN_CLAY = new dMaterial(Material.CLAY, 13).forceIdentifyAs("GREEN_CLAY");
+    public final static dMaterial RED_CLAY = new dMaterial(Material.CLAY, 14).forceIdentifyAs("RED_CLAY");
+    public final static dMaterial BLACK_CLAY = new dMaterial(Material.CLAY, 15).forceIdentifyAs("BLACK_CLAY");
 
-    public final static dMaterial NATURAL_COAL = dMaterial.valueOf("m@coal,0").forceIdentifyAs("NATURAL_COAL");
-    public final static dMaterial CHARCOAL = dMaterial.valueOf("m@coal,1").forceIdentifyAs("CHARCOAL");
+    public final static dMaterial NATURAL_COAL = new dMaterial(Material.COAL, 0).forceIdentifyAs("NATURAL_COAL");
+    public final static dMaterial CHARCOAL = new dMaterial(Material.COAL, 1).forceIdentifyAs("CHARCOAL");
 
-    public final static dMaterial OAK_PLANKS = dMaterial.valueOf("m@wood,0").forceIdentifyAs("OAK_PLANKS");
-    public final static dMaterial SPRUCE_PLANKS = dMaterial.valueOf("m@wood,1").forceIdentifyAs("SPRUCE_PLANKS");
-    public final static dMaterial BIRCH_PLANKS = dMaterial.valueOf("m@wood,2").forceIdentifyAs("BIRCH_PLANKS");
-    public final static dMaterial JUNGLE_PLANKS = dMaterial.valueOf("m@wood,3").forceIdentifyAs("JUNGLE_PLANKS");
+    public final static dMaterial OAK_PLANKS = new dMaterial(Material.WOOD, 0).forceIdentifyAs("OAK_PLANKS");
+    public final static dMaterial SPRUCE_PLANKS = new dMaterial(Material.WOOD, 1).forceIdentifyAs("SPRUCE_PLANKS");
+    public final static dMaterial BIRCH_PLANKS = new dMaterial(Material.WOOD, 2).forceIdentifyAs("BIRCH_PLANKS");
+    public final static dMaterial JUNGLE_PLANKS = new dMaterial(Material.WOOD, 3).forceIdentifyAs("JUNGLE_PLANKS");
 
-    public final static dMaterial OAK_SAPLING = dMaterial.valueOf("m@sapling,0").forceIdentifyAs("OAK_SAPLING");
-    public final static dMaterial SPRUCE_SAPLING = dMaterial.valueOf("m@sapling,1").forceIdentifyAs("SPRUCE_SAPLING");
-    public final static dMaterial BIRCH_SAPLING = dMaterial.valueOf("m@sapling,2").forceIdentifyAs("BIRCH_SAPLING");
-    public final static dMaterial JUNGLE_SAPLING = dMaterial.valueOf("m@sapling,3").forceIdentifyAs("JUNGLE_SAPLING");
+    public final static dMaterial OAK_SAPLING = new dMaterial(Material.SAPLING, 0).forceIdentifyAs("OAK_SAPLING");
+    public final static dMaterial SPRUCE_SAPLING = new dMaterial(Material.SAPLING, 1).forceIdentifyAs("SPRUCE_SAPLING");
+    public final static dMaterial BIRCH_SAPLING = new dMaterial(Material.SAPLING, 2).forceIdentifyAs("BIRCH_SAPLING");
+    public final static dMaterial JUNGLE_SAPLING = new dMaterial(Material.SAPLING, 3).forceIdentifyAs("JUNGLE_SAPLING");
 
-    public final static dMaterial OAK_LEAVES = dMaterial.valueOf("m@leaves,0").forceIdentifyAs("OAK_LEAVES");
-    public final static dMaterial SPRUCE_LEAVES = dMaterial.valueOf("m@leaves,1").forceIdentifyAs("SPRUCE_LEAVES");
-    public final static dMaterial BIRCH_LEAVES = dMaterial.valueOf("m@leaves,2").forceIdentifyAs("BIRCH_LEAVES");
-    public final static dMaterial JUNGLE_LEAVES = dMaterial.valueOf("m@leaves,3").forceIdentifyAs("JUNGLE_LEAVES");
+    public final static dMaterial OAK_LEAVES = new dMaterial(Material.LEAVES, 0).forceIdentifyAs("OAK_LEAVES");
+    public final static dMaterial SPRUCE_LEAVES = new dMaterial(Material.LEAVES, 1).forceIdentifyAs("SPRUCE_LEAVES");
+    public final static dMaterial BIRCH_LEAVES = new dMaterial(Material.LEAVES, 2).forceIdentifyAs("BIRCH_LEAVES");
+    public final static dMaterial JUNGLE_LEAVES = new dMaterial(Material.LEAVES, 3).forceIdentifyAs("JUNGLE_LEAVES");
 
     // TODO: Need to find a way to handle horizontal logs/etc. Should they be a different material?
-    public final static dMaterial OAK_LOG = dMaterial.valueOf("m@log,0").forceIdentifyAs("OAK_LOG");
-    public final static dMaterial SPRUCE_LOG = dMaterial.valueOf("m@log,1").forceIdentifyAs("SPRUCE_LOG");
-    public final static dMaterial BIRCH_LOG = dMaterial.valueOf("m@log,2").forceIdentifyAs("BIRCH_LOG");
-    public final static dMaterial JUNGLE_LOG = dMaterial.valueOf("m@log,3").forceIdentifyAs("JUNGLE_LOG");
+    public final static dMaterial OAK_LOG = new dMaterial(Material.LOG, 0).forceIdentifyAs("OAK_LOG");
+    public final static dMaterial SPRUCE_LOG = new dMaterial(Material.LOG, 1).forceIdentifyAs("SPRUCE_LOG");
+    public final static dMaterial BIRCH_LOG = new dMaterial(Material.LOG, 2).forceIdentifyAs("BIRCH_LOG");
+    public final static dMaterial JUNGLE_LOG = new dMaterial(Material.LOG, 3).forceIdentifyAs("JUNGLE_LOG");
 
-    public final static dMaterial NATURAL_SANDSTONE = dMaterial.valueOf("m@sandstone,0").forceIdentifyAs("NATURAL_SANDSTONE");
-    public final static dMaterial CHISELED_SANDSTONE = dMaterial.valueOf("m@sandstone,1").forceIdentifyAs("CHISELED_SANDSTONE");
-    public final static dMaterial SMOOTH_SANDSTONE = dMaterial.valueOf("m@sandstone,2").forceIdentifyAs("SMOOTH_SANDSTONE");
+    public final static dMaterial NATURAL_SANDSTONE = new dMaterial(Material.SANDSTONE, 0).forceIdentifyAs("NATURAL_SANDSTONE");
+    public final static dMaterial CHISELED_SANDSTONE = new dMaterial(Material.SANDSTONE, 1).forceIdentifyAs("CHISELED_SANDSTONE");
+    public final static dMaterial SMOOTH_SANDSTONE = new dMaterial(Material.SANDSTONE, 2).forceIdentifyAs("SMOOTH_SANDSTONE");
 
-    public final static dMaterial STONE_BRICK = dMaterial.valueOf("m@smooth_brick,0").forceIdentifyAs("STONE_BRICK");
-    public final static dMaterial MOSSY_STONE_BRICK = dMaterial.valueOf("m@smooth_brick,1").forceIdentifyAs("MOSSY_STONE_BRICK");
-    public final static dMaterial CRACKED_STONE_BRICK = dMaterial.valueOf("m@smooth_brick,2").forceIdentifyAs("CRACKED_STONE_BRICK");
-    public final static dMaterial CHISELED_STONE_BRICK = dMaterial.valueOf("m@smooth_brick,3").forceIdentifyAs("CHISELED_STONE_BRICK");
+    public final static dMaterial STONE_BRICK = new dMaterial(Material.SMOOTH_BRICK, 0).forceIdentifyAs("STONE_BRICK");
+    public final static dMaterial MOSSY_STONE_BRICK = new dMaterial(Material.SMOOTH_BRICK, 1).forceIdentifyAs("MOSSY_STONE_BRICK");
+    public final static dMaterial CRACKED_STONE_BRICK = new dMaterial(Material.SMOOTH_BRICK, 2).forceIdentifyAs("CRACKED_STONE_BRICK");
+    public final static dMaterial CHISELED_STONE_BRICK = new dMaterial(Material.SMOOTH_BRICK, 3).forceIdentifyAs("CHISELED_STONE_BRICK");
 
-    public final static dMaterial INK = dMaterial.valueOf("m@ink_sack,0").forceIdentifyAs("INK");
-    public final static dMaterial RED_DYE = dMaterial.valueOf("m@ink_sack,1").forceIdentifyAs("RED_DYE");
-    public final static dMaterial GREEN_DYE = dMaterial.valueOf("m@ink_sack,2").forceIdentifyAs("GREEN_DYE");
-    public final static dMaterial COCOA_BEANS = dMaterial.valueOf("m@ink_sack,3").forceIdentifyAs("COCOA_BEANS");
-    public final static dMaterial LAPIS_LAZULI = dMaterial.valueOf("m@ink_sack,4").forceIdentifyAs("LAPIS_LAZULI");
-    public final static dMaterial PURPLE_DYE = dMaterial.valueOf("m@ink_sack,5").forceIdentifyAs("PURPLE_DYE");
-    public final static dMaterial CYAN_DYE = dMaterial.valueOf("m@ink_sack,6").forceIdentifyAs("CYAN_DYE");
-    public final static dMaterial LIGHT_GRAY_DYE = dMaterial.valueOf("m@ink_sack,7").forceIdentifyAs("LIGHT_GRAY_DYE");
-    public final static dMaterial GRAY_DYE = dMaterial.valueOf("m@ink_sack,8").forceIdentifyAs("GRAY_DYE");
-    public final static dMaterial PINK_DYE = dMaterial.valueOf("m@ink_sack,9").forceIdentifyAs("PINK_DYE");
-    public final static dMaterial LIME_DYE = dMaterial.valueOf("m@ink_sack,10").forceIdentifyAs("LIME_DYE");
-    public final static dMaterial YELLOW_DYE = dMaterial.valueOf("m@ink_sack,11").forceIdentifyAs("YELLOW_DYE");
-    public final static dMaterial LIGHT_BLUE_DYE = dMaterial.valueOf("m@ink_sack,12").forceIdentifyAs("LIGHT_BLUE_DYE");
-    public final static dMaterial MAGENTA_DYE = dMaterial.valueOf("m@ink_sack,13").forceIdentifyAs("MAGENTA_DYE");
-    public final static dMaterial ORANGE_DYE = dMaterial.valueOf("m@ink_sack,14").forceIdentifyAs("ORANGE_DYE");
-    public final static dMaterial BONE_MEAL = dMaterial.valueOf("m@ink_sack,15").forceIdentifyAs("BONE_MEAL");
+    public final static dMaterial INK = new dMaterial(Material.INK_SACK, 0).forceIdentifyAs("INK");
+    public final static dMaterial RED_DYE = new dMaterial(Material.INK_SACK, 1).forceIdentifyAs("RED_DYE");
+    public final static dMaterial GREEN_DYE = new dMaterial(Material.INK_SACK, 2).forceIdentifyAs("GREEN_DYE");
+    public final static dMaterial COCOA_BEANS = new dMaterial(Material.INK_SACK, 3).forceIdentifyAs("COCOA_BEANS");
+    public final static dMaterial LAPIS_LAZULI = new dMaterial(Material.INK_SACK, 4).forceIdentifyAs("LAPIS_LAZULI");
+    public final static dMaterial PURPLE_DYE = new dMaterial(Material.INK_SACK, 5).forceIdentifyAs("PURPLE_DYE");
+    public final static dMaterial CYAN_DYE = new dMaterial(Material.INK_SACK, 6).forceIdentifyAs("CYAN_DYE");
+    public final static dMaterial LIGHT_GRAY_DYE = new dMaterial(Material.INK_SACK, 7).forceIdentifyAs("LIGHT_GRAY_DYE");
+    public final static dMaterial GRAY_DYE = new dMaterial(Material.INK_SACK, 8).forceIdentifyAs("GRAY_DYE");
+    public final static dMaterial PINK_DYE = new dMaterial(Material.INK_SACK, 9).forceIdentifyAs("PINK_DYE");
+    public final static dMaterial LIME_DYE = new dMaterial(Material.INK_SACK, 10).forceIdentifyAs("LIME_DYE");
+    public final static dMaterial YELLOW_DYE = new dMaterial(Material.INK_SACK, 11).forceIdentifyAs("YELLOW_DYE");
+    public final static dMaterial LIGHT_BLUE_DYE = new dMaterial(Material.INK_SACK, 12).forceIdentifyAs("LIGHT_BLUE_DYE");
+    public final static dMaterial MAGENTA_DYE = new dMaterial(Material.INK_SACK, 13).forceIdentifyAs("MAGENTA_DYE");
+    public final static dMaterial ORANGE_DYE = new dMaterial(Material.INK_SACK, 14).forceIdentifyAs("ORANGE_DYE");
+    public final static dMaterial BONE_MEAL = new dMaterial(Material.INK_SACK, 15).forceIdentifyAs("BONE_MEAL");
 
-    public final static dMaterial TALL_GRASS = dMaterial.valueOf("m@long_grass,1").forceIdentifyAs("TALL_GRASS");
-    public final static dMaterial FERN = dMaterial.valueOf("m@long_grass,1").forceIdentifyAs("FERN");
-    public final static dMaterial SHRUB = dMaterial.valueOf("m@long_grass,0").forceIdentifyAs("SHRUB");
+    public final static dMaterial SHRUB = new dMaterial(Material.LONG_GRASS, 0).forceIdentifyAs("SHRUB");
+    public final static dMaterial TALL_GRASS = new dMaterial(Material.LONG_GRASS ,1).forceIdentifyAs("TALL_GRASS");
+    public final static dMaterial FERN = new dMaterial(Material.LONG_GRASS, 2).forceIdentifyAs("FERN");
 
-    public final static dMaterial EMPTY_POT = dMaterial.valueOf("m@flower_pot,0").forceIdentifyAs("EMPTY_POT");
-    public final static dMaterial POTTED_POPPY = dMaterial.valueOf("m@flower_pot,1").forceIdentifyAs("POTTED_POPPY");
-    public final static dMaterial POTTED_DAISY = dMaterial.valueOf("m@flower_pot,2").forceIdentifyAs("POTTED_DAISY");
-    public final static dMaterial POTTED_OAK_SAPLING = dMaterial.valueOf("m@flower_pot,3").forceIdentifyAs("POTTED_OAK_SAPLING");
-    public final static dMaterial POTTED_SPRUCE_SAPLING = dMaterial.valueOf("m@flower_pot,4").forceIdentifyAs("POTTED_SPRUCE_SAPLING");
-    public final static dMaterial POTTED_BIRCH_SAPLING = dMaterial.valueOf("m@flower_pot,5").forceIdentifyAs("POTTED_BIRCH_SAPLING");
-    public final static dMaterial POTTED_JUNGLE_SAPLING = dMaterial.valueOf("m@flower_pot,6").forceIdentifyAs("POTTED_JUNGLE_SAPLING");
-    public final static dMaterial POTTED_RED_MUSHROOM = dMaterial.valueOf("m@flower_pot,7").forceIdentifyAs("POTTED_RED_MUSHROOM");
-    public final static dMaterial POTTED_BROWN_MUSHROOM = dMaterial.valueOf("m@flower_pot,8").forceIdentifyAs("POTTED_BROWN_MUSHROOM");
-    public final static dMaterial POTTED_CACTUS = dMaterial.valueOf("m@flower_pot,9").forceIdentifyAs("POTTED_CACTUS");
-    public final static dMaterial POTTED_SHRUB = dMaterial.valueOf("m@flower_pot,10").forceIdentifyAs("POTTED_SHRUB");
-    public final static dMaterial POTTED_FERN = dMaterial.valueOf("m@flower_pot,11").forceIdentifyAs("POTTED_FERN");
+    public final static dMaterial EMPTY_POT = new dMaterial(Material.FLOWER_POT, 0).forceIdentifyAs("EMPTY_POT");
+    public final static dMaterial POTTED_POPPY = new dMaterial(Material.FLOWER_POT, 1).forceIdentifyAs("POTTED_POPPY");
+    public final static dMaterial POTTED_DAISY = new dMaterial(Material.FLOWER_POT, 2).forceIdentifyAs("POTTED_DAISY");
+    public final static dMaterial POTTED_OAK_SAPLING = new dMaterial(Material.FLOWER_POT, 3).forceIdentifyAs("POTTED_OAK_SAPLING");
+    public final static dMaterial POTTED_SPRUCE_SAPLING = new dMaterial(Material.FLOWER_POT, 4).forceIdentifyAs("POTTED_SPRUCE_SAPLING");
+    public final static dMaterial POTTED_BIRCH_SAPLING = new dMaterial(Material.FLOWER_POT, 5).forceIdentifyAs("POTTED_BIRCH_SAPLING");
+    public final static dMaterial POTTED_JUNGLE_SAPLING = new dMaterial(Material.FLOWER_POT, 6).forceIdentifyAs("POTTED_JUNGLE_SAPLING");
+    public final static dMaterial POTTED_RED_MUSHROOM = new dMaterial(Material.FLOWER_POT, 7).forceIdentifyAs("POTTED_RED_MUSHROOM");
+    public final static dMaterial POTTED_BROWN_MUSHROOM = new dMaterial(Material.FLOWER_POT, 8).forceIdentifyAs("POTTED_BROWN_MUSHROOM");
+    public final static dMaterial POTTED_CACTUS = new dMaterial(Material.FLOWER_POT, 9).forceIdentifyAs("POTTED_CACTUS");
+    public final static dMaterial POTTED_SHRUB = new dMaterial(Material.FLOWER_POT, 10).forceIdentifyAs("POTTED_SHRUB");
+    public final static dMaterial POTTED_FERN = new dMaterial(Material.FLOWER_POT, 11).forceIdentifyAs("POTTED_FERN");
 
 
 
-    // TODO: Add bricks, potions, logs, etc.
+    // TODO: Add potions, etc.
 
 
     // Built on startup's call to initialize_ based on the dMaterials enum and available
@@ -291,13 +291,13 @@ public class dMaterial implements dObject {
             }
 
             if (aH.matchesInteger(m.group(1))) {
-                return new dMaterial(aH.getIntegerFrom(m.group(1)), data);
+                return dMaterial.getMaterialFrom(Material.getMaterial(aH.getIntegerFrom(m.group(1))), data);
 
             } else {
                 // Iterate through Materials
                 for (Material material : Material.values()) {
                     if (material.name().equalsIgnoreCase(m.group(1))) {
-                        return new dMaterial(material, data);
+                        return dMaterial.getMaterialFrom(material, data);
                     }
                 }
 
@@ -370,10 +370,6 @@ public class dMaterial implements dObject {
 
     private dMaterial(Material material) {
         this(material, 0);
-    }
-
-    private dMaterial(int id, int data) {
-        this(Material.getMaterial(id), data);
     }
 
     /////////////////////

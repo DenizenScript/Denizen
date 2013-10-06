@@ -161,7 +161,9 @@ public class dItem implements dObject, Notable, Properties {
                     stack = new dItem(Integer.valueOf(material));
                 }
                 else {
-                    stack = new dItem(dMaterial.valueOf(material).getMaterial());
+                    dMaterial mat = dMaterial.valueOf(material);
+                    stack = new dItem(mat.getMaterial());
+                    if (mat.hasData()) stack.setDurability((short) mat.getData());
                 }
 
                 if (m.group(2) != null) {
