@@ -329,7 +329,8 @@ public class FlagManager {
                 }
 
                 // Else, remove specified index
-            } else if (index < size()) value.values.remove(index - 1);
+            } else if (index <= size()) value.values.remove(index - 1);
+
             save();
             rebuild();
         }
