@@ -32,7 +32,7 @@ public class AgeCommand extends AbstractCommand {
     // @Code
     // # +--------------------
     // # | Age Command and Item Script/Item Event Example
-    //
+    // # |
     // # | This script shows a very small example that utilizes the Age Command with the use
     // # | of some items scripts and item events. Use /ex give i@aged_wand or /ex give i@baby_wand
     // # | and right click an entity.
