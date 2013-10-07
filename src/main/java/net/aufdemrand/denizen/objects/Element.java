@@ -565,6 +565,15 @@ public class Element implements dObject {
             return new Element(ChatColor.stripColor(element)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <e@element.trim>
+        // @returns Element
+        // @description 
+        // Returns he value of an element minus any leading or trailing whitespace.
+        // -->
+        if (attribute.startsWith("trim"))
+            return new Element(element.trim()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <element.substring[<#>(,<#>)]>
         // @returns Element
         // @description
