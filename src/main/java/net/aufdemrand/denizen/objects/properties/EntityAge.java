@@ -114,11 +114,20 @@ public class EntityAge implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <e@ageable_entity.age>
+        // @attribute <e@entity.age>
+        // @returns Element(Number)
+        // @description
+        // If the entity is ageable, returns the entity's age number.
+        // -->
+        if (attribute.startsWith("is_baby"))
+            return new Element(getAge())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.is_baby>
         // @returns Element(Boolean)
         // @description
-        // Returns 'true' if the entity is 'infected', otherwise false.
-        // Currently only 'Zombie' or 'Villager' entities can be infected.
+        // If the entity is ageable, returns whether the entity is a baby.
         // -->
         if (attribute.startsWith("is_baby"))
             return new Element(isBaby())

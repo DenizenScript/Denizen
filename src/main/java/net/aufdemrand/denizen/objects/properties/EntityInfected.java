@@ -104,11 +104,11 @@ public class EntityInfected implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <e@infectable_entity.is_infected>
+        // @attribute <e@entity.is_infected>
         // @returns Element(Boolean)
         // @description
-        // Returns 'true' if the entity is 'infected', otherwise false.
-        // Currently only 'Zombie' or 'Villager' entities can be infected.
+        // If the entity is infectable, returns whether the entity is infected.
+        // Currently only Zombie or Villager entities can be infected.
         // -->
         if (attribute.startsWith("is_infected"))
             return new Element(isInfected())

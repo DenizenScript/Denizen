@@ -68,11 +68,11 @@ public class EntityProfessional implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <e@professional_entity.profession>
+        // @attribute <e@entity.profession>
         // @returns Element
         // @description
-        // Returns the profession of a professional entity.
-        // Currently, only 'Villager'-type entities can be professionals.
+        // If the entity can have professions, returns the entity's profession.
+        // Currently, only Villager-type entities can have professions.
         // -->
         if (attribute.startsWith("profession"))
             return new Element(getProfession().name())

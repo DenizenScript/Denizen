@@ -70,7 +70,7 @@ public class CommandRegistry implements dRegistry {
         // specified.
 
         // @Tags
-        // Todo
+        // <e@entity.age>
 
         // @Usage
         // Use to make an ageable entity a permanant baby.
@@ -148,6 +148,9 @@ public class CommandRegistry implements dRegistry {
         // and NPCs can also use: WOLF_SMOKE, WOLF_HEARTS, and WOLF_SHAKE. Sheep entities and NPCs also have
         // available the SHEEP_EAT animation.
 
+        // @Tags
+        // None
+
         // @Usage
         // Use to make a player appear to get hurt.
         // - animate <player> animation:hurt
@@ -194,6 +197,9 @@ public class CommandRegistry implements dRegistry {
         // will send the message to players only if the specified flag does not equal true. Announce can also
         // utilize a format script with the 'format' argument. See the format script-container for more
         // information.
+
+        // @Tags
+        // None
 
         // @Usage
         // Use to send an important message to your players.
@@ -248,9 +254,9 @@ public class CommandRegistry implements dRegistry {
         // To cancel an attack, use the 'cancel' argument instead of specifying a target.
 
         // @Tags
-        // <n@npc.navigator.is_fighting> will return true if the NPC is currently attacking
-        // <n@npc.navigator.attack_strategy> will return the name of the current strategy
-        // <n@npc.navigator.target_entity> will return the entity object of the current target
+        // <n@npc.navigator.is_fighting>
+        // <n@npc.navigator.attack_strategy>
+        // <n@npc.navigator.target_entity>
 
         // @Usage
         // Use to make a NPC attack a player in an interact script.
@@ -306,7 +312,7 @@ public class CommandRegistry implements dRegistry {
         // in a 5 second burn.
 
         // @Tags
-        // <e@entity.fire_time> will show the duration of the burn on the entity
+        // <e@entity.fire_time>
 
         // @Usage
         // Use to set an entity on fire.
@@ -336,7 +342,7 @@ public class CommandRegistry implements dRegistry {
         // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
 
         // @Tags
-        // <e@entity.has_effect[<effect>]> will return true if the entity has an effect.
+        // <e@entity.has_effect[<effect>]>
 
         // @Usage
         // Use to apply an effect to an entity
@@ -380,6 +386,9 @@ public class CommandRegistry implements dRegistry {
         // If sending messages to the Player without any surrounding entities hearing the message is desireable,
         // it is often times recommended to instead use the 'narrate' command. Alternatively, on a server-wide scale,
         // the configuration node for the 'max range' can be set to 0, however this is discouraged.
+
+        // @Tags
+        // None
 
         // @Usage
         // Use to emulate a NPC talking out loud to a Player within an interact script-container.
@@ -453,9 +462,9 @@ public class CommandRegistry implements dRegistry {
         // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
 
         // @Tags
-        // <s@script_name.cooled_down[player]> will return whether the script is cooled down
-        // <s@script_name.cooldown> will return the duration of the cooldown in progress.
-        // <s@requirements.check> will also check script cooldown, as well as any requirements.
+        // <s@script_name.cooled_down[player]>
+        // <s@script_name.cooldown>
+        // <s@requirements.check>
 
         // @Usage
         // Use to keep the current interact script from meeting requirements.
@@ -533,6 +542,9 @@ public class CommandRegistry implements dRegistry {
         // Definitions are also resolved before replaceable tags, meaning you can use them within tags, even as an
         // attribute. ie. <%player%.name>
 
+        // @Tags
+        // %id% to get the value assigned to an ID
+
         // @Usage
         // Use to make complex tags look less complex, and scripts more readable.
         // - narrate 'You invoke your power of notice...'
@@ -596,6 +608,9 @@ public class CommandRegistry implements dRegistry {
         // NPCs that are interacted with while engaged will fire an 'on unavailable' assignment
         // script-container action.
 
+        // @Tags
+        // <n@npc.engaged>
+
         // @Usage
         // Use to reenable a NPC's triggers, disabled via 'engage'.
         // - engage
@@ -643,6 +658,9 @@ public class CommandRegistry implements dRegistry {
         // For all three usages, you can optionally specify an integer with 'qty:'
         // prefix to drop multiple items/entities/xp.
 
+        // @Tags
+        // None
+
         // @Usage
         // Use to drop some loot around the player.
         // - drop i@gold_nugget <cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2.2]>.get_spawnable_blocks.random>
@@ -685,7 +703,7 @@ public class CommandRegistry implements dRegistry {
         // @See Disengage Command
         //
         // @Tags
-        // <n@npc.engaged> will return true if the NPC is currently engaged, false otherwise.
+        // <n@npc.engaged>
         //
         // @Usage
         // Use to make a NPC appear 'busy'.
@@ -961,6 +979,9 @@ public class CommandRegistry implements dRegistry {
         // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
         // that list entry. To call the value of the entry while in the loop, you can use %value%.
 
+        // @Tags
+        // %value% to get the current item in the loop
+
         // @Usage
         // Use to run commands for 'each entry' in a list of objects/elements.
         // - foreach li@e@123|n@424|p@BobBarker {
@@ -1190,19 +1211,20 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Listens for the player achieving various actions and runs a script when they are completed.
         // @Author aufdemrand and Jeebiss
+
         // @Description
         // This will create a listener object that listens for the player to do specific actions,
         // and when the player reaches the proper quantity, it will run a specified script. Used
         // as the meat of quest style scripts, listeners are the foundation for getting information
-        // about what the player is doing. This command has 4 basic arguments that apply to ever listener, 
+        // about what the player is doing. This command has 4 basic arguments that apply to ever listener,
         // and then accepts any number of additional arguments for the specific listener type. Once
-        // created, a listener will remain active until it is finished by the player, finished via 
+        // created, a listener will remain active until it is finished by the player, finished via
         // a script, or canceled via a script.
         //
         // The currently availible listener types are: Block, Item, Kill, and Travel
         //
         // Summary:
-        // Block - Used to detect when a player breaks, places, or collects blocks in the specified list. 
+        // Block - Used to detect when a player breaks, places, or collects blocks in the specified list.
         // Item - Used to detect when a player crafts, smelts, or fishes an item on the speficifed list.
         // Kill - Used to detect when a player kills a(n) npc, player, entity, or player in a specific
         //        perrmissions group.
@@ -1210,8 +1232,10 @@ public class CommandRegistry implements dRegistry {
         //          or a specific distance.
         //
         // Deatiled usage information can be found in the specific listener files.
+
         // @Tags
         // Todo
+
         // @Usage
         // Exmaple of a kill type listener. Listening for when the player kills 10 zombies.
         // - listen kill type:entity target:zombie qty:10 script:ZombiesKilled
@@ -1223,7 +1247,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Example of a simple block listener. Listener for when a player mines 1 iron ore.
         // - listen block type:break block:iron_or qty:1 script:IronMined
-        
+
         // @Usage
         // Example of a simple travel listener. Listener for when a player walks for 150 blocks.
         // - listen travel type:distance distance:150 script:DistanceTraveled
@@ -1304,6 +1328,9 @@ public class CommandRegistry implements dRegistry {
         // Also, an example Midi song file has been included: "Denizen" by Black Coyote
         // He made it just for us! Check out more of his amazing work at:
         // http://www.youtube.com/user/BlaCoyProductions
+
+        // @Tags
+        // None
 
         // @Usage
         // Use to play a midi song file on the current player
@@ -1576,6 +1603,9 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
 
+        // @Tags
+        // None
+
         // @Usage
         // Use to choose randomly from the following commands
         // - random 3
@@ -1606,7 +1636,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // <n@npc.is_spawned>
+        // <e@entity.is_spawned>
         // @Usage
         // Todo
         // -->
@@ -1640,12 +1670,19 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Runs a series of braced commands several times.
         // @Author morphan1, mcmonkey
+
         // @Description
-        // Todo
+        // Loops through a series of braced commands a specified number of times.
+        // To get the number of loops so far, you can use %value%.
+
         // @Tags
-        // Todo
+        // %value% to get the number of loops so far
+
         // @Usage
-        // Todo
+        // Use loop through a command several times
+        // - repeat 5 {
+        //     - announce "Announce Number %value%"
+        //   }
         // -->
         registerCoreMember(RepeatCommand.class,
                 "REPEAT", "repeat [<amount>] [<commands>]", 1);
@@ -1679,6 +1716,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
+        // <e@entity.location.yaw>
+        // <e@entity.location.pitch>
         // @Usage
         // Todo
         // -->

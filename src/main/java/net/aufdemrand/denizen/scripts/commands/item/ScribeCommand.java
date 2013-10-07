@@ -62,8 +62,8 @@ public class ScribeCommand extends AbstractCommand implements Listener {
     //   author: aufdemrand
     //   text:
     //   - page 1 is pretty short.
-    //   - page 2 is kind of short, but longer than page 1.
-    //   - page 3 is super short.
+    //   - The next page is kind of short, but longer than page 1.
+    //   - The final page is <N>split<N>Across<N>Several lines.
     //
     //
     // # We'll use this in the if statement to test if the book has the title
