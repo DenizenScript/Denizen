@@ -73,16 +73,13 @@ public class RequirementRegistry implements dRegistry {
         // Use to check if the item in the player's hand has an enchantment.
         // - enchanted iteminhand
         //
-        // @Example
-        // TODO
-        //
         // -->
         registerCoreMember(EnchantedRequirement.class,
                 "ENCHANTED", "enchanted [iteminhand]", 1);
 
         // <--[requirement]
         // @Name Flagged
-        // @Usage (-)flagged ({player}/npc/global) [<name>([<#>])](:<value>)
+        // @Usage flagged ({player}/npc/global) [<name>([<#>])](:<value>)
         // @Required 1
         // @Stable Stable
         // @Short Checks if the specified flag exists.
@@ -103,12 +100,9 @@ public class RequirementRegistry implements dRegistry {
         // Check if a flag does not exist.
         // - -flagged FlagName
         //
-        // @Example
-        // TODO
-        //
         // -->
         registerCoreMember(FlaggedRequirement.class,
-                "FLAGGED", "(-)flagged ({player}/npc/global) [<name>([<#>])](:<value>)", 1);
+                "FLAGGED", "flagged ({player}/npc/global) [<name>([<#>])](:<value>)", 1);
 
         // <--[requirement]
         // @Name Holding
@@ -126,9 +120,6 @@ public class RequirementRegistry implements dRegistry {
         // @Usage
         // Check if the player is holding at least 3 pieces of wood.
         // - holding wood qty:3
-        //
-        // @Example
-        // TODO
         //
         // -->
         registerCoreMember(HoldingRequirement.class,
@@ -152,9 +143,6 @@ public class RequirementRegistry implements dRegistry {
         // Check if the player is in a global group.
         // - ingroup global Admin
         //
-        // @Example
-        // TODO
-        //
         // -->
         registerCoreMember(InGroupRequirement.class,
                 "INGROUP", "ingroup (global) [<group>]", 1);
@@ -172,9 +160,6 @@ public class RequirementRegistry implements dRegistry {
         // @Usage
         // Check if the player has an item.
         // - item wood qty:3
-        //
-        // @Example
-        // TODO
         //
         // -->
         registerCoreMember(ItemRequirement.class,
@@ -194,8 +179,6 @@ public class RequirementRegistry implements dRegistry {
         // Check if the block is a liquid.
         // - isliquid location:103,70,413,world
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(LiquidRequirement.class,
                 "ISLIQUID", "isliquid [location:<location>]", 1);
@@ -213,8 +196,6 @@ public class RequirementRegistry implements dRegistry {
         // @Usage
         // Check if the player has an amount of money.
         // - money qty:100
-        //
-        // @Example TODO
         //
         // -->
         registerCoreMember(MoneyRequirement.class,
@@ -234,8 +215,6 @@ public class RequirementRegistry implements dRegistry {
         // Check if the player is opped.
         // - op
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(OpRequirement.class,
                 "OP", "op", 0);
@@ -253,8 +232,6 @@ public class RequirementRegistry implements dRegistry {
         // @Usage
         // Check if the player is the owner of the NPC.
         // - owner
-        //
-        // @Example TODO
         //
         // -->
         registerCoreMember(OwnerRequirement.class,
@@ -274,8 +251,6 @@ public class RequirementRegistry implements dRegistry {
         // Check if the player has a permission.
         // - permission denizen.basic
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(PermissionRequirement.class,
                 "PERMISSION", "permission (global) [<permission>]", 1);
@@ -294,8 +269,6 @@ public class RequirementRegistry implements dRegistry {
         // Check if the block is powered.
         // - ispowered location:919,78,298
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(PoweredRequirement.class,
                 "ISPOWERED", "ispowered [location:<location>]", 1);
@@ -313,8 +286,6 @@ public class RequirementRegistry implements dRegistry {
         // @Usage Check if the player has above an amount of oxygen.
         // - oxygen range:above qty:3
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(OxygenRequirement.class,
                 "OXYGEN", "oxygen (range:below/equals/above) [qty:<#>]", 1);
@@ -331,8 +302,6 @@ public class RequirementRegistry implements dRegistry {
         // @Usage
         // Check if the procedure script determines true
         // - procedure procScriptName
-        //
-        // @Example TODO
         //
         // -->
         registerCoreMember(ProcedureRequirement.class,
@@ -356,8 +325,6 @@ public class RequirementRegistry implements dRegistry {
         // Check if the script was failed
         // - script failed script:ScriptName
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(ScriptRequirement.class,
                 "SCRIPT", "script [finished/failed] [script:<name>]", 2);
@@ -375,8 +342,6 @@ public class RequirementRegistry implements dRegistry {
         // @Usage
         // Check if the player is sneaking
         // - sneaking
-        //
-        // @Example TODO
         //
         // -->
         registerCoreMember(SneakingRequirement.class,
@@ -396,8 +361,6 @@ public class RequirementRegistry implements dRegistry {
         // Check if the world is storming
         // - storming
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(StormRequirement.class,
                 "STORMING", "storming", 0);
@@ -415,8 +378,6 @@ public class RequirementRegistry implements dRegistry {
         // @Usage
         // Check if the world is sunny
         // - sunny
-        //
-        // @Example TODO
         //
         // -->
         registerCoreMember(SunnyRequirement.class,
@@ -436,8 +397,6 @@ public class RequirementRegistry implements dRegistry {
         // Check if the world is rainy
         // - rainy
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(RainyRequirement.class,
                 "RAINY", "rainy", 0);
@@ -456,8 +415,6 @@ public class RequirementRegistry implements dRegistry {
         // Check the time of day
         // - time dusk
         //
-        // @Example TODO
-        //
         // -->
         registerCoreMember(TimeRequirement.class,
                 "TIME", "time [dawn/day/dusk/night]", 1);
@@ -475,8 +432,6 @@ public class RequirementRegistry implements dRegistry {
         // @Usage
         // Check if the player is in a region
         // - inregion name:MyRegion
-        //
-        // @Example TODO
         //
         // -->
         registerCoreMember(WorldGuardRegionRequirement.class,
