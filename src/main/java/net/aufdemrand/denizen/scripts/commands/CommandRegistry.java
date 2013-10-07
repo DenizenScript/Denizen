@@ -1189,13 +1189,44 @@ public class CommandRegistry implements dRegistry {
         // @Required 2
         // @Stable unstable
         // @Short Listens for the player achieving various actions and runs a script when they are completed.
-        // @Author aufdemrand
+        // @Author aufdemrand and Jeebiss
         // @Description
-        // Todo
+        // This will create a listener object that listens for the player to do specific actions,
+        // and when the player reaches the proper quantity, it will run a specified script. Used
+        // as the meat of quest style scripts, listeners are the foundation for getting information
+        // about what the player is doing. This command has 4 basic arguments that apply to ever listener, 
+        // and then accepts any number of additional arguments for the specific listener type. Once
+        // created, a listener will remain active until it is finished by the player, finished via 
+        // a script, or canceled via a script.
+        //
+        // The currently availible listener types are: Block, Item, Kill, and Travel
+        //
+        // Summary:
+        // Block - Used to detect when a player breaks, places, or collects blocks in the specified list. 
+        // Item - Used to detect when a player crafts, smelts, or fishes an item on the speficifed list.
+        // Kill - Used to detect when a player kills a(n) npc, player, entity, or player in a specific
+        //        perrmissions group.
+        // Travel - Used to detect when a player travels to an npc, to a specific location, to a dCubiod,
+        //          or a specific distance.
+        //
+        // Deatiled usage information can be found in the specific listener files.
         // @Tags
         // Todo
         // @Usage
-        // Todo
+        // Exmaple of a kill type listener. Listening for when the player kills 10 zombies.
+        // - listen kill type:entity target:zombie qty:10 script:ZombiesKilled
+
+        // @Usage
+        // Example of a simple item listener. Listener for when a player crafts 1 wooden sword.
+        // - listen item type:craft item:wood_sword qty:1 script:SwordCrafted
+
+        // @Usage
+        // Example of a simple block listener. Listener for when a player mines 1 iron ore.
+        // - listen block type:break block:iron_or qty:1 script:IronMined
+        
+        // @Usage
+        // Example of a simple travel listener. Listener for when a player walks for 150 blocks.
+        // - listen travel type:distance distance:150 script:DistanceTraveled
         // -->
         registerCoreMember(ListenCommand.class,
                 "LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)", 2);
