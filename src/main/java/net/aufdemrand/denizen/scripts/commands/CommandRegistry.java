@@ -50,6 +50,37 @@ public class CommandRegistry implements dRegistry {
         else return null;
     }
 
+    //<--[language]
+    // @Name Command Syntax
+    // @Description
+    // Almost every Denizen command and requirement has arguments after the command itself.
+    // These arguments are just snippets of text showing what exactly the command should do,
+    // like what the chat command should say, or where the look command should point.
+    // But how do you know what to put in the arguments?
+    //
+    // You merely need to look at the command's usage/syntax info.
+    // Let's take for example:
+    // - animatechest [<location>] ({open}/close) (sound:{true}/false)
+    // Obviously, the command is 'animatechest'... but what does the rest of it mean?
+    //
+    // Anything in [brackets] is required... you MUST put it there.
+    // Anything in (parenthesis) is optional... you only need to put it there if you want to
+    // Anything in {braces} is default... the command will just assume this if no argument is actually typed.
+    // Anything in <> is non-literal... you must change what is inside of it
+    // Anything outside of <> is literal... you must put it exactly as-is
+    // <#> represents a number without a decimal, and <#.#> represents a number with a decimal
+    //
+    // A few examples:
+    // [<location>] is required and non-literal... you might fill it with '1,2,3,world' which is a valid location object.
+    // (sound:{true}/false) is optional and has a default value of true... you can put sound:false to prevent sound, or leave it blank to allow sound.
+    // (repeats:<#>) is optional, has no clear default, and is a number. You can put repeats:3 to repeat three times, or leave it blank to not repeat.
+    // Note: Optional arguments without a default usually have a secret default... EG, the (repeats:<#>) above has a secret default of '0'.
+    //
+    // Also, you should never directly type in [], (), {}, or <> even though they are in the syntax info.
+    // The only exception is in a replaceable tag (EG: <npc.has_trait[<traitname>]> will take <npc.has_trait[mytrait]> as a valid actual usage)
+    //
+    // -->
+
     @Override
     public void registerCoreMembers() {
 
