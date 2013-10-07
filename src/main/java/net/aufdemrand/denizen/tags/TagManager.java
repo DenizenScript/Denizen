@@ -133,10 +133,12 @@ public class TagManager implements Listener {
             // Find new TAG
             positions = locateTag(arg);
         } while (positions != null || failsafe < 25);
+
         // Return argument with replacements
         arg = arg.replace((char)0x01, '<').replace((char)0x02, '>');
         return arg;
     }
+
     // Match all < > brackets that don't contain < > inside them
     private static Pattern tagRegex = Pattern.compile("<([^<>]+)>");
 

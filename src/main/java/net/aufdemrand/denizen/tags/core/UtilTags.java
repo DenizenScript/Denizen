@@ -63,7 +63,7 @@ public class UtilTags implements Listener {
         // @attribute <q.id>
         // @returns Element
         // @description
-        // Returns the current queue id.
+        // Returns the current queue ID.
         // -->
         if (attribute.startsWith("id"))
             event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().id)
