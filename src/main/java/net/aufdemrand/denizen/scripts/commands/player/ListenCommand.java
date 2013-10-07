@@ -21,36 +21,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ListenCommand extends AbstractCommand {
 
-    /* LISTEN can be used several ways:
-     *
-     * Issuing a new quest listener:
-     * LISTEN Listener_Type ID:ListenerID [Listener Arguments]
-     *   See documentation for Listener_Types and specific arguments for each type.
-     *
-     * Canceling a quest listener in progress:
-     * LISTEN CANCEL ID:ListenerID
-     *   Cancels a listener.
-     *
-     * Force-finishing a listener in progress:
-     * LISTEN FINISH ID:ListenerID
-     *   Force finishes a listener.. the outcome is exactly the same as the Player
-     *   completing the listener.
-     *
-     * Remember: A PLAYER:player_name argument can always be used to specify a
-     *   specific player if necessary.
-     */
-
-    /*
-     * Arguments: [] - Required, () - Optional
-     *
-     * [Listener_Type] The name of the type of listener. Only required when
-     *   issuing a new listener. See documentation for available types.
-     *
-     * [ID] The unique name/id of the listener. This should be unique to the
-     *   player since it is used with replaceable tag data and cancelling/force
-     *   finishing.
-     *
-     */
 
     private enum Action { NEW, CANCEL, FINISH }
 
@@ -58,9 +28,6 @@ public class ListenCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         List<aH.Argument> arguments = new ArrayList<aH.Argument>();
-
-        // - listen ({new}/cancel/finish) [<type>] [<id:name>]
-        //   [<args>...]
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
