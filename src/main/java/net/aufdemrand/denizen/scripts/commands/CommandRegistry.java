@@ -50,7 +50,7 @@ public class CommandRegistry implements dRegistry {
         else return null;
     }
 
-    //<--[language]
+    // <--[language]
     // @Name Command Syntax
     // @Description
     // Almost every Denizen command and requirement has arguments after the command itself.
