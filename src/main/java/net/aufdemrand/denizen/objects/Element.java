@@ -567,8 +567,8 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <e@element.trim>
         // @returns Element
-        // @description 
-        // Returns he value of an element minus any leading or trailing whitespace.
+        // @description
+        // Returns the value of an element minus any leading or trailing whitespace.
         // -->
         if (attribute.startsWith("trim"))
             return new Element(element.trim()).getAttribute(attribute.fulfill(1));
