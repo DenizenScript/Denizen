@@ -2698,8 +2698,7 @@ public class WorldScriptHelper implements Listener {
     public void inventoryPickupItemEvent(InventoryPickupItemEvent event) {
 
         // Too laggy! TODO: Evaluate further.
-        if (event.getInventory().getType() == InventoryType.HOPPER
-                || event.getInventory().getType() == InventoryType.DROPPER)
+        if (event.getInventory().getType() == InventoryType.HOPPER)
             return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
