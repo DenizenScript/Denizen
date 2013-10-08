@@ -93,7 +93,14 @@ public class Comparable {
 
         outcome = false;
 
-        if (comparable instanceof String) {
+        // Check '== null' right now
+        if (comparedto.toString().equals("null")) {
+            if (comparable.toString().equals("null"))
+                outcome = true;
+        }
+
+        // or... compare 'compared_to' as the type of 'comparable'
+        else if (comparable instanceof String) {
             compare_as_strings();
         }
 
