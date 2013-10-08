@@ -12,7 +12,9 @@ public class PacketHelper {
 
     public PacketHelper(Denizen denizen) {
         npHandler = new NameplateHandler(denizen);
-        ilHandler = new InvisibleLoreHandler(denizen);
+
+        // TODO: Find a way to get this to work in creative
+        // ilHandler = new InvisibleLoreHandler(denizen);
 
         Depends.protocolManager.addPacketListener(getNameplateHandler());
     }
