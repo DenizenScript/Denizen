@@ -260,6 +260,7 @@ public class Denizen extends JavaPlugin {
         dMaterial._initialize();
 
         // Fire the 'on Server Start' world event
+        ScriptHelper.reloadScripts();
         ws_helper.serverStartEvent();
     }
 
