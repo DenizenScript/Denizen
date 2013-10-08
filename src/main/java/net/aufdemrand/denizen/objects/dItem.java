@@ -18,6 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -163,7 +164,7 @@ public class dItem implements dObject, Notable, Properties {
                 else {
                     dMaterial mat = dMaterial.valueOf(material);
                     stack = new dItem(mat.getMaterial());
-                    if (mat.hasData()) stack.setDurability((short) mat.getData());
+                    if (mat.hasData()) stack.setDurability(mat.getData());
                 }
 
                 if (m.group(2) != null) {
@@ -683,6 +684,23 @@ public class dItem implements dObject, Notable, Properties {
             }
         }
 
+        // <--[tag]
+        // @attribute <i@item.skin>
+        // @returns Element
+        // @description
+        // Returns the name of the player whose skin a skull item uses.
+        // Note: Item must be a 'skull_item' with a skin.
+        // -->
+        if (attribute.startsWith("skin")) {
+            if (getItemStack().getType() == Material.SKULL_ITEM) {
+                SkullMeta skullInfo = (SkullMeta) getItemStack().getItemMeta();
+
+                if (skullInfo.hasOwner()) {
+                    return new Element(skullInfo.getOwner())
+                            .getAttribute(attribute.fulfill(1));
+                }
+            }
+        }
 
         if (attribute.startsWith("book")) {
             if (getItemStack().getType() == Material.WRITTEN_BOOK) {
