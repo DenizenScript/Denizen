@@ -103,7 +103,7 @@ public class WorldScriptHelper implements Listener {
         // dB.echoApproval("Built events map: " + events);
     }
 
-    public static List<String> trimEvents(String[] event) {
+    public static List<String> trimEvents(List<String> event) {
         List<String> parsed = new ArrayList<String>();
         for (String e : event)
             if (events.containsKey(e.toUpperCase()))
@@ -2459,10 +2459,6 @@ public class WorldScriptHelper implements Listener {
         String click = event.getClick().name();
         String slotType = event.getSlotType().name();
 
-        context.put("inventory", new dInventory(event.getInventory()));
-        context.put("click", new Element(click));
-        context.put("slot_type", new Element(slotType));
-
         List<String> events = new ArrayList<String>();
         events.add("player clicks in inventory");
         events.add("player clicks in " + type);
@@ -2491,7 +2487,14 @@ public class WorldScriptHelper implements Listener {
                     itemMaterial.identify() + " in " + type);
         }
 
+        events = trimEvents(events);
+
+        if (events.size() == 0 ) return;
+
         context.put("item", item);
+        context.put("inventory", new dInventory(event.getInventory()));
+        context.put("click", new Element(click));
+        context.put("slot_type", new Element(slotType));
 
         String determination = doEvents(events, null, player, context);
 
@@ -2552,7 +2555,7 @@ public class WorldScriptHelper implements Listener {
         Player player = (Player) event.getWhoClicked();
         String type = event.getInventory().getType().name();
 
-        context.put("inventory", new dInventory(event.getInventory()));
+
 
         List<String> events = new ArrayList<String>();
         events.add("player drags");
@@ -2578,7 +2581,12 @@ public class WorldScriptHelper implements Listener {
                     itemMaterial.identify() + " in " + type);
         }
 
+        events = trimEvents(events);
+
+        if (events.size() == 0 ) return;
+
         context.put("item", item);
+        context.put("inventory", new dInventory(event.getInventory()));
 
         String determination = doEvents(events, null, player, context);
 
@@ -2612,17 +2620,16 @@ public class WorldScriptHelper implements Listener {
         String originType = event.getSource().getType().name();
         String destinationType = event.getDestination().getType().name();
 
-        String[] e = {
-                "item moves from inventory",
+        List<String> events = Arrays.asList("item moves from inventory",
                 "item moves from " + originType,
                 "item moves from " + originType
                         + " to " + destinationType,
                 item.identify() + " moves from inventory",
                 item.identify() + " moves from " + originType,
                 item.identify() + " moves from " + originType
-                        + " to " + destinationType };
+                        + " to " + destinationType);
 
-        List<String> events = trimEvents(e);
+        events = trimEvents(events);
 
         if (events.size() == 0) return;
 
@@ -2690,20 +2697,30 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void inventoryPickupItemEvent(InventoryPickupItemEvent event) {
 
+        // Too laggy! TODO: Evaluate further.
+        if (event.getInventory().getType() == InventoryType.HOPPER
+                || event.getInventory().getType() == InventoryType.DROPPER)
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
 
+        String type = event.getInventory().getType().name();
         dItem item = new dItem(event.getItem());
-        dInventory inventory = new dInventory(event.getInventory());
-        String type = inventory.getInventoryType().name();
 
+        List<String> events = Arrays.asList("inventory picks up item",
+                "inventory picks up " + item.identify(),
+                type + " picks up item",
+                type + " picks up " + item.identify());
+
+        events = trimEvents(events);
+
+        if (events.size() == 0) return;
+
+        dInventory inventory = new dInventory(event.getInventory());
         context.put("inventory", inventory);
         context.put("item", item);
 
-        String determination = doEvents(Arrays.asList
-                ("inventory picks up item",
-                        "inventory picks up " + item.identify(),
-                        type + " picks up item",
-                        type + " picks up " + item.identify()),
+        String determination = doEvents(events,
                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
