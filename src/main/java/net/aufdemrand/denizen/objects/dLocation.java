@@ -1029,7 +1029,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // @attribute <l@location.highest>
         // @returns dLocation
         // @description
-        // Returns the location of the highest block at the location that isn't solid.
+        // Returns the location of the highest solid block at the location.
         // -->
         if (attribute.startsWith("highest")) {
             return new dLocation(getWorld().getHighestBlockAt(this).getLocation().add(0, -1, 0))
