@@ -50,7 +50,7 @@ public class DropCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dItem.class)) {
                 // Item arg
                 scriptEntry.addObject("action", new Element(Action.DROP_ITEM.toString()).setPrefix("action"));
-                scriptEntry.addObject("item", arg.asType(dItem.class).setPrefix("item"));  }
+                scriptEntry.addObject("item", dItem.valueOf(arg.getValue(), scriptEntry.getPlayer(), scriptEntry.getNPC()).setPrefix("item"));  }
 
 
             else if (!scriptEntry.hasObject("action")

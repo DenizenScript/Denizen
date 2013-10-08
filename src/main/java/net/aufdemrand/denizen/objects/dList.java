@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -162,7 +163,10 @@ public class dList extends ArrayList<String> implements dObject {
     }
 
     // Return a list that includes only elements belonging to a certain class
-    public List<dObject> filter(Class<? extends dObject> dClass) {
+    public List<dObject> filter(Class<? extends  dObject> dClass) {
+        return filter(dClass, null);
+    }
+    public List<dObject> filter(Class<? extends dObject> dClass, ScriptEntry entry) {
 
         List<dObject> results = new ArrayList<dObject>();
 
@@ -171,7 +175,9 @@ public class dList extends ArrayList<String> implements dObject {
             try {
                 if ((Boolean) dClass.getMethod("matches", String.class).invoke(null, element)) {
 
-                    dObject object = (dObject) dClass.getMethod("valueOf", String.class).invoke(null, element);
+                    dObject object = (dObject) (dClass == dItem.class && entry != null ?
+                            dItem.valueOf(element, entry.getPlayer(), entry.getNPC()):
+                            dClass.getMethod("valueOf", String.class).invoke(null, element));
 
                     // Only add the object if it is not null, thus filtering useless
                     // list items

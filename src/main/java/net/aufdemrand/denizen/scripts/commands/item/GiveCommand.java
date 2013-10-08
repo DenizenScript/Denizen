@@ -64,7 +64,7 @@ public class GiveCommand  extends AbstractCommand {
             else if (!scriptEntry.hasObject("items")
                         && !scriptEntry.hasObject("type")
                         && arg.matchesArgumentList(dItem.class))
-                scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class));
+                scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
 
             else if (!scriptEntry.hasObject("inventory")
                         && arg.matchesPrefix("t, to")
