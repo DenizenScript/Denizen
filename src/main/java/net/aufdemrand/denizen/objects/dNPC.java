@@ -559,7 +559,7 @@ public class dNPC implements dObject {
         // returns whether the NPC is in combat.
         // -->
         if (attribute.startsWith("navigator.is_fighting"))
-            return new Element(getNavigator().getEntityTarget().isAggressive())
+            return new Element(getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().isAggressive())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -569,7 +569,7 @@ public class dNPC implements dObject {
         // returns the entity type of the target.
         // -->
         if (attribute.startsWith("navigator.target_type"))
-            return new Element(getNavigator().getTargetType().toString())
+            return new Element(getNavigator().getTargetType() == null ? "null": getNavigator().getTargetType().toString())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -579,7 +579,7 @@ public class dNPC implements dObject {
         // returns the entity being targeted.
         // -->
         if (attribute.startsWith("navigator.target_entity"))
-            return (getNavigator().getEntityTarget().getTarget() != null
+            return (getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().getTarget() != null
                     ? new dEntity(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2))
                     : "null");
 
