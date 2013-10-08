@@ -54,6 +54,7 @@ public class ScriptRegistry {
     public static void _buildCoreYamlScriptContainers(FileConfiguration yamlScripts) {
         scriptContainers.clear();
         WorldScriptHelper.world_scripts.clear();
+        WorldScriptHelper.events.clear();
         ItemScriptHelper.item_scripts.clear();
         // Get a set of key names in concantenated Denizen Scripts
         Set<String> scripts = yamlScripts.getKeys(false);

@@ -77,7 +77,7 @@ public class WorldScriptHelper implements Listener {
     ///////////
 
     // Map for keeping the names of events
-    static Map<String, List<WorldScriptContainer>> events = new HashMap<String, List<WorldScriptContainer>>();
+    public static Map<String, List<WorldScriptContainer>> events = new HashMap<String, List<WorldScriptContainer>>();
 
     // Builds a Map of 'world events' and scripts containing said world events.
     @EventHandler
@@ -2554,8 +2554,6 @@ public class WorldScriptHelper implements Listener {
 
         Player player = (Player) event.getWhoClicked();
         String type = event.getInventory().getType().name();
-
-
 
         List<String> events = new ArrayList<String>();
         events.add("player drags");
