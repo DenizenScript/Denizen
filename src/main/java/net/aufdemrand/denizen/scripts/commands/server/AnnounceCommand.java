@@ -66,7 +66,7 @@ public class AnnounceCommand extends AbstractCommand {
                 scriptEntry.addObject("format", ScriptRegistry.getScriptContainerAs(arg.getValue(), FormatScriptContainer.class));
 
             else if (!scriptEntry.hasObject("text"))
-                scriptEntry.addObject("text", arg.asElement());
+                scriptEntry.addObject("text", new Element(arg.raw_value));
 
         }
 
