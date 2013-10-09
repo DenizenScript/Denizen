@@ -132,7 +132,7 @@ public class AgeCommand extends AbstractCommand {
         boolean lock = scriptEntry.hasObject("lock");
 
         // Report to dB
-        dB.report(getName(), (lock == true ? aH.debugObj("lock", lock) : "") +
+        dB.report(getName(), (lock ? aH.debugObj("lock", lock) : "") +
                              (ageType != null ? aH.debugObj("agetype", ageType)
                                               : aH.debugObj("age", age)) +
                              aH.debugObj("entities", entities.toString()));
@@ -143,7 +143,7 @@ public class AgeCommand extends AbstractCommand {
 
                 if (entity.isAgeable()) {
                     if (ageType != null) {
-                        if (ageType.equals(ageType.BABY))
+                        if (ageType.equals(AgeType.BABY))
                             entity.getAgeable().setBaby(true);
                         else entity.getAgeable().setBaby(false);
                     }

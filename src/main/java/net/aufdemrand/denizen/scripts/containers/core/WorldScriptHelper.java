@@ -3043,16 +3043,28 @@ public class WorldScriptHelper implements Listener {
 
         dPlayer player = dPlayer.valueOf(event.getPlayer().getName());
 
+        String command = event.getMessage().split(" ")[0].replace("/", "").toUpperCase();
+
+        List<String> events = trimEvents(Arrays.asList
+                ("command",
+                        command + " command"));
+
+        if (events.size() == 0)
+            return;
+
         // Well, this is ugly :(
         // Fill tags in any arguments
+
+        // TODO: Figure out why this should ever happen, then find a better way to do it and get rid of this
+        // Players should NOT be able to do commands like
+        // /echo <npc.flag[secret_password]> or whatever
+        // (Where /echo is a Denizen command that echos back input)
         List<String> args = Arrays.asList(
                 aH.buildArgs(
                         TagManager.tag(player, null,
                                 (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""))));
 
         dList args_list = new dList(args);
-
-        String command = event.getMessage().split(" ")[0].replace("/", "").toUpperCase();
 
         // Fill context
         context.put("args", args_list);
@@ -3063,9 +3075,7 @@ public class WorldScriptHelper implements Listener {
         String determination;
 
         // Run any event scripts and get the determination.
-        determination = doEvents(Arrays.asList
-                ("command",
-                        command + " command"),
+        determination = doEvents(events,
                 null, event.getPlayer(), context).toUpperCase();
 
         // If a script has determined fulfilled, cancel this event so the player doesn't
@@ -3819,6 +3829,15 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
 
+        String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
+
+        List<String> events = trimEvents(Arrays.asList
+                ("command",
+                        command + " command"));
+
+        if (events.size() == 0)
+            return;
+
         List<String> args = Arrays.asList(
                 aH.buildArgs(
                         TagManager.tag(null, null,
@@ -3826,16 +3845,13 @@ public class WorldScriptHelper implements Listener {
 
         dList args_list = new dList(args);
 
-        String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
-
         // Fill context
         context.put("args", args_list);
         context.put("command", new Element(command));
         context.put("raw_args", new Element((event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
         context.put("server", Element.TRUE);
 
-        doEvents(Arrays.asList("command",
-                command + " command"),
+        doEvents(events,
                 null, null, context);
     }
 

@@ -134,7 +134,7 @@ public class SwitchCommand extends AbstractCommand {
 
             } catch (NullPointerException e) {
 
-                dB.echoDebug("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
+                dB.echoError("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
             }
         }
     }
