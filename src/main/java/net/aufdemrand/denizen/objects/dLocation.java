@@ -952,33 +952,15 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         // <--[tag]
-        // @attribute <location.block.x>
+        // @attribute <l@location.block>
         // @returns Element(Number)
         // @description
-        // Returns the X coordinate of the block.
+        // Returns the location of the block this location is on,
+        // i.e. returns a location without decimals
         // -->
-        if (attribute.startsWith("block.x")) {
-            return new Element(getBlockX()).getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.block.y>
-        // @returns Element(Number)
-        // @description
-        // Returns the Y coordinate of the block.
-        // -->
-        if (attribute.startsWith("block.y")) {
-            return new Element(getBlockY()).getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.block.z>
-        // @returns Element(Number)
-        // @description
-        // Returns the Z coordinate of the block.
-        // -->
-        if (attribute.startsWith("block.z")) {
-            return new Element(getBlockZ()).getAttribute(attribute.fulfill(2));
+        if (attribute.startsWith("block")) {
+            return new dLocation(getWorld(), getBlockX(), getBlockY(), getBlockZ())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
