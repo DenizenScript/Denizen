@@ -953,7 +953,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.block>
-        // @returns Element(Number)
+        // @returns dLocation
         // @description
         // Returns the location of the block this location is on,
         // i.e. returns a location without decimals
