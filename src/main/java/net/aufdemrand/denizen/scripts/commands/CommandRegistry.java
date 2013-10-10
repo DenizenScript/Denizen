@@ -215,7 +215,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Announce
-        // @Usage announce ["<text>"] (to_ops/to_flagged:<flag_name>) (format:<name>)
+        // @Usage announce ["<text>"] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
         // @Required 1
         // @Stable stable
         // @Short Announces a message for everyone online to read.
@@ -224,10 +224,11 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Announce sends a raw message to players. Simply using announce with text will send
         // the message to all online players. Specifing the 'to_ops' argument will narrow down the players
-        // in which the message is sent to ops only. Alternatively, using the 'to_flagged' value argument
-        // will send the message to players only if the specified flag does not equal true. Announce can also
-        // utilize a format script with the 'format' argument. See the format script-container for more
-        // information.
+        // in which the message is sent to ops only. Alternatively, using the 'to_flagged' argument
+        // will send the message to players only if the specified flag does not equal true. You can also
+        // use the 'to_console' argument to make it so it only shows in the server console. Announce
+        // can also utilize a format script with the 'format' argument. See the format script-container
+        // for more information.
 
         // @Tags
         // None
@@ -244,9 +245,13 @@ public class CommandRegistry implements dRegistry {
         // Use to easily send a message to all online ops.
         // - announce to_ops '<player.name> requires help!'
 
+        // @Usage
+        // Use to send a message to just the console (Primarily for debugging / logging).
+        // - announce to_console 'Warning- <player.name> broke a mob spawner at location <player.location>'
+
         // -->
         registerCoreMember(AnnounceCommand.class,
-                "ANNOUNCE", "announce [\"<text>\"] (to_ops/to_flagged:<flag_name>) (format:<name>)", 1);
+                "ANNOUNCE", "announce [\"<text>\"] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)", 1);
 
 
         // <--[command]

@@ -39,7 +39,7 @@ import org.bukkit.entity.Player;
  */
 public class AnnounceCommand extends AbstractCommand {
 
-    enum AnnounceType { ALL, TO_OPS, TO_FLAGGED }
+    enum AnnounceType { ALL, TO_OPS, TO_FLAGGED, TO_CONSOLE }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -54,6 +54,10 @@ public class AnnounceCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("type")
                     && arg.matches("to_ops"))
                 scriptEntry.addObject("type", AnnounceType.TO_OPS);
+
+            else if (!scriptEntry.hasObject("type")
+                    && arg.matches("to_console"))
+                scriptEntry.addObject("type", AnnounceType.TO_CONSOLE);
 
             else if (!scriptEntry.hasObject("type")
                     && arg.matchesPrefix("to_flagged")) {
@@ -111,6 +115,10 @@ public class AnnounceCommand extends AbstractCommand {
                 if (FlagManager.playerHasFlag(dPlayer.mirrorBukkitPlayer(player), flag.asString()))
                     player.sendMessage(message);
             }
+        }
+
+        else if (type == AnnounceType.TO_CONSOLE) {
+            Bukkit.getServer().getConsoleSender().sendMessage(message);
         }
     }
 
