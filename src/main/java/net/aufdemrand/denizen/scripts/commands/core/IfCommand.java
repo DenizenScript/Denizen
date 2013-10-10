@@ -180,17 +180,19 @@ public class IfCommand extends AbstractCommand {
                     // or if it was "else" and we have no else commands yet
                     else if (newCommand || elseOutcome.size() == 0) {
                         newCommand = false;
-                        elseOutcome.put(elseOutcome.size(), new ArrayList<String>());
-                        elseOutcome.get(elseOutcome.lastKey()).add(arg.raw_value);
 
                         // Important!
                         //
-                        // If we find an "if", act like we entered a set of
+                        // If we find an "else if", act like we entered a set of
                         // brackets, so we treat the if's commands as arguments
                         // and don't add them to our current else commands
-                        if (arg.matches("if")) {
+                        if (arg.matches("if") && elseOutcome.size() == 0) {
                             bracketsEntered++;
                         }
+
+                        // Add the new else command
+                        elseOutcome.put(elseOutcome.size(), new ArrayList<String>());
+                        elseOutcome.get(elseOutcome.lastKey()).add(arg.raw_value);
                     }
 
                     // Add new else argument
