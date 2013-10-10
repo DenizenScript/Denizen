@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.tags.Attribute;
 
 // <--[language]
-// @name dObject
+// @name dObjects
 // @description
 // dObjects are a system put into place by Denizen that make working with things, or 'objects',
 // in Minecraft and Denizen easier. Many parts of scripts will require some kind of object as an
@@ -137,6 +137,29 @@ import net.aufdemrand.denizen.tags.Attribute;
 // -->
 
 public interface dObject {
+
+    /**
+     * dObjects should contain these two static methods, of which valueOf contains a valid
+     * annotation for ObjectFetcher
+     *
+     * public static dObject valueOf(String string);
+     *
+     * valueOf() should take a string representation of the object, preferably with a valid object
+     * notation (x@), and turn it into a new instance of the dObject. Care has to be taken to
+     * ensure that it is compatible with the tag system (ie. no periods (.) outside of square brackets),
+     * and other parts of Denizen.
+     *
+     * Since your object may be using the dObject Attributes System, valueOf should take that into
+     * account as well.
+     *
+     *
+     * public static boolean matches()
+     *
+     * matches() should use some logic to determine if a string is in the proper format to possibly
+     * return a non-null valueOf() call.
+     *
+     */
+
 
     /**
      * Retrieves the dScript argument prefix. dObjects should provide a default
