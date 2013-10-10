@@ -182,15 +182,6 @@ public class IfCommand extends AbstractCommand {
                         newCommand = false;
                         elseOutcome.put(elseOutcome.size(), new ArrayList<String>());
                         elseOutcome.get(elseOutcome.lastKey()).add(arg.raw_value);
-
-                        // Important!
-                        //
-                        // If we find an "if", act like we entered a set of
-                        // brackets, so we treat the if's commands as arguments
-                        // and don't add them to our current else commands
-                        if (arg.matches("if")) {
-                            bracketsEntered++;
-                        }
                     }
 
                     // Add new else argument
