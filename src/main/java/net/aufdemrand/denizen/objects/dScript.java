@@ -220,7 +220,7 @@ public class dScript implements dObject {
         // Returns the type of script container that is associated with this dScript object. For example: 'task', or
         // 'world'.
         // -->
-        if (attribute.startsWith("type"))
+        if (attribute.startsWith("container_type") || attribute.startsWith("type"))
             return new Element(container.getContainerType())
                     .getAttribute(attribute.fulfill(1));
 
