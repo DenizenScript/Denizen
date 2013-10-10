@@ -106,7 +106,7 @@ public class WorldScriptHelper implements Listener {
     public static List<String> trimEvents(List<String> event) {
         List<String> parsed = new ArrayList<String>();
         for (String e : event)
-            if (events.containsKey(e.toUpperCase()))
+            if (events.containsKey("ON " + e.toUpperCase()))
                 parsed.add(e);
 
         return parsed;
