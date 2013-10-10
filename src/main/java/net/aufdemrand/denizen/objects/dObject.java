@@ -25,7 +25,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 // clarification: Why <player.name> and not <p@player.name>? That's because Denizen allows Players,
 // NPCs and other 'in-context objects' to be linked to certain scripts. In short, <player> already
 // contains a reference to a specific player, such as the player that died in a world event 'on player dies'.
-// <p@player.name> would incorrectly reference the player named 'name', however this format is often
+// <p@player.name> would incorrectly reference the player named 'player', however this format is often
 // used to help with usage of a tag, simply indicating 'any player object'.
 //
 // dObjects can be used to CREATE new instances of objects, too! Though not all types allow 'new'
@@ -43,26 +43,26 @@ import net.aufdemrand.denizen.tags.Attribute;
 // + ----- dPlayer ----- +
 // | object notation: p@    can reference unique objects: yes    can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   p@<player_name>  - fetches an online or offline player with 'player_name'
+// |   p@<player_name>  - fetches an online or offline player with the specified name
 //
 // + ----- dNPC ---------+
 // | object notation: n@    can reference unique objects: yes    can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   n@<npc_id> - fetches the NPC with the specified id
+// |   n@<npc_id> - fetches the NPC with the specified ID
 // |   n@<npc_name> - fetches the first NPC found with the specified name
 //
 // + ----- dLocation ----+
 // | object notation: l@    can reference unique objects: no     can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   l@<x>,<y>,<z>,<world_name> - fetches a specific location
-// |   l@<notable_location_name> - fetches the location that has been 'noted' with the specified id
+// |   l@<notable_location_name> - fetches the location that has been 'noted' with the specified ID
 //
 // + ----- dEntity ------+
 // | object notation: e@    can reference unique objects: yes    can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   e@<entity_type> - fetches a new entity with the specified type as implemented by bukkit's entity type enumeration
+// |   e@<entity_type> - fetches a new entity with the specified type as implemented by Bukkit's entity type enumeration
 // |   e@<entity_script_name> - fetches a new custom entity as specified by the referenced entity script (soon)
-// |   e@<entity_id> - fetches the entity that has the (temporary) entity id set by bukkit
+// |   e@<entity_id> - fetches the entity that has the (temporary) entity ID set by Bukkit
 // |   e@random - fetches a new, random entity
 //
 // + ----- dItem --------+
@@ -70,7 +70,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   i@<material_name> - fetches a new item of the specified material
 // |   i@<material_name>,<data> - fetches a new item with the specified data
-// |   i@<item_entity_id> - fetches an item that is laying on the ground in a world by its bukkit entity_id
+// |   i@<item_entity_id> - fetches an item that is laying on the ground in a world by its Bukkit EntityID
 // |   i@<item_script_name> - fetches a new custom item as specified by the referenced item script
 //
 // + ----- dWorld -------+
@@ -81,15 +81,15 @@ import net.aufdemrand.denizen.tags.Attribute;
 // + ----- dColor -------+
 // | object notation: c@    can reference unique objects: no      can be notable: soon
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   c@<color_name> - fetches a named color, as implemented by bukkit's color enumeration
-// |   c@<r>,<g>,<b> - fetches a color make of the specified r,g,b values
+// |   c@<color_name> - fetches a named color, as implemented by Bukkit's color enumeration
+// |   c@<r>,<g>,<b> - fetches a color made of the specified Red,Green,Blue value
 // |   c@random - fetches a random color
 //
 // + ----- dCuboid ------+
 // | object notation: cu@   can reference unique objects: no      can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   cu@<position_1>|<position_2> - fetches a new cuboid with the specified locations as 'pos1' and 'pos2'
-// |   cu@<notable_cuboid_name> - fetches the cuboid that has been 'noted' with the specified id
+// |   cu@<notable_cuboid_name> - fetches the cuboid that has been 'noted' with the specified ID
 //
 // + ----- dInventory ---+
 // | object notation: in@   can reference unique objects: yes     can be notable: soon
@@ -98,24 +98,24 @@ import net.aufdemrand.denizen.tags.Attribute;
 // |   in@npc[<npc_id/object>] - fetches the specified NPC's inventory
 // |   in@entity[<entity_object>] - fetches the specified object's inventory, such as a Player, NPC, or Mule
 // |   in@location[<location_object>] - fetches the contents of a chest or other 'inventory' block
-// |   in@<notable_inventory_name> - fetches the inventory that has been 'noted' with the specified id
+// |   in@<notable_inventory_name> - fetches the inventory that has been 'noted' with the specified ID
 // |   in@<inventory_script_name> - fetches a new custom inventory as specified by the referenced inventory script
 //
 // + ----- dMaterial ----+
 // | object notation: m@    can reference unique objects: no      can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   m@<material_name> - fetches the material as specified by bukkit's material enumeration
-// |   m@<material_name>,<data> - fetches the material as specified by bukkit's material enumeration with specified data
+// |   m@<material_name> - fetches the material as specified by Bukkit's material enumeration
+// |   m@<material_name>,<data> - fetches the material as specified by Bukkit's material enumeration with specified data
 // |   m@<data_variety_material> - fetches the material specified by Denizen's 'data variety' dMaterials
 // |   m@random - fetches a random material
 //
 // + ----- dList -------+
 // | object notation: li@,fl@  can reference unique objects: yes  can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   li@<items|...> - fetches a new list with the elements specified, seperated by a pipe (|) character
+// |   li@<items|...> - fetches a new list with the elements specified, separated by a pipe (|) character
 // |   li@val[<items|...>] - slightly more verbose, but tag friendly way to fetch a new list (allows periods)
 // |   fl@<server_flag_name> - fetches the flag list value of the specified server flag, as a dList
-// |   fl[<player_object/npc_object]@<flag_name> - fetches the flag list value of the specified player/npc's flag, as a dList
+// |   fl[<player_object/npc_object]@<flag_name> - fetches the flag list value of the specified player/NPC's flag, as a dList
 //
 // + ----- dScript -------+
 // | object notation: s@    can reference unique objects: yes     can be notable: no
@@ -142,7 +142,7 @@ public interface dObject {
      * Retrieves the dScript argument prefix. dObjects should provide a default
      * prefix if nothing else has been specified.
      *
-     * @return
+     * @return the prefix
      */
     public String getPrefix();
 
@@ -158,7 +158,7 @@ public interface dObject {
      * </tt>
      *
      *
-     * @return
+     * @return the debug information
      */
     public String debug();
 

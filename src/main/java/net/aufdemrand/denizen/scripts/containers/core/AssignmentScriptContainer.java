@@ -7,14 +7,14 @@ import org.bukkit.configuration.ConfigurationSection;
 // @name Assignment Script-Containers
 // @description
 // Assignment script-containers provide functionality to NPCs by 'assignment' of the container. Assignment
-// scripts are meant to be used when customizing the normal behavior of NPCs. This can be used on a 'per-npc' basis,
+// scripts are meant to be used when customizing the normal behavior of NPCs. This can be used on a 'per-NPC' basis,
 // but the encouraged approach is to design assignment scripts in a way that they can be used for multiple NPCs,
 // perhaps with the use of constants or flags to determine specific information required by the scripts.
 
 // Features unique to assignment script-containers include 'actions', 'constants', and 'interact script' assignment.
 // Like any script, the ability to run local utility scripts can be accomplished as well. This allows fully
 // interactive NPCs to be built purely with Assignment Scripts, and for advanced situations, world scripts and
-// interact scripts can provide more functionailty.
+// interact scripts can provide more functionality.
 
 // Basic structure of an assignment script:
 // <code>
