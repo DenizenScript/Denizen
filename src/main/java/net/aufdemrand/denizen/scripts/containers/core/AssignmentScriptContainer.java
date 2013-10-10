@@ -25,15 +25,14 @@ import org.bukkit.configuration.ConfigurationSection;
 //     on <action>:
 //     - ...
 //
-//   constants:
-//     <constant name>: <value>
-//     <constant list>:
+//   default constants:
+//     <constant_name>: <value>
+//     <constant_list>:
 //     - ...
 //
 //   interact scripts:
-//   - <priority> <interact script name>
+//   - <priority> <interact_script_name>
 //   - ...
-//
 //   </code>
 //
 // Unlike other script containers, all part of an assignment script are optional. The three features provided can be
