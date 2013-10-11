@@ -173,7 +173,7 @@ public class PushCommand extends AbstractCommand {
         // can be fetched.
         scriptEntry.addObject("pushed_entities", entityList);
 
-        Position.mount(Conversion.convert(entities));
+        Position.mount(Conversion.convertEntities(entities));
 
         // Get the entity at the bottom of the entity list, because
         // only its gravity should be affected and tracked considering

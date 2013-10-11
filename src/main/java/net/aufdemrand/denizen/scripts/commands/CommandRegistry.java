@@ -913,10 +913,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Firework
-        // @Usage firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
+        // @Usage firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
         // @Required 0
-        // @Stable Todo
-        // @Short Launches a firework.
+        // @Stable stable
+        // @Short Launches a firework with specific coloring
         // @Author David Cernat
         // @Description
         // Todo
@@ -926,7 +926,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(FireworkCommand.class,
-                "FIREWORK", "firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
+                "FIREWORK", "firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
 
 
         // <--[command]

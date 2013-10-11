@@ -3,11 +3,29 @@ package net.aufdemrand.denizen.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dEntity;
 
+import org.bukkit.Color;
 import org.bukkit.entity.Entity;
 
 public class Conversion {
+
+    /**
+     * Turn a List of dColors into a list of Colors.
+     *
+     * @param entities The list of dColors
+     */
+
+    public static List<Color> convertColors(List<dColor> colors) {
+
+        List<Color> newList = new ArrayList<Color>();
+
+        for (dColor color : colors)
+            newList.add(color.getColor());
+
+        return newList;
+    }
 
     /**
      * Turn a List of dEntities into a list of Entities.
@@ -15,14 +33,12 @@ public class Conversion {
      * @param entities The list of dEntities
      */
 
-    public static List<Entity> convert(List<dEntity> entities) {
+    public static List<Entity> convertEntities(List<dEntity> entities) {
 
         List<Entity> newList = new ArrayList<Entity>();
 
-        for (dEntity entity : entities) {
-
+        for (dEntity entity : entities)
             newList.add(entity.getBukkitEntity());
-        }
 
         return newList;
     }

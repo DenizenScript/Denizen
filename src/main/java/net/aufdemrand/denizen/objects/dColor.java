@@ -99,10 +99,8 @@ public class dColor implements dObject {
     public dColor(Field field) {
         try {
             color = (Color) field.get(null);
-        } catch (IllegalArgumentException e) {
-            dB.echoError("Illegal argument for color!");
-        } catch (IllegalAccessException e) {
-            dB.echoError("Illegal access for color!");
+        } catch (Exception e) {
+            dB.echoError("Exception trying to fetch color!");
         }
     }
 
@@ -147,7 +145,20 @@ public class dColor implements dObject {
 
     @Override
     public String identify() {
+        for (Field field : Color.class.getFields()) {
+            try {
+                if (((Color) field.get(null)).asRGB() == getColor().asRGB())
+                    return "co@" + field.getName();
+            } catch (Exception e) {
+                dB.echoError("Exception trying to fetch color!");
+            }
+        }
         return "co@" + getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue();
+    }
+
+    @Override
+    public String toString() {
+        return identify();
     }
 
     @Override

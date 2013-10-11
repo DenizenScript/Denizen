@@ -188,10 +188,10 @@ public class FlyCommand extends AbstractCommand {
                 entity.spawnAt(origin);
             }
 
-            Position.mount(Conversion.convert(entities));
+            Position.mount(Conversion.convertEntities(entities));
         }
         else {
-            Position.dismount(Conversion.convert(entities));
+            Position.dismount(Conversion.convertEntities(entities));
 
             // Go no further if we are dismounting entities
             return;

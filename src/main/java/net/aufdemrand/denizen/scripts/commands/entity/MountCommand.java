@@ -89,10 +89,10 @@ public class MountCommand extends AbstractCommand {
                 entity.spawnAt(location);
             }
 
-            Position.mount(Conversion.convert(entities));
+            Position.mount(Conversion.convertEntities(entities));
         }
         else {
-            Position.dismount(Conversion.convert(entities));
+            Position.dismount(Conversion.convertEntities(entities));
         }
     }
 }

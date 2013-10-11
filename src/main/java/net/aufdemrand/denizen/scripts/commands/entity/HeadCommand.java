@@ -33,16 +33,16 @@ public class HeadCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("skin")
-                    && (arg.matchesPrefix("skin, s")))
+                && (arg.matchesPrefix("skin, s")))
                 scriptEntry.addObject("skin", arg.asElement());
 
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matches("PLAYER")
-                    && scriptEntry.hasPlayer())
+                     && arg.matches("player")
+                     && scriptEntry.hasPlayer())
                 scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
 
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class))
+                     && arg.matchesArgumentList(dEntity.class))
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
 
             else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);

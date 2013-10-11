@@ -1790,7 +1790,7 @@ public class WorldScriptHelper implements Listener {
             }
 
             // Mount the projectiles on top of each other
-            Position.mount(Conversion.convert(newProjectiles));
+            Position.mount(Conversion.convertEntities(newProjectiles));
 
             // Get the last entity on the list, i.e. the one at the bottom
             // if there are many mounted on top of each other
