@@ -41,35 +41,45 @@ public class CommandHandler {
     }
 
 
-    /**
-     * <p>Controls a NPCs Pushable Trait. When a NPC is 'pushable', the NPC
-     * will move out of the way when colliding with another LivingEntity.</p>
-     *
-     * <p>Pushable NPCs have 3 different settings available: Toggled, Returnable, and Delay</p>
-     *
-     * <p>When an NPCs Pushable Trait is toggled off, it will not function. Entities which
-     * collide may occupy the same space. To toggle pushable on or off, use the Bukkit command:</br>
-     * <code>/npc pushable -t</code>
-     * </p>
-     *
-     * <p>Setting the NPC as 'returnable' will automatically navigate the NPC back to
-     * its original location after a specified delay. If not returnable, NPCs will retain
-     * their position after being moved.</br>
-     * <code>/npc pushable -r</code>
-     * </p>
-     *
-     * <p>To change the delay of a returnable NPC, use the following Bukkit Command,
-     * specifying the number of seconds in which the delay should be.</br>
-     * <code>/npc pushable --delay #</code></p>
-     *
-     * <p>It is possible to use multiple arguments at once. For example:
-     * <code>/npc pushable -t -r --delay 10</code></p>
-     *
-     * <p>Note: If allowed to move in undesirable areas, the NPC may be un-returnable
-     * if the navigator cancels navigation due to being stuck. Care should be taken
-     * to ensure a safe area around the NPC.</p>
-     *
-     */
+    // <--[language]
+    // @name /npc pushable command
+    // @description
+    // The '/npc pushable' command controls a NPCs Pushable Trait. When a NPC is 'pushable', the NPC
+    // will move out of the way when colliding with another LivingEntity.</p>
+    //
+    // Pushable NPCs have 3 different settings available: Toggled, Returnable, and Delay>
+    //
+    // When an NPCs Pushable Trait is toggled off, it will not function. Entities which
+    // collide may occupy the same space. To toggle pushable on or off, use the Bukkit command:
+    // <code>
+    // /npc pushable -t
+    // </code>
+
+    // Setting the NPC as 'returnable' will automatically navigate the NPC back to
+    // its original location after a specified delay. If not returnable, NPCs will retain
+    // their position after being moved.
+    // <code>
+    // /npc pushable -r
+    // </code>
+
+    // To change the delay of a returnable NPC, use the following Bukkit Command,
+    // specifying the number of seconds in which the delay should be.
+    // <code>
+    // /npc pushable --delay #
+    // </code>
+
+    // It is possible to use multiple arguments at once. For example:
+    // <code>
+    // /npc pushable -t -r --delay 10
+    // </code>
+
+    // Note: If allowed to move in undesirable areas, the NPC may be un-returnable
+    // if the navigator cancels navigation due to being stuck. Care should be taken
+    // to ensure a safe area around the NPC.
+    //
+    // See also: 'pushable trait'
+
+    // -->
     @Command(
             aliases = { "npc" }, usage = "pushable -t (-r) (--delay #)", desc = "Makes a NPC pushable.",
             flags = "rt", modifiers = { "pushable", "push" }, min = 1, max = 2, permission = "denizen.npc.pushable")
@@ -123,32 +133,37 @@ public class CommandHandler {
                 (trait.isReturnable() ? " and will return when pushed after " + trait.getDelay() + " seconds." : "."));
     }
 
+    // <--[language]
+    // @name /npc constant command
+    // @description
+    // The /npc constants command configures a NPC's constants. Uses Denizen's ConstantTrait to keep track of
+    // NPC-specific constants. This provides seamless integration with an assignment script's 'Default Constants' in
+    // which string variables can be stored and retrieved with the use of 'replaceable tags', or API. Constants set at
+    // the NPC level override any constants from the NPC's Assignment Script.
+    //
+    // Constants may be used in several ways: Setting, Removing, and Viewing
+    //
+    // To set a constant, all that is required is a name and value. Use the Bukkit command in the
+    // following manner: (Note the use of quotes on multi world values)
+    // <code>
+    // /npc constant --set constant_name --value 'multi word value'
+    // </code>
+    //
+    // Removing a constant from an NPC only requires a name. Note: It is not possible to remove a
+    // constant set by the NPCs Assignment Script, except by modifying the script itself.
+    // <code>
+    // /npc constant --remove constant_name
+    // </code>
+    //
+    // Viewing constants is easy, just use '/npc constant #', specifying a page number.
+    // Constants which have been overridden in the Assignment Constants list are formatted with a
+    // 'strike-through' to indicate this case.
+    //
+    // To reference a constant value, use the replaceable tag to get the NPCs 'constant' attribute. For example:
+    // <npc.constant[constant_name]>. Constants may also have other TAGs in their value, which will be 'replaced'
+    // whenever the constant is called to be used allowing for the use of dynamic information.</p>
 
-    /**
-     * <p>Configures a NPCs constants. Uses Denizen's ConstantTrait to keep track of NPC-specific constants.
-     * This provides seamless integration with dScript Assignment Script 'Default Constants' in which string
-     * variables can be stored and retrieved with the use of Replaceable FLAGs, or API. Constants set at
-     * the NPC level override any constants from the NPCs Assignment Script.</p>
-     *
-     * <p>Constants may be used in several ways: Setting, Removing, and Viewing</p>
-     *
-     * <p>To set a constant, all that is required is a name and value. Use the Bukkit command in the
-     * following manner:</br>
-     * <code>/npc constant --set constant_name --value 'multi word value'</code></p>
-     *
-     * <p>Removing a constant from an NPC only requires a name. Note: It is not possible to remove a
-     * constant set by the NPCs Assignment Script, except by modifying the script itself.
-     * <code>/npc constant --remove constant_name</code></p>
-     *
-     * <p>Viewing constants is easy, just use <code>/npc constant #</code>, specifying a page number.
-     * Constants which have been overridden in the Assignment Constants list are formatted with a
-     * 'strike-through' to indicate this case.
-     *
-     * <p>To reference a constant value, use the Denizen Replaceable TAG format <code>&#60;CONS:name></code>.
-     * Constants may also have other TAGs in their value, which will be 'replaced' whenever the constant
-     * is called to be used.</p>
-     *
-     */
+     // -->
     @Command(
             aliases = { "npc" }, usage = "constant --set|remove name --value constant value",
             desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constants", "constant", "cons" },
