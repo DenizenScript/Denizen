@@ -341,22 +341,22 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <l@location.block.below>
+        // @attribute <l@location.below>
         // @returns dLocation
         // @description
-        // Returns the location of the block below the location.
+        // Returns the location below this location.
         // -->
-        if (attribute.startsWith("block.below"))
+        if (attribute.startsWith("below"))
             return new dLocation(this.add(0,-1,0))
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <l@location.block.above>
+        // @attribute <l@location.above>
         // @returns dLocation
         // @description
-        // Returns the location of the block above the location.
+        // Returns the location above this location.
         // -->
-        if (attribute.startsWith("block.above"))
+        if (attribute.startsWith("above"))
             return new dLocation(this.add(0,1,0))
                     .getAttribute(attribute.fulfill(2));
 
@@ -617,12 +617,12 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         // <--[tag]
-        // @attribute <l@location.block.material>
+        // @attribute <l@location.material>
         // @returns Element
         // @description
         // Returns the Bukkit material name of the block at the location.
         // -->
-        if (attribute.startsWith("block.material"))
+        if (attribute.startsWith("material"))
             return dMaterial.getMaterialFrom(getBlock().getType(), getBlock().getData()).getAttribute(attribute.fulfill(2));
 
 

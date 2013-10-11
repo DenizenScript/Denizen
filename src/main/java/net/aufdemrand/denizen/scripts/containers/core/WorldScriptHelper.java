@@ -1454,9 +1454,15 @@ public class WorldScriptHelper implements Listener {
 
             Player subPlayer = null;
             dNPC subNPC = null;
+            dEntity shooter = null;
 
             dEntity damager = new dEntity(subEvent.getDamager());
             context.put("damager", damager.getDenizenObject());
+
+            events.add("entity damaged by entity");
+            events.add("entity damaged by " + damager.identifyType());
+            events.add(entity.identifyType() + " damaged by entity");
+            events.add(entity.identifyType() + " damaged by " + damager.identifyType());
 
             if (damager.isNPC()) {
                 subNPC = damager.getDenizenNPC();
@@ -1475,14 +1481,14 @@ public class WorldScriptHelper implements Listener {
             // If the damager is a projectile, add its shooter (which can be null)
             // to the context
             else if (damager.hasShooter()) {
-                dEntity shooter = damager.getShooter();
+                shooter = damager.getShooter();
                 context.put("shooter", shooter.getDenizenObject());
-            }
 
-            events.add("entity damaged by entity");
-            events.add("entity damaged by " + damager.identifyType());
-            events.add(entity.identifyType() + " damaged by entity");
-            events.add(entity.identifyType() + " damaged by " + damager.identifyType());
+                if (shooter != null && !damager.getEntityType().equals(shooter.getEntityType())) {
+                    events.add("entity damaged by " + shooter.identifyType());
+                    events.add(entity.identifyType() + " damaged by " + shooter.identifyType());
+                }
+            }
 
             // Have a new list of events for the subContextPlayer
             // and subContextNPC
@@ -1494,11 +1500,21 @@ public class WorldScriptHelper implements Listener {
             subEvents.add(damager.identifyType() + " damages entity");
             subEvents.add(damager.identifyType() + " damages " + entity.identifyType());
 
+            if (shooter != null && !damager.getEntityType().equals(shooter.getEntityType())) {
+                subEvents.add(shooter.identifyType() + " damages entity");
+                subEvents.add(shooter.identifyType() + " damages " + entity.identifyType());
+            }
+
             if (isFatal) {
                 events.add("entity killed by entity");
                 events.add("entity killed by " + damager.identifyType());
                 events.add(entity.identifyType() + " killed by entity");
                 events.add(entity.identifyType() + " killed by " + damager.identifyType());
+
+                if (shooter != null && !damager.getEntityType().equals(shooter.getEntityType())) {
+                    events.add("entity killed by " + shooter.identifyType());
+                    events.add(entity.identifyType() + " killed by " + shooter.identifyType());
+                }
 
                 // <--[event]
                 // @Events
@@ -1524,6 +1540,11 @@ public class WorldScriptHelper implements Listener {
                 subEvents.add("entity kills " + entity.identifyType());
                 subEvents.add(damager.identifyType() + " kills entity");
                 subEvents.add(damager.identifyType() + " kills " + entity.identifyType());
+
+                if (shooter != null && !damager.getEntityType().equals(shooter.getEntityType())) {
+                    subEvents.add(shooter.identifyType() + " kills entity");
+                    subEvents.add(shooter.identifyType() + " kills " + entity.identifyType());
+                }
             }
 
             determination = doEvents(subEvents, subNPC, subPlayer, context, true);
