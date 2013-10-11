@@ -57,6 +57,12 @@ public class SpawnCommand extends AbstractCommand {
                 scriptEntry.addObject("spread", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("persistent")
+                    && arg.matches("persistent")) {
+
+                scriptEntry.addObject("persistent", "");
+            }
+
             else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
@@ -82,12 +88,14 @@ public class SpawnCommand extends AbstractCommand {
         dLocation location = (dLocation) scriptEntry.getObject("location");
         dEntity target = (dEntity) scriptEntry.getObject("target");
         Element spread = scriptEntry.getElement("spread");
+        boolean persistent = scriptEntry.hasObject("persistent");
 
         // Report to dB
         dB.report(getName(), aH.debugObj("entities", entities.toString()) +
                               location.debug() +
-                             (spread != null?spread.debug():"") +
-                             (target != null ? target.debug() : ""));
+                             (spread != null  ?spread.debug() : "") +
+                             (target != null ? target.debug() : "") +
+                             (persistent == true ? aH.debugObj("persistent", persistent) : ""));
 
         // Keep a dList of entities that can be called using <entry[name].spawned_entities>
         // later in the script queue
@@ -112,6 +120,10 @@ public class SpawnCommand extends AbstractCommand {
             // instead of "e@57" on it
 
             entityList.add(entity.toString());
+
+            if (persistent && entity.isLivingEntity()) {
+                entity.getLivingEntity().setRemoveWhenFarAway(false);
+            }
 
             if (target != null && target.isLivingEntity()) {
                 entity.target(target.getLivingEntity());

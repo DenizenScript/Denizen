@@ -1525,7 +1525,7 @@ public class dEntity implements dObject {
         // -->
         if (attribute.startsWith("is_persistent")) {
             if (isLivingEntity())
-                return new Element(getLivingEntity().getRemoveWhenFarAway())
+                return new Element(!getLivingEntity().getRemoveWhenFarAway())
                         .getAttribute(attribute.fulfill(1));
             else
                 return Element.FALSE

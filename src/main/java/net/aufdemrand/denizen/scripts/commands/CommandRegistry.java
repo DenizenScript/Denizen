@@ -1980,7 +1980,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Spawn
-        // @Usage spawn [<entity>|...] (<location>) (target:<entity>)
+        // @Usage spawn [<entity>|...] (<location>) (target:<entity>) (persistent)
         // @Required 1
         // @Stable stable
         // @Short Spawns a list of entities at a certain location.
@@ -1994,7 +1994,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(SpawnCommand.class,
-                "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>)", 1);
+                "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>) (persistent)", 1);
 
 
         // <--[command]
