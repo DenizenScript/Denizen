@@ -956,7 +956,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // @returns dLocation
         // @description
         // Returns the location of the block this location is on,
-        // i.e. returns a location without decimals
+        // I.E. returns a location without decimals or direction.
         // -->
         if (attribute.startsWith("block")) {
             return new dLocation(getWorld(), getBlockX(), getBlockY(), getBlockZ())
