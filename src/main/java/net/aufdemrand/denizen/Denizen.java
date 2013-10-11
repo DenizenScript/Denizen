@@ -345,6 +345,27 @@ public class Denizen extends JavaPlugin {
         if (citizens == null)
             citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
 
+        // <--[language]
+        // @name /ex command
+        // @description
+        // The '/ex' command is an easy way to run a single denizen script command in-game. Its syntax,
+        // aside from '/ex' is exactly the same as any other command. When running a command, some context
+        // is also supplied, such as '<player>' if being run by a player (versus the console), as well as
+        // '<npc>' if a NPC is selected by using the '/npc sel' command.
+        //
+        // Examples:
+        // /ex flag <player> test_flag:!
+        // /ex run 's@npc walk script' as:<npc>
+        //
+        // Need to '/ex' a command as a different player or NPC? No problem. Just use the 'npc' and 'player'
+        // value arguments, or utilize the object fetcher.
+        //
+        // Examples:
+        // /ex narrate player:p@NLBlackEagle 'Your health is <player.health.formatted>.'
+        // /ex walk npc:n@fred <player.location.cursor_on>
+
+        // -->
+
         // ...except this one :) /ex command
         if (cmdName.equalsIgnoreCase("ex")) {
             List<String> entries = new ArrayList<String>();
