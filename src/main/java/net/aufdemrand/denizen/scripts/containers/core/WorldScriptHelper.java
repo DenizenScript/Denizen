@@ -1387,6 +1387,7 @@ public class WorldScriptHelper implements Listener {
             // <context.cause> returns the reason the entity was killed.
             // <context.entity> returns the dEntity that was killed.
             // <context.damage> returns the amount of damage dealt.
+            // <context.damager> returns the dEntity damaging the other entity.
             // <context.shooter> returns the shooter of the entity, if any.
             //
             // @Determine
