@@ -762,7 +762,6 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -771,8 +770,8 @@ public class WorldScriptHelper implements Listener {
         String determination = doEvents(Arrays.asList
                 ("entity forms block",
                         "entity forms " + material.identify(),
-                        entityType + " forms block",
-                        entityType + " forms " + material.identify()),
+                        entity.identifyType() + " forms block",
+                        entity.identifyType() + " forms " + material.identify()),
                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1073,7 +1072,6 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity hanging = new dEntity(event.getEntity());
-        String hangingType = hanging.getEntityType().name();
         String cause =  event.getCause().name();
 
         context.put("hanging", hanging);
@@ -1082,8 +1080,8 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("hanging breaks");
         events.add("hanging breaks because " + cause);
-        events.add(hangingType + " breaks");
-        events.add(hangingType +
+        events.add(hanging.identifyType() + " breaks");
+        events.add(hanging.identifyType() +
                 " breaks because " + cause);
 
         if (event instanceof HangingBreakByEntityEvent) {
@@ -1109,20 +1107,19 @@ public class WorldScriptHelper implements Listener {
             HangingBreakByEntityEvent subEvent = (HangingBreakByEntityEvent) event;
 
             dEntity entity = new dEntity(subEvent.getRemover());
-            String entityType = entity.getEntityType().name();
             context.put("entity", entity.getDenizenObject());
 
-            if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+            if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
             else if (entity.isPlayer()) player = entity.getPlayer();
 
             events.add("entity breaks hanging");
             events.add("entity breaks hanging because " + cause);
-            events.add("entity breaks " + hangingType);
-            events.add("entity breaks " + hangingType + " because " + cause);
-            events.add(entityType + " breaks hanging");
-            events.add(entityType + " breaks hanging because " + cause);
-            events.add(entityType + " breaks " + hangingType);
-            events.add(entityType + " breaks " + hangingType + " because " + cause);
+            events.add("entity breaks " + hanging.identifyType());
+            events.add("entity breaks " + hanging.identifyType() + " because " + cause);
+            events.add(entity.identifyType() + " breaks hanging");
+            events.add(entity.identifyType() + " breaks hanging because " + cause);
+            events.add(entity.identifyType() + " breaks " + hanging.identifyType());
+            events.add(entity.identifyType() + " breaks " + hanging.identifyType() + " because " + cause);
         }
 
         String determination = doEvents(events, npc, player, context);
@@ -1150,14 +1147,13 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity hanging = new dEntity(event.getEntity());
-        String hangingType = hanging.getEntityType().name();
 
         context.put("hanging", hanging);
         context.put("location", new dLocation(event.getBlock().getLocation()));
 
         String determination = doEvents(Arrays.asList
                 ("player places hanging",
-                        "player places " + hangingType),
+                        "player places " + hanging.identifyType()),
                 null, event.getPlayer(), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1190,7 +1186,6 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
         String reason = event.getSpawnReason().name();
 
         context.put("entity", entity);
@@ -1199,8 +1194,8 @@ public class WorldScriptHelper implements Listener {
         String determination = doEvents(Arrays.asList
                 ("entity spawns",
                         "entity spawns because " + event.getSpawnReason().name(),
-                        entityType + " spawns",
-                        entityType + " spawns because " + reason),
+                        entity.identifyType() + " spawns",
+                        entity.identifyType() + " spawns because " + reason),
                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1264,7 +1259,6 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
         dMaterial oldMaterial = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         dMaterial newMaterial = dMaterial.getMaterialFrom(event.getTo()); // Not able to get DATA here?
 
@@ -1279,10 +1273,10 @@ public class WorldScriptHelper implements Listener {
                         "entity changes block into " + newMaterial.identify(),
                         "entity changes " + oldMaterial.identify() +
                                 " into " + newMaterial.identify(),
-                        entityType + " changes block",
-                        entityType + " changes " + oldMaterial.identify(),
-                        entityType + " changes block into " + newMaterial.identify(),
-                        entityType + " changes " + oldMaterial.identify() +
+                        entity.identifyType() + " changes block",
+                        entity.identifyType() + " changes " + oldMaterial.identify(),
+                        entity.identifyType() + " changes block into " + newMaterial.identify(),
+                        entity.identifyType() + " changes " + oldMaterial.identify() +
                                 " into " + newMaterial.identify()),
                 null, null, context);
 
@@ -1349,14 +1343,13 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
         String cause = event.getCause().name();
 
         context.put("entity", entity.getDenizenObject());
         context.put("damage", new Element(event.getDamage()));
         context.put("cause", new Element(event.getCause().name()));
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         boolean isFatal = false;
@@ -1370,8 +1363,8 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("entity damaged");
         events.add("entity damaged by " + cause);
-        events.add(entityType + " damaged");
-        events.add(entityType + " damaged by " + cause);
+        events.add(entity.identifyType() + " damaged");
+        events.add(entity.identifyType() + " damaged by " + cause);
 
         if (isFatal) {
 
@@ -1398,8 +1391,8 @@ public class WorldScriptHelper implements Listener {
 
             events.add("entity killed");
             events.add("entity killed by " + cause);
-            events.add(entityType + " killed");
-            events.add(entityType + " killed by " + cause);
+            events.add(entity.identifyType() + " killed");
+            events.add(entity.identifyType() + " killed by " + cause);
         }
 
         if (event instanceof EntityDamageByEntityEvent) {
@@ -1435,12 +1428,10 @@ public class WorldScriptHelper implements Listener {
             dNPC subNPC = null;
 
             dEntity damager = new dEntity(subEvent.getDamager());
-            String damagerType = damager.getEntityType().name();
             context.put("damager", damager.getDenizenObject());
 
             if (damager.isNPC()) {
                 subNPC = damager.getDenizenNPC();
-                damagerType = "npc";
 
                 // If we had no NPC in our regular context, use this one
                 if (npc == null) npc = subNPC;
@@ -1461,9 +1452,9 @@ public class WorldScriptHelper implements Listener {
             }
 
             events.add("entity damaged by entity");
-            events.add("entity damaged by " + damagerType);
-            events.add(entityType + " damaged by entity");
-            events.add(entityType + " damaged by " + damagerType);
+            events.add("entity damaged by " + damager.identifyType());
+            events.add(entity.identifyType() + " damaged by entity");
+            events.add(entity.identifyType() + " damaged by " + damager.identifyType());
 
             // Have a new list of events for the subContextPlayer
             // and subContextNPC
@@ -1471,15 +1462,15 @@ public class WorldScriptHelper implements Listener {
             List<String> subEvents = new ArrayList<String>();
 
             subEvents.add("entity damages entity");
-            subEvents.add("entity damages " + entityType);
-            subEvents.add(damagerType + " damages entity");
-            subEvents.add(damagerType + " damages " + entityType);
+            subEvents.add("entity damages " + entity.identifyType());
+            subEvents.add(damager.identifyType() + " damages entity");
+            subEvents.add(damager.identifyType() + " damages " + entity.identifyType());
 
             if (isFatal) {
                 events.add("entity killed by entity");
-                events.add("entity killed by " + damagerType);
-                events.add(entityType + " killed by entity");
-                events.add(entityType + " killed by " + damagerType);
+                events.add("entity killed by " + damager.identifyType());
+                events.add(entity.identifyType() + " killed by entity");
+                events.add(entity.identifyType() + " killed by " + damager.identifyType());
 
                 // <--[event]
                 // @Events
@@ -1502,9 +1493,9 @@ public class WorldScriptHelper implements Listener {
                 // -->
 
                 subEvents.add("entity kills entity");
-                subEvents.add("entity kills " + entityType);
-                subEvents.add(damagerType + " kills entity");
-                subEvents.add(damagerType + " kills " + entityType);
+                subEvents.add("entity kills " + entity.identifyType());
+                subEvents.add(damager.identifyType() + " kills entity");
+                subEvents.add(damager.identifyType() + " kills " + entity.identifyType());
             }
 
             determination = doEvents(subEvents, subNPC, subPlayer, context);
@@ -1551,7 +1542,6 @@ public class WorldScriptHelper implements Listener {
             return; // Fix for other plugins doing weird stuff.
         }
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         context.put("entity", entity.getDenizenObject());
         context.put("location", new dLocation(event.getLocation()));
@@ -1564,7 +1554,7 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("entity explodes",
-                        entityType + " explodes"),
+                        entity.identifyType() + " explodes"),
                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1595,21 +1585,20 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
         String reason = event.getRegainReason().name();
 
         context.put("reason", new Element(event.getRegainReason().name()));
         context.put("amount", new Element(event.getAmount()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity heals",
                         "entity heals because " + reason,
-                        entityType + " heals",
-                        entityType + " heals because " + reason),
+                        entity.identifyType() + " heals",
+                        entity.identifyType() + " heals because " + reason),
                 npc, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1640,17 +1629,16 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         context.put("location", new dLocation(event.getLocation()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         doEvents(Arrays.asList
                 ("entity enters portal",
-                        entityType + " enters portal"),
+                        entity.identifyType() + " enters portal"),
                 npc, player, context);
     }
 
@@ -1673,17 +1661,16 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         context.put("location", new dLocation(event.getTo()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         doEvents(Arrays.asList
                 ("entity exits portal",
-                        entityType + " exits portal"),
+                        entity.identifyType() + " exits portal"),
                 npc, player, context);
     }
 
@@ -1712,20 +1699,19 @@ public class WorldScriptHelper implements Listener {
         dItem bow = new dItem(event.getBow());
         dEntity projectile = new dEntity(event.getProjectile());
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         context.put("bow", bow);
         context.put("projectile", projectile);
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity shoots bow",
                         "entity shoots " + bow.identify(),
-                        entityType + " shoots bow",
-                        entityType + " shoots " + bow.identify()),
+                        entity.identifyType() + " shoots bow",
+                        entity.identifyType() + " shoots " + bow.identify()),
                 npc, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED")) {
@@ -1790,17 +1776,16 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
         context.put("entity", entity);
 
         List<String> events = new ArrayList<String>();
         events.add("entity tamed");
-        events.add(entityType + " tamed");
+        events.add(entity.identifyType() + " tamed");
 
         if (event.getOwner() instanceof Player) {
             player = (Player) event.getOwner();
             events.add("player tames entity");
-            events.add("player tames " + entityType);
+            events.add("player tames " + entity.identifyType());
         }
 
         String determination = doEvents(events, null, player, context);
@@ -1836,7 +1821,6 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         final dEntity entity = new dEntity(event.getEntity());
 
-        String entityType = entity.getEntityType().name();
         String reason = event.getReason().name();
 
         context.put("entity", entity);
@@ -1845,26 +1829,25 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("entity targets");
         events.add("entity targets because " + reason);
-        events.add(entityType + " targets");
-        events.add(entityType + " targets because " + reason);
+        events.add(entity.identifyType() + " targets");
+        events.add(entity.identifyType() + " targets because " + reason);
 
         if (event.getTarget() != null) {
 
             dEntity target = new dEntity(event.getTarget());
-            String targetType = target.getEntityType().name();
             context.put("target", target.getDenizenObject());
 
-            if (target.isNPC()) { npc = target.getDenizenNPC(); targetType = "npc"; }
+            if (target.isNPC()) { npc = target.getDenizenNPC(); }
             else if (target.isPlayer()) player = target.getPlayer();
 
             events.add("entity targets entity");
             events.add("entity targets entity because " + reason);
-            events.add("entity targets " + targetType);
-            events.add("entity targets " + targetType + " because " + reason);
-            events.add(entityType + " targets entity");
-            events.add(entityType + " targets entity because " + reason);
-            events.add(entityType + " targets " + targetType);
-            events.add(entityType + " targets " + targetType + " because " + reason);
+            events.add("entity targets " + target.identifyType());
+            events.add("entity targets " + target.identifyType() + " because " + reason);
+            events.add(entity.identifyType() + " targets entity");
+            events.add(entity.identifyType() + " targets entity because " + reason);
+            events.add(entity.identifyType() + " targets " + target.identifyType());
+            events.add(entity.identifyType() + " targets " + target.identifyType() + " because " + reason);
         }
 
         String determination = doEvents(events, npc, player, context);
@@ -1913,18 +1896,17 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         context.put("origin", new dLocation(event.getFrom()));
         context.put("destination", new dLocation(event.getTo()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity teleports",
-                        entityType + " teleports"),
+                        entity.identifyType() + " teleports"),
                 npc, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1947,7 +1929,6 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
         String reason = event.getReason().name();
 
         context.put("entity", entity.getDenizenObject());
@@ -1956,8 +1937,8 @@ public class WorldScriptHelper implements Listener {
         doEvents(Arrays.asList
                 ("entity unleashed",
                         "entity unleashed because " + reason,
-                        entityType + " unleashed",
-                        entityType + " unleashed because " + reason),
+                        entity.identifyType() + " unleashed",
+                        entity.identifyType() + " unleashed because " + reason),
                 null, null, context);
     }
 
@@ -2018,17 +1999,16 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         context.put("food", new Element(event.getFoodLevel()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity changes food level",
-                        entityType + " changes food level"),
+                        entity.identifyType() + " changes food level"),
                 npc, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2233,7 +2213,6 @@ public class WorldScriptHelper implements Listener {
         if (block == null)
             return;
 
-        String entityType = projectile.getEntityType().name();
         dEntity shooter = projectile.getShooter();
         dMaterial material = dMaterial.getMaterialFrom(block.getType(), block.getData());
 
@@ -2244,8 +2223,8 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("projectile hits block");
         events.add("projectile hits " + material.identify());
-        events.add(entityType + " hits block");
-        events.add(entityType + " hits " + material.identify());
+        events.add(projectile.identifyType() + " hits block");
+        events.add(projectile.identifyType() + " hits " + material.identify());
 
         if (shooter != null) {
             context.put("shooter", shooter.getDenizenObject());
@@ -2266,21 +2245,16 @@ public class WorldScriptHelper implements Listener {
             // <context.location> returns the dLocation of the block that was hit.
             //
             // -->
-            String shooterType = shooter.getEntityType().name();
 
-            if (shooter.isNPC()) {
-                npc = shooter.getDenizenNPC(); shooterType = "npc";
-            }
-            else if (shooter.isPlayer()) {
-                player = shooter.getPlayer();
-            }
+            if (shooter.isNPC()) { npc = shooter.getDenizenNPC(); }
+            else if (shooter.isPlayer()) { player = shooter.getPlayer(); }
 
             events.add("entity shoots block");
-            events.add("entity shoots block with " + entityType);
-            events.add("entity shoots " + material.identify() + " with " + entityType);
-            events.add(shooterType + " shoots block");
-            events.add(shooterType + " shoots block with " + entityType);
-            events.add(shooterType + " shoots " + material.identify() + " with " + entityType);
+            events.add("entity shoots block with " + projectile.identifyType());
+            events.add("entity shoots " + material.identify() + " with " + projectile.identifyType());
+            events.add(shooter.identifyType() + " shoots block");
+            events.add(shooter.identifyType() + " shoots block with " + projectile.identifyType());
+            events.add(shooter.identifyType() + " shoots " + material.identify() + " with " + projectile.identifyType());
         }
 
         doEvents(events, npc, player, context);
@@ -3218,13 +3192,12 @@ public class WorldScriptHelper implements Listener {
         if (event.getCaught() != null) {
 
             dEntity entity = new dEntity(event.getCaught());
-            String entityType = entity.getEntityType().name();
             context.put("entity", entity.getDenizenObject());
 
-            if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+            if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
 
-            events.add("player fishes " + entityType);
-            events.add("player fishes " + entityType + " while " + state);
+            events.add("player fishes " + entity.identifyType());
+            events.add("player fishes " + entity.identifyType() + " while " + state);
         }
 
         String determination = doEvents(events, npc, event.getPlayer(), context);
@@ -3357,24 +3330,23 @@ public class WorldScriptHelper implements Listener {
         dItem item = new dItem(event.getPlayer().getItemInHand());
         dMaterial itemMaterial = item.getMaterial();
         dEntity entity = new dEntity(event.getRightClicked());
-        String entityType = entity.getEntityType().name();
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getRightClicked().getLocation()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
 
         List<String> events = new ArrayList<String>();
         events.add("player right clicks entity");
-        events.add("player right clicks " + entityType);
+        events.add("player right clicks " + entity.identifyType());
         events.add("player right clicks entity with " +
                 item.identify());
-        events.add("player right clicks " + entityType + " with " +
+        events.add("player right clicks " + entity.identifyType() + " with " +
                 item.identify());
         events.add("player right clicks entity with " +
                 itemMaterial.identify());
-        events.add("player right clicks " + entityType + " with " +
+        events.add("player right clicks " + entity.identifyType() + " with " +
                 itemMaterial.identify());
 
         if (entity.getBukkitEntity() instanceof ItemFrame) {
@@ -3382,9 +3354,9 @@ public class WorldScriptHelper implements Listener {
             dMaterial itemFrameMaterial = itemFrame.getMaterial();
             context.put("itemframe", itemFrame);
 
-            events.add("player right clicks " + entityType + " " +
+            events.add("player right clicks " + entity.identifyType() + " " +
                     itemFrame.identify());
-            events.add("player right clicks " + entityType + " " +
+            events.add("player right clicks " + entity.identifyType() + " " +
                     itemFrameMaterial.identify());
         }
 
@@ -3499,14 +3471,13 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         context.put("entity", entity);
         context.put("holder", new dEntity(event.getLeashHolder()));
 
         doEvents(Arrays.asList
                 ("player leashes entity",
-                        "entity leashes " + entityType),
+                        "entity leashes " + entity.identifyType()),
                 null, event.getPlayer(), context);
     }
 
@@ -3716,13 +3687,12 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         context.put("entity", entity);
 
         List<String> events = new ArrayList<String>();
         events.add("player shears entity");
-        events.add("player shears " + entityType);
+        events.add("player shears " + entity.identifyType());
 
         if (entity.getEntityType().equals(EntityType.SHEEP)) {
             String color = ((Sheep) entity.getBukkitEntity()).getColor().name();
@@ -3884,7 +3854,6 @@ public class WorldScriptHelper implements Listener {
         dNPC npc = null;
 
         dEntity vehicle = new dEntity(event.getVehicle());
-        String vehicleType = vehicle.getEntityType().name();
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
         Map<String, dObject> context = new HashMap<String, dObject>();
@@ -3894,8 +3863,8 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("vehicle collides with block");
         events.add("vehicle collides with " + material.identify());
-        events.add(vehicleType + " collides with block");
-        events.add(vehicleType + " collides with " + material.identify());
+        events.add(vehicle.identifyType() + " collides with block");
+        events.add(vehicle.identifyType() + " collides with " + material.identify());
 
         doEvents(events, npc, player, context);
     }
@@ -3924,22 +3893,20 @@ public class WorldScriptHelper implements Listener {
         dNPC npc = null;
 
         dEntity vehicle = new dEntity(event.getVehicle());
-        String vehicleType = vehicle.getEntityType().name();
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getEntityType().name();
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("vehicle", vehicle);
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         List<String> events = new ArrayList<String>();
         events.add("vehicle collides with entity");
-        events.add("vehicle collides with " + entityType);
-        events.add(vehicleType + " collides with entity");
-        events.add(vehicleType + " collides with " + entityType);
+        events.add("vehicle collides with " + entity.identifyType());
+        events.add(vehicle.identifyType() + " collides with entity");
+        events.add(vehicle.identifyType() + " collides with " + entity.identifyType());
 
         String determination = doEvents(events, npc, player, context);
 
@@ -3968,13 +3935,12 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         dEntity vehicle = new dEntity(event.getVehicle());
-        String vehicleType = vehicle.getEntityType().name();
 
         context.put("vehicle", vehicle);
 
         doEvents(Arrays.asList
                 ("vehicle created",
-                        vehicleType + " created"),
+                        vehicle.identifyType() + " created"),
                 null, null, context);
     }
 
@@ -4004,7 +3970,6 @@ public class WorldScriptHelper implements Listener {
         dNPC npc = null;
 
         dEntity vehicle = new dEntity(event.getVehicle());
-        String vehicleType = vehicle.getEntityType().name();
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("damage", new Element(event.getDamage()));
@@ -4012,26 +3977,20 @@ public class WorldScriptHelper implements Listener {
 
         List<String> events = new ArrayList<String>();
         events.add("vehicle damaged");
-        events.add(vehicleType + " damaged");
+        events.add(vehicle.identifyType() + " damaged");
 
         if (event.getAttacker() != null) {
 
             dEntity entity = new dEntity(event.getAttacker());
-            String entityType = entity.getEntityType().name();
             context.put("entity", entity.getDenizenObject());
 
-            if (entity.isPlayer()) {
-                player = entity.getPlayer();
-            }
-            else {
-                npc = entity.getDenizenNPC();
-                entityType = "npc";
-            }
+            if (entity.isPlayer()) { player = entity.getPlayer(); }
+            else { npc = entity.getDenizenNPC(); }
 
             events.add("entity damages vehicle");
-            events.add("entity damages " + vehicleType);
-            events.add(entityType + " damages vehicle");
-            events.add(entityType + " damages " + vehicleType);
+            events.add("entity damages " + vehicle.identifyType());
+            events.add(entity.identifyType() + " damages vehicle");
+            events.add(entity.identifyType() + " damages " + vehicle.identifyType());
         }
 
         String determination = doEvents(events, npc, player, context);
@@ -4071,33 +4030,25 @@ public class WorldScriptHelper implements Listener {
         dNPC npc = null;
 
         dEntity vehicle = new dEntity(event.getVehicle());
-        String vehicleType = vehicle.getEntityType().name();
-
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("vehicle", vehicle);
 
         List<String> events = new ArrayList<String>();
         events.add("vehicle destroyed");
-        events.add(vehicleType + " destroyed");
+        events.add(vehicle.identifyType() + " destroyed");
 
         if (event.getAttacker() != null) {
 
             dEntity entity = new dEntity(event.getAttacker());
-            String entityType = entity.getEntityType().name();
             context.put("entity", entity.getDenizenObject());
 
-            if (entity.isPlayer()) {
-                player = entity.getPlayer();
-            }
-            else {
-                npc = entity.getDenizenNPC();
-                entityType = "npc";
-            }
+            if (entity.isPlayer()) { player = entity.getPlayer(); }
+            else { npc = entity.getDenizenNPC(); }
 
             events.add("entity destroys vehicle");
-            events.add("entity destroys " + vehicleType);
-            events.add(entityType + " destroys vehicle");
-            events.add(entityType + " destroys " + vehicleType);
+            events.add("entity destroys " + vehicle.identifyType());
+            events.add(entity.identifyType() + " destroys vehicle");
+            events.add(entity.identifyType() + " destroys " + vehicle.identifyType());
         }
 
         String determination = doEvents(events, npc, player, context);
@@ -4131,22 +4082,19 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         dEntity vehicle = new dEntity(event.getVehicle());
-        String vehicleType = vehicle.getEntityType().name();
-
         dEntity entity = new dEntity(event.getEntered());
-        String entityType = entity.getEntityType().name();
 
         context.put("vehicle", vehicle);
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity enters vehicle",
-                        entityType + " enters vehicle",
-                        "entity enters " + vehicleType,
-                        entityType + " enters " + vehicleType),
+                        entity.identifyType() + " enters vehicle",
+                        "entity enters " + vehicle.identifyType(),
+                        entity.identifyType() + " enters " + vehicle.identifyType()),
                 npc, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -4178,22 +4126,19 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         dEntity vehicle = new dEntity(event.getVehicle());
-        String vehicleType = vehicle.getEntityType().name();
-
         dEntity entity = new dEntity(event.getExited());
-        String entityType = entity.getEntityType().name();
 
         context.put("vehicle", vehicle);
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); entityType = "npc"; }
+        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
                 ("entity exits vehicle",
-                        "entity exits " + vehicleType,
-                        entityType + " exits vehicle",
-                        entityType + " exits " + vehicleType),
+                        "entity exits " + vehicle.identifyType(),
+                        entity.identifyType() + " exits vehicle",
+                        entity.identifyType() + " exits " + vehicle.identifyType()),
                 npc, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
