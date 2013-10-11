@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities.entity;
 
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_6_R3.entity.CraftEntity;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -37,12 +38,13 @@ public class Rotation {
             // is to use teleport on him/her
 
             entity.teleport(location);
-            return;
         }
 
-        if (entity instanceof LivingEntity) {
+        else if (entity instanceof LivingEntity) {
+            if (entity instanceof EnderDragon) yaw = normalizeYaw(yaw - 180);
             NMS.look((LivingEntity) entity, yaw, pitch);
         }
+
         else {
             net.minecraft.server.v1_6_R3.Entity handle = ((CraftEntity) entity).getHandle();
             handle.yaw = yaw;

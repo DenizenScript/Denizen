@@ -96,7 +96,7 @@ public class FlyCommand extends AbstractCommand {
 
         // Use a default speed and rotation threshold if they are not specified
         scriptEntry.defaultObject("speed", new Element(1.2));
-        scriptEntry.defaultObject("rotationThreshold", new Element(45));
+        scriptEntry.defaultObject("rotationThreshold", new Element(15));
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities"))
