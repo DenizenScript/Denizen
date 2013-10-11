@@ -1521,7 +1521,7 @@ public class dEntity implements dObject {
         // @attribute <e@entity.is_persistent>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the entity will despawn when far away from players.
+        // Returns whether the entity will not be removed completely when far away from players.
         // -->
         if (attribute.startsWith("is_persistent")) {
             if (isLivingEntity())
