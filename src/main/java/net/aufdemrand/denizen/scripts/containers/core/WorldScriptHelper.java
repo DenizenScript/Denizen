@@ -140,8 +140,8 @@ public class WorldScriptHelper implements Listener {
         // If a list of events uses identifiers, also add those events to the list
         // with their identifiers stripped
         return doEvents(usesIdentifiers ? addAlternates(eventNames)
-                                        : eventNames,
-                        npc, player, context);
+                : eventNames,
+                npc, player, context);
     }
 
     public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, dObject> context) {
@@ -3116,9 +3116,12 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a player dies.
     // @Context
     // <context.message> returns an Element of the death message.
+    // <context.inventory> returns a copy of the Player's inventory before death.
     //
     // @Determine
     // Element(String) to change the death message.
+    // "NO_DROPS" to specify the Player's drops should be removed.
+    // "DROPS <i@item|...>" to specify new items to be dropped.
     //
     // -->
     @EventHandler
@@ -3126,6 +3129,7 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getDeathMessage()));
+        context.put("inventory", new dInventory(event.getEntity().getInventory()));
 
         String determination = doEvents(Arrays.asList
                 ("player dies",
@@ -3133,9 +3137,22 @@ public class WorldScriptHelper implements Listener {
                 null, event.getEntity(), context);
 
         // Handle message
-        if (!determination.equals("none")) {
+        if (determination.equalsIgnoreCase("NO_DROPS")) {
+            event.getDrops().clear();
+
+        } else if (determination.toUpperCase().startsWith("DROPS ")) {
+            dList drops = dList.valueOf(determination.substring(6));
+            drops.filter(dItem.class);
+            event.getDrops().clear();
+            for (String drop : drops) {
+                dItem item = dItem.valueOf(drop);
+                if (item != null)
+                    event.getDrops().add(item.getItemStack());
+            }
+
+        } else if (!determination.equalsIgnoreCase("NONE"))
             event.setDeathMessage(determination);
-        }
+
     }
 
     // <--[event]
