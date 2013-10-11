@@ -300,83 +300,209 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return null;
 
-        // <--[tag]
-        // @attribute <l@location.biome.formatted>
-        // @returns Element
-        // @description
-        // Returns the formatted biome name at the location.
-        // -->
-        if (attribute.startsWith("biome.formatted"))
-            return new Element(getBlock().getBiome().name().toLowerCase().replace('_', ' '))
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <l@location.biome.humidity>
-        // @returns Element(Number)
-        // @description
-        // Returns the current humidity at the location.
-        // -->
-        if (attribute.startsWith("biome.humidity"))
-            return new Element(getBlock().getHumidity())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <l@location.biome.temperature>
-        // @returns Element(Number)
-        // @description
-        // Returns the current temperature at the location.
-        // -->
-        if (attribute.startsWith("biome.temperature"))
-            return new Element(getBlock().getTemperature())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <l@location.biome>
-        // @returns Element
-        // @description
-        // Returns the biome name at the location.
-        // -->
-        if (attribute.startsWith("biome"))
-            return new Element(getBlock().getBiome().name())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <l@location.below>
-        // @returns dLocation
-        // @description
-        // Returns the location below this location.
-        // -->
-        if (attribute.startsWith("below"))
-            return new dLocation(this.add(0,-1,0))
-                    .getAttribute(attribute.fulfill(2));
+        /////////////////////
+        //   BLOCK ATTRIBUTES
+        /////////////////
 
         // <--[tag]
         // @attribute <l@location.above>
         // @returns dLocation
         // @description
-        // Returns the location above this location.
+        // Returns the location one block above this location.
         // -->
         if (attribute.startsWith("above"))
             return new dLocation(this.add(0,1,0))
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <l@location.add[x,y,z]>
+        // @attribute <l@location.below>
         // @returns dLocation
         // @description
-        // Returns the location with the specified coordinates added to it.
+        // Returns the location one block below this location.
         // -->
-        if (attribute.startsWith("add")) {
-            if (attribute.hasContext(1) && attribute.getContext(1).split(",").length == 3) {
-                String[] ints = attribute.getContext(1).split(",", 3);
-                if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
-                        && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
-                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2]))) {
-                    return new dLocation(this.clone().add(Double.valueOf(ints[0]),
-                            Double.valueOf(ints[1]),
-                            Double.valueOf(ints[2]))).getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("below"))
+            return new dLocation(this.add(0,-1,0))
+                    .getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <l@location.block>
+        // @returns dLocation
+        // @description
+        // Returns the location of the block this location is on,
+        // i.e. returns a location without decimals or direction.
+        // -->
+        if (attribute.startsWith("block")) {
+            return new dLocation(getWorld(), getBlockX(), getBlockY(), getBlockZ())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.highest>
+        // @returns dLocation
+        // @description
+        // Returns the location of the highest solid block at the location.
+        // -->
+        if (attribute.startsWith("highest")) {
+            return new dLocation(getWorld().getHighestBlockAt(this).getLocation().add(0, -1, 0))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.inventory>
+        // @returns dInventory
+        // @description
+        // Returns the dInventory of the block at the location. If the
+        // block is not a container, returns null.
+        // -->
+        if (attribute.startsWith("inventory")) {
+            if (getBlock().getState() instanceof InventoryHolder)
+                return new dInventory(getBlock().getState()).getAttribute(attribute.fulfill(1));
+            return new Element("null").getAttribute(attribute);
+        }
+
+        // <--[tag]
+        // @attribute <l@location.material>
+        // @returns Element
+        // @description
+        // Returns the Bukkit material name of the block at the location.
+        // -->
+        if (attribute.startsWith("material"))
+            return dMaterial.getMaterialFrom(getBlock().getType(), getBlock().getData()).getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <l@location.sign_contents>
+        // @returns dList
+        // @description
+        // Returns a list of lines on a sign.
+        // -->
+        if (attribute.startsWith("sign_contents")) {
+            if (getBlock().getState() instanceof Sign) {
+                return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
+                        .getAttribute(attribute.fulfill(2));
+            }
+            else return "null";
+        }
+
+        // <--[tag]
+        // @attribute <l@location.simple.formatted>
+        // @returns Element
+        // @description
+        // Returns the formatted simple version of the dLocation's block coordinates.
+        // EG: X 'x', Y 'y', Z 'z', in world 'world'
+        // -->
+        if (attribute.startsWith("simple.formatted"))
+            return new Element("X '" + getBlockX()
+                    + "', Y '" + getBlockY()
+                    + "', Z '" + getBlockZ()
+                    + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <l@location.simple>
+        // @returns Element
+        // @description
+        // Returns a simple version of the dLocation's block coordinates.
+        // EG: x,y,z,world
+        // -->
+        if (attribute.startsWith("simple"))
+            return new Element(getBlockX() + "," + getBlockY() + "," + getBlockZ()
+            + "," + getWorld().getName()).getAttribute(attribute.fulfill(1));
+
+
+        /////////////////////
+        //   DIRECTION ATTRIBUTES
+        /////////////////
+
+        // <--[tag]
+        // @attribute <l@location.direction.vector>
+        // @returns dLocation
+        // @description
+        // Returns the location's direction as a one-length vector.
+        // -->
+        if (attribute.startsWith("direction.vector")) {
+            double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
+            double nx = xzLen * Math.cos(getYaw() * (Math.PI/180));
+            double ny = Math.sin(getPitch() * (Math.PI/180));
+            double nz = xzLen * Math.sin(-getYaw() * (Math.PI/180));
+            return new dLocation(getWorld(), -nx, -ny, nz).getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.direction[<location>]>
+        // @returns Element
+        // @description
+        // Returns the compass direction between two locations.
+        // If no second location is specified, returns the direction of the location.
+        // -->
+        if (attribute.startsWith("direction")) {
+            // Get the cardinal direction from this location to another
+            if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
+                // Subtract this location's vector from the other location's vector,
+                // not the other way around
+                return new Element(Rotation.getCardinal(Rotation.getYaw
+                        (dLocation.valueOf(attribute.getContext(1)).toVector().subtract(this.toVector())
+                                .normalize())))
+                        .getAttribute(attribute.fulfill(1));
+            }
+            // Get a cardinal direction from this location's yaw
+            else {
+                return new Element(Rotation.getCardinal(getYaw()))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.facing[<entity>/<location>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the location's yaw is facing another
+        // entity or location.
+        // -->
+        if (attribute.startsWith("facing")) {
+            if (attribute.hasContext(1)) {
+
+                // The default number of degrees if there is no degrees attribute
+                int degrees = 45;
+
+                // The attribute to fulfill from
+                int attributePos = 1;
+
+                // <--[tag]
+                // @attribute <location.facing[<entity>/<location>].degrees[X]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the location's yaw is facing another
+                // entity or location, within a specified degree range.
+                // -->
+                if (attribute.getAttribute(2).startsWith("degrees") &&
+                    attribute.hasContext(2) &&
+                    aH.matchesInteger(attribute.getContext(2))) {
+
+                    degrees = attribute.getIntContext(2);
+                    attributePos++;
+                }
+
+                if (dLocation.matches(attribute.getContext(1))) {
+                    return new Element(Rotation.isFacingLocation
+                            (this, dLocation.valueOf(attribute.getContext(1)), degrees))
+                               .getAttribute(attribute.fulfill(attributePos));
+                }
+                else if (dEntity.matches(attribute.getContext(1))) {
+                    return new Element(Rotation.isFacingLocation
+                            (this, dEntity.valueOf(attribute.getContext(1))
+                                    .getBukkitEntity().getLocation(), degrees))
+                               .getAttribute(attribute.fulfill(attributePos));
                 }
             }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.pitch>
+        // @returns Element(Number)
+        // @description
+        // Returns the pitch of the object at the location.
+        // -->
+        if (attribute.startsWith("pitch")) {
+            return new Element(getPitch()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -405,6 +531,33 @@ public class dLocation extends org.bukkit.Location implements dObject {
             loc.setYaw(yaw);
             return loc.getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <l@location.yaw.raw>
+        // @returns Element(Number)
+        // @description
+        // Returns the raw yaw of the object at the location.
+        // -->
+        if (attribute.startsWith("yaw.raw")) {
+            return new Element(getYaw())
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.yaw>
+        // @returns Element(Number)
+        // @description
+        // Returns the normalized yaw of the object at the location.
+        // -->
+        if (attribute.startsWith("yaw")) {
+            return new Element(Rotation.normalizeYaw(getYaw()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+
+        /////////////////////
+        //   ENTITY AND BLOCK LIST ATTRIBUTES
+        /////////////////
 
         if (attribute.startsWith("find") || attribute.startsWith("nearest")) {
             attribute.fulfill(1);
@@ -603,64 +756,86 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element("null").getAttribute(attribute);
         }
 
+
+        /////////////////////
+        //   IDENTIFICATION ATTRIBUTES
+        /////////////////
+
         // <--[tag]
-        // @attribute <l@location.inventory>
-        // @returns dInventory
+        // @attribute <l@location.formatted>
+        // @returns Element
         // @description
-        // Returns the dInventory of the block at the location. If the
-        // block is not a container, returns null.
+        // Returns the formatted version of the dLocation.
+        // EG: 'X 'x.x', Y 'y.y', Z 'z.z', in world 'world'
         // -->
-        if (attribute.startsWith("inventory")) {
-            if (getBlock().getState() instanceof InventoryHolder)
-                return new dInventory(getBlock().getState()).getAttribute(attribute.fulfill(1));
-            return new Element("null").getAttribute(attribute);
+        if (attribute.startsWith("formatted"))
+            return new Element("X '" + getX()
+                    + "', Y '" + getY()
+                    + "', Z '" + getZ()
+                    + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <l@location.world>
+        // @returns dWorld
+        // @description
+        // Returns the world that the location is in.
+        // -->
+        if (attribute.startsWith("world")) {
+            return dWorld.mirrorBukkitWorld(getWorld())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <l@location.material>
-        // @returns Element
+        // @attribute <l@location.x>
+        // @returns Element(Number)
         // @description
-        // Returns the Bukkit material name of the block at the location.
+        // Returns the X coordinate of the location.
         // -->
-        if (attribute.startsWith("material"))
-            return dMaterial.getMaterialFrom(getBlock().getType(), getBlock().getData()).getAttribute(attribute.fulfill(2));
-
+        if (attribute.startsWith("x")) {
+            return new Element(getX()).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
-        // @attribute <l@location.direction.vector>
+        // @attribute <l@location.y>
+        // @returns Element(Number)
+        // @description
+        // Returns the Y coordinate of the location.
+        // -->
+        if (attribute.startsWith("y")) {
+            return new Element(getY()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.z>
+        // @returns Element(Number)
+        // @description
+        // Returns the Z coordinate of the location.
+        // -->
+        if (attribute.startsWith("z")) {
+            return new Element(getZ()).getAttribute(attribute.fulfill(1));
+        }
+
+
+        /////////////////////
+        //   MATHEMATICAL ATTRIBUTES
+        /////////////////
+
+        // <--[tag]
+        // @attribute <l@location.add[x,y,z]>
         // @returns dLocation
         // @description
-        // Returns the location's direction as a one-length vector.
+        // Returns the location with the specified coordinates added to it.
         // -->
-        if (attribute.startsWith("direction.vector")) {
-            double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
-            double nx = xzLen * Math.cos(getYaw() * (Math.PI/180));
-            double ny = Math.sin(getPitch() * (Math.PI/180));
-            double nz = xzLen * Math.sin(-getYaw() * (Math.PI/180));
-            return new dLocation(getWorld(), -nx, -ny, nz).getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.direction[<location>]>
-        // @returns Element
-        // @description
-        // Returns the compass direction between two locations.
-        // If no second location is specified, returns the direction of the location.
-        // -->
-        if (attribute.startsWith("direction")) {
-            // Get the cardinal direction from this location to another
-            if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
-                // Subtract this location's vector from the other location's vector,
-                // not the other way around
-                return new Element(Rotation.getCardinal(Rotation.getYaw
-                        (dLocation.valueOf(attribute.getContext(1)).toVector().subtract(this.toVector())
-                                .normalize())))
-                        .getAttribute(attribute.fulfill(1));
-            }
-            // Get a cardinal direction from this location's yaw
-            else {
-                return new Element(Rotation.getCardinal(getYaw()))
-                        .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("add")) {
+            if (attribute.hasContext(1) && attribute.getContext(1).split(",").length == 3) {
+                String[] ints = attribute.getContext(1).split(",", 3);
+                if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
+                        && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
+                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2]))) {
+                    return new dLocation(this.clone().add(Double.valueOf(ints[0]),
+                            Double.valueOf(ints[1]),
+                            Double.valueOf(ints[2]))).getAttribute(attribute.fulfill(1));
+                }
             }
         }
 
@@ -727,42 +902,50 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
 
-        // <--[tag]
-        // @attribute <l@location.simple>
-        // @returns Element
-        // @description
-        // Returns a simple formatted version of the dLocation.
-        // EG: x,y,z,world
-        // -->
-        if (attribute.startsWith("simple"))
-            return new Element(getBlockX() + "," + getBlockY() + "," + getBlockZ()
-            + "," + getWorld().getName()).getAttribute(attribute.fulfill(1));
+
+        /////////////////////
+        //   STATE ATTRIBUTES
+        /////////////////
 
         // <--[tag]
-        // @attribute <l@location.formatted.simple>
+        // @attribute <l@location.biome.formatted>
         // @returns Element
         // @description
-        // Returns the formatted simple version of the dLocation.
-        // EG: X 'x', Y 'y', Z 'z', in world 'world'
+        // Returns the formatted biome name at the location.
         // -->
-        if (attribute.startsWith("formatted.simple"))
-            return new Element("X '" + getBlockX()
-                    + "', Y '" + getBlockY()
-                    + "', Z '" + getBlockZ()
-                    + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(2));
+        if (attribute.startsWith("biome.formatted"))
+            return new Element(getBlock().getBiome().name().toLowerCase().replace('_', ' '))
+                    .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <l@location.formatted>
+        // @attribute <l@location.biome.humidity>
+        // @returns Element(Number)
+        // @description
+        // Returns the current humidity at the location.
+        // -->
+        if (attribute.startsWith("biome.humidity"))
+            return new Element(getBlock().getHumidity())
+                    .getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <l@location.biome.temperature>
+        // @returns Element(Number)
+        // @description
+        // Returns the current temperature at the location.
+        // -->
+        if (attribute.startsWith("biome.temperature"))
+            return new Element(getBlock().getTemperature())
+                    .getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <l@location.biome>
         // @returns Element
         // @description
-        // Returns the formatted version of the dLocation.
-        // EG: 'X 'x.x', Y 'y.y', Z 'z.z', in world 'world'
+        // Returns the biome name at the location.
         // -->
-        if (attribute.startsWith("formatted"))
-            return new Element("X '" + getX()
-                    + "', Y '" + getY()
-                    + "', Z '" + getZ()
-                    + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("biome"))
+            return new Element(getBlock().getBiome().name())
+                    .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <l@location.is_liquid>
@@ -809,83 +992,6 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <l@location.pitch>
-        // @returns Element(Number)
-        // @description
-        // Returns the pitch of the object at the location.
-        // -->
-        if (attribute.startsWith("pitch")) {
-            return new Element(getPitch()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.yaw.raw>
-        // @returns Element(Number)
-        // @description
-        // Returns the raw yaw of the object at the location.
-        // -->
-        if (attribute.startsWith("yaw.raw")) {
-            return new Element(getYaw())
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.yaw>
-        // @returns Element(Number)
-        // @description
-        // Returns the normalized yaw of the object at the location.
-        // -->
-        if (attribute.startsWith("yaw")) {
-            return new Element(Rotation.normalizeYaw(getYaw()))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.facing[<entity>/<location>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the location's yaw is facing another
-        // entity or location.
-        // -->
-        if (attribute.startsWith("facing")) {
-            if (attribute.hasContext(1)) {
-
-                // The default number of degrees if there is no degrees attribute
-                int degrees = 45;
-
-                // The attribute to fulfill from
-                int attributePos = 1;
-
-                // <--[tag]
-                // @attribute <location.facing[<entity>/<location>].degrees[X]>
-                // @returns Element(Boolean)
-                // @description
-                // Returns whether the location's yaw is facing another
-                // entity or location, within a specified degree range.
-                // -->
-                if (attribute.getAttribute(2).startsWith("degrees") &&
-                    attribute.hasContext(2) &&
-                    aH.matchesInteger(attribute.getContext(2))) {
-
-                    degrees = attribute.getIntContext(2);
-                    attributePos++;
-                }
-
-                if (dLocation.matches(attribute.getContext(1))) {
-                    return new Element(Rotation.isFacingLocation
-                            (this, dLocation.valueOf(attribute.getContext(1)), degrees))
-                               .getAttribute(attribute.fulfill(attributePos));
-                }
-                else if (dEntity.matches(attribute.getContext(1))) {
-                    return new Element(Rotation.isFacingLocation
-                            (this, dEntity.valueOf(attribute.getContext(1))
-                                    .getBukkitEntity().getLocation(), degrees))
-                               .getAttribute(attribute.fulfill(attributePos));
-                }
-            }
-        }
-
-        // <--[tag]
         // @attribute <l@location.power>
         // @returns Element(Number)
         // @description
@@ -894,6 +1000,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
         if (attribute.startsWith("power"))
             return new Element(getBlock().getBlockPower())
                     .getAttribute(attribute.fulfill(1));
+
+
+        /////////////////////
+        //   WORLDGUARD ATTRIBUTES
+        /////////////////
 
         // <--[tag]
         // @attribute <l@location.in_region[<name>|...]>
@@ -909,7 +1020,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return null;
             }
 
-            // Check if the player is in the specified region
+            // Check if the location is in the specified region
             if (attribute.hasContext(1)) {
                 dList region_list = dList.valueOf(attribute.getContext(1));
                 for(String region: region_list)
@@ -918,7 +1029,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return Element.FALSE.getAttribute(attribute.fulfill(1));
             }
 
-            // Check if the player is in any region
+            // Check if the location is in any region
             else {
                 return new Element(WorldGuardUtilities.inRegion(this))
                     .getAttribute(attribute.fulfill(1));
@@ -937,84 +1048,6 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return null;
             }
             return new dList(WorldGuardUtilities.getRegions(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.world>
-        // @returns dWorld
-        // @description
-        // Returns the world that the location is in.
-        // -->
-        if (attribute.startsWith("world")) {
-            return dWorld.mirrorBukkitWorld(getWorld())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.block.sign_contents>
-        // @returns dList
-        // @description
-        // Returns a list of lines on a sign.
-        // -->
-        if (attribute.startsWith("block.sign_contents")) {
-            if (getBlock().getState() instanceof Sign) {
-                return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
-                        .getAttribute(attribute.fulfill(2));
-            }
-            else return "null";
-        }
-
-        // <--[tag]
-        // @attribute <l@location.block>
-        // @returns dLocation
-        // @description
-        // Returns the location of the block this location is on,
-        // I.E. returns a location without decimals or direction.
-        // -->
-        if (attribute.startsWith("block")) {
-            return new dLocation(getWorld(), getBlockX(), getBlockY(), getBlockZ())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.x>
-        // @returns Element(Number)
-        // @description
-        // Returns the X coordinate of the location.
-        // -->
-        if (attribute.startsWith("x")) {
-            return new Element(getX()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.y>
-        // @returns Element(Number)
-        // @description
-        // Returns the Y coordinate of the location.
-        // -->
-        if (attribute.startsWith("y")) {
-            return new Element(getY()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.z>
-        // @returns Element(Number)
-        // @description
-        // Returns the Z coordinate of the location.
-        // -->
-        if (attribute.startsWith("z")) {
-            return new Element(getZ()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.highest>
-        // @returns dLocation
-        // @description
-        // Returns the location of the highest solid block at the location.
-        // -->
-        if (attribute.startsWith("highest")) {
-            return new dLocation(getWorld().getHighestBlockAt(this).getLocation().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(1));
         }
 

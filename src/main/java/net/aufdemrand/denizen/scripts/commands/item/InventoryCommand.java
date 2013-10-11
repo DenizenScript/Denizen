@@ -117,7 +117,7 @@ public class InventoryCommand extends AbstractCommand {
 
         dB.report(getName(),
                 destination.debug()
-                + (origin != null?origin.debug():"")
+                + (origin != null ? origin.debug() : "")
                 + action.debug());
 
         switch (Action.valueOf(action.asString())) {
