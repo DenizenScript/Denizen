@@ -143,11 +143,11 @@ public class CommandHandler {
     // /npc constant --remove constant_name
     //
     // Viewing constants is easy, just use '/npc constant #', specifying a page number.
-    // Constants which have been overridden in the Assignment Constants list are formatted with a
+    // Constants which have been overridden in the Assignment 'Default Constants' list are formatted with a
     // 'strike-through' to indicate this case.
     //
     // To reference a constant value, use the replaceable tag to get the NPCs 'constant' attribute. For example:
-    // <npc.constant[constant_name]>. Constants may also have other TAGs in their value, which will be 'replaced'
+    // <npc.constant[constant_name]>. Constants may also have other tags in their value, which will be 'replaced'
     // whenever the constant is called to be used allowing for the use of dynamic information.
 
      // -->

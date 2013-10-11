@@ -952,6 +952,20 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         // <--[tag]
+        // @attribute <l@location.block.sign_contents>
+        // @returns dList
+        // @description
+        // Returns a list of lines on a sign.
+        // -->
+        if (attribute.startsWith("block.sign_contents")) {
+            if (getBlock().getState() instanceof Sign) {
+                return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
+                        .getAttribute(attribute.fulfill(2));
+            }
+            else return "null";
+        }
+
+        // <--[tag]
         // @attribute <l@location.block>
         // @returns dLocation
         // @description
@@ -991,20 +1005,6 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("z")) {
             return new Element(getZ()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <l@location.block.sign_contents>
-        // @returns dList
-        // @description
-        // Returns a list of lines on a sign.
-        // -->
-        if (attribute.startsWith("block.sign_contents")) {
-            if (getBlock().getState() instanceof Sign) {
-                return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
-                        .getAttribute(attribute.fulfill(2));
-            }
-            else return "null";
         }
 
         // <--[tag]
