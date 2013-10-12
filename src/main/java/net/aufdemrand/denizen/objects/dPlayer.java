@@ -42,7 +42,7 @@ public class dPlayer implements dObject {
     // <--[language]
     // @name p@
     // @description
-    // p@ refers to the object type of a dPlayer. The 'p@' is notation for Denizen's Object
+    // p@ refers to the 'object identifier' of a dPlayer. The 'p@' is notation for Denizen's Object
     // Fetcher. The only valid constructor for a dPlayer is the name of the player the object should be
     // associated with. For example, to reference the player named 'mythan', use p@mythan. Player names
     // are case insensitive.

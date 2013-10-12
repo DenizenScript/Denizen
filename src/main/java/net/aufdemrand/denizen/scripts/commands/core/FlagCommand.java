@@ -21,6 +21,12 @@ import org.bukkit.event.Listener;
 
 public class FlagCommand extends AbstractCommand implements Listener {
 
+    // <--[example]
+    //
+    //
+    //
+    //
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -45,7 +51,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             } else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("global, server")) {
                 specified_target = true;
-                scriptEntry.addObject("flag_target", new Element("server"));
+                scriptEntry.addObject("flag_target", Element.SERVER);
 
             } else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("player")) {
@@ -53,32 +59,35 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("flag_target", scriptEntry.getPlayer());
             }
 
-            // Allow a p@player or n@npc entity to specify the target
-            // to be flagged
+            // Allow a p@player or n@npc entity to specify the target to be flagged.
+            // Don't check if the player/npc is valid until after the argument
+            // is being process to make sure the objects don't accidently get set
+            // as the name of the flag..
             else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matchesArgumentType(dNPC.class)
                     && arg.startsWith("n@")) {
+                if (dNPC.valueOf(arg.getValue()) == null)
+                    throw new InvalidArgumentsException("Invalid NPC target.");
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
 
             } else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matchesArgumentType(dPlayer.class)
                     && arg.startsWith("p@")) {
+                if (dPlayer.valueOf(arg.getValue()) == null)
+                    throw new InvalidArgumentsException("Invalid Player target.");
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
             }
 
+
             // Check if setting a boolean
-            else if (!scriptEntry.hasObject("action")
-                    && arg.raw_value.split(":", 3).length == 1) {
+            else if (arg.raw_value.split(":", 3).length == 1) {
                 scriptEntry.addObject("action", FlagManager.Action.SET_BOOLEAN);
                 scriptEntry.addObject("value", Element.TRUE);
                 scriptEntry.addObject("flag_name", arg.asElement());
             }
 
             // Check for flag_name:value/action
-            else if (!scriptEntry.hasObject("action")
-                    && arg.raw_value.split(":", 3).length == 2) {
+            else if (arg.raw_value.split(":", 3).length == 2) {
 
                 String[] flagArgs = arg.raw_value.split(":", 2);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
@@ -107,8 +116,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             }
 
             // Check for flag_name:action:value
-            else if (!scriptEntry.hasObject("action")
-                    && arg.raw_value.split(":", 3).length == 3) {
+            else if (arg.raw_value.split(":", 3).length == 3) {
                 String[] flagArgs = arg.raw_value.split(":", 3);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
                 scriptEntry.addObject("value", new Element(flagArgs[2]));
@@ -135,7 +143,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
                     scriptEntry.addObject("action", FlagManager.Action.DIVIDE);
             }
 
-            else dB.echoDebug("Unhandled argument: " + arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Set defaults

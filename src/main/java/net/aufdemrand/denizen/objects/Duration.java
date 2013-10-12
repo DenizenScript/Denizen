@@ -68,7 +68,7 @@ public class Duration implements dObject {
     // <--[language]
     // @name d@
     // @description
-    // d@ refers to the object type of a 'Duration'. The 'd@' is notation for Denizen's Object
+    // d@ refers to the 'object identifier' of a 'Duration'. The 'd@' is notation for Denizen's Object
     // Fetcher. Durations must be a positive number or range of numbers followed optionally by
     // a unit of time, and prefixed by d@. Examples: d@3s, d@1d, d@10s-20s.
     //
