@@ -312,7 +312,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("above"))
             return new dLocation(this.add(0,1,0))
-                    .getAttribute(attribute.fulfill(2));
+                    .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <l@location.below>
@@ -322,7 +322,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("below"))
             return new dLocation(this.add(0,-1,0))
-                    .getAttribute(attribute.fulfill(2));
+                    .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <l@location.block>
@@ -378,7 +378,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         if (attribute.startsWith("sign_contents")) {
             if (getBlock().getState() instanceof Sign) {
                 return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
-                        .getAttribute(attribute.fulfill(2));
+                        .getAttribute(attribute.fulfill(1));
             }
             else return "null";
         }
