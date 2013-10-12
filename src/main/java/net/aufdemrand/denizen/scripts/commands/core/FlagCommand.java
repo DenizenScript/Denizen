@@ -21,12 +21,6 @@ import org.bukkit.event.Listener;
 
 public class FlagCommand extends AbstractCommand implements Listener {
 
-    // <--[example]
-    //
-    //
-    //
-    //
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
