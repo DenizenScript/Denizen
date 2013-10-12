@@ -22,17 +22,6 @@ import static net.aufdemrand.denizen.objects.aH.Argument;
  */
 public class AnchorCommand extends AbstractCommand {
 
-    // <--[example]
-    // @Title Simple Anchor Example
-    // @link Anchor Command, Anchors, Anchor Trait
-    // @Description
-    // This code example contains a very simple 'waypoints' system utilizing the
-    // anchor command, anchor trait (provided by Citizens2), and world scripts.
-    // @Code
-    // TODO: This example 0.0
-    //
-    // -->
-
     private enum Action { ADD, REMOVE, ASSUME, WALKTO, WALKNEAR }
 
     public static final    String  RANGE_ARG = "range, r";
