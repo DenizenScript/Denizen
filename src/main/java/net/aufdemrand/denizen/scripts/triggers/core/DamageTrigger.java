@@ -9,8 +9,6 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -23,15 +21,23 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     @EventHandler
     public void damageTrigger(EntityDamageByEntityEvent event) {
 
-        Player player = null;
-        if (event.getDamager() instanceof Player) player = (Player) event.getDamager();
-        else if (event.getDamager() instanceof Projectile
-                && ((Projectile) event.getDamager()).getShooter() instanceof Player)
-            player = (Player) ((Projectile)event.getDamager()).getShooter();
         if (event.getEntity() == null)
             return;
 
-        if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()) && player != null) {
+        dEntity damager = new dEntity(event.getDamager());
+
+        if (damager.isProjectile() && damager.hasShooter()) {
+            damager = damager.getShooter();
+        }
+
+        dPlayer dplayer = null;
+
+        if (damager.isPlayer()) {
+            dplayer = damager.getDenizenPlayer();
+        }
+        else return;
+
+        if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
             if (npc == null)
                 return;
@@ -40,9 +46,6 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 
             if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
             if (!npc.getTriggerTrait().isEnabled(name)) return;
-
-            dPlayer dplayer = dPlayer.mirrorBukkitPlayer(player);
-
             if (!npc.getTriggerTrait().trigger(this, dplayer)) return;
 
             InteractScriptContainer script = InteractScriptHelper
@@ -58,7 +61,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                         String entry_value = TagManager.tag(dplayer, npc, entry.getValue());
                         // Check if the item specified in the specified id's 'trigger:' key
                         // matches the item that the player is holding.
-                        if (dItem.valueOf(entry_value).comparesTo(player.getItemInHand()) >= 0
+                        if (dItem.valueOf(entry_value).comparesTo(dplayer.getPlayerEntity().getItemInHand()) >= 0
                                 && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
                                 dplayer, npc, entry.getKey()))
                             id = entry.getKey();
