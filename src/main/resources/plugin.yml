@@ -3,7 +3,7 @@ author: aufdemrand
 version: ${project.version} (build ${BUILD_NUMBER})
 main: net.aufdemrand.denizen.Denizen
 depend: [Citizens]
-softdepend: [Vault, WorldGuard]
+softdepend: [Vault, WorldEdit, WorldGuard]
 
 commands:
   denizen:

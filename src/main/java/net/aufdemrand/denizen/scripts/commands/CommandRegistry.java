@@ -1801,6 +1801,42 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
+        // @Name Schematic
+        // @Usage schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)
+        // @Required 2
+        // @Stable unstable
+        // @Short Loads, edits, or pastes a WorldEdit schematic.
+        // @Author mcmonkey
+        // @Description
+        // Todo
+        // @Tags
+        // <schematic[<name>].height>
+        // <schematic[<name>].length>
+        // <schematic[<name>].width>
+        // <schematic[<name>].block[<location>]>
+        // <schematic[<name>].origin>
+        // <schematic[<name>].offset>
+        // <schematic[<name>].blocks>
+        // @Usage
+        // Use to load a schematic
+        // - schematic load name:MySchematic
+        //
+        // @Usage
+        // Use to unload a schematic
+        // - schematic unload name:MySchematic
+        //
+        // @Usage
+        // Use to rotate a loaded schematic
+        // - schematic rotate name:MySchematic angle:90
+        //
+        // @Usage
+        // Use to paste a loaded schematic
+        // - schematic paste name:MySchematic <player.location> noair
+        // -->
+        registerCoreMember(SchematicCommand.class,
+                "SCHEMATIC", "schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)", 2);
+
+        // <--[command]
         // @Name Scoreboard
         // @Usage scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar})
         // @Required 1

@@ -166,6 +166,7 @@ public class Denizen extends JavaPlugin {
         String directory = URLDecoder.decode(System.getProperty("user.dir"));
         new File(directory + "/plugins/Denizen/scripts").mkdirs();
         new File(directory + "/plugins/Denizen/midi").mkdirs();
+        new File(directory + "/plugins/Denizen/schematics").mkdirs();
 
         // Ensure the example Denizen.mid sound file is available
         if (!new File(directory + "/plugins/Denizen/midi/Denizen.mid").exists()) {
