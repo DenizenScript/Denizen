@@ -1838,7 +1838,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Scoreboard
-        // @Usage scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar})
+        // @Usage scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none)
         // @Required 1
         // @Stable stable
         // @Short Add or removes viewers, objectives and scores from scoreboards.
@@ -1859,6 +1859,9 @@ public class CommandRegistry implements dRegistry {
         // display slot (which displays each player's score underneath his/her name) and the player_list
         // display slot (which displays each player's score to the right of his/her name in the player list).
         //
+        // If you do not specify a display slot, the sidebar will be used. You can also use "none" as the
+        // display slot if you want to add a hidden objective without automatically making it get displayed.
+        //
         // You can set scores manually, or you can use different Minecraft criteria that set and update the
         // scores automatically. A list of these criteria can be found here:
         // http://minecraft.gamepedia.com/Scoreboard#Objectives
@@ -1875,7 +1878,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Add a score for the player "mythan" to the default scoreboard under the objective "cookies" and let him see it
-        // - schematic add obj:cookies lines:mythan score:1000
+        // - schematic add obj:cookies lines:mythan score:1000 viewers:p@mythan
         //
         // @Usage
         // Add a new current objective called "food" to the "test" scoreboard with 3 lines that each have a score of 50:
@@ -1906,7 +1909,7 @@ public class CommandRegistry implements dRegistry {
         // - scoreboard add "viewers:<w@survival.players>" id:test obj:anything criteria:totalKillCount displayslot:player_list
         // -->
         registerCoreMember(ScoreboardCommand.class,
-                "SCOREBOARD", "scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar})", 1);
+                "SCOREBOARD", "scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none)", 1);
 
 
         /**
