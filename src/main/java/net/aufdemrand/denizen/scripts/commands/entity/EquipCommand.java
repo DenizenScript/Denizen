@@ -25,7 +25,7 @@ import net.citizensnpcs.api.trait.trait.Equipment;
  * @author David Cernat
  */
 
-public class EquipCommand extends AbstractCommand{
+public class EquipCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

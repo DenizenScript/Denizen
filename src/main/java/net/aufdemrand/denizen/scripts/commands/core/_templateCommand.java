@@ -34,13 +34,13 @@ public class _templateCommand extends AbstractCommand /* implements dExternal */
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        // if (!scriptEntry.hasObject("required_integer")
-        //  && arg.matchesPrimitive(aH.PrimitiveType.Integer))
-        //  scriptEntry.addObject("required_integer", arg.asElement());
+            // if (!scriptEntry.hasObject("required_integer")
+            //  && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+            //  scriptEntry.addObject("required_integer", arg.asElement());
 
-        // if (!scriptEntry.hasObject("required_location")
-        //  && arg.matchesArgumentType(dLocation.class))
-        //  scriptEntry.addObject("required_location", arg.asType(dLocation.class));
+            // if (!scriptEntry.hasObject("required_location")
+            //  && arg.matchesArgumentType(dLocation.class))
+            //  scriptEntry.addObject("required_location", arg.asType(dLocation.class));
 
         }
 
@@ -58,13 +58,14 @@ public class _templateCommand extends AbstractCommand /* implements dExternal */
 
         // Fetch required objects
 
-        // Element required_integer = (Element) scriptEntry.getObject("required_integer");
+        // Element required_integer = scriptEntry.getElement("required_integer");
         // dLocation required_location = (dLocation) scriptEntry.getObject("required_location");
 
 
         // Debug the execution
 
-        // dB.report(getName(), required_integer.debug() + required_location.debug());
+        // dB.report(getName(), required_integer.debug()
+        //                    + required_location.debug());
 
 
         // Do the execution
