@@ -235,8 +235,8 @@ public class ScoreboardCommand extends AbstractCommand {
 
             }
             // Only remove all objectives from scoreboard if viewers
-            // argument was not specified (because then only a list
-            // of viewers should be removed)
+            // argument was not specified (because if it was, a list
+            // of viewers should be removed instead)
             else if (viewers == null) {
                 dB.echoDebug("Removing all objectives from scoreboard " + id.asString());
                 for (Objective o : board.getObjectives()) {

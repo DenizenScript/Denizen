@@ -1137,7 +1137,7 @@ public class WorldScriptHelper implements Listener {
             dEntity entity = new dEntity(subEvent.getRemover());
             context.put("entity", entity.getDenizenObject());
 
-            if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+            if (entity.isNPC()) npc = entity.getDenizenNPC();
             else if (entity.isPlayer()) player = entity.getPlayer();
 
             events.add("entity breaks hanging");
@@ -1377,7 +1377,7 @@ public class WorldScriptHelper implements Listener {
         context.put("damage", new Element(event.getDamage()));
         context.put("cause", new Element(event.getCause().name()));
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         boolean isFatal = false;
@@ -1570,6 +1570,80 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // entity dies
+    // <entity> death
+    //
+    // @Triggers when an entity dies.
+    // @Context
+    // <context.message> returns the dEntity that died.
+    // <context.message> returns an Element of the death message,
+    //                   only available for player deaths.
+    // <context.inventory> returns the dInventory of the entity,
+    //                   currently only available for players.
+    //
+    // @Determine
+    // Element(String) to change the death message.
+    // "NO_DROPS" to specify the Player's drops should be removed.
+    // "DROPS <i@item|...>" to specify new items to be dropped.
+    //
+    // -->
+    @EventHandler
+    public void entityDeath(EntityDeathEvent event) {
+
+        Player player = null;
+        dNPC npc = null;
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity entity = new dEntity(event.getEntity());
+        context.put("entity", entity.getDenizenObject());
+
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
+        else if (entity.isPlayer()) player = entity.getPlayer();
+
+        PlayerDeathEvent subEvent = null;
+
+        if (event instanceof PlayerDeathEvent) {
+            subEvent = (PlayerDeathEvent) event;
+            context.put("message", new Element(subEvent.getDeathMessage()));
+
+            // Null check to prevent NPCs from causing an NPE
+            if (player != null)
+                context.put("inventory", new dInventory(player.getInventory()));
+        }
+
+        String determination = doEvents(Arrays.asList
+                ("entity dies",
+                 entity.identifyType() + " dies",
+                 "entity death",
+                 entity.identifyType() + " death"),
+                npc, player, context, true);
+
+        // Handle message
+        if (determination.equalsIgnoreCase("NO_DROPS")) {
+            event.getDrops().clear();
+
+        }
+        else if (determination.toUpperCase().startsWith("DROPS ")) {
+            dList drops = dList.valueOf(determination.substring(6));
+            drops.filter(dItem.class);
+            event.getDrops().clear();
+            for (String drop : drops) {
+                dItem item = dItem.valueOf(drop);
+                if (item != null)
+                    event.getDrops().add(item.getItemStack());
+            }
+
+        }
+
+        else if (!determination.equalsIgnoreCase("NONE")) {
+            if (event instanceof PlayerDeathEvent) {
+                subEvent.setDeathMessage(determination);
+            }
+        }
+    }
+
+    // <--[event]
+    // @Events
     // entity explodes
     // <entity> explodes
     //
@@ -1640,7 +1714,7 @@ public class WorldScriptHelper implements Listener {
         context.put("amount", new Element(event.getAmount()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
@@ -1682,7 +1756,7 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getLocation()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         doEvents(Arrays.asList
@@ -1714,7 +1788,7 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getTo()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         doEvents(Arrays.asList
@@ -1753,7 +1827,7 @@ public class WorldScriptHelper implements Listener {
         context.put("projectile", projectile);
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
@@ -1904,11 +1978,10 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
 
-            // If the determination matches a dEntity, change the event's target
-            // using a scheduled task (otherwise, the target will not be changed)
-            //
-            // Note: this does not work with all monster types
-
+        // If the determination matches a dEntity, change the event's target
+        // using a scheduled task (otherwise, the target will not be changed)
+        //
+        // Note: this does not work with all monster types
         else if (dEntity.matches(determination)) {
 
             final dEntity newTarget = dEntity.valueOf(determination);
@@ -1950,7 +2023,7 @@ public class WorldScriptHelper implements Listener {
         context.put("destination", new dLocation(event.getTo()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
@@ -2052,7 +2125,7 @@ public class WorldScriptHelper implements Listener {
         context.put("food", new Element(event.getFoodLevel()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
@@ -3110,53 +3183,6 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player dies
-    // player death
-    //
-    // @Triggers when a player dies.
-    // @Context
-    // <context.message> returns an Element of the death message.
-    // <context.inventory> returns a copy of the Player's inventory before death.
-    //
-    // @Determine
-    // Element(String) to change the death message.
-    // "NO_DROPS" to specify the Player's drops should be removed.
-    // "DROPS <i@item|...>" to specify new items to be dropped.
-    //
-    // -->
-    @EventHandler
-    public void playerDeath(PlayerDeathEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getDeathMessage()));
-        context.put("inventory", new dInventory(event.getEntity().getInventory()));
-
-        String determination = doEvents(Arrays.asList
-                ("player dies",
-                        "player death"),
-                null, event.getEntity(), context);
-
-        // Handle message
-        if (determination.equalsIgnoreCase("NO_DROPS")) {
-            event.getDrops().clear();
-
-        } else if (determination.toUpperCase().startsWith("DROPS ")) {
-            dList drops = dList.valueOf(determination.substring(6));
-            drops.filter(dItem.class);
-            event.getDrops().clear();
-            for (String drop : drops) {
-                dItem item = dItem.valueOf(drop);
-                if (item != null)
-                    event.getDrops().add(item.getItemStack());
-            }
-
-        } else if (!determination.equalsIgnoreCase("NONE"))
-            event.setDeathMessage(determination);
-
-    }
-
-    // <--[event]
-    // @Events
     // player drops item
     // player drops <item>
     //
@@ -3260,7 +3286,7 @@ public class WorldScriptHelper implements Listener {
             dEntity entity = new dEntity(event.getCaught());
             context.put("entity", entity.getDenizenObject());
 
-            if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+            if (entity.isNPC()) npc = entity.getDenizenNPC();
 
             events.add("player fishes " + entity.identifyType());
             events.add("player fishes " + entity.identifyType() + " while " + state);
@@ -3401,7 +3427,7 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getRightClicked().getLocation()));
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
 
         List<String> events = new ArrayList<String>();
         events.add("player right clicks entity");
@@ -3965,7 +3991,7 @@ public class WorldScriptHelper implements Listener {
         context.put("vehicle", vehicle);
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         List<String> events = new ArrayList<String>();
@@ -4050,8 +4076,8 @@ public class WorldScriptHelper implements Listener {
             dEntity entity = new dEntity(event.getAttacker());
             context.put("entity", entity.getDenizenObject());
 
-            if (entity.isPlayer()) { player = entity.getPlayer(); }
-            else { npc = entity.getDenizenNPC(); }
+            if (entity.isNPC()) npc = entity.getDenizenNPC();
+            else if (entity.isPlayer()) player = entity.getPlayer();
 
             events.add("entity damages vehicle");
             events.add("entity damages " + vehicle.identifyType());
@@ -4108,8 +4134,8 @@ public class WorldScriptHelper implements Listener {
             dEntity entity = new dEntity(event.getAttacker());
             context.put("entity", entity.getDenizenObject());
 
-            if (entity.isPlayer()) { player = entity.getPlayer(); }
-            else { npc = entity.getDenizenNPC(); }
+            if (entity.isNPC()) npc = entity.getDenizenNPC();
+            else if (entity.isPlayer()) player = entity.getPlayer();
 
             events.add("entity destroys vehicle");
             events.add("entity destroys " + vehicle.identifyType());
@@ -4153,7 +4179,7 @@ public class WorldScriptHelper implements Listener {
         context.put("vehicle", vehicle);
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
@@ -4197,7 +4223,7 @@ public class WorldScriptHelper implements Listener {
         context.put("vehicle", vehicle);
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) { npc = entity.getDenizenNPC(); }
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = doEvents(Arrays.asList
