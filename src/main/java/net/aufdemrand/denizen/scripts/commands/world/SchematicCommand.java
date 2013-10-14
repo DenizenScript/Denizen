@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,6 +44,11 @@ public class SchematicCommand extends AbstractCommand implements Listener {
         // - schematic rotate name:Potato angle:90
         // - schematic paste name:Potato location:x,y,z,world (noair)
         // - schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)
+
+        if (Depends.worldEdit == null) {
+            dB.echoError("This command requires WorldEdit!");
+            return;
+        } // TODO: Make independent!
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.depends;
 
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -15,6 +16,9 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 public class Depends {
 
     public static WorldGuardPlugin worldGuard = null;
+    public static WorldEditPlugin worldEdit = null;
+
+
     public static Citizens citizens = null;
 
     public static Economy economy = null;
@@ -28,6 +32,7 @@ public class Depends {
         setupPermissions();
         setupChat();
         setupWorldGuard();
+        setupWorldEdit();
         setupCitizens();
         setupProtocolManager();
     }
@@ -81,6 +86,14 @@ public class Depends {
         }
         worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
         return worldGuard != null;
+    }
+
+    private boolean setupWorldEdit() {
+        if (Bukkit.getServer().getPluginManager().getPlugin("WorldEdit") == null) {
+            return false;
+        }
+        worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+        return worldEdit != null;
     }
 
     private boolean setupCitizens() {
