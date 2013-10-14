@@ -1802,11 +1802,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Scoreboard
-        // @Usage scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)
+        // @Usage scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar})
         // @Required 1
-        // @Stable unstable
-        // @Short Modifies a scoreboard (Not going to work much until Minecraft 1.7)
-        // @Author aufdemrand
+        // @Stable stable
+        // @Short
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -1815,7 +1815,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(ScoreboardCommand.class,
-                "SCOREBOARD", "scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)", 1);
+                "SCOREBOARD", "scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar})", 1);
 
 
         /**

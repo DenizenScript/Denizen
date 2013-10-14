@@ -87,7 +87,7 @@ public class FireworkCommand extends AbstractCommand {
                 scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
 
-        scriptEntry.defaultObject("type", new Element("BALL"));
+        scriptEntry.defaultObject("type", new Element("ball"));
         scriptEntry.defaultObject("power", new Element(1));
         scriptEntry.defaultObject("primary", Arrays.asList(dColor.valueOf("yellow")));
     }
@@ -122,7 +122,7 @@ public class FireworkCommand extends AbstractCommand {
         fireworkMeta.setPower(power.asInt());
 
         Builder fireworkBuilder = FireworkEffect.builder();
-        fireworkBuilder.with(FireworkEffect.Type.valueOf(type.asString()));
+        fireworkBuilder.with(FireworkEffect.Type.valueOf(type.asString().toUpperCase()));
 
                           fireworkBuilder.withColor(Conversion.convertColors(primary));
         if (fade != null) fireworkBuilder.withFade(Conversion.convertColors(fade));
