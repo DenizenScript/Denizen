@@ -1878,11 +1878,11 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Usage
         // Add a score for the player "mythan" to the default scoreboard under the objective "cookies" and let him see it
-        // - schematic add obj:cookies lines:mythan score:1000 viewers:p@mythan
+        // - scoreboard add obj:cookies lines:mythan score:1000 viewers:p@mythan
         //
         // @Usage
         // Add a new current objective called "food" to the "test" scoreboard with 3 lines that each have a score of 50:
-        // - schematic add id:test obj:food lines:Cookies|Donuts|Cake score:50
+        // - scoreboard add id:test obj:food lines:Cookies|Donuts|Cake score:50
         //
         // @Usage
         // Make a list of players see the scoreboard that has the id "test":
