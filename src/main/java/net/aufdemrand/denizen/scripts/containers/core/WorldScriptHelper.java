@@ -1418,7 +1418,7 @@ public class WorldScriptHelper implements Listener {
             // <context.entity> returns the dEntity that was killed.
             // <context.damage> returns the amount of damage dealt.
             // <context.damager> returns the dEntity damaging the other entity.
-            // <context.shooter> returns the shooter of the entity, if any.
+            // <context.projectile> returns the projectile shot by the damager, if any.
             //
             // @Determine
             // "CANCELLED" to stop the entity from being killed.
@@ -1463,9 +1463,31 @@ public class WorldScriptHelper implements Listener {
 
             Player subPlayer = null;
             dNPC subNPC = null;
-            dEntity shooter = null;
-
+            dEntity projectile = null;
             dEntity damager = new dEntity(subEvent.getDamager());
+
+            // The decision for the contexts below, for posterity:
+            //
+            // <davidcernat> aufdemrand, let me ask you something...
+            // <davidcernat> Suppose an entity gets shot by an arrow from a player.
+            // <davidcernat> What should <context.damager> be in "on entity damaged"?
+            // <aufdemrand> the entity that shot the arrow
+            // <davidcernat> Okay.
+            // <aufdemrand> the arrow should be <c.projectile>
+            if (damager.isProjectile()) {
+                projectile = damager;
+                context.put("projectile", projectile);
+
+                if (damager.hasShooter()) {
+                    damager = damager.getShooter();
+                }
+
+                if (!damager.getEntityType().equals(projectile.getEntityType())) {
+                    events.add("entity damaged by " + projectile.identifyType());
+                    events.add(entity.identifyType() + " damaged by " + projectile.identifyType());
+                }
+            }
+
             context.put("damager", damager.getDenizenObject());
 
             events.add("entity damaged by entity");
@@ -1487,18 +1509,6 @@ public class WorldScriptHelper implements Listener {
                 if (player == null) player = subPlayer;
             }
 
-            // If the damager is a projectile, add its shooter (which can be null)
-            // to the context
-            else if (damager.hasShooter()) {
-                shooter = damager.getShooter();
-                context.put("shooter", shooter.getDenizenObject());
-
-                if (shooter != null && !damager.getEntityType().equals(shooter.getEntityType())) {
-                    events.add("entity damaged by " + shooter.identifyType());
-                    events.add(entity.identifyType() + " damaged by " + shooter.identifyType());
-                }
-            }
-
             // Have a new list of events for the subContextPlayer
             // and subContextNPC
 
@@ -1509,9 +1519,9 @@ public class WorldScriptHelper implements Listener {
             subEvents.add(damager.identifyType() + " damages entity");
             subEvents.add(damager.identifyType() + " damages " + entity.identifyType());
 
-            if (shooter != null && !damager.getEntityType().equals(shooter.getEntityType())) {
-                subEvents.add(shooter.identifyType() + " damages entity");
-                subEvents.add(shooter.identifyType() + " damages " + entity.identifyType());
+            if (projectile != null && !damager.getEntityType().equals(projectile.getEntityType())) {
+                subEvents.add(projectile.identifyType() + " damages entity");
+                subEvents.add(projectile.identifyType() + " damages " + entity.identifyType());
             }
 
             if (isFatal) {
@@ -1527,9 +1537,9 @@ public class WorldScriptHelper implements Listener {
                 events.add(entity.identifyType() + " killed by entity");
                 events.add(entity.identifyType() + " killed by " + damager.identifyType());
 
-                if (shooter != null && !damager.getEntityType().equals(shooter.getEntityType())) {
-                    events.add("entity killed by " + shooter.identifyType());
-                    events.add(entity.identifyType() + " killed by " + shooter.identifyType());
+                if (projectile != null && !damager.getEntityType().equals(projectile.getEntityType())) {
+                    events.add("entity killed by " + projectile.identifyType());
+                    events.add(entity.identifyType() + " killed by " + projectile.identifyType());
                 }
 
                 // <--[event]
@@ -1557,9 +1567,9 @@ public class WorldScriptHelper implements Listener {
                 subEvents.add(damager.identifyType() + " kills entity");
                 subEvents.add(damager.identifyType() + " kills " + entity.identifyType());
 
-                if (shooter != null && !damager.getEntityType().equals(shooter.getEntityType())) {
-                    subEvents.add(shooter.identifyType() + " kills entity");
-                    subEvents.add(shooter.identifyType() + " kills " + entity.identifyType());
+                if (projectile != null && !damager.getEntityType().equals(projectile.getEntityType())) {
+                    subEvents.add(projectile.identifyType() + " kills entity");
+                    subEvents.add(projectile.identifyType() + " kills " + entity.identifyType());
                 }
             }
 
@@ -1592,6 +1602,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when an entity dies.
     // @Context
     // <context.entity> returns the dEntity that died.
+    // <context.damager> returns the dEntity damaging the other entity, if any.
     // <context.message> returns an Element of the death message,
     //                   only available for player deaths.
     // <context.inventory> returns the dInventory of the entity,
