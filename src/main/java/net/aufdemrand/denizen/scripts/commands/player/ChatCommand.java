@@ -2,13 +2,16 @@ package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
+import net.citizensnpcs.api.ai.speech.Talkable;
+import net.citizensnpcs.npc.ai.speech.Chat;
+import net.citizensnpcs.npc.ai.speech.TalkableEntity;
 
 /**
  * <p>Uses the Citizens SpeechController to 'chat', the default VocalChord for
@@ -50,79 +53,98 @@ public class ChatCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Create empty speech context
-        SpeechContext context = new SpeechContext("");
-        boolean noTargets = false;
+        boolean specified_targets = false;
+        boolean specified_talker = false;
 
-        if (scriptEntry.getNPC() != null)
-            context.setTalker(scriptEntry.getNPC().getEntity());
-
-        for (String arg : scriptEntry.getArguments()) {
-
-            if (aH.matchesValueArg("TARGET, TARGETS", arg, ArgumentType.Custom)) {
-                if (aH.getStringFrom(arg).equalsIgnoreCase("none")) {
-                    dB.echoDebug("Removed TARGET(s).");
-                    noTargets = true;
-                }
-
-                else {
-                    // Iterate through targets, make sure target is LivingEntity
-                    for (String target : aH.getListFrom(arg)) {
-                        if (aH.getEntityFrom(target) != null) {
-                            context.addRecipient(aH.getEntityFrom(target).getLivingEntity());
-                        } else
-                            dB.echoError("Invalid TARGET: '%s'", target);
-                    }
-                    dB.echoDebug("Set TARGET(s).");
-                }
-
-            } else if (aH.matchesValueArg("TALKER", arg, ArgumentType.LivingEntity)) {
-                String talker = aH.getStringFrom(arg);
-                if (aH.getNPCFrom(talker) != null) {
-                    context.setTalker(aH.getEntityFrom(talker).getLivingEntity());
-                } else
-                    //
-                    // TODO: add hooking into Converse to handle player talking
-                    //
-                    dB.echoError("Invalid TALKER! Perhaps the NPC doesn't exist?");
-
-            } else {
-                context.setMessage(arg);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            // Default target is the attached Player, if none specified otherwise.
+            if (arg.matchesPrefix("target, targets, t")) {
+                if (arg.matchesArgumentList(dEntity.class))
+                    scriptEntry.addObject("targets", arg.asType(dList.class));
+                specified_targets = true;
             }
+
+            else if (arg.matches("no_target"))
+                scriptEntry.addObject("targets", Element.FALSE);
+
+                // Default talker is the attached NPC, if none specified otherwise.
+            else if (arg.matchesPrefix("talker, talkers")) {
+                if (arg.matchesArgumentList(dEntity.class))
+                    scriptEntry.addObject("talkers", arg.asType(dList.class));
+                specified_talker = true;
+
+            } else
+                scriptEntry.addObject("message", new Element(arg.raw_value));
         }
 
-        // Add default recipient as the scriptEntry Player if no recipients set otherwise
-        if (!context.hasRecipients() && !noTargets && scriptEntry.getPlayer() != null)
-            context.addRecipient(scriptEntry.getPlayer().getPlayerEntity());
+        // Add default recipient as the attached Player if no recipients set otherwise
+        if (!scriptEntry.hasObject("targets") && scriptEntry.hasPlayer() && !specified_targets)
+            scriptEntry.defaultObject("targets", scriptEntry.getPlayer());
+
+        // Add default talker as the attached NPC if no recipients set otherwise
+        if (!scriptEntry.hasObject("talkers") && scriptEntry.hasNPC() && !specified_talker)
+            scriptEntry.defaultObject("talkers", new dList(scriptEntry.getNPC().identify()));
 
         // Verify essential fields are set
-        if (context.getTalker() == null)
-            throw new InvalidArgumentsException("Must specify a valid TALKER.");
-        if (context.getMessage().length() < 1)
-            throw new InvalidArgumentsException("Must specify a message.");
+        if (!scriptEntry.hasObject("targets"))
+            throw new InvalidArgumentsException("Must specify valid targets!");
 
-        // Add context to the ScriptEntry to pass along to execute().
-        scriptEntry.addObject("context", context);
+        if (!scriptEntry.hasObject("talkers"))
+            throw new InvalidArgumentsException("Must specify valid talkers!");
+
+        if (!scriptEntry.hasObject("message"))
+            throw new InvalidArgumentsException("Must specify a message!");
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        SpeechContext context = (SpeechContext) scriptEntry.getObject("context");
+        dList talkers = (dList) scriptEntry.getdObject("talkers");
+        dObject targets = scriptEntry.getdObject("targets");
+        Element message = scriptEntry.getElement("message");
 
-        dB.report(getName(),
-                aH.debugObj("Talker", context.getTalker().getName())
-                        + aH.debugObj("Direct recipients?", String.valueOf(context.hasRecipients()))
-                        + aH.debugObj("Message", context.getMessage()));
+        dB.log(talkers.debug());
+        dB.log(targets.debug());
+        dB.log(message.debug());
 
-        // If the talker is an NPC, use the NPC object to speak
-        if (CitizensAPI.getNPCRegistry().isNPC(context.getTalker().getEntity()))
-            CitizensAPI.getNPCRegistry().getNPC(context.getTalker().getEntity())
-                    .getDefaultSpeechController().speak(context, "chat");
+        dB.report(getName(), talkers.debug() + targets.debug() + message.debug());
 
-        // else
-        // TODO: Chat via Player with Converse
+        // Create empty speech context
+        SpeechContext context = new SpeechContext(message.asString());
+
+        if (targets != Element.FALSE) {
+
+            if (targets instanceof dPlayer) {
+                dPlayer player = (dPlayer) targets;
+                if (player.isOnline())
+                    context.addRecipient(player.getPlayerEntity());
+
+            } else {
+                dList target_list = (dList) targets;
+                for (dObject obj : target_list.filter(dEntity.class)) {
+                    dEntity ent = (dEntity) obj;
+                    if (ent.isLivingEntity())
+                        context.addRecipient(ent.getLivingEntity());
+                }
+            }
+        }
+
+        for (String talker : talkers) {
+
+            if (dNPC.matches(talker)) {
+                dNPC npc = dNPC.valueOf(talker);
+                context.setTalker(npc.getEntity());
+                npc.getCitizen().getDefaultSpeechController().speak(context, "chat");
+
+            } else if (dPlayer.matches(talker)) {
+
+              // TODO
+
+            }
+
+
+        }
 
     }
 
