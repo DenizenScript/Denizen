@@ -1384,6 +1384,21 @@ public class dEntity implements dObject {
         }
 
         // <--[tag]
+        // @attribute <e@entity.get_shooter>
+        // @returns dEntity
+        // @description
+        // If the entity is a projectile with a shooter, gets its shooter
+        // Otherwise, returns null.
+        // -->
+        if (attribute.startsWith("get_shooter") ||
+            attribute.startsWith("shooter")) {
+            if (isProjectile() && hasShooter())
+                return getShooter().getAttribute(attribute.fulfill(1));
+            else return new Element("null")
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.get_vehicle>
         // @returns dEntity
         // @description

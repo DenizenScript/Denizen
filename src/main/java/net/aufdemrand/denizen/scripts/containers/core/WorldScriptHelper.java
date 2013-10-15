@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -72,6 +73,14 @@ public class WorldScriptHelper implements Listener {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
+
+    //////////////////
+    // MAPS
+    ///////////
+
+    // Store the UUIDs of dying entities along with the dEntities of their killers,
+    // to bring <context.damager> from "on entity killed" to "on entity dies"
+    public static Map<UUID, dEntity> entityKillers = new HashMap<UUID, dEntity>();
 
 
     //////////////////
@@ -1506,6 +1515,13 @@ public class WorldScriptHelper implements Listener {
             }
 
             if (isFatal) {
+
+                // If this entity's UUID isn't stored in entityKillers
+                // along with its killer, store it
+                if (!entityKillers.containsKey(entity.getUUID())) {
+                    entityKillers.put(entity.getUUID(), damager);
+                }
+
                 events.add("entity killed by entity");
                 events.add("entity killed by " + damager.identifyType());
                 events.add(entity.identifyType() + " killed by entity");
@@ -1575,7 +1591,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when an entity dies.
     // @Context
-    // <context.message> returns the dEntity that died.
+    // <context.entity> returns the dEntity that died.
     // <context.message> returns an Element of the death message,
     //                   only available for player deaths.
     // <context.inventory> returns the dInventory of the entity,
@@ -1599,6 +1615,13 @@ public class WorldScriptHelper implements Listener {
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
+
+        // If this entity has a stored killer, get it and then
+        // remove it from the entityKillers map
+        if (entityKillers.containsKey(entity.getUUID())) {
+            context.put("damager", entityKillers.get(entity.getUUID()));
+            entityKillers.remove(entity.getUUID());
+        }
 
         PlayerDeathEvent subEvent = null;
 
