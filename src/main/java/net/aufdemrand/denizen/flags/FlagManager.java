@@ -12,19 +12,19 @@ import java.util.*;
 // @name flags
 // @description
 // Flags are a feature that is implemented by Denizen to allow the dynamic and persistent storage of information
-// to NPC and Player objects as well as the server on a 'global-scale'. Whether you need to store a quest variable
+// to NPC and player objects as well as the server on a global scale. Whether you need to store a quest variable
 // on a player, or you are keeping track of the number of people logging into your server, flags can help.
 //
 // First, a couple facts about flags:
-// 1) They are persistent, that is -- they survive a 'server restart', as long as a '/denizen save' or proper shutdown
-// has been followed.
+// 1) They are persistent, that is - they survive a server restart, as long as '/denizen save' or a proper shutdown
+// has happened since the flag was made.
 // 2) They are stored in flags.yml whenever '/denizen save' is used. Otherwise, since writing to the disk is
 // 'expensive' as far as performance is concerned, they are stored in memory.
-// 3) Flags can be attached to Players, NPCs, or the Server. This means both 'aufdemrand' and 'davidcernat' can have
+// 3) Flags can be attached to players, NPCs, or the server. This means both 'aufdemrand' and 'davidcernat' can have
 // a flag by the same name, but contain separate values if stored to their player-objects.
 // 4) Flags can be booleans, single-item values, or multiple-item arrays, and storing information inside them is
 // smart and reliable.
-// 5) You can set 'expirations' on any flag, allowing a 'maximum' life on a flag. This is great for cooldowns and
+// 5) You can set expirations on any flag, to set the maximum life of a flag. This is great for cooldowns and
 // temporary variables.
 // 6) Flags have world script events, so you can tell when a flag is changing, and react to those changes.
 //
@@ -37,7 +37,7 @@ import java.util.*;
 // can be stored. It's like saying, 'this flag exists, and stored with it is a chunk of information'.
 //
 // The elements stored in flags also have the ability to do perform functions if they are numbers. Easily create
-// a 'counter' with flags, simply by using the 'flag command' to use the '+' feature. Also available is '-' to
+// a counter with flags, simply by using the flag command to use the '+' feature. Also available is '-' to
 // decrease, '*' to multiply, and '/' to divide the values.
 //
 // Flags can act as arrays of information as well, with the ability to add additional elements to a single flag. Flags
@@ -51,7 +51,7 @@ import java.util.*;
 // Setting a boolean flag to a player, and retrieving it:
 // We'll use the player linked to the script by specifying <player> in the flag command. The next argument
 // is 'stoneskin', shown here without quotes since it's just one word. This will be the name of the flag.
-// Second command, 'narrate', as used below will show the player 'p@player_name has flag 'stoneskin'? true'. The 'true'
+// Second command, 'narrate', as used below will show the player "p@player_name has flag 'stoneskin'? true". The 'true'
 // is retrieved by using the player attribute 'has_flag[flag_name]' to check. If this flag did not exist, it would
 // return false. To see a list of flag tags, see 'A list of flag-specific tags'.
 // <code>
@@ -64,25 +64,26 @@ import java.util.*;
 // Definitions are nice and light, but sometimes they just don't do the job. For example, using flags in foreach loops
 // is a great idea, and really easy to do.
 // <code>
-//   # initiate a loop for each player that has logged onto the server
+// # initiate a loop through each player that has logged onto the server
+// # Inside the loop, check if the player's flag 'completed' contains in it an element named 'beginners tutorial'.
+// # If it does, increment the server flag 'completes_counter' by one, and give it 10 seconds to live.
 // - foreach <server.list_players> {
-//       # Check if the player's flag 'completed' contains in it an element named 'beginners tutorial'.
-//       # If it does, increment the server flag 'completes_counter' by one, and give it 10 seconds to live.
 //     - if <%value%.flag[completed].as_list> contains 'beginners tutorial'
 //       flag server completes_counter:++ duration:10s
 //   }
-//   # Now show the number of players who had the element in their 'completed' flag.
+// # Now show the number of players who had the element in their 'completed' flag.
 // - narrate "The number of players who have completed the beginner's tutorial is<&co> <server.flag[completes_counter]>"
 // </code>
 //
 //
 // Using flags as object storage:
-// Flags can hold fetchable-objects, as well. Let's say players can be friends with NPCs. Why not store the friends
+// Flags can hold fetchable objects as well. Let's say players can be friends with NPCs. Why not store the friends
 // on the NPC with a list of player objects?
 // <code>
 // - flag <npc> friends:->:<player>
 // - foreach <npc.flag[friends].as_list> {
-//   chat t:%value% 'You are my friend!'
+//     - chat t:%value% 'You are my friend!'
+//   }
 // </code>
 //
 // Need to store a location? Store it in a flag!
@@ -92,9 +93,8 @@ import java.util.*;
 // </code>
 //
 //
-// Flags are good for lots of other things too! Check out 'flag command' and 'fl@flag' tags
+// Flags are good for lots of other things too! Check out the flag command and 'fl@flag' tags
 // for more specific information.
-
 // -->
 
 
