@@ -1,16 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.schematic.SchematicFormat;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -18,22 +13,27 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import com.sk89q.worldedit.CuboidClipboard;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.schematic.SchematicFormat;
 
 import java.io.File;
 import java.net.URLDecoder;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class SchematicCommand extends AbstractCommand implements Listener {
 
     @Override
     public void onEnable() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        if (Depends.worldEdit != null)
+            Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
 
     private enum Type { LOAD, UNLOAD, ROTATE, PASTE }
-    static Map<String, CuboidClipboard> schematics = new ConcurrentHashMap<String, CuboidClipboard>();
+    public static Map<String, CuboidClipboard> schematics;
 
     // TODO: Create schematic from dCuboid
     @Override
