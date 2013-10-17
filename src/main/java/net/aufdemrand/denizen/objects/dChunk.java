@@ -136,16 +136,16 @@ public class dChunk extends CraftChunk implements dObject {
 
         // <--[tag]
         // @attribute <ch@chunk.is_loaded>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
-        // returns true if the chunk is actively loaded into memory.
+        // returns true if the chunk is currently loaded into memory.
         // -->
         if (attribute.startsWith("is_loaded"))
             return new Element(this.isLoaded()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <ch@chunk.x>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the x coordinate of the chunk.
         // -->
@@ -154,7 +154,7 @@ public class dChunk extends CraftChunk implements dObject {
 
         // <--[tag]
         // @attribute <ch@chunk.z>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the z coordinate of the chunk.
         // -->
@@ -202,7 +202,7 @@ public class dChunk extends CraftChunk implements dObject {
 
         // <--[tag]
         // @attribute <ch@chunk.height_map>
-        // @returns dList
+        // @returns dList(Element)
         // @description
         // returns a list of the height of each block in the chunk.
         // -->
@@ -215,7 +215,7 @@ public class dChunk extends CraftChunk implements dObject {
 
         // <--[tag]
         // @attribute <ch@chunk.average_height>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the average height of the blocks in the chunk.
         // -->
@@ -227,7 +227,7 @@ public class dChunk extends CraftChunk implements dObject {
 
         // <--[tag]
         // @attribute <ch@chunk.is_flat[#]>
-        // @returns dList
+        // @returns Element(Boolean)
         // @description
         // scans the heights of the blocks to check variance between them. If no number is supplied, is_flat will return
         // true if all the blocks are less than 2 blocks apart in height. Specifying a number will modify the number

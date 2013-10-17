@@ -245,7 +245,7 @@ public class dWorld implements dObject {
         }
 
         // <--[tag]
-        // @attribute <w@world.rloaded_chunks>
+        // @attribute <w@world.loaded_chunks>
         // @returns dList(dChunk)
         // @description
         // returns a list of all the currently loaded chunks.
