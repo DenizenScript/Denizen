@@ -215,13 +215,14 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
             // Check targets, if any match entity killed, count_it!
             for (String target : targets) {
-                // Check IDs
+                // Check against a physical NPC object (n@7, n@18, etc.)
                 if (dNPC.valueOf(target) != null) {
                     if (dNPC.valueOf(target).getId() == npc.getId())
                         count_it = true;
                 }
-                // Check Names
-                else if (npc.getName().equalsIgnoreCase(target))
+                // Cannot be 'else if' since dNPC.valueOf will return true for names now, as well as ids.
+                // Check against name of NPC (n@fullwall, aufdemrand, etc)... object notation is optional.
+                if (npc.getName().equalsIgnoreCase(target.toLowerCase().replace("n@", "")))
                     count_it = true;
             }
             // If NPC was matched or targets contains '*', increment

@@ -58,14 +58,14 @@ public class FlagCommand extends AbstractCommand implements Listener {
             // is being process to make sure the objects don't accidently get set
             // as the name of the flag..
             else if (!scriptEntry.hasObject("flag_target")
-                    && arg.startsWith("n@")) {
+                    && arg.startsWith("n@") && !arg.hasPrefix()) {
                 if (dNPC.valueOf(arg.getValue()) == null)
                     throw new InvalidArgumentsException("Invalid NPC target.");
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
 
             } else if (!scriptEntry.hasObject("flag_target")
-                    && arg.startsWith("p@")) {
+                    && arg.startsWith("p@") && !arg.hasPrefix()) {
                 if (dPlayer.valueOf(arg.getValue()) == null)
                     throw new InvalidArgumentsException("Invalid Player target.");
                 specified_target = true;

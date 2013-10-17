@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.npc.*;
 import net.aufdemrand.denizen.scripts.commands.world.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 
 public class CommandRegistry implements dRegistry {
 
@@ -1833,6 +1834,7 @@ public class CommandRegistry implements dRegistry {
         // Use to paste a loaded schematic
         // - schematic paste name:MySchematic <player.location> noair
         // -->
+        if (Depends.worldEdit != null) // Temporary work-around...
         registerCoreMember(SchematicCommand.class,
                 "SCHEMATIC", "schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)", 2);
 

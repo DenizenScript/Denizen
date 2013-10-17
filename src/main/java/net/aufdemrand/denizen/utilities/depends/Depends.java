@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.utilities.depends;
 
+import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import net.aufdemrand.denizen.scripts.commands.world.SchematicCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -12,6 +14,8 @@ import net.milkbowl.vault.permission.Permission;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Depends {
 
@@ -93,6 +97,9 @@ public class Depends {
             return false;
         }
         worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+        if (worldEdit != null) {
+            SchematicCommand.schematics = new ConcurrentHashMap<String, CuboidClipboard>();
+        }
         return worldEdit != null;
     }
 

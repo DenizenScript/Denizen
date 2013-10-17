@@ -669,6 +669,39 @@ public class dItem implements dObject, Notable, Properties {
                         .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <i@item.enchantments.with_levels>
+        // @returns dList
+        // @description
+        // Returns a list of enchantments on the item, with their levels listed too.
+        // In the format of ENCHANTMENT,LEVEL - EG: DAMAGE_ALL,3
+        // -->
+        if (attribute.startsWith("enchantments.with_levels")) {
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
+                List<String> enchants = new ArrayList<String>();
+                for (Map.Entry<Enchantment, Integer> enchantment : getItemStack().getEnchantments().entrySet())
+                    enchants.add(enchantment.getKey().getName() + "," + enchantment.getValue());
+                return new dList(enchants)
+                        .getAttribute(attribute.fulfill(2));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <i@item.enchantments.levels>
+        // @returns dList
+        // @description
+        // Returns a list of enchantments on the item, showing only the level.
+        // -->
+        if (attribute.startsWith("enchantments.levels")) {
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
+                List<String> enchants = new ArrayList<String>();
+                for (Map.Entry<Enchantment, Integer> enchantment : getItemStack().getEnchantments().entrySet())
+                    enchants.add(String.valueOf(enchantment.getValue()));
+                return new dList(enchants)
+                        .getAttribute(attribute.fulfill(2));
+            }
+        }
+
+        // <--[tag]
         // @attribute <i@item.enchantments>
         // @returns dList
         // @description
@@ -677,8 +710,8 @@ public class dItem implements dObject, Notable, Properties {
         if (attribute.startsWith("enchantments")) {
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
                 List<String> enchants = new ArrayList<String>();
-                for (Enchantment enchantment : getItemStack().getEnchantments().keySet())
-                    enchants.add(enchantment.getName());
+                for (Map.Entry<Enchantment, Integer> enchantment : getItemStack().getEnchantments().entrySet())
+                    enchants.add(enchantment.getKey().getName());
                 return new dList(enchants)
                         .getAttribute(attribute.fulfill(1));
             }
