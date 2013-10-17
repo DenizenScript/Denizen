@@ -1,11 +1,14 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -228,6 +231,32 @@ public class dWorld implements dObject {
         /////////////////////
         //   GEOGRAPHY ATTRIBUTES
         /////////////////
+
+        // <--[tag]
+        // @attribute <w@world.random_loaded_chunk>
+        // @returns dChunk
+        // @description
+        // returns a random loaded chunk.
+        // -->
+        if (attribute.startsWith("random_loaded_chunk")) {
+            int random = Utilities.getRandom().nextInt(getWorld().getLoadedChunks().length);
+            return new dChunk((CraftChunk) getWorld().getLoadedChunks()[random])
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <w@world.loaded_chunks>
+        // @returns dList(dChunk)
+        // @description
+        // returns a list of all the currently loaded chunks.
+        // -->
+        if (attribute.startsWith("loaded_chunks")) {
+            dList chunks = new dList();
+            for (Chunk ent : this.getWorld().getLoadedChunks())
+                chunks.add(new dChunk((CraftChunk) ent).identify());
+
+            return chunks.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <w@world.sea_level>
@@ -468,6 +497,8 @@ public class dWorld implements dObject {
         if (attribute.startsWith("weather_duration"))
             return Duration.valueOf(getWorld().getWeatherDuration() + "t")
                     .getAttribute(attribute.fulfill(1));
+
+
 
         return new Element(identify()).getAttribute(attribute);
     }

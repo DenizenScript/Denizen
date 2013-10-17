@@ -41,6 +41,7 @@ public class ProcedureScriptTag implements Listener {
     // ProcedureTutorial:
     //   type: procedure
     //
+    //   script:
     //   # The procedure script is much like a task script
     //   # Except it must end with a Determine command
     //

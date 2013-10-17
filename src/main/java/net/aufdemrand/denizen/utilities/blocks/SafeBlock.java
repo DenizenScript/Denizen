@@ -4,8 +4,8 @@ import org.bukkit.Material;
 
 public class SafeBlock {
     // Quick util function to decide whether
-    // A block is 'safe' - air, grass, etc.
-    // Credit to Mythan for compiling initial list
+    // A block is 'safe' (Can be spawned inside of) - air, tallgrass, etc.
+    // Credit to Mythan for compiling the initial list
     public static boolean blockIsSafe(Material mat) {
         switch (mat) {
             case LEVER:

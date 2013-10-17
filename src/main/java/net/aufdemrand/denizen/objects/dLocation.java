@@ -300,6 +300,15 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return null;
 
+        // <--[tag]
+        // @attribute <l@location.get_chunk>
+        // @returns dChunk
+        // @description
+        // returns the chunk that this location belongs to.
+        // -->
+        if (attribute.startsWith("get_chunk"))
+            return new dChunk(this).getAttribute(attribute.fulfill(1));
+
         /////////////////////
         //   BLOCK ATTRIBUTES
         /////////////////
