@@ -490,7 +490,11 @@ public class dItem implements dObject, Notable, Properties {
         }
 
         // Else, return the material name
-        return "i@" + dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identify().replace("m@", "");
+        return "i@" + identifyMaterial().replace("m@", "");
+    }
+
+    public String identifyMaterial() {
+        return "m@" + dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identify();
     }
 
     @Override

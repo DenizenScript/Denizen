@@ -249,15 +249,16 @@ public class WorldScriptHelper implements Listener {
         context.put("material", material);
 
         dItem item = new dItem(event.getPlayer().getItemInHand());
-        dMaterial itemMaterial = item.getMaterial();
 
         List<String> events = new ArrayList<String>();
         events.add("player breaks block");
         events.add("player breaks " + material.identify());
         events.add("player breaks block with " + item.identify());
-        events.add("player breaks " + material.identify() + " with " + item.identify());
-        events.add("player breaks block with " + itemMaterial.identify());
-        events.add("player breaks " + material.identify() + " with " + itemMaterial.identify());
+        events.add("player breaks " + material.identify() +
+                   " with " + item.identify());
+        events.add("player breaks block with " + item.identifyMaterial());
+        events.add("player breaks " + material.identify() +
+                   " with " + item.identifyMaterial());
 
         String determination = doEvents(events, null, event.getPlayer(), context, true);
 
@@ -880,7 +881,7 @@ public class WorldScriptHelper implements Listener {
         String determination = doEvents(Arrays.asList
                 ("player takes item from furnace",
                         "player takes " + item.identify() + " from furnace",
-                        "player takes " + itemMaterial.identify() + " from furnace"),
+                        "player takes " + item.identifyMaterial() + " from furnace"),
                 null, event.getPlayer(), context, true);
 
         if (Argument.valueOf(determination)
@@ -2240,7 +2241,6 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getEntity().getItemStack());
-        dMaterial itemMaterial = item.getMaterial();
 
         context.put("item", item);
         context.put("entity", new dEntity(event.getEntity()));
@@ -2248,7 +2248,7 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("item despawns");
         events.add(item.identify() + " despawns");
-        events.add(itemMaterial.identify() + " despawns");
+        events.add(item.identifyMaterial() + " despawns");
 
         String determination = doEvents(events, null, null, context, true);
 
@@ -2276,7 +2276,6 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getEntity().getItemStack());
-        dMaterial itemMaterial = item.getMaterial();
 
         context.put("item", item);
         context.put("entity", new dEntity(event.getEntity()));
@@ -2284,7 +2283,7 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("item spawns");
         events.add(item.identify() + " spawns");
-        events.add(itemMaterial.identify() + " spawns");
+        events.add(item.identifyMaterial() + " spawns");
 
         String determination = doEvents(events, null, null, context, true);
 
@@ -2598,7 +2597,6 @@ public class WorldScriptHelper implements Listener {
         if (event.getCurrentItem() != null) {
 
             item = new dItem(event.getCurrentItem());
-            dMaterial itemMaterial = item.getMaterial();
 
             events.add("player clicks " +
                     item.identify() + " in inventory");
@@ -2607,11 +2605,11 @@ public class WorldScriptHelper implements Listener {
             events.add(interaction +
                     item.identify() + " in " + type);
             events.add("player clicks " +
-                    itemMaterial.identify() + " in inventory");
+                    item.identifyMaterial() + " in inventory");
             events.add(interaction +
-                    itemMaterial.identify() + " in inventory");
+                    item.identifyMaterial() + " in inventory");
             events.add(interaction +
-                    itemMaterial.identify() + " in " + type);
+                    item.identifyMaterial() + " in " + type);
         }
 
         events = trimEvents(events);
@@ -2690,7 +2688,6 @@ public class WorldScriptHelper implements Listener {
         if (event.getOldCursor() != null) {
 
             item = new dItem(event.getOldCursor());
-            dMaterial itemMaterial = item.getMaterial();
 
             events.add("player drags " +
                     item.identify());
@@ -2699,11 +2696,11 @@ public class WorldScriptHelper implements Listener {
             events.add("player drags " +
                     item.identify() + " in " + type);
             events.add("player drags " +
-                    itemMaterial.identify());
+                    item.identifyMaterial());
             events.add("player drags " +
-                    itemMaterial.identify() + " in inventory");
+                    item.identifyMaterial() + " in inventory");
             events.add("player drags " +
-                    itemMaterial.identify() + " in " + type);
+                    item.identifyMaterial() + " in " + type);
         }
 
         events = trimEvents(events);
@@ -3377,7 +3374,6 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         Action action = event.getAction();
         dItem item = null;
-        dMaterial itemMaterial = null;
 
         List<String> events = new ArrayList<String>();
 
@@ -3395,12 +3391,11 @@ public class WorldScriptHelper implements Listener {
 
         if (event.hasItem()) {
             item = new dItem(event.getItem());
-            itemMaterial = item.getMaterial();
             context.put("item", item);
 
             events.add(interaction + " with item");
             events.add(interaction + " with " + item.identify());
-            events.add(interaction + " with " + itemMaterial.identify());
+            events.add(interaction + " with " + item.identifyMaterial());
         }
 
         if (event.hasBlock()) {
@@ -3414,13 +3409,13 @@ public class WorldScriptHelper implements Listener {
             if (event.hasItem()) {
                 events.add(interaction + " block with item");
                 events.add(interaction + " block with " + item.identify());
-                events.add(interaction + " block with " + itemMaterial.identify());
+                events.add(interaction + " block with " + item.identifyMaterial());
                 events.add(interaction + " " + blockMaterial.identify() +
                         " with item");
                 events.add(interaction + " " + blockMaterial.identify() +
                         " with " + item.identify());
                 events.add(interaction + " " + blockMaterial.identify() +
-                        " with " + itemMaterial.identify());
+                        " with " + item.identifyMaterial());
             }
         }
 
@@ -3450,7 +3445,6 @@ public class WorldScriptHelper implements Listener {
         dNPC npc = null;
 
         dItem item = new dItem(event.getPlayer().getItemInHand());
-        dMaterial itemMaterial = item.getMaterial();
         dEntity entity = new dEntity(event.getRightClicked());
 
         Map<String, dObject> context = new HashMap<String, dObject>();
@@ -3467,19 +3461,18 @@ public class WorldScriptHelper implements Listener {
         events.add("player right clicks " + entity.identifyType() + " with " +
                 item.identify());
         events.add("player right clicks entity with " +
-                itemMaterial.identify());
+                item.identifyMaterial());
         events.add("player right clicks " + entity.identifyType() + " with " +
-                itemMaterial.identify());
+                item.identifyMaterial());
 
         if (entity.getBukkitEntity() instanceof ItemFrame) {
             dItem itemFrame = new dItem(((ItemFrame) entity.getBukkitEntity()).getItem());
-            dMaterial itemFrameMaterial = itemFrame.getMaterial();
             context.put("itemframe", itemFrame);
 
             events.add("player right clicks " + entity.identifyType() + " " +
                     itemFrame.identify());
             events.add("player right clicks " + entity.identifyType() + " " +
-                    itemFrameMaterial.identify());
+                    itemFrame.identifyMaterial());
         }
 
         determination = doEvents(events, npc, event.getPlayer(), context, true);
@@ -3505,14 +3498,13 @@ public class WorldScriptHelper implements Listener {
     public void playerItemConsume(PlayerItemConsumeEvent event) {
 
         dItem item = new dItem(event.getItem());
-        dMaterial itemMaterial = item.getMaterial();
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("item", item);
 
         List<String> events = new ArrayList<String>();
         events.add("player consumes " + item.identify());
-        events.add("player consumes " + itemMaterial.identify());
+        events.add("player consumes " + item.identifyMaterial());
 
         String determination = doEvents(events, null, event.getPlayer(), context, true);
 
@@ -3711,7 +3703,6 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getItem().getItemStack());
-        dMaterial itemMaterial = item.getMaterial();
         context.put("item", item);
         context.put("entity", new dEntity(event.getItem()));
         context.put("location", new dLocation(event.getItem().getLocation()));
@@ -3720,10 +3711,10 @@ public class WorldScriptHelper implements Listener {
 
         events.add("player picks up item");
         events.add("player picks up " + item.identify());
-        events.add("player picks up " + itemMaterial.identify());
+        events.add("player picks up " + item.identifyMaterial());
         events.add("player takes item");
         events.add("player takes " + item.identify());
-        events.add("player takes " + itemMaterial.identify());
+        events.add("player takes " + item.identifyMaterial());
 
         String determination = doEvents(events, null, event.getPlayer(), context, true);
 
