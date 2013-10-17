@@ -36,6 +36,7 @@ import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 
@@ -3528,17 +3529,25 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerJoinEvent(PlayerJoinEvent event) {
 
+        Player player = event.getPlayer();
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getJoinMessage()));
 
         String determination = doEvents(Arrays.asList
                 ("player joins",
                         "player join"),
-                null, event.getPlayer(), context);
+                null, player, context);
 
         // Handle message
         if (!determination.equals("none")) {
             event.setJoinMessage(determination);
+        }
+
+        // As a tie-in with ScoreboardHelper, make this player view
+        // the scoreboard he/she is supposed to view
+        if (ScoreboardHelper.viewerMap.containsKey(player.getName())) {
+            player.setScoreboard(ScoreboardHelper
+                    .getScoreboard(ScoreboardHelper.viewerMap.get(player.getName())));
         }
     }
 

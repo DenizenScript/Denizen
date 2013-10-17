@@ -236,14 +236,27 @@ public class ScoreboardCommand extends AbstractCommand {
 
         if (viewers != null) {
             for (dPlayer viewer : viewers) {
-                if (viewer.isOnline()) {
-                    // Add viewers to this scoreboard
-                    if (act.equals(Action.ADD))
+                // Add viewers for this scoreboard
+                if (act.equals(Action.ADD)) {
+                    // If this isn't the main scoreboard, add this viewer
+                    // to the map of viewers saved by Denizen
+                    if (!id.asString().equalsIgnoreCase("main"))
+                        ScoreboardHelper.viewerMap.put(viewer.getName(), id.asString());
+
+                    // Make this player view the scoreboard if he/she
+                    // is already online
+                    if (viewer.isOnline())
                         viewer.getPlayerEntity().setScoreboard(board);
-                    // Remove viewers from this scoreboard by giving them
-                    // a blank scoreboard (in lieu of better methods provided
-                    // by Bukkit)
-                    else if (act.equals(Action.REMOVE))
+                }
+                // Remove viewers for this scoreboard
+                else if (act.equals(Action.REMOVE)) {
+                    // Take this player out of the map of viewers
+                    ScoreboardHelper.viewerMap.remove(viewer.getName());
+
+                    // Make the player view a blank scoreboard if he/she
+                    // is online (in lieu of a scoreboard-removing method
+                    // provided by Bukkit)
+                    if (viewer.isOnline())
                         viewer.getPlayerEntity().setScoreboard(ScoreboardHelper.createScoreboard());
                 }
             }

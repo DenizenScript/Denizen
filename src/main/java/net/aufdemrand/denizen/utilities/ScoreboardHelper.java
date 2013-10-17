@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -27,7 +26,11 @@ import org.bukkit.scoreboard.ScoreboardManager;
 public class ScoreboardHelper {
 
     public static ScoreboardManager manager = Bukkit.getScoreboardManager();
-    public static Map<String, Scoreboard> scoreboards = new HashMap<String, Scoreboard>();
+
+    // A map with scoreboard IDs as keys and scoreboards as values
+    public static Map<String, Scoreboard> scoreboardMap = new HashMap<String, Scoreboard>();
+    // A map with viewer names as keys and scoreboard IDs as values
+    public static Map<String, String> viewerMap = new HashMap<String, String>();
 
     /*
      * Called on server startup or /denizen reload saves
@@ -35,12 +38,23 @@ public class ScoreboardHelper {
     public static void _recallScoreboards() {
 
         // Clear every existing ingame scoreboard
-        for (Map.Entry<String, Scoreboard> entry : scoreboards.entrySet()) {
+        for (Map.Entry<String, Scoreboard> entry : scoreboardMap.entrySet()) {
             clearScoreboard(entry.getValue());
         }
 
-        // Delete the contents of the scoreboards map
-        scoreboards.clear();
+        Scoreboard emptyBoard = createScoreboard();
+
+        // Clear every viewer's set scoreboard
+        for (Map.Entry<String, String> entry : viewerMap.entrySet()) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());
+            if (player.isOnline()) {
+                player.getPlayer().setScoreboard(emptyBoard);
+            }
+        }
+
+        // Delete the contents of the scoreboardMap and viewerMap
+        scoreboardMap.clear();
+        viewerMap.clear();
 
         ConfigurationSection rootSection = DenizenAPI.getCurrentInstance()
                 .getScoreboards().getConfigurationSection("Scoreboards");
@@ -56,13 +70,14 @@ public class ScoreboardHelper {
             board = createScoreboard(id);
 
             // Get the list of viewers
-            List<String> viewers = rootSection.getStringList(id + ".Viewers");
+            List<String> viewerList = rootSection.getStringList(id + ".Viewers");
 
-            // Iterate through viewers and make them see this scoreboard
-            // if they are online
-            for (String viewer : viewers) {
+            // Iterate through viewers, store them in the viewerMap,
+            // and make them see this scoreboard if they are online
+            for (String viewer : viewerList) {
                 if (dPlayer.matches(viewer)) {
                     dPlayer player = dPlayer.valueOf(viewer);
+                    viewerMap.put(player.getName(), id);
 
                     if (player.isOnline())
                         player.getPlayerEntity().setScoreboard(board);
@@ -121,26 +136,25 @@ public class ScoreboardHelper {
             .set("Scoreboards", null);
 
         // Iterate through scoreboards map
-        for (Map.Entry<String, Scoreboard> entry : scoreboards.entrySet()) {
+        for (Map.Entry<String, Scoreboard> scoreboardEntry : scoreboardMap.entrySet()) {
 
-            String id = entry.getKey();
-            List<String> viewers = new ArrayList<String>();
+            String id = scoreboardEntry.getKey();
+            List<String> viewerList = new ArrayList<String>();
 
-            // There is no method to get the viewers of a scoreboard,
-            // so iterate through all of the players and check if
-            // they can see this scoreboard
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getScoreboard() == entry.getValue()) {
-                    viewers.add(player.getName());
+            // Find all of the viewers that are viewing this scoreboard
+            // and put them on a list
+            for (Map.Entry<String, String> viewerEntry : viewerMap.entrySet()) {
+                if (id.equalsIgnoreCase(viewerEntry.getValue())) {
+                    viewerList.add(viewerEntry.getKey());
                 }
             }
 
             // Save viewer list
             DenizenAPI.getCurrentInstance().getScoreboards()
-                .set("Scoreboards." + id + ".Viewers", viewers);
+                .set("Scoreboards." + id + ".Viewers", viewerList);
 
             // Iterate through objectives
-            for (Objective obj : entry.getValue().getObjectives()) {
+            for (Objective obj : scoreboardEntry.getValue().getObjectives()) {
                 String objPath = "Scoreboards." + id + ".Objectives."
                                  + obj.getName();
 
@@ -163,7 +177,7 @@ public class ScoreboardHelper {
                 // scores, so iterate through all of the scoreboard's
                 // players, check if they have a score for this
                 // objective, and save it if they do
-                for (OfflinePlayer player : entry.getValue().getPlayers()) {
+                for (OfflinePlayer player : scoreboardEntry.getValue().getPlayers()) {
 
                     int score = obj.getScore(player).getScore();
 
@@ -280,7 +294,7 @@ public class ScoreboardHelper {
      */
     public static Scoreboard createScoreboard(String id) {
         Scoreboard board = manager.getNewScoreboard();
-        scoreboards.put(id.toUpperCase(), board);
+        scoreboardMap.put(id.toUpperCase(), board);
         return board;
     }
 
@@ -297,7 +311,7 @@ public class ScoreboardHelper {
             clearScoreboard(getMain());
         else {
             clearScoreboard(getScoreboard(id));
-            scoreboards.remove(id.toUpperCase());
+            scoreboardMap.remove(id.toUpperCase());
         }
     }
 
@@ -321,7 +335,7 @@ public class ScoreboardHelper {
      *
      */
     public static Scoreboard getScoreboard(String id) {
-        return scoreboards.get(id.toUpperCase());
+        return scoreboardMap.get(id.toUpperCase());
     }
 
     /**
@@ -333,7 +347,7 @@ public class ScoreboardHelper {
      *
      */
     public static boolean hasScoreboard(String id) {
-        if (scoreboards.containsKey(id.toUpperCase())) return true;
+        if (scoreboardMap.containsKey(id.toUpperCase())) return true;
         else return false;
     }
 
@@ -346,6 +360,6 @@ public class ScoreboardHelper {
      *
      */
     public static void removePlayer(String id, OfflinePlayer player) {
-        scoreboards.get(id.toUpperCase()).resetScores(player);
+        scoreboardMap.get(id.toUpperCase()).resetScores(player);
     }
 }
