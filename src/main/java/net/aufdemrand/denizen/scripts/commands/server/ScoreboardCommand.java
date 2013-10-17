@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.server;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -168,6 +169,10 @@ public class ScoreboardCommand extends AbstractCommand {
                 obj.setDisplayName(objective.asString());
 
                 if (!lines.isEmpty()) {
+                    // If we've gotten this far, but the score is null,
+                    // use a score of 0
+                    if (score == null) score = new Element(0);
+
                     // Set all the score lines in the scoreboard, creating fake players
                     // for those lines that are not meant to track players
                     //
@@ -175,11 +180,7 @@ public class ScoreboardCommand extends AbstractCommand {
                     // for clarifications
                     for (String line : lines) {
                         line = line.replaceAll("[pP]@", "");
-
-                        if (score != null)
-                            ScoreboardHelper.addScore(obj, line, score.asInt());
-                        else
-                            ScoreboardHelper.addScore(obj, line, 0);
+                        ScoreboardHelper.addScore(obj, Bukkit.getOfflinePlayer(line), score.asInt());
                     }
                 }
             }
@@ -196,12 +197,15 @@ public class ScoreboardCommand extends AbstractCommand {
 
                 if (obj != null) {
                     // Remove the entire objective if no lines have been specified
-                    if (lines.isEmpty()) obj.unregister();
+                    if (lines.isEmpty()) {
+                        dB.echoDebug("Removing objective " + obj.getName() +
+                                " from scoreboard " + id.asString());
+                        obj.unregister();
+                    }
                     else {
                         for (String line : lines) {
                             line = line.replaceAll("[pP]@", "");
-
-                            ScoreboardHelper.removeScore(obj, line);
+                            ScoreboardHelper.removeScore(obj, Bukkit.getOfflinePlayer(line));
                         }
                     }
                 }
@@ -209,7 +213,17 @@ public class ScoreboardCommand extends AbstractCommand {
                     dB.echoError("Objective " + objective.asString() +
                                  " does not exist in scoreboard " + id.asString());
                 }
+            }
+            // If lines were specified, but an objective was not, remove the
+            // lines from every objective
+            else if (!lines.isEmpty()) {
+                dB.echoDebug("Removing lines " + lines.identify() +
+                        " from all objectives in scoreboard " + id.asString());
 
+                for (String line : lines) {
+                    line = line.replaceAll("[pP]@", "");
+                    ScoreboardHelper.removePlayer(id.asString(), Bukkit.getOfflinePlayer(line));
+                }
             }
             // Only remove all objectives from scoreboard if viewers
             // argument was not specified (because if it was, a list

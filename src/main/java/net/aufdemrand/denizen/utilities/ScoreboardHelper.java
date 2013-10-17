@@ -104,7 +104,7 @@ public class ScoreboardHelper {
                     // Iterate through scores and add them to this objective
                     for (String scoreName : scoreSection.getKeys(false)) {
                         int scoreInt = scoreSection.getInt(scoreName);
-                        addScore(o, scoreName, scoreInt);
+                        addScore(o, Bukkit.getOfflinePlayer(scoreName), scoreInt);
                     }
                 }
             }
@@ -115,6 +115,10 @@ public class ScoreboardHelper {
      * Called on server shutdown or /denizen save
      */
     public static void _saveScoreboards() {
+
+        // Clear scoreboards.yml
+        DenizenAPI.getCurrentInstance().getScoreboards()
+            .set("Scoreboards", null);
 
         // Iterate through scoreboards map
         for (Map.Entry<String, Scoreboard> entry : scoreboards.entrySet()) {
@@ -181,15 +185,15 @@ public class ScoreboardHelper {
     /////////////////
 
     /**
-     * Add a score to an objective.
+     * Add a score to an Objective for an OfflinePlayer.
      *
      * @param Scoreboard  the Objective to add the score to
-     * @param String  the name of the score, technically a real or fake player's name
+     * @param OfflinePlayer  the OfflinePlayer to set the score for
      * @param int  the score
      *
      */
-    public static void addScore(Objective o, String name, int score) {
-        Score sc = o.getScore(Bukkit.getOfflinePlayer(name));
+    public static void addScore(Objective o, OfflinePlayer player, int score) {
+        Score sc = o.getScore(player);
 
         // If the score is 0, it won't normally be displayed at first,
         // so force it to be displayed by using setScore() like below on it
@@ -200,13 +204,13 @@ public class ScoreboardHelper {
     }
 
     /**
-     * Remove a score from an objective.
+     * Remove a score from an Objective for an OfflinePlayer.
      *
      * @param Scoreboard  the Objective to remove the score from
-     * @param String  the name of the score, technically a real or fake player's name
+     * @param String  the OfflinePlayer to remove the score for
      *
      */
-    public static void removeScore(Objective o, String name) {
+    public static void removeScore(Objective o, OfflinePlayer player) {
 
         // There is no method to remove a single score from an
         // objective, as confirmed here:
@@ -219,21 +223,20 @@ public class ScoreboardHelper {
         // Go through every score for this (real or fake) player
         // and put it in scoreMap if it doesn't belong to the
         // objective we want to remove the score from
-        for (Score sc : board.getScores(Bukkit.getOfflinePlayer(name))) {
+        for (Score sc : board.getScores(player)) {
             if (!sc.getObjective().equals(o)) {
                 scoreMap.put(sc.getObjective().getName(), sc.getScore());
             }
         }
 
         // Remove all the scores for this (real or fake) player
-        board.resetScores(Bukkit.getOfflinePlayer(name));
+        board.resetScores(player);
 
         // Go through scoreMap and add back all the scores we saved
         // for this (real or fake) player
         for (Map.Entry<String, Integer> entry : scoreMap.entrySet()) {
             board.getObjective(entry.getKey())
-                 .getScore(Bukkit.getOfflinePlayer(name))
-                 .setScore(entry.getValue());
+                 .getScore(player).setScore(entry.getValue());
         }
     }
 
@@ -325,11 +328,24 @@ public class ScoreboardHelper {
      * Returns true if the scoreboards map contains a certain
      * scoreboard id.
      *
+     * @param String  the id of the Scoreboard
      * @return  true or false
      *
      */
     public static boolean hasScoreboard(String id) {
         if (scoreboards.containsKey(id.toUpperCase())) return true;
         else return false;
+    }
+
+    /**
+     * Removes all the scores of an OfflinePlayer from a
+     * Scoreboard.
+     *
+     * @param String  the id of the Scoreboard
+     * @param OfflinePlayer  the OfflinePlayer
+     *
+     */
+    public static void removePlayer(String id, OfflinePlayer player) {
+        scoreboards.get(id.toUpperCase()).resetScores(player);
     }
 }
