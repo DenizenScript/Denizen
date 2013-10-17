@@ -17,7 +17,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 
 public class dPlayer implements dObject {
 

@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.events.ScriptReloadEvent;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
@@ -34,6 +35,9 @@ public class ScriptHelper {
             dB.echoError("Could not load scripts!");
             e.printStackTrace();
         }
+
+        // Remove all recipes added by Denizen item scripts
+        ItemScriptHelper.removeDenizenRecipes();
 
         ScriptRegistry._buildCoreYamlScriptContainers(getScripts());
         Bukkit.getServer().getPluginManager().callEvent(new ScriptReloadEvent());

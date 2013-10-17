@@ -43,6 +43,8 @@ public class dItem implements dObject, Notable, Properties {
             Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
                     Pattern.CASE_INSENSITIVE);
 
+    final public static String itemscriptIdentifier = "§0id:";
+
 
     // List of classes to check for properties
 
@@ -365,7 +367,6 @@ public class dItem implements dObject, Notable, Properties {
      *
      */
     public String getLore(String prefix) {
-
         for (String itemLore : getItemStack().getItemMeta().getLore()) {
             if (itemLore.startsWith(prefix)) {
                 return itemLore.substring(prefix.length());
@@ -383,8 +384,7 @@ public class dItem implements dObject, Notable, Properties {
      *
      */
     public boolean isItemscript() {
-
-        return containsLore("§0id:");
+        return containsLore(itemscriptIdentifier);
     }
 
     public dMaterial getMaterial() {
@@ -485,7 +485,7 @@ public class dItem implements dObject, Notable, Properties {
 
             // If not a saved item, but is a custom item, return the script id
             else if (isItemscript()) {
-                return "i@" + getLore("§0id:");
+                return "i@" + getLore(itemscriptIdentifier);
             }
         }
 
@@ -769,11 +769,10 @@ public class dItem implements dObject, Notable, Properties {
         // @description
         // Returns the script name of the item if it was created by an item script.
         // -->
-        if (attribute.startsWith("scriptname")) // Note: Update this when the id: is stored less stupidly!
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
-                for (String itemLore : getItemStack().getItemMeta().getLore())
-                    if (itemLore.startsWith("§0id:"))
-                        return new Element(itemLore.substring(5)).getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("scriptname")) // Note: Update this when the id: is stored differently
+            if (isItemscript()) {
+                return new Element(getLore(itemscriptIdentifier))
+                        .getAttribute(attribute.fulfill(1));
             }
 
         // <--[tag]
@@ -789,7 +788,7 @@ public class dItem implements dObject, Notable, Properties {
                 List<String> loreList = new ArrayList<String>();
 
                 for (String itemLore : getItemStack().getItemMeta().getLore()) {
-                    if (!itemLore.startsWith("§0id:")) {
+                    if (!itemLore.startsWith(itemscriptIdentifier)) {
                         loreList.add(itemLore);
                     }
                 }

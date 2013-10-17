@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,10 +18,12 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -86,19 +89,27 @@ public class ItemScriptHelper implements Listener {
         return determination;
     }
 
-    public static boolean isItemScript(ItemStack item) {
-        // If the item doesn't have ItemMeta, ignore it.
-        if (!item.hasItemMeta()) return false;
+    // Remove all recipes added by Denizen
+    public static void removeDenizenRecipes() {
+        Iterator<Recipe> recipes = Bukkit.getServer().recipeIterator();
+        while (recipes.hasNext()) {
+            Recipe current = recipes.next();
 
-        // Since dItems are handled by lore, it must match an item script on one of the lines
-        if (!item.getItemMeta().hasLore()) return false;
-
-        // Check to make sure the lore includes id:ItemScriptName. If not, ignore the item.
-        for (String line : item.getItemMeta().getLore())
-            if (ChatColor.stripColor(line).substring(0, 3).equalsIgnoreCase("id:") &&
-                    dScript.matches(ChatColor.stripColor(line).substring(3))) {
-                return true;
+            if (isItemscript(current.getResult())) {
+                recipes.remove();
             }
+        }
+    }
+
+    public static boolean isItemscript(ItemStack item) {
+        if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
+            for (String itemLore : item.getItemMeta().getLore()) {
+                if (itemLore.startsWith(dItem.itemscriptIdentifier)) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -147,26 +158,26 @@ public class ItemScriptHelper implements Listener {
     @EventHandler
     public void craftItem(CraftItemEvent event) {
         // Run a script on craft of an item script
-        if (isItemScript(event.getRecipe().getResult())) {
+        if (isItemscript(event.getRecipe().getResult())) {
             if (!(event.getWhoClicked() instanceof Player)) return;
 
             dItem item = new dItem(event.getRecipe().getResult());
             ItemScriptContainer script = null;
             for (String itemLore : item.getItemStack().getItemMeta().getLore())
-                if (itemLore.startsWith("§0id:")) // Note: Update this when the id: is stored less stupidly!
-                    script = (ItemScriptContainer) ScriptRegistry.getScriptContainerAs(itemLore.substring(5), ItemScriptContainer.class);
+                if (itemLore.startsWith(dItem.itemscriptIdentifier)) // Note: Update this when the id: is stored differently
+                    script = ScriptRegistry.getScriptContainerAs(itemLore.substring(5), ItemScriptContainer.class);
 
             if (script == null) {
-                dB.echoDebug("Tried to craft non-existant script!");
+                dB.echoDebug("Tried to craft non-existent script!");
                 return;
             }
 
-            for (int i = 0;i < 9;i++) {
-                if (!script.getRecipe().get(i).identify().split(":")[0].equalsIgnoreCase(
-                (new dItem(event.getInventory().getMatrix()[i])).identify().split(":")[0])) { // This probably can be compared more efficiently...
+            for (int i = 0; i < 9; i++) {
+                if (!script.getRecipe().get(i).identify().equalsIgnoreCase(
+                (new dItem(event.getInventory().getMatrix()[i])).identify())) { // This probably can be compared more efficiently...
                     dB.echoDebug("Ignoring craft attempt using "
-                            + (new dItem(event.getInventory().getMatrix()[i])).identify().split(":")[0]
-                            + " instead of " + script.getRecipe().get(i).identify().split(":")[0]);
+                            + (new dItem(event.getInventory().getMatrix()[i])).identify()
+                            + " instead of " + script.getRecipe().get(i).identify());
                     event.setCancelled(true);
                     return;
                 }
@@ -184,7 +195,7 @@ public class ItemScriptHelper implements Listener {
     @EventHandler
     public void dropItem(PlayerDropItemEvent event) {
         // Run a script on drop of an item script
-        if (isItemScript(event.getItemDrop().getItemStack())) {
+        if (isItemscript(event.getItemDrop().getItemStack())) {
             Map<String, Object> context = new HashMap<String, Object>();
             context.put("location", new dLocation(event.getItemDrop().getLocation()));
             String determination = doEvents(Arrays.asList

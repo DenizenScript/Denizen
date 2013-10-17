@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import net.aufdemrand.denizen.objects.dNPC;
@@ -15,6 +16,7 @@ import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -77,9 +79,12 @@ public class ItemScriptContainer extends ScriptContainer {
                     shapedRecipe.setIngredient(x, material.getItemStack().getData());
                 x++;
             }
+
             Bukkit.getServer().addRecipe(shapedRecipe);
         }
     }
+
+
 
     public dItem getItemFrom() {
        return getItemFrom(null, null);
@@ -106,7 +111,7 @@ public class ItemScriptContainer extends ScriptContainer {
             List<String> lore = new ArrayList<String>();
 
             // Set Id of the first, invisible lore
-            lore.add("§0id:" + getName());
+            lore.add(dItem.itemscriptIdentifier + getName());
 
             // Set Display Name
             if (contains("DISPLAY NAME")){

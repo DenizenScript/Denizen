@@ -2286,10 +2286,6 @@ public class WorldScriptHelper implements Listener {
         events.add(item.identify() + " spawns");
         events.add(itemMaterial.identify() + " spawns");
 
-        if (!item.identify().equals(item.identify().split(":")[0])) {
-            events.add(item.identify().split(":")[0] + " spawns");
-        }
-
         String determination = doEvents(events, null, null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))

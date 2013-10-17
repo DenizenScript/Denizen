@@ -119,7 +119,7 @@ public class InvisibleLoreHandler {
                 ItemMeta meta = stack.getItemMeta();
                 LinkedList<String> lore = new LinkedList<String>();
                 for (String line: meta.getLore()) {
-                    if (!line.startsWith("§0id:")) {
+                    if (!line.startsWith(dItem.itemscriptIdentifier)) {
                         lore.add(line);
                     }
                 }
