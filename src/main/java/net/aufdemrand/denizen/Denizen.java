@@ -26,6 +26,7 @@ import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.ObjectFetcher;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
+import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
@@ -276,17 +277,21 @@ public class Denizen extends JavaPlugin {
         // Save locations
         dLocation._saveLocations();
 
+        // Save scoreboards
+        ScoreboardHelper._saveScoreboards();
+
         // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
         for (Player player : this.getServer().getOnlinePlayers())
             getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player));
 
-        for (OfflinePlayer player : this.getServer().getOfflinePlayers())
+        for (OfflinePlayer player : this.getServer().getOfflinePlayers()) {
             try {
                 getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player)); } catch (Exception e) {
                 if (player == null) dB.echoDebug("Tell aufdemrand ASAP about this error! ERR: OPN");
                 else dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
                         "You might have a corrupt player file!");
             }
+        }
 
         //Disable core members
         getCommandRegistry().disableCoreMembers();
@@ -299,10 +304,13 @@ public class Denizen extends JavaPlugin {
 
 
     /*
-     * Reloads, retrieves and saves progress information Denizen/saves.yml.
+     * Reloads, retrieves and saves progress information in
+     * Denizen/saves.yml and Denizen/scoreboards.yml
      */
     private FileConfiguration savesConfig = null;
     private File savesConfigFile = null;
+    private FileConfiguration scoreboardsConfig = null;
+    private File scoreboardsConfigFile = null;
 
     public void reloadSaves() {
         if (savesConfigFile == null) {
@@ -311,6 +319,13 @@ public class Denizen extends JavaPlugin {
         savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
         // Reload dLocations from saves.yml
         dLocation._recallLocations();
+
+        if (scoreboardsConfigFile == null) {
+            scoreboardsConfigFile = new File(getDataFolder(), "scoreboards.yml");
+        }
+        scoreboardsConfig = YamlConfiguration.loadConfiguration(scoreboardsConfigFile);
+        // Reload scoreboards from scoreboards.yml
+        ScoreboardHelper._recallScoreboards();
 
         Bukkit.getServer().getPluginManager().callEvent(new SavesReloadEvent());
     }
@@ -322,6 +337,13 @@ public class Denizen extends JavaPlugin {
         return savesConfig;
     }
 
+    public FileConfiguration getScoreboards() {
+        if (scoreboardsConfig == null) {
+            reloadSaves();
+        }
+        return scoreboardsConfig;
+    }
+
     public void saveSaves() {
         if (savesConfig == null || savesConfigFile == null) {
             return;
@@ -329,9 +351,16 @@ public class Denizen extends JavaPlugin {
         try {
             // Save dLocations to saves.yml
             dLocation._saveLocations();
+            // Save scoreboards to scoreboards.yml
+            ScoreboardHelper._saveScoreboards();
             savesConfig.save(savesConfigFile);
         } catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + savesConfigFile, ex);
+        }
+        try {
+            scoreboardsConfig.save(scoreboardsConfigFile);
+        } catch (IOException ex) {
+            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + scoreboardsConfigFile, ex);
         }
     }
 

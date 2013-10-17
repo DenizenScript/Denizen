@@ -1,15 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -19,6 +14,7 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
@@ -30,7 +26,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ScoreboardCommand extends AbstractCommand {
 
-    public static Map<String, Scoreboard> scoreboards = new HashMap<String, Scoreboard>();
     private enum Action { ADD, REMOVE }
 
     @Override
@@ -112,29 +107,31 @@ public class ScoreboardCommand extends AbstractCommand {
                              id.debug() +
                              (viewers != null ? aH.debugObj("viewers", viewers.toString()) : "") +
                              (objective != null ? objective.debug() : "") +
-                             (act.equals(Action.ADD) ? criteria.debug() : "") +
+                             (act.equals(Action.ADD) && objective!= null
+                                 ? criteria.debug()
+                                 : "") +
                              (!lines.isEmpty() ? lines.debug() : "") +
-                             (score != null && act.equals(Action.ADD)
+                             (act.equals(Action.ADD) && score != null
                                  ? score.debug()
                                  : "") +
-                             (act.equals(Action.ADD) ? displaySlot.debug() : ""));
+                             (act.equals(Action.ADD) && objective != null
+                                 ? displaySlot.debug()
+                                 : ""));
 
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = null;
 
         // Get the main scoreboard by default
         if (id.asString().equalsIgnoreCase("main")) {
-            board = manager.getMainScoreboard();
+            board = ScoreboardHelper.getMain();
         }
         else {
             // If this scoreboard already exists, get it
-            if (scoreboards.containsKey(id.asString().toUpperCase())) {
-                board = scoreboards.get(id.asString().toUpperCase());
+            if (ScoreboardHelper.hasScoreboard(id.asString())) {
+                board = ScoreboardHelper.getScoreboard(id.asString());
             }
             // Else, create a new one if Action is ADD
             else if (act.equals(Action.ADD)) {
-                board = manager.getNewScoreboard();
-                scoreboards.put(id.asString().toUpperCase(), board);
+                board = ScoreboardHelper.createScoreboard(id.asString());
             }
         }
 
@@ -179,17 +176,17 @@ public class ScoreboardCommand extends AbstractCommand {
                     for (String line : lines) {
                         line = line.replaceAll("[pP]@", "");
 
-                        Score sc = null;
-                        sc = obj.getScore(Bukkit.getOfflinePlayer(line));
-
-                        if (score != null) sc.setScore(score.asInt());
-                        // If the score is 0, it won't normally be displayed at first,
-                        // so force it to be displayed by using setScore() like below on it
-                        else if (sc.getScore() == 0) {
-                            sc.setScore(1); sc.setScore(0);
-                        }
+                        if (score != null)
+                            ScoreboardHelper.addScore(obj, line, score.asInt());
+                        else
+                            ScoreboardHelper.addScore(obj, line, 0);
                     }
                 }
+            }
+            // If there is no objective and no viewers, but there are some lines,
+            // the command cannot do anything at all, so print a message about that
+            else if (viewers == null && !lines.isEmpty()) {
+                dB.echoDebug("Cannot add lines without specifying an objective!");
             }
         }
         else if (act.equals(Action.REMOVE)) {
@@ -202,29 +199,9 @@ public class ScoreboardCommand extends AbstractCommand {
                     if (lines.isEmpty()) obj.unregister();
                     else {
                         for (String line : lines) {
-                            // There is no method to remove a single score from an
-                            // objective, as confirmed here:
-                            // https://bukkit.atlassian.net/browse/BUKKIT-4014
-                            //
-                            // So use crazy workaround below where we delete all the
-                            // scores, then put them back in except for the one we wanted
-                            // to delete
                             line = line.replaceAll("[pP]@", "");
 
-                            Map<String, Integer> scoreMap = new HashMap<String, Integer>();
-                            for (Score sc : board.getScores(Bukkit.getOfflinePlayer(line))) {
-                                if (!sc.getObjective().equals(obj)) {
-                                    scoreMap.put(sc.getObjective().getName(), sc.getScore());
-                                }
-                            }
-
-                            board.resetScores(Bukkit.getOfflinePlayer(line));
-
-                            for (Map.Entry<String, Integer> entry : scoreMap.entrySet()) {
-                                board.getObjective(entry.getKey())
-                                     .getScore(Bukkit.getOfflinePlayer(line))
-                                     .setScore(entry.getValue());
-                            }
+                            ScoreboardHelper.removeScore(obj, line);
                         }
                     }
                 }
@@ -238,23 +215,23 @@ public class ScoreboardCommand extends AbstractCommand {
             // argument was not specified (because if it was, a list
             // of viewers should be removed instead)
             else if (viewers == null) {
-                dB.echoDebug("Removing all objectives from scoreboard " + id.asString());
-                for (Objective o : board.getObjectives()) {
-                    o.unregister();
-                }
+                dB.echoDebug("Removing scoreboard " + id.asString());
+                ScoreboardHelper.deleteScoreboard(id.asString());
             }
         }
 
         if (viewers != null) {
             for (dPlayer viewer : viewers) {
-                // Add viewers to this scoreboard
-                if (act.equals(Action.ADD))
-                    viewer.getPlayerEntity().setScoreboard(board);
-                // Remove viewers from this scoreboard by giving them
-                // a blank scoreboard (in lieu of better methods provided
-                // by Bukkit)
-                else if (act.equals(Action.REMOVE))
-                    viewer.getPlayerEntity().setScoreboard(manager.getNewScoreboard());
+                if (viewer.isOnline()) {
+                    // Add viewers to this scoreboard
+                    if (act.equals(Action.ADD))
+                        viewer.getPlayerEntity().setScoreboard(board);
+                    // Remove viewers from this scoreboard by giving them
+                    // a blank scoreboard (in lieu of better methods provided
+                    // by Bukkit)
+                    else if (act.equals(Action.REMOVE))
+                        viewer.getPlayerEntity().setScoreboard(ScoreboardHelper.createScoreboard());
+                }
             }
         }
     }

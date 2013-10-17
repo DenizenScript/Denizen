@@ -1211,7 +1211,8 @@ public class dEntity implements dObject {
         // returns the item the entity is holding, or null
         // if none.
         // -->
-        if (attribute.startsWith("item_in_hand"))
+        if (attribute.startsWith("item_in_hand") ||
+            attribute.startsWith("iteminhand"))
             return new dItem(getLivingEntity().getEquipment().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
 

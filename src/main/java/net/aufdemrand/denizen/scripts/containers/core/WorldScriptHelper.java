@@ -3711,6 +3711,7 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getItem().getItemStack());
+        dMaterial itemMaterial = item.getMaterial();
         context.put("item", item);
         context.put("entity", new dEntity(event.getItem()));
         context.put("location", new dLocation(event.getItem().getLocation()));
@@ -3719,8 +3720,10 @@ public class WorldScriptHelper implements Listener {
 
         events.add("player picks up item");
         events.add("player picks up " + item.identify());
+        events.add("player picks up " + itemMaterial.identify());
         events.add("player takes item");
         events.add("player takes " + item.identify());
+        events.add("player takes " + itemMaterial.identify());
 
         String determination = doEvents(events, null, event.getPlayer(), context, true);
 
