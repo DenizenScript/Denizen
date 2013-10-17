@@ -247,6 +247,7 @@ public class Denizen extends JavaPlugin {
             ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
             ObjectFetcher.registerWithObjectFetcher(Element.class);    // el@
             ObjectFetcher.registerWithObjectFetcher(Duration.class);   // d@
+            ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
             ObjectFetcher._initialize();
 
             // Initialize the NotableManager
