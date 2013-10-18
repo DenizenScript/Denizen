@@ -88,15 +88,16 @@ public class Utilities {
      *
      */
     public static void talkToNPC(String message, dPlayer player, dNPC npc, double range) {
+        String replacer = String.valueOf((char)0x03);
         // Get formats from Settings, and fill in <TEXT>
         String talkFormat = Settings.ChatToNpcFormat()
-                .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
+                .replace("<TEXT>", replacer).replace("<text>", replacer).replace("<Text>", replacer);
         String bystanderFormat = Settings.ChatToNpcOverheardFormat()
-                .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
+                .replace("<TEXT>", replacer).replace("<text>", replacer).replace("<Text>", replacer);
 
         // Fill in tags
-        talkFormat = TagManager.tag(player, npc, talkFormat, false);
-        bystanderFormat = TagManager.tag(player, npc, bystanderFormat, false);
+        talkFormat = TagManager.tag(player, npc, talkFormat, false).replace(replacer, message);
+        bystanderFormat = TagManager.tag(player, npc, bystanderFormat, false).replace(replacer, message);
 
         // Send message to player
         player.getPlayerEntity().sendMessage(talkFormat);
