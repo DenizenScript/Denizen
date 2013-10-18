@@ -424,7 +424,8 @@ public class dNPC implements dObject {
         // returns the owner of the NPC.
         // -->
         if (attribute.startsWith("owner"))
-            return new Element(getOwner()).getAttribute(attribute.fulfill(1));
+            if (dPlayer.matches(getOwner()))
+                return dPlayer.valueOf(getOwner()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <npc.inventory>
