@@ -210,6 +210,12 @@ public class Denizen extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MobproxTrait.class).withName("mobprox"));
 
+        // If Program AB, used for reading Artificial Intelligence Markup Language
+        // 2.0, is included as a dependency at Denizen/lib/Ab.jar, register the
+        // ChatbotTrait
+        if (Depends.hasProgramAB)
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ChatbotTrait.class).withName("chatbot"));
+
         // Create instance of PacketHelper if ProtocolLib has been hooked
         if(Depends.protocolManager != null) {
             new PacketHelper(this);

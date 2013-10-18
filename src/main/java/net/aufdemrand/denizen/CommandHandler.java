@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
@@ -25,6 +26,7 @@ import net.citizensnpcs.api.util.Messaging;
 import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -410,9 +412,6 @@ public class CommandHandler {
             trait.stand();
             npc.removeTrait(SneakingTrait.class);
         }
-
-
-
     }
 
     /*
@@ -665,6 +664,36 @@ public class CommandHandler {
 
         if (showMore)
             Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s health is '" + trait.getHealth() + "/" + trait.getMaxhealth() + "'.");
+    }
+
+    /*
+     * Chatbot
+     */
+    @Command(
+            aliases = { "npc" }, usage = "chatbot",
+            desc = "Turns the NPC into a chatbot.", flags = "", modifiers = { "chatbot", "bot" },
+            min = 1, max = 2, permission = "denizen.npc.chatbot")
+    @Requirements(selected = true, ownership = true)
+    public void chatbot(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+
+        if (!Depends.hasProgramAB) {
+            Messaging.send(sender, ChatColor.RED + "The Chatbot Trait " +
+                    " cannot be used if Program AB is missing from Denizen/lib");
+            return;
+        }
+
+        if (!npc.hasTrait(ChatbotTrait.class)) {
+            npc.addTrait(ChatbotTrait.class);
+            Messaging.send(sender, ChatColor.BLUE + npc.getName() +
+                    " has become a chatbot!");
+        }
+        ChatbotTrait trait = npc.getTrait(ChatbotTrait.class);
+
+        if (args.argsLength() > 1) {
+            trait.setBot(args.getString(1));
+            Messaging.send(sender, ChatColor.BLUE + npc.getName() +
+                    " is now the chatbot " + args.getString(1));
+        }
     }
 
 

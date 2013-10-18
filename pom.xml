@@ -110,6 +110,12 @@
 			<version>5.7.3-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.alicebot</groupId>
+			<artifactId>ab</artifactId>
+			<version>0.0.4.3</version>
+			<scope>provided</scope>
+		</dependency>
         <dependency>
         	<groupId>org.json</groupId>
         	<artifactId>org.json</artifactId>
