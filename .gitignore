@@ -42,7 +42,6 @@ Thumbs.db
 
 # Build files #
 #################
-MANIFEST.MF
 dependency-reduced-pom.xml
 
 # Project files #
