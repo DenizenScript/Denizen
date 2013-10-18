@@ -114,7 +114,7 @@
 			<groupId>org.alicebot</groupId>
 			<artifactId>ab</artifactId>
 			<version>0.0.4.3</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
         <dependency>
         	<groupId>org.json</groupId>
@@ -194,6 +194,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.2</version>
+                <configuration>
+                	<archive>
+            			<manifest>
+                			<addClasspath>true</addClasspath>
+                			<classpathPrefix>Denizen/lib/</classpathPrefix>
+            			</manifest>
+                	</archive>
+            	</configuration>    
             </plugin>
 
             <plugin>
