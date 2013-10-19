@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.HorseInventory;
@@ -27,7 +26,6 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.CitizensAPI;
 
 public class dInventory implements dObject, Notable {
 
@@ -43,23 +41,23 @@ public class dInventory implements dObject, Notable {
     /////////////////
 
     public boolean isUnique() {
-        return holderType.equals("notable");
+        return idType.equals("notable");
     }
 
     @Note("inventory")
     public String getSaveObject() {
-        return holderIdentifier;
+        return idHolder;
     }
 
     public void makeUnique(String id) {
-        holderType = "notable";
-        holderIdentifier = id;
+        idType = "notable";
+        idHolder = id;
         NotableManager.saveAs(this, id);
     }
 
     public void forget() {
-        NotableManager.remove(holderIdentifier);
-        getIdentifiers();
+        NotableManager.remove(idHolder);
+        loadIdentifiers();
     }
 
     //////////////////
@@ -158,36 +156,31 @@ public class dInventory implements dObject, Notable {
     //   Constructors
     /////////////
 
-    String holderType = null;
-    String holderIdentifier = null;
+    String idType = null;
+    String idHolder = null;
 
     public dInventory(Inventory inventory) {
         this.inventory = inventory;
-        getIdentifiers();
+        loadIdentifiers();
     }
 
     public dInventory(InventoryHolder holder) {
         inventory = holder.getInventory();
-        getIdentifiers();
+        loadIdentifiers();
     }
 
     public dInventory(InventoryType type) {
         inventory = Bukkit.getServer().createInventory(null, type);
-        holderType = "generic";
-        holderIdentifier = type.name();
+        idType = "generic";
+        idHolder = type.name();
     }
 
-    public dInventory(InventoryType type, String id, String identifier) {
-        inventory = Bukkit.getServer().createInventory(null, type);
-        holderType = id;
-        holderIdentifier = identifier;
-    }
-
-    public dInventory(int size, String id, String identifier) {
+    public dInventory(int size) {
         inventory = Bukkit.getServer().createInventory(null, size);
-        holderType = id;
-        holderIdentifier = identifier;
+        idType = "generic";
+        idHolder = "CHEST";
     }
+
 
 
     /////////////////////
@@ -202,23 +195,36 @@ public class dInventory implements dObject, Notable {
         return inventory;
     }
 
-    private void getIdentifiers() {
+    private void loadIdentifiers() {
         InventoryHolder holder = inventory.getHolder();
 
         if (holder != null) {
             if (holder instanceof Player) {
-                holderType = "player";
-                holderIdentifier = "p@" + ((Player) holder).getName();
+                idType = "player";
+                idHolder = "p@" + ((Player) holder).getName();
             }
             else if (holder instanceof Entity) {
-                holderType = "entity";
-                holderIdentifier = "e@" + ((Entity) holder).getEntityId();
+                idType = "entity";
+                idHolder = "e@" + ((Entity) holder).getEntityId();
             }
             else {
-                holderType = "location";
-                holderIdentifier = getLocation().identify();
+                idType = "location";
+                idHolder = getLocation().identify();
             }
         }
+    }
+
+    public void setIdentifiers(String type, String holder) {
+        idType = type;
+        idHolder = holder;
+    }
+
+    public String getIdType() {
+        return idType;
+    }
+
+    public String getIdHolder() {
+        return idHolder;
     }
 
     /**
@@ -249,6 +255,19 @@ public class dInventory implements dObject, Notable {
     public ItemStack[] getContents() {
         if (inventory != null) return inventory.getContents();
         else return new ItemStack[0];
+    }
+
+    public dInventory getEquipment() {
+        if (inventory instanceof PlayerInventory) {
+            return new dInventory(InventoryType.CRAFTING)
+                .add(((PlayerInventory) inventory).getArmorContents());
+        }
+        else if (inventory instanceof HorseInventory) {
+            return new dInventory(InventoryType.CRAFTING)
+                .add(((HorseInventory) inventory).getArmor())
+                .add(((HorseInventory) inventory).getSaddle());
+        }
+        return null;
     }
 
     public InventoryType getInventoryType() {
@@ -563,8 +582,8 @@ public class dInventory implements dObject, Notable {
     }
 
     public String identify() {
-        return "in@" + (holderType.equals("script") || holderType.equals("notable")
-                ? holderIdentifier : (holderType + '[' + holderIdentifier + ']'));
+        return "in@" + (idType.equals("script") || idType.equals("notable")
+                ? idHolder : (idType + '[' + idHolder + ']'));
     }
 
     @Override
@@ -739,31 +758,7 @@ public class dInventory implements dObject, Notable {
         // equipment (Generally, if it's not alive), returns null.
         // -->
         if (attribute.startsWith("equipment")) {
-            if (getInventory() instanceof PlayerInventory) {
-                String identifier = null;
-                if (CitizensAPI.getNPCRegistry().isNPC((LivingEntity) getInventory().getHolder())) {
-                    if (inventory.getHolder() instanceof Player)
-                        identifier = "n@" + CitizensAPI.getNPCRegistry().getNPC((LivingEntity) getInventory().getHolder()).getId();
-                    else return new Element("null")
-                            .getAttribute(attribute.fulfill(1));
-                }
-                else if (inventory.getHolder() instanceof Player)
-                    identifier = "p@" + ((Player) getInventory().getHolder()).getName();
-                else if (inventory.getHolder() instanceof LivingEntity)
-                    identifier = "e@" + ((Player) getInventory().getHolder()).getEntityId();
-                else return new Element("null")
-                            .getAttribute(attribute.fulfill(1));
-
-                return new dInventory(InventoryType.CRAFTING, "equipment", identifier)
-                        .add(((PlayerInventory) getInventory()).getArmorContents())
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else if (getInventory() instanceof HorseInventory) {
-                return new dInventory(InventoryType.CRAFTING, "equipment",
-                        (getInventory().getHolder() != null ? "e@" + String.valueOf(((LivingEntity) getInventory().getHolder()).getEntityId())
-                                : getInventory().getName()))
-                        .getAttribute(attribute.fulfill(1));
-            }
+            return getEquipment().getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

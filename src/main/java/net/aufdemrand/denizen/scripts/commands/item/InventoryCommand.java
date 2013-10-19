@@ -71,7 +71,15 @@ public class InventoryCommand extends AbstractCommand {
 
             // Make the attached player open the destination inventory
             case OPEN:
-                scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+                // Use special method to make opening generic workbenches
+                // work properly
+                if (destination.getIdType().equalsIgnoreCase("generic") &&
+                    destination.getIdHolder().equalsIgnoreCase("workbench")) {
+                    scriptEntry.getPlayer().getPlayerEntity().openWorkbench(null, true);
+                }
+                // Otherwise, open inventory as usual
+                else scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+
                 return;
 
             // Turn destination's contents into a copy of origin's
