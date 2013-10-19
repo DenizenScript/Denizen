@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -16,7 +16,6 @@ import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -56,27 +55,27 @@ public class ItemScriptContainer extends ScriptContainer {
     dNPC npc = null;
     dPlayer player = null;
     public boolean bound = false;
-    List<dItem> recipe = null;
+    List<dMaterial> recipe = null;
 
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         ItemScriptHelper.item_scripts.put(getName(), this);
         // Set Recipe
         if (contains("RECIPE")) {
-            recipe = new ArrayList<dItem>();
+            recipe = new ArrayList<dMaterial>();
             for (String recipeRow : getStringList("RECIPE")) {
                 recipeRow = TagManager.tag(player, npc, recipeRow);
                 String[] row = recipeRow.split("\\|", 3);
                 for (String material : row) {
-                    recipe.add(recipe.size(), dItem.valueOf(material));
+                    recipe.add(recipe.size(), dMaterial.valueOf(material));
                 }
             }
             ShapedRecipe shapedRecipe = new ShapedRecipe(getItemFrom().getItemStack());
             shapedRecipe.shape("abc", "def", "ghi");
             char x = 'a';
-            for (dItem material : recipe) {
-                if (!material.getItemStack().getType().name().equals("AIR"))
-                    shapedRecipe.setIngredient(x, material.getItemStack().getData());
+            for (dMaterial material : recipe) {
+                if (!material.getMaterial().name().equals("AIR"))
+                    shapedRecipe.setIngredient(x, material.getMaterialData());
                 x++;
             }
 
@@ -84,13 +83,11 @@ public class ItemScriptContainer extends ScriptContainer {
         }
     }
 
-
-
     public dItem getItemFrom() {
        return getItemFrom(null, null);
     }
 
-    public List<dItem> getRecipe() {
+    public List<dMaterial> getRecipe() {
         return recipe;
     }
 
