@@ -196,7 +196,7 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <element.as_boolean>
+        // @attribute <el@element.as_boolean>
         // @returns Element(Boolean)
         // @description
         // Returns the element as true/false.
@@ -207,7 +207,7 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_double>
+        // @attribute <el@element.as_double>
         // @returns Element(Number)
         // @description
         // Returns the element as a number with a decimal.
@@ -222,7 +222,7 @@ public class Element implements dObject {
             }
 
         // <--[tag]
-        // @attribute <element.as_duration>
+        // @attribute <el@element.as_duration>
         // @returns Duration
         // @description
         // Returns the element as a duration.
@@ -232,7 +232,7 @@ public class Element implements dObject {
             return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_entity>
+        // @attribute <el@element.as_entity>
         // @returns dEntity
         // @description
         // Returns the element as an entity. Note: the value must be a valid entity.
@@ -242,7 +242,7 @@ public class Element implements dObject {
             return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_int>
+        // @attribute <el@element.as_int>
         // @returns Element(Number)
         // @description
         // Returns the element as a number without a decimal. Rounds up double values.
@@ -261,7 +261,7 @@ public class Element implements dObject {
             }
 
         // <--[tag]
-        // @attribute <element.as_item>
+        // @attribute <el@element.as_item>
         // @returns dItem
         // @description
         // Returns the element as an item. Additional attributes can be accessed by dItem.
@@ -272,7 +272,7 @@ public class Element implements dObject {
             return dItem.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_list>
+        // @attribute <el@element.as_list>
         // @returns dList
         // @description
         // Returns the element as a list.
@@ -282,7 +282,7 @@ public class Element implements dObject {
             return dList.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_location>
+        // @attribute <el@element.as_location>
         // @returns dLocation
         // @description
         // Returns the element as a location. Note: the value must be a valid location.
@@ -292,7 +292,7 @@ public class Element implements dObject {
             return dLocation.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_money>
+        // @attribute <el@element.as_money>
         // @returns Element(Number)
         // @description
         // Returns the element as a number with two decimal places.
@@ -310,7 +310,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.as_npc>
+        // @attribute <el@element.as_npc>
         // @returns dNPC
         // @description
         // Returns the element as an NPC. Note: the value must be a valid NPC.
@@ -320,7 +320,7 @@ public class Element implements dObject {
             return dNPC.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_player>
+        // @attribute <el@element.as_player>
         // @returns dPlayer
         // @description
         // Returns the element as a player. Note: the value must be a valid player. Can be online or offline.
@@ -330,7 +330,7 @@ public class Element implements dObject {
             return dPlayer.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_script>
+        // @attribute <el@element.as_script>
         // @returns dScript
         // @description
         // Returns the element as a script. Note: the value must be a valid script.
@@ -345,7 +345,7 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <element.debug.log>
+        // @attribute <el@element.debug.log>
         // @returns Element
         // @description
         // Prints the Element's debug representation in the console and returns true.
@@ -357,7 +357,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.debug.no_color>
+        // @attribute <el@element.debug.no_color>
         // @returns Element
         // @description
         // Returns a standard debug representation of the Element with colors stripped.
@@ -368,7 +368,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.debug>
+        // @attribute <el@element.debug>
         // @returns Element
         // @description
         // Returns a standard debug representation of the Element.
@@ -379,7 +379,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.prefix>
+        // @attribute <el@element.prefix>
         // @returns Element
         // @description
         // Returns the prefix of the element.
@@ -394,7 +394,7 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <element.contains[<string>]>
+        // @attribute <el@element.contains[<string>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the element contains a specified string, case insensitive. Can use
@@ -416,7 +416,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.ends_with[<string>]>
+        // @attribute <el@element.ends_with[<string>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the element ends with a specified string.
@@ -425,7 +425,7 @@ public class Element implements dObject {
             return new Element(element.endsWith(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.last_color>
+        // @attribute <el@element.last_color>
         // @returns Element
         // @description
         // Returns the ChatColors used at the end of a string.
@@ -434,7 +434,7 @@ public class Element implements dObject {
             return new Element(ChatColor.getLastColors(element)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.length>
+        // @attribute <el@element.length>
         // @returns Element(Number)
         // @description
         // Returns the length of the element.
@@ -445,7 +445,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.starts_with[<string>]>
+        // @attribute <el@element.starts_with[<string>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the element starts with a specified string.
@@ -459,7 +459,7 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <element.after[<string>]>
+        // @attribute <el@element.after[<string>]>
         // @returns Element
         // @description
         // Returns the portion of an element after a specified string. ie. <el@helloWorld.after[hello]> returns 'World'.
@@ -476,7 +476,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.before[<string>]>
+        // @attribute <el@element.before[<string>]>
         // @returns Element
         // @description
         // Returns the portion of an element before a specified string.
@@ -493,14 +493,14 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.replace[<string>]>
+        // @attribute <el@element.replace[<string>]>
         // @returns Element
         // @description
         // Returns the element with all instances of a string removed.
         // -->
 
         // <--[tag]
-        // @attribute <element.replace[<string>].with[<string>]>
+        // @attribute <el@element.replace[<string>].with[<string>]>
         // @returns Element
         // @description
         // Returns the element with all instances of a string replaced with another.
@@ -523,7 +523,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.split[<string>].limit[<#>]>
+        // @attribute <el@element.split[<string>].limit[<#>]>
         // @returns dList
         // @description
         // Returns a list of portions of this element, split by the specified string,
@@ -541,7 +541,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.split[<string>]>
+        // @attribute <el@element.split[<string>]>
         // @returns dList
         // @description
         // Returns a list of portions of this element, split by the specified string.
@@ -557,7 +557,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.strip_color>
+        // @attribute <el@element.strip_color>
         // @returns Element
         // @description
         // Returns the element with all color encoding stripped.
@@ -575,7 +575,7 @@ public class Element implements dObject {
             return new Element(element.trim()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.substring[<#>(,<#>)]>
+        // @attribute <el@element.substring[<#>(,<#>)]>
         // @returns Element
         // @description
         // Returns the portion of an element between two string indices.
@@ -601,7 +601,7 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <element.abs>
+        // @attribute <el@element.abs>
         // @returns Element(Number)
         // @description
         // Returns the absolute value of the element.
@@ -612,7 +612,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.add[<#>]>
+        // @attribute <el@element.add[<#>]>
         // @returns Element(Number)
         // @description
         // Returns the element plus a number.
@@ -624,7 +624,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.div[<#>]>
+        // @attribute <el@element.div[<#>]>
         // @returns Element(Number)
         // @description
         // Returns the element divided by a number.
@@ -636,7 +636,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.mod[<#>]>
+        // @attribute <el@element.mod[<#>]>
         // @returns Element(Number)
         // @description
         // Returns the remainder of the element divided by a number.
@@ -648,7 +648,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.mul[<#>]>
+        // @attribute <el@element.mul[<#>]>
         // @returns Element(Number)
         // @description
         // Returns the element multiplied by a number.
@@ -660,7 +660,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.sqrt>
+        // @attribute <el@element.sqrt>
         // @returns Element(Number)
         // @description
         // Returns the square root of the element.
@@ -671,7 +671,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <element.sub[<#>]>
+        // @attribute <el@element.sub[<#>]>
         // @returns Element(Number)
         // @description
         // Returns the element minus a number.

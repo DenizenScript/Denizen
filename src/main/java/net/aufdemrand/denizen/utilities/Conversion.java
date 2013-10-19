@@ -17,7 +17,7 @@ public class Conversion {
     /**
      * Turn a List of dColors into a list of Colors.
      *
-     * @param entities The list of dColors
+     * @param colors The list of dColors
      */
 
     public static List<Color> convertColors(List<dColor> colors) {
@@ -50,7 +50,7 @@ public class Conversion {
      * Gets a dInventory from an Object, which can be a
      * dEntity, dLocation or dInventory
      *
-     * @param entities The list of dEntities
+     * @param string The inventory holding object
      */
 
     public static dInventory getInventory(String string) {
