@@ -50,7 +50,7 @@ public class InventoryCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an Inventory action!");
 
         scriptEntry.defaultObject("destination",
-                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory() : null);
+                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity().getInventory() : null);
     }
 
     @Override

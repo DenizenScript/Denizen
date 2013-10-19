@@ -254,7 +254,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public dInventory getInventory() {
         BlockState block = getBlock().getState();
         if (block instanceof InventoryHolder)
-            return new dInventory(block);
+            return new dInventory((InventoryHolder) block);
         else return null;
     }
 
@@ -372,9 +372,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // block is not a container, returns null.
         // -->
         if (attribute.startsWith("inventory")) {
-            if (getBlock().getState() instanceof InventoryHolder)
-                return new dInventory(getBlock().getState()).getAttribute(attribute.fulfill(1));
-            return new Element("null").getAttribute(attribute);
+            return getInventory().getAttribute(attribute);
         }
 
         // <--[tag]

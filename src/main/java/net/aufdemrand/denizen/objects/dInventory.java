@@ -8,12 +8,9 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.DoubleChest;
-import org.bukkit.entity.Horse;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.minecart.HopperMinecart;
-import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.HorseInventory;
 import org.bukkit.inventory.Inventory;
@@ -22,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
+import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.notable.Note;
@@ -37,7 +35,7 @@ public class dInventory implements dObject, Notable {
     //   PATTERNS
     /////////////////
 
-    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment)(\\[)(.+?)(\\])", Pattern.CASE_INSENSITIVE);
+    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
     final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
 
     /////////////////////
@@ -54,8 +52,6 @@ public class dInventory implements dObject, Notable {
     }
 
     public void makeUnique(String id) {
-        holderType_old = holderType;
-        holderIdentifier_old = holderIdentifier;
         holderType = "notable";
         holderIdentifier = id;
         NotableManager.saveAs(this, id);
@@ -63,10 +59,7 @@ public class dInventory implements dObject, Notable {
 
     public void forget() {
         NotableManager.remove(holderIdentifier);
-        holderType = holderType_old;
-        holderIdentifier = holderIdentifier_old;
-        holderType_old = null;
-        holderIdentifier_old = null;
+        getIdentifiers();
     }
 
     //////////////////
@@ -98,77 +91,51 @@ public class dInventory implements dObject, Notable {
         if (m.matches()) {
 
             // Set the type of the inventory holder
-            String t = m.group(2);
+            String type = m.group(2);
             // Set the name/id/location of the inventory holder
-            String h = m.group(4);
+            String holder = m.group(3);
 
-            if (t.equalsIgnoreCase("npc")) {
-                // Check if the NPC ID specified is valid
-                if (dNPC.matches((h.startsWith("n@") ? h : "n@" + h))
-                        && (dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Player
-                        || dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Horse))
-                    return new dInventory(dNPC.valueOf(h).getEntity());
-            }
-            else if (t.equalsIgnoreCase("player")) {
-                // Check if the player name specified is valid
-                if (dPlayer.matches(h))
-                    return new dInventory(dPlayer.valueOf(h).getPlayerEntity());
-            }
-            else if (t.equalsIgnoreCase("entity")) {
-                // Check if the entity ID specified is valid and the entity is living
-                if (dEntity.matches((h.startsWith("e@") ? h : "e@" + h))
-                        && dEntity.valueOf((h.startsWith("e@") ? h : "e@" + h)).isLivingEntity())
-                    return new dInventory(dEntity.valueOf((h.startsWith("e@") ? h : "e@" + h)).getLivingEntity());
-            }
-            else if (t.equalsIgnoreCase("location")) {
-                // Check if the location specified is valid and the block is a container
-                if (dLocation.matches(h)) {
-                    return dLocation.valueOf(h).getInventory();
+            if (type.equalsIgnoreCase("generic")) {
+                if (Argument.valueOf(holder).matchesEnum(InventoryType.values())) {
+                    return new dInventory(InventoryType.valueOf(holder));
+                }
+                else {
+                    dB.echoError("That type of inventory does not exist!");
                 }
             }
-            else if (t.equalsIgnoreCase("equipment")) {
-                // Match the entity given in the brackets
-                if (dNPC.matches(h)) {
-                    if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(h.substring(2))).getBukkitEntity() instanceof Player)
-                        return new dInventory(InventoryType.CRAFTING, t, h).add(CitizensAPI.getNPCRegistry()
-                                .getById(Integer.valueOf(h.substring(2))).getBukkitEntity().getEquipment().getArmorContents());
-                }
-                else if (dPlayer.matches(h) && Bukkit.getPlayer(h.substring(2)).isOnline()) {
-                    return new dInventory(InventoryType.CRAFTING, t, h).add(Bukkit.getPlayer(h.substring(2))
-                            .getEquipment().getArmorContents());
-                }
-                else if (dEntity.matches(h) && dEntity.valueOf(h).isLivingEntity()
-                        && dEntity.valueOf(h).isSpawned()) {
-                    return new dInventory(InventoryType.CRAFTING, t, h).add(dEntity.valueOf(h).getLivingEntity()
-                            .getEquipment().getArmorContents());
-                }
+            else if (type.equalsIgnoreCase("entity")
+                     || type.equalsIgnoreCase("player")
+                     || type.equalsIgnoreCase("npc")) {
+                if (dEntity.matches(holder))
+                    return dEntity.valueOf(holder).getInventory();
+            }
+            else if (type.equalsIgnoreCase("location")) {
+                if (dLocation.matches(holder))
+                    return dLocation.valueOf(holder).getInventory();
+            }
+            else if (type.equalsIgnoreCase("equipment")) {
+                dEntity.valueOf(holder).getEquipment();
             }
 
             // If the dInventory is invalid, alert the user and return null
-            dB.echoError("Value of dInventory returning null. Invalid " + t + " specified: " + h);
+            dB.echoError("Value of dInventory returning null. Invalid " +
+                    type + " specified: " + holder);
             return null;
-
         }
 
         // Match in@scriptName for Inventory Scripts
         m = inventory_by_script.matcher(string);
 
         if (m.matches()) {
-
             if (ScriptRegistry.containsScript(m.group(2), InventoryScriptContainer.class))
                 return ScriptRegistry.getScriptContainerAs(m.group(2), InventoryScriptContainer.class).getInventoryFrom(player, npc);
 
             if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dInventory.class))
                 return (dInventory) NotableManager.getSavedObject(m.group(2));
-
-            dB.echoError("Value of dInventory returning null. Invalid script specified: " + m.group(2));
-            return null;
-
         }
 
         dB.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
         return null;
-
     }
 
     /**
@@ -184,7 +151,6 @@ public class dInventory implements dObject, Notable {
             return true;
 
         return false;
-
     }
 
 
@@ -193,67 +159,22 @@ public class dInventory implements dObject, Notable {
     /////////////
 
     String holderType = null;
-    String holderType_old = null;
     String holderIdentifier = null;
-    String holderIdentifier_old = null;
 
     public dInventory(Inventory inventory) {
-        if (inventory.getHolder() != null) {
-
-            InventoryHolder holder = inventory.getHolder();
-
-            if (!(holder instanceof LivingEntity)) {
-                if (holder instanceof DoubleChest)
-                    holderIdentifier = ((DoubleChest) holder).getLocation().toString();
-                else if (holder instanceof BlockState)
-                    holderIdentifier = ((BlockState) holder).getLocation().toString();
-                holderType = "location";
-            }
-            else if (holder instanceof Player) {
-                // Check if it's an NPC... currently, only Player NPCs can have inventories
-                if (CitizensAPI.getNPCRegistry().isNPC((LivingEntity) holder)) {
-                    holderType = "npc";
-                    holderIdentifier = String.valueOf(CitizensAPI.getNPCRegistry().getNPC((LivingEntity) holder).getId());
-                }
-                else {
-                    holderType = "player";
-                    holderIdentifier = ((Player) holder).getName();
-                }
-            }
-            else if (holder instanceof Horse) {
-                holderType = "entity";
-                holderIdentifier = String.valueOf(((Horse) holder).getEntityId());
-            }
-            else if (holder instanceof HopperMinecart) {
-                holderType = "entity";
-                holderIdentifier = String.valueOf(((HopperMinecart) holder).getEntityId());
-            }
-            else if (holder instanceof StorageMinecart) {
-                holderType = "entity";
-                holderIdentifier = String.valueOf(((StorageMinecart) holder).getEntityId());
-            }
-            else {
-                if (CitizensAPI.getNPCRegistry().isNPC((LivingEntity) holder)) {
-                    // Return, because only Players and Player NPCs can have inventories right now.
-                    // Uncomment this when Denizen implements inventories for all!
-                    // holderType = "npc";
-                    // holderIdentifier = String.valueOf(((NPC) holder).getId());
-
-                    dB.echoError("Only Player-type NPCs can have inventories.");
-                    return;
-                }
-                else {
-                    holderType = "entity";
-                    holderIdentifier = String.valueOf(((LivingEntity) holder).getEntityId());
-                }
-            }
-
-        }
         this.inventory = inventory;
+        getIdentifiers();
+    }
+
+    public dInventory(InventoryHolder holder) {
+        inventory = holder.getInventory();
+        getIdentifiers();
     }
 
     public dInventory(InventoryType type) {
         inventory = Bukkit.getServer().createInventory(null, type);
+        holderType = "generic";
+        holderIdentifier = type.name();
     }
 
     public dInventory(InventoryType type, String id, String identifier) {
@@ -268,76 +189,6 @@ public class dInventory implements dObject, Notable {
         holderIdentifier = identifier;
     }
 
-    public dInventory(InventoryHolder holder) {
-        if (!(holder instanceof LivingEntity)) {
-            if (holder instanceof DoubleChest)
-                holderIdentifier = ((DoubleChest) holder).getLocation().toString();
-            else if (holder instanceof BlockState)
-                holderIdentifier = ((BlockState) holder).getLocation().toString();
-            holderType = "location";
-        }
-        else if (holder instanceof Player) {
-            // Check if it's an NPC... currently, only Player NPCs can have inventories
-            if (CitizensAPI.getNPCRegistry().isNPC((LivingEntity) holder)) {
-                holderType = "npc";
-                holderIdentifier = String.valueOf(CitizensAPI.getNPCRegistry().getNPC((LivingEntity) holder).getId());
-            }
-            else {
-                holderType = "player";
-                holderIdentifier = ((Player) holder).getName();
-            }
-        }
-        else if (holder instanceof Horse) {
-            holderType = "entity";
-            holderIdentifier = String.valueOf(((Horse) holder).getEntityId());
-        }
-        else if (holder instanceof HopperMinecart) {
-            holderType = "entity";
-            holderIdentifier = String.valueOf(((HopperMinecart) holder).getEntityId());
-        }
-        else if (holder instanceof StorageMinecart) {
-            holderType = "entity";
-            holderIdentifier = String.valueOf(((StorageMinecart) holder).getEntityId());
-        }
-        else {
-            if (CitizensAPI.getNPCRegistry().isNPC((LivingEntity) holder)) {
-                // Return, because only Players and Player NPCs can have inventories right now.
-                // Uncomment this when Denizen implements inventories for all!
-                // holderType = "npc";
-                // holderIdentifier = String.valueOf(((NPC) holder).getId());
-
-                dB.echoError("Only Player-type NPCs can have inventories.");
-                return;
-            }
-            else {
-                holderType = "entity";
-                holderIdentifier = String.valueOf(((LivingEntity) holder).getEntityId());
-            }
-        }
-    }
-
-    public dInventory(Player player) {
-        this.inventory = player.getInventory();
-        holderType = "player";
-        holderIdentifier = player.getName();
-    }
-
-    public dInventory(BlockState state) {
-        if (state instanceof InventoryHolder) {
-            this.inventory = ((InventoryHolder) state).getInventory();
-            holderType = "location";
-            holderIdentifier = new dLocation(state.getLocation()).identify();
-        }
-    }
-
-    public dInventory(LivingEntity entity) {
-        if (entity instanceof InventoryHolder) {
-            this.inventory = ((InventoryHolder) entity).getInventory();
-            holderType = "entity";
-            holderIdentifier = String.valueOf(entity.getEntityId());
-        }
-    }
-
 
     /////////////////////
     //   INSTANCE FIELDS/METHODS
@@ -350,6 +201,76 @@ public class dInventory implements dObject, Notable {
     public Inventory getInventory() {
         return inventory;
     }
+
+    private void getIdentifiers() {
+        InventoryHolder holder = inventory.getHolder();
+
+        if (holder != null) {
+            if (holder instanceof Player) {
+                holderType = "player";
+                holderIdentifier = "p@" + ((Player) holder).getName();
+            }
+            else if (holder instanceof Entity) {
+                holderType = "entity";
+                holderIdentifier = "e@" + ((Entity) holder).getEntityId();
+            }
+            else {
+                holderType = "location";
+                holderIdentifier = getLocation().identify();
+            }
+        }
+    }
+
+    /**
+     * Return the dLocation of this inventory's
+     * holder
+     *
+     * @return  The holder's dLocation
+     *
+     */
+
+    public dLocation getLocation() {
+
+        if (inventory != null) {
+
+            InventoryHolder holder = inventory.getHolder();
+
+            if (holder instanceof BlockState) {
+                return new dLocation(((BlockState) holder).getLocation());
+            }
+            else if (holder instanceof Player) {
+                return new dLocation(((Player) holder).getLocation());
+            }
+        }
+
+        return null;
+    }
+
+    public ItemStack[] getContents() {
+        if (inventory != null) return inventory.getContents();
+        else return new ItemStack[0];
+    }
+
+    public InventoryType getInventoryType() {
+        return inventory.getType();
+    }
+
+    public int getSize() {
+        return inventory.getSize();
+    }
+
+    public void remove(ItemStack item) {
+        inventory.remove(item);
+    }
+
+    public void setContents(ItemStack[] contents) {
+        inventory.setContents(contents);
+    }
+
+
+    /////////////////////
+    //   INVENTORY MANIPULATION
+    /////////////////
 
     /**
      * Add an array of items to this inventory
@@ -514,32 +435,6 @@ public class dInventory implements dObject, Notable {
     }
 
     /**
-     * Return the dLocation of this inventory's
-     * holder
-     *
-     * @return  The holder's dLocation
-     *
-     */
-
-    public dLocation getLocation() {
-
-        if (inventory != null) {
-
-            InventoryHolder holder = inventory.getHolder();
-
-            if (holder instanceof BlockState) {
-                return new dLocation(((BlockState) holder).getLocation());
-            }
-            else if (holder instanceof Player) {
-
-                return new dLocation(((Player) holder).getLocation());
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Remove an array of items from this inventory,
      * and return the result
      *
@@ -553,7 +448,6 @@ public class dInventory implements dObject, Notable {
         if (inventory == null || items == null) return this;
 
         for (ItemStack item : items) {
-
             if (item != null) inventory.removeItem(item);
         }
 
@@ -610,7 +504,6 @@ public class dInventory implements dObject, Notable {
                     }
                 }
             }
-
         }
 
         return this;
@@ -644,27 +537,6 @@ public class dInventory implements dObject, Notable {
 
     public void clear() {
         if (inventory != null) inventory.clear();
-    }
-
-    public ItemStack[] getContents() {
-        if (inventory != null) return inventory.getContents();
-        else return new ItemStack[0];
-    }
-
-    public InventoryType getInventoryType() {
-        return inventory.getType();
-    }
-
-    public int getSize() {
-        return inventory.getSize();
-    }
-
-    public void remove(ItemStack item) {
-        inventory.remove(item);
-    }
-
-    public void setContents(ItemStack[] contents) {
-        inventory.setContents(contents);
     }
 
     ////////////////////////

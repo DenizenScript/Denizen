@@ -43,6 +43,7 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -485,8 +486,22 @@ public class dEntity implements dObject {
      */
 
     public dInventory getInventory() {
+        if (isLivingEntity() && getLivingEntity() instanceof InventoryHolder)
+            return new dInventory((InventoryHolder) getLivingEntity());
+        else return null;
+    }
+
+    /**
+     * Returns this entity's equipment (i.e. armor contents)
+     * as a 4-slot dInventory
+     *
+     * @return  the entity's dInventory
+     */
+
+    public dInventory getEquipment() {
         if (isLivingEntity())
-            return new dInventory(getLivingEntity());
+            return new dInventory(InventoryType.CRAFTING)
+                .add(getLivingEntity().getEquipment().getArmorContents());
         else return null;
     }
 
@@ -1206,14 +1221,7 @@ public class dEntity implements dObject {
             // The only way to return correct size for dInventory
             // created from equipment is to use a CRAFTING type
             // that has the expected 4 slots
-            if (isPlayer()) {
-                return new dInventory(InventoryType.CRAFTING).add(getPlayer().getInventory().getArmorContents())
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return new dInventory(getLivingEntity())
-                        .getAttribute(attribute.fulfill(1));
-            }
+            return getEquipment().getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

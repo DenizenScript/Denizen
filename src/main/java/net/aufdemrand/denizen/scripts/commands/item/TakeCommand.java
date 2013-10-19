@@ -72,7 +72,7 @@ public class TakeCommand extends AbstractCommand{
 
             else if (!scriptEntry.hasObject("inventory")
                         && arg.matches("npc"))
-                scriptEntry.addObject("inventory", new dInventory(scriptEntry.getNPC().getEntity()));
+                scriptEntry.addObject("inventory", scriptEntry.getNPC().getDenizenEntity().getInventory());
 
         }
 
