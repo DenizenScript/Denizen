@@ -3,21 +3,25 @@ package net.aufdemrand.denizen.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
 
 public class Conversion {
 
     /**
-     * Turn a List of dColors into a list of Colors.
+     * Turn a list of dColors into a list of Colors.
      *
      * @param colors The list of dColors
+     * @return The list of Colors
      */
 
     public static List<Color> convertColors(List<dColor> colors) {
@@ -31,9 +35,27 @@ public class Conversion {
     }
 
     /**
-     * Turn a List of dEntities into a list of Entities.
+     * Turn a list of dItems into a list of ItemStacks.
+     *
+     * @param entities The list of dItems
+     * @return The list of ItemStacks
+     */
+
+    public static List<ItemStack> convertItems(List<dItem> items) {
+
+        List<ItemStack> newList = new ArrayList<ItemStack>();
+
+        for (dItem item : items)
+            newList.add(item.getItemStack());
+
+        return newList;
+    }
+
+    /**
+     * Turn a list of dEntities into a list of Entities.
      *
      * @param entities The list of dEntities
+     * @return The list of Entities
      */
 
     public static List<Entity> convertEntities(List<dEntity> entities) {
@@ -48,13 +70,25 @@ public class Conversion {
 
     /**
      * Gets a dInventory from an Object, which can be a
-     * dEntity, dLocation or dInventory
+     * dEntity, dLocation, dInventory, or a dList of dItems
      *
-     * @param string The inventory holding object
+     * @param arg An argument to parse
+     * @return The dInventory retrieved by parsing the argument
      */
 
-    public static dInventory getInventory(String string) {
-        if (dInventory.matches(string)) {
+    public static dInventory getInventory(Argument arg) {
+        String string = arg.getValue();
+
+        if (arg.matchesArgumentList(dItem.class)) {
+            Object list1 = dList.valueOf(string).filter(dItem.class);
+
+            @SuppressWarnings("unchecked")
+            List<ItemStack> list2 = convertItems((List<dItem>) list1);
+            ItemStack[] items = list2.toArray(new ItemStack[list2.size()]);
+
+            return new dInventory(dInventory.maxSlots).add(items);
+        }
+        else if (dInventory.matches(string)) {
             return dInventory.valueOf(string);
         }
         else if (dLocation.matches(string)) {

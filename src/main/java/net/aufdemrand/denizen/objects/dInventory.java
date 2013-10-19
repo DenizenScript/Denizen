@@ -30,6 +30,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class dInventory implements dObject, Notable {
 
+    // The maximum number of slots a Bukkit inventory can have
+    final static public int maxSlots = 54;
+
     /////////////////////
     //   PATTERNS
     /////////////////

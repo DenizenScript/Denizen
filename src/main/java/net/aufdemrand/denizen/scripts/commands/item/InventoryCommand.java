@@ -32,14 +32,15 @@ public class InventoryCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("origin")
                      && arg.matchesPrefix("origin, o, source, s, items, item, i, from, f")
-                     && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
-                scriptEntry.addObject("origin", Conversion.getInventory(arg.getValue()));
+                     && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
+                         || arg.matchesArgumentList(dItem.class))) {
+                scriptEntry.addObject("origin", Conversion.getInventory(arg));
             }
 
             else if (!scriptEntry.hasObject("destination")
                      && arg.matchesPrefix("destination, dest, d, target, to, t")
                      && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
-                scriptEntry.addObject("destination", Conversion.getInventory(arg.getValue()));
+                scriptEntry.addObject("destination", Conversion.getInventory(arg));
             }
 
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
@@ -71,11 +72,10 @@ public class InventoryCommand extends AbstractCommand {
 
             // Make the attached player open the destination inventory
             case OPEN:
-                // Use special method to make opening generic workbenches
-                // work properly
-                if (destination.getIdType().equalsIgnoreCase("generic") &&
-                    destination.getIdHolder().equalsIgnoreCase("workbench")) {
-                    scriptEntry.getPlayer().getPlayerEntity().openWorkbench(null, true);
+                // Use special method to make opening workbenches work properly
+                if (destination.getIdHolder().equalsIgnoreCase("workbench")) {
+                    scriptEntry.getPlayer().getPlayerEntity()
+                        .openWorkbench(destination.getLocation(), true);
                 }
                 // Otherwise, open inventory as usual
                 else scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
