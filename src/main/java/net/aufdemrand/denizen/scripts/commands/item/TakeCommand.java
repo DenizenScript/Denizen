@@ -112,7 +112,7 @@ public class TakeCommand extends AbstractCommand{
 
             case ITEMINHAND:
                 int inHandAmt = scriptEntry.getPlayer().getPlayerEntity().getItemInHand().getAmount();
-                int theAmount = qty.asInt();
+                int theAmount = (int)qty.asDouble();
                 ItemStack newHandItem = new ItemStack(0);
                 if (theAmount > inHandAmt) {
                     dB.echoDebug("...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
@@ -146,7 +146,7 @@ public class TakeCommand extends AbstractCommand{
             case ITEM:
                 for (dItem item : items) {
                     ItemStack is = item.getItemStack();
-                    is.setAmount(qty.asInt());
+                    is.setAmount((int)qty.asDouble());
 
                     // Remove books with a certain title even if they
                     // are not identical to an item script, to allow
