@@ -19,21 +19,22 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dChunk extends CraftChunk implements dObject {
+public class dChunk extends CraftChunk implements dObject, Adjustable {
 
     //////////////////
     //    OBJECT FETCHER
     ////////////////
 
     /**
-     * Gets a Chunk Object from a string form of x,y,z,world.
-     * This is not to be confused with the 'x,y,world' of a
-     * location, which is a finer grain of unit in Worlds..
+     * Gets a Chunk Object from a string form of x,z,world.
+     * This is not to be confused with the 'x,y,z,world' of a
+     * location, which is a finer grain of unit in a dWorlds.
      *
      * @param string  the string or dScript argument String
      * @return  a dChunk, or null if incorrectly formatted
@@ -122,7 +123,7 @@ public class dChunk extends CraftChunk implements dObject {
 
     @Override
     public String identify() {
-        return "ch@" + ',' + getX() + ',' + getZ() + ',' + getWorld().getName();
+        return "ch@" + getX() + ',' + getZ() + ',' + getWorld().getName();
     }
 
     @Override
@@ -201,6 +202,21 @@ public class dChunk extends CraftChunk implements dObject {
         }
 
         // <--[tag]
+        // @attribute <ch@chunk.players>
+        // @returns dList(dPlayer)
+        // @description
+        // returns a list of players in the chunk.
+        // -->
+        if (attribute.startsWith("players")) {
+            dList entities = new dList();
+            for (Entity ent : this.getEntities())
+                if (ent instanceof Player)
+                    entities.add(new dPlayer((Player) ent).identify());
+
+            return entities.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <ch@chunk.height_map>
         // @returns dList(Element)
         // @description
@@ -260,6 +276,37 @@ public class dChunk extends CraftChunk implements dObject {
         }
 
         return new Element(identify()).getAttribute(attribute);
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism, Element value) {
+
+        if (mechanism.matches("unload")) {
+            unload(true);
+            return;
+        }
+
+        if (mechanism.matches("unload_safely")) {
+            unload(true, true);
+            return;
+        }
+
+        if (mechanism.matches("unload_without_saving")) {
+            unload(false);
+            return;
+        }
+
+        if (mechanism.matches("load")) {
+            load(true);
+            return;
+        }
+
+        if (mechanism.matches("regenerate")) {
+            getWorld().regenerateChunk(getX(), getZ());
+            return;
+        }
+
+
     }
 
 }

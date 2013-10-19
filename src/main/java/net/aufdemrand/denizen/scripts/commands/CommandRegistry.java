@@ -85,6 +85,26 @@ public class CommandRegistry implements dRegistry {
     @Override
     public void registerCoreMembers() {
 
+        // <--[command]
+        // @Name Adjust
+        // @Usage adjust [<dObject>] [<mechanism>](:<value>)
+        // @Required 2
+        // @Stable stable
+        // @Short Adjusts a dObjects mechanism.
+        // @Author aufdemrand
+
+        // @Description
+        // Many dObjects contains options and properties that need to be adjusted. Denizen employs a mechanism
+        // interface to deal with those adjustments. To easily accomplish this, use this command with a valid object
+        // mechanism, and sometimes accompanying value.
+
+        // @Usage
+        // Use to set a custom display name on an entity.
+        // - adjust e@1000 'set_custom_name:ANGRY!'
+
+        // -->
+        registerCoreMember(AdjustCommand.class,
+                "ADJUST", "adjust [<dObject>] [<mechanism>](:<value>)", 2);
 
         // <--[command]
         // @Name Age

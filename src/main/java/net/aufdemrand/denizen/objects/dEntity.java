@@ -4,11 +4,15 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.exceptions.CommandExecutionException;
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.properties.EntityAge;
 import net.aufdemrand.denizen.objects.properties.EntityInfected;
 import net.aufdemrand.denizen.objects.properties.EntityProfessional;
 import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -45,10 +49,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class dEntity implements dObject {
+public class dEntity implements dObject, Adjustable {
 
     /////////////////////
     //   PATTERNS
@@ -853,7 +858,6 @@ public class dEntity implements dObject {
     public void setEntity(Entity entity) {
         this.entity = entity;
     }
-
 
     // Used to store some information about a livingEntity while it's despawned
     private class DespawnedEntity {
@@ -1754,6 +1758,38 @@ public class dEntity implements dObject {
 
         return new Element(identify()).getAttribute(attribute);
     }
+
+
+    @Override
+    public void adjust(Mechanism mechanism, Element value) {
+
+        if (mechanism.matches("remove_effects")) {
+            for (PotionEffect potionEffect : this.getLivingEntity().getActivePotionEffects())
+                getLivingEntity().removePotionEffect(potionEffect.getType());
+            return;
+        }
+
+        if (mechanism.matches("set_remove_when_far_away"))
+             getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
+
+        if (mechanism.matches("set_custom_name"))
+            getLivingEntity().setCustomName(value.asString());
+
+        if (mechanism.matches("set_custom_name_visibility"))
+            getLivingEntity().setCustomNameVisible(value.asBoolean());
+
+        if (mechanism.matches("set_can_pickup_items"))
+            getLivingEntity().setCanPickupItems(value.asBoolean());
+
+        if (mechanism.matches("set_leash_holder"))
+            getLivingEntity().setLeashHolder(dEntity.valueOf(value.asString()).getBukkitEntity());
+
+        if (mechanism.matches("set_remaining_air"))
+            getLivingEntity().setRemainingAir(value.asInt());
+
+
+    }
+
 
 
 
