@@ -19,6 +19,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
 import net.aufdemrand.denizen.objects.aH.Argument;
+import net.aufdemrand.denizen.objects.aH.PrimitiveType;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.notable.Note;
@@ -94,8 +95,12 @@ public class dInventory implements dObject, Notable {
             String holder = m.group(3);
 
             if (type.equalsIgnoreCase("generic")) {
-                if (Argument.valueOf(holder).matchesEnum(InventoryType.values())) {
+                Argument arg = Argument.valueOf(holder);
+                if (arg.matchesEnum(InventoryType.values())) {
                     return new dInventory(InventoryType.valueOf(holder.toUpperCase()));
+                }
+                else if (arg.matchesPrimitive(PrimitiveType.Integer)) {
+                    return new dInventory(arg.asElement().asInt());
                 }
                 else {
                     dB.echoError("That type of inventory does not exist!");
