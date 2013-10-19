@@ -35,7 +35,7 @@ public class dInventory implements dObject, Notable {
     //   PATTERNS
     /////////////////
 
-    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
+    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
     final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
 
     /////////////////////
@@ -97,7 +97,7 @@ public class dInventory implements dObject, Notable {
 
             if (type.equalsIgnoreCase("generic")) {
                 if (Argument.valueOf(holder).matchesEnum(InventoryType.values())) {
-                    return new dInventory(InventoryType.valueOf(holder));
+                    return new dInventory(InventoryType.valueOf(holder.toUpperCase()));
                 }
                 else {
                     dB.echoError("That type of inventory does not exist!");
