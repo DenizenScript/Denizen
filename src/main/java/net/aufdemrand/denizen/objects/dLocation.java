@@ -28,7 +28,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
     // This pattern correctly reads both 0.9 and 0.8 notables
     final static Pattern notablePattern =
-            Pattern.compile("(\\w+)[;,]((-?\\d+\\.?\\d*,){3,5}\\w+)",
+            Pattern.compile("(\\w+)[;,]((-?\\d+\\.?\\d*,){3,5}.+)",
                     Pattern.CASE_INSENSITIVE);
 
     /////////////////////
