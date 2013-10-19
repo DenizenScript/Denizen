@@ -123,9 +123,7 @@ public class dInventory implements dObject, Notable {
             else if (t.equalsIgnoreCase("location")) {
                 // Check if the location specified is valid and the block is a container
                 if (dLocation.matches(h)) {
-                    BlockState block = dLocation.valueOf(h).getBlock().getState();
-                    if (block instanceof InventoryHolder)
-                        return new dInventory(block);
+                    return dLocation.valueOf(h).getInventory();
                 }
             }
             else if (t.equalsIgnoreCase("equipment")) {
@@ -365,11 +363,14 @@ public class dInventory implements dObject, Notable {
     public dInventory add(ItemStack... items) {
         if (inventory == null || items == null) return this;
 
-        inventory.addItem(items);
+        for (ItemStack item : items) {
+            if (item != null) inventory.addItem(item);
+        }
 
         return this;
     }
 
+    // TODO: Fix this
     public HashMap<Integer, ItemStack> addWithLeftovers(ItemStack... items) {
         if (inventory == null || items == null) return null;
 

@@ -5,7 +5,10 @@ import java.util.List;
 
 import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dLocation;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;
 
@@ -43,4 +46,24 @@ public class Conversion {
         return newList;
     }
 
+    /**
+     * Gets a dInventory from an Object, which can be a
+     * dEntity, dLocation or dInventory
+     *
+     * @param entities The list of dEntities
+     */
+
+    public static dInventory getInventory(String string) {
+        if (dInventory.matches(string)) {
+            return dInventory.valueOf(string);
+        }
+        else if (dLocation.matches(string)) {
+            return dLocation.valueOf(string).getInventory();
+        }
+        else if (dEntity.matches(string)) {
+            return dEntity.valueOf(string).getInventory();
+        }
+
+        return null;
+    }
 }

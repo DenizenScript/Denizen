@@ -187,12 +187,26 @@ public class aH {
         }
 
 
+        // Check if this argument matches a certain dObject type
         public boolean matchesArgumentType(Class<? extends dObject> dClass) {
 
             try {
                 return (Boolean) dClass.getMethod("matches", String.class).invoke(null, value);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+
+            return false;
+        }
+
+
+        // Check if this argument matches any of multiple dObject types
+        public boolean matchesArgumentTypes(Class<? extends dObject>... dClasses) {
+
+            for (Class<? extends dObject> c : dClasses) {
+                if (matchesArgumentType(c)) {
+                    return true;
+                }
             }
 
             return false;

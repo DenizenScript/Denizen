@@ -479,6 +479,18 @@ public class dEntity implements dObject {
     }
 
     /**
+     * Returns this entity's dInventory.
+     *
+     * @return  the entity's dInventory
+     */
+
+    public dInventory getInventory() {
+        if (isLivingEntity())
+            return new dInventory(getLivingEntity());
+        else return null;
+    }
+
+    /**
      * Whether this entity identifies as a generic
      * entity type, for instance "e@cow", instead of
      * a spawned entity

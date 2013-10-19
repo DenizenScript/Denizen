@@ -17,6 +17,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 
 import java.util.*;
@@ -248,6 +249,13 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public dLocation rememberAs(String id) {
         dLocation.saveAs(this, id);
         return this;
+    }
+
+    public dInventory getInventory() {
+        BlockState block = getBlock().getState();
+        if (block instanceof InventoryHolder)
+            return new dInventory(block);
+        else return null;
     }
 
 

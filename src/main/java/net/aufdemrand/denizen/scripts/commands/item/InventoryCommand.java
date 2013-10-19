@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
@@ -18,65 +19,38 @@ public class InventoryCommand extends AbstractCommand {
 
     private enum Action { OPEN, COPY, MOVE, SWAP, ADD, REMOVE, KEEP, EXCLUDE, FILL, CLEAR }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.values())) {
-                // add Action
+                && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", new Element(arg.getValue().toUpperCase()));
             }
 
-            else if (!scriptEntry.hasObject("originEntity") &&
-                !scriptEntry.hasObject("originLocation") &&
-                !scriptEntry.hasObject("originInventory") &&
-                arg.matchesPrefix("origin, o, source, s, items, item, i, from, f")) {
-
-                // Is entity
-                if (arg.matchesArgumentType(dEntity.class))
-                    scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
-                // Is location
-                else if (arg.matchesArgumentType(dLocation.class))
-                    scriptEntry.addObject("originLocation", arg.asType(dLocation.class));
-                // Is inventory
-                else if (arg.matchesArgumentType(dInventory.class))
-                    scriptEntry.addObject("originInventory", arg.asType(dInventory.class));
+            else if (!scriptEntry.hasObject("origin")
+                     && arg.matchesPrefix("origin, o, source, s, items, item, i, from, f")
+                     && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
+                scriptEntry.addObject("origin", Conversion.getInventory(arg.getValue()));
             }
 
-            else if (!scriptEntry.hasObject("destinationEntity") &&
-                     !scriptEntry.hasObject("destinationLocation") &&
-                     !scriptEntry.hasObject("destinationInventory") &&
-                     arg.matchesPrefix("destination, dest, d, target, to, t")) {
-
-                // Is entity
-                if (arg.matchesArgumentType(dEntity.class))
-                    scriptEntry.addObject("destinationEntity", arg.asType(dEntity.class));
-                // Is location
-                else if (arg.matchesArgumentType(dLocation.class))
-                    scriptEntry.addObject("destinationLocation", arg.asType(dLocation.class));
-                // Is inventory
-                else if (arg.matchesArgumentType(dInventory.class))
-                    scriptEntry.addObject("destinationInventory", arg.asType(dInventory.class));
+            else if (!scriptEntry.hasObject("destination")
+                     && arg.matchesPrefix("destination, dest, d, target, to, t")
+                     && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
+                scriptEntry.addObject("destination", Conversion.getInventory(arg.getValue()));
             }
 
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("action"))
             throw new InvalidArgumentsException("Must specify an Inventory action!");
 
-        if (!scriptEntry.hasObject("destinationEntity") &&
-            !scriptEntry.hasObject("destinationLocation") &&
-            !scriptEntry.hasObject("destinationInventory")) {
-            if (scriptEntry.hasPlayer())
-                scriptEntry.addObject("destinationInventory", new dInventory(scriptEntry.getPlayer().getPlayerEntity()));
-            else
-                throw new InvalidArgumentsException("Must specify a destination inventory!");
-        }
+        scriptEntry.defaultObject("destination",
+                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory() : null);
     }
 
     @Override
@@ -85,35 +59,8 @@ public class InventoryCommand extends AbstractCommand {
         // Get objects
         Element action = scriptEntry.getElement("action");
 
-        dEntity originEntity = (dEntity) scriptEntry.getObject("originEntity");
-        dLocation originLocation = (dLocation) scriptEntry.getObject("originLocation");
-
-        dEntity destinationEntity = (dEntity) scriptEntry.getObject("destinationEntity");
-        dLocation destinationLocation = (dLocation) scriptEntry.getObject("destinationLocation");
-
-        dInventory origin = (dInventory) scriptEntry.getObject("originInventory");
-        dInventory destination = (dInventory) scriptEntry.getObject("destinationInventory");
-
-        if (origin == null) {
-            if (originLocation != null) {
-                origin = new dInventory(originLocation.getBlock().getState());
-            }
-            else if (originEntity != null) {
-                origin = new dInventory(originEntity.getLivingEntity());
-            }
-        }
-
-        if (destination == null) {
-            if (destinationLocation != null) {
-                destination = new dInventory(destinationLocation.getBlock().getState());
-            }
-            else if (destinationEntity != null) {
-                destination = new dInventory(destinationEntity.getLivingEntity());
-            }
-            else {
-                return;
-            }
-        }
+        dInventory origin = (dInventory) scriptEntry.getObject("origin");
+        dInventory destination = (dInventory) scriptEntry.getObject("destination");
 
         dB.report(getName(),
                 destination.debug()
@@ -141,7 +88,7 @@ public class InventoryCommand extends AbstractCommand {
             // Swap the contents of the two inventories
             case SWAP:
                 dInventory temp = new dInventory(destination.getInventoryType())
-                                      .add(destination.getContents());
+                                          .add(destination.getContents());
                 origin.replace(destination);
                 temp.replace(origin);
                 return;
@@ -178,13 +125,6 @@ public class InventoryCommand extends AbstractCommand {
             case CLEAR:
                 destination.clear();
                 return;
-
-            default:
-                return;
-
         }
-
-
-
     }
 }

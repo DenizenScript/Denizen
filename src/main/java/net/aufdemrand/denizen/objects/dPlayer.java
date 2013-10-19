@@ -142,6 +142,11 @@ public class dPlayer implements dObject {
         return player_name;
     }
 
+    public dInventory getInventory() {
+        if (isOnline()) return new dInventory(getPlayerEntity());
+        else return null;
+    }
+
     public dLocation getLocation() {
         if (isOnline()) return new dLocation(getPlayerEntity().getLocation());
         else return null;
