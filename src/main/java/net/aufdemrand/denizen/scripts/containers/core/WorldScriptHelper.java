@@ -2562,6 +2562,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // player clicks in inventory
     // player (<click type>) clicks (<item>) (in <inventory>)
     //
     // @Triggers when a player clicks in an inventory.
@@ -2630,6 +2631,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // player closes inventory
     // player closes <inventory>
     //
     // @Triggers when a player closes an inventory.
@@ -2661,6 +2663,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // player drags in inventory
     // player drags (<item>) (in <inventory>)
     //
     // @Triggers when a player drags in an inventory.
@@ -2719,6 +2722,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // item moves from inventory
     // item moves from inventory (to <inventory>)
     // item moves from <inventory> (to <inventory>)
     //
@@ -2772,6 +2776,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // player opens inventory
     // player opens <inventory>
     //
     // @Triggers when a player opens an inventory.
