@@ -25,11 +25,13 @@ public class InventoryCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("action")
-                && arg.matchesEnum(Action.values())) {
-                scriptEntry.addObject("action", new Element(arg.getValue().toUpperCase()));
+            // Check for a dList of actions
+            if (arg.matchesEnumList(Action.values())) {
+                scriptEntry.addObject("actions", arg.asType(dList.class));
             }
 
+            // Check for an origin, which can be a dInventory, dEntity, dLocation
+            // or a dList of dItems
             else if (!scriptEntry.hasObject("origin")
                      && arg.matchesPrefix("origin, o, source, s, items, item, i, from, f")
                      && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
@@ -37,6 +39,8 @@ public class InventoryCommand extends AbstractCommand {
                 scriptEntry.addObject("origin", Conversion.getInventory(arg));
             }
 
+            // Check for a destination, which can be a dInventory, dEntity
+            // or dLocation
             else if (!scriptEntry.hasObject("destination")
                      && arg.matchesPrefix("destination, dest, d, target, to, t")
                      && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
@@ -47,7 +51,7 @@ public class InventoryCommand extends AbstractCommand {
         }
 
         // Check to make sure required arguments have been filled
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("actions"))
             throw new InvalidArgumentsException("Must specify an Inventory action!");
 
         scriptEntry.defaultObject("destination",
@@ -58,7 +62,7 @@ public class InventoryCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects
-        Element action = scriptEntry.getElement("action");
+        dList actions = (dList) scriptEntry.getObject("action");
 
         dInventory origin = (dInventory) scriptEntry.getObject("origin");
         dInventory destination = (dInventory) scriptEntry.getObject("destination");
@@ -66,73 +70,75 @@ public class InventoryCommand extends AbstractCommand {
         dB.report(getName(),
                 destination.debug()
                 + (origin != null ? origin.debug() : "")
-                + action.debug());
+                + actions.debug());
 
-        switch (Action.valueOf(action.asString())) {
+        for (String action : actions) {
+            switch (Action.valueOf(action)) {
 
-            // Make the attached player open the destination inventory
-            case OPEN:
-                // Use special method to make opening workbenches work properly
-                if (destination.getIdHolder().equalsIgnoreCase("workbench")) {
-                    scriptEntry.getPlayer().getPlayerEntity()
-                        .openWorkbench(destination.getLocation(), true);
-                }
-                // Otherwise, open inventory as usual
-                else scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+                // Make the attached player open the destination inventory
+                case OPEN:
+                    // Use special method to make opening workbenches work properly
+                    if (destination.getIdHolder().equalsIgnoreCase("workbench")) {
+                        scriptEntry.getPlayer().getPlayerEntity()
+                            .openWorkbench(destination.getLocation(), true);
+                    }
+                    // Otherwise, open inventory as usual
+                    else scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
 
-                return;
+                    return;
 
-            // Turn destination's contents into a copy of origin's
-            case COPY:
-                origin.replace(destination);
-                return;
+                // Turn destination's contents into a copy of origin's
+                case COPY:
+                    origin.replace(destination);
+                    return;
 
-            // Copy origin's contents to destination, then empty origin
-            case MOVE:
-                origin.replace(destination);
-                origin.clear();
-                return;
+                // Copy origin's contents to destination, then empty origin
+                case MOVE:
+                    origin.replace(destination);
+                    origin.clear();
+                    return;
 
-            // Swap the contents of the two inventories
-            case SWAP:
-                dInventory temp = new dInventory(destination.getInventoryType())
-                                          .add(destination.getContents());
-                origin.replace(destination);
-                temp.replace(origin);
-                return;
+                // Swap the contents of the two inventories
+                case SWAP:
+                    dInventory temp = new dInventory(destination.getInventoryType())
+                                              .add(destination.getContents());
+                    origin.replace(destination);
+                    temp.replace(origin);
+                    return;
 
-            // Add origin's contents to destination
-            case ADD:
-                destination.add(origin.getContents());
-                return;
+                // Add origin's contents to destination
+                case ADD:
+                    destination.add(origin.getContents());
+                    return;
 
-            // Remove origin's contents from destination
-            case REMOVE:
-                destination.remove(origin.getContents());
-                return;
+                // Remove origin's contents from destination
+                case REMOVE:
+                    destination.remove(origin.getContents());
+                    return;
 
-            // Keep only items from the origin's contents in the
-            // destination
-            case KEEP:
-                   destination.keep(origin.getContents());
-                   return;
+                // Keep only items from the origin's contents in the
+                // destination
+                case KEEP:
+                       destination.keep(origin.getContents());
+                       return;
 
-            // Exclude all items from the origin's contents in the
-            // destination
-            case EXCLUDE:
-                   destination.exclude(origin.getContents());
-                   return;
+                // Exclude all items from the origin's contents in the
+                // destination
+                case EXCLUDE:
+                       destination.exclude(origin.getContents());
+                       return;
 
-            // Add origin's contents over and over to destination
-            // until it is full
-            case FILL:
-                destination.fill(origin.getContents());
-                   return;
+                // Add origin's contents over and over to destination
+                // until it is full
+                case FILL:
+                    destination.fill(origin.getContents());
+                       return;
 
-            // Clear the content of the destination inventory
-            case CLEAR:
-                destination.clear();
-                return;
+                // Clear the content of the destination inventory
+                case CLEAR:
+                    destination.clear();
+                    return;
+            }
         }
     }
 }

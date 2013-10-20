@@ -147,6 +147,20 @@ public class aH {
         }
 
 
+        // Check if this argument matches a dList of Enum values
+        public boolean matchesEnumList(Enum[] values) {
+            dList list = dList.valueOf(this.value);
+
+            for (String string : list) {
+                for (Enum value : values)
+                    if (value.name().replace("_", "").equalsIgnoreCase(string.replace("_", "")))
+                        return true;
+            }
+
+            return false;
+        }
+
+
         public boolean matchesPrefix(String values) {
             if (!hasPrefix()) return false;
             for (String value : values.split(","))

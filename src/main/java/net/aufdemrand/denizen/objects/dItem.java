@@ -494,7 +494,7 @@ public class dItem implements dObject, Notable, Properties {
     }
 
     public String identifyMaterial() {
-        return "m@" + dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identify();
+        return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identify();
     }
 
     @Override
