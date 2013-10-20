@@ -1769,22 +1769,22 @@ public class dEntity implements dObject, Adjustable {
             return;
         }
 
-        if (mechanism.matches("set_remove_when_far_away"))
+        if (mechanism.matches("remove_when_far_away"))
              getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
 
-        if (mechanism.matches("set_custom_name"))
+        if (mechanism.matches("custom_name"))
             getLivingEntity().setCustomName(value.asString());
 
-        if (mechanism.matches("set_custom_name_visibility"))
+        if (mechanism.matches("custom_name_visibility"))
             getLivingEntity().setCustomNameVisible(value.asBoolean());
 
-        if (mechanism.matches("set_can_pickup_items"))
+        if (mechanism.matches("can_pickup_items"))
             getLivingEntity().setCanPickupItems(value.asBoolean());
 
-        if (mechanism.matches("set_leash_holder"))
+        if (mechanism.matches("leash_holder"))
             getLivingEntity().setLeashHolder(dEntity.valueOf(value.asString()).getBukkitEntity());
 
-        if (mechanism.matches("set_remaining_air"))
+        if (mechanism.matches("remaining_air"))
             getLivingEntity().setRemainingAir(value.asInt());
 
 

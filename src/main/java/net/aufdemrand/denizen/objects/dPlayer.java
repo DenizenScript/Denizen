@@ -12,13 +12,10 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
-public class dPlayer implements dObject {
+public class dPlayer implements dObject, Adjustable {
 
 
     /////////////////////
@@ -968,4 +965,102 @@ public class dPlayer implements dObject {
         return new dEntity(getPlayerEntity()).getAttribute(attribute);
     }
 
+
+    @Override
+    public void adjust(Mechanism mechanism, Element value) {
+
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name level
+        // @input Element(Integer)
+        // @description
+        // Sets the level on the player. Does not affect the current progression
+        // of experience towards next level.
+        // @tags
+        // <player.xp.level>
+        // -->
+        if (mechanism.matches("level")) {
+            getPlayerEntity().setLevel(value.asInt());
+            return;
+        }
+
+        if (mechanism.matches("award_achievement")) {
+            getPlayerEntity().awardAchievement(Achievement.valueOf(value.asString().toUpperCase()));
+            return;
+        }
+
+        if (mechanism.matches("health_scale")) {
+            getPlayerEntity().setHealthScale(value.asDouble());
+            return;
+        }
+
+        if (mechanism.matches("scale_health")) {
+            getPlayerEntity().setHealthScaled(value.asBoolean());
+            return;
+        }
+
+        if (mechanism.matches("texture_pack")) {
+            getPlayerEntity().setTexturePack(value.asString());
+            return;
+        }
+
+        if (mechanism.matches("saturation")) {
+            getPlayerEntity().setSaturation(value.asFloat());
+            return;
+        }
+
+        if (mechanism.matches("bed_spawn_location")) {
+            getPlayerEntity().setBedSpawnLocation(dLocation.valueOf(value.asString()));
+            return;
+        }
+
+        if (mechanism.matches("fly_speed")) {
+            getPlayerEntity().setFlySpeed(value.asFloat());
+            return;
+        }
+
+        if (mechanism.matches("weather")) {
+            getPlayerEntity().setPlayerWeather(WeatherType.valueOf(value.asString().toUpperCase()));
+            return;
+        }
+
+        if (mechanism.matches("reset_weather")) {
+            getPlayerEntity().resetPlayerWeather();
+            return;
+        }
+
+        if (mechanism.matches("player_list_name")) {
+            getPlayerEntity().setPlayerListName(value.asString());
+            return;
+        }
+
+        if (mechanism.matches("time")) {
+            getPlayerEntity().setPlayerTime(value.asInt(), true);
+            return;
+        }
+
+        if (mechanism.matches("freeze_time")) {
+            if (value == null)
+                getPlayerEntity().setPlayerTime(getPlayerEntity().getWorld().getTime(), false);
+            else
+                getPlayerEntity().setPlayerTime(value.asInt(), false);
+            return;
+        }
+
+        if (mechanism.matches("reset_time")) {
+            getPlayerEntity().resetPlayerTime();
+            return;
+        }
+
+        if (mechanism.matches("walk_speed")) {
+            getPlayerEntity().setWalkSpeed(value.asFloat());
+            return;
+        }
+
+        // Pass along to dEntity mechanism handler if not already handled.
+        Adjustable entity = new dEntity(getPlayerEntity());
+        entity.adjust(mechanism, value);
+
+    }
 }
