@@ -1017,7 +1017,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name level
-        // @input Element(int number)
+        // @input Element(Integer)
         // @description
         // Sets the level on the player. Does not affect the current progression
         // of experience towards next level.
@@ -1039,6 +1039,8 @@ public class dPlayer implements dObject, Adjustable {
         // BUILD_HOE, MAKE_BREAD, BAKE_CAKE, BUILD_BETTER_PICKAXE, COOK_FISH, ON_A_RAIL, BUILD_SWORD,
         // KILL_ENEMY, KILL_COW, FLY_PIG, SNIPE_SKELETON, GET_DIAMONDS, NETHER_PORTAL, GHAST_RETURN,
         // GET_BLAZE_ROD, BREW_POTION, END_PORTAL, THE_END, ENCHANTMENTS, OVERKILL, BOOKCASE
+        // @tags
+        // None
         // -->
         if (mechanism.matches("award_achievement")) {
             getPlayerEntity().awardAchievement(Achievement.valueOf(value.asString().toUpperCase()));
@@ -1048,14 +1050,14 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name health_scale
-        // @input Element(int number)
+        // @input Element(Integer)
         // @description
         // Sets the 'health scale' on the Player. Each heart equals '2'. The standard health scale is
         // 20, so for example, indicating a value of 40 will display double the amount of hearts
         // standard.
         // Player relogging will reset this mechanism.
         // @tags
-        // <player.health.scale> will return the value of the  current health scale.
+        // <player.health.scale>
         // -->
         if (mechanism.matches("health_scale")) {
             getPlayerEntity().setHealthScale(value.asDouble());
@@ -1065,12 +1067,12 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name scale_health
-        // @input Element(boolean)
+        // @input Element(Boolean)
         // @description
         // Enables or disables the health scale value. Disabling will result in the standard
         // amount of hearts being shown.
         // @tags
-        // <player.health.is_scaled> will return true if the health bar is currently being scaled.
+        // <player.health.is_scaled>
         // -->
         if (mechanism.matches("scale_health")) {
             getPlayerEntity().setHealthScaled(value.asBoolean());
@@ -1083,6 +1085,8 @@ public class dPlayer implements dObject, Adjustable {
         // @input Element
         // @description
         // Sets the current texture pack by specifying the valid URL of a texture pack.
+        // @tags
+        // None
         // -->
         if (mechanism.matches("texture_pack")) {
             getPlayerEntity().setTexturePack(value.asString());
@@ -1092,11 +1096,11 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name saturation
-        // @input Element(int number)
+        // @input Element(Integer)
         // @description
         // Sets the current saturation level of a player.
         // @tags
-        // <player.saturation> shows the Player's current saturation level
+        // <player.saturation>
         // -->
         if (mechanism.matches("saturation")) {
             getPlayerEntity().setSaturation(value.asFloat());
@@ -1106,11 +1110,11 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name food_level
-        // @input Element(int number)
+        // @input Element(Integer)
         // @description
         // Sets the current food level of a player. Typically, '20' is full.
         // @tags
-        // <player.food_level> shows the Player's current food level
+        // <player.food_level>
         // -->
         if (mechanism.matches("food_level")) {
             getPlayerEntity().setFoodLevel(value.asInt());
@@ -1124,7 +1128,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the location that the player respawns after going to bed.
         // @tags
-        // <player.bed_spawn> shows the Player's current bed spawn location
+        // <player.bed_spawn>
         // -->
         if (mechanism.matches("bed_spawn_location")) {
             getPlayerEntity().setBedSpawnLocation(dLocation.valueOf(value.asString()));
@@ -1134,11 +1138,11 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name fly_speed
-        // @input Element(number)
+        // @input Element(Number)
         // @description
         // Sets the fly speed of the player. Valid range is 0.0 to 1.0
         // @tags
-        // <player.fly_speed> shows the Player's current fly speed
+        // <player.fly_speed>
         // -->
         if (mechanism.matches("fly_speed")) {
             getPlayerEntity().setFlySpeed(value.asFloat());
@@ -1154,7 +1158,7 @@ public class dPlayer implements dObject, Adjustable {
         // in the world, and will block any world weather changes until the 'reset_weather'
         // mechanism is used. Valid weather: CLEAR, DOWNFALL
         // @tags
-        // <player.weather> shows the current weather conditions
+        // <player.weather>
         // -->
         if (mechanism.matches("weather")) {
             getPlayerEntity().setPlayerWeather(WeatherType.valueOf(value.asString().toUpperCase()));
@@ -1164,12 +1168,12 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name reset_weather
-        // @input none
+        // @input None
         // @description
         // Resets the weather on the Player to the conditions currently taking place in the Player's
         // current world.
         // @tags
-        // <player.weather> shows the current weather conditions
+        // <player.weather>
         // -->
         if (mechanism.matches("reset_weather")) {
             getPlayerEntity().resetPlayerWeather();
@@ -1183,7 +1187,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the entry that is shown in the 'player list' that is shown when pressing tab.
         // @tags
-        // <player.name.list> shows the current value of the Player's player list entry.
+        // <player.name.list>
         // -->
         if (mechanism.matches("player_list_name")) {
             getPlayerEntity().setPlayerListName(value.asString());
@@ -1193,14 +1197,14 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name time
-        // @input Element(int number)
+        // @input Element(Integer)
         // @description
         // Sets the time of day the Player is currently experiencing. Setting this will cause the
         // player to have a different time than other Players in the world are experiencing though
         // time will continue to progress. Using the 'reset_time' mechanism, or relogging your player
         // will reset this mechanism to match the world's current time. Valid range is 0-28000
         // @tags
-        // <player.time> returns the time the player is currently experiencing
+        // <player.time>
         // -->
         if (mechanism.matches("time")) {
             getPlayerEntity().setPlayerTime(value.asInt(), true);
@@ -1210,7 +1214,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name freeze_time
-        // @input Element(int number)
+        // @input Element(Integer)
         // @description
         // Sets the time of day the Player is currently experiencing and freezes it there. Note:
         // there is a small 'twitch effect' when looking at the sky when time is frozen.
@@ -1218,7 +1222,7 @@ public class dPlayer implements dObject, Adjustable {
         // the world are experiencing. Using the 'reset_time' mechanism, or relogging your player
         // will reset this mechanism to match the world's current time. Valid range is 0-28000
         // @tags
-        // <player.time> returns the time the player is currently experiencing
+        // <player.time>
         // -->
         if (mechanism.matches("freeze_time")) {
             if (value == null)
@@ -1231,12 +1235,12 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name reset_time
-        // @input none
+        // @input None
         // @description
         // Resets any altered time that has been applied to this player. Using this will make
         // the Player's time match the world's current time.
         // @tags
-        // <player.time> returns the time the player is currently experiencing
+        // <player.time>
         // -->
         if (mechanism.matches("reset_time")) {
             getPlayerEntity().resetPlayerTime();
@@ -1246,11 +1250,11 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name walk_speed
-        // @input Element(number)
+        // @input Element(Number)
         // @description
         // Sets the walk speed of the player. The standard value is '0.2'. Valid range is 0.0 to 1.0
         // @tags
-        // <player.fly_speed> shows the Player's current fly speed
+        // <player.fly_speed>
         // -->
         if (mechanism.matches("walk_speed")) {
             getPlayerEntity().setWalkSpeed(value.asFloat());
