@@ -156,43 +156,6 @@ public class ItemScriptHelper implements Listener {
     }
 
     @EventHandler
-    public void craftItem(CraftItemEvent event) {
-        // Run a script on craft of an item script
-        if (isItemscript(event.getRecipe().getResult())) {
-            if (!(event.getWhoClicked() instanceof Player)) return;
-
-            dItem item = new dItem(event.getRecipe().getResult());
-            ItemScriptContainer script = null;
-            for (String itemLore : item.getItemStack().getItemMeta().getLore())
-                if (itemLore.startsWith(dItem.itemscriptIdentifier)) // Note: Update this when the id: is stored differently
-                    script = ScriptRegistry.getScriptContainerAs(itemLore.substring(5), ItemScriptContainer.class);
-
-            if (script == null) {
-                dB.echoDebug("Tried to craft non-existent script!");
-                return;
-            }
-
-            for (int i = 0; i < 9; i++) {
-                if (!script.getRecipe().get(i).identify().equalsIgnoreCase(
-                (new dItem(event.getInventory().getMatrix()[i])).identify())) { // This probably can be compared more efficiently...
-                    dB.echoDebug("Ignoring craft attempt using "
-                            + (new dItem(event.getInventory().getMatrix()[i])).identify()
-                            + " instead of " + script.getRecipe().get(i).identify());
-                    event.setCancelled(true);
-                    return;
-                }
-            }
-
-            Map<String, Object> context = new HashMap<String, Object>();
-            String determination = doEvents(Arrays.asList("craft"),
-                                    null, (Player) event.getWhoClicked(), context);
-
-            if (determination.toUpperCase().startsWith("CANCELLED"))
-                event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void dropItem(PlayerDropItemEvent event) {
         // Run a script on drop of an item script
         if (isItemscript(event.getItemDrop().getItemStack())) {
