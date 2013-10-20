@@ -17,6 +17,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
+import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.util.Anchor;
 import net.minecraft.server.v1_6_R3.EntityLiving;
 
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class dNPC implements dObject {
+public class dNPC implements dObject, Adjustable {
 
     public static dNPC mirrorCitizensNPC(NPC npc) {
         if (dNPCRegistry.denizenNPCs.containsKey(npc.getId())) return dNPCRegistry.denizenNPCs.get(npc.getId());
@@ -590,4 +591,22 @@ public class dNPC implements dObject {
 
     }
 
+    @Override
+    public void adjust(Mechanism mechanism, Element value) {
+
+
+//        getAssignmentTrait().setAssignment();
+//        getAssignmentTrait().removeAssignment();
+//
+//        getNicknameTrait().setNickname();
+//        getNicknameTrait().removeNickname();
+//
+//        getCitizen().setBukkitEntityType();
+//        getCitizen().setName();
+//        getCitizen().spawn();
+//        getCitizen().despawn();
+//        getCitizen().setProtected();
+//        getCitizen().getTrait(LookClose.class).lookClose();
+
+    }
 }
