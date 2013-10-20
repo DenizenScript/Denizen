@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import org.bukkit.Bukkit;
+import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -29,7 +29,7 @@ public class InventoryCommand extends AbstractCommand {
 
             // Check for a dList of actions
             if (arg.matchesEnumList(Action.values())) {
-                scriptEntry.addObject("actions", arg.asType(dList.class));
+                scriptEntry.addObject("actions", ((dList) arg.asType(dList.class)).filter(Action.values()));
             }
 
             // Check for an origin, which can be a dInventory, dEntity, dLocation
@@ -60,19 +60,19 @@ public class InventoryCommand extends AbstractCommand {
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity().getInventory() : null);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects
-        dList actions = (dList) scriptEntry.getObject("actions");
-
+        List<String> actions = (List<String>) scriptEntry.getObject("actions");
         dInventory origin = (dInventory) scriptEntry.getObject("origin");
         dInventory destination = (dInventory) scriptEntry.getObject("destination");
 
         dB.report(getName(),
+                aH.debugObj("actions", actions.toString()) +
                 destination.debug()
-                + (origin != null ? origin.debug() : "")
-                + actions.debug());
+                + (origin != null ? origin.debug() : ""));
 
         for (String action : actions) {
             switch (Action.valueOf(action.toUpperCase())) {

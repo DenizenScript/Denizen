@@ -161,10 +161,27 @@ public class dList extends ArrayList<String> implements dObject {
         return list.toArray(new String[list.size()]);
     }
 
+    // Return a list that includes only strings that match the values
+    // of an Enum array
+    public List<String> filter(Enum[] values) {
+        List<String> list = new ArrayList<String>();
+
+        for (String string : this) {
+            for (Enum value : values)
+                if (value.name().equalsIgnoreCase(string))
+                    list.add(string);
+        }
+
+        if (!list.isEmpty())
+            return list;
+        else return null;
+    }
+
     // Return a list that includes only elements belonging to a certain class
     public List<dObject> filter(Class<? extends  dObject> dClass) {
         return filter(dClass, null);
     }
+
     public List<dObject> filter(Class<? extends dObject> dClass, ScriptEntry entry) {
 
         List<dObject> results = new ArrayList<dObject>();
