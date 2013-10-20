@@ -443,7 +443,7 @@ public class UtilTags implements Listener {
 
         // <--[tag]
         // @attribute <util.entity_is_spawned[<entity>]>
-        // @returns Boolean
+        // @returns Element(Boolean)
         // @description
         // Returns whether an entity is spawned and valid.
         // -->

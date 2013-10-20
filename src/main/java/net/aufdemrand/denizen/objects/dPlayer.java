@@ -1084,7 +1084,7 @@ public class dPlayer implements dObject, Adjustable {
         // @name texture_pack
         // @input Element
         // @description
-        // Sets the current texture pack by specifying the valid URL of a texture pack.
+        // Sets the current texture pack by specifying a valid URL to a texture pack.
         // @tags
         // None
         // -->
@@ -1098,7 +1098,7 @@ public class dPlayer implements dObject, Adjustable {
         // @name saturation
         // @input Element(Integer)
         // @description
-        // Sets the current saturation level of a player.
+        // Sets the current food saturation level of a player.
         // @tags
         // <player.saturation>
         // -->
@@ -1126,7 +1126,7 @@ public class dPlayer implements dObject, Adjustable {
         // @name bed_spawn_location
         // @input dLocation
         // @description
-        // Sets the location that the player respawns after going to bed.
+        // Sets the bed location that the player respawns at.
         // @tags
         // <player.bed_spawn>
         // -->
@@ -1151,7 +1151,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
-        // @name level
+        // @name weather
         // @input Element
         // @description
         // Sets the weather condition for the player. This does NOT affect the weather
