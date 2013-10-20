@@ -1,6 +1,12 @@
 package net.aufdemrand.denizen;
 
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.*;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
@@ -698,12 +704,51 @@ public class CommandHandler {
 
 
     /*
+     * DENIZEN SUBMIT
+     */
+    @Command(
+            aliases = { "denizen" }, usage = "submit",
+            desc = "Submits recorded logs triggered by /denizen debug -r", modifiers = { "submit" },
+            min = 1, max = 3, permission = "denizen.submit")
+    public void submit(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        if (!dB.record) {
+            Messaging.send(sender, ChatColor.RED + "Use /denizen debug -r  to record debug information to be submitted");
+            return;
+        }
+        dB.record = false;
+        try {
+            URL url = new URL("http://mcmonkey4eva.dyndns.org/paste");
+            HttpURLConnection uc = (HttpURLConnection) url.openConnection();
+            uc.setDoInput(true);
+            uc.setDoOutput(true);
+            uc.setConnectTimeout(10000); // Max 10 seconds - don't crash a server if the pastebin is down!
+            uc.connect();
+            uc.getOutputStream().write(
+                    ("postid=pastetext&pastetype=log"
+                            + "&response=micro&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char)0x01))
+                            + "&pastecontents=" + dB.Recording)
+                            .getBytes("UTF-8"));
+            BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+            Messaging.send(sender, ChatColor.GREEN + "Successfully submitted to http://mcmonkey4eva.dyndns.org" + in.readLine());
+            in.close();
+            dB.Recording = "";
+        }
+        catch (Exception e) {
+            if (dB.showStackTraces) {
+                e.printStackTrace();
+            }
+            dB.Recording = "";
+            Messaging.send(sender, ChatColor.RED + "Error while submitting.");
+        }
+    }
+
+    /*
      * DENIZEN DEBUG
      */
     @Command(
             aliases = { "denizen" }, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db" },
-            min = 1, max = 3, permission = "denizen.debug", flags = "sceb")
+            min = 1, max = 3, permission = "denizen.debug", flags = "scebr")
     public void debug(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (args.hasFlag('s')) {
             if (!dB.debugMode) dB.toggle();
@@ -717,10 +762,13 @@ public class CommandHandler {
         } else if (args.hasFlag('b')) {
             if (!dB.debugMode) dB.toggle();
             dB.showScriptBuilder = !dB.showScriptBuilder;
+        } else if (args.hasFlag('r')) {
+            dB.record = !dB.record;
+            dB.Recording = "";
         } else dB.toggle();
 
         Messaging.send(sender, ChatColor.YELLOW + "Denizen debugger is " + (dB.debugMode ?
-                ((dB.showStackTraces) ? "enabled and showing stack-traces." : "enabled.") : "disabled."));
+                ((dB.showStackTraces) ? "enabled and showing stack-traces." : "enabled.") : "disabled.") + (dB.record ? " (Recording Active)": ""));
     }
 
     /*

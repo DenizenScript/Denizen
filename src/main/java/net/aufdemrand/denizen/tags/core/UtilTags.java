@@ -285,7 +285,6 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of all offline ops.
         // -->
-        // server.list_offline_ops
         if (attribute.startsWith("list_offline_ops")) {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers())
@@ -293,6 +292,18 @@ public class UtilTags implements Listener {
             event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
             return;
         }
+
+        // <--[tag]
+        // @attribute <server.motd>
+        // @returns Element
+        // @description
+        // Returns the server's current MOTD
+        // -->
+        if (attribute.startsWith("list_offline_ops")) {
+            event.setReplaced(new Element(Bukkit.getServer().getMotd()).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+        // TODO: Add everything else from Bukkit.getServer().*
 
     }
 

@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import java.net.URLEncoder;
+import java.util.Calendar;
 
 /**
  * Preferred method of outputting debugger information with Denizen and
@@ -59,6 +61,8 @@ public class dB {
     public static boolean showScriptBuilder = false;
     public static boolean showColor = true;
     public static boolean showEventsFiring = false;
+    public static boolean record = false;
+    public static String Recording = "";
 
     /**
      * Can be used with echoDebug(...) to output a header, footer,
@@ -132,9 +136,26 @@ public class dB {
                 }                          // 16:05:06 [INFO]
             }
             // Send buffer to the player
+            dB.Recording += URLEncoder.encode(getDate() + " [INFO] " + buffer.replace(ChatColor.COLOR_CHAR, (char)0x01) + "\n");
             if (showColor)
                 commandSender.sendMessage(buffer);
             else commandSender.sendMessage(ChatColor.stripColor(buffer));
+
+
+        }
+
+        static String getDate() {
+            Calendar calendar = Calendar.getInstance();
+            int h = calendar.get(Calendar.HOUR_OF_DAY);
+            int m = calendar.get(Calendar.MINUTE);
+            int s = calendar.get(Calendar.SECOND);
+            String toret = "";
+            if (h < 10) toret += "0" + h; else toret += h;
+            toret += ":";
+            if (m < 10) toret += "0" + m; else toret += m;
+            toret += ":";
+            if (s < 10) toret += "0" + s; else toret += s;
+            return toret;
         }
     }
 

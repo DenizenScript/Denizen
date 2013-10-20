@@ -1048,7 +1048,7 @@ public class WorldScriptHelper implements Listener {
     // <0-23>:00 in <world>
     // time <0-23> in <world>
     //
-    // @Triggers when a block is set on fire.
+    // @Triggers when the current time changes in a world (once per mine-hour).
     // @Context
     // <context.time> returns the current time.
     // <context.world> returns the world.
