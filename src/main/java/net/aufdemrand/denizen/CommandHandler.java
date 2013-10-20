@@ -1,12 +1,6 @@
 package net.aufdemrand.denizen;
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.*;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
@@ -20,6 +14,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.debugging.DebugSubmit;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.Citizens;
@@ -32,7 +27,6 @@ import net.citizensnpcs.api.util.Messaging;
 import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -716,30 +710,12 @@ public class CommandHandler {
             return;
         }
         dB.record = false;
-        try {
-            URL url = new URL("http://mcmonkey4eva.dyndns.org/paste");
-            HttpURLConnection uc = (HttpURLConnection) url.openConnection();
-            uc.setDoInput(true);
-            uc.setDoOutput(true);
-            uc.setConnectTimeout(10000); // Max 10 seconds - don't crash a server if the pastebin is down!
-            uc.connect();
-            uc.getOutputStream().write(
-                    ("postid=pastetext&pastetype=log"
-                            + "&response=micro&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char)0x01))
-                            + "&pastecontents=" + dB.Recording)
-                            .getBytes("UTF-8"));
-            BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-            Messaging.send(sender, ChatColor.GREEN + "Successfully submitted to http://mcmonkey4eva.dyndns.org" + in.readLine());
-            in.close();
-            dB.Recording = "";
-        }
-        catch (Exception e) {
-            if (dB.showStackTraces) {
-                e.printStackTrace();
-            }
-            dB.Recording = "";
-            Messaging.send(sender, ChatColor.RED + "Error while submitting.");
-        }
+        Messaging.send(sender, ChatColor.GREEN + "Submitting...");
+        DebugSubmit submit = new DebugSubmit();
+        submit.sender = sender;
+        submit.recording = dB.Recording;
+        dB.Recording = "";
+        submit.start();
     }
 
     /*
