@@ -179,14 +179,12 @@ public class dInventory implements dObject, Notable {
 
     public dInventory(InventoryType type) {
         inventory = Bukkit.getServer().createInventory(null, type);
-        idType = "generic";
-        idHolder = type.name();
+        loadIdentifiers();
     }
 
     public dInventory(int size) {
         inventory = Bukkit.getServer().createInventory(null, size);
-        idType = "generic";
-        idHolder = "CHEST";
+        loadIdentifiers();
     }
 
 
@@ -219,6 +217,10 @@ public class dInventory implements dObject, Notable {
                 idType = "location";
                 idHolder = getLocation().identify();
             }
+        }
+        else {
+            idType = "generic";
+            idHolder = getInventory().getType().name();
         }
     }
 

@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
+import org.bukkit.Bukkit;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -62,7 +64,7 @@ public class InventoryCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects
-        dList actions = (dList) scriptEntry.getObject("action");
+        dList actions = (dList) scriptEntry.getObject("actions");
 
         dInventory origin = (dInventory) scriptEntry.getObject("origin");
         dInventory destination = (dInventory) scriptEntry.getObject("destination");
@@ -73,7 +75,7 @@ public class InventoryCommand extends AbstractCommand {
                 + actions.debug());
 
         for (String action : actions) {
-            switch (Action.valueOf(action)) {
+            switch (Action.valueOf(action.toUpperCase())) {
 
                 // Make the attached player open the destination inventory
                 case OPEN:
@@ -84,19 +86,18 @@ public class InventoryCommand extends AbstractCommand {
                     }
                     // Otherwise, open inventory as usual
                     else scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
-
-                    return;
+                    break;
 
                 // Turn destination's contents into a copy of origin's
                 case COPY:
                     origin.replace(destination);
-                    return;
+                    break;
 
                 // Copy origin's contents to destination, then empty origin
                 case MOVE:
                     origin.replace(destination);
                     origin.clear();
-                    return;
+                    break;
 
                 // Swap the contents of the two inventories
                 case SWAP:
@@ -104,40 +105,40 @@ public class InventoryCommand extends AbstractCommand {
                                               .add(destination.getContents());
                     origin.replace(destination);
                     temp.replace(origin);
-                    return;
+                    break;
 
                 // Add origin's contents to destination
                 case ADD:
                     destination.add(origin.getContents());
-                    return;
+                    break;
 
                 // Remove origin's contents from destination
                 case REMOVE:
                     destination.remove(origin.getContents());
-                    return;
+                    break;
 
                 // Keep only items from the origin's contents in the
                 // destination
                 case KEEP:
-                       destination.keep(origin.getContents());
-                       return;
+                    destination.keep(origin.getContents());
+                    break;
 
                 // Exclude all items from the origin's contents in the
                 // destination
                 case EXCLUDE:
-                       destination.exclude(origin.getContents());
-                       return;
+                    destination.exclude(origin.getContents());
+                    break;
 
                 // Add origin's contents over and over to destination
                 // until it is full
                 case FILL:
                     destination.fill(origin.getContents());
-                       return;
+                    break;
 
                 // Clear the content of the destination inventory
                 case CLEAR:
                     destination.clear();
-                    return;
+                    break;
             }
         }
     }
