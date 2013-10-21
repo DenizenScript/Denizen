@@ -82,6 +82,12 @@ public class TagManager implements Listener {
                     .invoke(null, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']'
                             : event.getName());
 
+            if (arg == null) {
+                dB.echoError((event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']'
+                        : event.getName() + " is an invalid dObject!"));
+                return;
+            }
+
             Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
             event.setReplaced(arg.getAttribute(attribute.fulfill(1)));
         } catch (Exception e) {
