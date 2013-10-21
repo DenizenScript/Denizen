@@ -2647,18 +2647,12 @@ public class WorldScriptHelper implements Listener {
         Player player = (Player) event.getPlayer();
         String type = event.getInventory().getType().name();
 
-        // TODO: Find out why this would ever throw an NPE (Issue #450) - then prevent that NPE
-        try {
-            context.put("inventory", new dInventory(event.getInventory()));
+        context.put("inventory", new dInventory(event.getInventory()));
 
-            doEvents(Arrays.asList
-                    ("player closes inventory",
-                            "player closes " + type),
-                    null, player, context);
-        }
-        catch (NullPointerException e) {
-            dB.echoError("Ignoring error #450, bug the developers about this...");
-        }
+        doEvents(Arrays.asList
+                ("player closes inventory",
+                        "player closes " + type),
+                null, player, context);
     }
 
     // <--[event]

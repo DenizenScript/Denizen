@@ -215,7 +215,10 @@ public class dInventory implements dObject, Notable {
             }
             else {
                 idType = "location";
-                idHolder = getLocation().identify();
+                if (getLocation() != null)
+                    idHolder = getLocation().identify();
+                else
+                    idHolder = "null";
             }
         }
         else {

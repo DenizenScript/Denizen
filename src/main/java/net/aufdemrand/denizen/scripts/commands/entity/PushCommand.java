@@ -216,7 +216,8 @@ public class PushCommand extends AbstractCommand {
                                 scriptEntry.getPlayer(),
                                 scriptEntry.getNPC());
                         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
-                        queue.addDefinition("location", lastEntity.getLocation().identify());
+                        if (lastEntity.getLocation() != null)
+                            queue.addDefinition("location", lastEntity.getLocation().identify());
                         queue.addDefinition("pushed_entities", entityList.toString());
                         queue.addDefinition("last_entity", lastEntity.identify());
                         queue.start();
