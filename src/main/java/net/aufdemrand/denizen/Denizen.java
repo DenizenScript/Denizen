@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.*;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
@@ -101,6 +102,17 @@ public class Denizen extends JavaPlugin {
     public TriggerRegistry getTriggerRegistry() {
         return triggerRegistry;
     }
+
+
+    /*
+     * Denizen Property Parser
+     */
+    private PropertyParser propertyParser;
+
+    private PropertyParser getPropertyParser() {
+        return propertyParser;
+    }
+
 
 
     /*
@@ -236,8 +248,6 @@ public class Denizen extends JavaPlugin {
         // Register CommandHandler with Citizens
         Depends.citizens.registerCommandClass(CommandHandler.class);
 
-        dB.echoDebug(DebugElement.Footer);
-
         try {
             // Initialize the ObjectFetcher
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
@@ -268,8 +278,15 @@ public class Denizen extends JavaPlugin {
         // Initialize non-standard dMaterials
         dMaterial._initialize();
 
-        // Fire the 'on Server Start' world event
+        // Initialize Property Parser
+        propertyParser = new PropertyParser();
+
+        dB.echoDebug(DebugElement.Footer);
+
+        // TODO: Figure out why we need this
         ScriptHelper.reloadScripts();
+
+        // Fire the 'on Server Start' world event
         ws_helper.serverStartEvent();
     }
 
