@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.objects.properties.EntityAge;
 import org.bukkit.entity.Zombie;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -141,29 +142,27 @@ public class AgeCommand extends AbstractCommand {
         for (dEntity entity : entities) {
             if (entity.isSpawned()) {
 
-                if (entity.isAgeable()) {
+                // Check if entity specified can be described by 'EntityAge'
+                if (EntityAge.describes(entity)) {
+
+                    EntityAge property = EntityAge.getFrom(entity);
+
+                    // Adjust 'ageType'
                     if (ageType != null) {
                         if (ageType.equals(AgeType.BABY))
-                            entity.getAgeable().setBaby(true);
-                        else entity.getAgeable().setBaby(false);
-                    }
-                    else entity.getAgeable().setAge(age);
+                            property.setBaby(true);
+                        else property.setBaby(false);
 
-                    if (lock) entity.getAgeable().setLock(true);
+                    } else property.setAge(age);
+
+                    // Adjust 'locked'
+                    if (lock) property.setLock(true);
                 }
 
-                // Zombies are not ageable, but can be babies
-                else if (entity.getBukkitEntity() instanceof Zombie) {
-                    if (ageType.equals(ageType.BABY))
-                        ((Zombie) entity.getBukkitEntity()).setBaby(true);
-                    else
-                        ((Zombie) entity.getBukkitEntity()).setBaby(false);
-                }
+                else dB.echoError(entity.identify() + " is not ageable!");
 
-                else {
-                    dB.echoError(entity.identify() + " is not ageable!");
-                }
             }
         }
+
     }
 }
