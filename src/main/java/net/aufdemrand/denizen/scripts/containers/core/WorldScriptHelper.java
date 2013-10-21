@@ -3427,7 +3427,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player right clicks entity (with item)
+    // player right clicks entity (with <item>)
     //
     // @Triggers when a player right clicks on an entity.
     // @Context

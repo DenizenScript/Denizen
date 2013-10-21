@@ -7,7 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import java.net.URLEncoder;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Preferred method of outputting debugger information with Denizen and
@@ -106,6 +107,7 @@ public class dB {
         // Bukkit CommandSender sends color nicely to the logger.
         static CommandSender commandSender = null;
         static boolean skipFooter = false;
+        static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         public static void sendMessage(String string) {
             if (commandSender == null) commandSender = Bukkit.getServer().getConsoleSender();
 
@@ -135,27 +137,14 @@ public class dB {
                     buffer = buffer + "\n" + "                   " + word + " ";
                 }                          // 16:05:06 [INFO]
             }
+
+            // Record current buffer to the to-be-submitted buffer
+            if (dB.record) dB.Recording += URLEncoder.encode(dateFormat.format(new Date()) + " [INFO] " + buffer.replace(ChatColor.COLOR_CHAR, (char)0x01) + "\n");
+
             // Send buffer to the player
-            dB.Recording += URLEncoder.encode(getDate() + " [INFO] " + buffer.replace(ChatColor.COLOR_CHAR, (char)0x01) + "\n");
             if (showColor)
                 commandSender.sendMessage(buffer);
             else commandSender.sendMessage(ChatColor.stripColor(buffer));
-
-
-        }
-
-        static String getDate() {
-            Calendar calendar = Calendar.getInstance();
-            int h = calendar.get(Calendar.HOUR_OF_DAY);
-            int m = calendar.get(Calendar.MINUTE);
-            int s = calendar.get(Calendar.SECOND);
-            String toret = "";
-            if (h < 10) toret += "0" + h; else toret += h;
-            toret += ":";
-            if (m < 10) toret += "0" + m; else toret += m;
-            toret += ":";
-            if (s < 10) toret += "0" + s; else toret += s;
-            return toret;
         }
     }
 
