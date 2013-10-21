@@ -3,21 +3,24 @@ package net.aufdemrand.denizen.objects.properties;
 
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 
-public class EntityProfessional implements Property {
+public class EntityProfession implements Property {
 
 
-    public static boolean describes(dEntity entity) {
-        return entity.getEntityType() == EntityType.VILLAGER;
+    public static boolean describes(dObject entity) {
+        if (!(entity instanceof dEntity)) return false;
+        // Check if the entity is a Villager, the only EntityType that can be a Professional
+        return ((dEntity) entity).getEntityType() == EntityType.VILLAGER;
     }
 
-    public static EntityProfessional getFrom(dEntity entity) {
+    public static EntityProfession getFrom(dObject entity) {
         if (!describes(entity)) return null;
 
-        else return new EntityProfessional(entity);
+        else return new EntityProfession((dEntity) entity);
     }
 
 
@@ -25,7 +28,7 @@ public class EntityProfessional implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityProfessional(dEntity entity) {
+    private EntityProfession(dEntity entity) {
         professional = entity;
     }
 
@@ -49,12 +52,12 @@ public class EntityProfessional implements Property {
 
     @Override
     public String getPropertyString() {
-        return getPropertyId() + '=' + getProfession() + ';';
+        return getPropertyId() + '=' + getProfession().name().toLowerCase() + ';';
     }
 
     @Override
     public String getPropertyId() {
-        return "professional";
+        return "profession";
     }
 
 
@@ -75,7 +78,7 @@ public class EntityProfessional implements Property {
         // Currently, only Villager-type entities can have professions.
         // -->
         if (attribute.startsWith("profession"))
-            return new Element(getProfession().name())
+            return new Element(getProfession().name().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
 
         return null;

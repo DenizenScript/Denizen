@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects.properties;
 
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.ZombieModifier;
@@ -13,15 +14,16 @@ import org.bukkit.entity.Zombie;
 
 public class EntityInfected implements Property {
 
-    public static boolean describes(dEntity entity) {
-        return entity.getEntityType() == EntityType.ZOMBIE
-                || entity.getEntityType() == EntityType.VILLAGER;
+    public static boolean describes(dObject entity) {
+        if (!(entity instanceof dEntity)) return false;
+        // Check if a Villager or Zombie -- the only two EntityTypes that can be 'infected'
+        return ((dEntity) entity).getEntityType() == EntityType.ZOMBIE
+                || ((dEntity) entity).getEntityType() == EntityType.VILLAGER;
     }
 
-    public static EntityInfected getFrom(dEntity entity) {
+    public static EntityInfected getFrom(dObject entity) {
         if (!describes(entity)) return null;
-
-        else return new EntityInfected(entity);
+        else return new EntityInfected((dEntity)entity);
     }
 
 
@@ -85,7 +87,10 @@ public class EntityInfected implements Property {
 
     @Override
     public String getPropertyString() {
-        return getPropertyId() + '=' + isInfected() + ';';
+        if (isInfected())
+            return getPropertyId();
+        // Don't describe if not infected.. this is unnecessary.
+        else return PropertyParser.NONE;
     }
 
     @Override

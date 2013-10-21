@@ -6,10 +6,7 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.properties.EntityAge;
-import net.aufdemrand.denizen.objects.properties.EntityInfected;
-import net.aufdemrand.denizen.objects.properties.EntityProfessional;
-import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -373,8 +370,11 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public NPC getNPC() {
-
-        return npc;
+        if (npc != null)
+            return npc;
+        else if (entity != null && CitizensAPI.getNPCRegistry().isNPC(entity))
+            return CitizensAPI.getNPCRegistry().getNPC(entity);
+        else return null;
     }
 
     /**
@@ -384,8 +384,11 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dNPC getDenizenNPC() {
-
-        return new dNPC(npc);
+        if (npc != null)
+            return new dNPC(npc);
+        else if (entity != null && CitizensAPI.getNPCRegistry().isNPC(entity))
+            return new dNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+        else return null;
     }
 
     /**
@@ -395,7 +398,9 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public boolean isNPC() {
-        return npc != null;
+        if (npc != null) return true;
+        else if (entity != null && CitizensAPI.getNPCRegistry().isNPC(entity)) return true;
+        else return false;
     }
 
     /**
@@ -506,7 +511,7 @@ public class dEntity implements dObject, Adjustable {
     public dInventory getEquipment() {
         if (isLivingEntity())
             return new dInventory(InventoryType.CRAFTING)
-                .add(getLivingEntity().getEquipment().getArmorContents());
+                    .add(getLivingEntity().getEquipment().getArmorContents());
         else return null;
     }
 
@@ -900,50 +905,6 @@ public class dEntity implements dObject, Adjustable {
     }
 
 
-
-    ///////////////
-    // Properties
-    ////////////
-
-    private List<Property> properties = new ArrayList<Property>();
-
-    public String describe() {
-        properties.clear();
-
-        StringBuilder property_string = new StringBuilder();
-
-        for (Property property : properties)
-            property_string.append(property.getPropertyString());
-
-        return identify() + '[' + property_string.toString() + ']';
-    }
-
-    public boolean isInfected() {
-        return EntityInfected.describes(this);
-    }
-
-    public EntityInfected getInfected() {
-        return EntityInfected.getFrom(this);
-    }
-
-    public boolean isProfessional() {
-        return EntityProfessional.describes(this);
-    }
-
-    public EntityProfessional getProfessional() {
-        return EntityProfessional.getFrom(this);
-    }
-
-    public boolean isAgeable() {
-        return EntityAge.describes(this);
-    }
-
-    public EntityAge getAgeable() {
-        return EntityAge.getFrom(this);
-    }
-
-
-
     /////////////////////
     //  dObject Methods
     ///////////////////
@@ -1178,7 +1139,7 @@ public class dEntity implements dObject, Adjustable {
         // if none.
         // -->
         else if (attribute.startsWith("equipment.chestplate") ||
-                 attribute.startsWith("equipment.chest")) {
+                attribute.startsWith("equipment.chest")) {
             if (getLivingEntity().getEquipment().getChestplate() != null) {
                 return new dItem(getLivingEntity().getEquipment().getChestplate())
                         .getAttribute(attribute.fulfill(2));
@@ -1193,7 +1154,7 @@ public class dEntity implements dObject, Adjustable {
         // if none.
         // -->
         else if (attribute.startsWith("equipment.helmet") ||
-                 attribute.startsWith("equipment.head")) {
+                attribute.startsWith("equipment.head")) {
             if (getLivingEntity().getEquipment().getHelmet() != null) {
                 return new dItem(getLivingEntity().getEquipment().getHelmet())
                         .getAttribute(attribute.fulfill(2));
@@ -1208,7 +1169,7 @@ public class dEntity implements dObject, Adjustable {
         // if none.
         // -->
         else if (attribute.startsWith("equipment.leggings") ||
-                 attribute.startsWith("equipment.legs")) {
+                attribute.startsWith("equipment.legs")) {
             if (getLivingEntity().getEquipment().getLeggings() != null) {
                 return new dItem(getLivingEntity().getEquipment().getLeggings())
                         .getAttribute(attribute.fulfill(2));
@@ -1236,7 +1197,7 @@ public class dEntity implements dObject, Adjustable {
         // if none.
         // -->
         if (attribute.startsWith("item_in_hand") ||
-            attribute.startsWith("iteminhand"))
+                attribute.startsWith("iteminhand"))
             return new dItem(getLivingEntity().getEquipment().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
 
@@ -1416,7 +1377,7 @@ public class dEntity implements dObject, Adjustable {
         // Otherwise, returns null.
         // -->
         if (attribute.startsWith("get_shooter") ||
-            attribute.startsWith("shooter")) {
+                attribute.startsWith("shooter")) {
             if (isProjectile() && hasShooter())
                 return getShooter().getAttribute(attribute.fulfill(1));
             else return new Element("null")
@@ -1730,30 +1691,19 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
 
-
         /////////////////////
         //   PROPERTY ATTRIBUTES
         /////////////////
 
-        if (attribute.startsWith("infected")) {
-            if (EntityInfected.describes(this))
-                return EntityInfected.getFrom(this)
-                        .getAttribute(attribute.fulfill(1));
-            else return Attribute.RETURN_NULL;
-        }
+        if (attribute.startsWith("describe"))
+            return new Element("e@" + getEntityType().name().toLowerCase()
+                    + '[' + PropertyParser.getPropertiesString(this) + ']')
+                    .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("professional")) {
-            if (EntityProfessional.describes(this))
-                return EntityProfessional.getFrom(this)
-                        .getAttribute(attribute.fulfill(1));
-            else return Attribute.RETURN_NULL;
-        }
-
-        if (attribute.startsWith("age")) {
-            if (EntityAge.describes(this))
-                return EntityAge.getFrom(this)
-                .getAttribute(attribute.fulfill(1));
-            else return Attribute.RETURN_NULL;
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -1770,7 +1720,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         if (mechanism.matches("remove_when_far_away"))
-             getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
+            getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
 
         if (mechanism.matches("custom_name"))
             getLivingEntity().setCustomName(value.asString());
