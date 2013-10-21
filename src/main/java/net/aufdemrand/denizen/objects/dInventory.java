@@ -696,15 +696,35 @@ public class dInventory implements dObject, Notable {
         }
 
         // <--[tag]
+        // @attribute <in@inventory.id_holder>
+        // @returns Element
+        // @description
+        // Returns Denizen's holder ID for this inventory
+        // -->
+        if (attribute.startsWith("id_holder")) {
+            return new Element(idHolder).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.id_type>
+        // @returns Element
+        // @description
+        // Returns Denizen's type ID for this inventory
+        // -->
+        if (attribute.startsWith("id_type")) {
+            return new Element(idType).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.location>
         // @returns dLocation
         // @description
         // Returns the location of this inventory's holder.
         // -->
         if (attribute.startsWith("location")) {
-
-            return new dLocation(getLocation())
-                    .getAttribute(attribute.fulfill(1));
+            if (getLocation() != null)
+                return getLocation().getAttribute(attribute.fulfill(1));
+            else return "null";
         }
 
         // <--[tag]
