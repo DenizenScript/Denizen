@@ -573,7 +573,7 @@ public class dPlayer implements dObject, Adjustable {
         // returns the dEntity object of the player.
         // (Note: This should never actually be needed. <p@player> is considered a valid dEntity by script commands.)
         // -->
-        if (attribute.startsWith("entity"))
+        if (attribute.startsWith("entity") && !attribute.startsWith("entity_"))
             return new dEntity(getPlayerEntity())
                     .getAttribute(attribute.fulfill(1));
 
