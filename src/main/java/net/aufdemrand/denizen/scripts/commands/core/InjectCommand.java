@@ -121,6 +121,9 @@ public class InjectCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("path"))
                 scriptEntry.addObject("path", arg.asElement());
 
+            else
+                dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+
         }
 
         if (!scriptEntry.hasObject("script") && !scriptEntry.hasObject("local"))
