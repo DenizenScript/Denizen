@@ -31,6 +31,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 
 
@@ -704,18 +705,31 @@ public class CommandHandler {
             aliases = { "denizen" }, usage = "submit",
             desc = "Submits recorded logs triggered by /denizen debug -r", modifiers = { "submit" },
             min = 1, max = 3, permission = "denizen.submit")
-    public void submit(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+    public void submit(CommandContext args, final CommandSender sender, NPC npc) throws CommandException {
         if (!dB.record) {
             Messaging.send(sender, ChatColor.RED + "Use /denizen debug -r  to record debug information to be submitted");
             return;
         }
         dB.record = false;
         Messaging.send(sender, ChatColor.GREEN + "Submitting...");
-        DebugSubmit submit = new DebugSubmit();
-        submit.sender = sender;
+        final DebugSubmit submit = new DebugSubmit();
         submit.recording = dB.Recording;
         dB.Recording = "";
         submit.start();
+        BukkitRunnable task = new BukkitRunnable() {
+            public void run() {
+                if (!submit.isAlive()) {
+                    if (submit.Result == null) {
+                        Messaging.send(sender, ChatColor.RED + "Error while submitting.");
+                    }
+                    else {
+                        Messaging.send(sender, ChatColor.GREEN + "Successfully submitted to http://mcmonkey4eva.dyndns.org" + submit.Result);
+                    }
+                    this.cancel();
+                }
+            }
+        };
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 20);
     }
 
     /*
@@ -739,6 +753,7 @@ public class CommandHandler {
             if (!dB.debugMode) dB.toggle();
             dB.showScriptBuilder = !dB.showScriptBuilder;
         } else if (args.hasFlag('r')) {
+            if (!dB.debugMode) dB.toggle();
             dB.record = !dB.record;
             dB.Recording = "";
         } else dB.toggle();
