@@ -83,156 +83,310 @@ public class TextTags implements Listener {
 
     // <--[tag]
     // @attribute <&0>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Black.
+    // Returns the ChatColor that makes the following characters Black.
     // -->
-    
+
     // <--[tag]
     // @attribute <&1>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Dark Blue.
+    // Returns the ChatColor that makes the following characters Dark Blue.
     // -->
-    
+
     // <--[tag]
     // @attribute <&2>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Dark Green.
+    // Returns the ChatColor that makes the following characters Dark Green.
     // -->
-    
+
     // <--[tag]
     // @attribute <&3>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Dark Aqua.
+    // Returns the ChatColor that makes the following characters Dark Cyan.
     // -->
-    
+
     // <--[tag]
     // @attribute <&4>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Dark Red.
+    // Returns the ChatColor that makes the following characters Dark Red.
     // -->
-    
+
     // <--[tag]
     // @attribute <&5>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Dark Purple.
+    // Returns the ChatColor that makes the following characters Dark Magenta.
     // -->
-    
+
     // <--[tag]
     // @attribute <&6>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Gold.
+    // Returns the ChatColor that makes the following characters Gold.
     // -->
-    
+
     // <--[tag]
     // @attribute <&7>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Gray.
+    // Returns the ChatColor that makes the following characters Light Gray.
     // -->
-    
+
     // <--[tag]
     // @attribute <&8>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Dark Gray.
+    // Returns the ChatColor that makes the following characters Dark Gray.
     // -->
-    
+
     // <--[tag]
     // @attribute <&9>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Blue.
+    // Returns the ChatColor that makes the following characters Light Blue.
     // -->
-    
+
     // <--[tag]
     // @attribute <&a>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Green.
+    // Returns the ChatColor that makes the following characters Light Green.
     // -->
-    
+
     // <--[tag]
     // @attribute <&b>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Aqua.
+    // Returns the ChatColor that makes the following characters Cyan.
     // -->
-    
+
     // <--[tag]
     // @attribute <&c>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Red.
+    // Returns the ChatColor that makes the following characters Light Red.
     // -->
-    
+
     // <--[tag]
     // @attribute <&d>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Light Purple.
+    // Returns the ChatColor that makes the following characters Magenta.
     // -->
-    
+
     // <--[tag]
     // @attribute <&e>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters Yellow.
+    // Returns the ChatColor that makes the following characters Yellow.
     // -->
-    
+
     // <--[tag]
     // @attribute <&f>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters White.
+    // Returns the ChatColor that makes the following characters White.
     // -->
-    
+
     // <--[tag]
     // @attribute <&k>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters obfuscated.
+    // Returns the ChatColor that makes the following characters obfuscated.
     // -->
-    
+
     // <--[tag]
     // @attribute <&l>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters bolded.
+    // Returns the ChatColor that makes the following characters bold.
     // -->
-    
+
     // <--[tag]
     // @attribute <&m>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters strikethroughed.
+    // Returns the ChatColor that makes the following characters have a strike-through.
     // -->
-    
+
     // <--[tag]
     // @attribute <&n>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters underlined.
+    // Returns the ChatColor that makes the following characters have an underline.
     // -->
-    
+
     // <--[tag]
     // @attribute <&o>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Makes the following characters italicized.
+    // Returns the ChatColor that makes the following characters italicized.
     // -->
-    
+
     // <--[tag]
     // @attribute <&r>
-    // @returns ChatColor
+    // @returns Element
     // @description
-    // Resets the following characters to normal.
+    // Returns the ChatColor that resets the following characters to normal.
+    // -->
+
+    // <--[tag]
+    // @attribute <black>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Black.
+    // -->
+
+    // <--[tag]
+    // @attribute <dark_red>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Dark Blue.
+    // -->
+
+    // <--[tag]
+    // @attribute <dark_green>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Dark Green.
+    // -->
+
+    // <--[tag]
+    // @attribute <dark_aqua>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Dark Cyan.
+    // -->
+
+    // <--[tag]
+    // @attribute <dark_red>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Dark Red.
+    // -->
+
+    // <--[tag]
+    // @attribute <dark_purple>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Dark Magenta.
+    // -->
+
+    // <--[tag]
+    // @attribute <gold>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Gold.
+    // -->
+
+    // <--[tag]
+    // @attribute <gray>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Light Gray.
+    // -->
+
+    // <--[tag]
+    // @attribute <dark_gray>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Dark Gray.
+    // -->
+
+    // <--[tag]
+    // @attribute <blue>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Light Blue.
+    // -->
+
+    // <--[tag]
+    // @attribute <green>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Light Green.
+    // -->
+
+    // <--[tag]
+    // @attribute <aqua>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Cyan.
+    // -->
+
+    // <--[tag]
+    // @attribute <red>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Light Red.
+    // -->
+
+    // <--[tag]
+    // @attribute <light_purple>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Magenta.
+    // -->
+
+    // <--[tag]
+    // @attribute <yellow>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters Yellow.
+    // -->
+
+    // <--[tag]
+    // @attribute <white>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters White.
+    // -->
+
+    // <--[tag]
+    // @attribute <magic>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters obfuscated.
+    // -->
+
+    // <--[tag]
+    // @attribute <bold>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters bold.
+    // -->
+
+    // <--[tag]
+    // @attribute <strikethrough>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters have a strike-through.
+    // -->
+
+    // <--[tag]
+    // @attribute <underline>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters have an underline.
+    // -->
+
+    // <--[tag]
+    // @attribute <italic>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that makes the following characters italicized.
+    // -->
+
+    // <--[tag]
+    // @attribute <reset>
+    // @returns Element
+    // @description
+    // Returns the ChatColor that resets the following characters to normal.
     // -->
 
     @EventHandler
