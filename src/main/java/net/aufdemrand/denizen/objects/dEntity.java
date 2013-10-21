@@ -150,14 +150,11 @@ public class dEntity implements dObject, Adjustable {
 
                         if (nmsEntity != null) {
                             entity = nmsEntity.getBukkitEntity();
+                            break;
                         }
-                        else {
-                            return null;
-                        }
-
-                        if (entity != null) break;
                     }
                     if (entity != null) return new dEntity(entity);
+                    return null;
                 }
 
 //                else if (isSaved(m.group(2)))
