@@ -281,26 +281,71 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
     @Override
     public void adjust(Mechanism mechanism, Element value) {
 
+        // <--[mechanism]
+        // @object dChunk
+        // @name unload
+        // @input None
+        // @description
+        // Removes a chunk from memory.
+        // @tags
+        // <chunk.is_loaded>
+        // -->
         if (mechanism.matches("unload")) {
             unload(true);
             return;
         }
 
+        // <--[mechanism]
+        // @object dChunk
+        // @name unload_safely
+        // @input None
+        // @description
+        // Removes a chunk from memory in a safe manner.
+        // @tags
+        // <chunk.is_loaded>
+        // -->
         if (mechanism.matches("unload_safely")) {
             unload(true, true);
             return;
         }
 
+        // <--[mechanism]
+        // @object dChunk
+        // @name unload_without_saving
+        // @input None
+        // @description
+        // Removes a chunk from memory without saving any recent changes.
+        // @tags
+        // <chunk.is_loaded>
+        // -->
         if (mechanism.matches("unload_without_saving")) {
             unload(false);
             return;
         }
 
+        // <--[mechanism]
+        // @object dChunk
+        // @name unload
+        // @input None
+        // @description
+        // Loads a chunk into memory.
+        // @tags
+        // <chunk.is_loaded>
+        // -->
         if (mechanism.matches("load")) {
             load(true);
             return;
         }
 
+        // <--[mechanism]
+        // @object dChunk
+        // @name regenerate
+        // @input None
+        // @description
+        // Causes the chunk to be entirely deleted and reformed from the world's seed.
+        // @tags
+        // None
+        // -->
         if (mechanism.matches("regenerate")) {
             getWorld().regenerateChunk(getX(), getZ());
             return;

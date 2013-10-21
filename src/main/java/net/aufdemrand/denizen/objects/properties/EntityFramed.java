@@ -76,20 +76,20 @@ public class EntityFramed implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <i@item.framed_item>
+        // @attribute <e@entity.framed_item>
         // @returns dItem
         // @description
-        // returns the material currently framed if the entity is an item frame.
+        // If the entity is an item frame, returns the material currently framed.
         // -->
         if (attribute.startsWith("framed_item"))
             return getItem()
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <i@item.has_framed_item>
+        // @attribute <e@entity.has_framed_item>
         // @returns Element(Boolean)
         // @description
-        // returns true if the entity is an item frame that has an item.
+        // If the entity is an item frame, returns whether the frame has an item in it.
         // -->
         if (attribute.startsWith("has_framed_item"))
             return new Element(hasItem())
@@ -99,7 +99,7 @@ public class EntityFramed implements Property {
         // @attribute <e@entity.framed_item_rotation>
         // @returns Element
         // @description
-        // returns the rotation of the material currently framed if the entity is an item frame.
+        // If the entity is an item frame, returns the rotation of the material currently framed.
         // -->
         if (attribute.startsWith("framed_item_rotation"))
             return new Element(getItemFrameEntity().getRotation().name().toLowerCase())

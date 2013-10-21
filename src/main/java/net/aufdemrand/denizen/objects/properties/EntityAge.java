@@ -70,7 +70,7 @@ public class EntityAge implements Property {
 
         } else {
             if (ageable.getBukkitEntity().getType() == EntityType.ZOMBIE)
-                ((Zombie) ageable.getBukkitEntity()).setBaby(val < 1 ? false : true);
+                ((Zombie) ageable.getBukkitEntity()).setBaby(val >= 1);
             else
                 ((Ageable) ageable.getBukkitEntity()).setAge(val);
         }
