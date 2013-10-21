@@ -313,7 +313,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.has_trait[<trait>]>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the NPC has a specified trait.
         // -->
@@ -342,7 +342,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.has_anchors>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the NPC has anchors assigned.
         // -->
@@ -411,7 +411,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.id>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the NPC's ID number.
         // -->
@@ -420,7 +420,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.owner>
-        // @returns Element
+        // @returns dPlayer
         // @description
         // returns the owner of the NPC.
         // -->
@@ -439,7 +439,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.is_spawned>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the NPC is spawned.
         // -->
@@ -476,7 +476,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.navigator.is_navigating>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the NPC is currently navigating.
         // -->
@@ -485,7 +485,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.navigator.speed>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the current speed of the NPC.
         // -->
@@ -495,7 +495,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.navigator.range>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the maximum pathfinding range.
         // -->
@@ -515,7 +515,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.navigator.speed_modifier>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the NPC movement speed modifier.
         // -->
@@ -525,7 +525,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.navigator.base_speed>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the base navigation speed.
         // -->
@@ -535,7 +535,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.navigator.avoid_water>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the NPC will avoid water.
         // -->
@@ -556,7 +556,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.navigator.is_fighting>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the NPC is in combat.
         // -->

@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
-import net.citizensnpcs.api.util.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,8 +10,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class DebugSubmit extends Thread {
-    public CommandSender sender;
     public String recording;
+    public String Result = null;
     @Override
     public void run() {
         try {
@@ -29,14 +27,13 @@ public class DebugSubmit extends Thread {
                         + "&pastecontents=" + recording)
                         .getBytes("UTF-8"));
             BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-            Messaging.send(sender, ChatColor.GREEN + "Successfully submitted to http://mcmonkey4eva.dyndns.org" + in.readLine());
+            Result = in.readLine();
             in.close();
         }
         catch (Exception e) {
             if (dB.showStackTraces) {
                 e.printStackTrace();
             }
-            Messaging.send(sender, ChatColor.RED + "Error while submitting.");
         }
     }
 }
