@@ -23,6 +23,10 @@ public class PropertyParser {
 
 
     public PropertyParser() {
+        properties.clear();
+        describes.clear();
+        getFrom.clear();
+
         // register core dEntity properties
         registerProperty(EntityProfession.class, dEntity.class);
         registerProperty(EntityAge.class, dEntity.class);
