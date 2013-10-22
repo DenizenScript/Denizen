@@ -2873,7 +2873,8 @@ public class WorldScriptHelper implements Listener {
         if (!Settings.WorldScriptChatEventAsynchronous()) return;
 
         final Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getMessage()));
+        context.put("message", new Element(event.getMessage().replace('<', (char)0x01)
+                .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>").replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>")));
 
         Callable<String> call = new Callable<String>() {
             @Override
@@ -3083,7 +3084,8 @@ public class WorldScriptHelper implements Listener {
         if (Settings.WorldScriptChatEventAsynchronous()) return;
 
         final Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getMessage()));
+        context.put("message", new Element(event.getMessage().replace('<', (char)0x01)
+                .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>").replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>")));
 
         String determination = doEvents(Arrays.asList("player chats"),
                 null, event.getPlayer(), context);
@@ -3125,19 +3127,30 @@ public class WorldScriptHelper implements Listener {
     //     - narrate 'You just used the /testcommand command!'
     //
     //     # You can utilize any arguments that come along with the command, too!
-    //     # <c.args> returns a list of the arguments, run through the Denizen argument
+    //     # <context.args> returns a list of the arguments, run through the Denizen argument
     //     # interpreter. Using quotes will allow the use of multiple word arguments,
     //     # just like Denizen!
-    //     # Just need what was typed after the command? Use <c.raw_args> for a String
+    //     # Just need what was typed after the command? Use <contaxt.raw_args> for a String
     //     # Element containing the uninterpreted arguments.
-    //     - define arg_size <c.args.size>
+    //     - define arg_size <context.args.size>
     //     - narrate "'%arg_size%' arguments were used."
     //     - if %arg_size% > 0 {
-    //       - narrate "'<c.args.get[1]>' was the first argument."
-    //       - narrate "Here's a list of all the arguments<&co> <c.args.as_cslist>"
+    //       - narrate "'<context.args.get[1]>' was the first argument."
+    //       - narrate "Here's a list of all the arguments<&co> <context.args.as_cslist>"
     //       }
     //
-    //     # When a command isn't found, Bukkit reports an error. To let bukkit know
+    //     # Commands won't be checked for <replaceable tags> So if you type /testcommand <player.name>
+    //     # It won't be read as /testcommand mcmonkey
+    //     # If you want tags to be parsed, you can just do this:
+    //     - define args <context.raw_args>
+    //     # The define above will add the literal <> to the 'args' definition
+    //     - narrate "With tag parsing, you input <%args%>"
+    //     # The narrate above gets the list of arguments via %args% but also encases it in <> to ensure any tags inside are read
+    //     - if %arg_size% > 0 {
+    //       - narrate "'<%args%.get[1]>' was the first argument."
+    //       }
+    //
+    //     # When a command isn't found, Bukkit reports an error. To let Bukkit know
     //     # that the command was handled, use the 'determine fulfilled' command/arg.
     //     - determine fulfilled
     //
@@ -3167,7 +3180,9 @@ public class WorldScriptHelper implements Listener {
 
         dPlayer player = dPlayer.valueOf(event.getPlayer().getName());
 
-        String command = event.getMessage().split(" ")[0].replace("/", "").toUpperCase();
+        String message = event.getMessage().replace('<', (char)0x01)
+                .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>").replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>");
+        String command = message.split(" ")[0].replace("/", "").toUpperCase();
 
         List<String> events = trimEvents(Arrays.asList
                 ("command",
@@ -3176,25 +3191,15 @@ public class WorldScriptHelper implements Listener {
         if (events.size() == 0)
             return;
 
-        // Well, this is ugly :(
-        // Fill tags in any arguments
-
-        // TODO: Figure out why this should ever happen, then find a better way to do it and get rid of this
-        // Players should NOT be able to do commands like
-        // /echo <npc.flag[secret_password]> or whatever
-        // (Where /echo is a Denizen command that echos back input)
-        List<String> args = Arrays.asList(
-                aH.buildArgs(
-                        TagManager.tag(player, null,
-                                (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""))));
+        List<String> args = Arrays.asList(aH.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
 
         dList args_list = new dList(args);
 
         // Fill context
         context.put("args", args_list);
         context.put("command", new Element(command));
-        context.put("raw_args", new Element((event.getMessage().split(" ").length > 1
-                ? event.getMessage().split(" ", 2)[1] : "")));
+        context.put("raw_args", new Element((message.split(" ").length > 1
+                ? message.split(" ", 2)[1] : "")));
         context.put("server", Element.FALSE);
         String determination;
 
@@ -3924,6 +3929,8 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
 
+        String message = event.getCommand().replace('<', (char)0x01)
+                .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>").replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>");
         String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
 
         List<String> events = trimEvents(Arrays.asList
@@ -3933,21 +3940,17 @@ public class WorldScriptHelper implements Listener {
         if (events.size() == 0)
             return;
 
-        List<String> args = Arrays.asList(
-                aH.buildArgs(
-                        TagManager.tag(null, null,
-                                (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""))));
+        List<String> args = Arrays.asList(aH.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
 
         dList args_list = new dList(args);
 
         // Fill context
         context.put("args", args_list);
         context.put("command", new Element(command));
-        context.put("raw_args", new Element((event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
+        context.put("raw_args", new Element((message.split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
         context.put("server", Element.TRUE);
 
-        doEvents(events,
-                null, null, context);
+        doEvents(events, null, null, context);
     }
 
 
