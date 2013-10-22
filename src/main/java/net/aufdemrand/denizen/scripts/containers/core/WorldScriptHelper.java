@@ -3130,7 +3130,7 @@ public class WorldScriptHelper implements Listener {
     //     # <context.args> returns a list of the arguments, run through the Denizen argument
     //     # interpreter. Using quotes will allow the use of multiple word arguments,
     //     # just like Denizen!
-    //     # Just need what was typed after the command? Use <contaxt.raw_args> for a String
+    //     # Just need what was typed after the command? Use <context.raw_args> for a String
     //     # Element containing the uninterpreted arguments.
     //     - define arg_size <context.args.size>
     //     - narrate "'%arg_size%' arguments were used."
@@ -3141,13 +3141,10 @@ public class WorldScriptHelper implements Listener {
     //
     //     # Commands won't be checked for <replaceable tags> So if you type /testcommand <player.name>
     //     # It won't be read as /testcommand mcmonkey
-    //     # If you want tags to be parsed, you can just do this:
-    //     - define args <context.raw_args>
-    //     # The define above will add the literal <> to the 'args' definition
-    //     - narrate "With tag parsing, you input <%args%>"
-    //     # The narrate above gets the list of arguments via %args% but also encases it in <> to ensure any tags inside are read
+    //     # If you want tags to be parsed (read and translated), you can instead use '<context.parsed_args>'
+    //     - narrate "With tag parsing, you input <context.parsed_args>"
     //     - if %arg_size% > 0 {
-    //       - narrate "'<%args%.get[1]>' was the first argument."
+    //       - narrate "'<context.parsed_args.get[1]>' was the first argument."
     //       }
     //
     //     # When a command isn't found, Bukkit reports an error. To let Bukkit know
@@ -3166,7 +3163,8 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.command> returns the command name as an Element.
     // <context.raw_args> returns any args used as an Element.
-    // <context.args> returns a dList of the arguments, parsed with Denizen's
+    // <context.args> returns a dList of the arguments.
+    // <context.parsed_args> returns a dList of the arguments, parsed with Denizen's
     //   argument parser. Just like any Denizen Command, quotes and tags can be used.
     // <context.server> returns true if the command was run from the console.
     //
@@ -3192,11 +3190,11 @@ public class WorldScriptHelper implements Listener {
             return;
 
         List<String> args = Arrays.asList(aH.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
-
-        dList args_list = new dList(args);
+        List<String> parsed_args = Arrays.asList(aH.buildArgs(event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
 
         // Fill context
-        context.put("args", args_list);
+        context.put("args", new dList(args));
+        context.put("parsed_args", new dList(parsed_args));
         context.put("command", new Element(command));
         context.put("raw_args", new Element((message.split(" ").length > 1
                 ? message.split(" ", 2)[1] : "")));
@@ -3941,11 +3939,11 @@ public class WorldScriptHelper implements Listener {
             return;
 
         List<String> args = Arrays.asList(aH.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
-
-        dList args_list = new dList(args);
+        List<String> parsed_args = Arrays.asList(aH.buildArgs(event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
 
         // Fill context
-        context.put("args", args_list);
+        context.put("args", new dList(args));
+        context.put("parsed_args", new dList(parsed_args));
         context.put("command", new Element(command));
         context.put("raw_args", new Element((message.split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
         context.put("server", Element.TRUE);
