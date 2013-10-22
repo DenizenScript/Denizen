@@ -97,7 +97,7 @@ public class dCuboid implements dObject, Notable {
         // regex patterns used for matching
         final Pattern location_by_saved = Pattern.compile("(cu@)(.+)");
         final Pattern location =
-                Pattern.compile("((-?\\d+,){3})\\w+\\|((-?\\d+,){3})\\w+",
+                Pattern.compile("((-?\\d+,){3})[\\w\\s]+\\|((-?\\d+,){3})[\\w\\s]+",
                         Pattern.CASE_INSENSITIVE);
 
         Matcher m;

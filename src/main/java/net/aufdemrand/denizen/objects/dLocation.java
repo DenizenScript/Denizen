@@ -777,6 +777,16 @@ public class dLocation extends org.bukkit.Location implements dObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <l@location.formatted.citizens>
+        // @returns Element
+        // @description
+        // Returns the location formatted for a Citizens command.
+        // EG: x.x:y.y:z.z:world
+        // -->
+        if (attribute.startsWith("formatted.citizens"))
+            return new Element(getX() + ":" + getY() + ":" + getZ() + ":" + getWorld().getName()).getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
         // @attribute <l@location.formatted>
         // @returns Element
         // @description
