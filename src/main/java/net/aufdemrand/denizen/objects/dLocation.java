@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -134,7 +133,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
      * @return  a Location, or null if incorrectly formatted
      *
      */
-    @ObjectFetcher("l")
+    @Fetchable("l")
     public static dLocation valueOf(String string) {
         if (string == null) return null;
 

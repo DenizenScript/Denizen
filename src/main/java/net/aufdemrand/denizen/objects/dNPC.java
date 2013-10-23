@@ -17,7 +17,6 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
-import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.util.Anchor;
 import net.minecraft.server.v1_6_R3.EntityLiving;
 
@@ -38,7 +37,7 @@ public class dNPC implements dObject, Adjustable {
         else return new dNPC(npc);
     }
 
-    @ObjectFetcher("n")
+    @Fetchable("n")
     public static dNPC valueOf(String string) {
         if (string == null) return null;
 

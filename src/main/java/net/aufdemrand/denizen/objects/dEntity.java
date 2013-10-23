@@ -4,12 +4,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.properties.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -83,7 +79,7 @@ public class dEntity implements dObject, Adjustable {
      * @param string  the string or dScript argument String
      * @return  a dEntity, or null
      */
-    @ObjectFetcher("e")
+    @Fetchable("e")
     public static dEntity valueOf(String string) {
         if (string == null) return null;
 

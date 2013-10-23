@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.ItemColor;
-import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
@@ -21,7 +20,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -72,7 +70,7 @@ public class dItem implements dObject, Notable, Properties {
      * @return  an Item, or null if incorrectly formatted
      *
      */
-    @ObjectFetcher("i")
+    @Fetchable("i")
     public static dItem valueOf(String string, dPlayer player, dNPC npc) {
         if (string == null) return null;
 

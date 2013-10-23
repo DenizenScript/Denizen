@@ -24,7 +24,7 @@ import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
-import net.aufdemrand.denizen.tags.ObjectFetcher;
+import net.aufdemrand.denizen.objects.ObjectFetcher;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
@@ -248,31 +248,11 @@ public class Denizen extends JavaPlugin {
         // Register CommandHandler with Citizens
         Depends.citizens.registerCommandClass(CommandHandler.class);
 
+        // Initialize ObjectFetcher
         try {
-            // Initialize the ObjectFetcher
-            ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
-            ObjectFetcher.registerWithObjectFetcher(dCuboid.class);    // cu@
-            ObjectFetcher.registerWithObjectFetcher(dEntity.class);    // e@
-            ObjectFetcher.registerWithObjectFetcher(dInventory.class); // in@
-            ObjectFetcher.registerWithObjectFetcher(dColor.class);     // co@
-            ObjectFetcher.registerWithObjectFetcher(dList.class);      // li@/fl@
-            ObjectFetcher.registerWithObjectFetcher(dLocation.class);  // l@
-            ObjectFetcher.registerWithObjectFetcher(dMaterial.class);  // m@
-            ObjectFetcher.registerWithObjectFetcher(dNPC.class);       // n@
-            ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
-            ObjectFetcher.registerWithObjectFetcher(dScript.class);    // s@
-            ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
-            ObjectFetcher.registerWithObjectFetcher(Element.class);    // el@
-            ObjectFetcher.registerWithObjectFetcher(Duration.class);   // d@
-            ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
             ObjectFetcher._initialize();
-
-            // Initialize the NotableManager
-            NotableManager.registerWithNotableManager(dCuboid.class);   // cuboid
-            NotableManager._initialize();
-
         } catch (Exception e) {
-            // Shit!
+            e.printStackTrace();
         }
 
         // Initialize non-standard dMaterials

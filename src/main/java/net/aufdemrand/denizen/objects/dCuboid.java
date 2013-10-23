@@ -14,9 +14,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 
 public class dCuboid implements dObject, Notable {
@@ -42,7 +40,7 @@ public class dCuboid implements dObject, Notable {
      * @return  a Location, or null if incorrectly formatted
      *
      */
-    @ObjectFetcher("cu")
+    @Fetchable("cu")
     public static dCuboid valueOf(String string) {
         if (string == null) return null;
 

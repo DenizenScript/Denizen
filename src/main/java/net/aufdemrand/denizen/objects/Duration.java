@@ -83,7 +83,7 @@ public class Duration implements dObject {
      * @param string  the Argument value.
      * @return  a Duration, or null if incorrectly formatted.
      */
-    @ObjectFetcher("d")
+    @Fetchable("d")
     public static Duration valueOf(String string) {
         if (string == null) return null;
 

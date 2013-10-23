@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.objects.ObjectFetcher;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -69,17 +70,15 @@ public class TagManager implements Listener {
         dObject arg;
         try {
 
-            if (!((Boolean) object_class.getMethod("matches", String.class)
-                    .invoke(null, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']'
-                    : event.getName()))) {
+            if (!ObjectFetcher.checkMatch(object_class, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']'
+                    : event.getName())) {
                 dB.echoDebug("Returning null. '" + event.getName()
                         + "' is an invalid " + object_class.getSimpleName() + ".");
                 event.setReplaced("null");
                 return;
             }
 
-            arg = (dObject) object_class.getMethod("valueOf", String.class)
-                    .invoke(null, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']'
+            arg = ObjectFetcher.getObjectFrom(object_class, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']'
                             : event.getName());
 
             if (arg == null) {

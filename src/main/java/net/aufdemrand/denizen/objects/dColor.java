@@ -25,7 +25,7 @@ public class dColor implements dObject {
      * @return  a Color, or null if incorrectly formatted
      *
      */
-    @ObjectFetcher("co")
+    @Fetchable("co")
     public static dColor valueOf(String string) {
 
         string = string.toUpperCase().replace("CO@", "");

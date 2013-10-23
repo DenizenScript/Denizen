@@ -1,29 +1,14 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
-import net.minecraft.server.v1_6_R3.*;
 import org.bukkit.*;
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class dChunk extends CraftChunk implements dObject, Adjustable {
 
@@ -40,7 +25,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
      * @return  a dChunk, or null if incorrectly formatted
      *
      */
-    @ObjectFetcher("ch")
+    @Fetchable("ch")
     public static dChunk valueOf(String string) {
         if (string == null) return null;
 

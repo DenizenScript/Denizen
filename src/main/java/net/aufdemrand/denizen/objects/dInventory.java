@@ -83,7 +83,7 @@ public class dInventory implements dObject, Notable {
      *          the specified inventory is invalid, this is null.
      *
      */
-    @ObjectFetcher("in")
+    @Fetchable("in")
     public static dInventory valueOf(String string, dPlayer player, dNPC npc) {
 
         if (string == null) return null;

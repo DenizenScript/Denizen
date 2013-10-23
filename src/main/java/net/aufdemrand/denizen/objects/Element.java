@@ -54,7 +54,7 @@ public class Element implements dObject {
      * @return  a dScript dList
      *
      */
-    @ObjectFetcher("el")
+    @Fetchable("el")
     public static Element valueOf(String string) {
         if (string == null) return null;
 

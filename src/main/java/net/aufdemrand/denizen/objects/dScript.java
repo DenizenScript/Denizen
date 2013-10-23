@@ -69,7 +69,7 @@ public class dScript implements dObject {
      * @param string  the dScript argument String
      * @return  a Script, or null if incorrectly formatted
      */
-    @ObjectFetcher("s")
+    @Fetchable("s")
     public static dScript valueOf(String string) {
 
         Matcher m = CONTAINER_PATTERN.matcher(string);

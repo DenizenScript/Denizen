@@ -42,33 +42,27 @@ public class AdjustCommand extends AbstractCommand {
 
         String object = scriptEntry.getElement("object").asString();
 
-        Class object_class = net.aufdemrand.denizen.tags.ObjectFetcher.getObjectClass(object.split("@")[0]);
+        Class object_class = ObjectFetcher.getObjectClass(object.split("@")[0]);
 
         if (object_class == null)
             throw new CommandExecutionException("Unfetchable object found '" + object + '\'');
 
         dObject fetched;
 
-        try {
-            // Check to make sure this is a valid constructor by checking the 'matches' static method
-            if (!((Boolean) object_class.getMethod("matches", String.class)
-                    .invoke(null, object)))
-                throw new CommandExecutionException('\'' + object + "' is returning null.");
+        // Check to make sure this is a valid constructor by checking the 'matches' static method
+        if (!ObjectFetcher.checkMatch(object_class, object))
+            throw new CommandExecutionException('\'' + object + "' is returning null.");
 
-            // Get the object with the 'valueOf' static method
-            fetched = (dObject) object_class.getMethod("valueOf", String.class)
-                    .invoke(null, object);
+        // Get the object with the 'valueOf' static method
+        fetched = ObjectFetcher.getObjectFrom(object_class, object);
 
-            // Make sure this object is Adjustable
-            if (!(fetched instanceof Adjustable))
-                throw new CommandExecutionException('\'' + object + "' is not adjustable.");
+        // Make sure this object is Adjustable
+        if (!(fetched instanceof Adjustable))
+            throw new CommandExecutionException('\'' + object + "' is not adjustable.");
 
-            // Do the adjustment!
-            ((Adjustable) fetched).adjust(new Mechanism(scriptEntry.getElement("mechanism").asString()),
-                    scriptEntry.getElement("mechanism_value"));
-
-        } catch (NoSuchMethodException  e) { } catch (SecurityException e) {
-        } catch (InvocationTargetException e) { } catch (IllegalAccessException e) { }
+        // Do the adjustment!
+        ((Adjustable) fetched).adjust(new Mechanism(scriptEntry.getElement("mechanism").asString()),
+                scriptEntry.getElement("mechanism_value"));
 
         // :)
 

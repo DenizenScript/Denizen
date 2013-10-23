@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.tags.ObjectFetcher;
+import net.aufdemrand.denizen.objects.ObjectFetcher;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
@@ -51,15 +51,13 @@ public class NoteCommand extends AbstractCommand {
         dObject arg;
         try {
 
-            if ((Boolean) object_class.getMethod("matches", String.class)
-                    .invoke(null, object) == false) {
+            if (!ObjectFetcher.checkMatch(object_class, object)) {
                 dB.echoDebug("'" + object
                         + "' is an invalid " + object_class.getSimpleName() + ".");
                 return;
             }
 
-            arg = (dObject) object_class.getMethod("valueOf", String.class)
-                    .invoke(null, object);
+            arg = ObjectFetcher.getObjectFrom(object_class, object);
 
             if (arg instanceof Notable)
                 ((Notable) arg).makeUnique(id.asString());

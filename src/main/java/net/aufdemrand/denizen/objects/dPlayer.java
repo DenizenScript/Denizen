@@ -13,7 +13,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class dPlayer implements dObject, Adjustable {
@@ -45,7 +44,7 @@ public class dPlayer implements dObject, Adjustable {
     // are case insensitive.
     // -->
 
-    @ObjectFetcher("p")
+    @Fetchable("p")
     public static dPlayer valueOf(String string) {
         if (string == null) return null;
 

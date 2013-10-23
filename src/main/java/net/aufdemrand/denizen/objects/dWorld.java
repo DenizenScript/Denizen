@@ -46,7 +46,7 @@ public class dWorld implements dObject {
     // World names are case insensitive.
     // -->
 
-    @ObjectFetcher("w")
+    @Fetchable("w")
     public static dWorld valueOf(String string) {
         if (string == null) return null;
 

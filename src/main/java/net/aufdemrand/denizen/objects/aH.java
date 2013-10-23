@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,6 +75,7 @@ public class aH {
     //////////////////
 
     public static class Argument {
+
         public String raw_value;
         String prefix = null;
         String value;
@@ -94,7 +96,6 @@ public class aH {
                 value = string.split(":", 2)[1];
             }
 
-            // dB.log("Constructed Argument: " + prefix + ":" + value);
         }
 
 
@@ -111,6 +112,7 @@ public class aH {
         public boolean hasPrefix() {
             return has_prefix;
         }
+
 
         public Argument getPrefix() {
             if (prefix == null)
@@ -203,14 +205,7 @@ public class aH {
 
         // Check if this argument matches a certain dObject type
         public boolean matchesArgumentType(Class<? extends dObject> dClass) {
-
-            try {
-                return (Boolean) dClass.getMethod("matches", String.class).invoke(null, value);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return false;
+            return ObjectFetcher.checkMatch(dClass, value);
         }
 
 
@@ -240,29 +235,18 @@ public class aH {
             return new Element(prefix, value);
         }
 
+
         public <T extends dObject> T asType(Class<? extends dObject> clazz) {
 
-            // dB.log("Calling asType: " + prefix + ":" + value + " " + clazz.getCanonicalName());
+            dObject arg = ObjectFetcher.getObjectFrom(clazz, value);
 
-            try {
-                dObject arg = (dObject) clazz.getMethod("valueOf", String.class)
-                        .invoke(null, value);
-
-               // dB.log("Created: " + clazz.cast(arg).debug());
-                if (arg != null) {
-                    return (T) clazz.cast(arg).setPrefix(prefix);
-                }
-
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+            if (arg != null) {
+                return (T) clazz.cast(arg).setPrefix(prefix);
             }
 
             return null;
         }
+
 
         public void reportUnhandled() {
             dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, raw_value);
@@ -626,7 +610,7 @@ public class aH {
     @Deprecated
     public static boolean matchesContext(String arg) {
         if (arg.toUpperCase().startsWith("CONTEXT:") ||
-            arg.toUpperCase().startsWith("DEFINE:")) return true;
+                arg.toUpperCase().startsWith("DEFINE:")) return true;
         // TODO: Other matches____ do some actual checks, should this?.
         return false;
     }

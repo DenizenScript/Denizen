@@ -24,7 +24,7 @@ public class dList extends ArrayList<String> implements dObject {
     final static Pattern split_char = Pattern.compile("\\|");
     final static Pattern identifier = Pattern.compile("li@", Pattern.CASE_INSENSITIVE);
 
-    @ObjectFetcher("li, fl")
+    @Fetchable("li, fl")
     public static dList valueOf(String string) {
         if (string == null) return null;
 
@@ -189,11 +189,11 @@ public class dList extends ArrayList<String> implements dObject {
         for (String element : this) {
 
             try {
-                if ((Boolean) dClass.getMethod("matches", String.class).invoke(null, element)) {
+                if (ObjectFetcher.checkMatch(dClass, element)) {
 
-                    dObject object = (dObject) (dClass == dItem.class && entry != null ?
+                    dObject object = (dClass.equals(dItem.class) && entry != null ?
                             dItem.valueOf(element, entry.getPlayer(), entry.getNPC()):
-                            dClass.getMethod("valueOf", String.class).invoke(null, element));
+                            ObjectFetcher.getObjectFrom(dClass, element));
 
                     // Only add the object if it is not null, thus filtering useless
                     // list items

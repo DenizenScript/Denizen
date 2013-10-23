@@ -64,3 +64,45 @@ _util_dtime_command:
       else flag global "Iterator %id%:!"
 
 
+# Load Tester
+
+Load Tester:
+  type: world
+
+  events:
+    on testload command:
+
+    # ops only!
+    - if !<player.is_op> queue clear
+
+    - if <c.args.size> == 1
+      define n <c.args.get[1]>
+
+    # if no number specified, stress test with 100 queues
+    - if %n% == null {
+      - narrate 'Invalid integer, assuming 100.'
+      - define n 100
+      }
+
+    # initialize the progress flag
+    # this will count up each time a queue was completed
+    - flag server stress_test_counter:0
+
+    # keep track of the start time
+    - define start_time <server.current_time_millis>
+
+    # repeat the run command
+    # each run will create a new queue, and increase the counter
+    - repeat %n% {
+      - flag server stress_test_counter:++
+      }
+
+    # ...and end time, to compare against the start time
+    - define end_time <server.current_time_millis>
+
+    - narrate 'Completed <server.flag[stress_test_counter].as_int> of %n%
+      total queues in <m:(%end_time% - %start_time%) / 1000> seconds.'
+
+    # cleanup
+    - flag server stress_test_counter:!
+    - determine fulfilled

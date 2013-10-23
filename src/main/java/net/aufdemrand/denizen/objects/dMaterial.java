@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
@@ -279,7 +278,7 @@ public class dMaterial implements dObject {
      * @return  a Material, or null if incorrectly formatted
      *
      */
-    @ObjectFetcher("m")
+    @Fetchable("m")
     public static dMaterial valueOf(String string) {
 
         if (string.toLowerCase().matches("random")
