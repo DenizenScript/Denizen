@@ -54,15 +54,15 @@ public class Utilities {
                 && (location.add(0, 1, 0).getBlock().getType() == Material.AIR));
     }
 
-    public static String arrayToString(String[] input, String glue){
+    public static String arrayToString(String[] input, String glue) {
         String output="";
         int length = input.length;
         int i = 1;
-        for(String s : input){
+        for(String s : input) { // TODO: Should this be? : output = output.concat(s);
             output.concat(s);
             i++;
             if(i!=length){
-                output.concat(glue);
+                output.concat(glue); // TODO: Same as above
             }
         }
         return output;

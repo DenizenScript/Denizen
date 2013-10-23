@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
@@ -132,7 +133,7 @@ public class TriggerTrait extends Trait implements Listener {
         if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
                 return false;
         // Check engaged
-        if (DenizenAPI.getCurrentInstance().getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
+        if (EngageCommand.getEngaged(npc)) {
             return false;
         }
         // Set cool down
@@ -140,19 +141,30 @@ public class TriggerTrait extends Trait implements Listener {
         return true;
     }
 
+    // <--[action]
+    // @Actions
+    // unavailable
+    //
+    // @Triggers when a trigger fires but the NPC is engaged.
+    //
+    // @Context
+    // None
+    //
+    // -->
     public boolean trigger(AbstractTrigger triggerClass, dPlayer player) {
         // Check cool down, return false if not yet met
         if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
                 return false;
         // Check engaged
-        if (DenizenAPI.getCurrentInstance().getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
+        if (EngageCommand.getEngaged(npc)) {
             // On Unavailable Action
-            DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action("unavailable", player);
+            // TODO: Add triggertype context + relevant triggering contexts
+            dNPCRegistry.getDenizen(npc).action("unavailable", player);
             return false;
         }
         // Set cool down, On [TriggerName] Action
         DenizenAPI.getCurrentInstance().getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
-        DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action(triggerClass.getName(), player);
+        dNPCRegistry.getDenizen(npc).action(triggerClass.getName(), player);
         return true;
     }
 

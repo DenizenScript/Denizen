@@ -4,6 +4,7 @@ package net.aufdemrand.denizen;
 import java.util.*;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
@@ -377,7 +378,7 @@ public class CommandHandler {
             trait.sit(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
         } else if (args.hasValueFlag("anchor")) {
             DenizenAPI.getCurrentInstance().tagManager();
-            trait.sit(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+            trait.sit(aH.getLocationFrom(TagManager.tag(null, dNPCRegistry.getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
         } else {
             trait.sit();
         }
@@ -441,7 +442,7 @@ public class CommandHandler {
             trait.toSleep(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
         } else if (args.hasValueFlag("anchor")) {
             DenizenAPI.getCurrentInstance().tagManager();
-            trait.toSleep(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+            trait.toSleep(aH.getLocationFrom(TagManager.tag(null, dNPCRegistry.getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
         } else {
             trait.toSleep();
         }
@@ -508,7 +509,7 @@ public class CommandHandler {
             trait.startFishing(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
         } else if (args.hasValueFlag("anchor")) {
             DenizenAPI.getCurrentInstance().tagManager();
-            trait.startFishing(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+            trait.startFishing(aH.getLocationFrom(TagManager.tag(null, dNPCRegistry.getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
         } else {
             trait.startFishing();
         }

@@ -18,6 +18,27 @@ import java.util.Map;
 
 public class DamageTrigger extends AbstractTrigger implements Listener {
 
+    // <--[action]
+    // @Actions
+    // no damage trigger
+    //
+    // @Triggers when the NPC is damaged by a player but no damage trigger fires.
+    //
+    // @Context
+    // None
+    //
+    // -->
+    // Technically defined in TriggerTrait, but placing here instead.
+    // <--[action]
+    // @Actions
+    // damage
+    //
+    // @Triggers when the NPC is damaged by a player.
+    //
+    // @Context
+    // None
+    //
+    // -->
     @EventHandler
     public void damageTrigger(EntityDamageByEntityEvent event) {
 

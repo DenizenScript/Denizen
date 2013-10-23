@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.events.ScriptReloadEvent;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -73,6 +74,47 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ProximityTrigger extends AbstractTrigger implements Listener {
 
+    // <--[action]
+    // @Actions
+    // enter proximity
+    //
+    // @Triggers when a player enters the NPC's proximity trigger's radius.
+    //
+    // @Context
+    // None
+    //
+    // -->
+    // <--[action]
+    // @Actions
+    // exit proximity
+    //
+    // @Triggers when a player exits the NPC's proximity trigger's radius.
+    //
+    // @Context
+    // None
+    //
+    // -->
+    // <--[action]
+    // @Actions
+    // move proximity
+    //
+    // @Triggers when a player moves inside the NPC's proximity trigger's radius.
+    //
+    // @Context
+    // None
+    //
+    // -->
+    // Technically defined in TriggerTrait, but placing here instead.
+    // <--[action]
+    // @Actions
+    // proximity
+    //
+    // @Triggers when a player moves inside the NPC's proximity trigger's radius.
+    //
+    // @Context
+    // None
+    //
+    // -->
     @Override
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
@@ -131,7 +173,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
             //
             // Iterate over all of the NPCs
             //
-            Iterator<dNPC>    it = DenizenAPI.getCurrentInstance().getNPCRegistry().getSpawnedNPCs().iterator();
+            Iterator<dNPC>    it = dNPCRegistry.getSpawnedNPCs().iterator();
             while (it.hasNext ()) {
                 dNPC npc = it.next ();
                 if (npc == null)

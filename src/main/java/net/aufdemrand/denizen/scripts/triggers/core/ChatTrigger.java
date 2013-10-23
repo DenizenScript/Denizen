@@ -40,6 +40,17 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
+    // Technically defined in TriggerTrait, but placing here instead.
+    // <--[action]
+    // @Actions
+    // chat
+    //
+    // @Triggers when a player chats to the NPC.
+    //
+    // @Context
+    // None
+    //
+    // -->
     public Boolean process(Player player, String message) {
 
         // Check if there is an NPC within range of a player to chat to.

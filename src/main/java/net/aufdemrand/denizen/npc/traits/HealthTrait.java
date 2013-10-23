@@ -202,7 +202,7 @@ public class HealthTrait extends Trait implements Listener {
     // death by block
     // death by <cause>
     //
-    // @Triggers when the NPC dies.
+    // @Triggers when the NPC dies. (Requires Health Trait)
     //
     // @Context
     // <context.killer> returns the entity that killed the NPC (if any)

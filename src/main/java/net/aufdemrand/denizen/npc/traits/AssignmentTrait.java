@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
@@ -76,7 +77,7 @@ public class AssignmentTrait extends Trait {
             // Reset Constants
             npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();
             // 'On Assignment' action.
-            DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action("assignment", player);
+            dNPCRegistry.getDenizen(npc).action("assignment", player);
             return true;
         }
 
@@ -125,7 +126,7 @@ public class AssignmentTrait extends Trait {
      */
     public void removeAssignment (dPlayer player) {
         assignment = "";
-        DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action("remove assignment", player);
+        dNPCRegistry.getDenizen(npc).action("remove assignment", player);
     }
 
     public void describe(CommandSender sender, int page) throws CommandException {

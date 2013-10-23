@@ -51,11 +51,11 @@ public class dNPCRegistry implements Listener {
         return actionHandler;
     }
 
-    private boolean _isRegistered (NPC npc) {
-        return denizenNPCs.containsKey(npc);
+    private static boolean _isRegistered (NPC npc) {
+        return denizenNPCs.containsKey(npc.getId());
     }
 
-    private void _registerNPC(NPC npc) {
+    private static void _registerNPC(NPC npc) {
         if (npc == null) return;
         if (!denizenNPCs.containsKey(npc.getId())) {
             denizenNPCs.put(npc.getId(), new dNPC(npc));
@@ -72,7 +72,7 @@ public class dNPCRegistry implements Listener {
      * @return a dNPC
      *
      */
-    public dNPC getDenizen(NPC npc) {
+    public static dNPC getDenizen(NPC npc) {
         if (npc == null) return null;
         if (!denizenNPCs.containsKey(npc.getId()))
             _registerNPC(npc);
@@ -86,7 +86,7 @@ public class dNPCRegistry implements Listener {
      * @return map of NPC, dNPC of all spawned NPCs
      *
      */
-    public Set<dNPC> getSpawnedNPCs() {
+    public static Set<dNPC> getSpawnedNPCs() {
         Iterator<Map.Entry<Integer, dNPC>> it = denizenNPCs.entrySet().iterator();
         Set<dNPC> npcs = new HashSet<dNPC>();
         while (it.hasNext()) {
@@ -115,9 +115,19 @@ public class dNPCRegistry implements Listener {
                 ("npc spawns"),
                 dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
         // On Spawn action
-        plugin.getNPCRegistry().getDenizen(event.getNPC()).action("spawn", null);
+        getDenizen(event.getNPC()).action("spawn", null);
     }
 
+    // <--[action]
+    // @Actions
+    // despawn
+    //
+    // @Triggers when the NPC is despawned.
+    //
+    // @Context
+    // None
+    //
+    // -->
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
         // Do world script event 'On NPC Completes Navigation'
@@ -125,9 +135,19 @@ public class dNPCRegistry implements Listener {
                 ("npc despawns"),
                 dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
 
-        plugin.getNPCRegistry().getDenizen(event.getNPC()).action("despawn", null);
+        getDenizen(event.getNPC()).action("despawn", null);
     }
 
+    // <--[action]
+    // @Actions
+    // remove
+    //
+    // @Triggers when the NPC is removed.
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Removes an NPC from the Registry when removed from Citizens.
      *
@@ -136,9 +156,9 @@ public class dNPCRegistry implements Listener {
      */
     @EventHandler
     public void onRemove(NPCRemoveEvent event) {
-        plugin.getNPCRegistry().getDenizen(event.getNPC()).action("remove", null);
+        getDenizen(event.getNPC()).action("remove", null);
         if (_isRegistered(event.getNPC()))
-            denizenNPCs.remove(event.getNPC());
+            denizenNPCs.remove(event.getNPC().getId());
         dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + event.getNPC().getName() + "/" + event.getNPC().getId());
     }
 

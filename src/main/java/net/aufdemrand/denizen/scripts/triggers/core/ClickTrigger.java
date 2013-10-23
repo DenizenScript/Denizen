@@ -17,6 +17,27 @@ import java.util.Map;
 
 public class ClickTrigger extends AbstractTrigger implements Listener {
 
+    // <--[action]
+    // @Actions
+    // no click trigger
+    //
+    // @Triggers when the NPC is clicked but no click trigger fires.
+    //
+    // @Context
+    // None
+    //
+    // -->
+    // Technically defined in TriggerTrait, but placing here instead.
+    // <--[action]
+    // @Actions
+    // click
+    //
+    // @Triggers when the NPC is clicked by a player.
+    //
+    // @Context
+    // None
+    //
+    // -->
     @EventHandler
     public void clickTrigger(NPCRightClickEvent event) {
 

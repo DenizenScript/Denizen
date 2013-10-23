@@ -11,9 +11,9 @@ public class Mechanism {
         raw_mechanism = string;
     }
 
-    public void fulfill(String outcome) {
+    public void fulfill(String _outcome) {
         fulfilled = true;
-        outcome = outcome;
+        outcome = _outcome;
     }
 
     public boolean matches(String string) {

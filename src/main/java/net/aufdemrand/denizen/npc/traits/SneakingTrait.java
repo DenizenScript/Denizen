@@ -23,6 +23,16 @@ public class SneakingTrait extends Trait implements Listener  {
         if (sneaking) sneak();
     }
 
+    // <--[action]
+    // @Actions
+    // sneak
+    //
+    // @Triggers when the NPC starts sneaking.
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**x
      * Makes the NPC sneak
      */

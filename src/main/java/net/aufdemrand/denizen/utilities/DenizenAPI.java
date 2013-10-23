@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
@@ -28,7 +29,7 @@ public class DenizenAPI {
      *
      */
     public static dNPC getDenizenNPC(NPC npc) {
-        return getCurrentInstance().getNPCRegistry().getDenizen(npc);
+        return dNPCRegistry.getDenizen(npc);
     }
 
     /**
@@ -39,7 +40,7 @@ public class DenizenAPI {
      *
      */
     public static Collection<dNPC> getSpawnedNPCs() {
-        return getCurrentInstance().getNPCRegistry().getSpawnedNPCs();
+        return dNPCRegistry.getSpawnedNPCs();
     }
 
     /**
