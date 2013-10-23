@@ -184,7 +184,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name Animate
         // @Usage animate [<entity>|...] [animation:<name>]
-        // @Required 1
+        // @Required 2
         // @Stable stable
         // @Short Makes a list of entities perform a certain animation.
         // @Author David Cernat
@@ -194,7 +194,7 @@ public class CommandRegistry implements dRegistry {
         // specify an entity and an animation.
 
         // Player animations require a Player-type entity or NPC. Available player animations include:
-        // ARM_SWING, CRIT, HURT, and MAGIC_CRIT
+        // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING
 
         // All entities, regardless of type, can utilize the 'hurt' animation. Additionally, wolf entities
         // and NPCs can also use: WOLF_SMOKE, WOLF_HEARTS, and WOLF_SHAKE. Sheep entities and NPCs also have
@@ -213,7 +213,7 @@ public class CommandRegistry implements dRegistry {
 
         // -->
         registerCoreMember(AnimateCommand.class,
-                "ANIMATE", "animate [<entity>|...] [animation:<name>]", 1);
+                "ANIMATE", "animate [<entity>|...] [animation:<name>]", 2);
 
 
         // <--[command]

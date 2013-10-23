@@ -194,6 +194,21 @@ public class HealthTrait extends Trait implements Listener {
         event.getDrops().clear();
     }
 
+    // <--[action]
+    // @Actions
+    // death
+    // death by entity
+    // death by <entity>
+    // death by block
+    // death by <cause>
+    //
+    // @Triggers when the NPC dies.
+    //
+    // @Context
+    // <context.killer> returns the entity that killed the NPC (if any)
+    // <context.shooter> returns the shooter of the killing projectile (if any)
+    //
+    // -->
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
         // Don't use NPCDamageEvent because it doesn't work well
