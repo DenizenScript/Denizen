@@ -37,6 +37,16 @@ public class SittingTrait extends Trait implements Listener  {
         if (sitting) sit();
     }
 
+    // <--[action]
+    // @Actions
+    // sit
+    //
+    // @Triggers when the NPC sits down.
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Makes the NPC sit
      */
@@ -78,6 +88,16 @@ public class SittingTrait extends Trait implements Listener  {
         chairLocation = location;
     }
 
+    // <--[action]
+    // @Actions
+    // stand
+    //
+    // @Triggers when the NPC stands up.
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Makes the NPC stand
      */

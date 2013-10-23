@@ -129,6 +129,16 @@ public class PushableTrait extends Trait implements Listener {
         return pushable;
     }
 
+    // <--[action]
+    // @Actions
+    // push
+    //
+    // @Triggers when the NPC is pushed by a player
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Fires an 'On Push:' action upon being pushed.
      *
@@ -159,6 +169,16 @@ public class PushableTrait extends Trait implements Listener {
         }
     }
 
+    // <--[action]
+    // @Actions
+    // push return
+    //
+    // @Triggers when the NPC returns to its center after being pushed by a player.
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Fires a 'On Push Return:' action upon return after being pushed.
      *

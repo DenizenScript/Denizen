@@ -42,6 +42,7 @@ public class SneakingTrait extends Trait implements Listener  {
      * Makes the NPC stand
      */
     public void stand() {
+        // Notated in SittingTrait
         DenizenAPI.getDenizenNPC(npc).action("stand", null);
 
         ((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x00));

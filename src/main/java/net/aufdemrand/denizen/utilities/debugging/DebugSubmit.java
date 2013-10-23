@@ -14,6 +14,7 @@ public class DebugSubmit extends Thread {
     public String Result = null;
     @Override
     public void run() {
+        BufferedReader in = null;
         try {
             URL url = new URL("http://mcmonkey4eva.dyndns.org/paste");
             HttpURLConnection uc = (HttpURLConnection) url.openConnection();
@@ -26,13 +27,24 @@ public class DebugSubmit extends Thread {
                         + "&response=micro&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
                         + "&pastecontents=" + recording)
                         .getBytes("UTF-8"));
-            BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
             Result = in.readLine();
             in.close();
         }
         catch (Exception e) {
             if (dB.showStackTraces) {
                 e.printStackTrace();
+            }
+        }
+        finally {
+            try {
+            if (in != null)
+                in.close();
+            }
+            catch (Exception e) {
+                if (dB.showStackTraces) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -49,6 +49,16 @@ public class HungerTrait extends Trait implements Listener {
         }
     }
 
+    // <--[action]
+    // @Actions
+    // exhausted
+    //
+    // @Triggers when the NPC is exhausted (Requires the Hunger trait)
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Listens for the NPC to move so hunger-loss can be calculated.
      * Cuts down on processing since loss is only calculated when moving.
