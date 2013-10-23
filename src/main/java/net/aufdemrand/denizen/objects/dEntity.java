@@ -1399,6 +1399,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the entity has a specified effect.
         // If no effect is specified, returns whether the entity has any effect.
         // -->
+        // TODO: add list_effects ?
         if (attribute.startsWith("has_effect")) {
             Boolean returnElement = false;
             if (attribute.hasContext(1))
@@ -1688,6 +1689,12 @@ public class dEntity implements dObject, Adjustable {
         //   PROPERTY ATTRIBUTES
         /////////////////
 
+        // <--[tag]
+        // @attribute <e@entity.describe>
+        // @returns Element(Boolean)
+        // @description
+        // Returns the entity's full description, including all properties.
+        // -->
         if (attribute.startsWith("describe"))
             return new Element("e@" + getEntityType().name().toLowerCase()
                     + '[' + PropertyParser.getPropertiesString(this) + ']')
@@ -1706,27 +1713,95 @@ public class dEntity implements dObject, Adjustable {
     @Override
     public void adjust(Mechanism mechanism, Element value) {
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name remove_effects
+        // @input None
+        // @description
+        // Removes all potion effects from the entity.
+        // @tags
+        // <e@entity.has_effect[<effect>]>
+        // -->
         if (mechanism.matches("remove_effects")) {
             for (PotionEffect potionEffect : this.getLivingEntity().getActivePotionEffects())
                 getLivingEntity().removePotionEffect(potionEffect.getType());
             return;
         }
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name remove_when_far_away
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity should be removed entirely when despawned.
+        // @tags
+        // None
+        // -->
+        // TODO: Tag for this
         if (mechanism.matches("remove_when_far_away"))
             getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name custom_name
+        // @input Element
+        // @description
+        // Sets the custom name of the entity.
+        // @tags
+        // <e@entity.custom_name>
+        // -->
         if (mechanism.matches("custom_name"))
             getLivingEntity().setCustomName(value.asString());
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name custom_name_visibility
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the custom name is visible.
+        // @tags
+        // None
+        // -->
+        // TODO: Tag for this
         if (mechanism.matches("custom_name_visibility"))
             getLivingEntity().setCustomNameVisible(value.asBoolean());
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name can_pickup_items
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity can pick up items.
+        // @tags
+        // <e@entity.can_pickup_items>
+        // -->
         if (mechanism.matches("can_pickup_items"))
             getLivingEntity().setCanPickupItems(value.asBoolean());
 
-        if (mechanism.matches("leash_holder"))
+        // <--[mechanism]
+        // @object dEntity
+        // @name leash_holder
+        // @input dEntity
+        // @description
+        // Sets the entity holding this entity by leash.
+        // @tags
+        // <e@entity.is_leashed>
+        // <e@entity.get_leash_holder>
+        // -->
+        if (mechanism.matches("leash_holder")) // TODO: Make sure value is a valid entity... also valid bool/int/etc for other inputs...
             getLivingEntity().setLeashHolder(dEntity.valueOf(value.asString()).getBukkitEntity());
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name remaining_air
+        // @input Element(Number)
+        // @description
+        // Sets how much air the entity has remaining before it drowns.
+        // @tags
+        // <p@player.oxygen>
+        // <p@player.oxygen.max>
+        // -->
+        // TODO: Make those tags available for dEntities XOR make this mechanism for players only.
         if (mechanism.matches("remaining_air"))
             getLivingEntity().setRemainingAir(value.asInt());
 
