@@ -27,21 +27,21 @@ public class ObjectFetcher {
     public static void _initialize() throws IOException, ClassNotFoundException, NoSuchMethodException {
 
         // Initialize the ObjectFetcher
-        ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
-        ObjectFetcher.registerWithObjectFetcher(dCuboid.class);    // cu@
-        ObjectFetcher.registerWithObjectFetcher(dEntity.class);    // e@
-        ObjectFetcher.registerWithObjectFetcher(dInventory.class); // in@
-        ObjectFetcher.registerWithObjectFetcher(dColor.class);     // co@
-        ObjectFetcher.registerWithObjectFetcher(dList.class);      // li@/fl@
-        ObjectFetcher.registerWithObjectFetcher(dLocation.class);  // l@
-        ObjectFetcher.registerWithObjectFetcher(dMaterial.class);  // m@
-        ObjectFetcher.registerWithObjectFetcher(dNPC.class);       // n@
-        ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
-        ObjectFetcher.registerWithObjectFetcher(dScript.class);    // s@
-        ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
-        ObjectFetcher.registerWithObjectFetcher(Element.class);    // el@
-        ObjectFetcher.registerWithObjectFetcher(Duration.class);   // d@
-        ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
+        registerWithObjectFetcher(dItem.class);      // i@
+        registerWithObjectFetcher(dCuboid.class);    // cu@
+        registerWithObjectFetcher(dEntity.class);    // e@
+        registerWithObjectFetcher(dInventory.class); // in@
+        registerWithObjectFetcher(dColor.class);     // co@
+        registerWithObjectFetcher(dList.class);      // li@/fl@
+        registerWithObjectFetcher(dLocation.class);  // l@
+        registerWithObjectFetcher(dMaterial.class);  // m@
+        registerWithObjectFetcher(dNPC.class);       // n@
+        registerWithObjectFetcher(dPlayer.class);    // p@
+        registerWithObjectFetcher(dScript.class);    // s@
+        registerWithObjectFetcher(dWorld.class);     // w@
+        registerWithObjectFetcher(Element.class);    // el@
+        registerWithObjectFetcher(Duration.class);   // d@
+        registerWithObjectFetcher(dChunk.class);     // ch@
 
         if (fetchable_objects.isEmpty())
             return;
