@@ -45,6 +45,16 @@ public class AssignmentTrait extends Trait {
         npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();
     }
 
+    // <--[action]
+    // @Actions
+    // assignment
+    //
+    // @Triggers when the NPC receives an assignment via '/npc assign --set Name'.
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Sets the NPCs Assignment Script and fires an 'On Assignment:' action. Can specify a player for
      * context with the action.
@@ -96,6 +106,16 @@ public class AssignmentTrait extends Trait {
         return ScriptRegistry.containsScript(assignment);
     }
 
+    // <--[action]
+    // @Actions
+    // remove assignment
+    //
+    // @Triggers when the NPC loses its assignment.
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Removes the current assignment and fires an 'On Remove Assignment:' action. Can specify a player for
      * context with the action.
@@ -166,6 +186,28 @@ public class AssignmentTrait extends Trait {
     }
 
 
+    // <--[action]
+    // @Actions
+    // hit
+    // hit on <entity>
+    //
+    // @Triggers when the NPC hits an enemy.
+    //
+    // @Context
+    // None
+    //
+    // -->
+    // <--[action]
+    // @Actions
+    // kill
+    // kill of <entity>
+    //
+    // @Triggers when the NPC kills an enemy.
+    //
+    // @Context
+    // None
+    //
+    // -->
     // Listen for this NPC's hits on entities
     @EventHandler(priority = EventPriority.MONITOR)
     public void onHit(EntityDamageByEntityEvent event) {
@@ -188,6 +230,7 @@ public class AssignmentTrait extends Trait {
         if (event.getEntity() instanceof Player)
             player = dPlayer.mirrorBukkitPlayer((Player) event.getEntity());
 
+        // TODO: Context containing the entity hit
         DenizenAPI.getDenizenNPC(npc).action("hit", player);
         DenizenAPI.getDenizenNPC(npc).action("hit on " + event.getEntityType().name(), player);
 

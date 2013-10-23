@@ -75,6 +75,16 @@ public class FishingTrait extends Trait {
         nmsworld = ((CraftWorld) npc.getBukkitEntity().getWorld()).getHandle();
     }
 
+    // <--[action]
+    // @Actions
+    // start fishing
+    //
+    // @Triggers when the NPC starts fishing.
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Makes the NPC fish at the specified location
      *
@@ -89,6 +99,16 @@ public class FishingTrait extends Trait {
         fishing = true;
     }
 
+    // <--[action]
+    // @Actions
+    // stop fishing
+    //
+    // @Triggers when the NPC stops fishing.
+    //
+    // @Context
+    // None
+    //
+    // -->
     /**
      * Makes the stop fishing.
      */
@@ -111,6 +131,16 @@ public class FishingTrait extends Trait {
         fishingLocation = npc.getBukkitEntity().getLocation();
     }
 
+    // <--[action]
+    // @Actions
+    // cast fishing rod
+    //
+    // @Triggers when the NPC casts a fishing rod.
+    //
+    // @Context
+    // None
+    //
+    // -->
     private void cast() {
         DenizenAPI.getDenizenNPC(npc).action("cast fishing rod", null);
 
@@ -159,6 +189,16 @@ public class FishingTrait extends Trait {
         PlayerAnimation.ARM_SWING.play((Player) npc.getBukkitEntity());
     }
 
+    // <--[action]
+    // @Actions
+    // reel in fishing rod
+    //
+    // @Triggers when the NPC reels in its fishing rod.
+    //
+    // @Context
+    // None
+    //
+    // -->
     private void reel() {
         DenizenAPI.getDenizenNPC(npc).action("reel in fishing rod", null);
 

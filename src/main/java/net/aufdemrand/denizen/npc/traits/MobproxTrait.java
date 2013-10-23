@@ -67,6 +67,40 @@ public class MobproxTrait extends Trait {
             }
         }
     }
+    // <--[action]
+    // @Actions
+    // mob enter proximity
+    // <entity> enter proximity
+    //
+    // @Triggers when a mob enters the proximity of the NPC (Requires MobProx trait).
+    //
+    // @Context
+    // <context.entity> returns the mob that entered the proximity
+    //
+    // -->
+    // <--[action]
+    // @Actions
+    // mob exit proximity
+    // <entity> exit proximity
+    //
+    // @Triggers when a mob exits the proximity of the NPC (Requires MobProx trait).
+    //
+    // @Context
+    // <context.entity> returns the mob that exited the proximity
+    //
+    // -->
+    // <--[action]
+    // @Actions
+    // mob move proximity
+    // <entity> move proximity
+    //
+    // @Triggers when a mob moves in the proximity of the NPC (Requires MobProx trait).
+    // (Fires at a rate of specified by the 'mobprox_timer' flag, default of 2 seconds)
+    //
+    // @Context
+    // <context.entity> returns the mob that entered the proximity
+    //
+    // -->
     private void callAction(String act, Entity ent) {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("entity", new dEntity(ent));

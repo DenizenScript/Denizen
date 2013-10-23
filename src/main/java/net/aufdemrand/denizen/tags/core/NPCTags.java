@@ -67,6 +67,17 @@ public class NPCTags implements Listener {
 
     public static Map<Integer, dLocation> previousLocations = new HashMap<Integer, dLocation>();
 
+    // <--[action]
+    // @Actions
+    // complete navigation
+    //
+    // @Triggers when the NPC has finished a 'walk' command,
+    // or has reached a path point.
+    //
+    // @Context
+    // None
+    //
+    // -->
     @EventHandler
     public void navComplete(NavigationCompleteEvent event) {
 
@@ -82,6 +93,17 @@ public class NPCTags implements Listener {
 
     }
 
+    // <--[action]
+    // @Actions
+    // begin navigation
+    //
+    // @Triggers when the NPC has received a 'walk' command,
+    // or is about to follow a path.
+    //
+    // @Context
+    // None
+    //
+    // -->
     @EventHandler
     public void navBegin(NavigationBeginEvent event) {
         // Do world script event 'On NPC Completes Navigation'
@@ -107,6 +129,17 @@ public class NPCTags implements Listener {
                 if (entity instanceof Player)
                     player = dPlayer.mirrorBukkitPlayer((Player) entity);
 
+                // <--[action]
+                // @Actions
+                // attack
+                // attack on <entity>
+                //
+                // @Triggers when the NPC is about to attack an enemy.
+                //
+                // @Context
+                // None
+                //
+                // -->
                 npc.action("attack", player);
 
                 npc.action("attack on "
@@ -116,6 +149,17 @@ public class NPCTags implements Listener {
         }
     }
 
+    // <--[action]
+    // @Actions
+    // cancel navigation
+    // cancel navigation due to <reason>
+    //
+    // @Triggers when a plugin or script cancels an NPC's navigation.
+    //
+    // @Context
+    // None
+    //
+    // -->
     @EventHandler
     public void navCancel(NavigationCancelEvent event) {
         WorldScriptHelper.doEvents(Arrays.asList
