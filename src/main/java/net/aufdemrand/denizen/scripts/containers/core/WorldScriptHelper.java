@@ -3583,6 +3583,7 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity the player is clicking on.
     // <context.item> returns the dItem the player is clicking with.
+    // <context.cuboids> returns a dList of cuboids that contain the interacted entity
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
