@@ -1931,6 +1931,8 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // entity shoots bow
     // <entity> shoots bow
+    // entity shoots <item>
+    // <entity> shoots <item>
     //
     // @Triggers when an entity shoots something out of a bow.
     // @Context

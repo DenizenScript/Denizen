@@ -126,7 +126,7 @@ public class dNPCRegistry implements Listener {
     // This can be because a command was issues, or a chunk has been unloaded.
     //
     // @Context
-    // <npc> The NPC involved.
+    // None
     // -->
 
     /**
@@ -151,7 +151,7 @@ public class dNPCRegistry implements Listener {
     // @Triggers when the NPC is removed.
     //
     // @Context
-    // <npc> The NPC involved.
+    // None
     // -->
 
     /**
