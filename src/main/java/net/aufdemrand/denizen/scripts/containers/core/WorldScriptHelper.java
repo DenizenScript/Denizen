@@ -14,20 +14,8 @@ import java.util.concurrent.ExecutionException;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.ScriptReloadEvent;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.aH.Argument;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
@@ -74,6 +62,7 @@ public class WorldScriptHelper implements Listener {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
+
 
     //////////////////
     // MAPS
@@ -142,6 +131,7 @@ public class WorldScriptHelper implements Listener {
         return finalEvents;
     }
 
+
     /////////////////////
     //   EVENT HANDLER
     /////////////////
@@ -158,7 +148,7 @@ public class WorldScriptHelper implements Listener {
 
         String determination = "none";
 
-        if (dB.showEventsFiring) dB.log("Fired for '" + eventNames.toString() + '\'');
+        if (dB.showEventsFiring) dB.echoApproval("Fired world events for '" + eventNames.toString() + '\'');
 
         for (String eventName : eventNames) {
 
@@ -222,16 +212,21 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player breaks block
+    // player breaks block in <notable cuboid>
     // player breaks <material>
+    // player breaks <material> in <notable cuboid>
     // player breaks block with <item>
     // player breaks <material> with <item>
+    // player breaks <material> with <item> in <notable cuboid>
     // player breaks block with <material>
     // player breaks <material> with <material>
+    // player breaks <material> with <material> in <notable cuboid>
     //
     // @Triggers when a player breaks a block.
     // @Context
     // <context.location> returns the dLocation the block was broken at.
     // <context.material> returns the dMaterial of the block that was broken.
+    // <context.cuboids> returns a dList of notable cuboids surrounding the block broken.
     //
     // @Determine
     // "CANCELLED" to stop the block from breaking.
@@ -246,36 +241,63 @@ public class WorldScriptHelper implements Listener {
         Block block = event.getBlock();
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
 
-        context.put("location", new dLocation(block.getLocation()));
-        context.put("material", material);
-
         dItem item = new dItem(event.getPlayer().getItemInHand());
 
+        // Add events
         List<String> events = new ArrayList<String>();
         events.add("player breaks block");
         events.add("player breaks " + material.identify());
         events.add("player breaks block with " + item.identify());
         events.add("player breaks " + material.identify() +
-                   " with " + item.identify());
+                " with " + item.identify());
         events.add("player breaks block with " + item.identifyMaterial());
         events.add("player breaks " + material.identify() +
-                   " with " + item.identifyMaterial());
+                " with " + item.identifyMaterial());
 
-        String determination = doEvents(events, null, event.getPlayer(), context, true);
+        // Look for cuboids that contain the block's location
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-
-            // Make nothing drop, usually used as "drop:nothing"
-        else if (determination.toUpperCase().startsWith("NOTHING")) {
-            event.setCancelled(true);
-            block.setType(Material.AIR);
+        if (cuboids.size() > 0) {
+            dList cuboid_context = new dList();
+            for (dCuboid cuboid : cuboids) {
+                events.add("player breaks block in " + cuboid.identify());
+                events.add("player breaks " + material.identify() + " in " + cuboid.identify());
+                events.add("player breaks " + material.identify() + " with " + item.identify() + " in " + cuboid.identify());
+                events.add("player breaks " + material.identify() + " with " + item.identifyMaterial() + " in " + cuboid.identify());
+                events.add("player breaks block in cuboid");
+                events.add("player breaks " + material.identify() + " in cuboid");
+                events.add("player breaks " + material.identify() + " with " + item.identify() + " in cuboid");
+                events.add("player breaks " + material.identify() + " with " + item.identifyMaterial() + " in cuboid");
+                cuboid_context.add(cuboid.identify());
+            }
+            // Add in cuboids context, if inside a cuboid
+            context.put("cuboids", cuboid_context);
         }
 
-        // Get a dList of dItems to drop
-        else if (Argument.valueOf(determination).matchesArgumentList(dItem.class)) {
+        // Trim events not used
+        events = trimEvents(events);
 
-            // Cancel the event
+        // Don't continue if there are no events to run
+        if (events.size() == 0) return;
+
+        // Add in more context
+        context.put("location", new dLocation(block.getLocation()));
+        context.put("material", material);
+
+        // Do events, get the determination
+        String determination = doEvents(events, null, event.getPlayer(), context, true);
+
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
+            // Straight up cancel the event
+            event.setCancelled(true);
+
+        } else if (determination.toUpperCase().startsWith("NOTHING")) {
+            // Make nothing drop, usually used as "drop:nothing"
+            event.setCancelled(true);
+            block.setType(Material.AIR);
+
+        } else if (Argument.valueOf(determination).matchesArgumentList(dItem.class)) {
+            // Get a dList of dItems to drop
             event.setCancelled(true);
             block.setType(Material.AIR);
 
@@ -286,12 +308,12 @@ public class WorldScriptHelper implements Listener {
             List<dItem> newItems = (List<dItem>) list;
 
             for (dItem newItem : newItems) {
-
                 block.getWorld().dropItemNaturally(block.getLocation(),
                         newItem.getItemStack()); // Drop each item
             }
         }
     }
+
 
     // <--[event]
     // @Events
@@ -372,11 +394,14 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // player damages block
     // player damages <material>
+    // player damages block in <notable cuboid>
+    // player damages <material> in <notable cuboid>
     //
     // @Triggers when a block is damaged by a player.
     // @Context
     // <context.location> returns the dLocation the block that was damaged.
     // <context.material> returns the dMaterial of the block that was damaged.
+    // <context.cuboids> returns a dList of notable cuboids which the damaged block is contained.
     //
     // @Determine
     // "CANCELLED" to stop the block from being damaged.
@@ -388,13 +413,36 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        List<String> events = new ArrayList<String>();
 
+        // Look for cuboids that contain the block's location
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
+
+        if (cuboids.size() > 0) {
+            dList cuboid_context = new dList();
+            for (dCuboid cuboid : cuboids) {
+                events.add("player damages block in " + cuboid.identify());
+                events.add("player damages " + material.identify() + " in " + cuboid.identify());
+                cuboid_context.add(cuboid.identify());
+            }
+            // Add in cuboids context, if inside a cuboid
+            context.put("cuboids", cuboid_context);
+        }
+
+        events.add("player damages block");
+        events.add("player damages " + material.identify());
+
+        // Trim events not used
+        events = trimEvents(events);
+
+        // Return if no events left to parse
+        if (events.size() == 0) return;
+
+        // Add in add'l context
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
 
-        String determination = doEvents(Arrays.asList
-                ("player damages block",
-                        "player damages " + material.identify()),
+        String determination = doEvents(events,
                 null, event.getPlayer(), context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -687,6 +735,8 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // player places block
     // player places <block>
+    // player places block in <notable cuboid>
+    // player places <block> in <notable cuboid>
     //
     // @Triggers when a player places a block.
     // @Context
@@ -702,13 +752,35 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        List<String> events = new ArrayList<String>();
+
+        // Look for cuboids that contain the block's location
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
+
+        if (cuboids.size() > 0) {
+            dList cuboid_context = new dList();
+            for (dCuboid cuboid : cuboids) {
+                events.add("player places block in " + cuboid.identify());
+                events.add("player places " + material.identify() + " in " + cuboid.identify());
+                cuboid_context.add(cuboid.identify());
+            }
+            // Add in cuboids context, if inside a cuboid
+            context.put("cuboids", cuboid_context);
+        }
+
+        events.add("player places block");
+        events.add("player places " + material.identify());
+
+        // Trim events not used
+        events = trimEvents(events);
+
+        // Return if no events left to parse
+        if (events.size() == 0) return;
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
 
-        String determination = doEvents(Arrays.asList
-                ("player places block",
-                        "player places " + material.identify()),
+        String determination = doEvents(events,
                 null, event.getPlayer(), context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1113,9 +1185,6 @@ public class WorldScriptHelper implements Listener {
         dEntity hanging = new dEntity(event.getEntity());
         String cause =  event.getCause().name();
 
-        context.put("hanging", hanging);
-        context.put("cause", new Element(cause));
-
         List<String> events = new ArrayList<String>();
         events.add("hanging breaks");
         events.add("hanging breaks because " + cause);
@@ -1129,7 +1198,8 @@ public class WorldScriptHelper implements Listener {
             // @Events
             // <entity> breaks hanging
             // <entity> breaks hanging because <cause>
-            // <entity> breaks <hanging>
+            // <entity> breaks <hanging> in <notable cuboid>
+            // <entity> breaks <hanging> because
             // <entity> breaks <hanging> because <cause>
             //
             // @Triggers when a hanging entity is broken by an entity.
@@ -1151,6 +1221,20 @@ public class WorldScriptHelper implements Listener {
             if (entity.isNPC()) npc = entity.getDenizenNPC();
             else if (entity.isPlayer()) player = entity.getPlayer();
 
+            // Look for cuboids that contain the block's location
+            List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getEntity().getLocation());
+
+            if (cuboids.size() > 0) {
+                dList cuboid_context = new dList();
+                for (dCuboid cuboid : cuboids) {
+                    events.add(entity.identifyType() + " breaks " + hanging.identifyType() + " in " + cuboid.identify());
+
+                    cuboid_context.add(cuboid.identify());
+                }
+                // Add in cuboids context, if inside a cuboid
+                context.put("cuboids", cuboid_context);
+            }
+
             events.add("entity breaks hanging");
             events.add("entity breaks hanging because " + cause);
             events.add("entity breaks " + hanging.identifyType());
@@ -1160,6 +1244,16 @@ public class WorldScriptHelper implements Listener {
             events.add(entity.identifyType() + " breaks " + hanging.identifyType());
             events.add(entity.identifyType() + " breaks " + hanging.identifyType() + " because " + cause);
         }
+
+        // Trim events not used
+        events = trimEvents(events);
+
+        // Return if no events left to parse
+        if (events.size() == 0) return;
+
+        // Add context
+        context.put("hanging", hanging);
+        context.put("cause", new Element(cause));
 
         String determination = doEvents(events, npc, player, context, true);
 
@@ -1649,9 +1743,9 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("entity dies",
-                 entity.identifyType() + " dies",
-                 "entity death",
-                 entity.identifyType() + " death"),
+                        entity.identifyType() + " dies",
+                        "entity death",
+                        entity.identifyType() + " death"),
                 npc, player, context, true);
 
         // Handle message
@@ -2014,10 +2108,10 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
 
-        // If the determination matches a dEntity, change the event's target
-        // using a scheduled task (otherwise, the target will not be changed)
-        //
-        // Note: this does not work with all monster types
+            // If the determination matches a dEntity, change the event's target
+            // using a scheduled task (otherwise, the target will not be changed)
+            //
+            // Note: this does not work with all monster types
         else if (dEntity.matches(determination)) {
 
             final dEntity newTarget = dEntity.valueOf(determination);
@@ -3157,6 +3251,7 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // command
     // <command_name> command
+    // <command_name> command in <notable cuboid>
     //
     // @Triggers when a player or console runs a Bukkit command. This happens before
     // any code of established commands allowing scripters to 'override' existing commands.
@@ -3167,6 +3262,7 @@ public class WorldScriptHelper implements Listener {
     // <context.parsed_args> returns a dList of the arguments, parsed with Denizen's
     //   argument parser. Just like any Denizen Command, quotes and tags can be used.
     // <context.server> returns true if the command was run from the console.
+    // <context.cuboids> returns a list of cuboids the player is in when using the command.
     //
     // @Determine
     // "FULFILLED" to tell Bukkit the command was handled.
@@ -3182,9 +3278,25 @@ public class WorldScriptHelper implements Listener {
                 .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>").replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>");
         String command = message.split(" ")[0].replace("/", "").toUpperCase();
 
-        List<String> events = trimEvents(Arrays.asList
-                ("command",
-                        command + " command"));
+        List<String> events = new ArrayList<String>();
+
+        events.add("command");
+        events.add(command + " command");
+
+        // Look for cuboids that contain the block's location
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getPlayer().getLocation());
+
+        if (cuboids.size() > 0) {
+            dList cuboid_context = new dList();
+            for (dCuboid cuboid : cuboids) {
+                events.add(command + " command in " + cuboid.identify());
+                cuboid_context.add(cuboid.identify());
+            }
+            // Add in cuboids context, if inside a cuboid
+            context.put("cuboids", cuboid_context);
+        }
+
+        events = trimEvents(events);
 
         if (events.size() == 0)
             return;
@@ -3283,7 +3395,8 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player fishes (while <state>)
+    // player fishes
+    // player fishes while <state>
     //
     // @Triggers when a player uses a fishing rod.
     // @Context
@@ -3298,9 +3411,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerFish(PlayerFishEvent event) {
 
-
         dNPC npc = null;
-
         String state = event.getState().name();
 
         Map<String, dObject> context = new HashMap<String, dObject>();
@@ -3331,7 +3442,8 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player changes gamemode (to <gamemode>)
+    // player changes gamemode
+    // player changes gamemode to <gamemode>
     //
     // @Triggers when a player's gamemode is changed.
     // @Context
@@ -3360,12 +3472,23 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player (<click type>) clicks (<material>) (with <item>)
+    // player right clicks block
+    // player left clicks block
+    // player right clicks block with <item>
+    // player left clicks block with <item>
+    // player right clicks <material>
+    // player left clicks <material>
+    // player right clicks <material> with <item>
+    // player left clicks <material> with <item>
+    // player right clicks <material> in <notable cuboid>
+    // player left clicks <material> in <notable cuboid>
     // player stands on <pressure plate>
     //
     // @Triggers when a player clicks on a block or stands on a pressure plate.
     // @Context
     // <context.item> returns the dItem the player is clicking with.
     // <context.location> returns the dLocation the player is clicking on.
+    // <context.cuboids> returns the notable cuboids that contain the clicked block
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
@@ -3420,6 +3543,23 @@ public class WorldScriptHelper implements Listener {
                 events.add(interaction + " " + blockMaterial.identify() +
                         " with " + item.identifyMaterial());
             }
+
+            // Look for cuboids that contain the block's location
+            List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getClickedBlock().getLocation());
+
+            if (cuboids.size() > 0) {
+                dList cuboid_context = new dList();
+                for (dCuboid cuboid : cuboids) {
+                    events.add(interaction + " block in " + cuboid.identify());
+                    events.add(interaction + " block in cuboid");
+                    events.add(interaction + " " + blockMaterial.identify() + " in " + cuboid.identify());
+                    events.add(interaction + " " + blockMaterial.identify() + " in cuboid");
+                    cuboid_context.add(cuboid.identify());
+                }
+                // Add in cuboids context, if inside a cuboid
+                context.put("cuboids", cuboid_context);
+            }
+
         }
 
         String determination = doEvents(events, null, event.getPlayer(), context, true);
@@ -3430,8 +3570,15 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player right clicks entity (with <item>)
-    //
+    // player right clicks entity
+    // player right clicks entity with <item>
+    // player right clicks entity in <notable cuboid>
+    // player right clicks entity in cuboid
+    // player right clicks <entity>
+    // player right clicks <entity> with <item>
+    // player right clicks <entity> in <notable cuboid>
+    // player right clicks <entity> in cuboid
+
     // @Triggers when a player right clicks on an entity.
     // @Context
     // <context.entity> returns the dEntity the player is clicking on.
@@ -3477,6 +3624,26 @@ public class WorldScriptHelper implements Listener {
             events.add("player right clicks " + entity.identifyType() + " " +
                     itemFrame.identifyMaterial());
         }
+
+        // Look for cuboids that contain the block's location
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getRightClicked().getLocation());
+
+        if (cuboids.size() > 0) {
+            dList cuboid_context = new dList();
+            for (dCuboid cuboid : cuboids) {
+                events.add("player right clicks entity in " + cuboid.identify());
+                events.add("player right clicks entity in cuboid");
+                events.add("player right clicks " + entity.identifyType() + " in cuboid");
+                events.add("player right clicks " + entity.identifyType() + " in " + cuboid.identify());
+                cuboid_context.add(cuboid.identify());
+            }
+            // Add in cuboids context, if inside a cuboid
+            context.put("cuboids", cuboid_context);
+        }
+
+        events = trimEvents(events);
+
+        if (events.size() == 0) return;
 
         determination = doEvents(events, npc, event.getPlayer(), context, true);
 

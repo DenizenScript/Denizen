@@ -118,16 +118,22 @@ public class dNPCRegistry implements Listener {
         getDenizen(event.getNPC()).action("spawn", null);
     }
 
+
     // <--[action]
     // @Actions
     // despawn
-    //
     // @Triggers when the NPC is despawned.
+    // This can be because a command was issues, or a chunk has been unloaded.
     //
     // @Context
-    // None
-    //
+    // <npc> The NPC involved.
     // -->
+
+    /**
+     * Fires a world script event and then NPC action when the NPC despawns.
+     *
+     * @param event NPCDespawnEvent
+     */
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
         // Do world script event 'On NPC Completes Navigation'
@@ -138,21 +144,20 @@ public class dNPCRegistry implements Listener {
         getDenizen(event.getNPC()).action("despawn", null);
     }
 
+
     // <--[action]
     // @Actions
     // remove
-    //
     // @Triggers when the NPC is removed.
     //
     // @Context
-    // None
-    //
+    // <npc> The NPC involved.
     // -->
+
     /**
      * Removes an NPC from the Registry when removed from Citizens.
      *
      * @param event NPCRemoveEvent
-     *
      */
     @EventHandler
     public void onRemove(NPCRemoveEvent event) {

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects.notable;
 
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -60,7 +62,7 @@ public class NotableManager {
 
     public static String getSavedId(Notable object) {
         if (reverseObjects.containsKey(object))
-            return reverseObjects.get(reverseObjects);
+            return reverseObjects.get(object);
         return null;
     }
 
@@ -90,6 +92,17 @@ public class NotableManager {
         notableObjects.remove(id.toLowerCase());
         reverseObjects.remove(obj);
         typeTracker.remove(id.toLowerCase());
+    }
+
+    public static List<dObject> getAllType(Class<? extends dObject> type) {
+        List<dObject> objects = new ArrayList<dObject>();
+        for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
+            dB.log(notable.toString());
+            if (isType(notable.getKey(), type))
+                objects.add((dObject) notable.getValue());
+        }
+
+        return objects;
     }
 
 

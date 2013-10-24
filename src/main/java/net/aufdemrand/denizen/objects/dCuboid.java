@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +25,14 @@ public class dCuboid implements dObject, Notable {
     //   STATIC METHODS
     /////////////////
 
+    public static List<dCuboid> getNotableCuboidsContaining(Location location) {
+        List<dCuboid> cuboids = new ArrayList<dCuboid>();
+        for (dObject notable : NotableManager.getAllType(dCuboid.class))
+            if (((dCuboid) notable).isInsideCuboid(location))
+                cuboids.add((dCuboid) notable);
 
+        return cuboids;
+    }
 
 
     //////////////////
@@ -321,8 +329,8 @@ public class dCuboid implements dObject, Notable {
                             .add(x, y, z));
 
                     if (SafeBlock.blockIsSafe(loc.getBlock().getType())
-                        && SafeBlock.blockIsSafe(loc.clone().add(0, 1, 0).getBlock().getType())
-                        && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()) {
+                            && SafeBlock.blockIsSafe(loc.clone().add(0, 1, 0).getBlock().getType())
+                            && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()) {
                         // Get the center of the block, so the entity won't suffocate
                         // inside the edges for a couple of seconds
                         loc.add(0.5, 0, 0.5);
@@ -351,11 +359,11 @@ public class dCuboid implements dObject, Notable {
     @Override
     @Note("cuboid")
     public String getSaveObject() {
-        return loc_1.getBlockX() + "," + loc_1.getBlockY()
-                + "," + loc_1.getBlockZ() + "," + loc_1.getWorld().getName()
-                + "|"
-                + loc_2.getBlockX() + "," + loc_2.getBlockY()
-                + "," + loc_2.getBlockZ() + "," + loc_2.getWorld().getName();
+        return loc_1.getBlockX() + ',' + loc_1.getBlockY()
+                + ',' + loc_1.getBlockZ() + ',' + loc_1.getWorld().getName()
+                + '|'
+                + loc_2.getBlockX() + ',' + loc_2.getBlockY()
+                + ',' + loc_2.getBlockZ() + ',' + loc_2.getWorld().getName();
     }
 
     @Override
@@ -376,7 +384,7 @@ public class dCuboid implements dObject, Notable {
     ////////////////////
 
 
-String prefix = "Cuboid";
+    String prefix = "Cuboid";
 
 
     @Override
