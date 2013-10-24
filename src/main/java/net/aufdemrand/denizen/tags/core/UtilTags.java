@@ -56,11 +56,25 @@ public class UtilTags implements Listener {
     public void queueTags(ReplaceableTagEvent event) {
 
         if (!event.matches("queue, q")) return;
+
+        // TODO: <queue[<id>]. * > tags?
+
         Attribute attribute =
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
         // <--[tag]
-        // @attribute <q.id>
+        // @attribute <queue.exists[<queue_id>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the specified queue exists.
+        // -->
+        if (attribute.startsWith("exists")
+                && attribute.hasContext(1))
+            event.setReplaced(new Element(ScriptQueue._queueExists(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1)));
+
+        // <--[tag]
+        // @attribute <queue.id>
         // @returns Element
         // @description
         // Returns the current queue ID.
@@ -70,7 +84,7 @@ public class UtilTags implements Listener {
                     .getAttribute(attribute.fulfill(1)));
 
         // <--[tag]
-        // @attribute <q.stats>
+        // @attribute <queue.stats>
         // @returns Element
         // @description
         // Returns stats for all queues during this server session.
@@ -80,8 +94,8 @@ public class UtilTags implements Listener {
                     .getAttribute(attribute.fulfill(1)));
 
         // <--[tag]
-        // @attribute <q.size>
-        // @returns Element
+        // @attribute <queue.size>
+        // @returns Element(Number)
         // @description
         // Returns the size of the current queue.
         // -->
@@ -90,7 +104,7 @@ public class UtilTags implements Listener {
                     .getAttribute(attribute.fulfill(1)));
 
         // <--[tag]
-        // @attribute <q.definitions>
+        // @attribute <queue.definitions>
         // @returns Element
         // @description
         // Returns all definitions that were passed to the current queue.

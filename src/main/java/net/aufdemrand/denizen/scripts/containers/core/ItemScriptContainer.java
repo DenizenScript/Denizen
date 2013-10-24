@@ -29,25 +29,46 @@ public class ItemScriptContainer extends ScriptContainer {
     // dItem constructor i@item_script_name. Example:
     // - drop <player.location> i@super_dooper_diamond
     //
-    // The following is the format for the container. All keys are optional.
+    // The following is the format for the container. All keys are optional (except type and material).
     // <code>
     // Item Script Name:
+    //   # Exact:
     //   type: item
     //
+    //   # Must be a valid material... can have datavalues, EG 'wool:3'
+    //   material: material
+    //
+    //   # 'custom name' can be anything you wish, including tags.
     //   display name: custom name
+    //
+    //   # the lore lines can be anything you wish, including tags.
     //   lore:
     //   - item
     //   - ...
+    //
+    //   # Each line must specify a valid Bukkit enchantment.
     //   enchantments:
     //   - enchantment_name:level
     //   - ...
+    //
+    ///  # The recipe must have 9 valid materials, up to 9. Use m@air for an empty slow.
     //   recipe:
     //   - m@material|m@material|m@material
     //   - m@material|m@material|m@material
     //   - m@material|m@material|m@material
-    //   bound: true                           # Bound items cannot be dropped
-    //   color: c@color                        # Only colorable items (such as leather)
-    //   book: book_script_name                # Only i@written_book types
+    //
+    //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
+    //   # (Removes the black 'ID:' line from the lore, temporarily until we fix the bug that requires that line in the first place)
+    //   no_id: true/false
+    //
+    //   # Bound items cannot be dropped (Not fully working currently)
+    //   bound: true/false
+    //
+    //   # Only colorable items (such as leather)
+    //   color: c@color
+    //
+    //   # Only 'written_book' types
+    //   book: book_script_name
     // </code>
     //
     // -->
