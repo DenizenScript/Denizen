@@ -651,14 +651,14 @@ public class dInventory implements dObject, Notable {
                     for (ItemStack item : getContents()) {
                         if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                                 item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string))
-                            found_items++;
+                            found_items += item.getAmount();
                     }
                 } else {
                     for (ItemStack item : getContents()) {
                         if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                                 item.getItemMeta().getDisplayName().toLowerCase()
                                         .contains(search_string.toLowerCase()))
-                            found_items++;
+                            found_items += item.getAmount();
                     }
                 }
 
