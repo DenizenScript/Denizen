@@ -36,7 +36,7 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 
 public class TakeCommand extends AbstractCommand{
 
-    private enum Type { MONEY, ITEMINHAND, ITEM, INVENTORY }
+    private enum Type { MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -55,6 +55,13 @@ public class TakeCommand extends AbstractCommand{
                         && arg.matchesPrefix("q, qty, quantity")
                         && arg.matchesPrimitive(aH.PrimitiveType.Double))
                 scriptEntry.addObject("qty", arg.asElement());
+
+            else if (!scriptEntry.hasObject("items")
+                    && arg.matchesPrefix("bydisplay")
+                    && !scriptEntry.hasObject("type")) {
+                scriptEntry.addObject("type", Type.BYDISPLAY);
+                scriptEntry.addObject("displayname", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("items")
                         && !scriptEntry.hasObject("type")
@@ -90,6 +97,7 @@ public class TakeCommand extends AbstractCommand{
 
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
         Element qty = scriptEntry.getElement("qty");
+        Element displayname = scriptEntry.getElement("displayname");
         Type type = (Type) scriptEntry.getObject("type");
 
         Object items_object = scriptEntry.getObject("items");
@@ -102,6 +110,7 @@ public class TakeCommand extends AbstractCommand{
                 aH.debugObj("Type", type.name())
                         + qty.debug()
                         + inventory.debug()
+                        + (displayname != null ? displayname.debug(): "")
                         + aH.debugObj("Items", items));
 
         switch (type) {
@@ -158,6 +167,27 @@ public class TakeCommand extends AbstractCommand{
                     else if (!inventory.getInventory().removeItem(is).isEmpty())
                         dB.echoError("Inventory does not contain at least " + qty.asInt() + " of " + item.identify() +
                                 "... Taking as much as possible...");
+                }
+                break;
+
+            case BYDISPLAY:
+                int found_items = 0;
+                if (displayname == null) {
+                    dB.echoError("Must specify a displayname!");
+                    return;
+                }
+                for (ItemStack it : inventory.getContents()) {
+                    if (found_items < qty.asInt() && it != null && it.hasItemMeta() && it.getItemMeta().hasDisplayName() &&
+                            it.getItemMeta().getDisplayName().equalsIgnoreCase(displayname.identify())) {
+                        if (found_items + it.getAmount() <= qty.asInt()) {
+                            inventory.remove(it);
+                        }
+                        else {
+                            it.setAmount(it.getAmount() - (qty.asInt() - found_items));
+                            break;
+                        }
+                        found_items += it.getAmount();
+                    }
                 }
                 break;
         }

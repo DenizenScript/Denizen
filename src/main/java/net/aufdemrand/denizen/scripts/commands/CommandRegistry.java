@@ -2167,7 +2167,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Take
-        // @Usage take [money/iteminhand/<item>|...] (qty:<#>) (from:<inventory>)
+        // @Usage take [money/iteminhand/bydisplay:<name>/<item>|...] (qty:<#>) (from:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.
@@ -2181,7 +2181,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(TakeCommand.class,
-                "TAKE", "take [money/iteminhand/<item>|...] (qty:<#>) (from:<inventory>)", 1);
+                "TAKE", "take [money/iteminhand/bydisplay:<name>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
 
         // <--[command]
         // @Name Teleport
