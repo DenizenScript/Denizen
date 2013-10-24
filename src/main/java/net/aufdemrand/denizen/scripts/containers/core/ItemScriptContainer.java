@@ -108,7 +108,12 @@ public class ItemScriptContainer extends ScriptContainer {
             List<String> lore = new ArrayList<String>();
 
             // Set Id of the first, invisible lore
-            lore.add(dItem.itemscriptIdentifier + getName());
+            boolean hideLore = false;
+            if (contains("NO_ID")) {
+                hideLore = Boolean.valueOf(getString("NO_ID"));
+            }
+            if (!hideLore)
+                lore.add(dItem.itemscriptIdentifier + getName());
 
             // Set Display Name
             if (contains("DISPLAY NAME")){
