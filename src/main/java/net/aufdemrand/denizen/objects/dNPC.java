@@ -419,13 +419,16 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <npc.owner>
-        // @returns dPlayer
+        // @returns dPlayer/Element
         // @description
-        // returns the owner of the NPC.
+        // returns the owner of the NPC as a dPlayer if it's a player, otherwise as just the name.
         // -->
-        if (attribute.startsWith("owner"))
-            if (dPlayer.matches(getOwner()))
+        if (attribute.startsWith("owner")) {
+            if (dPlayer.matches(getOwner())) {
                 return dPlayer.valueOf(getOwner()).getAttribute(attribute.fulfill(1));
+            }
+            else return new Element(getOwner()).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <npc.inventory>
