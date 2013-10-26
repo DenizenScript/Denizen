@@ -263,6 +263,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns Element
         // @description
         // returns the list in a human-readable format.
+        // EG: li@n@3|p@bob|potato returns 'GuardNPC, bob, and potato'
         // -->
         if (attribute.startsWith("formatted")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
@@ -283,8 +284,12 @@ public class dList extends ArrayList<String> implements dObject {
                     dScriptArg.append(get(n).replaceAll("\\w\\w?@", ""));
                 }
 
-                if (n == this.size() - 2) dScriptArg.append(" and ");
-                else                      dScriptArg.append(", ");
+                if (n == this.size() - 2) {
+                    dScriptArg.append(n == 0 ? " and ": ", and ");
+                }
+                else {
+                    dScriptArg.append(", ");
+                }
             }
 
             return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
