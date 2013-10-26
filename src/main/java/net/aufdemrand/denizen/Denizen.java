@@ -248,9 +248,9 @@ public class Denizen extends JavaPlugin {
         // Register CommandHandler with Citizens
         Depends.citizens.registerCommandClass(CommandHandler.class);
 
-        // Initialize ObjectFetcher
+        // Register Core dObjects with the ObjectFetcher
         try {
-            ObjectFetcher._initialize();
+            ObjectFetcher._registerCoreObjects();
         } catch (Exception e) {
             e.printStackTrace();
         }

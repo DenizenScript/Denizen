@@ -24,7 +24,26 @@ public class ObjectFetcher {
     static Map<Class, Method> matches = new WeakHashMap<Class, Method>();
     static Map<Class, Method> valueof = new WeakHashMap<Class, Method>();
 
-    public static void _initialize() throws IOException, ClassNotFoundException, NoSuchMethodException {
+    public static void _initialize() throws IOException, ClassNotFoundException {
+
+        if (fetchable_objects.isEmpty())
+            return;
+
+        Map<String, Class> adding = new HashMap<String, Class>();
+        for (Class dClass : fetchable_objects)
+            for (Method method : dClass.getMethods())
+                if (method.isAnnotationPresent(Fetchable.class)) {
+                    String[] identifiers = method.getAnnotation(Fetchable.class).value().split(",");
+                    for (String identifer : identifiers)
+                        adding.put(identifer.trim().toLowerCase(), dClass);
+                }
+
+        objects.putAll(adding);
+        dB.echoApproval("Added objects to the ObjectFetcher " + adding.keySet().toString());
+        fetchable_objects.clear();
+    }
+    
+    public static void _registerCoreObjects() throws NoSuchMethodException, ClassNotFoundException, IOException {
 
         // Initialize the ObjectFetcher
         registerWithObjectFetcher(dItem.class);      // i@
@@ -42,22 +61,9 @@ public class ObjectFetcher {
         registerWithObjectFetcher(Element.class);    // el@
         registerWithObjectFetcher(Duration.class);   // d@
         registerWithObjectFetcher(dChunk.class);     // ch@
-
-        if (fetchable_objects.isEmpty())
-            return;
-
-        Map<String, Class> adding = new HashMap<String, Class>();
-        for (Class dClass : fetchable_objects)
-            for (Method method : dClass.getMethods())
-                if (method.isAnnotationPresent(Fetchable.class)) {
-                    String[] identifiers = method.getAnnotation(Fetchable.class).value().split(",");
-                    for (String identifer : identifiers)
-                        adding.put(identifer.trim().toLowerCase(), dClass);
-                }
-
-        objects.putAll(adding);
-        dB.echoApproval("Added objects to the ObjectFetcher " + adding.keySet().toString());
-        fetchable_objects.clear();
+        
+        _initialize();
+        
     }
 
     private static ArrayList<Class> fetchable_objects = new ArrayList<Class>();
