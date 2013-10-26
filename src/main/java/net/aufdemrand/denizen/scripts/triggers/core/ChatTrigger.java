@@ -152,7 +152,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
                 // Check if the chat trigger specified in the specified id's 'trigger:' key
                 // matches the text the player has said
-                Matcher matcher = triggerPattern.matcher(entry.getValue());
+                String triggerText = TagManager.tag(denizenPlayer, npc, entry.getValue());
+                Matcher matcher = triggerPattern.matcher(triggerText);
                 while (matcher.find ()) {
                     if (!script.checkSpecificTriggerScriptRequirementsFor(ChatTrigger.class,
                             denizenPlayer, npc, entry.getKey())) continue;
@@ -166,8 +167,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             // REGEX matches are left for last, so save it in case non-REGEX
                             // matches don't exist
                             regexId = entry.getKey();
-                            regexMessage = entry.getValue().replace(matcher.group(), m.group());
-                            dB.log("entry value: " + entry.getValue() + "  keyword: " + keyword + "  m.group: " + m.group() + "  matcher.group: " + matcher.group());
+                            regexMessage = triggerText.replace(matcher.group(), m.group());
+                            dB.log("entry value: " + triggerText + "  keyword: " + keyword + "  m.group: " + m.group() + "  matcher.group: " + matcher.group());
                         }
                     }
                     else if (isKeywordStrict(keyword)) {
@@ -175,7 +176,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         {
                             // Trigger matches
                             id = entry.getKey();
-                            replacementText = entry.getValue().replace("/", "");
+                            replacementText = triggerText.replace("/", "");
                             matched = true;
                         }
                     }
@@ -183,7 +184,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                     {
                         // Trigger matches
                         id = entry.getKey();
-                        replacementText = entry.getValue().replace("/", "");
+                        replacementText = triggerText.replace("/", "");
                         matched = true;
                     }
                 }
@@ -200,7 +201,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (id != null) {
             Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
             Map<String, dObject> context = new HashMap<String, dObject>();
-            context.put("message", new Element(message));
+            context.put("message", new Element(message.replace('<', (char)0x01)
+                    .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>")
+                    .replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>")));
             parse(npc, denizenPlayer, script, id, context);
             return true;
         }
