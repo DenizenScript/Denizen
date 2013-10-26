@@ -24,6 +24,8 @@ public class HurtCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+        
+        boolean specified_targets = false;
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
@@ -36,12 +38,14 @@ public class HurtCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dList.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+                specified_targets = true;
             }
 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", Arrays.asList(arg.asType(dEntity.class)));
+                specified_targets = true;
             }
 
             else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
@@ -50,7 +54,7 @@ public class HurtCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("amount"))
             scriptEntry.addObject("amount", new Element(1.0d));
 
-        if (!scriptEntry.hasObject("entities")) {
+        if (!specified_targets) {
             List<dEntity> entities = new ArrayList<dEntity>();
             if (scriptEntry.getPlayer() != null)
                 entities.add(scriptEntry.getPlayer().getDenizenEntity());
@@ -68,6 +72,8 @@ public class HurtCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        if (entities == null)
+            return;
         Element amountelement = scriptEntry.getElement("amount");
 
         dB.report(getName(), amountelement.debug() + aH.debugObj("entities", entities));
