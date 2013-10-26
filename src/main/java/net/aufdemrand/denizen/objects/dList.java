@@ -270,7 +270,18 @@ public class dList extends ArrayList<String> implements dObject {
 
             for (int n = 0; n < this.size(); n++) {
 
-                dScriptArg.append(this.get(n).replaceAll("\\w\\w?@", ""));
+                if (dNPC.matches(get(n))) {
+                    dNPC gotten = dNPC.valueOf(get(n));
+                    if (gotten != null) {
+                        dScriptArg.append(gotten.getName());
+                    }
+                    else {
+                        dScriptArg.append(get(n).replaceAll("\\w\\w?@", ""));
+                    }
+                }
+                else {
+                    dScriptArg.append(get(n).replaceAll("\\w\\w?@", ""));
+                }
 
                 if (n == this.size() - 2) dScriptArg.append(" and ");
                 else                      dScriptArg.append(", ");
