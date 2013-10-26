@@ -192,14 +192,14 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
-        // @attribute <server.get_player[<name>]>
+        // @attribute <server.match_player[<name>]>
         // @returns dPlayer
         // @description
         // Returns the online player that best matches the input name.
         // (EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns p@bob,
         // input 'bobb' returns p@bobby, and input 'b' returns p@bo.)
         // -->
-        if (attribute.startsWith("get_player") && attribute.hasContext(1)) {
+        if (attribute.startsWith("match_player") && attribute.hasContext(1)) {
             Player matchPlayer = null;
             String matchInput = attribute.getContext(1).toLowerCase();
             for (Player player: Bukkit.getOnlinePlayers()) {
