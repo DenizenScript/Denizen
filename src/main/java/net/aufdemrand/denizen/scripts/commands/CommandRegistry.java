@@ -701,7 +701,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Drop
-        // @Usage drop [<item>/<entity_type>/xp] [<location>] (qty:<#>)
+        // @Usage drop [<item>/<entity_type>/xp] [<location>] (qty:<#>) (speed:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
@@ -714,6 +714,7 @@ public class CommandRegistry implements dRegistry {
         //
         // For all three usages, you can optionally specify an integer with 'qty:'
         // prefix to drop multiple items/entities/xp.
+        // For items, you can add 'speed:' to modify the launch velocity.
 
         // @Tags
         // None
@@ -727,12 +728,12 @@ public class CommandRegistry implements dRegistry {
         // - drop xp qty:500 <player.location>
 
         // @Usage
-        // Use to drop a nasty surpise (exploding TNT)
+        // Use to drop a nasty surprise (exploding TNT)
         // - drop e@primed_tnt <player.location>
 
         // -->
         registerCoreMember(DropCommand.class,
-                "DROP", "drop [<item>/<entity_type>/xp] [<location>] (qty:<#>)", 1);
+                "DROP", "drop [<item>/<entity_type>/xp] [<location>] (qty:<#>) (speed:<#.#>)", 1);
 
 
         // <--[command]

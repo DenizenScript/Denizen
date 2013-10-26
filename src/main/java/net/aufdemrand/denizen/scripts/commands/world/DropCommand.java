@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 
@@ -71,6 +72,10 @@ public class DropCommand extends AbstractCommand {
                 // Location arg
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
 
+            else if (!scriptEntry.hasObject("speed")
+                    && arg.matchesPrefix("speed")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                scriptEntry.addObject("speed", arg.asElement());
 
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
@@ -104,8 +109,9 @@ public class DropCommand extends AbstractCommand {
 
         // Get objects
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        Element qty = (Element) scriptEntry.getObject("qty");
-        Element action = (Element) scriptEntry.getObject("action");
+        Element qty = scriptEntry.getElement("qty");
+        Element action = scriptEntry.getElement("action");
+        Element speed = scriptEntry.getElement("speed");
         dItem item = (dItem) scriptEntry.getObject("item");
         dEntity entity = (dEntity) scriptEntry.getObject("entity");
 
@@ -113,8 +119,9 @@ public class DropCommand extends AbstractCommand {
         // Report to dB
         dB.report(getName(),
                 action.debug() + location.debug() + qty.debug()
-                        + (Action.valueOf(action.asString()) == Action.DROP_ITEM ? item.debug() : "")
-                        + (Action.valueOf(action.asString()) == Action.DROP_ENTITY ? entity.debug() : ""));
+                        + (item != null ? item.debug() : "")
+                        + (entity != null ? entity.debug() : "")
+                        + (speed != null ? speed.debug() : ""));
 
 
         // Do the drop
@@ -129,9 +136,10 @@ public class DropCommand extends AbstractCommand {
                 if (qty.asInt() > 1 && item.isUnique())
                     dB.echoDebug("Cannot drop multiples of this item because it is Unique!");
                 // TODO: Make a dItem specific 'drop/give' to better keep track of it, like dEntity.
-                for (int x = 0; x < qty.asInt(); x++)
-                    location.getWorld()
-                            .dropItemNaturally(location, item.getItemStack());
+                for (int x = 0; x < qty.asInt(); x++) {
+                    Entity e = location.getWorld().dropItemNaturally(location, item.getItemStack());
+                    e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble(): 1d));
+                }
                 break;
 
             case DROP_ENTITY:
