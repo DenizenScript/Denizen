@@ -1636,7 +1636,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Queue
-        // @Usage queue (queue:<id>) [clear/pause/resume/delay:<#>]
+        // @Usage queue (queue:<id>) [clear/stop/pause/resume/delay:<#>]
         // @Required 1
         // @Stable stable
         // @Short Modifies the current state of a script queue.
@@ -1644,12 +1644,12 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <queue. * >
         // @Usage
         // Todo
         // -->
         registerCoreMember(QueueCommand.class,
-                "QUEUE", "queue (queue:<id>) [clear/pause/resume/delay:<#>]", 1);
+                "QUEUE", "queue (queue:<id>) [clear/stop/pause/resume/delay:<#>]", 1);
 
 
         // <--[command]

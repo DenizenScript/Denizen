@@ -13,7 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class QueueCommand extends AbstractCommand {
 
-    private enum Action { CLEAR, DELAY, PAUSE, RESUME }
+    private enum Action { CLEAR, DELAY, PAUSE, RESUME, STOP }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -60,12 +60,16 @@ public class QueueCommand extends AbstractCommand {
         // Debugger
         dB.report(getName(), aH.debugObj("Queue", queue.id)
                 + aH.debugObj("Action", action.toString())
-                + (action != null && action == Action.DELAY ? delay.debug() : ""));
+                + (action == Action.DELAY ? delay.debug() : ""));
 
         switch (action) {
 
             case CLEAR:
                 queue.clear();
+                return;
+
+            case STOP:
+                queue.stop();
                 return;
 
             case PAUSE:
