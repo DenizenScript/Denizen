@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Set;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -267,6 +268,32 @@ public class Utilities {
             dNPC npc = it.next();
             Location loc = npc.getLocation();
             if (loc.getWorld().equals(location.getWorld())
+                    && loc.distanceSquared(location) < closestDistance) {
+                closestNPC = npc;
+                closestDistance = npc.getLocation().distanceSquared(location);
+            }
+        }
+        return closestNPC;
+    }
+    /**
+     * Finds the closest NPC to a particular location.
+     *
+     * @param location    The location to find the closest NPC to.
+     * @param range    The maximum range to look for the NPC.
+     *
+     * @return    The closest NPC to the location, or null if no NPC was found
+     *                     within the range specified.
+     */
+
+    public static dNPC getClosestNPC_ChatTrigger (Location location, int range) {
+        dNPC closestNPC = null;
+        double closestDistance = Math.pow(range, 2);
+        Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
+        while (it.hasNext()) {
+            dNPC npc = it.next();
+            Location loc = npc.getLocation();
+            if (npc.getCitizen().hasTrait(TriggerTrait.class) && npc.getTriggerTrait().hasTrigger("CHAT") &&
+            loc.getWorld().equals(location.getWorld())
                     && loc.distanceSquared(location) < closestDistance) {
                 closestNPC = npc;
                 closestDistance = npc.getLocation().distanceSquared(location);

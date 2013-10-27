@@ -54,7 +54,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     public Boolean process(Player player, String message) {
 
         // Check if there is an NPC within range of a player to chat to.
-        dNPC npc = Utilities.getClosestNPC(player.getLocation(), 25);
+        dNPC npc = Utilities.getClosestNPC_ChatTrigger(player.getLocation(), 25);
         dPlayer denizenPlayer = dPlayer.mirrorBukkitPlayer(player);
 
         // No NPC? Nothing else to do here.

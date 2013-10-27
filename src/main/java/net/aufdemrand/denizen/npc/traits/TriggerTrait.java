@@ -56,7 +56,7 @@ public class TriggerTrait extends Trait implements Listener {
      *
      * @param triggerName name of the Trigger, as specified by the Trigger. Case in-sensitive.
      * @param toggle new state of the trigger
-     * @return
+     * @return output debug information.
      */
     public String toggleTrigger(String triggerName, boolean toggle) {
         if (enabled.containsKey(triggerName.toUpperCase())) {
@@ -76,6 +76,10 @@ public class TriggerTrait extends Trait implements Listener {
                 return triggerName + " trigger is now enabled.";
             }
         else return triggerName + " trigger not found!";
+    }
+
+    public boolean hasTrigger(String triggerName) {
+        return enabled.containsKey(triggerName.toUpperCase()) && enabled.get(triggerName.toUpperCase());
     }
 
     public boolean isEnabled(String triggerName) {
