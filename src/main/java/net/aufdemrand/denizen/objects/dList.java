@@ -339,7 +339,8 @@ public class dList extends ArrayList<String> implements dObject {
         // @description
         // returns a new dList excluding the items specified.
         // -->
-        if (attribute.startsWith("exclude")) {
+        if (attribute.startsWith("exclude") &&
+                attribute.hasContext(1)) {
             String[] exclusions = split_char.split(attribute.getContext(1));
             // Create a new dList that will contain the exclusions
             dList list = new dList(this);
@@ -359,7 +360,8 @@ public class dList extends ArrayList<String> implements dObject {
         // @description
         // returns an Element of the value specified by the supplied context.
         // -->
-        if (attribute.startsWith("get")) {
+        if (attribute.startsWith("get") &&
+                attribute.hasContext(1)) {
             if (isEmpty()) return "null";
             int index = attribute.getIntContext(1);
             if (index > size()) return "null";
@@ -377,8 +379,8 @@ public class dList extends ArrayList<String> implements dObject {
         // returns the numbered location of an element within a list,
         // or -1 if the list does not contain that item.
         // -->
-        if (attribute.startsWith("find")) {
-            if (attribute.hasContext(1)) {
+        if (attribute.startsWith("find") &&
+                attribute.hasContext(1)) {
                 for (int i = 0; i < size(); i++) {
                     if (get(i).equalsIgnoreCase(attribute.getContext(1)))
                         return new Element(i + 1).getAttribute(attribute.fulfill(1));
@@ -388,9 +390,14 @@ public class dList extends ArrayList<String> implements dObject {
                         return new Element(i + 1).getAttribute(attribute.fulfill(1));
                 }
                 return new Element(-1).getAttribute(attribute.fulfill(1));
-            }
         }
 
+        // <--[tag]
+        // @attribute <li@list.last>
+        // @returns Element
+        // @description
+        // returns the last element in the list.
+        // -->
         if (attribute.startsWith("last")) {
             return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
         }
