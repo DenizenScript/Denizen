@@ -49,7 +49,7 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
         for (String arg : args) {
             if (aH.matchesValueArg("NAME, N", arg, ArgumentType.String)) {
                 region = aH.getStringFrom(arg);
-                dB.echoDebug("...region set as: " + region);
+                dB.echoDebug(context.getScriptContainer(), "...region set as: " + region);
             } else throw new RequirementCheckException("Invalid argument specified!");
         }
 
@@ -61,8 +61,8 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
         /*
          * Display proper debug output
          */
-        if (outcome) dB.echoDebug("...player in region!");
-        else dB.echoDebug("...player is not in region!");
+        if (outcome) dB.echoDebug(context.getScriptContainer(), "...player in region!");
+        else dB.echoDebug(context.getScriptContainer(), "...player is not in region!");
 
         return outcome;
     }

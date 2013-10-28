@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.LookClose;
 
@@ -46,21 +45,21 @@ public class LookcloseCommand extends AbstractCommand {
 
             if (aH.matchesArg("REALISTIC", arg)) {
                 realistic = true;
-                dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
 
-            }   else if (aH.matchesValueArg("RANGE", arg, ArgumentType.Double)) {
+            }
+            else if (aH.matchesValueArg("RANGE", arg, ArgumentType.Double)) {
                 range = aH.getDoubleFrom(arg);
-                dB.echoDebug(Messages.DEBUG_SET_RANGE, String.valueOf(range));
 
-            }   else if (aH.matchesState(arg)) {
+            }
+            else if (aH.matchesState(arg)) {
                 toggle = aH.getBooleanFrom(arg);
-                dB.echoDebug(Messages.DEBUG_TOGGLE, String.valueOf(toggle));
 
-            }    else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            }
+            else dB.echoError("Unknown argument '" + arg + "'");
         }
 
         if (scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
 
 
         scriptEntry.addObject("realistic", realistic)

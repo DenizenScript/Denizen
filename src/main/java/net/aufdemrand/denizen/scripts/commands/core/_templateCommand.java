@@ -64,7 +64,7 @@ public class _templateCommand extends AbstractCommand /* implements dExternal */
 
         // Debug the execution
 
-        // dB.report(getName(), required_integer.debug()
+        // dB.report(scriptEntry, getName(), required_integer.debug()
         //                    + required_location.debug());
 
 

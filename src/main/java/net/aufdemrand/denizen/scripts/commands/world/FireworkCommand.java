@@ -79,7 +79,8 @@ public class FireworkCommand extends AbstractCommand {
                 scriptEntry.addObject("fade", ((dList) arg.asType(dList.class)).filter(dColor.class));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         // Use the NPC or player's locations as the location if one is not specified
@@ -109,7 +110,7 @@ public class FireworkCommand extends AbstractCommand {
         List<dColor> fade = (List<dColor>) scriptEntry.getObject("fade");
 
         // Report to dB
-        dB.report(getName(), location.debug() +
+        dB.report(scriptEntry, getName(), location.debug() +
                              type.debug() +
                              power.debug() +
                              (flicker ? aH.debugObj("flicker", flicker) : "") +

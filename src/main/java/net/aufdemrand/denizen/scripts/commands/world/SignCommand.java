@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -51,7 +50,8 @@ public class SignCommand extends AbstractCommand {
                     && arg.matchesPrefix("direction, dir"))
                 scriptEntry.addObject("direction", arg.asElement());
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         // Check to make sure required arguments have been filled
@@ -74,7 +74,7 @@ public class SignCommand extends AbstractCommand {
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
         // Report to dB
-        dB.report(getName(), type.name() + ", "
+        dB.report(scriptEntry, getName(), type.name() + ", "
                 + aH.debugObj("location", location)
                 + aH.debugObj("text", text));
 

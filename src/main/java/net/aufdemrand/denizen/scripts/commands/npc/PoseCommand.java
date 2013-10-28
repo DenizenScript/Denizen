@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.trait.Poses;
 
 /**
@@ -44,15 +43,18 @@ public class PoseCommand extends AbstractCommand {
 
             } else if (aH.matchesArg("PLAYER", arg)) {
                 targetType = TargetType.PLAYER;
-                    dB.echoDebug("Setting pose on PLAYER!");
+                    dB.echoDebug(scriptEntry, "Setting pose on PLAYER!");
 
-            } else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT);
+            } else
+                dB.echoError("Unknown argument '" + arg + "'");
 
         }
 
         // If TARGET is NPC/PLAYER and no NPC/PLAYER available, throw exception.
-        if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
-        else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+        if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null)
+            throw new InvalidArgumentsException("This command requires a linked player!");
+        else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null)
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
         scriptEntry.addObject("target", targetType)
                 .addObject("action", action).addObject("id", id);
     }
@@ -68,7 +70,7 @@ public class PoseCommand extends AbstractCommand {
         String id = (String) scriptEntry.getObject("id");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj(target.toString(), npc.toString())
                         + aH.debugObj("Action", action.toString())
                         + aH.debugObj("Id", id));

@@ -73,14 +73,14 @@ public class SchematicCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("noair", Element.TRUE);
 
             else
-                dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+                arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("type"))
-          throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "type");
+          throw new InvalidArgumentsException("Missing type argument!");
 
         if (!scriptEntry.hasObject("name"))
-            throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "name");
+            throw new InvalidArgumentsException("Missing name argument!");
 
     }
 
@@ -94,7 +94,7 @@ public class SchematicCommand extends AbstractCommand implements Listener {
         Element noair = scriptEntry.getElement("noair");
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
-        dB.report(getName(), type.debug()
+        dB.report(scriptEntry, getName(), type.debug()
                            + name.debug()
                            + (location != null ? location.debug(): "")
                            + (angle != null ? angle.debug(): "")
@@ -135,7 +135,7 @@ public class SchematicCommand extends AbstractCommand implements Listener {
                     return;
                 }
                 if (angle == null) {
-                    dB.echoError(dB.Messages.ERROR_MISSING_OTHER, "ANGLE");
+                    dB.echoError("Missing angle argument!");
                     return;
                 }
                 schematics.get(name.asString().toUpperCase()).rotate2D(angle.asInt());
@@ -146,7 +146,7 @@ public class SchematicCommand extends AbstractCommand implements Listener {
                     return;
                 }
                 if (location == null) {
-                    dB.echoError(dB.Messages.ERROR_MISSING_OTHER, "LOCATION");
+                    dB.echoError("Missing location argument!");
                     return;
                 }
                 try {

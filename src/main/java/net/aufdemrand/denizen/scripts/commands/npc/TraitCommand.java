@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
@@ -32,10 +31,10 @@ public class TraitCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("trait"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "TRAIT");
+            throw new InvalidArgumentsException("Missing trait argument!");
 
         if (!scriptEntry.hasNPC())
-            throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
 
         scriptEntry.defaultObject("state", new Element("TOGGLE"));
 
@@ -48,7 +47,7 @@ public class TraitCommand extends AbstractCommand {
         Element traitName = scriptEntry.getElement("trait");
         NPC npc = scriptEntry.getNPC().getCitizen();
 
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                     traitName.debug() +
                     toggle.debug() +
                     scriptEntry.getNPC().debug());

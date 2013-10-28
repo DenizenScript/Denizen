@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * Sends a message to Players.
@@ -31,7 +30,7 @@ public class NarrateCommand extends AbstractCommand {
 
 
         if (scriptEntry.getArguments().size() > 4)
-            throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
+            throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
@@ -62,7 +61,7 @@ public class NarrateCommand extends AbstractCommand {
                     (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer()) : null));
 
         if (!scriptEntry.hasObject("text"))
-            throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
+            throw new InvalidArgumentsException("Missing any text!");
 
     }
 
@@ -75,7 +74,7 @@ public class NarrateCommand extends AbstractCommand {
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("Narrating", text)
                         + aH.debugObj("Targets", targets)
                         + (format != null ? aH.debugObj("Format", format.getName()) : ""));

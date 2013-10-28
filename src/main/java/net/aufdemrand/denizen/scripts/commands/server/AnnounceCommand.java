@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -47,7 +46,7 @@ public class AnnounceCommand extends AbstractCommand {
         // Users tend to forget quotes sometimes on commands like this, so
         // let's check if there are more argument than usual.
         if (scriptEntry.getArguments().size() > 3)
-            throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
+            throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
@@ -76,7 +75,7 @@ public class AnnounceCommand extends AbstractCommand {
 
         // If text is missing, alert the console.
         if (!scriptEntry.hasObject("text"))
-            throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
+            throw new InvalidArgumentsException("Missing text argument!");
 
         scriptEntry.defaultObject("type", AnnounceType.ALL);
 
@@ -91,7 +90,7 @@ public class AnnounceCommand extends AbstractCommand {
         Element flag = scriptEntry.getElement("flag");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("Message", text)
                         + (format != null ? aH.debugObj("Format", format.getName()) : "")
                         + aH.debugObj("Type", type.name())

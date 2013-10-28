@@ -1184,7 +1184,7 @@ public class dEntity implements dObject, Adjustable {
         // @attribute <e@entity.item_in_hand>
         // @returns dItem
         // @description
-        // returns the item the entity is holding, or null
+        // returns the item the entity is holding, or i@air
         // if none.
         // -->
         if (attribute.startsWith("item_in_hand") ||

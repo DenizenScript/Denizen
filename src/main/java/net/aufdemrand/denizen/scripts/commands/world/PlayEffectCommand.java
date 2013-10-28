@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.ParticleEffect;
 
 /**
@@ -87,7 +86,8 @@ public class PlayEffectCommand extends AbstractCommand {
                 scriptEntry.addObject("offset", arg.asElement());
             }
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         // Use default values if necessary
@@ -103,10 +103,10 @@ public class PlayEffectCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("effect") &&
             !scriptEntry.hasObject("particleeffect"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EFFECT");
+            throw new InvalidArgumentsException("Missing effect argument!");
 
         if (!scriptEntry.hasObject("location"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+            throw new InvalidArgumentsException("Missing location argument!");
     }
 
     @Override
@@ -126,7 +126,7 @@ public class PlayEffectCommand extends AbstractCommand {
         location.add(0, 1, 0);
 
         // Report to dB
-        dB.report(getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
+        dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
                                                aH.debugObj("special effect", particleEffect.name())) +
                              aH.debugObj("location", location.toString()) +
                              aH.debugObj("radius", visibility) +

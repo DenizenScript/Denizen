@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -11,7 +10,6 @@ import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /* PLAYSOUND [LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)*/
 
@@ -55,14 +53,15 @@ public class PlaySoundCommand extends AbstractCommand {
                     scriptEntry.addObject("sound", arg.asElement());
             }
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
 
         }
 
         if (!scriptEntry.hasObject("sound"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SOUND");
+            throw new InvalidArgumentsException("Missing sound argument!");
         if (!scriptEntry.hasObject("location"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+            throw new InvalidArgumentsException("Missing location argument!");
 
         scriptEntry.defaultObject("volume", new Element(1));
         scriptEntry.defaultObject("pitch", new Element(1));
@@ -77,7 +76,7 @@ public class PlaySoundCommand extends AbstractCommand {
         Element volume = scriptEntry.getElement("volume");
         Element pitch = scriptEntry.getElement("pitch");
 
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 location.debug() +
                 sound.debug() +
                 volume.debug() +

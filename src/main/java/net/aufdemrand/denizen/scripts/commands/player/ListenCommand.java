@@ -80,7 +80,7 @@ public class ListenCommand extends AbstractCommand {
         Element id = scriptEntry.getElement("id");
         dScript finish_script = (dScript) scriptEntry.getObject("finish_script");
 
-        dB.report(getName(), action.debug() + (type != null ? type.debug() : "")
+        dB.report(scriptEntry, getName(), action.debug() + (type != null ? type.debug() : "")
                 + id.debug() + (finish_script != null ? finish_script.debug() : ""));
 
         List<aH.Argument> arguments = (ArrayList<aH.Argument>) scriptEntry.getObject("args");
@@ -108,7 +108,7 @@ public class ListenCommand extends AbstractCommand {
                                     scriptEntry.getNPC());
 
                 } catch (Exception e) {
-                    dB.echoDebug("Cancelled creation of NEW listener!");
+                    dB.echoDebug(scriptEntry, "Cancelled creation of NEW listener!");
 
                     // Why? Maybe a wrong listener type...
                     if (denizen.getListenerRegistry().get(type.asString()) == null)

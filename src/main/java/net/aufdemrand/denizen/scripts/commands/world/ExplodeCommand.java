@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * Create an explosion at a location.
@@ -50,7 +49,8 @@ public class ExplodeCommand extends AbstractCommand {
                 scriptEntry.addObject("fire", "");
             }
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         // Use default values if necessary
@@ -60,7 +60,7 @@ public class ExplodeCommand extends AbstractCommand {
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
 
         if (!scriptEntry.hasObject("location")) {
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+            throw new InvalidArgumentsException("Missing location argument!");
         }
     }
 
@@ -74,7 +74,7 @@ public class ExplodeCommand extends AbstractCommand {
         Boolean fire = scriptEntry.hasObject("fire");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 (aH.debugObj("location", location.toString()) +
                  aH.debugObj("power", power) +
                  aH.debugObj("breakblocks", breakblocks) +

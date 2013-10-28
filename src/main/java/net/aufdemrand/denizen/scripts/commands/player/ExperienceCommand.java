@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 
 public class ExperienceCommand extends AbstractCommand {
@@ -46,7 +45,7 @@ public class ExperienceCommand extends AbstractCommand {
             else if(aH.matchesArg("LEVEL", arg))
                 level = true;
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else throw new InvalidArgumentsException("Unknown argument '" + arg + "'");
         }
 
         scriptEntry.addObject("quantity", amount)
@@ -63,7 +62,7 @@ public class ExperienceCommand extends AbstractCommand {
         Integer quantity = (Integer) scriptEntry.getObject("quantity");
         Boolean level = (Boolean) scriptEntry.getObject("level");
 
-        dB.report(name, aH.debugObj("Type", type.toString())
+        dB.report(scriptEntry, name, aH.debugObj("Type", type.toString())
             + aH.debugObj("Quantity", level ? quantity.toString() + " levels" : quantity.toString())
             + aH.debugObj("Player", scriptEntry.getPlayer().getName()));
 

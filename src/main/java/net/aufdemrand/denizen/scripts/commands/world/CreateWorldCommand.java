@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -41,6 +40,8 @@ public class CreateWorldCommand extends AbstractCommand {
 
     // TODO: Rewrite this entire everything, make it make sense.
     // TODO: At time of writing this todo, commandfile was full of Template stuff 0.o
+
+    // TODO: also, save worlds through restart!
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
@@ -59,7 +60,7 @@ public class CreateWorldCommand extends AbstractCommand {
                     .name(scriptEntry.getElement("world_name").asString()));
 
         if (world == null)
-            dB.echoDebug("World is null! :(");
+            dB.echoDebug(scriptEntry, "World is null! :(");
 
     }
 

@@ -34,13 +34,14 @@ public class FollowCommand extends AbstractCommand {
                     arg.matchesArgumentType(dEntity.class))
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
 
-            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
         if (!scriptEntry.hasObject("target")) {
             if (scriptEntry.hasPlayer())
                 scriptEntry.addObject("target", scriptEntry.getPlayer().getDenizenEntity());
             else
-                throw new InvalidArgumentsException(dB.Messages.ERROR_NO_PLAYER);
+                throw new InvalidArgumentsException("This command requires a linked player!");
         }
     }
 
@@ -52,7 +53,7 @@ public class FollowCommand extends AbstractCommand {
         dEntity target = (dEntity) scriptEntry.getObject("target");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                         (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().debug() : "")
                         + (stop == null ? aH.debugObj("Action", "FOLLOW")
                         : aH.debugObj("Action", "STOP"))

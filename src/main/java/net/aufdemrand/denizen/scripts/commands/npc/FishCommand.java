@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Location;
@@ -26,17 +25,17 @@ public class FishCommand extends AbstractCommand {
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
-                dB.echoDebug("...location set");
+                dB.echoDebug(scriptEntry, "...location set");
             } else if (aH.matchesArg("CATCHFISH", arg)) {
                 catchFish = true;
-                dB.echoDebug("...npc will catch fish");
+                dB.echoDebug(scriptEntry, "...npc will catch fish");
             } else if (aH.matchesArg("STOP", arg)) {
                 stopping = true;
-                dB.echoDebug("...stopping");
+                dB.echoDebug(scriptEntry, "...stopping");
             } else if (aH.matchesValueArg("CATCHPERCENT, PERCENT", arg, ArgumentType.Integer)) {
                 catchPercent = aH.getIntegerFrom(arg);
-                dB.echoDebug("...set catch percent: " + catchPercent);
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+                dB.echoDebug(scriptEntry, "...set catch percent: " + catchPercent);
+            } else throw new InvalidArgumentsException("Unknown argument '" + arg + "'");
         }
 
         scriptEntry.addObject("location", location)
@@ -46,8 +45,7 @@ public class FishCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry)
-            throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         Boolean stopping = (Boolean) scriptEntry.getObject("stopping");
         Boolean catchFish = (Boolean) scriptEntry.getObject("catchFish");
         int catchPercent = (Integer) scriptEntry.getObject("catchPercent");

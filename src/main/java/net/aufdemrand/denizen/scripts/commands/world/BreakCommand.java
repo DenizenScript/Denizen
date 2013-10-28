@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.npc.ai.BlockBreaker;
 
 /**
@@ -39,7 +38,8 @@ public class BreakCommand extends AbstractCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Double))
                 scriptEntry.addObject("radius", arg.asElement());
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         // Make sure location and entity were fulfilled
@@ -62,15 +62,16 @@ public class BreakCommand extends AbstractCommand {
         final dEntity entity = (dEntity) scriptEntry.getObject("entity");
         Element radius = scriptEntry.getElement("radius");
 
-        dB.report(getName(), location.debug() + entity.debug() + radius.debug());
+        dB.report(scriptEntry, getName(), location.debug() + entity.debug() + radius.debug());
 
+        final ScriptEntry se = scriptEntry;
         BlockBreaker.Configuration config = new BlockBreaker.Configuration()
                 .item(entity.getLivingEntity().getEquipment().getItemInHand())
                 .radius(radius.asDouble())
                 .callback(new Runnable() {
                     @Override
                     public void run() {
-                        dB.echoDebug(entity.debug() + " dug " + location.debug());
+                        dB.echoDebug(se, entity.debug() + " dug " + location.debug());
                     }
                 });
 

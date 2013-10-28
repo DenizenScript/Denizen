@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 
 import org.bukkit.Chunk;
@@ -52,11 +51,12 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 && !scriptEntry.hasObject("duration"))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("location"))
-            throw new InvalidArgumentsException(Messages.DEBUG_SET_LOCATION);
+            throw new InvalidArgumentsException("Missing location argument!");
 
         if (!scriptEntry.hasObject("action"))
             scriptEntry.addObject("action", new Element("ADD"));
@@ -72,7 +72,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         dLocation chunkloc = (dLocation) scriptEntry.getObject("location");
         Duration length = (Duration) scriptEntry.getObject("duration");
 
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 action.debug()
                 + chunkloc.debug()
                 + length.debug());
@@ -86,20 +86,20 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 chunkDelays.put(chunkString, System.currentTimeMillis() + length.getMillis());
             else
                 chunkDelays.put(chunkString, (long) 0);
-            dB.echoDebug("...added chunk "+chunk.getX() + ", "+ chunk.getZ() + " with a delay of " + length.getSeconds() + " seconds.");
+            dB.echoDebug(scriptEntry, "...added chunk "+chunk.getX() + ", "+ chunk.getZ() + " with a delay of " + length.getSeconds() + " seconds.");
             if(!chunk.isLoaded())
                 chunk.load();
             break;
         case REMOVE:
             if(chunkDelays.containsKey(chunkString)) {
                 chunkDelays.remove(chunkString);
-                dB.echoDebug("...allowing unloading of chunk "+chunk.getX() + ", "+ chunk.getZ());
+                dB.echoDebug(scriptEntry, "...allowing unloading of chunk "+chunk.getX() + ", "+ chunk.getZ());
             }
             else
                 dB.echoError("Chunk was not on the load list!");
             break;
         case REMOVEALL:
-            dB.echoDebug("...allowing unloading of all stored chunks");
+            dB.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
             chunkDelays.clear();
             break;
         }

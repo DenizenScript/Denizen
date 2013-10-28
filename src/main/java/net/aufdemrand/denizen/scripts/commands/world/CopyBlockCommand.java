@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -40,11 +40,12 @@ public class CopyBlockCommand extends AbstractCommand{
             else if (aH.matchesArg("and_remove", arg))
                 remove_original = true;
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else
+                dB.echoError("Unknown argument '" + arg + "'");
         }
 
         if (copy_location == null || destination == null)
-            throw  new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
+            throw  new InvalidArgumentsException("Missing location argument!");
 
         scriptEntry.addObject("copy_location", copy_location)
                 .addObject("destination", destination)

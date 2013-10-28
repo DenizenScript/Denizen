@@ -23,12 +23,13 @@ public class CompassCommand extends AbstractCommand {
                  && arg.matchesArgumentType(dLocation.class))
                  scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-             else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+             else
+                 arg.reportUnhandled();
         }
 
         // Check for required information
          if (!scriptEntry.hasObject("location"))
-              throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "LOCATION");
+              throw new InvalidArgumentsException("Missing location argument!");
     }
 
 
@@ -43,7 +44,7 @@ public class CompassCommand extends AbstractCommand {
 
         // Debug the execution
 
-        dB.report(getName(), location.debug());
+        dB.report(scriptEntry, getName(), location.debug());
 
 
         player.setCompassTarget(location);

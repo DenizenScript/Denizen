@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
 
 /**
@@ -51,11 +50,12 @@ public class TriggerCommand extends AbstractCommand {
             else if (denizen.getTriggerRegistry().get(arg) != null)
                 trigger = aH.getStringFrom(arg);
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else
+                dB.echoError("Unknown argument '" + arg + "'");
         }
 
         // Check required arguments
-        if (trigger == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "NAME");
+        if (trigger == null) throw new InvalidArgumentsException("Missing name argument!");
 
         // Store objects in ScriptEntry for execute()
         scriptEntry.addObject("trigger", trigger);

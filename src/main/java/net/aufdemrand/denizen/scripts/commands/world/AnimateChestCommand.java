@@ -25,15 +25,15 @@ public class AnimateChestCommand extends AbstractCommand {
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesArg("OPEN, CLOSE", arg)) {
                 chestAction = aH.getStringFrom(arg);
-                dB.echoDebug("...chest action set: " + chestAction);
+                dB.echoDebug(scriptEntry, "...chest action set: " + chestAction);
             } else if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
-                dB.echoDebug("...location set");
+                dB.echoDebug(scriptEntry, "...location set");
             } else if (aH.matchesValueArg("SOUND", arg, ArgumentType.Custom)) {
                 sound = aH.getBooleanFrom(arg);
-                if (sound) dB.echoDebug("...sound enabled");
-                else dB.echoDebug("...sound disabled");
-            } else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+                if (sound) dB.echoDebug(scriptEntry, "...sound enabled");
+                else dB.echoDebug(scriptEntry, "...sound disabled");
+            } else dB.echoError("Unknown argument '" + arg + "'");
 
         }
 
@@ -55,13 +55,13 @@ public class AnimateChestCommand extends AbstractCommand {
         case OPEN:
             if (sound) scriptEntry.getPlayer().getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
             scriptEntry.getPlayer().getPlayerEntity().playNote(location, (byte)1, (byte)1);
-            dB.echoDebug("...opening chest");
+            dB.echoDebug(scriptEntry, "...opening chest");
             break;
 
         case CLOSE:
             if (sound) scriptEntry.getPlayer().getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
             scriptEntry.getPlayer().getPlayerEntity().playNote(location, (byte)1, (byte)0);
-            dB.echoDebug("...closing chest");
+            dB.echoDebug(scriptEntry, "...closing chest");
             break;
 
         default:

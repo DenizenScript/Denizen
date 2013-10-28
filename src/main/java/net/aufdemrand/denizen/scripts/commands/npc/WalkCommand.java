@@ -40,7 +40,8 @@ public class WalkCommand extends AbstractCommand {
                     && arg.matches("auto_range"))
                 scriptEntry.addObject("auto_range", Element.TRUE);
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
 
@@ -68,7 +69,7 @@ public class WalkCommand extends AbstractCommand {
 
         // Debug the execution
 
-        dB.report(getName(), loc.debug()
+        dB.report(scriptEntry, getName(), loc.debug()
                 + (speed != null ? speed.debug() : "")
                 + (auto_range != null ? auto_range.debug() : ""));
 

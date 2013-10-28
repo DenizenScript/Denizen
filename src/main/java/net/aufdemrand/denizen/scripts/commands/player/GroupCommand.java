@@ -45,7 +45,7 @@ public class GroupCommand extends AbstractCommand {
         Player player = scriptEntry.getPlayer().getPlayerEntity();
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("Action", action.toString())
                         + aH.debugObj("Player", player.getName())
                         + aH.debugObj("Group", group)
@@ -54,20 +54,20 @@ public class GroupCommand extends AbstractCommand {
         switch (action) {
         case ADD:
             if(Depends.permissions.playerInGroup(world, player.getName(), group)) {
-                dB.echoDebug("Player " + player.getName() + " is already in group " + group);
+                dB.echoDebug(scriptEntry, "Player " + player.getName() + " is already in group " + group);
             }
             else {
                 Depends.permissions.playerAddGroup(world, player.getName(), group);
-                dB.echoDebug("Added " + player.getName() + " to group " + group);
+                dB.echoDebug(scriptEntry, "Added " + player.getName() + " to group " + group);
             }
             return;
         case REMOVE:
             if(!Depends.permissions.playerInGroup(world, player.getName(), group)) {
-                dB.echoDebug("Player " + player.getName() + " is not in group " + group);
+                dB.echoDebug(scriptEntry, "Player " + player.getName() + " is not in group " + group);
             }
             else {
                 Depends.permissions.playerRemoveGroup(world, player.getName(), group);
-                dB.echoDebug("Removed " + player.getName() + " from group " + group);
+                dB.echoDebug(scriptEntry, "Removed " + player.getName() + " from group " + group);
             }
         }
     }

@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 import org.bukkit.entity.Player;
 
@@ -53,15 +52,16 @@ public class PauseCommand extends AbstractCommand {
 
             if (aH.matchesDuration(arg)) {
                 duration = aH.getIntegerFrom(arg);
-                dB.echoDebug(Messages.DEBUG_SET_DURATION, arg);
 
-            }    else if (aH.matchesArg("WAYPOINTS", arg) || aH.matchesArg("NAVIGATION", arg)
+            }
+            else if (aH.matchesArg("WAYPOINTS", arg) || aH.matchesArg("NAVIGATION", arg)
                     || aH.matchesArg("ACTIVITY", arg) || aH.matchesArg("WAYPOINTS", arg)) {
                 // Could also maybe do for( ... : PauseType.values()) ... not sure which is faster.
                 pauseType = PauseType.valueOf(arg.toUpperCase());
-                dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
 
-            }    else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            }
+            else
+                dB.echoError("Unknown argument '" + arg + "'");
         }
     }
 
@@ -74,14 +74,16 @@ public class PauseCommand extends AbstractCommand {
         if (duration > 0) {
             if (durations.containsKey(dNPC.getCitizen().getId() + pauseType.name())) {
                 try { denizen.getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name())); }
-                catch (Exception e) { dB.echoError(Messages.ERROR_CANCELLING_DELAYED_TASK); }
+                catch (Exception e) { dB.echoError("There was an error pausing that!"); e.printStackTrace(); }
 
-            }    dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "UNPAUSE " + pauseType);
+            }
+            dB.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());
 
+            final ScriptEntry se = scriptEntry;
             durations.put(dNPC.getId() + pauseType.name(), denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
                     new Runnable() {
                 @Override public void run() {
-                    dB.echoDebug(Messages.DEBUG_RUNNING_DELAYED_TASK, "UNPAUSING " + pauseType);
+                    dB.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());
                     pause(dNPC, pauseType, false);
 
                 }

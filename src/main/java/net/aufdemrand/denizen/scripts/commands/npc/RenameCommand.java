@@ -41,7 +41,7 @@ public class RenameCommand extends AbstractCommand {
 
         Element name = (Element) scriptEntry.getObject("name");
 
-        dB.report(getName(), name.debug());
+        dB.report(scriptEntry, getName(), name.debug());
 
         NPC npc = scriptEntry.getNPC().getCitizen();
 

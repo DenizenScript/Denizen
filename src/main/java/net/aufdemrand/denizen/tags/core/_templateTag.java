@@ -75,7 +75,7 @@ public class _templateTag implements Listener {
         if (type.equalsIgnoreCase("for")) {
             // Check if type_context is a valid player...
             if (aH.getPlayerFrom(type_context) == null) {
-                dB.echoDebug("This tag requires a player! Has this player logged off? Aborting replacement...");
+                dB.echoDebug(event.getScriptEntry(), "This tag requires a player! Has this player logged off? Aborting replacement...");
                 return;
             }
 

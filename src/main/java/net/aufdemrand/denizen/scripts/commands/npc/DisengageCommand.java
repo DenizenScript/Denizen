@@ -5,9 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * Unsets the Denizen from the Engage List.
@@ -30,7 +28,7 @@ public class DisengageCommand extends AbstractCommand {
 
         // Make sure NPC is available
         if (scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
 
     }
 
@@ -38,7 +36,7 @@ public class DisengageCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("NPC", scriptEntry.getNPC().toString()));
 
         // Set Disengaged

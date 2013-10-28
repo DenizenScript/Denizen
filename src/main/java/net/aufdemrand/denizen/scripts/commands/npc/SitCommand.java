@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Wolf;
@@ -26,7 +25,8 @@ public class SitCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
     }
@@ -53,7 +53,7 @@ public class SitCommand extends AbstractCommand {
             SittingTrait trait = scriptEntry.getNPC().getCitizen().getTrait(SittingTrait.class);
             if (!scriptEntry.getNPC().getCitizen().hasTrait(SittingTrait.class)) {
                 scriptEntry.getNPC().getCitizen().addTrait(SittingTrait.class);
-                dB.echoDebug("...added sitting trait");
+                dB.echoDebug(scriptEntry, "...added sitting trait");
             }
 
             if (trait.isSitting()) {

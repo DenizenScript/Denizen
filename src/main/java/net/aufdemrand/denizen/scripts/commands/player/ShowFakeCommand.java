@@ -38,7 +38,8 @@ public class ShowFakeCommand extends AbstractCommand {
             else if (arg.matchesArgumentType(dMaterial.class))
                 scriptEntry.addObject("material", arg.asType(dMaterial.class));
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         if (locations.isEmpty())
@@ -59,7 +60,7 @@ public class ShowFakeCommand extends AbstractCommand {
         dMaterial material = (dMaterial) scriptEntry.getObject("material");
         dList list = (dList) scriptEntry.getObject("locations");
 
-        dB.report(getName(), material.debug()
+        dB.report(scriptEntry, getName(), material.debug()
                 + list.debug() + scriptEntry.getPlayer().debug() + duration.debug());
 
         for (dObject obj : list.filter(dLocation.class)) {

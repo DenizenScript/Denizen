@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -82,7 +81,8 @@ public class DropCommand extends AbstractCommand {
                 // Quantity arg
                 scriptEntry.addObject("qty", arg.asElement().setPrefix("qty"));
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         // Make sure all required arguments are met
@@ -93,7 +93,7 @@ public class DropCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("location"))
             if (scriptEntry.getPlayer() != null && scriptEntry.getPlayer().isOnline()) {
                 scriptEntry.addObject("location", scriptEntry.getPlayer().getLocation().setPrefix("location"));
-                dB.echoDebug("Did not specify a location, assuming Player's location.");
+                dB.echoDebug(scriptEntry, "Did not specify a location, assuming Player's location.");
 
             } else throw new InvalidArgumentsException("Must specify a location!");
 
@@ -117,7 +117,7 @@ public class DropCommand extends AbstractCommand {
 
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 action.debug() + location.debug() + qty.debug()
                         + (item != null ? item.debug() : "")
                         + (entity != null ? entity.debug() : "")
@@ -134,7 +134,7 @@ public class DropCommand extends AbstractCommand {
 
             case DROP_ITEM:
                 if (qty.asInt() > 1 && item.isUnique())
-                    dB.echoDebug("Cannot drop multiples of this item because it is Unique!");
+                    dB.echoDebug(scriptEntry, "Cannot drop multiples of this item because it is Unique!");
                 // TODO: Make a dItem specific 'drop/give' to better keep track of it, like dEntity.
                 for (int x = 0; x < qty.asInt(); x++) {
                     Entity e = location.getWorld().dropItemNaturally(location, item.getItemStack());
@@ -144,7 +144,7 @@ public class DropCommand extends AbstractCommand {
 
             case DROP_ENTITY:
                 if (qty.asInt() > 1 && entity.isUnique())
-                    dB.echoDebug("Cannot drop multiples of this entity because it is Unique!");
+                    dB.echoDebug(scriptEntry, "Cannot drop multiples of this entity because it is Unique!");
                 for (int x = 0; x < qty.asInt(); x++)
                     entity.spawnAt(location);
                 break;

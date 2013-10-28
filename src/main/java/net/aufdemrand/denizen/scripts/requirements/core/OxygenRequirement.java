@@ -26,13 +26,13 @@ public class OxygenRequirement extends AbstractRequirement{
             if(aH.matchesValueArg("range", arg, aH.ArgumentType.String)) {
                 try {
                     range = Range.valueOf(aH.getStringFrom(arg));
-                    dB.echoDebug("Set range to " + range.name() + "!");
+                    dB.echoDebug(context.getScriptContainer(), "Set range to " + range.name() + "!");
                 } catch(Exception e) {
                     dB.echoError("Invalid range: " + e.getMessage());
                 }
             } else if(aH.matchesQuantity(arg) || aH.matchesArg("amt", arg)) {
                 val = aH.getIntegerFrom(arg);
-                dB.echoDebug("Amount set to " + val);
+                dB.echoDebug(context.getScriptContainer(), "Amount set to " + val);
             }
         }
 

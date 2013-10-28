@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * TODO: Document usage
@@ -33,7 +32,7 @@ public class AssignmentCommand extends AbstractCommand {
             if (aH.matchesScript(arg)) {
                 script = aH.getScriptFrom(arg);
                 if (script != null && !script.getType().equalsIgnoreCase("assignment")) {
-                    dB.echoError("Script type must be 'ASSIGNMENT'. Script specified is '%s'.", script.getType());
+                    dB.echoError("Script type must be 'ASSIGNMENT'. Script specified is '" + script.getType() + "'.");
                     script = null;
                 }
             }
@@ -42,15 +41,16 @@ public class AssignmentCommand extends AbstractCommand {
             else if (aH.matchesArg("SET, REMOVE", arg))
                 action = Action.valueOf(arg.toUpperCase());
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else
+                dB.echoError("Unnknown argument '" + arg + "'");
         }
 
         // If 'SET'ting with no 'script' throws an error.
         if (action == Action.SET && script == null)
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SCRIPT");
+            throw new InvalidArgumentsException("Missing 'script' argument!");
         // If no NPC attached, throw an error
         if (scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+            throw new InvalidArgumentsException("This command requires a linked npc!");
 
         // Add objects that need to be passed to execute() to the scriptEntry
         scriptEntry.addObject("script", script)
@@ -64,7 +64,7 @@ public class AssignmentCommand extends AbstractCommand {
         dScript script = (dScript) scriptEntry.getObject("script");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("Action", action.toString())
                         + (script != null ? script.debug() : "")
                         + aH.debugObj("NPC", scriptEntry.getNPC().toString()));

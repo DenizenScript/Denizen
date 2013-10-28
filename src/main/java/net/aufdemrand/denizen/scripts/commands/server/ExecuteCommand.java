@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class ExecuteCommand extends AbstractCommand {
 
@@ -53,14 +52,14 @@ public class ExecuteCommand extends AbstractCommand {
                 scriptEntry.addObject("command", new Element(arg.raw_value));
 
             else
-                throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+                arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("type"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EXECUTE_TYPE");
+            throw new InvalidArgumentsException("Missing execution type!");
 
         if (!scriptEntry.hasObject("command"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "COMMAND_TEXT");
+            throw new InvalidArgumentsException("Missing command text!");
 
     }
 
@@ -71,7 +70,7 @@ public class ExecuteCommand extends AbstractCommand {
         Element type = scriptEntry.getElement("type");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 type.debug()
                 + cmd.debug());
 

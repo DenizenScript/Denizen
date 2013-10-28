@@ -8,8 +8,6 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -76,13 +74,14 @@ public class ModifyBlockCommand extends AbstractCommand{
                 scriptEntry.addObject("depth", new Element(arg.getValue()));
             }
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("material"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "MATERIAL");
+            throw new InvalidArgumentsException("Missing material argument!");
         if (!scriptEntry.hasObject("location"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
+            throw new InvalidArgumentsException("Missing location argument!");
         scriptEntry.defaultObject("radius", new Element(0));
         scriptEntry.defaultObject("height", new Element(0));
         scriptEntry.defaultObject("depth", new Element(0));

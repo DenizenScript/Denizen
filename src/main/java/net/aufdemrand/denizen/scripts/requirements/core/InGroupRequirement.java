@@ -38,22 +38,22 @@ public class InGroupRequirement extends AbstractRequirement{
                         {
                             if (Depends.permissions.playerInGroup((World) null, context.getPlayer().getName(), arg))
                             {
-                                dB.echoDebug("...player is in global group: " + arg);
+                                dB.echoDebug(context.getScriptContainer(), "...player is in global group: " + arg);
                                 outcome = true;
                             }
                             else
-                                dB.echoDebug("...player is not in global group: " + arg + "!");
+                                dB.echoDebug(context.getScriptContainer(), "...player is not in global group: " + arg + "!");
                         }
                         else
                         {
                             if (Depends.permissions.playerInGroup(context.getPlayer().getPlayerEntity(), arg))
                             {
-                                dB.echoDebug("...player is in group: " + arg);
+                                dB.echoDebug(context.getScriptContainer(), "...player is in group: " + arg);
                                 outcome = true;
                             }
                             else
                             {
-                                dB.echoDebug("...player is not in group: " + arg + "!");
+                                dB.echoDebug(context.getScriptContainer(), "...player is not in group: " + arg + "!");
                             }
                         }
 
@@ -63,7 +63,7 @@ public class InGroupRequirement extends AbstractRequirement{
                 return outcome;
             }
 
-            dB.echoDebug("...no permission plugin found, assume as FALSE!");
+            dB.echoDebug(context.getScriptContainer(), "...no permission plugin found, assume as FALSE!");
         }
 
         return false;

@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.midi.MidiUtil;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 
 /**
@@ -70,14 +69,15 @@ public class MidiCommand extends AbstractCommand {
                 scriptEntry.addObject("file", new Element(path));
             }
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
         // Produce error if there is no file and the "cancel" argument was
         // not used
         if (!scriptEntry.hasObject("file")
             && !scriptEntry.hasObject("cancel"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "FILE");
+            throw new InvalidArgumentsException("Missing file (Midi name) argument!");
 
         if (!scriptEntry.hasObject("location")) {
             scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
@@ -104,14 +104,14 @@ public class MidiCommand extends AbstractCommand {
         float tempo = (float) scriptEntry.getElement("tempo").asDouble();
 
         // Report to dB
-        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
                              (file != null ? aH.debugObj("file", file.getPath()) : "") +
                              (entities != null ? aH.debugObj("entities", entities.toString()) : "") +
                              (location != null ? location.debug() : "") +
                              aH.debugObj("tempo", tempo));
 
         // Play the midi
-        if (cancel == false) {
+        if (!cancel) {
             if (location != null) {
                 MidiUtil.playMidi(file, tempo, location);
             }

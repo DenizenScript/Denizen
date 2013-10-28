@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 
 public class StrikeCommand extends AbstractCommand {
@@ -26,13 +25,14 @@ public class StrikeCommand extends AbstractCommand {
             else if (arg.matches("no_damage") || arg.matches("nodamage"))
                 scriptEntry.addObject("damage", Element.FALSE);
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
 
         }
 
         // Check required args
         if (!scriptEntry.hasObject("location"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+            throw new InvalidArgumentsException("Missing location argument!");
 
         scriptEntry.defaultObject("damage", Element.TRUE);
     }
@@ -45,7 +45,7 @@ public class StrikeCommand extends AbstractCommand {
         Boolean damage = scriptEntry.getElement("damage").asBoolean();
 
         // Debugger
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 location.debug()
                 + aH.debugObj("Damageable", String.valueOf(damage)));
 
