@@ -303,7 +303,7 @@ public class ReplaceableTagEvent extends Event {
     // TODO: Remove in 1.0
     @Deprecated
     private void parseContext() {
-        dB.echoDebug("Using 'context' in this way has been deprecated, as it is now possible " +
+        dB.log("Using 'context' in this way has been deprecated, as it is now possible " +
                 "to specify specific objects.");
     }
 

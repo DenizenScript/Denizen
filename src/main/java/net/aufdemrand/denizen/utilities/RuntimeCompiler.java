@@ -27,7 +27,7 @@ public class RuntimeCompiler {
     public void loader() {
 
         List<String> dependencies = new ArrayList<String>();
-        dB.echoDebug("Loading external dependencies for run-time compiler.");
+        dB.log("Loading external dependencies for run-time compiler.");
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals" + File.separator + "dependencies");
             File[] files = file.listFiles();
@@ -36,7 +36,7 @@ public class RuntimeCompiler {
                     String fileName = f.getName();
                     if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("JAR")) {
                         dependencies.add(f.getPath());
-                        dB.echoDebug("Loaded  " + f.getName());
+                        dB.log("Loaded  " + f.getName());
                     }
                 }
             }
@@ -50,7 +50,7 @@ public class RuntimeCompiler {
                     String fileName = f.getName();
 
                     if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("JAVA") && !fileName.startsWith(".")) {
-                        dB.echoDebug("Processing '" + fileName + "'... ");
+                        dB.log("Processing '" + fileName + "'... ");
 
                         JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
                         JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();

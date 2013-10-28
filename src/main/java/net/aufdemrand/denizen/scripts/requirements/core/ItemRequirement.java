@@ -29,11 +29,11 @@ public class ItemRequirement extends AbstractRequirement {
         }
 
         if (context.getPlayer().getPlayerEntity().getInventory().containsAtLeast(contains.getItemStack(), quantity)) {
-            dB.echoDebug("...player has " + contains.identify() + ".");
+            dB.echoDebug(context.getScriptContainer(), "...player has " + contains.identify() + ".");
             return true;
 
         } else {
-            dB.echoDebug("...player doesn't have " + contains.identify() + ".");
+            dB.echoDebug(context.getScriptContainer(), "...player doesn't have " + contains.identify() + ".");
             return false;
         }
     }

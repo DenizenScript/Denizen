@@ -46,7 +46,7 @@ public class InteractScriptHelper {
         if (assignedScripts.isEmpty()) return null;
 
         // Alert the dBugger -- trying to find a good interact script!
-        dB.echoDebug(dB.DebugElement.Header, "Getting interact script: " + npc.getName() + "/" + player.getName());
+        dB.log(dB.DebugElement.Header + "Getting interact script: " + npc.getName() + "/" + player.getName());
 
         //
         // Get scripts that meet requirements and add them to interactableScripts.
@@ -95,16 +95,16 @@ public class InteractScriptHelper {
                         if (interactScript.checkCooldown(player))
                             interactableScripts.add(new PriorityPair(priority, entry.split(" ", 2)[1]));
                         else
-                            dB.echoDebug(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
+                            dB.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
 
                     } else {
                         // Does not meet requirements, alert the console!
-                        dB.echoDebug("'" + entry + "' does not meet requirements.");
+                        dB.log("'" + entry + "' does not meet requirements.");
                     }
 
                 } else {
                     // Alert the console
-                    dB.echoDebug("'" + entry + "' is not a valid Interact Script. Is there a duplicate script by this name?");
+                    dB.log("'" + entry + "' is not a valid Interact Script. Is there a duplicate script by this name?");
                 }
             } catch (Exception e) {
                 // Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
@@ -113,7 +113,7 @@ public class InteractScriptHelper {
                 else e.printStackTrace();
             }
 
-            dB.echoDebug(dB.DebugElement.Spacer);
+            dB.log(dB.DebugElement.Spacer.toString()); // TODO: ???? toString(), or...?
             // Next entry!
         }
 
@@ -125,14 +125,14 @@ public class InteractScriptHelper {
         if (interactableScripts.size() == 1) {
             String script = interactableScripts.get(0).getName();
             dB.echoApproval("Highest scoring script is " + script + ".");
-            dB.echoDebug(dB.DebugElement.Footer);
+            dB.log(dB.DebugElement.Footer.toString()); // TODO: Above
             return ScriptRegistry.getScriptContainerAs(script.replace("^", ""), InteractScriptContainer.class);
         }
 
         // Or, if list is empty.. no scripts meet requirements!
         else if (interactableScripts.isEmpty()) {
-            dB.echoDebug(ChatColor.YELLOW + "+> " + ChatColor.WHITE + "No scripts meet requirements!");
-            dB.echoDebug(dB.DebugElement.Footer);
+            dB.log(ChatColor.YELLOW + "+> " + ChatColor.WHITE + "No scripts meet requirements!");
+            dB.log(dB.DebugElement.Footer.toString());
             return null;
         }
 
@@ -145,7 +145,7 @@ public class InteractScriptHelper {
             InteractScriptContainer interactScript = ScriptRegistry
                     .getScriptContainerAs(interactableScripts.get(a).name.replace("^", ""), InteractScriptContainer.class);
 
-            dB.echoDebug("Checking script '" + interactableScripts.get(a).getName() + "'.");
+            dB.log("Checking script '" + interactableScripts.get(a).getName() + "'.");
 
             // Check for 'Overlay' assignment mode.
             // If specified as an 'Overlay', the criteria for matching requires the
@@ -155,21 +155,21 @@ public class InteractScriptHelper {
                 // This is an Overlay Assignment, check for the appropriate Trigger Script...
                 // If Trigger exists, cool, this is our script.
                 if (interactScript.containsTriggerInStep(getCurrentStep(player, interactScript.getName()), trigger)) {
-                    dB.echoDebug("...found trigger!");
+                    dB.log("...found trigger!");
                     dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
-                    dB.echoDebug(dB.DebugElement.Footer);
+                    dB.log(dB.DebugElement.Footer.toString());
                     return interactScript;
                 }
 
-                else dB.echoDebug("...no trigger on this overlay assignment. Skipping.");
+                else dB.log("...no trigger on this overlay assignment. Skipping.");
             }
 
             // Not an Overlay Assignment, so return this script, which is the highest scoring.
             else {
-                dB.echoDebug("...script is good!");
+                dB.log("...script is good!");
                 dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
-                dB.echoDebug("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
-                dB.echoDebug(dB.DebugElement.Footer);
+                dB.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
+                dB.log(dB.DebugElement.Footer.toString());
                 return interactScript;
             }
         }

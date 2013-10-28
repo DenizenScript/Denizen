@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
 
 import java.util.HashMap;
@@ -39,7 +38,7 @@ public class EngageCommand extends AbstractCommand {
 
         // Check for NPC
         if (scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
 
         // Parse arguments
         for (String arg : scriptEntry.getArguments()) {
@@ -49,7 +48,7 @@ public class EngageCommand extends AbstractCommand {
             } else if (aH.matchesArg("NOW", arg)) {
                 // Catch 'NOW' argument... it's already been parsed.
 
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT);
+            } else throw new InvalidArgumentsException("Unknown argument '" + arg + "'");
         }
 
         // If no duration set, assume 15 seconds.
@@ -66,7 +65,7 @@ public class EngageCommand extends AbstractCommand {
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("NPC", scriptEntry.getNPC().toString())
                         + duration.debug());
 

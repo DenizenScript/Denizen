@@ -57,7 +57,8 @@ public class AnchorCommand extends AbstractCommand {
                 // add location (for ADD)
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else
+                arg.reportUnhandled();
         }
 
 
@@ -77,7 +78,7 @@ public class AnchorCommand extends AbstractCommand {
         Element id = (Element) scriptEntry.getObject("id");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("NPC", scriptEntry.getNPC().toString())
                         + action.name() + id.debug()
                         + (location != null ? location.debug() : "")

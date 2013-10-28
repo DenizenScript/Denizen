@@ -80,7 +80,7 @@ public class SittingTrait extends Trait implements Listener  {
          * sending the sit packet to the clients.
          */
         eh.getBukkitEntity().teleport(location.add(0.5, 0, 0.5));
-        dB.echoDebug("...NPC moved to chair");
+        dB.log("...NPC moved to chair");
 
         ((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x04));
 

@@ -75,14 +75,14 @@ public class FlaggedRequirement extends AbstractRequirement {
             if (flag.getLast().asString().equalsIgnoreCase(value))
                 outcome = true;
             else
-                dB.echoDebug("... does not match '%s'.", flag.getLast().asString());
+                dB.echoDebug(context.getScriptContainer(), "... does not match '" + flag.getLast().asString() + "'.");
         }
         else if (index.matches("\\d+"))
         {
             if (flag.get(Integer.parseInt(index)).asString().equalsIgnoreCase(value))
                 outcome = true;
             else
-                dB.echoDebug("... does not match '%s'.", flag.get(Integer.parseInt(index)).asString());
+                dB.echoDebug(context.getScriptContainer(), "... does not match '" + flag.get(Integer.parseInt(index)).asString() + "'.");
         }
 
         return outcome;

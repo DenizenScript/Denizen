@@ -38,7 +38,7 @@ public class HoldingRequirement extends AbstractRequirement{
         else
             outcome = context.getPlayer().getPlayerEntity().getItemInHand().isSimilar(itemToCheck.getItemStack());
 
-        dB.report("Outcome", (outcome) ? (exact) ? "Player is holding exact item" : "Player is holding item" : "");
+        dB.echoDebug(context.getScriptContainer(), "Outcome: " + ((outcome) ? (exact) ? "Player is holding exact item" : "Player is holding item" : ""));
 
         return outcome;
     }

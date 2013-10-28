@@ -189,26 +189,26 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
     @EventHandler
     public void mobKilled(EntityDeathEvent event) {
         if (type != ItemDropType.MOBKILL) return;
-        dB.echoDebug("...checking kill");
+        dB.log("...checking kill");
         if (event.getEntity().getKiller() != player.getPlayerEntity()) return;
-        dB.echoDebug("...killed by player");
+        dB.log("...killed by player");
         if (event.getEntity().getType() != mob) return;
-        dB.echoDebug("...proper mob");
+        dB.log("...proper mob");
         if (location != null) {
             if (location.distance(player.getPlayerEntity().getLocation()) > radius ) return;
         }
-        dB.echoDebug("...within range");
+        dB.log("...within range");
         if (region != null) {
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         }
-        dB.echoDebug("...within region");
+        dB.log("...within region");
 
-        dB.echoDebug("...trying to drop item");
+        dB.log("...trying to drop item");
         if (Utilities.getRandom().nextInt(101) < dropRate) {
-            dB.echoDebug("...item should drop now");
+            dB.log("...item should drop now");
             event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), item);
             qtyDropped++;
-            dB.echoDebug("...item dropped");
+            dB.log("...item dropped");
             check();
         }
     }
@@ -216,24 +216,24 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
     @EventHandler
     public void blockMined(BlockBreakEvent event) {
         if (type != ItemDropType.BLOCKBREAK) return;
-        dB.echoDebug("...checking blockbreakevent");
+        dB.log("...checking blockbreakevent");
         if (event.getPlayer() != player.getPlayerEntity()) return;
-        dB.echoDebug("...mined by player");
+        dB.log("...mined by player");
         if (event.getBlock().getType() != block) return;
-        dB.echoDebug("...proper block mined");
+        dB.log("...proper block mined");
         if (location != null) {
             if (location.distance(player.getPlayerEntity().getLocation()) > radius ) return;
         }
-        dB.echoDebug("...within range");
+        dB.log("...within range");
         if (region != null) {
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         }
-        dB.echoDebug("...within region");
+        dB.log("...within region");
 
         if (Utilities.getRandom().nextInt(101) < dropRate) {
             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
             qtyDropped++;
-            dB.echoDebug("...item dropped");
+            dB.log("...item dropped");
             check();
         }
     }
@@ -241,30 +241,30 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
     @EventHandler
     public void blockPlaced(BlockPlaceEvent event) {
         if (type != ItemDropType.BLOCKPLACE) return;
-        dB.echoDebug("...checking blockplaceevent");
+        dB.log("...checking blockplaceevent");
         if (event.getPlayer() != player.getPlayerEntity()) return;
-        dB.echoDebug("...placed by player");
+        dB.log("...placed by player");
         if (event.getBlock().getType() != block) return;
-        dB.echoDebug("...proper block placed");
+        dB.log("...proper block placed");
         if (location != null) {
             if (location.distance(player.getPlayerEntity().getLocation()) > radius ) return;
         }
-        dB.echoDebug("...within range");
+        dB.log("...within range");
         if (region != null) {
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         }
-        dB.echoDebug("...within region");
+        dB.log("...within region");
 
         if (Utilities.getRandom().nextInt(101) < dropRate) {
             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
             qtyDropped++;
-            dB.echoDebug("...item dropped");
+            dB.log("...item dropped");
             check();
         }
     }
 
     private void check() {
-        dB.echoDebug(qtyDropped + "/" + quantity + " dropped");
+        dB.log(qtyDropped + "/" + quantity + " dropped");
         if (quantity.equals(qtyDropped)) {
             finish();
         }
