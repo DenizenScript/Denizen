@@ -104,10 +104,6 @@ public class ChatCommand extends AbstractCommand {
         dObject targets = scriptEntry.getdObject("targets");
         Element message = scriptEntry.getElement("message");
 
-        dB.log(talkers.debug());
-        dB.log(targets.debug());
-        dB.log(message.debug());
-
         dB.report(getName(), talkers.debug() + targets.debug() + message.debug());
 
         // Create empty speech context

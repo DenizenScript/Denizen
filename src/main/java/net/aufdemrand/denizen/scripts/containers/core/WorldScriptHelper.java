@@ -28,10 +28,7 @@ import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 
-import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -3175,6 +3172,11 @@ public class WorldScriptHelper implements Listener {
     // Shares description with asyncPlayerChat
     @EventHandler
     public void playerChat(final PlayerChatEvent event) {
+
+        // If currently recording debug information, quickly add the chat message to debug output
+        // (Intentionally placed in the sync event to prevent glitching)
+        if (dB.record) dB.echoDebug(ChatColor.DARK_GREEN + "CHAT: " +
+                event.getPlayer().getName() + ": " + event.getMessage());
 
         // Return if "Use asynchronous event" is true in config file
         if (Settings.WorldScriptChatEventAsynchronous()) return;
