@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -49,13 +48,13 @@ public class RemoveCommand extends AbstractCommand {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Check to make sure required arguments have been filled
 
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+            throw new InvalidArgumentsException("Must specify entity/entities!");
 
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to the specified world in the server properties if necessary
@@ -76,7 +75,7 @@ public class RemoveCommand extends AbstractCommand {
         Element region = (Element) scriptEntry.getObject("region");
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("entities", entities.toString()) +
+        dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
                              (region != null ? aH.debugObj("region", region) : ""));
 
         boolean conditionsMet;

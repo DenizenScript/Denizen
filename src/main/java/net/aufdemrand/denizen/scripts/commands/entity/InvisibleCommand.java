@@ -29,6 +29,8 @@ public class InvisibleCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        // TODO: UPDATE THIS COMMAND!
+
         // Parse Arguments
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesState(arg))
@@ -37,7 +39,6 @@ public class InvisibleCommand extends AbstractCommand {
             else if (aH.matchesArg("NPC, PLAYER", arg))
                 scriptEntry.addObject("target", Target.valueOf(aH.getStringFrom(arg).toUpperCase()));
 
-            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
         if (scriptEntry.getObject("state") == null)
@@ -58,7 +59,7 @@ public class InvisibleCommand extends AbstractCommand {
         Target target = (Target) scriptEntry.getObject("target");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("Toggle", action.name())
                         + aH.debugObj("Target", target == Target.NPC ? scriptEntry.getNPC().toString() :
                         scriptEntry.getPlayer().getName()));

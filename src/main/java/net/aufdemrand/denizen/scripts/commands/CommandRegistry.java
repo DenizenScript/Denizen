@@ -786,24 +786,6 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
-        // @Name Engrave
-        // @Usage engrave (set/remove)
-        // @Required 0
-        // @Stable unstable
-        // @Short Locks an item to a player *does not work currently*
-        // @Author Todo
-        // @Description
-        // Todo
-        // @Tags
-        // Todo
-        // @Usage
-        // Todo
-        // -->
-        registerCoreMember(EngraveCommand.class,
-                "ENGRAVE", "engrave (set/remove)", 0);
-
-
-        // <--[command]
         // @Name Equip
         // @Usage equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
         // @Required 1

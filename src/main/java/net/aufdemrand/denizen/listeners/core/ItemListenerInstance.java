@@ -163,7 +163,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             store("Region", region);
             if (cuboid != null) store("Cuboid", cuboid.identify());
         } catch (Exception e) {
-            dB.echoError("Unable to save ITEM listener for '%s'!", player.getName());
+            dB.echoError("Unable to save ITEM listener for '" + player.getName() + "'!");
         }
     }
 
@@ -178,7 +178,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             region = (String) get("Region");
             cuboid = dCuboid.valueOf((String) get("Cuboid"));
         } catch (Exception e) {
-            dB.echoError("Unable to load ITEM listener for '%s'!", player.getName());
+            dB.echoError("Unable to load ITEM listener for '" + player.getName() + "'!");
             cancel();
         }
     }

@@ -35,7 +35,7 @@ public class ActionHandler {
 
         if (!assignment.contains("actions.on " + actionName)) return false;
 
-        dB.report("Action",
+        dB.report(assignment, "Action",
                 aH.debugObj("Type", "On " + actionName)
                         + aH.debugObj("NPC", npc.toString())
                         + assignment.getAsScriptArg().debug()
@@ -45,7 +45,8 @@ public class ActionHandler {
         List<ScriptEntry> script = assignment.getEntries(player, npc, "actions.on " + actionName);
         if (script.isEmpty()) return false;
 
-        dB.echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
+        dB.echoDebug(assignment, DebugElement.Header,
+                "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
 
         // Add entries and context to the queue
         ScriptQueue queue = InstantQueue.getQueue(null).addEntries(script);

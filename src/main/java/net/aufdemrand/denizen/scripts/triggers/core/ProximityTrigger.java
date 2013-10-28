@@ -230,19 +230,19 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         if (script.hasTriggerOptionFor(getClass(), player, null, "ENTRY RADIUS"))
                             entryRadius = Integer.valueOf(script.getTriggerOptionFor(getClass(), player, null, "ENTRY RADIUS"));
                     } catch (NumberFormatException nfe) {
-                        dB.echoDebug("Entry Radius was not an integer.  Assuming " + entryRadius + " as the radius.");
+                        dB.echoDebug(script, "Entry Radius was not an integer.  Assuming " + entryRadius + " as the radius.");
                     }
                     try {
                         if (script.hasTriggerOptionFor(getClass(), player, null, "EXIT RADIUS"))
                             exitRadius = Integer.valueOf(script.getTriggerOptionFor(getClass(), player, null, "EXIT RADIUS"));
                     } catch (NumberFormatException nfe) {
-                        dB.echoDebug("Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
+                        dB.echoDebug(script, "Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
                     }
                     try {
                         if (script.hasTriggerOptionFor(getClass(), player, null, "MOVE RADIUS"))
                             moveRadius = Integer.valueOf(script.getTriggerOptionFor(getClass(), player, null, "MOVE RADIUS"));
                     } catch (NumberFormatException nfe) {
-                        dB.echoDebug("Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
+                        dB.echoDebug(script, "Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
                     }
                 }
 
@@ -278,7 +278,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         continue;
                     // Remember that NPC has exited proximity.
                     exitProximityOf(event.getPlayer(), npc);
-                    dB.echoDebug(ChatColor.YELLOW + "FOUND! NPC is in EXITING range: '" + npc.getName() + "'");
+                    dB.echoDebug(script, ChatColor.YELLOW + "FOUND! NPC is in EXITING range: '" + npc.getName() + "'");
                     // Exit Proximity Action
                     npc.action("exit proximity", player);
                     // Parse Interact Script

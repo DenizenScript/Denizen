@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -29,10 +28,13 @@ public class RepeatCommand extends BracedCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("qty", arg.asElement());
 
+            // Don't report unhandled argument since getBracedCommands will handle
+            // the remainder of the commands.
+
         }
 
         if (!scriptEntry.hasObject("qty"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "QUANTITY");
+            throw new InvalidArgumentsException("Must specify a quantity!");
 
         scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
 
@@ -51,7 +53,7 @@ public class RepeatCommand extends BracedCommand {
         }
 
         // Report to dB
-        dB.report(getName(), qty.debug());
+        dB.report(scriptEntry, getName(), qty.debug());
 
         String queueId = UUID.randomUUID().toString();
         for (int incr = 0; incr < qty.asInt(); incr++) {

@@ -149,10 +149,10 @@ public class dNPC implements dObject, Adjustable {
     }
 
     public InteractScriptContainer getInteractScriptQuietly(dPlayer player, Class<? extends AbstractTrigger> triggerType) {
-        boolean db = dB.debugMode;
-        dB.debugMode = false;
+        boolean db = dB.showDebug;
+        dB.showDebug = false;
         InteractScriptContainer script = InteractScriptHelper.getInteractScript(this, player, triggerType);
-        dB.debugMode = db;
+        dB.showDebug = db;
         return script;
     }
 

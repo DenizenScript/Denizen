@@ -14,7 +14,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.Velocity;
 import net.aufdemrand.denizen.utilities.entity.Gravity;
@@ -82,7 +81,7 @@ public class ShootCommand extends AbstractCommand {
                 scriptEntry.addObject("gravity", arg.asElement());
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Use the NPC or player's locations as the origin if one is not specified
@@ -99,10 +98,10 @@ public class ShootCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
 
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "entities");
+            throw new InvalidArgumentsException("Must specify entity/entities!");
 
         if (!scriptEntry.hasObject("originEntity") && !scriptEntry.hasObject("originLocation"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "origin");
+            throw new InvalidArgumentsException("Must specify an origin location!");
     }
 
     @SuppressWarnings("unchecked")
@@ -125,8 +124,9 @@ public class ShootCommand extends AbstractCommand {
                                                                .multiply(30)))
                                                             : null);
 
+        // TODO: Same as PUSH -- is this the place to do this?
         if (destination == null) {
-            dB.report(getName(), "No destination specified!");
+            dB.report(scriptEntry, getName(), "No destination specified!");
             return;
         }
 
@@ -137,7 +137,7 @@ public class ShootCommand extends AbstractCommand {
         Element gravity = (Element) scriptEntry.getObject("gravity");
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
+        dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("destination", destination) +
                              aH.debugObj("height", height) +
@@ -187,7 +187,7 @@ public class ShootCommand extends AbstractCommand {
                 if (defaultGravity.name().equals(entityType)) {
 
                     gravity = new Element(defaultGravity.getGravity());
-                    dB.echoDebug("Gravity: " + gravity);
+                    dB.echoDebug(scriptEntry, "Gravity: " + gravity);
                 }
             }
 

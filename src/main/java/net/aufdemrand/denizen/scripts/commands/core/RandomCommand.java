@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 
 /**
@@ -51,14 +50,13 @@ public class RandomCommand extends BracedCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("possibilities", arg.asElement());
 
-            else
-                throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
 
         }
 
         if (!scriptEntry.hasObject("braces")) {
             if (!scriptEntry.hasObject("possibilities"))
-                throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "POSSIBILITIES");
+                throw new InvalidArgumentsException("Missing possibilities!");
 
             if (scriptEntry.getElement("possibilities").asInt() <= 1)
                 throw new InvalidArgumentsException("Must randomly select more than one item.");
@@ -72,6 +70,8 @@ public class RandomCommand extends BracedCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+
+        // TODO: ADD REPORT!
 
         int possibilities = 0;
         ScriptQueue queue = scriptEntry.getResidingQueue();
@@ -87,7 +87,7 @@ public class RandomCommand extends BracedCommand {
 
         int selected = Utilities.getRandom().nextInt(possibilities);
 
-        dB.echoDebug("...random number generator selected '%s'", String.valueOf(selected + 1));
+        dB.echoDebug(scriptEntry, "...random number generator selected '" + String.valueOf(selected + 1) + "'.");
 
         if (bracedCommands == null) {
 
@@ -95,14 +95,12 @@ public class RandomCommand extends BracedCommand {
 
             for (int x = 0; x < possibilities; x++) {
 
-                if (x != selected) {
-                    dB.echoDebug("...removing '%s'", queue.getEntry(0).getCommandName());
+                if (x != selected)
                     queue.removeEntry(0);
-                }
 
                 else {
-                    dB.echoDebug("...selected '%s'", queue.getEntry(0).getCommandName() + ": "
-                        + queue.getEntry(0).getArguments());
+                    dB.echoDebug(scriptEntry, "...selected '" + queue.getEntry(0).getCommandName() + ": "
+                        + queue.getEntry(0).getArguments() + "'.");
                     keeping = queue.getEntry(0);
                     queue.removeEntry(0);
                 }

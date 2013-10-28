@@ -13,7 +13,6 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.util.PlayerAnimation;
 
 /**
@@ -51,10 +50,10 @@ public class AnimateCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
 
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+            throw new InvalidArgumentsException("Must specify entity/entities!");
 
         if (!scriptEntry.hasObject("effect") && !scriptEntry.hasObject("animation"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ANIMATION");
+            throw new InvalidArgumentsException("Must specify a valid animation!");
     }
 
     @SuppressWarnings("unchecked")
@@ -69,7 +68,7 @@ public class AnimateCommand extends AbstractCommand {
                 (EntityEffect) scriptEntry.getObject("effect") : null;
 
         // Report to dB
-        dB.report(getName(), (animation != null ?
+        dB.report(scriptEntry, getName(), (animation != null ?
                                   aH.debugObj("animation", animation.name()) :
                                   aH.debugObj("effect", effect.name())) +
                              aH.debugObj("entities", entities.toString()));

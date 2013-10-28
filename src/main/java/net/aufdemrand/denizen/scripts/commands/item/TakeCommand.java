@@ -15,7 +15,6 @@ import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 
 /* TAKE [MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
@@ -88,7 +87,7 @@ public class TakeCommand extends AbstractCommand{
                 .defaultObject("qty", new Element(1));
 
         if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ITEMS");
+            throw new InvalidArgumentsException("Must specify item/items!");
 
     }
 
@@ -106,7 +105,7 @@ public class TakeCommand extends AbstractCommand{
         if (items_object != null)
             items = (List<dItem>) items_object;
 
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
                         + qty.debug()
                         + inventory.debug()
@@ -124,7 +123,7 @@ public class TakeCommand extends AbstractCommand{
                 int theAmount = (int)qty.asDouble();
                 ItemStack newHandItem = new ItemStack(0);
                 if (theAmount > inHandAmt) {
-                    dB.echoDebug("...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
+                    dB.echoDebug(scriptEntry, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
                     scriptEntry.getPlayer().getPlayerEntity().setItemInHand(newHandItem);
                 }
                 else {
@@ -145,7 +144,7 @@ public class TakeCommand extends AbstractCommand{
 
             case MONEY:
                 if(Depends.economy != null) {
-                    dB.echoDebug ("...taking " + qty.asDouble() + " money.");
+                    dB.echoDebug (scriptEntry, "...taking " + qty.asDouble() + " money.");
                     Depends.economy.withdrawPlayer(scriptEntry.getPlayer().getName(), qty.asDouble());
                 } else {
                     dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");

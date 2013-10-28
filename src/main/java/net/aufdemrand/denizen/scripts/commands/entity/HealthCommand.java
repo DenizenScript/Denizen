@@ -22,7 +22,7 @@ public class HealthCommand extends AbstractCommand  {
             if (!scriptEntry.hasObject("target")
                     && arg.matches("player")){
                 if (!scriptEntry.hasPlayer())
-                    throw new InvalidArgumentsException(dB.Messages.ERROR_NO_PLAYER);
+                    throw new InvalidArgumentsException("No player attached!");
                 scriptEntry.addObject("target", arg.asElement());
             }
 
@@ -34,14 +34,14 @@ public class HealthCommand extends AbstractCommand  {
                 && arg.matchesPrefix("state"))
                     scriptEntry.addObject("action", arg.asElement());
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
 
         // Check for required information
 
         if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action"))
-            throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "QUANTITY");
+            throw new InvalidArgumentsException("Must specify a quantity!");
         if (!scriptEntry.hasObject("target")) {
             if (!scriptEntry.hasNPC())
                 throw new InvalidArgumentsException("Missing NPC!");
@@ -60,7 +60,7 @@ public class HealthCommand extends AbstractCommand  {
         Element action = scriptEntry.getElement("action");
         boolean isplayer = scriptEntry.getElement("target").asString().equalsIgnoreCase("player");
 
-        dB.report(getName(), (qty != null?qty.debug():"") + (action != null?action.debug():""));
+        dB.report(scriptEntry, getName(), (qty != null?qty.debug():"") + (action != null?action.debug():""));
 
         if (qty == null && action == null)
             dB.echoError("Null quantity!");

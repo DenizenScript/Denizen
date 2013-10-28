@@ -82,7 +82,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("id", arg.asElement());
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Check for required arguments
@@ -204,7 +204,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             String value = getYaml(id).getString(path);
             if (value == null) {
                 // If value is null, the key at the specified path didn't exist.
-                dB.echoDebug("YAML tag '" + event.raw_tag + "' has returned null.");
+                dB.echoDebug(event.getScriptEntry(), "YAML tag '" + event.raw_tag + "' has returned null.");
                 event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
                 return;
 
@@ -224,13 +224,13 @@ public class YamlCommand extends AbstractCommand implements Listener {
         if (attribute.startsWith("list_keys")) {
             ConfigurationSection section = getYaml(id).getConfigurationSection(path);
             if (section == null) {
-                dB.echoDebug("YAML tag '" + event.raw_tag + "' has returned null.");
+                dB.echoDebug(event.getScriptEntry(), "YAML tag '" + event.raw_tag + "' has returned null.");
                 event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
                 return;
             }
             Set<String> keys = section.getKeys(false);
             if (keys == null) {
-                dB.echoDebug("YAML tag '" + event.raw_tag + "' has returned null.");
+                dB.echoDebug(event.getScriptEntry(), "YAML tag '" + event.raw_tag + "' has returned null.");
                 event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
                 return;
 

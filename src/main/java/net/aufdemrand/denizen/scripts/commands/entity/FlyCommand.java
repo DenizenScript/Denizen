@@ -15,7 +15,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
@@ -86,7 +85,7 @@ public class FlyCommand extends AbstractCommand {
                 scriptEntry.addObject("speed", arg.asElement());
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Use the NPC or player's locations as the location if one is not specified
@@ -100,9 +99,9 @@ public class FlyCommand extends AbstractCommand {
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+            throw new InvalidArgumentsException("Must specify entity/entities!");
         if (!scriptEntry.hasObject("origin"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ORIGIN");
+            throw new InvalidArgumentsException("Must specify an origin!");
     }
 
     @SuppressWarnings("unchecked")
@@ -134,7 +133,7 @@ public class FlyCommand extends AbstractCommand {
                         // the controller
                         if (entities.get(entities.size() - 1) != entity) {
                             controller = entity;
-                            dB.report(getName(), "Flight control defaulting to " + controller);
+                            dB.report(scriptEntry, getName(), "Flight control defaulting to " + controller);
                             break;
                         }
                     }
@@ -142,7 +141,7 @@ public class FlyCommand extends AbstractCommand {
 
                 // If the controller is still null, we cannot continue
                 if (controller == null) {
-                    dB.report(getName(), "There is no one to control the flight's path!");
+                    dB.report(scriptEntry, getName(), "There is no one to control the flight's path!");
                     return;
                 }
             }
@@ -161,7 +160,7 @@ public class FlyCommand extends AbstractCommand {
 
                 // Add the controller to the entity list
                 if (!found) {
-                    dB.report(getName(), "Adding controller " + controller + " to flying entities.");
+                    dB.report(scriptEntry, getName(), "Adding controller " + controller + " to flying entities.");
                     entities.add(0, controller);
                 }
             }
@@ -172,7 +171,7 @@ public class FlyCommand extends AbstractCommand {
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
-        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(scriptEntry, getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("origin", origin) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("speed", speed) +

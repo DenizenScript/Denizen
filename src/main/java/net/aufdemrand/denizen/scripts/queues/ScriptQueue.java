@@ -380,7 +380,6 @@ public abstract class ScriptQueue {
         if (delay_time > System.currentTimeMillis())
             is_delayed = true;
 
-        dB.echoDebug("Starting " + getClass().getSimpleName() + " '" + id + "'");
         // If it's delayed, schedule it for later
 
         if (is_delayed) {
@@ -399,9 +398,10 @@ public abstract class ScriptQueue {
             onStart();
 
         if (is_delayed) {
-            dB.echoDebug("...but delaying execution for '"
+            dB.log("Delaying " + getClass().getSimpleName() + " '" + id + "'" + " for '"
                     + new Duration((delay_time - System.currentTimeMillis()) / 1000 * 20).identify() + "'.");
-        }
+        } else
+            dB.log("Starting " + getClass().getSimpleName() + " '" + id + "'");
 
     }
 
@@ -436,7 +436,7 @@ public abstract class ScriptQueue {
                 dB.log("Finishing up queue " + id + "...");
             } else /* if empty, just stop the queue like normal */ {
                 _queues.remove(id);
-                dB.echoDebug("Completing queue " + id + "...");
+                dB.log("Completing queue " + id + "...");
                 is_started = false;
                 onStop();
             }
@@ -447,7 +447,7 @@ public abstract class ScriptQueue {
         // 2) Cancel the corresponding task_id
         else {
             _queues.remove(id);
-            dB.echoDebug("Completing queue " + id + "...");
+            dB.log("Completing queue " + id + "...");
             is_started = false;
             onStop();
         }
@@ -545,5 +545,6 @@ public abstract class ScriptQueue {
     public int getQueueSize() {
         return script_entries.size();
     }
+
 
 }

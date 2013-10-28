@@ -74,19 +74,21 @@ public class dPlayer implements dObject, Adjustable {
 
 
     public static boolean matches(String arg) {
-
+        // If passed null, of course it doesn't match!
         if (arg == null) return false;
 
-        arg = arg.replace("p@", "");
+        // If passed a identified object that starts with 'p@', return true
+        // even if the player doesn't technically exist.
+        if (arg.toLowerCase().startsWith("p@")) return true;
 
+        // No identifier supplied? Let's check offlinePlayers. Return true if
+        // a match is found.
         OfflinePlayer returnable = null;
-
         for (OfflinePlayer player : Bukkit.getOfflinePlayers())
             if (player.getName().equalsIgnoreCase(arg)) {
                 returnable = player;
                 break;
             }
-
         return returnable != null;
     }
 

@@ -17,7 +17,6 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
@@ -84,7 +83,7 @@ public class PushCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Use the NPC or player's locations as the origin if one is not specified
@@ -102,10 +101,10 @@ public class PushCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
 
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "entities");
+            throw new InvalidArgumentsException("Must specify entity/entities!");
 
         if (!scriptEntry.hasObject("originEntity") && !scriptEntry.hasObject("originLocation"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "origin");
+            throw new InvalidArgumentsException("Must specify an origin location!");
     }
 
     @SuppressWarnings("unchecked")
@@ -128,8 +127,9 @@ public class PushCommand extends AbstractCommand {
                                                                .multiply(30)))
                                                             : null);
 
+        // TODO: Should this be checked in argument parsing?
         if (destination == null) {
-            dB.report(getName(), "No destination specified!");
+            dB.report(scriptEntry, getName(), "No destination specified!");
             return;
         }
 
@@ -140,7 +140,7 @@ public class PushCommand extends AbstractCommand {
         final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
+        dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("destination", destination) +
                              aH.debugObj("speed", speed) +

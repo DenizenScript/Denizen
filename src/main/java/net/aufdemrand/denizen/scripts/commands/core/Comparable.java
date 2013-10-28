@@ -68,7 +68,7 @@ public class Comparable {
             if (aH.matchesDouble(arg) || aH.matchesInteger(arg))
                 comparedto = aH.getDoubleFrom(arg);
             else {
-                dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
+                dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
                         + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
                 comparedto = Double.NaN;
             }

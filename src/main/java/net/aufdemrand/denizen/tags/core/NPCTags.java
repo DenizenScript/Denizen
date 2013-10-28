@@ -45,13 +45,13 @@ public class NPCTags implements Listener {
             if (dNPC.matches(attribute.getContext(1)))
                 n = dNPC.valueOf(attribute.getContext(1));
             else {
-                dB.echoDebug("Could not match '" + attribute.getContext(1) + "' to a valid NPC!");
+                dB.echoDebug(event.getScriptEntry(), "Could not match '" + attribute.getContext(1) + "' to a valid NPC!");
                 return;
             }
 
 
         if (n == null || !n.isValid()) {
-            dB.echoDebug("Invalid or missing NPC for tag <" + event.raw_tag + ">!");
+            dB.echoDebug(event.getScriptEntry(), "Invalid or missing NPC for tag <" + event.raw_tag + ">!");
             event.setReplaced("null");
             return;
         }

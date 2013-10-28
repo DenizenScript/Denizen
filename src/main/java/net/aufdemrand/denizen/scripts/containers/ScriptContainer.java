@@ -9,12 +9,13 @@ import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScriptContainer {
+public class ScriptContainer implements Debuggable {
 
     // <--[language]
     // @name Script Container
@@ -226,6 +227,17 @@ public class ScriptContainer {
 
     public boolean checkCooldown(dPlayer player) {
         return CooldownCommand.checkCooldown((player != null ? player.getName() : null), name);
+    }
+
+
+
+    /////////////
+    // DEBUGGABLE
+    /////////
+
+    @Override
+    public boolean shouldDebug() throws Exception {
+        return (!(contents.contains("DEBUG") && contents.getString("DEBUG").equalsIgnoreCase("false")));
     }
 
 }

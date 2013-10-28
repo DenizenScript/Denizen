@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 
 import java.util.*;
 
@@ -16,12 +16,10 @@ import java.util.*;
  * @author Jeremy Schroeder
  *
  */
-public class ScriptEntry implements Cloneable{
+public class ScriptEntry implements Cloneable, Debuggable {
 
     // The name of the command that will be executed
     private String command;
-
-    private long creationTime;
 
     private boolean instant = false;
     private boolean waitfor = false;
@@ -29,7 +27,6 @@ public class ScriptEntry implements Cloneable{
 
     private dPlayer player = null;
     private dNPC npc = null;
-
     private dScript script = null;
 
     private ScriptQueue queue = null;
@@ -51,9 +48,6 @@ public class ScriptEntry implements Cloneable{
         this.command = command.toUpperCase();
         if (script != null)
             this.script = script.getAsScriptArg();
-
-        // Internal, never null.
-        this.creationTime = System.currentTimeMillis();
 
         // Check if this is an 'instant' or 'waitfor' command.
         if (command.startsWith("^")) {
@@ -94,9 +88,7 @@ public class ScriptEntry implements Cloneable{
      *
      * @param key  The key of the object to check
      * @return  The scriptEntry
-     *
      */
-
     public ScriptEntry defaultObject(String key, Object... objects) throws InvalidArgumentsException {
         if (!this.objects.containsKey(key.toUpperCase()))
             for (Object obj : objects)
@@ -105,7 +97,7 @@ public class ScriptEntry implements Cloneable{
                     break;
                 }
         // Check if the object has been filled. If not, throw new Invalid Arguments Exception.
-        if (!hasObject(key)) throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, key);
+        if (!hasObject(key)) throw new InvalidArgumentsException("Missing '" + key + "' argument!");
         else
             return this;
     }
@@ -216,6 +208,15 @@ public class ScriptEntry implements Cloneable{
         queue = scriptQueue;
     }
 
+    public void setCommandName(String commandName) {
+        this.command = commandName;
+    }
+
+
+    ////////////
+    // COMPATIBILITY
+    //////////
+
     // Keep track of objects which were added by mass
     // so that IF can inject them into new entries.
     // This is ugly, but it will keep from breaking
@@ -226,7 +227,13 @@ public class ScriptEntry implements Cloneable{
         return this;
     }
 
-    public void setCommandName(String commandName) {
-        this.command = commandName;
+
+    /////////////
+    // DEBUGGABLE
+    /////////
+
+    @Override
+    public boolean shouldDebug() throws Exception {
+        return script.getContainer().shouldDebug();
     }
 }

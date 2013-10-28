@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.event.Listener;
 
 import java.util.Map;
@@ -79,7 +78,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
                     && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Add default script if none was specified.
@@ -99,7 +98,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         final dScript script = (dScript) scriptEntry.getObject("script");
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
-        dB.report(getName(), scriptEntry.getPlayer().debug() + script.debug()
+        dB.report(scriptEntry, getName(), scriptEntry.getPlayer().debug() + script.debug()
                 + (scriptEntry.hasObject("step")
                 ? scriptEntry.getElement("step").debug() : aH.debugObj("step", "++ (inc)"))
                 + (duration != null ? duration.debug() : ""));
@@ -144,13 +143,13 @@ public class ZapCommand extends AbstractCommand implements Listener{
             long delay = (long) (duration.getSeconds() * 20);
 
             // Set delayed task and put id in a map
-            dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "RESET ZAP for '" + script + "'");
+            dB.log("Setting delayed task 'RESET ZAP' for '" + script.identify() + "'");
             durations.put(scriptEntry.getPlayer().getName() + "," + script.getName(),
                     denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    dB.log(Messages.DEBUG_RUNNING_DELAYED_TASK, "RESET ZAP for '" + script.getName() + "'");
+                                    dB.log("Running delayed task 'RESET ZAP' for '" + script.identify() + "'");
                                     try {
                                         durations.remove(scriptEntry.getPlayer().getName() + "," + script.getName().toUpperCase());
                                         execute(scriptEntry);
@@ -166,7 +165,8 @@ public class ZapCommand extends AbstractCommand implements Listener{
         // FINALLY! ZAP! Change the step in Saves... your step is now ZAPPED!
         // Fun fact: ZAP is named in homage of ZZT-OOPs ZAP command. Google it.
         //
-        denizen.getSaves().set("Players." + scriptEntry.getPlayer().getName() + ".Scripts." + script.getName().toUpperCase() + "." + "Current Step", step);
+        denizen.getSaves().set("Players." + scriptEntry.getPlayer().getName()
+                + ".Scripts." + script.getName().toUpperCase() + "." + "Current Step", step);
     }
 
 }

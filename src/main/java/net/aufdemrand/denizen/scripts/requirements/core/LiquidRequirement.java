@@ -31,16 +31,16 @@ public class LiquidRequirement extends AbstractRequirement{
             if (aH.matchesLocation(thisArg)) {
                 blockToCheck = aH.getLocationFrom(thisArg).getBlock();
                 if (blockToCheck != null)
-                    dB.echoDebug("...block to check is type '%s'.", blockToCheck.getType().toString());
+                    dB.echoDebug(context.getScriptContainer(), "...block to check is type '" + blockToCheck.getType().toString() + "'");
             }
 
-            else dB.echoError("Could not match argument '%s'!", thisArg);
+            else dB.echoError("Could not match argument '" + thisArg + "'");
         }
 
         if (blockToCheck != null && blockToCheck.isLiquid()) outcome = true;
 
-        if (outcome) dB.echoDebug("...block is liquid!");
-        else dB.echoDebug("...block is not liquid!");
+        if (outcome) dB.echoDebug(context.getScriptContainer(), "...block is liquid!");
+        else dB.echoDebug(context.getScriptContainer(), "...block is not liquid!");
 
         return outcome;
     }

@@ -45,7 +45,7 @@ public class ScriptBuilder {
         }
 
         if (dB.showScriptBuilder)
-            dB.echoDebug("Building script entries:");
+            dB.echoDebug(parent, "Building script entries:");
 
         for (String entry : contents) {
 
@@ -70,7 +70,7 @@ public class ScriptBuilder {
                 /* Build new script commands */
                 String[] args = aH.buildArgs(scriptEntry[1]);
                 if (dB.showScriptBuilder)
-                    dB.echoDebug("Adding '" + scriptEntry[0] + "'  Args: " + Arrays.toString(args));
+                    dB.echoDebug(parent, "Adding '" + scriptEntry[0] + "'  Args: " + Arrays.toString(args));
                 ScriptEntry newEntry = new ScriptEntry(scriptEntry[0], args, parent).setPlayer(player).setNPC(npc);
                 scriptCommands.add(newEntry);
             } catch (Exception e) {

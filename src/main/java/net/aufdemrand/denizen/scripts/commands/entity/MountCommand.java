@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.entity.Position;
 
 /**
@@ -49,7 +48,7 @@ public class MountCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Use the NPC or player's locations as the location if one is not specified
@@ -61,10 +60,10 @@ public class MountCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
 
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+            throw new InvalidArgumentsException("Must specify entity/entities!");
 
         if (!scriptEntry.hasObject("location"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+            throw new InvalidArgumentsException("Must specify a location!");
     }
 
     @SuppressWarnings("unchecked")
@@ -77,7 +76,7 @@ public class MountCommand extends AbstractCommand {
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
-        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(scriptEntry, getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("location", location) +
                              aH.debugObj("entities", entities.toString()));
 

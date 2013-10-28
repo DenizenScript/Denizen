@@ -2,6 +2,11 @@ package net.aufdemrand.denizen.utilities.debugging;
 
 import net.aufdemrand.denizen.Settings;
 
+import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -55,15 +60,17 @@ import java.util.Date;
  */
 public class dB {
 
-    static ConsoleSender cs = new ConsoleSender();
-
-    public static boolean debugMode = Settings.ShowDebug();
+    public static boolean showDebug = Settings.ShowDebug();
     public static boolean showStackTraces = true;
     public static boolean showScriptBuilder = false;
     public static boolean showColor = true;
     public static boolean showEventsFiring = false;
+
+    public static boolean shouldTrim = true;
     public static boolean record = false;
-    public static String Recording = "";
+    public static StringBuilder Recording = new StringBuilder();
+    public static void toggle() { showDebug = !showDebug; }
+
 
     /**
      * Can be used with echoDebug(...) to output a header, footer,
@@ -74,46 +81,157 @@ public class dB {
      * DebugElement.Footer = +--------------+
      *
      * Also includes color.
-     *
      */
     public static enum DebugElement {
-        Header,    Footer, Spacer
+        Header, Footer, Spacer
     }
 
-    public static void report(String name, String report) {
-        dB.echoDebug("<Y>+> <G>Executing '<Y>" + name + "<G>': " + trimMessage(report));
+
+
+    ////////////
+    //  Public debugging methods, toggleable by checking extra criteria as implemented
+    //  by the Debuggable interface, which usually checks a ScriptContainer's 'debug' node
+    //////
+
+
+    /**
+     * Used by Commands to report how the supplied arguments were parsed.
+     * Should be supplied a concatenated String with aH.debugObject() or dObject.debug() of all
+     * applicable objects used by the Command.
+     *
+     * @param caller
+     * @param name
+     * @param report
+     */
+    public static void report(Debuggable caller, String name, String report) {
+        if (!showDebug) return;
+        echo("<Y>+> <G>Executing '<Y>" + name + "<G>': "
+                + trimMessage(report), caller);
     }
+
+
+    // Used by the various parts of Denizen that output debuggable information
+    // to help scripters see what is going on. Debugging an element is usually
+    // for formatting debug information.
+    public static void echoDebug(Debuggable caller, DebugElement element) {
+        if (!showDebug) return;
+        echoDebug(caller, element, null);
+    }
+
+
+    // Used by the various parts of Denizen that output debuggable information
+    // to help scripters see what is going on. Debugging an element is usually
+    // for formatting debug information.
+    public static void echoDebug(Debuggable caller, DebugElement element, String string) {
+        if (!showDebug) return;
+        StringBuilder sb = new StringBuilder(24);
+
+        switch(element) {
+            case Footer:
+                sb.append(ChatColor.LIGHT_PURPLE).append("+---------------------+");
+                break;
+
+            case Header:
+                sb.append(ChatColor.LIGHT_PURPLE).append("+- ").append(string).append(" ---------+");
+                break;
+        }
+
+        echo(sb.toString(), caller);
+    }
+
+
+    // Used by the various parts of Denizen that output debuggable information
+    // to help scripters see what is going on.
+    public static void echoDebug(Debuggable caller, String message) {
+        if (!showDebug) return;
+        echo(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + trimMessage(message), caller);
+    }
+
+
+
+    /////////////
+    // Other public debugging methods (Always show when debugger is enabled)
+    ///////
+
+
+    public static void echoApproval(String message) {
+        if (!showDebug) return;
+        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! "
+                + ChatColor.WHITE + message);
+    }
+
+
+    public static void echoError(String message) {
+        if (!showDebug) return;
+        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! "
+                + ChatColor.WHITE + trimMessage(message));
+    }
+
+
+    public static void log(String message) {
+        if (!showDebug) return;
+        ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
+                + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
+                sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
+                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] "
+                + ChatColor.WHITE + trimMessage(message));
+    }
+
+
+
+    ///////////////
+    // Private Helper Methods
+    /////////
+
+
+    // Some debug methods trim to keep super-long messages from hitting the console.
+    private static String trimMessage(String message) {
+        if (!shouldTrim) return message;
+        if (message.length() > 512)
+            message = message.substring(0, 511) + "... * snip! *";
+        return message;
+    }
+
+
+    // Handles checking whether the provided debuggable should submit to the debugger
+    private static void echo(String string, Debuggable caller) {
+        boolean should_send = true;
+
+        // Attempt to see if the debug should even be sent by checking the
+        // script container's 'debug' node.
+        try {
+            should_send = caller.shouldDebug();
+        } catch (Exception e) {
+            // Could not determine cancelled debug!
+            should_send = true;
+        }
+
+        if (should_send) ConsoleSender.sendMessage(string);
+    }
+
 
     /**
      * ConsoleSender sends dScript debugging information to the logger
      * will attempt to intelligently wrap any debug information that is more
      * than one line. This is used by the dB static methods which do some
      * additional formatting.
-     *
-     * Example:
-     *
-     * 16:05:05 [INFO] +- Executing command: ENGRAVE/aufdemrand ------+
-     * 16:05:05 [INFO]  ...set TYPE: 'TARGET:fullwall'
-     * 16:05:05 [INFO]  Engraving 'DIAMOND_CHESTPLATE' with an inscription of
-                         'Mastaba'.
-     * 16:05:05 [INFO] +---------------------+
-     * 16:05:05 [INFO] +- Executing command: SUPERZAP ------+
-     * 16:05:05 [INFO]  ERROR! SUPERZAP is an invalid dScript command! Are you
-                          sure the command loaded?
-     * 16:05:05 [INFO] +---------------------+
-     *
      */
     private static class ConsoleSender {
-        // Bukkit CommandSender sends color nicely to the logger.
+
+        // Bukkit CommandSender sends color nicely to the logger, so we'll use that.
         static CommandSender commandSender = null;
-        static boolean skipFooter = false;
         static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        static boolean skipFooter = false;
+
+        // Use this method for sending a message
         public static void sendMessage(String string) {
             if (commandSender == null) commandSender = Bukkit.getServer().getConsoleSender();
 
             // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
             // than having a bunch of ChatColor.XXXX
-            string = string.replace("<Y>", ChatColor.YELLOW + "").replace("<G>", ChatColor.DARK_GRAY + "")
+            string = string
+                    .replace("<Y>", ChatColor.YELLOW + "")
+                    .replace("<G>", ChatColor.DARK_GRAY + "")
                     .replace("<A>", ChatColor.AQUA + "");
 
             // 'Hack-fix' for disallowing multiple 'footers' to print in a row
@@ -122,7 +240,7 @@ public class dB {
                 else { return; }
             } else skipFooter = false;
 
-            // Create buffer for wrapping debug text nicely.
+            // Create buffer for wrapping debug text nicely. This is mostly needed for Windows logging.
             String[] words = string.split(" ");
             String buffer = "";
             int length = 0;
@@ -139,183 +257,12 @@ public class dB {
             }
 
             // Record current buffer to the to-be-submitted buffer
-            if (dB.record) dB.Recording += URLEncoder.encode(dateFormat.format(new Date()) + " [INFO] " + buffer.replace(ChatColor.COLOR_CHAR, (char)0x01) + "\n");
+            if (dB.record) dB.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
+                    + " [INFO] " + buffer.replace(ChatColor.COLOR_CHAR, (char)0x01) + "\n"));
 
             // Send buffer to the player
-            if (showColor)
-                commandSender.sendMessage(buffer);
-            else commandSender.sendMessage(ChatColor.stripColor(buffer));
+            commandSender.sendMessage(showColor ? buffer : ChatColor.stripColor(buffer));
         }
-    }
-
-
-    // TODO: Clean up messages.
-    // Plan is to have all core debugging dialog nicely organized here. Outside plugins which use the
-    // debugger can use this as well, but the main goal would be to ensure that all 'output' is uniform.
-    public enum Messages {
-
-        ERROR_NO_NPCID ("No 'NPCID:#' argument."),
-        ERROR_NO_PLAYER ("No 'PLAYER:player_name' argument."),
-        ERROR_NO_TEXT("No 'TEXT' argument."),
-        ERROR_NO_PLAYER_IN_SCRIPTENTRY("No Player object in the ScriptEntry. Use 'PLAYER:player_name' argument."),
-        ERROR_INVALID_ANCHOR("Missing 'TEXT' argument."),
-        ERROR_INVALID_NOTABLE("Missing 'TEXT' argument."),
-        ERROR_MISSING_LOCATION("Missing 'LOCATION'."),
-        ERROR_NO_SCRIPT("Missing 'SCRIPT' argument."),
-        ERROR_MISSING_OTHER("Missing '%s' argument."),
-        ERROR_LOTS_OF_ARGUMENTS("Too many arguments. Are there misplaced quotes?"),
-        ERROR_UNKNOWN_ARGUMENT("Unknown argument: '%s' Check spelling and syntax."),
-        DEBUG_SET_TEXT("...set TEXT: '%s'"),
-        DEBUG_TOGGLE("...TOGGLE: '%s'"),
-        DEBUG_SET_DURATION("...set DURATION: '%s'"),
-        DEBUG_SET_GLOBAL("...set GLOBAL."),
-        DEBUG_SET_SCRIPT("...set SCRIPT: '%s'"),
-        DEBUG_SET_QUANTITY("...set QUANTITY: '%s'"),
-        DEBUG_SET_LOCATION("...set LOCATION: '%s'"),
-        DEBUG_SET_TYPE("...set TYPE: '%s'"),
-        DEBUG_SET_RANGE("...set RANGE: '%s'"),
-        DEBUG_SET_ITEM("...set ITEM: '%s'"),
-        DEBUG_SET_NAME("...set NAME: '%s'"),
-        DEBUG_SET_RADIUS("...set RADIUS: '%s'"),
-        DEBUG_SET_COOLDOWN("...set COOLDOWN: '%s'"),
-        DEBUG_SET_COMMAND("...set COMMAND: '%s'"),
-        DEBUG_SET_FLAG_ACTION("...set FLAG ACTION: '%s'"),
-        DEBUG_SET_FLAG_TYPE("...set FLAG TYPE: '%s'"),
-        ERROR_INVALID_ENTITY("Invalid entity!"),
-        ERROR_INVALID_ITEM("Invalid item!"),
-        ERROR_PLAYER_NPCS_ONLY("NPC must be Human (Player)!"),
-        DEBUG_SET_STEP("...set STEP: '%s'"),
-        DEBUG_RANDOMLY_SELECTED_STEP("...randomly selected step '%s'"),
-        ERROR_CANCELLING_DELAYED_TASK("Unable to cancel previously delayed task!"),
-        DEBUG_RUNNING_DELAYED_TASK(ChatColor.YELLOW + "// DELAYED // Running delayed task '%s'"),
-        DEBUG_SETTING_DELAYED_TASK(ChatColor.YELLOW + "// DELAYED // Setting delayed task '%s'"),
-        ERROR_NO_WORLD("No valid world specified!"),
-        ERROR_INVALID_WORLD("Invalid world!");
-
-        @Override
-        public String toString() {
-            return error;
-        }
-
-        private String error;
-
-        private Messages(String error) {
-            this.error = error;
-        }
-    }
-
-    /*
-     *  Communicate with the Logger
-     */
-
-    public static void echoDebug(DebugElement element) {
-        echoDebug(element, null);
-    }
-
-    public static void echoDebug(Messages message, String arg) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + String.format(message.toString(), arg));
-    }
-
-    public static void echoDebug(DebugElement element, String string) {
-        if (!debugMode) return;
-        if (element == DebugElement.Footer)
-            ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
-        else if (element == DebugElement.Header)
-            ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + "+- " + string + " ------+");
-        else if (element == DebugElement.Spacer)
-            ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + "");
-    }
-
-    public static void echoDebug(String message, String arg) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + String.format(message, arg));
-    }
-
-    public static void echoDebug(String message) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + message);
-    }
-
-    public static void echoApproval(String message, String arg) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + String.format(message, arg));
-    }
-
-    public static void echoApproval(String message) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + message);
-    }
-
-    public static void echoError(String message) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + trimMessage(message));
-    }
-
-    public static void echoError(Messages message) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + trimMessage(message.toString()));
-    }
-
-    public static void echoError(Messages message, String arg) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + String.format(message.toString(), arg));
-    }
-
-    public static void echoError(String message, String arg) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + String.format(message, arg));
-    }
-
-    @SuppressWarnings("restriction")
-    public static void log(String message, String arg) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
-                + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
-                sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
-                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] "
-                + ChatColor.WHITE + String.format(trimMessage(message), arg));
-    }
-
-    @SuppressWarnings("restriction")
-    public static void log(Messages message, String arg) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
-                + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
-                sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
-                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] "
-                + ChatColor.WHITE + String.format(message.toString(), arg));
-    }
-
-    @SuppressWarnings("restriction")
-    public static void log(String message) {
-        if (!debugMode) return;
-        ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
-                + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
-                sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
-                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] " + ChatColor.WHITE + trimMessage(message));
-    }
-
-    /*
-     * These methods do NOT require DebugMode to be enabled
-     */
-
-    public static void notify(Player player, String message, String arg) {
-        player.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + String.format(message, arg));
-    }
-
-    public static void notify(Player player, String message) {
-        player.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + ChatColor.WHITE + message);
-    }
-
-    public static void toggle() {
-        debugMode = !debugMode;
-    }
-
-    private static String trimMessage(String message) {
-        if (message.length() > 512)
-            message = message.substring(0, 511) + "... *snip*";
-        return message;
     }
 
 }

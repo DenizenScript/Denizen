@@ -10,10 +10,8 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Displays an item in the world. This item will not disappear (unless set to)
@@ -41,7 +39,7 @@ public class DisplayItemCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("item"))
                 scriptEntry.addObject("item", arg.asType(dItem.class));
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Check required args
@@ -49,7 +47,7 @@ public class DisplayItemCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an item to display.");
 
         if (!scriptEntry.hasObject("location"))
-            throw new InvalidArgumentsException(Messages.DEBUG_SET_LOCATION);
+            throw new InvalidArgumentsException("Must specify a location!");
 
         if (!scriptEntry.hasObject("duration"))
             scriptEntry.addObject("duration", Duration.valueOf("1m"));
@@ -62,7 +60,7 @@ public class DisplayItemCommand extends AbstractCommand {
         Duration duration = (Duration) scriptEntry.getObject("duration");
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 item.debug()
                 + duration.debug()
                 + location.debug());

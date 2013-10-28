@@ -49,7 +49,7 @@ public class ScriptRequirement extends AbstractRequirement{
                 //im pretty confident this was missing from the original requirement
                 exactly = true;
 
-            else dB.echoError("Could not match argument '%s'!", thisArg);
+            else dB.echoError("Could not match argument '" + thisArg + "'");
         }
 
         if (type != null && checkScript != null) {

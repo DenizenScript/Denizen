@@ -69,15 +69,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(player.getLocation()))
             return false;
 
-        // Debugger
-        dB.report(name, aH.debugObj("Player", player.getName())
-                + aH.debugObj("NPC", npc.toString())
-                + aH.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
-                + "(" + npc.getTriggerTrait().getRadius(name) + ")")
-                + aH.debugObj("Trigger text", message)
-                + aH.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
-                + aH.debugObj("Facing", String.valueOf(Rotation.isFacingEntity(player, npc.getEntity(), 45))));
-
         // The Denizen config can require some other criteria for a successful chat-with-npc.
         // Should we check 'line of sight'? Players cannot talk to NPCs through walls
         // if enabled. Should the Player chat only when looking at the NPC? This may
@@ -92,13 +83,16 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         Boolean ret = false;
 
+        // Denizen should be good to interact with. Let's get the script.
+        InteractScriptContainer script = npc.getInteractScript(denizenPlayer, ChatTrigger.class);
+
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
         if (!npc.getTriggerTrait().trigger(ChatTrigger.this, denizenPlayer)) {
             // If the NPC is not interactable, Settings may allow the chat to filter
             // through. Check the Settings if this is enabled.
             if (Settings.ChatGloballyIfUninteractable()) {
-                dB.echoDebug (ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
+                dB.echoDebug(script, ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
                         + "The NPC is currently cooling down or engaged.");
                 return false;
             } else {
@@ -106,8 +100,14 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             }
         }
 
-        // Denizen should be good to interact with. Let's get the script.
-        InteractScriptContainer script = npc.getInteractScript(denizenPlayer, ChatTrigger.class);
+        // Debugger
+        dB.report(script, name, aH.debugObj("Player", player.getName())
+                + aH.debugObj("NPC", npc.toString())
+                + aH.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
+                + "(" + npc.getTriggerTrait().getRadius(name) + ")")
+                + aH.debugObj("Trigger text", message)
+                + aH.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
+                + aH.debugObj("Facing", String.valueOf(Rotation.isFacingEntity(player, npc.getEntity(), 45))));
 
         if (script == null) return false;
 
@@ -125,7 +125,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             }
             // No chat trigger for this step.. do we chat globally, or to the NPC?
             else if (!Settings.ChatGloballyIfNoChatTriggers()) {
-                dB.echoDebug(player.getName() + " says to "
+                dB.echoDebug(script, player.getName() + " says to "
                         + npc.getNicknameTrait().getNickname() + ", " + message);
                 return true;
             }

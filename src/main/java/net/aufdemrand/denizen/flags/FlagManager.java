@@ -530,7 +530,7 @@ public class FlagManager {
                     denizen.getSaves().set(flagPath + "-expiration", null);
                     denizen.getSaves().set(flagPath, null);
                     rebuild();
-                    dB.echoDebug("// '" + flagName + "' has expired! " + flagPath);
+                    dB.log('\'' + flagName + "' has expired! " + flagPath);
                     return true;
                 }
             return false;

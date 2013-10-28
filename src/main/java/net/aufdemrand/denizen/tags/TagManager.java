@@ -35,12 +35,6 @@ public class TagManager implements Listener {
     }
 
     public void registerCoreTags() {
-        // For compatibility
-        new AnchorTags(denizen);
-        new FlagTags(denizen);
-        new ConstantTags(denizen);
-        new NotableLocationTags(denizen);
-
         new PlayerTags(denizen);
         new NPCTags(denizen);
         new LocationTags(denizen);
@@ -50,6 +44,12 @@ public class TagManager implements Listener {
         new ContextTags(denizen);
         new SpecialCharacterTags(denizen);
         new TextTags(denizen);
+
+        // For compatibility
+        new AnchorTags(denizen);
+        new FlagTags(denizen);
+        new ConstantTags(denizen);
+        new NotableLocationTags(denizen);
 
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
@@ -72,7 +72,7 @@ public class TagManager implements Listener {
 
             if (!ObjectFetcher.checkMatch(object_class, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']'
                     : event.getName())) {
-                dB.echoDebug("Returning null. '" + event.getName()
+                dB.echoDebug(event.getScriptEntry(), "Returning null. '" + event.getName()
                         + "' is an invalid " + object_class.getSimpleName() + ".");
                 event.setReplaced("null");
                 return;

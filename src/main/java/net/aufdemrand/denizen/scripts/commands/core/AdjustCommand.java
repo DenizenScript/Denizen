@@ -40,6 +40,8 @@ public class AdjustCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
+        // TODO: ADD REPORT!
+
         String object = scriptEntry.getElement("object").asString();
 
         Class object_class = ObjectFetcher.getObjectClass(object.split("@")[0]);

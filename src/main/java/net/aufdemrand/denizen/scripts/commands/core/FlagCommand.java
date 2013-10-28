@@ -174,7 +174,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         }
 
         // Send information to debugger
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 name.debug() + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
                         + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value.asString() : "null"))
                         + (duration != null ? duration.debug() : "")

@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.minecraft.server.v1_6_R3.Block;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -67,11 +66,11 @@ public class SwitchCommand extends AbstractCommand {
                     arg.matchesEnum(SwitchState.values()))
                 scriptEntry.addObject("switchstate", new Element(arg.getValue().toUpperCase()));
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("location"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION, "location");
+            throw new InvalidArgumentsException("Must specify a location!");
 
         scriptEntry.defaultObject("duration", new Duration(0));
         scriptEntry.defaultObject("switchstate", new Element("TOGGLE"));
@@ -92,7 +91,7 @@ public class SwitchCommand extends AbstractCommand {
             // If this block already had a delayed task, cancel it.
             if (taskMap.containsKey(interactLocation))
                 try { denizen.getServer().getScheduler().cancelTask(taskMap.get(interactLocation)); } catch (Exception e) { }
-            dB.echoDebug(Messages.DEBUG_RUNNING_DELAYED_TASK, "SWITCH");
+            dB.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
             // Store new delayed task ID, for checking against, then schedule new delayed task.
             taskMap.put(interactLocation, denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
                     new Runnable() {
@@ -129,7 +128,7 @@ public class SwitchCommand extends AbstractCommand {
                               interactLocation.getBlockZ(),
                               null, 0, 0f, 0f, 0f);
 
-                dB.echoDebug("Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
+                dB.log("Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
                         ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
 
             } catch (NullPointerException e) {

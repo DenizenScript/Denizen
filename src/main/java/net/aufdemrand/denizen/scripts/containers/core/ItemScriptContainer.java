@@ -14,9 +14,11 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemScriptContainer extends ScriptContainer {
@@ -26,48 +28,52 @@ public class ItemScriptContainer extends ScriptContainer {
     // @description
     // Item script containers are an easy way to pre-define custom items for use within scripts. Item
     // scripts work with the dItem object, and can be fetched with the Object Fetcher by using the
-    // dItem constructor i@item_script_name. Example:
-    // - drop <player.location> i@super_dooper_diamond
+    // dItem constructor i@item_script_name. Example: - drop <player.location> i@super_dooper_diamond
     //
-    // The following is the format for the container. All keys are optional (except type and material).
+    // The following is the format for the container. Except for the 'material' key (and the dScript
+    // required 'type' key), all other keys are optional.
+    //
     // <code>
+    // # The name of the item script is the same name that you can use to construct a new
+    // # dItem based on this item script. For example, an item script named 'sword of swiftness'
+    // # can be referred to as 'i@sword of swiftness'.
     // Item Script Name:
-    //   # Exact:
+    //
     //   type: item
     //
-    //   # Must be a valid material... can have datavalues, EG 'wool:3'
+    //   # Must be a valid dMaterial (ie. m@red_wool or m@potion,8226) See 'dMaterial' for more information.
     //   material: material
     //
-    //   # 'custom name' can be anything you wish, including tags.
+    //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
     //   display name: custom name
     //
-    //   # the lore lines can be anything you wish, including tags.
+    //   # Lore lines can make items extra unique. This is a list, so multiple entries will result in multiple lores.
+    //   # If using a replaceable tag, they are filled in when the item script is given/created/dropped/etc.
     //   lore:
     //   - item
     //   - ...
     //
-    //   # Each line must specify a valid Bukkit enchantment.
+    //   # Each line must specify a valid Bukkit enchantment. See 'enchantments' for more information.
     //   enchantments:
     //   - enchantment_name:level
     //   - ...
     //
-    ///  # The recipe must have 9 valid materials, up to 9. Use m@air for an empty slow.
+    //   # Specifying a material will allow your item script to be crafted. Specify the materials required
+    //   # to craft your item. For an empty slot, use m@air. Currently, Denizen only supports shaped recipes.
     //   recipe:
     //   - m@material|m@material|m@material
     //   - m@material|m@material|m@material
     //   - m@material|m@material|m@material
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
-    //   # (Removes the black 'ID:' line from the lore, temporarily until we fix the bug that requires that line in the first place)
     //   no_id: true/false
     //
-    //   # Bound items cannot be dropped (Not fully working currently)
-    //   bound: true/false
-    //
-    //   # Only colorable items (such as leather)
+    //   # For colorable items, such as leather armor, you can specify a valid dColor to specify the item's appearance.
+    //   # See 'dColor' for more information.
     //   color: c@color
     //
-    //   # Only 'written_book' types
+    //   # If your material is a 'm@written_book', you can specify a book script to automatically scribe your item
+    //   # upon creation. See 'book script containers' for more information.
     //   book: book_script_name
     // </code>
     //
@@ -80,7 +86,9 @@ public class ItemScriptContainer extends ScriptContainer {
 
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+
         ItemScriptHelper.item_scripts.put(getName(), this);
+
         // Set Recipe
         if (contains("RECIPE")) {
             recipe = new ArrayList<dMaterial>();
@@ -175,7 +183,8 @@ public class ItemScriptContainer extends ScriptContainer {
                         Enchantment ench = Enchantment.getByName(enchantment.toUpperCase());
                         stack.getItemStack().addUnsafeEnchantment(ench, level);
                     } catch (Exception e) {
-                        dB.echoError("While constructing '" + getName() + "', there has been a problem. '" + enchantment + "' is an invalid Enchantment!");
+                        dB.echoError("While constructing '" + getName() + "', there has been a problem. '"
+                                + enchantment + "' is an invalid Enchantment!");
                     }
                 }
             }

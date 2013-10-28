@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * Lets you store and edit inventories.
@@ -49,7 +48,7 @@ public class InventoryCommand extends AbstractCommand {
                 scriptEntry.addObject("destination", Conversion.getInventory(arg));
             }
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Check to make sure required arguments have been filled
@@ -69,7 +68,7 @@ public class InventoryCommand extends AbstractCommand {
         dInventory origin = (dInventory) scriptEntry.getObject("origin");
         dInventory destination = (dInventory) scriptEntry.getObject("destination");
 
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("actions", actions.toString()) +
                 destination.debug()
                 + (origin != null ? origin.debug() : ""));

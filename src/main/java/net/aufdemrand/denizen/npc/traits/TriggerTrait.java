@@ -32,10 +32,10 @@ public class TriggerTrait extends Trait implements Listener {
     private Map<String, Integer> radius = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
 
     public void report() {
-        dB.echoDebug("enabled: " + enabled.entrySet().toString());
-        dB.echoDebug("duration: " + duration.entrySet().toString());
-        dB.echoDebug("type: " + type.entrySet().toString());
-        dB.echoDebug("radius: " + radius.entrySet().toString());
+        dB.log("enabled: " + enabled.entrySet().toString());
+        dB.log("duration: " + duration.entrySet().toString());
+        dB.log("type: " + type.entrySet().toString());
+        dB.log("radius: " + radius.entrySet().toString());
     }
 
     public TriggerTrait() {

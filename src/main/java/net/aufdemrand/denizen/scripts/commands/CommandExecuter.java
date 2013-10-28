@@ -48,9 +48,9 @@ public class CommandExecuter {
         scriptEntry.setCommandName(sb.toString());
 
         if (plugin.getCommandRegistry().get(scriptEntry.getCommandName()) == null) {
-            dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName());
+            dB.echoDebug(scriptEntry, DebugElement.Header, "Executing command: " + scriptEntry.getCommandName());
             dB.echoError(scriptEntry.getCommandName() + " is an invalid dCommand! Are you sure it loaded?");
-            dB.echoDebug(DebugElement.Footer);
+            dB.echoDebug(scriptEntry, DebugElement.Footer);
             return false;
         }
 
@@ -59,8 +59,8 @@ public class CommandExecuter {
 
         // Debugger information
         if (scriptEntry.getPlayer() != null)
-            dB.echoDebug(DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/" + scriptEntry.getPlayer().getName());
-        else dB.echoDebug(DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/" + scriptEntry.getNPC().getName() : ""));
+            dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/" + scriptEntry.getPlayer().getName());
+        else dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/" + scriptEntry.getNPC().getName() : ""));
 
         // Don't execute() if problems arise in parseArgs()
         boolean keepGoing = true;
@@ -123,7 +123,7 @@ public class CommandExecuter {
 
                 // Fill player/off-line player
                 if (arg.matchesPrefix("player") && !if_ignore) {
-                    dB.echoDebug("...replacing the linked player with " + arg.getValue());
+                    dB.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
                     String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
                     dPlayer player = dPlayer.valueOf(value);
                     if (player == null || !player.isValid()) {
@@ -135,7 +135,7 @@ public class CommandExecuter {
 
                 // Fill NPCID/NPC argument
                 else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
-                    dB.echoDebug("...replacing the linked NPC with " + arg.getValue());
+                    dB.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
                     String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
                     dNPC npc = dNPC.valueOf(value);
                     if (npc == null || !npc.isValid()) {
@@ -147,7 +147,7 @@ public class CommandExecuter {
 
                 // Save the scriptentry if needed later for fetching scriptentry context
                 else if (arg.matchesPrefix("save") && !if_ignore) {
-                    dB.echoDebug("...remembering this script entry!");
+                    dB.echoDebug(scriptEntry, "...remembering this script entry!");
                     scriptEntry.getResidingQueue().holdScriptEntry(arg.getValue(), scriptEntry);
                 }
 
@@ -169,9 +169,9 @@ public class CommandExecuter {
             keepGoing = false;
             // Give usage hint if InvalidArgumentsException was called.
             dB.echoError("Woah! Invalid arguments were specified!");
-            dB.echoDebug(ChatColor.YELLOW + "+> MESSAGE follows: " + ChatColor.WHITE + "'" + e.getMessage() + "'");
-            dB.echoDebug("Usage: " + command.getUsageHint());
-            dB.echoDebug(DebugElement.Footer);
+            dB.log(ChatColor.YELLOW + "+> MESSAGE follows: " + ChatColor.WHITE + "'" + e.getMessage() + "'");
+            dB.log("Usage: " + command.getUsageHint());
+            dB.echoDebug(scriptEntry, DebugElement.Footer);
 
         } catch (Exception e) {
 
@@ -180,7 +180,7 @@ public class CommandExecuter {
             if (!dB.showStackTraces)
                 dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
             else e.printStackTrace();
-            dB.echoDebug(DebugElement.Footer);
+            dB.echoDebug(scriptEntry, DebugElement.Footer);
 
         } finally {
 
@@ -195,7 +195,7 @@ public class CommandExecuter {
 
                     // Run the execute method in the command
                     if (!event.isCancelled()) command.execute(scriptEntry);
-                    else dB.echoDebug("ScriptEntry has been cancelled.");
+                    else dB.echoDebug(scriptEntry, "ScriptEntry has been cancelled.");
                 } catch (Exception e) {
                     dB.echoError("Woah!! An exception has been called with this command!");
                     if (!dB.showStackTraces)

@@ -93,7 +93,8 @@ public class dNPCRegistry implements Listener {
             Map.Entry<Integer, dNPC> npc = it.next();
             if (npc.getValue().getCitizen() == null) {
                 dB.log(ChatColor.RED + "Removed NPC from dRegistry.");
-                try { denizenNPCs.remove(npc.getKey()); } catch (Exception e) { dB.echoDebug("Report this error to aufdemrand! Err: posconcurrency1"); }
+                try { denizenNPCs.remove(npc.getKey()); }
+                catch (Exception e) { dB.echoError("Report this error to aufdemrand! Err: posconcurrency1"); }
             }
             else if (npc.getValue().isSpawned())
                 npcs.add(npc.getValue());

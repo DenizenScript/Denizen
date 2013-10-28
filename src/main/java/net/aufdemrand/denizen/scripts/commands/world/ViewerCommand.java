@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,7 +72,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
                     && arg.matchesPrefix("direction, dir"))
                 scriptEntry.addObject("direction", arg.asElement());
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
 
@@ -111,7 +110,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
 
             case CREATE:
                 if (viewers.containsKey(id)) {
-                    dB.echoDebug("Viewer ID " + id + " already exists!");
+                    dB.echoDebug(scriptEntry, "Viewer ID " + id + " already exists!");
                     return;
                 }
 
@@ -145,7 +144,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
 
             case MODIFY:
                 if (!viewers.containsKey(id)) {
-                    dB.echoDebug("Viewer ID " + id + " doesn't exist!");
+                    dB.echoDebug(scriptEntry, "Viewer ID " + id + " doesn't exist!");
                     return;
                 }
                 if (content != null) viewers.get(id).setContent(content);
@@ -172,7 +171,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
 
             case REMOVE:
                 if (!viewers.containsKey(id)) {
-                    dB.echoDebug("Viewer ID " + id + " doesn't exist!");
+                    dB.echoDebug(scriptEntry, "Viewer ID " + id + " doesn't exist!");
                     return;
                 }
 

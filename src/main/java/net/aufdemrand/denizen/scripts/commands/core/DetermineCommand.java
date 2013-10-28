@@ -40,12 +40,16 @@ public class DetermineCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments()))
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matches("passive, passively"))
                 scriptEntry.addObject("passively", new Element(true));
-            else
+
+            else if (!scriptEntry.hasObject("outcome"))
                 scriptEntry.addObject("outcome", arg.asElement());
+
+            else arg.reportUnhandled();
+        }
 
         // Set defaults
         scriptEntry.defaultObject("passively", new Element(false));
@@ -56,7 +60,7 @@ public class DetermineCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Report!
-        dB.report(getName(), scriptEntry.getElement("outcome").debug()
+        dB.report(scriptEntry, getName(), scriptEntry.getElement("outcome").debug()
                 + scriptEntry.getElement("passively").debug());
 
         // Fetch

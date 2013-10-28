@@ -14,7 +14,7 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 
 /**
  * Sets the ages of a list of entities, optionally locking them in those ages.
@@ -109,13 +109,13 @@ public class AgeCommand extends AbstractCommand {
                 scriptEntry.addObject("lock", "");
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Check to make sure required arguments have been filled
 
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+            throw new InvalidArgumentsException("Must specify entity/entities!");
 
         // Use default duration if one is not specified
 
@@ -133,7 +133,7 @@ public class AgeCommand extends AbstractCommand {
         boolean lock = scriptEntry.hasObject("lock");
 
         // Report to dB
-        dB.report(getName(), (lock ? aH.debugObj("lock", lock) : "") +
+        dB.report(scriptEntry, getName(), (lock ? aH.debugObj("lock", lock) : "") +
                              (ageType != null ? aH.debugObj("agetype", ageType)
                                               : aH.debugObj("age", age)) +
                              aH.debugObj("entities", entities.toString()));

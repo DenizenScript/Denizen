@@ -40,10 +40,12 @@ public class NameplateCommand extends AbstractCommand {
 
         List<String> args = scriptEntry.getArguments();
 
+        // TODO: Update this command!
+
         for(String arg : args) {
             if(aH.matchesValueArg("COLOR", arg, ArgumentType.String))
                 try { color = ChatColor.valueOf(aH.getStringFrom(arg).toUpperCase()); } catch( Exception e)  {
-                    dB.echoDebug("...COLOR could not be set: '%s' is an invalid color!", aH.getStringFrom(arg)); }
+                    dB.echoDebug(scriptEntry, "...COLOR could not be set: '" + aH.getStringFrom(arg) + "' is an invalid color!"); }
 
             else if(aH.matchesValueArg("TARGET", arg, ArgumentType.Word)) {
                 player = true;
@@ -72,11 +74,11 @@ public class NameplateCommand extends AbstractCommand {
         if (text != null) {
             if (text.equalsIgnoreCase("none")) {
                 scriptEntry.getNPC().getEntity().setCustomNameVisible(false);
-                dB.echoDebug("none");
+                dB.echoDebug(scriptEntry, "none");
             } else {
                 scriptEntry.getNPC().getEntity().setCustomNameVisible(true);
                 scriptEntry.getNPC().getEntity().setCustomName(text);
-                dB.echoDebug(text);
+                dB.echoDebug(scriptEntry, text);
             }
 
             if (scriptEntry.getNPC().getEntity() instanceof Player)

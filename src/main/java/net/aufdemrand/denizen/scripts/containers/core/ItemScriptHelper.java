@@ -59,14 +59,14 @@ public class ItemScriptHelper implements Listener {
                          npc, "events.on " + eventName);
                 if (entries.isEmpty()) continue;
 
-                dB.report("Event",
+                dB.report(script, "Event",
                         aH.debugObj("Type", "On " + eventName)
                         + script.getAsScriptArg().debug()
                         + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
                         + (player != null ? aH.debugObj("Player", player.getName()) : "")
                         + (context != null ? aH.debugObj("Context", context.toString()) : ""));
 
-                dB.echoDebug(dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
+                dB.echoDebug(script, dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
 
                 if (context != null) {
                     for (Map.Entry<String, Object> entry : context.entrySet()) {

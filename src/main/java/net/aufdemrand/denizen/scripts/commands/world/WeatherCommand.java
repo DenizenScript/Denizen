@@ -10,7 +10,7 @@ import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 
 /**
  *
@@ -43,13 +43,13 @@ public class WeatherCommand extends AbstractCommand {
 
                 scriptEntry.addObject("value", arg.asElement());
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Check to make sure required arguments have been filled
 
         if ((!scriptEntry.hasObject("value")))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "VALUE");
+            throw new InvalidArgumentsException("Must specify a value!");
 
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary
@@ -69,7 +69,7 @@ public class WeatherCommand extends AbstractCommand {
                 (Type) scriptEntry.getObject("type") : Type.GLOBAL;
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("type", type.name()) +
+        dB.report(scriptEntry, getName(), aH.debugObj("type", type.name()) +
                              (type.name().equalsIgnoreCase("player") ?
                              aH.debugObj("player", scriptEntry.getPlayer()) : "") +
                              (type.name().equalsIgnoreCase("global") ?

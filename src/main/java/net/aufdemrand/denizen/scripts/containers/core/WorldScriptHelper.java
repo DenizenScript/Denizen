@@ -21,7 +21,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
-import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
@@ -165,14 +164,14 @@ public class WorldScriptHelper implements Listener {
 
                     if (entries.isEmpty()) continue;
 
-                    dB.report("Event",
+                    dB.report(script, "Event",
                             aH.debugObj("Type", "on " + eventName)
                                     + script.getAsScriptArg().debug()
                                     + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
                                     + (player != null ? aH.debugObj("Player", player.getName()) : "")
                                     + (context != null ? aH.debugObj("Context", context.toString()) : ""));
 
-                    dB.echoDebug(dB.DebugElement.Header, "Building event 'ON " + eventName.toUpperCase() + "' for " + script.getName());
+                    dB.echoDebug(script, dB.DebugElement.Header, "Building event 'ON " + eventName.toUpperCase() + "' for " + script.getName());
 
                     // Create new ID -- this is what we will look for when determining an outcome
                     long id = DetermineCommand.getNewId();

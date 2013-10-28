@@ -249,7 +249,7 @@ public class aH {
 
 
         public void reportUnhandled() {
-            dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, raw_value);
+            dB.echoError('\'' + raw_value + "' is an unknown argument!");
         }
     }
 
@@ -300,7 +300,7 @@ public class aH {
         }
 
         if (dB.showScriptBuilder)
-            dB.echoDebug(ChatColor.GRAY + "Args: " + Arrays.toString(matchList.toArray()));
+            dB.log(ChatColor.GRAY + "Constructed args: " + Arrays.toString(matchList.toArray()));
 
         return matchList.toArray(new String[matchList.size()]);
     }

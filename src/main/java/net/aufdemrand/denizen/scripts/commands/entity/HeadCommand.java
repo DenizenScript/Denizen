@@ -45,7 +45,7 @@ public class HeadCommand extends AbstractCommand {
                      && arg.matchesArgumentList(dEntity.class))
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Use the NPC or the Player as the default entity
@@ -54,7 +54,7 @@ public class HeadCommand extends AbstractCommand {
                 (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null));
 
         if (!scriptEntry.hasObject("skin"))
-            throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "SKIN");
+            throw new InvalidArgumentsException("Must specify a skin!");
     }
 
     @SuppressWarnings("unchecked")
@@ -65,7 +65,7 @@ public class HeadCommand extends AbstractCommand {
         Element skin = scriptEntry.getElement("skin");
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("entities", entities.toString()) +
                 skin.debug());
 

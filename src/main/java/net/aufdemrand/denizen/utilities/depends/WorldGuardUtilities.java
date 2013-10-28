@@ -72,10 +72,7 @@ public class WorldGuardUtilities {
                 (location.getWorld()).getApplicableRegions(location);
 
         for(ProtectedRegion thisRegion: currentRegions) {
-            dB.echoDebug("...checking current region: " + thisRegion.getId());
             if (thisRegion.getId().equalsIgnoreCase(region)) {
-
-                dB.echoDebug("...matched region");
                 return true;
             }
         }

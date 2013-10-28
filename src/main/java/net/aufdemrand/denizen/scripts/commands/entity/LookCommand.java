@@ -44,7 +44,7 @@ public class LookCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Use the NPC or player as the entity if no entities are specified
@@ -65,7 +65,7 @@ public class LookCommand extends AbstractCommand {
         final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final Duration duration = (Duration) scriptEntry.getObject("duration");
 
-        dB.report(getName(), loc.debug() +
+        dB.report(scriptEntry, getName(), loc.debug() +
                 aH.debugObj("entities", entities.toString()));
 
         for (dEntity entity : entities) {

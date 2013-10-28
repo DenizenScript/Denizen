@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -98,7 +97,7 @@ public class CastCommand extends AbstractCommand{
 
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
 
         }
 
@@ -108,7 +107,7 @@ public class CastCommand extends AbstractCommand{
 
         // No potion specified? Problem!
         if (!scriptEntry.hasObject("effect"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PotionType");
+            throw new InvalidArgumentsException("Must specify a valid PotionType!");
 
         scriptEntry.defaultObject("duration", new Duration(60));
         scriptEntry.defaultObject("amplifier", new Element(1));
@@ -127,7 +126,7 @@ public class CastCommand extends AbstractCommand{
         boolean remove = scriptEntry.getElement("remove").asBoolean();
 
         // Report to dB
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("Target(s)", entities.toString())
                         + aH.debugObj("Effect", effect.getName())
                         + aH.debugObj("Amplifier", amplifier)

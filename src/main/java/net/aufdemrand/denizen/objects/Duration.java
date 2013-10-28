@@ -106,7 +106,7 @@ public class Duration implements dObject {
                         .nextInt((high.getSecondsAsInt() - low.getSecondsAsInt() + 1))
                                 + low.getSecondsAsInt();
                 // Send the result to the debugger since it's probably good to know what is being chosen.
-                dB.echoDebug("Getting random duration between " + low.identify()
+                dB.log("Getting random duration between " + low.identify()
                         + " and " + high.identify() + "... " + seconds + "s");
 
                 return new Duration(seconds);

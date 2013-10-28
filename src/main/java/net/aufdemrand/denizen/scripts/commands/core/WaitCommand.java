@@ -52,7 +52,7 @@ public class WaitCommand extends AbstractCommand {
         // Tell the queue to delay
         if (queue instanceof Delayable) {
             ((Delayable) queue).delayFor(delay);
-            dB.echoDebug("Delaying " + delay.identify());
+            dB.echoDebug(scriptEntry, "Delaying " + delay.identify());
         }
 
         else dB.echoError("This type of queue is not able to be delayed!");

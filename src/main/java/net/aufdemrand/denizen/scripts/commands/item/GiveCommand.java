@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 
@@ -79,7 +78,7 @@ public class GiveCommand  extends AbstractCommand {
                 .defaultObject("qty", new Element(1));
 
         if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ITEMS");
+            throw new InvalidArgumentsException("Must specify item/items!");
 
     }
 
@@ -97,7 +96,7 @@ public class GiveCommand  extends AbstractCommand {
         if (items_object != null)
             items = (List<dItem>) items_object;
 
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
                         + aH.debugObj("Quantity", qty.asDouble())
                         + engrave.debug()
@@ -125,7 +124,7 @@ public class GiveCommand  extends AbstractCommand {
                     HashMap<Integer, ItemStack> leftovers = inventory.addWithLeftovers(is);
 
                     if (!leftovers.isEmpty()) {
-                        dB.echoDebug ("The inventory didn't have enough space, the rest of the items have been placed on the floor.");
+                        dB.echoDebug (scriptEntry, "The inventory didn't have enough space, the rest of the items have been placed on the floor.");
                         for (ItemStack leftoverItem : leftovers.values())
                                inventory.getLocation().getWorld().dropItem(inventory.getLocation(), leftoverItem);
                     }

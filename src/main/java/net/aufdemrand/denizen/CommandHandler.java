@@ -714,8 +714,8 @@ public class CommandHandler {
         dB.record = false;
         Messaging.send(sender, ChatColor.GREEN + "Submitting...");
         final DebugSubmit submit = new DebugSubmit();
-        submit.recording = dB.Recording;
-        dB.Recording = "";
+        submit.recording = dB.Recording.toString();
+        dB.Recording = new StringBuilder();
         submit.start();
         BukkitRunnable task = new BukkitRunnable() {
             public void run() {
@@ -742,24 +742,24 @@ public class CommandHandler {
             min = 1, max = 3, permission = "denizen.debug", flags = "scebr")
     public void debug(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (args.hasFlag('s')) {
-            if (!dB.debugMode) dB.toggle();
+            if (!dB.showDebug) dB.toggle();
             dB.showStackTraces = !dB.showStackTraces;
         } else if (args.hasFlag('c')) {
-            if (!dB.debugMode) dB.toggle();
+            if (!dB.showDebug) dB.toggle();
             dB.showColor = !dB.showColor;
         } else if (args.hasFlag('e')) {
-            if (!dB.debugMode) dB.toggle();
+            if (!dB.showDebug) dB.toggle();
             dB.showEventsFiring = !dB.showEventsFiring;
         } else if (args.hasFlag('b')) {
-            if (!dB.debugMode) dB.toggle();
+            if (!dB.showDebug) dB.toggle();
             dB.showScriptBuilder = !dB.showScriptBuilder;
         } else if (args.hasFlag('r')) {
-            if (!dB.debugMode) dB.toggle();
+            if (!dB.showDebug) dB.toggle();
             dB.record = !dB.record;
-            dB.Recording = "";
+            dB.Recording = new StringBuilder();
         } else dB.toggle();
 
-        Messaging.send(sender, ChatColor.YELLOW + "Denizen debugger is " + (dB.debugMode ?
+        Messaging.send(sender, ChatColor.YELLOW + "Denizen debugger is " + (dB.showDebug ?
                 ((dB.showStackTraces) ? "enabled and showing stack-traces." : "enabled.") : "disabled.") + (dB.record ? " (Recording Active)": ""));
     }
 

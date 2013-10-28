@@ -122,7 +122,7 @@ public class InjectCommand extends AbstractCommand {
                 scriptEntry.addObject("path", arg.asElement());
 
             else
-                dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+                arg.reportUnhandled();
 
         }
 
@@ -137,7 +137,7 @@ public class InjectCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 (scriptEntry.hasObject("script") ? scriptEntry.getdObject("script").debug() : scriptEntry.getScript().debug())
                         + (scriptEntry.hasObject("instant") ? scriptEntry.getdObject("instant").debug() : "")
                         + (scriptEntry.hasObject("path") ? scriptEntry.getElement("path").debug() : "")

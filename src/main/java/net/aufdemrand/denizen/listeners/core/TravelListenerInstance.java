@@ -167,37 +167,35 @@ public class TravelListenerInstance extends AbstractListener implements Listener
     @EventHandler
     public void walking(PlayerMoveEvent event) {
         // Only continue if the player moving owns this Listener
-        if (!(event.getPlayer() == player.getPlayerEntity())) return;
+        if (!event.getPlayer().equals(player.getPlayerEntity())) return;
         // Don't look if the player hasn't moved a block yet...
         if (event.getTo().getBlock().equals(event.getFrom().getBlock())) return;
 
-        //
+        ////////////
         // DISTANCE type Location Listener
-        //
+        ///////
         if (type == TravelType.DISTANCE){
                 blocks_walked++;
                 check();
         }
 
-        //
+        ////////////
         // TOLOCATION type Location Listener
-        //
+        ///////
         else if (type == TravelType.TOLOCATION) {
             if (!player.getPlayerEntity().getLocation().getWorld().equals(end_point.getWorld())) return;
             //if (player.getLocation().distance(endPoint) <= radius) {
             if (Utilities.checkLocation(player.getPlayerEntity(), end_point, radius)) {
-                dB.echoDebug("...player reached location");
                 finish();
             }
         }
 
-        //
+        ///////////
         // TONPC type Location Listener
-        //
+        ///////
         else if (type == TravelType.TONPC) {
             if (Utilities.checkLocation(player.getPlayerEntity(),
                     target.getLocation(), radius)) {
-                dB.echoDebug("...player reached NPC");
                 finish();
             }
         }

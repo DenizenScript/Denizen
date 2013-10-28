@@ -15,7 +15,7 @@ import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 
 public class ForEachCommand extends BracedCommand {
 
@@ -32,10 +32,12 @@ public class ForEachCommand extends BracedCommand {
                     && arg.matchesArgumentType(dList.class))
                 scriptEntry.addObject("list", arg.asType(dList.class));
 
+            // Don't report unhandled since getBracedCommands will handle the remainder
+
         }
 
         if (!scriptEntry.hasObject("list"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LIST");
+            throw new InvalidArgumentsException("Must specify a valid list!");
 
         scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
 
@@ -55,7 +57,7 @@ public class ForEachCommand extends BracedCommand {
 
 
         // Report to dB
-        dB.report(getName(), list.debug() );
+        dB.report(scriptEntry, getName(), list.debug());
 
         String queueId = UUID.randomUUID().toString();
         for (String value : list) {
@@ -67,15 +69,15 @@ public class ForEachCommand extends BracedCommand {
                     ScriptEntry toAdd = entry.clone();
                     toAdd.getObjects().clear();
                     newEntries.add(toAdd);
-                }
-                catch (Throwable e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
             }
+
             ScriptQueue queue = new InstantQueue(queueId);
-            for (Map.Entry<String, dObject> entry : scriptEntry.getResidingQueue().getAllContext().entrySet()) {
+            for (Map.Entry<String, dObject> entry : scriptEntry.getResidingQueue().getAllContext().entrySet())
                 queue.addContext(entry.getKey(), entry.getValue());
-            }
+
             queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
             scriptEntry.getResidingQueue().addDefinition("value", value);
             queue.addDefinition("value", value);

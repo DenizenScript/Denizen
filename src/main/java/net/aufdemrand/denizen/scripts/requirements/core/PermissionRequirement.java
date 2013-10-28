@@ -32,22 +32,22 @@ public class PermissionRequirement extends AbstractRequirement{
                         {
                             if(Depends.permissions.has((World) null, context.getPlayer().getName(), arg))
                             {
-                                dB.echoDebug("...player has global permission: " + arg);
+                                dB.echoDebug(context.getScriptContainer(), "...player has global permission: " + arg);
                                 outcome = true;
                             }
                             else
-                                dB.echoDebug("...player does not have global permission: " + arg);
+                                dB.echoDebug(context.getScriptContainer(), "...player does not have global permission: " + arg);
                         }
                         else
                         {
                             if(Depends.permissions.has(context.getPlayer().getPlayerEntity(), arg))
                             {
-                                dB.echoDebug("...player has permission: " + arg);
+                                dB.echoDebug(context.getScriptContainer(), "...player has permission: " + arg);
                                 outcome = true;
                             }
                             else
                             {
-                                dB.echoDebug("...player does not have permission: " + arg + "!");
+                                dB.echoDebug(context.getScriptContainer(), "...player does not have permission: " + arg + "!");
                             }
                         }
                     }
@@ -56,7 +56,7 @@ public class PermissionRequirement extends AbstractRequirement{
                 return outcome;
             }
 
-            dB.echoDebug("...no permission plugin found, assume as FALSE!");
+            dB.echoDebug(context.getScriptContainer(), "...no permission plugin found, assume as FALSE!");
         }
 
         return false;

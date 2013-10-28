@@ -767,9 +767,7 @@ public class dEntity implements dObject, Adjustable {
     public void respawn() {
         if (despawned_entity != null)
             spawnAt(despawned_entity.location);
-        else if (entity != null)
-            dB.echoDebug("Entity " + identify() + " is already spawned!");
-        else
+        else if (entity == null)
             dB.echoError("Cannot respawn a null dEntity!");
 
     }
@@ -972,7 +970,7 @@ public class dEntity implements dObject, Adjustable {
         if (attribute == null) return null;
 
         if (entity == null) {
-            dB.echoDebug("dEntity has returned null.");
+            dB.echoError("dEntity has returned null.");
             return "null";
         }
 

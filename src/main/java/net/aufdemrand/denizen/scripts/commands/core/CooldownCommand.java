@@ -50,7 +50,7 @@ public class CooldownCommand extends AbstractCommand {
                     throw new InvalidArgumentsException("Specified an invalid script!");
             }
 
-            else dB.echoDebug("Unhandled argument: " + arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("duration"))
@@ -67,7 +67,7 @@ public class CooldownCommand extends AbstractCommand {
                 (Type) scriptEntry.getObject("type") : Type.PLAYER);
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("Type", type.name())
+        dB.report(scriptEntry, getName(), aH.debugObj("Type", type.name())
                 + script.debug()
                 + (type.name().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
                 + duration.debug());

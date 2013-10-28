@@ -18,7 +18,6 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.scheduler.BukkitRunnable;
@@ -85,7 +84,7 @@ public class RotateCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Use the NPC or the Player as the default entity
@@ -100,7 +99,7 @@ public class RotateCommand extends AbstractCommand {
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "entities");
+            throw new InvalidArgumentsException("Must specify entity/entities!");
     }
 
     @SuppressWarnings("unchecked")
@@ -116,7 +115,7 @@ public class RotateCommand extends AbstractCommand {
         final boolean infinite = scriptEntry.hasObject("infinite");
 
         // Report to dB
-        dB.report(getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("entities", entities.toString()) +
                              (infinite ? aH.debugObj("duration", "infinite") : duration.debug()) +
                              frequency.debug() +

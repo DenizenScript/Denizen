@@ -41,17 +41,17 @@ public class LogCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Needs at least 2 arguments (message and file)!");
         }
 
+        // TODO: UPDATE THIS COMMAND!
+
         for(String arg : scriptEntry.getArguments()) {
             if(aH.matchesValueArg("type", arg, aH.ArgumentType.String)) {
                 try {
                     type = Type.valueOf(aH.getStringFrom(arg));
-                    dB.echoDebug("Set type to " + type.name() + "!");
                 } catch(Exception e) {
                     dB.echoError("Invalid type: " + e.getMessage());
                 }
             } else if(aH.matchesValueArg("file", arg, aH.ArgumentType.String)) {
                 fileName = aH.getStringFrom(arg);
-                dB.echoDebug("Appending to '" + fileName + "' log file");
             } else {
                 message = arg;
             }
@@ -79,7 +79,7 @@ public class LogCommand extends AbstractCommand {
         Type type = (Type) scriptEntry.getObject("type");
         DebugLog log = (DebugLog) scriptEntry.getObject("log");
 
-         dB.report(getName(),
+         dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type) + aH.debugObj("Filename", fileName)
                 + aH.debugObj("Message", message));
 

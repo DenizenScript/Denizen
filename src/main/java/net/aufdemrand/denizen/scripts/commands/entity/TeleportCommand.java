@@ -15,7 +15,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 
 /**
  * Teleports a list of entities to a location.
@@ -46,11 +46,11 @@ public class TeleportCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("location"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+            throw new InvalidArgumentsException("Must specify a location!");
 
         // Use player or NPC as default entity
         scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
@@ -67,7 +67,7 @@ public class TeleportCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("location", location) +
+        dB.report(scriptEntry, getName(), aH.debugObj("location", location) +
                              aH.debugObj("entities", entities.toString()));
 
         for (dEntity entity : entities) {

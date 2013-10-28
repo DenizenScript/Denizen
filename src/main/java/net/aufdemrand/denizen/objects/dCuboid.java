@@ -58,8 +58,6 @@ public class dCuboid implements dObject, Notable {
         // Split values
         String[] positions = string.replace("cu@", "").split("\\|");
 
-        dB.echoDebug(Arrays.asList(positions).toString());
-
         dLocation pos_1;
         dLocation pos_2;
 
@@ -118,57 +116,79 @@ public class dCuboid implements dObject, Notable {
     }
 
 
+    public static class LocationPair {
+        dLocation loc_1;
+        dLocation loc_2;
+        int x_distance;
+        int y_distance;
+        int z_distance;
+    }
+
+
     ///////////////////
     //  Constructors/Instance Methods
     //////////////////
 
-
-    dLocation loc_1;
-    dLocation loc_2;
-    int x_distance;
-    int y_distance;
-    int z_distance;
-
+    // Location Pairs (loc_1, loc_2) that make up the dCuboid
+    List<LocationPair> pairs = new ArrayList<LocationPair>();
 
     // Only put dMaterials in filter.
     ArrayList<dObject> filter = new ArrayList<dObject>();
 
+
     private dCuboid(Location point_1, Location point_2) {
+        addPair(point_1, point_2);
+    }
+
+
+    public void addPair(Location point_1, Location point_2) {
+        // Make a new pair
+        LocationPair pair = new LocationPair();
 
         World world = point_1.getWorld();
 
+        // Calculate distances in the pair
         int x_high = (point_1.getBlockX() >= point_2.getBlockX()
                 ? point_1.getBlockX() : point_2.getBlockX());
         int x_low = (point_1.getBlockX() <= point_2.getBlockX()
                 ? point_1.getBlockX() : point_2.getBlockX());
-        x_distance = x_high - x_low;
+        pair.x_distance = x_high - x_low;
 
         int y_high = (point_1.getBlockY() >= point_2.getBlockY()
                 ? point_1.getBlockY() : point_2.getBlockY());
         int y_low = (point_1.getBlockY() <= point_2.getBlockY()
                 ? point_1.getBlockY() : point_2.getBlockY());
-        y_distance = y_high - y_low;
+        pair.y_distance = y_high - y_low;
 
         int z_high = (point_1.getBlockZ() >= point_2.getBlockZ()
                 ? point_1.getBlockZ() : point_2.getBlockZ());
         int z_low = (point_1.getBlockZ() <= point_2.getBlockZ()
                 ? point_1.getBlockZ() : point_2.getBlockZ());
-        z_distance = z_high - z_low;
+        pair.z_distance = z_high - z_low;
 
+        // Add defining locations to the pair
+        pair.loc_1 = new dLocation(world, x_low, y_low, z_low);
+        pair.loc_2 = new dLocation(world, x_high, y_high, z_high);
 
-        loc_1 = new dLocation(world, x_low, y_low, z_low);
-        loc_2 = new dLocation(world, x_high, y_high, z_high);
-
+        // Add pair to pairs array
+        pairs.add(pair);
     }
 
 
     public boolean isInsideCuboid(Location location) {
-        if (location.getWorld() != loc_1.getWorld()) return false;
-        if (!Utilities.isBetween(loc_1.getX(), loc_2.getX(), location.getX()))
-            return false;
-        if (!Utilities.isBetween(loc_1.getY(), loc_2.getY(), location.getY()))
-            return false;
-        return Utilities.isBetween(loc_1.getZ(), loc_2.getZ(), location.getZ());
+        for (LocationPair pair : pairs) {
+            if (!location.getWorld().equals(pair.loc_1.getWorld()))
+                continue;
+            if (!Utilities.isBetween(pair.loc_1.getX(), pair.loc_2.getX(), location.getX()))
+                continue;
+            if (!Utilities.isBetween(pair.loc_1.getY(), pair.loc_2.getY(), location.getY()))
+                continue;
+            if (Utilities.isBetween(pair.loc_1.getZ(), pair.loc_2.getZ(), location.getZ()))
+                return true;
+        }
+
+        // Does not match any of the pairs
+        return false;
     }
 
 
@@ -215,70 +235,79 @@ public class dCuboid implements dObject, Notable {
 
         dList list = new dList();
 
-        for (int y = loc_1.getBlockY(); y <= loc_1.getBlockY() + y_distance; y++) {
-            list.add(new dLocation(loc_1.getWorld(),
-                    loc_1.getBlockX(),
-                    y,
-                    loc_1.getBlockZ()).identify());
+        for (LocationPair pair : pairs) {
 
-            list.add(new dLocation(loc_1.getWorld(),
-                    loc_2.getBlockX(),
-                    y,
-                    loc_2.getBlockZ()).identify());
+            dLocation loc_1 = pair.loc_1;
+            dLocation loc_2 = pair.loc_2;
+            int y_distance = pair.y_distance;
+            int z_distance = pair.z_distance;
+            int x_distance = pair.x_distance;
 
-            list.add(new dLocation(loc_1.getWorld(),
-                    loc_1.getBlockX(),
-                    y,
-                    loc_2.getBlockZ()).identify());
+            for (int y = loc_1.getBlockY(); y <= loc_1.getBlockY() + y_distance; y++) {
+                list.add(new dLocation(loc_1.getWorld(),
+                        loc_1.getBlockX(),
+                        y,
+                        loc_1.getBlockZ()).identify());
 
-            list.add(new dLocation(loc_1.getWorld(),
-                    loc_2.getBlockX(),
-                    y,
-                    loc_1.getBlockZ()).identify());
-        }
+                list.add(new dLocation(loc_1.getWorld(),
+                        loc_2.getBlockX(),
+                        y,
+                        loc_2.getBlockZ()).identify());
 
-        for (int x = loc_1.getBlockX(); x <= loc_1.getBlockX() + x_distance; x++) {
-            list.add(new dLocation(loc_1.getWorld(),
-                    x,
-                    loc_1.getBlockY(),
-                    loc_1.getBlockZ()).identify());
+                list.add(new dLocation(loc_1.getWorld(),
+                        loc_1.getBlockX(),
+                        y,
+                        loc_2.getBlockZ()).identify());
 
-            list.add(new dLocation(loc_1.getWorld(),
-                    x,
-                    loc_1.getBlockY(),
-                    loc_2.getBlockZ()).identify());
+                list.add(new dLocation(loc_1.getWorld(),
+                        loc_2.getBlockX(),
+                        y,
+                        loc_1.getBlockZ()).identify());
+            }
 
-            list.add(new dLocation(loc_1.getWorld(),
-                    x,
-                    loc_2.getBlockY(),
-                    loc_2.getBlockZ()).identify());
+            for (int x = loc_1.getBlockX(); x <= loc_1.getBlockX() + x_distance; x++) {
+                list.add(new dLocation(loc_1.getWorld(),
+                        x,
+                        loc_1.getBlockY(),
+                        loc_1.getBlockZ()).identify());
 
-            list.add(new dLocation(loc_1.getWorld(),
-                    x,
-                    loc_2.getBlockY(),
-                    loc_1.getBlockZ()).identify());
-        }
+                list.add(new dLocation(loc_1.getWorld(),
+                        x,
+                        loc_1.getBlockY(),
+                        loc_2.getBlockZ()).identify());
 
-        for (int z = loc_1.getBlockZ(); z <= loc_1.getBlockZ() + z_distance; z++) {
-            list.add(new dLocation(loc_1.getWorld(),
-                    loc_1.getBlockX(),
-                    loc_1.getBlockY(),
-                    z).identify());
+                list.add(new dLocation(loc_1.getWorld(),
+                        x,
+                        loc_2.getBlockY(),
+                        loc_2.getBlockZ()).identify());
 
-            list.add(new dLocation(loc_1.getWorld(),
-                    loc_2.getBlockX(),
-                    loc_2.getBlockY(),
-                    z).identify());
+                list.add(new dLocation(loc_1.getWorld(),
+                        x,
+                        loc_2.getBlockY(),
+                        loc_1.getBlockZ()).identify());
+            }
 
-            list.add(new dLocation(loc_1.getWorld(),
-                    loc_1.getBlockX(),
-                    loc_2.getBlockY(),
-                    z).identify());
+            for (int z = loc_1.getBlockZ(); z <= loc_1.getBlockZ() + z_distance; z++) {
+                list.add(new dLocation(loc_1.getWorld(),
+                        loc_1.getBlockX(),
+                        loc_1.getBlockY(),
+                        z).identify());
 
-            list.add(new dLocation(loc_1.getWorld(),
-                    loc_2.getBlockX(),
-                    loc_1.getBlockY(),
-                    z).identify());
+                list.add(new dLocation(loc_1.getWorld(),
+                        loc_2.getBlockX(),
+                        loc_2.getBlockY(),
+                        z).identify());
+
+                list.add(new dLocation(loc_1.getWorld(),
+                        loc_1.getBlockX(),
+                        loc_2.getBlockY(),
+                        z).identify());
+
+                list.add(new dLocation(loc_1.getWorld(),
+                        loc_2.getBlockX(),
+                        loc_1.getBlockY(),
+                        z).identify());
+            }
         }
 
         return list;
@@ -289,21 +318,30 @@ public class dCuboid implements dObject, Notable {
         dLocation loc;
         dList list = new dList();
 
-        for (int x = 0; x != x_distance + 1; x++) {
-            for (int z = 0; z != z_distance + 1; z++) {
-                for (int y = 0; y != y_distance + 1; y++) {
-                    loc = new dLocation(loc_1.clone()
-                            .add(x, y, z));
-                    if (!filter.isEmpty()) {
-                        // Check filter
-                        for (dObject material : filter)
-                            if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
-                                    .getMaterial().name()))
-                                list.add(loc.identify());
-                    } else
-                        list.add(loc.identify());
+        for (LocationPair pair : pairs) {
+
+            dLocation loc_1 = pair.loc_1;
+            int y_distance = pair.y_distance;
+            int z_distance = pair.z_distance;
+            int x_distance = pair.x_distance;
+
+            for (int x = 0; x != x_distance + 1; x++) {
+                for (int z = 0; z != z_distance + 1; z++) {
+                    for (int y = 0; y != y_distance + 1; y++) {
+                        loc = new dLocation(loc_1.clone()
+                                .add(x, y, z));
+                        if (!filter.isEmpty()) {
+                            // Check filter
+                            for (dObject material : filter)
+                                if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
+                                        .getMaterial().name()))
+                                    list.add(loc.identify());
+                        } else
+                            list.add(loc.identify());
+                    }
                 }
             }
+
         }
 
         return list;
@@ -321,20 +359,28 @@ public class dCuboid implements dObject, Notable {
         dLocation loc;
         dList list = new dList();
 
-        for (int x = 0; x != x_distance + 1; x++) {
-            for (int z = 0; z != z_distance + 1; z++) {
-                for (int y = 0; y != y_distance; y++) {
+        for (LocationPair pair : pairs) {
 
-                    loc = new dLocation(loc_1.clone()
-                            .add(x, y, z));
+            dLocation loc_1 = pair.loc_1;
+            int y_distance = pair.y_distance;
+            int z_distance = pair.z_distance;
+            int x_distance = pair.x_distance;
 
-                    if (SafeBlock.blockIsSafe(loc.getBlock().getType())
-                            && SafeBlock.blockIsSafe(loc.clone().add(0, 1, 0).getBlock().getType())
-                            && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()) {
-                        // Get the center of the block, so the entity won't suffocate
-                        // inside the edges for a couple of seconds
-                        loc.add(0.5, 0, 0.5);
-                        list.add(loc.identify());
+            for (int x = 0; x != x_distance + 1; x++) {
+                for (int z = 0; z != z_distance + 1; z++) {
+                    for (int y = 0; y != y_distance; y++) {
+
+                        loc = new dLocation(loc_1.clone()
+                                .add(x, y, z));
+
+                        if (SafeBlock.blockIsSafe(loc.getBlock().getType())
+                                && SafeBlock.blockIsSafe(loc.clone().add(0, 1, 0).getBlock().getType())
+                                && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()) {
+                            // Get the center of the block, so the entity won't suffocate
+                            // inside the edges for a couple of seconds
+                            loc.add(0.5, 0, 0.5);
+                            list.add(loc.identify());
+                        }
                     }
                 }
             }
@@ -359,11 +405,18 @@ public class dCuboid implements dObject, Notable {
     @Override
     @Note("cuboid")
     public String getSaveObject() {
-        return loc_1.getBlockX() + ',' + loc_1.getBlockY()
-                + ',' + loc_1.getBlockZ() + ',' + loc_1.getWorld().getName()
-                + '|'
-                + loc_2.getBlockX() + ',' + loc_2.getBlockY()
-                + ',' + loc_2.getBlockZ() + ',' + loc_2.getWorld().getName();
+        StringBuilder sb = new StringBuilder();
+
+        for (LocationPair pair : pairs) {
+            sb.append(pair.loc_1.getBlockX() + ',' + pair.loc_1.getBlockY()
+                    + "," + pair.loc_1.getBlockZ() + ',' + pair.loc_1.getWorld().getName()
+                    + '|'
+                    + pair.loc_2.getBlockX() + ',' + pair.loc_2.getBlockY()
+                    + ',' + pair.loc_2.getBlockZ() + ',' + pair.loc_2.getWorld().getName()
+                    + '|');
+        }
+
+        return sb.toString().substring(0, sb.toString().length() - 1);
     }
 
     @Override
@@ -419,11 +472,22 @@ public class dCuboid implements dObject, Notable {
     public String identify() {
         if (isUnique())
             return "cu@" + NotableManager.getSavedId(this);
-        else return "cu@" + loc_1.getBlockX() + "," + loc_1.getBlockY()
-                + "," + loc_1.getBlockZ() + "," + loc_1.getWorld().getName()
-                + "|"
-                + loc_2.getBlockX() + "," + loc_2.getBlockY()
-                + "," + loc_2.getBlockZ() + "," + loc_2.getWorld().getName();
+
+        else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("cu@");
+
+            for (LocationPair pair : pairs) {
+                sb.append(pair.loc_1.getBlockX() + ',' + pair.loc_1.getBlockY()
+                        + "," + pair.loc_1.getBlockZ() + ',' + pair.loc_1.getWorld().getName()
+                        + '|'
+                        + pair.loc_2.getBlockX() + ',' + pair.loc_2.getBlockY()
+                        + ',' + pair.loc_2.getBlockZ() + ',' + pair.loc_2.getWorld().getName()
+                        + '|');
+            }
+
+            return sb.toString().substring(0, sb.toString().length() - 1);
+        }
     }
 
 
@@ -452,6 +516,32 @@ public class dCuboid implements dObject, Notable {
         if (attribute.startsWith("get_blocks"))
             return new dList(getBlocks())
                     .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <cu@cuboid.members_size>
+        // @returns Element(Number)
+        // @description
+        // Returns the number of cuboids defined in the dCuboid.
+        // -->
+        if (attribute.startsWith("members_size"))
+            return new Element(pairs.size())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <cu@cuboid.get_member[#]>
+        // @returns dCuboid
+        // @description
+        // Returns a new dCuboid of a single member of this dCuboid. Just specify an index.
+        // -->
+        if (attribute.startsWith("get_member")) {
+            int member = attribute.getIntContext(1);
+            if (member == 0)
+                return "null";
+            if (member - 1 > pairs.size())
+                return "null";
+            return new dCuboid(pairs.get(member - 1).loc_1, pairs.get(member - 1).loc_2)
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <cu@cuboid.get_spawnable_blocks>
@@ -500,20 +590,40 @@ public class dCuboid implements dObject, Notable {
         // @attribute <cu@cuboid.max>
         // @returns dLocation
         // @description
-        // Returns the highest-numbered corner location.
+        // Returns the highest-numbered corner location. If a single-member dCuboid, no
+        // index is required. If wanting the max of a specific member, just specify an index.
         // -->
         if (attribute.startsWith("max")) {
-            return loc_2.getAttribute(attribute.fulfill(1));
+            if (!attribute.hasContext(1))
+            return pairs.get(0).loc_2.getAttribute(attribute.fulfill(1));
+            else {
+                int member = attribute.getIntContext(1);
+                if (member == 0)
+                    return "null";
+                if (member - 1 > pairs.size())
+                    return "null";
+                return pairs.get(member - 1).loc_2.getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
         // @attribute <cu@cuboid.min>
         // @returns dLocation
         // @description
-        // Returns the lowest-numbered corner location.
+        // Returns the lowest-numbered corner location. If a single-member dCuboid, no
+        // index is required. If wanting the max of a specific member, just specify an index.
         // -->
         if (attribute.startsWith("min")) {
-            return loc_1.getAttribute(attribute.fulfill(1));
+            if (!attribute.hasContext(1))
+            return pairs.get(0).loc_1.getAttribute(attribute.fulfill(1));
+            else {
+                int member = attribute.getIntContext(1);
+                if (member == 0)
+                    return "null";
+                if (member - 1 > pairs.size())
+                    return "null";
+                return pairs.get(member - 1).loc_1.getAttribute(attribute.fulfill(1));
+            }
         }
 
 

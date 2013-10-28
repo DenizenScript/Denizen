@@ -16,7 +16,7 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 
 /**
  * Runs a task script.
@@ -112,7 +112,7 @@ public class RuntaskCommand extends AbstractCommand {
                 if (!script.getType().equalsIgnoreCase("TASK"))
                     script = null;
 
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            } else throw new InvalidArgumentsException("Unknown argument '" + arg + "'!");
         }
 
         // Must specify at least a valid script to run...
@@ -134,6 +134,10 @@ public class RuntaskCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
+        // Warn the console!
+        dB.log("Notice: This command has been deprecated. Use instead 'run' or 'inject'! While this command" +
+                " will continue to work for now, RUNTASK's new counterparts are more efficient and powerful!");
+
         Boolean instant = (Boolean) scriptEntry.getObject("instant");
 
         ScriptQueue queue;
@@ -150,7 +154,7 @@ public class RuntaskCommand extends AbstractCommand {
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debug output
-        dB.report(this.getName(),
+        dB.report(scriptEntry, getName(),
                 script.debug()
                         + (delay != null ? delay.debug() : "")
                         + aH.debugObj("Instant", instant.toString())

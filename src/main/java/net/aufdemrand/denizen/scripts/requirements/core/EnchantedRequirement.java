@@ -28,10 +28,10 @@ public class EnchantedRequirement extends AbstractRequirement{
 
             if (aH.matchesValueArg("ITEMINHAND", thisArg, ArgumentType.Custom)) {
                 checkType = CheckType.ITEMINHAND;
-                dB.echoDebug("...will check item in hand");
+                dB.echoDebug(context.getScriptContainer(), "...will check item in hand");
             }
 
-            else dB.echoError("Could not match argument '%s'!", thisArg);
+            else dB.echoError("Could not match argument '" + thisArg + "'");
         }
 
         if (checkType != null) {
@@ -44,8 +44,8 @@ public class EnchantedRequirement extends AbstractRequirement{
             }
         }
 
-        if (outcome) dB.echoDebug("...item is enchanted.");
-        else dB.echoDebug("...item is not enchanted!");
+        if (outcome) dB.echoDebug(context.getScriptContainer(), "...item is enchanted.");
+        else dB.echoDebug(context.getScriptContainer(), "...item is not enchanted!");
 
         return outcome;
     }

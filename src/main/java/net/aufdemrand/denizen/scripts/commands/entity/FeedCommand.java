@@ -3,9 +3,6 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.citizensnpcs.api.ai.TargetType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -13,11 +10,7 @@ import net.aufdemrand.denizen.npc.traits.HungerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 
 /**
  * Feeds a (Player) entity.
@@ -58,8 +51,8 @@ public class FeedCommand extends AbstractCommand {
                     && scriptEntry.hasPlayer())
                 scriptEntry.addObject("targetplayer", scriptEntry.getPlayer());
 
-            else
-                dB.echoError(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
+
         }
 
         if (!scriptEntry.hasObject("targetplayer") &&
@@ -69,11 +62,11 @@ public class FeedCommand extends AbstractCommand {
             else if (scriptEntry.hasNPC())
                 scriptEntry.addObject("targetnpc", scriptEntry.getNPC());
             else
-                throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+                throw new InvalidArgumentsException("Must specify a player!");
         }
 
         if (!scriptEntry.hasObject("amount"))
-            scriptEntry.addObject("amount", new Element(9999));
+            scriptEntry.addObject("amount", new Element(9999)); // TODO: 9999?
     }
 
     @Override
@@ -83,7 +76,7 @@ public class FeedCommand extends AbstractCommand {
         dNPC npc = (dNPC) scriptEntry.getObject("targetnpc");
         Element amount = scriptEntry.getElement("amount");
 
-        dB.report(getName(),
+        dB.report(scriptEntry, getName(),
                 (player == null?"": player.debug())
                 +(npc == null?"":npc.debug())
                 +amount.debug());

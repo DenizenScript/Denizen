@@ -106,7 +106,7 @@ public class ChatCommand extends AbstractCommand {
 
         dB.report(getName(), talkers.debug() + targets.debug() + message.debug());
 
-        // Create empty speech context
+        // Create new speech context
         SpeechContext context = new SpeechContext(message.asString());
 
         if (targets != Element.FALSE) {

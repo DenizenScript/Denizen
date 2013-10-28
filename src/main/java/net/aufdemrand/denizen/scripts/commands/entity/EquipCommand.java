@@ -15,7 +15,6 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 
@@ -71,12 +70,12 @@ public class EquipCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Make sure at least one equipment argument was used
         if (equipment.isEmpty())
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EQUIPMENT");
+            throw new InvalidArgumentsException("Must specify equipment!");
 
         scriptEntry.addObject("equipment", equipment);
 
@@ -95,7 +94,7 @@ public class EquipCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("entities", entities.toString()) +
+        dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("equipment", equipment.toString()));
 
         for (dEntity entity : entities) {

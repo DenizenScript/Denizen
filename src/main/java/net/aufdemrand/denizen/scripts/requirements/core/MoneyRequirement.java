@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 
 import java.util.List;
@@ -23,12 +22,12 @@ public class MoneyRequirement extends AbstractRequirement{
             for (String arg : args) {
                 if (aH.matchesQuantity(arg) || aH.matchesInteger(arg) || aH.matchesDouble(arg)) {
                     quantity = aH.getDoubleFrom(arg);
-                    dB.echoDebug("...quantity set to: " + quantity);
-                } else throw new RequirementCheckException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+                    dB.echoDebug(context.getScriptContainer(), "...quantity set to: " + quantity);
+                } else throw new RequirementCheckException("Unknown argument '" + arg + "'!");
             }
 
             balance = Depends.economy.getBalance(context.getPlayer().getName());
-            dB.echoDebug ("...player balance: " + balance);
+            dB.echoDebug (context.getScriptContainer(), "...player balance: " + balance);
 
             outcome = (balance >= quantity);
         } else {

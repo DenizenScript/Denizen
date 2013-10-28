@@ -3,13 +3,13 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.events.ScriptFailEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Bukkit;
 
 /**
@@ -36,39 +36,35 @@ public class FailCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        // Get some defaults from the ScriptEntry
-        dScript script = scriptEntry.getScript();
 
         // Parse the arguments
-        for (String arg : scriptEntry.getArguments()) {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (aH.matchesScript(arg)) {
-                script = aH.getScriptFrom(arg);
+            if (arg.matchesArgumentType(dScript.class))
+                scriptEntry.addObject("script", arg.asType(dScript.class));
 
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else if (arg.matchesArgumentType(dPlayer.class))
+                scriptEntry.addObject("player", arg.asType(dPlayer.class));
+
+            else arg.reportUnhandled();
         }
 
         // Check for required args
-        if (scriptEntry.getPlayer() == null)
-            throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
-        if (script == null)
-            throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
-
-        // Stash objects
-        scriptEntry.addObject("script", script);
+        scriptEntry.defaultObject("player", scriptEntry.getPlayer());
+        scriptEntry.defaultObject("script", scriptEntry.getScript());
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Grab objects from scriptEntry
         dScript script = (dScript) scriptEntry.getObject("script");
+        dPlayer player = (dPlayer) scriptEntry.getObject("player");
 
         // Report to dB
-        dB.report(getName(),
-                scriptEntry.getPlayer().debug()
-                        + script.debug());
+        dB.report(scriptEntry, getName(),
+                player.debug() + script.debug());
 
-        failScript(scriptEntry.getPlayer().getName(), script.getName());
+        failScript(player.getName(), script.getName());
     }
 
     public static void resetFails(String playerName, String scriptName) {
@@ -108,7 +104,8 @@ public class FailCommand extends AbstractCommand {
      *         number of times the Player has failed the specified script
      */
     public static int getScriptFails(String playerName, String scriptName) {
-        return DenizenAPI.getCurrentInstance().getSaves().getInt("Players." + playerName + "." + scriptName.toUpperCase() + "." + "Failed", 0);
+        return DenizenAPI.getCurrentInstance().getSaves()
+                .getInt("Players." + playerName + "." + scriptName.toUpperCase() + "." + "Failed", 0);
     }
 
 }

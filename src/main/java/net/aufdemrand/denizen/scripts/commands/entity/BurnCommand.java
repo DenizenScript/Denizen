@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * Sets a list of entities on fire.
@@ -39,7 +38,7 @@ public class BurnCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Use the NPC or the Player as the default entity
@@ -60,7 +59,7 @@ public class BurnCommand extends AbstractCommand {
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
         // Report to dB
-        dB.report(getName(), duration.debug() +
+        dB.report(scriptEntry, getName(), duration.debug() +
                 aH.debugObj("entities", entities.toString()));
 
         // Go through all the entities and set them on fire

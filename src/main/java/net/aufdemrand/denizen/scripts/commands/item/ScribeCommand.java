@@ -5,11 +5,9 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -168,7 +166,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
             player.getInventory().addItem(book);
         else {
             player.getWorld().dropItem(player.getLocation(), book);
-            dB.echoDebug("Player's inventory is full, dropped book.");
+            dB.log("Player's inventory is full, dropped book.");
         }
     }
 
@@ -184,17 +182,17 @@ public class ScribeCommand extends AbstractCommand implements Listener {
         }
         // drop it if inventory has no empty slots
         emptySpot = inv.firstEmpty();
-        dB.echoDebug("emptySpot: " + emptySpot);
+        dB.log("emptySpot: " + emptySpot);
 
         if (emptySpot == -1) {
             player.getWorld().dropItem(player.getLocation(), book);
-            dB.echoDebug("Player's inventory is full, dropped book.");
+            dB.log("Player's inventory is full, dropped book.");
         }
         // move current held item to empty spot, set item in hand to the book
         else {
             inv.setItem(emptySpot, currItem);
             player.setItemInHand(book);
-            dB.echoDebug("...added book to player hand, moved original item");
+            dB.log("...added book to player hand, moved original item");
         }
     }
 

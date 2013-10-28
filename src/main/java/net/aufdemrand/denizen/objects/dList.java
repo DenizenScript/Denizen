@@ -54,7 +54,7 @@ public class dList extends ArrayList<String> implements dObject {
                 }
 
             } catch (Exception e) {
-                dB.echoDebug("Flag '" + m.group() + "' could not be found!");
+                dB.echoError("Flag '" + m.group() + "' could not be found!");
                 return null;
             }
         }

@@ -19,6 +19,8 @@ public class ResetCommand extends AbstractCommand {
         dScript script = scriptEntry.getScript();
         Type type = null;
 
+        // TODO: UPDATE THIS COMMAND!
+
         for (String arg : scriptEntry.getArguments()) {
 
             if (aH.matchesArg("finishes, finished, finish", arg))
@@ -36,14 +38,14 @@ public class ResetCommand extends AbstractCommand {
             else if (aH.matchesScript(arg))
                 script = aH.getScriptFrom(arg);
 
-            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else throw new InvalidArgumentsException("Unknown argument '" + arg + "'!");
         }
 
         if (type == null)
             throw new InvalidArgumentsException("Must specify a type! Valid: FAILS, FINISHES, COOLDOWN, GLOBAL_COOLDOWN");
 
         if (scriptEntry.getPlayer() == null && type != Type.GLOBAL_COOLDOWN)
-            throw new InvalidArgumentsException(dB.Messages.ERROR_NO_PLAYER);
+            throw new InvalidArgumentsException("Must specify a player!");
 
         scriptEntry.addObject("script", script)
                 .addObject("type", type);

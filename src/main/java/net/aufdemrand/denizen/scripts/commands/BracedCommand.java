@@ -42,15 +42,15 @@ public abstract class BracedCommand extends AbstractCommand {
         // Inject the scriptEntry into the front of the queue, otherwise it doesn't exist
         scriptEntry.getResidingQueue().injectEntry(scriptEntry, 0);
         // Send info to debug
-        if (hyperdebug) dB.echoDebug("Starting getBracedCommands...");
+        if (hyperdebug) dB.echoDebug(scriptEntry, "Starting getBracedCommands...");
 
         // If the specified amount of possible entries is less than the queue size, print that instead
-        if (hyperdebug) dB.echoDebug("...with queue size: " + scriptEntry.getResidingQueue().getQueueSize());
-        if (hyperdebug) dB.echoDebug("...with first command name: " + scriptEntry.getCommandName());
-        if (hyperdebug) dB.echoDebug("...with first command arguments: " + scriptEntry.getArguments());
+        if (hyperdebug) dB.echoDebug(scriptEntry, "...with queue size: " + scriptEntry.getResidingQueue().getQueueSize());
+        if (hyperdebug) dB.echoDebug(scriptEntry, "...with first command name: " + scriptEntry.getCommandName());
+        if (hyperdebug) dB.echoDebug(scriptEntry, "...with first command arguments: " + scriptEntry.getArguments());
 
         ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(0);
-        if (hyperdebug) dB.echoDebug("Entry found: " + entry.getCommandName());
+        if (hyperdebug) dB.echoDebug(scriptEntry, "Entry found: " + entry.getCommandName());
 
         // Loop through the arguments of each entry
         List<aH.Argument> argList = aH.interpret(entry.getArguments());
@@ -60,14 +60,14 @@ public abstract class BracedCommand extends AbstractCommand {
 
         for (int i = startArg; i < argList.size(); i++) {
             aH.Argument arg = argList.get(i);
-            if (hyperdebug) dB.echoDebug("Arg found: " + arg.raw_value);
+            if (hyperdebug) dB.echoDebug(scriptEntry, "Arg found: " + arg.raw_value);
 
             // Listen for opened braces
             if (arg.matches("{")) {
                 bracesEntered++;
                 newCommand = false;
                 waitingForDash = bracesEntered == 1;
-                if (hyperdebug) dB.echoDebug("Opened brace; " + String.valueOf(bracesEntered) + " now");
+                if (hyperdebug) dB.echoDebug(scriptEntry, "Opened brace; " + String.valueOf(bracesEntered) + " now");
                 if (bracesEntered > 1) {
                     commandList.get(commandList.lastKey()).add(arg.raw_value);
                 }
@@ -77,7 +77,7 @@ public abstract class BracedCommand extends AbstractCommand {
             else if (arg.matches("}")) {
                 bracesEntered--;
                 newCommand = false;
-                if (hyperdebug) dB.echoDebug("Closed brace; " + String.valueOf(bracesEntered) + " now");
+                if (hyperdebug) dB.echoDebug(scriptEntry, "Closed brace; " + String.valueOf(bracesEntered) + " now");
                 if (bracesEntered > 0) {
                     commandList.get(commandList.lastKey()).add(arg.raw_value);
                 }
@@ -94,7 +94,7 @@ public abstract class BracedCommand extends AbstractCommand {
                                 continue;
                             }
                             String cmd = command.get(0);
-                            if (hyperdebug) dB.echoDebug("Calculating " + cmd);
+                            if (hyperdebug) dB.echoDebug(scriptEntry, "Calculating " + cmd);
                             command.remove(0);
                             String[] args = new String[command.size()];
                             args = command.toArray(args);
@@ -103,12 +103,12 @@ public abstract class BracedCommand extends AbstractCommand {
                                     scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
                             bracesSection.get(bracesSection.size() - 1).setPlayer(scriptEntry.getPlayer());
                             bracesSection.get(bracesSection.size() - 1).setNPC(scriptEntry.getNPC());
-                            if (hyperdebug) dB.echoDebug("Command added: " + cmd + ", with " + String.valueOf(args.length) + " arguments");
+                            if (hyperdebug) dB.echoDebug(scriptEntry, "Command added: " + cmd + ", with " + String.valueOf(args.length) + " arguments");
                         } catch (ScriptEntryCreationException e) {
                             if (hyperdebug) dB.echoError(e.getMessage());
                         }
                     }
-                    if (hyperdebug) dB.echoDebug("Adding section " + bracesName);
+                    if (hyperdebug) dB.echoDebug(scriptEntry, "Adding section " + bracesName);
                     bracedSections.put(bracesName.toUpperCase(), bracesSection);
                     bracesName = "";
                 }
@@ -119,14 +119,14 @@ public abstract class BracedCommand extends AbstractCommand {
                 commandList.put(commandList.size(), new ArrayList<String>());
                 commandList.get(commandList.lastKey()).add(arg.raw_value);
                 newCommand = false;
-                if (hyperdebug) dB.echoDebug("Treating as new command");
+                if (hyperdebug) dB.echoDebug(scriptEntry, "Treating as new command");
             }
 
             // Start building a command
             else if (arg.matches("-") && bracesEntered == 1) {
                 newCommand = true;
                 waitingForDash = false;
-                if (hyperdebug) dB.echoDebug("Assuming following is a new command");
+                if (hyperdebug) dB.echoDebug(scriptEntry, "Assuming following is a new command");
             }
 
             // Add to the name of the braced command list
@@ -142,7 +142,7 @@ public abstract class BracedCommand extends AbstractCommand {
                 }
                 newCommand = false;
                 commandList.get(commandList.lastKey()).add(arg.raw_value);
-                if (hyperdebug) dB.echoDebug("Adding to the command");
+                if (hyperdebug) dB.echoDebug(scriptEntry, "Adding to the command");
             }
         }
 

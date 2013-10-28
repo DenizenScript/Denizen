@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -49,12 +48,12 @@ public class LeashCommand extends AbstractCommand {
                     scriptEntry.addObject("holder", arg.asType(dLocation.class));
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+            throw new InvalidArgumentsException("Must specify entity/entities!");
 
         if (!scriptEntry.hasObject("cancel")) {
 
@@ -90,7 +89,7 @@ public class LeashCommand extends AbstractCommand {
         Boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
-        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(scriptEntry, getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("entities", entities.toString()) +
                              (holder != null ? aH.debugObj("holder", holder) : aH.debugObj("holder", holderLoc)));
 

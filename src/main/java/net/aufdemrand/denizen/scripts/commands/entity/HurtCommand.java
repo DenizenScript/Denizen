@@ -48,7 +48,7 @@ public class HurtCommand extends AbstractCommand {
                 specified_targets = true;
             }
 
-            else dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+            else arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("amount"))
@@ -76,7 +76,7 @@ public class HurtCommand extends AbstractCommand {
             return;
         Element amountelement = scriptEntry.getElement("amount");
 
-        dB.report(getName(), amountelement.debug() + aH.debugObj("entities", entities));
+        dB.report(scriptEntry, getName(), amountelement.debug() + aH.debugObj("entities", entities));
         for (dEntity entity : entities)
             entity.getLivingEntity().damage(amountelement.asDouble());
 

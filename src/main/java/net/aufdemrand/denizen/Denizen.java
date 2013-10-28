@@ -154,13 +154,13 @@ public class Denizen extends JavaPlugin {
         versionTag = this.getDescription().getVersion();
 
         // Startup procedure
-        dB.echoDebug(DebugElement.Footer);
-        dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
-        dB.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable minecraft");
-        dB.echoDebug(DebugElement.Spacer);
-        dB.echoDebug(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
-        dB.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
-        dB.echoDebug(DebugElement.Footer);
+        dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+        dB.log(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
+        dB.log(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable minecraft");
+        dB.log("");
+        dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
+        dB.log(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
+        dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
         // Create the dNPC Registry
         dNPCRegistry = new dNPCRegistry(this);
@@ -184,7 +184,7 @@ public class Denizen extends JavaPlugin {
         // Ensure the example Denizen.mid sound file is available
         if (!new File(directory + "/plugins/Denizen/midi/Denizen.mid").exists()) {
             String sourceFile = URLDecoder.decode(Denizen.class.getProtectionDomain().getCodeSource().getLocation().getFile());
-            dB.echoDebug("Denizen.mid not found, extracting from " + sourceFile);
+            dB.log("Denizen.mid not found, extracting from " + sourceFile);
             Utilities.extractFile(new File(sourceFile), "Denizen.mid", directory + "/plugins/Denizen/midi/");
         }
 
@@ -261,7 +261,7 @@ public class Denizen extends JavaPlugin {
         // Initialize Property Parser
         propertyParser = new PropertyParser();
 
-        dB.echoDebug(DebugElement.Footer);
+        dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
         // TODO: Figure out why we need this
         ScriptHelper.reloadScripts();
@@ -291,7 +291,7 @@ public class Denizen extends JavaPlugin {
         for (OfflinePlayer player : this.getServer().getOfflinePlayers()) {
             try {
                 getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player)); } catch (Exception e) {
-                if (player == null) dB.echoDebug("Tell aufdemrand ASAP about this error! ERR: OPN");
+                if (player == null) dB.echoError("Tell aufdemrand ASAP about this error! ERR: OPN");
                 else dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
                         "You might have a corrupt player file!");
             }

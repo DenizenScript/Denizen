@@ -23,6 +23,7 @@ public class NoteCommand extends AbstractCommand {
             else if (ObjectFetcher.canFetch(arg.getValue().split("@")[0]))
                 scriptEntry.addObject("object", arg.getValue());
 
+            else arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("id"))
@@ -38,7 +39,7 @@ public class NoteCommand extends AbstractCommand {
         String object = (String) scriptEntry.getObject("object");
         Element id = scriptEntry.getElement("id");
 
-        dB.report(getName(), aH.debugObj("object", object) + id.debug());
+        dB.report(scriptEntry, getName(), aH.debugObj("object", object) + id.debug());
 
         String object_type = object.split("@")[0].toLowerCase();
         Class object_class = ObjectFetcher.getObjectClass(object_type);
@@ -52,7 +53,7 @@ public class NoteCommand extends AbstractCommand {
         try {
 
             if (!ObjectFetcher.checkMatch(object_class, object)) {
-                dB.echoDebug("'" + object
+                dB.echoError("'" + object
                         + "' is an invalid " + object_class.getSimpleName() + ".");
                 return;
             }

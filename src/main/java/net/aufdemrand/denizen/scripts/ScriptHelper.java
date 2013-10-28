@@ -78,14 +78,11 @@ public class ScriptHelper {
                 StringBuilder sb = new StringBuilder();
 
                 YamlConfiguration yaml;
-                dB.echoDebug("Processing 'util.dscript'... ");
+                dB.log("Processing 'util.dscript'... ");
                 yaml = YamlConfiguration.loadConfiguration(DenizenAPI.getCurrentInstance().getResource("util.dscript"));
                 sb.append(yaml.saveToString() + "\r\n");
-                dB.echoDebug("Processing 'genies.dscript'... ");
-                yaml = YamlConfiguration.loadConfiguration(DenizenAPI.getCurrentInstance().getResource("genies.dscript"));
-                sb.append(yaml.saveToString() + "\r\n");
 
-                dB.echoDebug("Processing outside scripts... ");
+                dB.log("Processing outside scripts... ");
                 for (FileConfiguration outsideConfig : ScriptRegistry.outside_scripts) {
                     try {
                         sb.append(outsideConfig.saveToString() + "\r\n");
@@ -97,7 +94,7 @@ public class ScriptHelper {
 
                 for (File f : files){
                     String fileName = f.getAbsolutePath().substring(file.getAbsolutePath().length());
-                    dB.echoDebug("Processing '" + fileName + "'... ");
+                    dB.log("Processing '" + fileName + "'... ");
 
                     try {
                         yaml = YamlConfiguration.loadConfiguration(f);
@@ -113,10 +110,10 @@ public class ScriptHelper {
                         dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "!");
                         HadAnError = true;
                         if (dB.showStackTraces) {
-                            dB.echoDebug("STACKTRACE follows:");
+                            dB.log("STACKTRACE follows:");
                             e.printStackTrace();
                         }
-                        else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
+                        else dB.log("Use '/denizen debug -s' for the nitty-gritty.");
                     }
                 }
 

@@ -223,7 +223,7 @@ public class IfCommand extends AbstractCommand {
             com.determineOutcome();
 
             // Show outcome of Comparable
-            dB.echoDebug(ChatColor.YELLOW + "Comparable " + counter + ": " + ChatColor.WHITE + com.toString());
+            dB.echoDebug(scriptEntry, ChatColor.YELLOW + "Comparable " + counter + ": " + ChatColor.WHITE + com.toString());
             counter++;
         }
 
@@ -289,10 +289,10 @@ public class IfCommand extends AbstractCommand {
             } catch (ScriptEntryCreationException e) {
                 dB.echoError("There has been a problem running the Command. Check syntax.");
                 if (dB.showStackTraces) {
-                    dB.echoDebug("STACKTRACE follows:");
+                    dB.log("STACKTRACE follows:");
                     e.printStackTrace();
                 }
-                else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
+                else dB.log("Use '/denizen debug -s' for the nitty-gritty.");
             }
         }
 

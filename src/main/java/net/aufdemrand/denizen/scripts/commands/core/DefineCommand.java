@@ -46,6 +46,7 @@ public class DefineCommand extends AbstractCommand implements Listener {
                 // Use the raw_value as to not exclude values with :'s in them.
                 scriptEntry.addObject("value", arg.raw_value);
 
+            else arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("definition") || !scriptEntry.hasObject("value"))
@@ -56,7 +57,7 @@ public class DefineCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dB.report(getName(), aH.debugObj("queue", scriptEntry.getResidingQueue().id)
+        dB.report(scriptEntry, getName(), aH.debugObj("queue", scriptEntry.getResidingQueue().id)
                 + aH.debugObj("definition", scriptEntry.getObject("definition").toString())
                 + aH.debugObj("value", scriptEntry.getObject("value").toString()));
 
