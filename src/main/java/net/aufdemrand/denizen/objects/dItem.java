@@ -613,7 +613,7 @@ public class dItem implements dObject, Notable, Properties {
         // -->
         if (attribute.startsWith("material.formatted")) {
 
-            String id = item.getType().name().toLowerCase();
+            String id = item.getType().name().toLowerCase().replace('_', ' ');
 
             if (id.equals("air"))
                 return new Element("nothing")
