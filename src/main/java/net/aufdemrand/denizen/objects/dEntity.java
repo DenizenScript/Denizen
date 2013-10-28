@@ -592,7 +592,8 @@ public class dEntity implements dObject, Adjustable {
 
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
-        if (entity != null && isUnique()) entity.teleport(location);
+        if (npc != null) npc.teleport(location, TeleportCause.PLUGIN);
+        else if (entity != null && isUnique()) entity.teleport(location);
 
         else {
             if (npc != null) {
