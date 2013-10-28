@@ -3174,7 +3174,7 @@ public class WorldScriptHelper implements Listener {
 
         // If currently recording debug information, quickly add the chat message to debug output
         // (Intentionally placed in the sync event to prevent glitching)
-        if (dB.record) dB.echoDebug(ChatColor.DARK_GREEN + "CHAT: " +
+        if (dB.record) dB.log(ChatColor.DARK_GREEN + "CHAT: " +
                 event.getPlayer().getName() + ": " + event.getMessage());
 
         // Return if "Use asynchronous event" is true in config file

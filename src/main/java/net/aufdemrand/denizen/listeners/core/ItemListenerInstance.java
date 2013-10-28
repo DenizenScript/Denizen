@@ -68,7 +68,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
     public void increment(String object, int amount) {
         items_so_far = items_so_far + amount;
-        dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " " +
+        dB.log(ChatColor.YELLOW + "// " + player.getName() + " " +
         type.toString().toLowerCase() + "ed " + amount + " " + object + ".");
         check();
     }

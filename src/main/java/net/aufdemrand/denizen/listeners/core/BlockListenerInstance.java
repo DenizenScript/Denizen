@@ -155,7 +155,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
             //if catch-all specified, count it!
             if (blocks.contains("*")) {
                 blocks_so_far++;
-                dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                dB.log(ChatColor.YELLOW + "// " + player.getName()
                         + " broke a(n) " + event.getBlock().getType().toString()
                         + ".");
                 check();
@@ -170,7 +170,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 if (event.getBlock().getState().getType() == mat.getMaterial() &&
                         event.getBlock().getState().getData().equals(mat.getMaterialData())){
                     blocks_so_far++;
-                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                    dB.log(ChatColor.YELLOW + "// " + player.getName()
                             + " broke a(n) " + event.getBlock().getType().toString()
                             + ".");
                     check();
@@ -200,7 +200,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
             //if catch-all specified, count it!
             if (blocks.contains("*")) {
                 blocks_so_far++;
-                dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                dB.log(ChatColor.YELLOW + "// " + player.getName()
                         + " collected a(n) " + event.getItem().getItemStack().getType().toString()
                         + ".");
                 check();
@@ -219,7 +219,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                     else itemsCollected.add(event.getItem().getEntityId());
 
                     blocks_so_far++;
-                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                    dB.log(ChatColor.YELLOW + "// " + player.getName()
                             + " collected a(n) " + event.getItem().getItemStack().getType().toString()
                             + ".");
                     check();
@@ -246,7 +246,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
             //if catch-all specified, count it!
             if (blocks.contains("*")) {
                 blocks_so_far++;
-                dB.echoDebug(ChatColor.YELLOW + "// "
+                dB.log(ChatColor.YELLOW + "// "
                         + player.getName() + " collected a "
                         + event.getBucket().name() + ".");
                 check();
@@ -259,7 +259,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
                 if (event.getBucket() == mat.getMaterial()){
                     blocks_so_far++;
-                    dB.echoDebug(ChatColor.YELLOW + "// "
+                    dB.log(ChatColor.YELLOW + "// "
                             + player.getName() + " collected a "
                             + event.getBucket().name() + ".");
 
@@ -289,7 +289,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
             //if catch-all specified, count it!
             if (blocks.contains("*")) {
                 blocks_so_far++;
-                dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                dB.log(ChatColor.YELLOW + "// " + player.getName()
                         + " placed a(n) " + event.getBlock().getType().toString()
                         + ".");
                 check();
@@ -303,7 +303,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 if (event.getBlock().getState().getType() == mat.getMaterial() &&
                         event.getBlock().getState().getData().equals(mat.getMaterialData())){
                     blocks_so_far++;
-                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName()
+                    dB.log(ChatColor.YELLOW + "// " + player.getName()
                             + " placed a(n) " + event.getBlock().getType().toString()
                             + ".");
                     check();
