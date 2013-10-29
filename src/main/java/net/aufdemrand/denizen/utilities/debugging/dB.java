@@ -2,15 +2,9 @@ package net.aufdemrand.denizen.utilities.debugging;
 
 import net.aufdemrand.denizen.Settings;
 
-import net.aufdemrand.denizen.objects.dScript;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -150,6 +144,14 @@ public class dB {
     public static void echoDebug(Debuggable caller, String message) {
         if (!showDebug) return;
         echo(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + trimMessage(message), caller);
+    }
+
+    // TODO: REMOVE AFTER SENTRY STOPS CALLING THESE!
+    public static void echoDebug(String message) {
+        log("[External Caller] " + message);
+    }
+    public static void echoDebug(DebugElement de, String message) {
+        echoDebug(de.toString() + message);
     }
 
 
