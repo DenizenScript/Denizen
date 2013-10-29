@@ -146,12 +146,18 @@ public class dB {
         echo(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + trimMessage(message), caller);
     }
 
-    // TODO: REMOVE AFTER SENTRY STOPS CALLING THESE!
+
+    // These methods are deprecated. Please instead supply a valid Debuggable reference,
+    // which at this time is either a ScriptQueue, a ScriptEntry, or ScriptContainer.
+    // If none of these are available, using dB.log(...)
+    @Deprecated
     public static void echoDebug(String message) {
-        log("[External Caller] " + message);
+        echo(message, null);
     }
+
+    @Deprecated
     public static void echoDebug(DebugElement de, String message) {
-        echoDebug(de.toString() + message);
+        echoDebug(null, de, message);
     }
 
 
@@ -206,24 +212,25 @@ public class dB {
 
         // Attempt to see if the debug should even be sent by checking the
         // script container's 'debug' node.
-        try {
+        if (caller != null)
+            try {
 
-            if (filter.isEmpty())
-                should_send = caller.shouldDebug();
+                if (filter.isEmpty())
+                    should_send = caller.shouldDebug();
 
-            else {
-                should_send = false;
-                for (String criteria : filter)
-                    if (caller.shouldFilter(criteria)) {
-                        should_send = true;
-                        break;
-                    }
+                else {
+                    should_send = false;
+                    for (String criteria : filter)
+                        if (caller.shouldFilter(criteria)) {
+                            should_send = true;
+                            break;
+                        }
+                }
+
+            } catch (Exception e) {
+                // Had a problem determining whether it should debug, assume true.
+                should_send = true;
             }
-
-        } catch (Exception e) {
-            // Had a problem determining whether it should debug, assume true.
-            should_send = true;
-        }
 
         if (should_send) ConsoleSender.sendMessage(string);
     }
