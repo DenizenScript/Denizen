@@ -240,4 +240,9 @@ public class ScriptContainer implements Debuggable {
         return (!(contents.contains("DEBUG") && contents.getString("DEBUG").equalsIgnoreCase("false")));
     }
 
+    @Override
+    public boolean shouldFilter(String criteria) throws Exception {
+        return name.equalsIgnoreCase(criteria.replace("s@", ""));
+    }
+
 }

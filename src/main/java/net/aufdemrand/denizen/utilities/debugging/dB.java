@@ -13,7 +13,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Preferred method of outputting debugger information with Denizen and
@@ -66,7 +68,10 @@ public class dB {
     public static boolean showColor = true;
     public static boolean showEventsFiring = false;
 
+    public static List<String> filter = new ArrayList<String>();
+
     public static boolean shouldTrim = true;
+    public static int trimSize = 512;
     public static boolean record = false;
     public static StringBuilder Recording = new StringBuilder();
     public static void toggle() { showDebug = !showDebug; }
@@ -187,8 +192,8 @@ public class dB {
     // Some debug methods trim to keep super-long messages from hitting the console.
     private static String trimMessage(String message) {
         if (!shouldTrim) return message;
-        if (message.length() > 512)
-            message = message.substring(0, 511) + "... * snip! *";
+        if (message.length() > trimSize)
+            message = message.substring(0, trimSize - 1) + "... * snip! *";
         return message;
     }
 
@@ -200,9 +205,21 @@ public class dB {
         // Attempt to see if the debug should even be sent by checking the
         // script container's 'debug' node.
         try {
-            should_send = caller.shouldDebug();
+
+            if (filter.isEmpty())
+                should_send = caller.shouldDebug();
+
+            else {
+                should_send = false;
+                for (String criteria : filter)
+                    if (caller.shouldFilter(criteria)) {
+                        should_send = true;
+                        break;
+                    }
+            }
+
         } catch (Exception e) {
-            // Could not determine cancelled debug!
+            // Had a problem determining whether it should debug, assume true.
             should_send = true;
         }
 

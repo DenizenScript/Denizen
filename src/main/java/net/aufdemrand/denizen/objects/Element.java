@@ -692,7 +692,7 @@ public class Element implements dObject {
                     "for tag <" + attribute.getOrigin() + ">!");
             return "null";
         } else {
-            dB.log("Filled tag <" + attribute.getOrigin() + "> with '" + element + "'.");
+            dB.echoDebug(attribute.getScriptEntry(), "Filled tag <" + attribute.getOrigin() + "> with '" + element + "'.");
             return element;
         }
     }

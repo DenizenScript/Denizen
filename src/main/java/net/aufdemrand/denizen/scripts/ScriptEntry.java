@@ -236,4 +236,9 @@ public class ScriptEntry implements Cloneable, Debuggable {
     public boolean shouldDebug() throws Exception {
         return script.getContainer().shouldDebug();
     }
+
+    @Override
+    public boolean shouldFilter(String criteria) throws Exception {
+        return script.getName().equalsIgnoreCase(criteria.replace("s@", ""));
+    }
 }

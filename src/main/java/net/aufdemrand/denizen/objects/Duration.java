@@ -105,9 +105,8 @@ public class Duration implements dObject {
                 int seconds = Utilities.getRandom()
                         .nextInt((high.getSecondsAsInt() - low.getSecondsAsInt() + 1))
                                 + low.getSecondsAsInt();
-                // Send the result to the debugger since it's probably good to know what is being chosen.
-                dB.log("Getting random duration between " + low.identify()
-                        + " and " + high.identify() + "... " + seconds + "s");
+                // dB.log("Getting random duration between " + low.identify()
+                //        + " and " + high.identify() + "... " + seconds + "s");
 
                 return new Duration(seconds);
 

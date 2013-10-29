@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Jeremy Schroeder
  */
 
-public abstract class ScriptQueue {
+public abstract class ScriptQueue implements Debuggable {
 
 
     protected static long total_queues = 0;
@@ -398,10 +399,10 @@ public abstract class ScriptQueue {
             onStart();
 
         if (is_delayed) {
-            dB.log("Delaying " + getClass().getSimpleName() + " '" + id + "'" + " for '"
+            dB.echoDebug(this, "Delaying " + getClass().getSimpleName() + " '" + id + "'" + " for '"
                     + new Duration((delay_time - System.currentTimeMillis()) / 1000 * 20).identify() + "'.");
         } else
-            dB.log("Starting " + getClass().getSimpleName() + " '" + id + "'");
+            dB.echoDebug(this, "Starting " + getClass().getSimpleName() + " '" + id + "'");
 
     }
 
@@ -428,15 +429,15 @@ public abstract class ScriptQueue {
             List<ScriptEntry> entries =
                     (lastEntryExecuted != null && lastEntryExecuted.getScript() != null ?
                             lastEntryExecuted.getScript().getContainer()
-                            .getEntries(lastEntryExecuted.getPlayer(),
-                                    lastEntryExecuted.getNPC(), "on queue completes") : new ArrayList<ScriptEntry>());
+                                    .getEntries(lastEntryExecuted.getPlayer(),
+                                            lastEntryExecuted.getNPC(), "on queue completes") : new ArrayList<ScriptEntry>());
             // Add the 'finishing' entries back into the queue (if not empty)
             if (!entries.isEmpty()) {
                 script_entries.addAll(entries);
-                dB.log("Finishing up queue " + id + "...");
+                dB.echoDebug(this, "Finishing up queue " + id + "...");
             } else /* if empty, just stop the queue like normal */ {
                 _queues.remove(id);
-                dB.log("Completing queue " + id + "...");
+                dB.echoDebug(this, "Completing queue " + id + "...");
                 is_started = false;
                 onStop();
             }
@@ -447,7 +448,7 @@ public abstract class ScriptQueue {
         // 2) Cancel the corresponding task_id
         else {
             _queues.remove(id);
-            dB.log("Completing queue " + id + "...");
+            dB.echoDebug(this, "Completing queue " + id + "...");
             is_started = false;
             onStop();
         }
@@ -544,6 +545,19 @@ public abstract class ScriptQueue {
 
     public int getQueueSize() {
         return script_entries.size();
+    }
+
+
+    @Override
+    public boolean shouldDebug() throws Exception {
+        return (lastEntryExecuted != null ? lastEntryExecuted.shouldDebug()
+                : script_entries.get(0).shouldDebug());
+    }
+
+    @Override
+    public boolean shouldFilter(String criteria) throws Exception {
+        return (lastEntryExecuted != null ? lastEntryExecuted.getScript().getName().equalsIgnoreCase(criteria.replace("s@", ""))
+                : script_entries.get(0).getScript().getName().equalsIgnoreCase(criteria.replace("s@", "")));
     }
 
 
