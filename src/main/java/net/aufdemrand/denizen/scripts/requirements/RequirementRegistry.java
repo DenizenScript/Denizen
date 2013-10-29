@@ -60,7 +60,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Enchanted
-        // @Usage enchanted [iteminhand]
+        // @Syntax enchanted [iteminhand]
         // @Required 1
         // @Stable Stable
         // @Short Checks if an item has an enchantment or not.
@@ -79,7 +79,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Flagged
-        // @Usage flagged ({player}/npc/global) [<name>([<#>])](:<value>)
+        // @Syntax flagged ({player}/npc/global) [<name>([<#>])](:<value>)
         // @Required 1
         // @Stable Stable
         // @Short Checks if the specified flag exists.
@@ -106,7 +106,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Holding
-        // @Usage holding [<item>] (qty:<#>) (exact)
+        // @Syntax holding [<item>] (qty:<#>) (exact)
         // @Required 1
         // @Stable Stable
         // @Short Checks if the player is holding an item.
@@ -127,7 +127,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name InGroup
-        // @Usage ingroup (global) [<group>]
+        // @Syntax ingroup (global) [<group>]
         // @Required 1
         // @Stable Stable
         // @Short Checks if the player is in a group.
@@ -149,7 +149,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Item
-        // @Usage item [<item>] (qty:<#>)
+        // @Syntax item [<item>] (qty:<#>)
         // @Required 1
         // @Stable Stable
         // @Short Checks if the player has an item.
@@ -167,7 +167,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name IsLiquid
-        // @Usage isliquid [location:<location>]
+        // @Syntax isliquid [location:<location>]
         // @Required 1
         // @Stable Stable
         // @Short Checks if a block is a liquid.
@@ -185,7 +185,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Money
-        // @Usage money [qty:<#>]
+        // @Syntax money [qty:<#>]
         // @Required 1
         // @Stable Stable
         // @Short Checks if the player has an amount of money.
@@ -203,7 +203,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Op
-        // @Usage op
+        // @Syntax op
         // @Required 0
         // @Stable Stable
         // @Short Checks if the player is an op.
@@ -221,7 +221,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Owner
-        // @Usage owner
+        // @Syntax owner
         // @Required 0
         // @Stable Stable
         // @Short Checks if the player is the owner of the current NPC.
@@ -239,7 +239,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Permission
-        // @Usage permission (global) [<permission>]
+        // @Syntax permission (global) [<permission>]
         // @Required 1
         // @Stable Stable
         // @Short Checks if the player has a permission node.
@@ -257,7 +257,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name IsPowered
-        // @Usage ispowered [location:<location>]
+        // @Syntax ispowered [location:<location>]
         // @Required 1
         // @Stable Stable
         // @Short Checks if a block is powered.
@@ -275,7 +275,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Oxygen
-        // @Usage oxygen (range:below/equals/above) [qty:<#>]
+        // @Syntax oxygen (range:below/equals/above) [qty:<#>]
         // @Required 1
         // @Stable Stable
         // @Short Checks the player's oxygen level.
@@ -292,7 +292,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Procedure
-        // @Usage procedure [<script>]
+        // @Syntax procedure [<script>]
         // @Required 1
         // @Stable Stable
         // @Short Checks the value of the procedure script.
@@ -309,7 +309,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Script
-        // @Usage script [finished/failed] [script:<name>]
+        // @Syntax script [finished/failed] [script:<name>]
         // @Required 2
         // @Stable Stable
         // @Short Checks if a script is finished or failed.
@@ -331,7 +331,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Sneaking
-        // @Usage sneaking
+        // @Syntax sneaking
         // @Required 0
         // @Stable Stable
         // @Short Checks if the player is sneaking.
@@ -349,7 +349,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Storming
-        // @Usage storming
+        // @Syntax storming
         // @Required 0
         // @Stable Stable
         // @Short Checks if the player's world is storming.
@@ -367,7 +367,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Sunny
-        // @Usage sunny
+        // @Syntax sunny
         // @Required 0
         // @Stable Stable
         // @Short Checks if the player's world is sunny.
@@ -385,7 +385,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Rainy
-        // @Usage rainy
+        // @Syntax rainy
         // @Required 0
         // @Stable Stable
         // @Short Checks if the player's world is rainy.
@@ -403,7 +403,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name Time
-        // @Usage time [dawn/day/dusk/night]
+        // @Syntax time [dawn/day/dusk/night]
         // @Required 1
         // @Stable Stable
         // @Short Checks the time of the player's world.
@@ -421,7 +421,7 @@ public class RequirementRegistry implements dRegistry {
 
         // <--[requirement]
         // @Name InRegion
-        // @Usage inregion [name:<region>]
+        // @Syntax inregion [name:<region>]
         // @Required 1
         // @Stable Stable
         // @Short Checks if the player is in a region.

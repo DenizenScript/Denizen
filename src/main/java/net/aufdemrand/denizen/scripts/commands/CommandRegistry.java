@@ -87,7 +87,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Adjust
-        // @Usage adjust [<dObject>] [<mechanism>](:<value>)
+        // @Syntax adjust [<dObject>] [<mechanism>](:<value>)
         // @Required 2
         // @Stable stable
         // @Short Adjusts a dObjects mechanism.
@@ -108,7 +108,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Age
-        // @Usage age [<entity>|...] (adult/baby/<age>) (lock)
+        // @Syntax age [<entity>|...] (adult/baby/<age>) (lock)
         // @Required 1
         // @Stable stable
         // @Short Sets the ages of a list of entities, optionally locking them in those ages.
@@ -146,7 +146,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name Anchor
 
-        // @Usage anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]
+        // @Syntax anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]
         // @Required 2
         // @Stable stable
         // @Short Controls a NPC's Anchor Trait.
@@ -183,7 +183,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Animate
-        // @Usage animate [<entity>|...] [animation:<name>]
+        // @Syntax animate [<entity>|...] [animation:<name>]
         // @Required 2
         // @Stable stable
         // @Short Makes a list of entities perform a certain animation.
@@ -218,7 +218,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name AnimateChest
-        // @Usage animatechest [<location>] ({open}/close) (sound:{true}/false)
+        // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false)
         // @Required 1
         // @Stable unstable
         // @Short Makes a chest open or close.
@@ -236,7 +236,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Announce
-        // @Usage announce ["<text>"] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
+        // @Syntax announce ["<text>"] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
         // @Required 1
         // @Stable stable
         // @Short Announces a message for everyone online to read.
@@ -277,7 +277,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Assignment
-        // @Usage assignment [{set}/remove] (script:<name>)
+        // @Syntax assignment [{set}/remove] (script:<name>)
         // @Required 1
         // @Stable unstable
         // @Short Changes an NPC's assignment.
@@ -295,7 +295,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Attack
-        // @Usage attack (<entity>|...) (target:<entity>/cancel)
+        // @Syntax attack (<entity>|...) (target:<entity>/cancel)
         // @Required 0
         // @Stable stable
         // @Short Makes an entity, or list of entities, attack a target.
@@ -338,7 +338,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Break
-        // @Usage break [<location>] (entity:<entity>) (radius:<#.#>)
+        // @Syntax break [<location>] (entity:<entity>) (radius:<#.#>)
         // @Required 1
         // @Stable unstable
         // @Short Makes the NPC walk over and break a block. (Doesn't work!)
@@ -356,7 +356,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Burn
-        // @Usage burn [<entity>|...] (duration:<value>)
+        // @Syntax burn [<entity>|...] (duration:<value>)
         // @Required 1
         // @Stable stable
         // @Short Sets a list of entities on fire.
@@ -388,7 +388,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Cast, Potion
-        // @Usage cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
+        // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
         // @Required 1
         // @Stable Stable
         // @Short Casts a potion effect to a list of entities.
@@ -418,7 +418,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Chat
-        // @Usage chat ["<text>"] (targets:<entity>|...)
+        // @Syntax chat ["<text>"] (targets:<entity>|...)
         // @Required 1
         // @Stable stable
         // @Short Causes the NPC to send a chat message to nearby players.
@@ -467,7 +467,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ChunkLoad
-        // @Usage chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
+        // @Syntax chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
         // @Required 1
         // @Stable stable
         // @Short Keeps a chunk actively loaded and allowing NPC activity.
@@ -485,7 +485,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Compass
-        // @Usage compass [<location>]
+        // @Syntax compass [<location>]
         // @Required 1
         // @Stable stable
         // @Short Redirects the player's compass to target the given location.
@@ -503,7 +503,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Cooldown
-        // @Usage cooldown [<duration>] (global) (s:<script>)
+        // @Syntax cooldown [<duration>] (global) (s:<script>)
         // @Required 1
         // @Stable stable
         // @Short Temporarily disables a script-container from meeting requirements.
@@ -543,7 +543,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name CopyBlock
-        // @Usage copyblock [location:<location>] [to:<location>]
+        // @Syntax copyblock [location:<location>] [to:<location>]
         // @Required 1
         // @Stable unstable
         // @Short Copies a block to another location, keeping all metadata.
@@ -561,7 +561,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name CreateWorld
-        // @Usage createworld [<name>] (g:<generator>)
+        // @Syntax createworld [<name>] (g:<generator>)
         // @Required 1
         // @Stable unstable
         // @Short Creates a new world
@@ -579,7 +579,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Define
-        // @Usage define [<id>] [<value>]
+        // @Syntax define [<id>] [<value>]
         // @Required 2
         // @Stable stable
         // @Short Creates a temporary variable inside a script queue.
@@ -629,7 +629,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Determine
-        // @Usage determine [<value>]
+        // @Syntax determine [<value>]
         // @Required 1
         // @Stable stable
         // @Short Sets the outcome of an event.
@@ -647,7 +647,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Disengage
-        // @Usage disengage (npc:<npc>)
+        // @Syntax disengage (npc:<npc>)
         // @Required 0
         // @Stable stable
         // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command.
@@ -683,7 +683,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name DisplayItem
-        // @Usage displayitem [<item>] [<location>] (duration:<value>)
+        // @Syntax displayitem [<item>] [<location>] (duration:<value>)
         // @Required 2
         // @Stable unstable
         // @Short Makes a non-touchable item spawn for players to view.
@@ -701,7 +701,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Drop
-        // @Usage drop [<item>/<entity_type>/xp] [<location>] (qty:<#>) (speed:<#.#>)
+        // @Syntax drop [<item>/<entity_type>/xp] [<location>] (qty:<#>) (speed:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
@@ -738,7 +738,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Engage
-        // @Usage engage (<duration>) (npc:<npc>)
+        // @Syntax engage (<duration>) (npc:<npc>)
         // @Required 0
         // @Stable stable
         // @Short Temporarily disables a NPCs toggled interact script-container triggers.
@@ -787,7 +787,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Equip
-        // @Usage equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
+        // @Syntax equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
         // @Required 1
         // @Stable stable
         // @Short Equips items and armor on a list of entities.
@@ -805,7 +805,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Execute
-        // @Usage execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]
+        // @Syntax execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]
         // @Required 2
         // @Stable stable
         // @Short Executes an arbitrary server command as if the player, NPC, or server typed it in.
@@ -823,7 +823,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Experience
-        // @Usage experience [{set}/give/take] (level) [<#>]
+        // @Syntax experience [{set}/give/take] (level) [<#>]
         // @Required 2
         // @Stable Todo
         // @Short Gives or takes experience points to the player.
@@ -844,7 +844,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Explode
-        // @Usage explode (power:<#.#>) (<location>) (fire) (breakblocks)
+        // @Syntax explode (power:<#.#>) (<location>) (fire) (breakblocks)
         // @Required 0
         // @Stable stable
         // @Short Causes an explosion at the location.
@@ -862,7 +862,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Fail
-        // @Usage fail (script:<name>)
+        // @Syntax fail (script:<name>)
         // @Required 0
         // @Stable stable
         // @Short Marks a script as having failed.
@@ -880,7 +880,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Feed
-        // @Usage feed (amt:<#>) (target:<entity>|...)
+        // @Syntax feed (amt:<#>) (target:<entity>|...)
         // @Required 0
         // @Stable unstable
         // @Short Refills the player's food bar.
@@ -899,7 +899,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Finish
-        // @Usage finish (script:<name>)
+        // @Syntax finish (script:<name>)
         // @Required 0
         // @Stable stable
         // @Short Marks a script as having been completed successfully.
@@ -917,7 +917,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Firework
-        // @Usage firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
+        // @Syntax firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
         // @Required 0
         // @Stable stable
         // @Short Launches a firework with specific coloring
@@ -935,7 +935,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Fish
-        // @Usage fish (catchfish) (stop) (<location>) (catchpercent:<#>)
+        // @Syntax fish (catchfish) (stop) (<location>) (catchpercent:<#>)
         // @Required 1
         // @Stable Todo
         // @Short Causes an NPC to begin fishing
@@ -953,7 +953,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Flag
-        // @Usage flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
+        // @Syntax flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
         // @Required 1
         // @Stable stable
         // @Short Sets or modifies a flag on the player, NPC, or server.
@@ -973,7 +973,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Fly
-        // @Usage fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)
+        // @Syntax fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Make an entity fly where its controller is looking or fly to waypoints.
@@ -991,7 +991,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Follow
-        // @Usage follow (stop) (lead:<#.#>) (target:<entity>)
+        // @Syntax follow (stop) (lead:<#.#>) (target:<entity>)
         // @Required 0
         // @Stable unstable
         // @Short Causes the NPC to follow a target (Currently experiencing bugs with lead: )
@@ -1009,7 +1009,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ForEach
-        // @Usage foreach [<object>|...] [<commands>]
+        // @Syntax foreach [<object>|...] [<commands>]
         // @Required 2
         // @Stable stable
         // @Short Loops through a dList, running a set of commands for each item.
@@ -1042,7 +1042,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Give
-        // @Usage give [money/<item>|...] (qty:<#>) (engrave) (to:<inventory>)
+        // @Syntax give [money/<item>|...] (qty:<#>) (engrave) (to:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Gives the player an item or money.
@@ -1060,7 +1060,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Group
-        // @Usage group [add/remove] [<group>] (world:<name>)
+        // @Syntax group [add/remove] [<group>] (world:<name>)
         // @Required 2
         // @Stable Todo
         // @Short Adds a player to or removes a player from a permissions group.
@@ -1080,7 +1080,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Head
-        // @Usage head (<entity>|...) [skin:<player>]
+        // @Syntax head (<entity>|...) [skin:<player>]
         // @Required 1
         // @Stable stable
         // @Short Makes players or NPCs wear a specific player's head.
@@ -1098,7 +1098,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Heal
-        // @Usage heal (<#.#>) (<entity>|...)
+        // @Syntax heal (<#.#>) (<entity>|...)
         // @Required 0
         // @Stable stable
         // @Short Heals the player.
@@ -1116,7 +1116,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Health
-        // @Usage health (target:player/{npc}) [<#>]
+        // @Syntax health (target:player/{npc}) [<#>]
         // @Required 1
         // @Stable stable
         // @Short Changes the target's maximum health.
@@ -1135,7 +1135,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Hurt
-        // @Usage hurt (<#.#>) (<entity>|...)
+        // @Syntax hurt (<#.#>) (<entity>|...)
         // @Required 0
         // @Stable stable
         // @Short Hurts the player.
@@ -1153,7 +1153,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name If
-        // @Usage if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)
+        // @Syntax if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)
         // @Required 2
         // @Stable stable
         // @Short Compares values, and runs one script if they match, or a different script if they don't match.
@@ -1171,7 +1171,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Inventory
-        // @Usage inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (destination:<inventory>) (origin:<inventory>/<item>|...)
+        // @Syntax inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (destination:<inventory>) (origin:<inventory>/<item>|...)
         // @Required 1
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
@@ -1191,7 +1191,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Inject
-        // @Usage inject (locally) [<script>] (path:<name>) (instantly)
+        // @Syntax inject (locally) [<script>] (path:<name>) (instantly)
         // @Required 1
         // @Stable stable
         // @Short Runs a script in the current ScriptQueue.
@@ -1209,7 +1209,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Invisible
-        // @Usage invisible [player/npc] [state:true/false/toggle]
+        // @Syntax invisible [player/npc] [state:true/false/toggle]
         // @Required 2
         // @Stable unstable
         // @Short Makes the player or NPC turn invisible. (Does not fully work currently)
@@ -1227,7 +1227,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Leash
-        // @Usage leash (cancel) [<entity>|...] (holder:<entity>/<location>)
+        // @Syntax leash (cancel) [<entity>|...] (holder:<entity>/<location>)
         // @Required 1
         // @Stable stable
         // @Short Sticks a leash on target entity, held by a fence post or another entity.
@@ -1246,7 +1246,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Listen
-        // @Usage listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
+        // @Syntax listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
         // @Required 2
         // @Stable unstable
         // @Short Listens for the player achieving various actions and runs a script when they are completed.
@@ -1300,7 +1300,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Log
-        // @Usage log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]
+        // @Syntax log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]
         // @Required 2
         // @Stable Todo
         // @Short Logs some debugging info to a file.
@@ -1318,7 +1318,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Look
-        // @Usage look (<entity>|...) [<location>] (duration:<duration>)
+        // @Syntax look (<entity>|...) [<location>] (duration:<duration>)
         // @Required 1
         // @Stable stable
         // @Short Causes the NPC or other entity to look at a target location.
@@ -1337,7 +1337,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name LookClose
-        // @Usage lookclose [state:true/false]
+        // @Syntax lookclose [state:true/false]
         // @Required 1
         // @Stable unstable
         // @Short Toggles whether the NPC will automatically look at nearby players.
@@ -1355,7 +1355,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Midi
-        // @Usage midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>)
+        // @Syntax midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Plays a midi file at a given location or to a list of players using note block sounds.
@@ -1393,7 +1393,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Mount
-        // @Usage mount (cancel) [<entity>|...] (<location>)
+        // @Syntax mount (cancel) [<entity>|...] (<location>)
         // @Required 0
         // @Stable stable
         // @Short Mounts one entity onto another.
@@ -1412,7 +1412,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ModifyBlock
-        // @Usage modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)
+        // @Syntax modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)
         // @Required 2
         // @Stable unstable
         // @Short Changes a block's material.
@@ -1430,7 +1430,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Nameplate
-        // @Usage nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib
+        // @Syntax nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib
         // @Required 1
         // @Stable unstable
         // @Short Changes something's nameplate, requires ProtocolLib (Unstable and broken!)
@@ -1448,7 +1448,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Narrate
-        // @Usage narrate ["<text>"] (targets:<player>|...) (format:<name>)
+        // @Syntax narrate ["<text>"] (targets:<player>|...) (format:<name>)
         // @Required 1
         // @Stable stable
         // @Short Shows some text to the player.
@@ -1466,7 +1466,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Note
-        // @Usage note [<Notable dObject>] [as:<name>]
+        // @Syntax note [<Notable dObject>] [as:<name>]
         // @Required 2
         // @Stable unstable
         // @Short Adds a new notable object.
@@ -1484,7 +1484,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Oxygen
-        // @Usage oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]
+        // @Syntax oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]
         // @Required 1
         // @Stable unstable
         // @Short Gives or takes breath from the player.
@@ -1503,7 +1503,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Pause
-        // @Usage pause [waypoints/navigation]
+        // @Syntax pause [waypoints/navigation]
         // @Required 1
         // @Stable unstable
         // @Short Pauses an NPC's navigation.
@@ -1521,7 +1521,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name PlayEffect
-        // @Usage playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)
+        // @Syntax playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)
         // @Required 2
         // @Stable stable
         // @Short Plays a visible or audible effect at the location.
@@ -1539,7 +1539,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name PlaySound
-        // @Usage playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
+        // @Syntax playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
         // @Required 2
         // @Stable stable
         // @Short Plays a sound at the location.
@@ -1557,7 +1557,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Permission
-        // @Usage permission [add/remove] [permission] (player:<name>) (group:<name>) (world:<name>)
+        // @Syntax permission [add/remove] [permission] (player:<name>) (group:<name>) (world:<name>)
         // @Required 2
         // @Stable unstable
         // @Short Gives or takes a permission node to/from the player or group.
@@ -1577,7 +1577,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Pose
-        // @Usage pose (player/npc) [id:<name>]
+        // @Syntax pose (player/npc) [id:<name>]
         // @Required 1
         // @Stable unstable
         // @Short Rotates the player or NPC to match a pose.
@@ -1595,7 +1595,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Push
-        // @Usage push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>)
+        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>)
         // @Required 1
         // @Stable mostly
         // @Short Pushes entities through the air in a straight line.
@@ -1619,7 +1619,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Queue
-        // @Usage queue (queue:<id>) [clear/stop/pause/resume/delay:<#>]
+        // @Syntax queue (queue:<id>) [clear/stop/pause/resume/delay:<#>]
         // @Required 1
         // @Stable stable
         // @Short Modifies the current state of a script queue.
@@ -1637,7 +1637,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Random
-        // @Usage random [<#>/{braced commands}]
+        // @Syntax random [<#>/{braced commands}]
         // @Required 1
         // @Stable stable
         // @Short Selects a random choice from the following script commands.
@@ -1688,7 +1688,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Rename
-        // @Usage rename [<npc>] [<name>]
+        // @Syntax rename [<npc>] [<name>]
         // @Required 1
         // @Stable Todo
         // @Short Renames an NPC.
@@ -1707,7 +1707,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Repeat
-        // @Usage repeat [<amount>] [<commands>]
+        // @Syntax repeat [<amount>] [<commands>]
         // @Required 1
         // @Stable stable
         // @Short Runs a series of braced commands several times.
@@ -1732,7 +1732,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Reset
-        // @Usage reset [fails/finishes/cooldown] (script:<name>)
+        // @Syntax reset [fails/finishes/cooldown] (script:<name>)
         // @Required 1
         // @Stable unstable
         // @Short Resets a script's fails, finishes, or cooldowns.
@@ -1750,7 +1750,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Rotate
-        // @Usage rotate (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (frequency:<duration>)
+        // @Syntax rotate (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (frequency:<duration>)
         // @Required 1
         // @Stable stable
         // @Short Rotates a list of entities.
@@ -1769,7 +1769,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Run
-        // @Usage run (locally) [<script>] (path:<name>) (as:<player>/<npc>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)
+        // @Syntax run (locally) [<script>] (path:<name>) (as:<player>/<npc>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)
         // @Required 1
         // @Stable stable
         // @Short Runs a script in a new ScriptQueue.
@@ -1788,7 +1788,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name RunTask
         // @Deprecated This has been replaced by the 'run' and 'inject' commands.
-        // @Usage runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)
+        // @Syntax runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)
         // @Required 1
         // @Stable unstable
         // @Short Runs a task script.
@@ -1806,7 +1806,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Schematic
-        // @Usage schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)
+        // @Syntax schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)
         // @Required 2
         // @Stable unstable
         // @Short Loads, edits, or pastes a WorldEdit schematic.
@@ -1843,7 +1843,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Scoreboard
-        // @Usage scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none)
+        // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none)
         // @Required 1
         // @Stable stable
         // @Short Add or removes viewers, objectives and scores from scoreboards.
@@ -1985,7 +1985,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Scribe
-        // @Usage scribe [<script>] (<item>/give/equip/{drop <location>})
+        // @Syntax scribe [<script>] (<item>/give/equip/{drop <location>})
         // @Required 1
         // @Stable Todo
         // @Short Writes information to a book from a book-type script or a book item.
@@ -2007,7 +2007,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Usage shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>)
+        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>)
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air up to a certain height.
@@ -2025,7 +2025,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ShowFake
-        // @Usage showfake [<material>] [<location>|...] (d:<duration>{10s})
+        // @Syntax showfake [<material>] [<location>|...] (d:<duration>{10s})
         // @Required 2
         // @Stable stable
         // @Short Makes the player see a block change that didn't actually happen.
@@ -2043,7 +2043,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Sign
-        // @Usage sign (type:{sign_post}/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
+        // @Syntax sign (type:{sign_post}/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
         // @Required 1
         // @Stable stable
         // @Short Modifies a sign.
@@ -2061,7 +2061,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Sit
-        // @Usage sit (<location>)
+        // @Syntax sit (<location>)
         // @Required 0
         // @Stable unstable
         // @Short Causes the NPC to sit. (Does not currently work!)
@@ -2079,7 +2079,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Spawn
-        // @Usage spawn [<entity>|...] (<location>) (target:<entity>) (persistent)
+        // @Syntax spawn [<entity>|...] (<location>) (target:<entity>) (persistent)
         // @Required 1
         // @Stable stable
         // @Short Spawns a list of entities at a certain location.
@@ -2098,7 +2098,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Stand
-        // @Usage stand
+        // @Syntax stand
         // @Required 0
         // @Stable unstable
         // @Short Causes the NPC to stand. (Does not currently work!)
@@ -2116,7 +2116,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Strike
-        // @Usage strike (no_damage) [<location>]
+        // @Syntax strike (no_damage) [<location>]
         // @Required 1
         // @Stable stable
         // @Short Strikes lightning down upon the location.
@@ -2133,7 +2133,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Switch
-        // @Usage switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)
+        // @Syntax switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)
         // @Required 1
         // @Stable stable
         // @Short Switches a lever.
@@ -2150,7 +2150,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Take
-        // @Usage take [money/iteminhand/bydisplay:<name>/<item>|...] (qty:<#>) (from:<inventory>)
+        // @Syntax take [money/iteminhand/bydisplay:<name>/<item>|...] (qty:<#>) (from:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.
@@ -2168,7 +2168,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Teleport
-        // @Usage teleport (<entity>|...) [<location>]
+        // @Syntax teleport (<entity>|...) [<location>]
         // @Required 1
         // @Stable stable
         // @Short Teleports the player or NPC to a new location.
@@ -2185,7 +2185,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Time
-        // @Usage time [type:{global}/player] [<value>] (world:<name>)
+        // @Syntax time [type:{global}/player] [<value>] (world:<name>)
         // @Required 1
         // @Stable Todo
         // @Short Changes the current time in the minecraft world.
@@ -2203,7 +2203,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Trait
-        // @Usage trait (state:true/false/{toggle}) [<trait>]
+        // @Syntax trait (state:true/false/{toggle}) [<trait>]
         // @Required 1
         // @Stable Stable
         // @Short Adds or removes a trait from an NPC.
@@ -2222,7 +2222,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Trigger
-        // @Usage trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)
+        // @Syntax trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)
         // @Required 2
         // @Stable stable
         // @Short Enables or disables a trigger.
@@ -2239,7 +2239,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Viewer
-        // @Usage viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)
+        // @Syntax viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)
         // @Required 1
         // @Stable unstable
         // @Short Creates a sign that auto-updates with information.
@@ -2262,7 +2262,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Vulnerable
-        // @Usage vulnerable (state:{true}/false/toggle)
+        // @Syntax vulnerable (state:{true}/false/toggle)
         // @Required 0
         // @Stable unstable
         // @Short Sets whether an NPC is vulnerable.
@@ -2279,7 +2279,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Wait
-        // @Usage wait (<duration>) (queue:<name>)
+        // @Syntax wait (<duration>) (queue:<name>)
         // @Required 0
         // @Stable stable
         // @Short Delays a script for a specified amount of time.
@@ -2296,7 +2296,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Walk, WalkTo
-        // @Usage walk [<location>] (speed:<#>) (auto_range)
+        // @Syntax walk [<location>] (speed:<#>) (auto_range)
         // @Required 1
         // @Stable stable
         // @Short Causes the NPC to walk to another location.
@@ -2313,7 +2313,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Weather
-        // @Usage weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)
+        // @Syntax weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)
         // @Required 1
         // @Stable Todo
         // @Short Changes the current weather in the minecraft world.
@@ -2330,7 +2330,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Usage yaml [load/create/savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
+        // @Syntax yaml [load/create/savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
         // @Required 1
         // @Stable Todo
         // @Short Edits a YAML configuration file.
@@ -2349,7 +2349,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Zap
-        // @Usage zap (<script>) [<step>] (<duration>)
+        // @Syntax zap (<script>) [<step>] (<duration>)
         // @Required 0
         // @Stable stable
         // @Short Changes the current script step.
