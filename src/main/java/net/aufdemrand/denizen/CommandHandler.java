@@ -742,14 +742,14 @@ public class CommandHandler {
     // To enable debugging mode, simply type '/denizen debug'. While debug is enabled, all debuggable
     // scripts, and any invoked actions, will output information to the console as they are executed.
     // By default, all scripts are debuggable while the dBugger is enabled. To disable a script
-    // specifically from debugging, simply add the'debug:' node with a value of 'false' to your script
+    // specifically from debugging, simply add the 'debug:' node with a value of 'false' to your script
     // container. This is typically used to silence particularly spammy scripts. Any kind of script
     // container can be silenced using this method.
     //
     // To stop debugging, simply type the '/denizen debug' command again. This must be used without
     // any additional options. A message will be sent to show the current status of the dBugger.
     // Note: While your server is in 'live production mode', the dBugger should be disabled as your
-    // server will run more slowly outputting debug information.
+    // server will run slower while outputting debug information.
     //
     // There are also several options to further help debugging. To use an option, simply attach them
     // to the /denizen debug command. One option, or multiple options can be used. For example: /denizen debug -ce
