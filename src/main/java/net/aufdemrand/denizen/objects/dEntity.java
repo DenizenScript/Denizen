@@ -593,17 +593,19 @@ public class dEntity implements dObject, Adjustable {
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
 
-        if (isNPC()) getNPC().teleport(location, TeleportCause.PLUGIN);
+        if (isNPC()) {
+            if (getNPC().isSpawned())
+                getNPC().teleport(location, TeleportCause.PLUGIN);
+            else {
+                getNPC().spawn(location);
+                entity = getNPC().getBukkitEntity();
+                uuid = getNPC().getBukkitEntity().getUniqueId();
+            }
+        }
         else if (entity != null && isUnique()) entity.teleport(location);
 
         else {
-            if (npc != null) {
-                npc.spawn(location);
-                entity = npc.getBukkitEntity();
-                uuid = entity.getUniqueId();
-            }
-
-            else if (entity_type != null) {
+            if (entity_type != null) {
                 if (despawned_entity != null) {
                     // If entity had a custom_script, use the script to rebuild the base entity.
                     if (despawned_entity.custom_script != null)
