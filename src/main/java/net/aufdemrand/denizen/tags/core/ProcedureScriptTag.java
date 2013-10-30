@@ -47,7 +47,7 @@ public class ProcedureScriptTag implements Listener {
     //   # Note: If you don't name the definitions but they are given anyway, they will be added as
     //   # %1%, %2%, and so on.
     //   definitions: price|moneysign
-    //   # (For the purposes of this example, assume price = 3 dollars, and moneysign holds the '$' USD symbol)
+    //   # (For the purposes of this example, assume price = 3 dollars, and moneysign holds the '&' symbol)
     //
     //   script:
     //   # The procedure script is much like a task script
@@ -69,7 +69,7 @@ public class ProcedureScriptTag implements Listener {
     //
     //   # Tell the player they paid, to be nice
     //   - narrate "You lost %moneysign%%price%!"
-    //   # Remember that due to the definitions this script requres, %moneysign% becomes '$' and price becomes '3'
+    //   # Remember that due to the definitions this script requres, %moneysign% becomes '&' and price becomes '3'
     //
     //   # And, finally, determine true, to inform the calling script that it passed
     //   - determine true
@@ -86,9 +86,9 @@ public class ProcedureScriptTag implements Listener {
     //     # Depending on the determine command. Remember not to return different types of things in one procedure script
     //     # If one determine returns "true", the other shouldn't return "3"
     //
-    //     # the .context[3|$] adds the two definitions: 'price' as '3', and 'moneysign' as '$'
+    //     # the .context[3|$] adds the two definitions: 'price' as '3', and 'moneysign' as '&'
     //     # Remember that if you don't need context, you can just entirely remove the '.context[]' portion
-    //     - if <proc[ProcedureTutorial].context[3|$]> {
+    //     - if <proc[ProcedureTutorial].context[3|&]> {
     //       - heal
     //       - chat "All patched up!"
     //       }
