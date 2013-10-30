@@ -142,17 +142,22 @@ public class ItemScriptHelper implements Listener {
 
     @EventHandler
     public void boundDropItem(PlayerDropItemEvent event) {
-        if (!event.getItemDrop().getItemStack().hasItemMeta()) return;
-        if (!event.getItemDrop().getItemStack().getItemMeta().hasLore()) return;
+        
+        // If the item has no ItemMeta or lore, ignore it.
+        if (!event.getItemDrop().getItemStack().hasItemMeta()
+                && !event.getItemDrop().getItemStack().getItemMeta().hasLore())
+            return;
+        
         for (String line : event.getItemDrop().getItemStack().getItemMeta().getLore()) {
             // If the item being dropped is bound, don't drop it.
-            if (ChatColor.stripColor(line).substring(0, 3).equalsIgnoreCase("id:")
-                    && dScript.matches(ChatColor.stripColor(line).substring(3))
-                    && dScript.valueOf(ChatColor.stripColor(line).substring(3)).getContainer().getAsContainerType(ItemScriptContainer.class).bound) {
+            if (line.startsWith("§0id:")
+                    && dScript.matches(line.replace("§0id:", ""))
+                    && dScript.valueOf(line.replace("§0id:", "")).getContainer().getAsContainerType(ItemScriptContainer.class).bound) {
                 event.setCancelled(true);
                 break;
             }
         }
+        
     }
 
     @EventHandler
