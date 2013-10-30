@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -41,28 +42,36 @@ public class ProcedureScriptTag implements Listener {
     // ProcedureTutorial:
     //   type: procedure
     //
+    //   # You can define variables to insert into the procedure, named here and separated by the |pipe| symbol.
+    //   # You can have as many as you want - anywhere from none to several thousand.
+    //   # Note: If you don't name the definitions but they are given anyway, they will be added as
+    //   # %1%, %2%, and so on.
+    //   definitions: price|moneysign
+    //   # (For the purposes of this example, assume price = 3 dollars, and moneysign holds the '$' USD symbol)
+    //
     //   script:
     //   # The procedure script is much like a task script
-    //   # Except it must end with a Determine command
+    //   # Except it must contain a Determine command
     //
     //   # In this example, we're checking if the player can buy a heal
     //   # So first check if the player has at least $3
     //   # If the player has less than 3 dollars, determine false
-    //   - if <player.money> < 3 determine false
+    //   - if <player.money> < %price% determine false
     //   # The determine above will immediately end the procedure and return false
     //
-    //   # If the player has more than 75% health, he doesn't need a heal so determine false
-    //   - if <player.health.percentage> > 75 determine false
+    //   # If the player has more than 80% health, he doesn't need a heal so determine false
+    //   - if <player.health.percentage> > 80 determine false
     //
     //   # This example shouldn't get too complex, so
     //   # If it passed the money and health requirements:
     //   # First, take the $3
-    //   - take money qty:3
+    //   - take money qty:%price%
     //
     //   # Tell the player they paid, to be nice
-    //   - narrate "You lost $3!"
+    //   - narrate "You lost %moneysign%%price%!"
+    //   # Remember that due to the definitions this script requres, %moneysign% becomes '$' and price becomes '3'
     //
-    //   # And, finally, determine true
+    //   # And, finally, determine true, to inform the calling script that it passed
     //   - determine true
     //
     // # +-- The NPC Assignment --+
@@ -73,33 +82,56 @@ public class ProcedureScriptTag implements Listener {
     //     on click:
     //
     //     # This will run the procedure script, and run the commands inside the { braces }
-    //     # If it returned true. You could also compare any other value, EG <proc:whatever> == 3
+    //     # If it returned true. You could also compare any other value, EG <proc[whatever]> == 3
     //     # Depending on the determine command. Remember not to return different types of things in one procedure script
     //     # If one determine returns "true", the other shouldn't return "3"
-    //     - if <proc:ProcedureTutorial> {
+    //
+    //     # the .context[3|$] adds the two definitions: 'price' as '3', and 'moneysign' as '$'
+    //     # Remember that if you don't need context, you can just entirely remove the '.context[]' portion
+    //     - if <proc[ProcedureTutorial].context[3|$]> {
     //       - heal
     //       - chat "All patched up!"
     //       }
+    //       else {
+    //       - chat "You need $3 for a heal!"
+    //       }
+    //     # The 'else' braced section will be run if the procedure returned 'false'.
     //
     // -->
 
    @EventHandler
     public void procedureTag(ReplaceableTagEvent event) {
        // <--[tag]
-       // @attribute <proc:<ProcedureScript>>
+       // @attribute <proc[ProcedureScript].Context[<element>|...]>
+       // @returns Element
+       // @description
+       // Returns the 'determine' result of a procedure script with the given context
+       // See !tutorial procedure
+       // -->
+       // <--[tag]
+       // @attribute <proc[ProcedureScript]>
        // @returns Element
        // @description
        // Returns the 'determine' result of a procedure script
        // See !tutorial procedure
        // -->
-    if (!event.matches("proc, pr")) return;
-       if (event.getValue() == null) return;
+       if (!event.matches("proc, pr")) return;
 
-       // Get the script's name from the tag's value
-       dScript script = dScript.valueOf(event.getValue());
+       dScript script = null;
+
+       if (event.hasNameContext()) {
+           script = dScript.valueOf(event.getNameContext());
+       }
+       else if (event.getValue() != null) {
+           script = dScript.valueOf(event.getValue());
+       }
+       else {
+           dB.echoError("Invalid procedure script tag '" + event.getValue() + "'!");
+           return;
+       }
 
        if (script == null) {
-           dB.echoError("Tried to execute '" + event.getValue() + "', but it couldn't be found!");
+           dB.echoError("Missing script for procedure script tag '" + event.getValue() + "'!");
            return;
        }
 
@@ -115,13 +147,30 @@ public class ProcedureScriptTag implements Listener {
        // Add the reqId to each of the entries for referencing
        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
-       InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries).start();
+       InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
+       queue.addEntries(entries);
+       if (event.hasType() &&
+               event.getType().equalsIgnoreCase("context") &&
+               event.hasTypeContext()) {
+           int x = 1;
+           dList definitions = new dList(event.getTypeContext());
+           String[] definition_names = null;
+           try {
+               definition_names = script.getContainer().getString("definitions").split("\\|");
+           }
+           catch (Exception e) { }
+           for (String definition : definitions) {
+               String name = definition_names != null && definition_names.length >= x ?
+                       definition_names[x - 1].trim() : String.valueOf(x);
+               queue.addDefinition(name, definition);
+               dB.echoDebug(event.getScriptEntry(), "Adding definition %" + name + "% as " + definition);
+               x++;
+           }
+       }
+       queue.start();
 
        if (DetermineCommand.hasOutcome(id)) {
            event.setReplaced(DetermineCommand.getOutcome(id));
        }
-
-
    }
-
 }
