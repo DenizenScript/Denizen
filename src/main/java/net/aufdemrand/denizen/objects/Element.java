@@ -242,10 +242,40 @@ public class Element implements dObject {
             return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <el@element.round_up>
+        // @returns Element(Number)
+        // @description
+        // Rounds a decimal upward.
+        // -->
+        if (attribute.startsWith("round_up"))
+            try {
+                return new Element((int)Math.ceil(Double.valueOf(element)))
+                        .getAttribute(attribute.fulfill(1)); }
+            catch (NumberFormatException e) {
+                dB.echoError("'" + element + "' is not a valid Integer.");
+                return new Element("null").getAttribute(attribute.fulfill(1));
+            }
+
+        // <--[tag]
+        // @attribute <el@element.round_down>
+        // @returns Element(Number)
+        // @description
+        // Rounds a decimal downward.
+        // -->
+        if (attribute.startsWith("round_down"))
+            try {
+                return new Element((int)Math.floor(Double.valueOf(element)))
+                        .getAttribute(attribute.fulfill(1)); }
+            catch (NumberFormatException e) {
+                dB.echoError("'" + element + "' is not a valid Integer.");
+                return new Element("null").getAttribute(attribute.fulfill(1));
+            }
+
+        // <--[tag]
         // @attribute <el@element.as_int>
         // @returns Element(Number)
         // @description
-        // Returns the element as a number without a decimal. Rounds up double values.
+        // Returns the element as a number without a decimal. Rounds double values.
         // -->
         if (attribute.startsWith("asint")
                 || attribute.startsWith("as_int"))
