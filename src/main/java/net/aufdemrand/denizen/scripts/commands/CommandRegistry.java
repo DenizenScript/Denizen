@@ -1670,7 +1670,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Remove
-        // @Usage remove [<entity>|...] (region:<name>)
+        // @Syntax remove [<entity>|...] (region:<name>)
         // @Required 0
         // @Stable Todo
         // @Short Despawns a list of entities.
