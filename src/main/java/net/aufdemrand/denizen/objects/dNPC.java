@@ -365,6 +365,19 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <n@npc.has_flag[flag_name]>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the NPC has the specified flag, otherwise returns false.
+        // -->
+        if (attribute.startsWith("has_flag")) {
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else return "null";
+            return new Element(FlagManager.npcHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <npc.flag[flag_name]>
         // @returns Flag dList
         // @description

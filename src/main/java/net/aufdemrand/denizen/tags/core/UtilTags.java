@@ -122,6 +122,22 @@ public class UtilTags implements Listener {
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
         // <--[tag]
+        // @attribute <server.has_flag[flag_name]>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the Player has the specified flag, otherwise returns false.
+        // -->
+        if (attribute.startsWith("has_flag")) {
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else {
+                event.setReplaced("null");
+                return;
+            }
+            event.setReplaced(new Element(FlagManager.serverHasFlag(flag_name)).getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.flag[<name>]>
         // @returns Flag dList
         // @description
@@ -211,12 +227,13 @@ public class UtilTags implements Listener {
                     matchPlayer = player;
                 }
             }
+
             if (matchPlayer == null) {
                 event.setReplaced("null");
-            }
-            else {
+            } else {
                 event.setReplaced(new dPlayer(matchPlayer).getAttribute(attribute.fulfill(1)));
             }
+
             return;
         }
 

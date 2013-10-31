@@ -381,6 +381,7 @@ public class Denizen extends JavaPlugin {
 
         // <--[language]
         // @name /ex command
+        // @group Console Commands
         // @description
         // The '/ex' command is an easy way to run a single denizen script command in-game. Its syntax,
         // aside from '/ex' is exactly the same as any other command. When running a command, some context

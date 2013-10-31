@@ -211,9 +211,9 @@ public class dPlayer implements dObject, Adjustable {
 
         if (player_name == null) return "null";
 
-    /////////////////////
-    //   OFFLINE ATTRIBUTES
-    /////////////////
+        /////////////////////
+        //   OFFLINE ATTRIBUTES
+        /////////////////
 
         /////////////////////
         //   DEBUG ATTRIBUTES
@@ -318,6 +318,19 @@ public class dPlayer implements dObject, Adjustable {
                         .getPlayerFlag(getName(), flag_name))
                         .getAttribute(attribute);
             else return "null";
+        }
+
+        // <--[tag]
+        // @attribute <p@player.has_flag[flag_name]>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the Player has the specified flag, otherwise returns false.
+        // -->
+        if (attribute.startsWith("has_flag")) {
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else return "null";
+            return new Element(FlagManager.playerHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
 
@@ -537,9 +550,9 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
 
-    /////////////////////
-    //   ONLINE ATTRIBUTES
-    /////////////////
+        /////////////////////
+        //   ONLINE ATTRIBUTES
+        /////////////////
 
         // Player is required to be online after this point...
         if (!isOnline()) return new Element(identify()).getAttribute(attribute);
@@ -559,7 +572,7 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("selected_npc")) {
             if (getPlayerEntity().hasMetadata("selected"))
                 return getSelectedNPC()
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
             else return "null";
         }
 
@@ -591,7 +604,7 @@ public class dPlayer implements dObject, Adjustable {
         // returns the player's IP address.
         // -->
         if (attribute.startsWith("ip") ||
-            attribute.startsWith("host_name"))
+                attribute.startsWith("host_name"))
             return new Element(getPlayerEntity().getAddress().getHostName())
                     .getAttribute(attribute.fulfill(1));
 
@@ -732,7 +745,7 @@ public class dPlayer implements dObject, Adjustable {
                 return new Element(Depends.permissions.playerInGroup((World) null, player_name, group))
                         .getAttribute(attribute.fulfill(2));
 
-            // Permission in certain world
+                // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world"))
                 return new Element(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group))
                         .getAttribute(attribute.fulfill(2));
