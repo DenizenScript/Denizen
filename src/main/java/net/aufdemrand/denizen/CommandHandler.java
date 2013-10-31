@@ -705,15 +705,20 @@ public class CommandHandler {
     // @name /denizen submit command
     // @group Console Commands
     // @description
-    // Using the /denizen submit command interfaces with Denizen's dBugger to allow control
-    // over debug messages.
+    // Use the '/denizen submit' command with '/denizen debug -r' to record debug output and post
+    // it online for assisting developers to see.
     //
-    // To enable debugging mode, simply type '/denizen debug'. While debug is enabled, all debuggable
-    // scripts, and any invoked actions, will output information to the console as they are executed.
-    // By default, all scripts are debuggable while the dBugger is enabled. To disable a script
-    // specifically from debugging, simply add the 'debug:' node with a value of 'false' to your script
-    // container. This is typically used to silence particularly spammy scripts. Any kind of script
-    // container can be silenced using this method.
+    // To begin recording, simply use '/denizen debug -r'. After that, any debug output sent to the
+    // console and any player chat will be added to an internal record. Once enabled, you should then
+    // fire off scripts and events that aren't working fully. Finally, you use the '/denizen submit'
+    // command to take all the recording information and paste it to an online pastebin hosted by
+    // the Denizen team. It will give you back a direct link to the full debug output, which you
+    // can view yourself and send to other helpers without trouble.
+    //
+    // There is no limit to the recording size, to prevent any important information from being trimmed
+    // away. Be careful not to leave debug recording enabled by accident, as it may eventually begin
+    // using up large amounts of memory. (The submit command will automatically disable recording,
+    // or you can instead just use '/denizen debug -r' again.)
     //
     // -->
     @Command(
