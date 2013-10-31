@@ -28,7 +28,7 @@ public class dScript implements dObject {
 
     // <--[language]
     // @name dScript
-    // @group dObject System
+    // @group Object System
     // @description
     // 1) A dObject that represents a script container. dScripts contain all information inside the script, and can be
     // used in a variety of commands that require script arguments. For example, run and inject will 'execute'

@@ -21,7 +21,7 @@ public class Duration implements dObject {
 
     // <--[language]
     // @name Duration
-    // @group dObjects System
+    // @group Object System
     // @description
     // Durations are a unified and convenient way to get a 'unit of time' throughout Denizen.
     // Many commands and features that require a duration can be satisfied by specifying a number

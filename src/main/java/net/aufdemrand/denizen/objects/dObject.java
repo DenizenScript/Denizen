@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 
 // <--[language]
 // @name dObjects
-// @group dObjects System
+// @group Object System
 // @description
 // dObjects are a system put into place by Denizen that make working with things, or 'objects',
 // in Minecraft and Denizen easier. Many parts of scripts will require some kind of object as an

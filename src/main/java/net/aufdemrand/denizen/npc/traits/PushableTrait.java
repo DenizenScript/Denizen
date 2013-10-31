@@ -17,7 +17,7 @@ import org.bukkit.event.Listener;
 
 // <--[language]
 // @name Pushable Trait
-// @group npc traits
+// @group NPC Traits
 // @description
 // By default, NPCs created will allow players to 'noclip' them, or go right through. This is to
 // avoid NPCs moving from their set location, but often times, this behavior may be undesired.

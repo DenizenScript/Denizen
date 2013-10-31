@@ -14,7 +14,7 @@ import org.bukkit.ChatColor;
 
 // <--[language]
 // @name Element
-// @group dObject System
+// @group Object System
 // @description
 // Elements are simple objects that contain either a boolean (true/false),
 // string, or number value. Their main usage is within the replaceable tag
