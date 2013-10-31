@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 // <--[language]
 // @name Assignment Script-Containers
+// @group Script Container System
 // @description
 // Assignment script-containers provide functionality to NPCs by 'assignment' of the container. Assignment
 // scripts are meant to be used when customizing the normal behavior of NPCs. This can be used on a 'per-NPC' basis,

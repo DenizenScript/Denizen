@@ -10,6 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 
 // <--[language]
 // @name Invisible Trait
+// @group npc traits
 // @description
 // The invisible trait will allow a NPC to remain invisible, even after a server restart. It permanently applies
 // the invisible potion effect. Use '/trait invisible' or the 'invisible' command to toggle this trait.

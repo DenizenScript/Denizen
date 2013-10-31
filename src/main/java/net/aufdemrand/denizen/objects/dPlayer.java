@@ -37,6 +37,7 @@ public class dPlayer implements dObject, Adjustable {
 
     // <--[language]
     // @name p@
+    // @group Object Fetcher System
     // @description
     // p@ refers to the 'object identifier' of a dPlayer. The 'p@' is notation for Denizen's Object
     // Fetcher. The only valid constructor for a dPlayer is the name of the player the object should be

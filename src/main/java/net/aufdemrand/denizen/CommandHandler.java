@@ -47,6 +47,7 @@ public class CommandHandler {
 
     // <--[language]
     // @name /npc pushable command
+    // @group console commands
     // @description
     // The '/npc pushable' command controls a NPCs Pushable Trait. When a NPC is 'pushable', the NPC
     // will move out of the way when colliding with another LivingEntity.
@@ -130,6 +131,7 @@ public class CommandHandler {
 
     // <--[language]
     // @name /npc constant command
+    // @group console commands
     // @description
     // The /npc constants command configures a NPC's constants. Uses Denizen's ConstantTrait to keep track of
     // NPC-specific constants. This provides seamless integration with an assignment script's 'Default Constants' in
@@ -701,6 +703,7 @@ public class CommandHandler {
 
     // <--[language]
     // @name /denizen submit command
+    // @group console commands
     // @description
     // Using the /denizen submit command interfaces with Denizen's dBugger to allow control
     // over debug messages.
@@ -746,6 +749,7 @@ public class CommandHandler {
 
     // <--[language]
     // @name /denizen debug command
+    // @group console commands
     // @description
     // Using the /denizen debug command interfaces with Denizen's dBugger to allow control
     // over debug messages.

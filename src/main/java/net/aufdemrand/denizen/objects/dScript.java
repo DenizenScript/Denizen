@@ -28,6 +28,7 @@ public class dScript implements dObject {
 
     // <--[language]
     // @name dScript
+    // @group dObject System
     // @description
     // 1) A dObject that represents a script container. dScripts contain all information inside the script, and can be
     // used in a variety of commands that require script arguments. For example, run and inject will 'execute'
@@ -52,6 +53,7 @@ public class dScript implements dObject {
 
     // <--[language]
     // @name s@
+    // @group Object Fetcher System
     // @description
     // s@ refers to the 'object identifier' of a dScript. The 's@' is notation for Denizen's Object
     // Fetcher. The only valid constructor for a dScript is the name of the script container that it should be

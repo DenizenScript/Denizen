@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 
 // <--[language]
 // @name dObjects
+// @group dObjects System
 // @description
 // dObjects are a system put into place by Denizen that make working with things, or 'objects',
 // in Minecraft and Denizen easier. Many parts of scripts will require some kind of object as an
@@ -120,7 +121,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 // + ----- dScript -------+
 // | object notation: s@    can reference unique objects: yes     can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   w@<script_container_name> - fetches the script container with the specified name
+// |   s@<script_container_name> - fetches the script container with the specified name
 //
 // + ----- Duration ------+
 // | object notation: d@    can reference unique objects: no      can be notable: no

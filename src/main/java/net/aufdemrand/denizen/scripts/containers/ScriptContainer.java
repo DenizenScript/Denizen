@@ -19,6 +19,7 @@ public class ScriptContainer implements Debuggable {
 
     // <--[language]
     // @name Script Container
+    // @group Script Container System
     // @description
     // Script Containers are the basic structure that Denizen uses inside its YAML-based scripting files found in your
     // plugins/Denizen/scripts/ folder. Regardless of type, all script containers have basic parts that can usually be
@@ -89,6 +90,7 @@ public class ScriptContainer implements Debuggable {
 
     // <--[language]
     // @name Script Name
+    // @group Script Container System
     // @description
     // Typically refers to the name of a script container. When using the object fetcher with dScript objects,
     // (s@script_name), the script_name referred to is the name of the container.
@@ -131,6 +133,7 @@ public class ScriptContainer implements Debuggable {
 
     // <--[language]
     // @name Script Type
+    // @group Script Container System
     // @description
     // The type of container that a script is in. For example, 'task script' is a script type that has some sort of
     // utility script or

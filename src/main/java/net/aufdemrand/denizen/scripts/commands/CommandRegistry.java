@@ -53,6 +53,7 @@ public class CommandRegistry implements dRegistry {
 
     // <--[language]
     // @Name Command Syntax
+    // @group Getting Started
     // @Description
     // Almost every Denizen command and requirement has arguments after the command itself.
     // These arguments are just snippets of text showing what exactly the command should do,

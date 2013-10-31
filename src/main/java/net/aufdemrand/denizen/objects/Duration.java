@@ -21,6 +21,7 @@ public class Duration implements dObject {
 
     // <--[language]
     // @name Duration
+    // @group dObjects System
     // @description
     // Durations are a unified and convenient way to get a 'unit of time' throughout Denizen.
     // Many commands and features that require a duration can be satisfied by specifying a number
@@ -67,6 +68,7 @@ public class Duration implements dObject {
 
     // <--[language]
     // @name d@
+    // @group Object Fetcher System
     // @description
     // d@ refers to the 'object identifier' of a 'Duration'. The 'd@' is notation for Denizen's Object
     // Fetcher. Durations must be a positive number or range of numbers followed optionally by

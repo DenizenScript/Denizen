@@ -10,6 +10,7 @@ import java.util.*;
 
 // <--[language]
 // @name flags
+// @group flag system
 // @description
 // Flags are a feature that is implemented by Denizen to allow the dynamic and persistent storage of information
 // to NPC and player objects as well as the server on a global scale. Whether you need to store a quest variable

@@ -40,10 +40,10 @@ public class aH {
     // decimal point. Numbers can be verified with the 'if' commands' 'matches' functionality.
     // For example: - if <number> matches double ... will return true if <number> is a valid number.
     //
-    // Denizen uses the regular expression pattern (-)?(?:(?:\d+)|)(?:(?:\.\d+)|) for number matching.
+    // Denizen uses the regular expression pattern -?(?:\d+)?(\.\d+)? for number matching.
     // -->
     final static Pattern doublePrimitive =
-            Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
+            Pattern.compile("-?(?:\\d+)?(\\.\\d+)?");
 
     // <--[language]
     // @name percentage
@@ -55,10 +55,10 @@ public class aH {
     // #.#% or <percentage>. Percentages can be verified with the 'if' commands' 'matches' functionality.
     // For example: - if <percentage> matches percentage ... will return true if <percentage> is a valid percentage.
     //
-    // Denizen uses the regular expression pattern (?:(?:\d+)|)(?:(?:\.\d+)|)(%)? for percentage matching.
+    // Denizen uses the regular expression pattern -?(?:\d+)?(\.\d+)?(%)? for percentage matching.
     // -->
     final static Pattern percentagePrimitive =
-            Pattern.compile("(?:(?:\\d+)|)(?:(?:\\.\\d+)|)(%)?");
+            Pattern.compile("-?(?:\\d+)?(\\.\\d+)?(%)?");
 
     final static Pattern integerPrimitive =
             Pattern.compile("(-)?\\d+");

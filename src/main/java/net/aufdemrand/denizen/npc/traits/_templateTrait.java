@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 
 // <--[language]
 // @name Trait
+// @group npc traits
 // @description
 // Traits are abilities and functions that are specific to NPCs. The trait system is
 // implemented by Citizens2, but heavily utilized for NPC features throughout Denizen.

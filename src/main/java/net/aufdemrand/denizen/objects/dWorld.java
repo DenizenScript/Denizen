@@ -39,6 +39,7 @@ public class dWorld implements dObject {
 
     // <--[language]
     // @name w@
+    // @group Object Fetcher System
     // @description
     // w@ refers to the 'object identifier' of a dWorld. The 'w@' is notation for Denizen's Object
     // Fetcher. The only valid constructor for a dWorld is the name of the world it should be
