@@ -358,13 +358,13 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.get[#]>
         // @returns Element
         // @description
-        // returns an Element of the value specified by the supplied context.
+        // returns an element of the value specified by the supplied context.
         // -->
         if (attribute.startsWith("get") &&
                 attribute.hasContext(1)) {
             if (isEmpty()) return "null";
             int index = attribute.getIntContext(1);
-            if (index > size()) index = size();
+            if (index > size()) return "null";
             if (index < 1) index = 1;
             attribute = attribute.fulfill(1);
 
