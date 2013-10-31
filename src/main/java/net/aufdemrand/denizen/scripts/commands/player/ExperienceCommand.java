@@ -29,9 +29,9 @@ public class ExperienceCommand extends AbstractCommand {
     /* Tail recursive way to count the level for the given exp, maybe better with iteration */
     public static int countLevel(int exp, int toLevel, int level){if (exp < toLevel){return level;} else {return countLevel(exp - toLevel, getTotalExpToLevel(level+2) - getTotalExpToLevel(level+1), ++level);}}
     /* Setting the new level and exp using the setExp and setLevel methods, should be soundless (not yet tested) */
-    public static void setSoundlessTotalExperience(Player player, int exp) {player.setTotalExperience(0);player.setLevel(0);player.setExp(0); if (exp > 0) {final int level = countLevel(exp, 17, 0);player.setLevel(level); player.setExp((getTotalExpToLevel(level)-exp)/getExpToLevel(level+1));}}
+    public static void setSilentTotalExperience(Player player, int exp) {player.setTotalExperience(0);player.setLevel(0);player.setExp(0); if (exp > 0) {final int level = countLevel(exp, 17, 0);player.setLevel(level);final int expToLvl = exp-getTotalExpToLevel(level); player.setExp(expToLvl < 0 ? 0 : expToLvl/getExpToLevel(level+1));}}
     /* Adding experience using the setExp and setLevel methods, should be soundless (not tested) */
-    public static void giveSoundlessExperience(Player player, int exp){final int currentExp = getTotalExperience(player);player.setTotalExperience(0);player.setLevel(0);player.setExp(0);final int newexp = currentExp + exp;if (newexp > 0){final int level = countLevel(currentExp + exp, 17, 0);player.setLevel(level); player.setExp((getTotalExpToLevel(level)-exp)/getExpToLevel(level+1));}}
+    public static void giveSilentExperience(Player player, int exp){final int currentExp = getTotalExperience(player);player.setTotalExperience(0);player.setLevel(0);player.setExp(0);final int newexp = currentExp + exp;if (newexp > 0){final int level = countLevel(newexp, 17, 0);player.setLevel(level);final int epxToLvl = newexp-getTotalExpToLevel(level);player.setExp(epxToLvl < 0 ? 0 : epxToLvl/getExpToLevel(level+1));}}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -39,7 +39,7 @@ public class ExperienceCommand extends AbstractCommand {
         int amount = 0;
         Type type = Type.SET;
         boolean level = false;
-        boolean soundless = false;
+        boolean silent = false;
 
         for (String arg : scriptEntry.getArguments()) {
 
@@ -53,8 +53,8 @@ public class ExperienceCommand extends AbstractCommand {
             else if(aH.matchesArg("LEVEL", arg))
                 level = true;
             
-            else if(aH.matchesArg("SOUNDLESS", arg))
-                soundless = true;
+            else if(aH.matchesArg("SILENT", arg))
+                silent = true;
 
             else throw new InvalidArgumentsException("Unknown argument '" + arg + "'");
         }
@@ -62,7 +62,7 @@ public class ExperienceCommand extends AbstractCommand {
         scriptEntry.addObject("quantity", amount)
                 .addObject("type", type)
                 .addObject("level", level)
-                .addObject("soundless", soundless);
+                .addObject("silent", silent);
 
     }
 
@@ -73,7 +73,7 @@ public class ExperienceCommand extends AbstractCommand {
         Type type = (Type) scriptEntry.getObject("type");
         Integer quantity = (Integer) scriptEntry.getObject("quantity");
         Boolean level = (Boolean) scriptEntry.getObject("level");
-        Boolean sound = !((Boolean) scriptEntry.getObject("soundless"));
+        Boolean silent = (Boolean) scriptEntry.getObject("soundless");
 
         dB.report(scriptEntry, name, aH.debugObj("Type", type.toString())
             + aH.debugObj("Quantity", level ? quantity.toString() + " levels" : quantity.toString())
@@ -85,28 +85,28 @@ public class ExperienceCommand extends AbstractCommand {
             case SET:
                 if(level)
                     setLevel(player, quantity);
-                else if ( sound )
+                else if ( !silent )
                     setTotalExperience(player, quantity);
                 else
-                    setSoundlessTotalExperience(player, quantity);
+                    setSilentTotalExperience(player, quantity);
                 break;
 
             case GIVE:
                 if(level)
                     setLevel(player, player.getLevel() + quantity);
-                else if ( sound )
+                else if ( !silent )
                     giveExperience(player, quantity);
                 else
-                	giveSoundlessExperience(player, quantity);
+                	giveSilentExperience(player, quantity);
                 break;
 
             case TAKE:
                 if(level)
                     setLevel(player, player.getLevel() - quantity);
-                else if ( sound )
+                else if ( !silent )
                     giveExperience(player, -quantity);
                 else
-                	giveSoundlessExperience(player, -quantity);
+                	giveSilentExperience(player, -quantity);
                 break;
         }
 
