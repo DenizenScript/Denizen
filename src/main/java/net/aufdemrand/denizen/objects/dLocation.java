@@ -41,7 +41,14 @@ public class dLocation extends org.bukkit.Location implements dObject {
     }
 
     public static boolean isSaved(dLocation location) {
-        return uniqueObjects.containsValue(location);
+        for (Map.Entry<String, dLocation> i : uniqueObjects.entrySet()) {
+            if (i.getValue().getBlockX() != location.getBlockX()) continue;
+            if (i.getValue().getBlockY() != location.getBlockY()) continue;
+            if (i.getValue().getBlockZ() != location.getBlockZ()) continue;
+            if (!i.getValue().getWorld().getName().equals(location.getWorld().getName())) continue;
+            return true;
+        }
+        return false;
     }
 
     public static boolean isSaved(Location location) {
@@ -63,7 +70,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             if (i.getValue().getBlockY() != location.getBlockY()) continue;
             if (i.getValue().getBlockZ() != location.getBlockZ()) continue;
             if (!i.getValue().getWorld().getName().equals(location.getWorld().getName())) continue;
-            return i.getKey();
+            return "l@" + i.getKey();
         }
         return null;
     }
@@ -279,7 +286,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
     @Override
     public String debug() {
-        return (isSaved(this) ? "<G>" + prefix + "='<A>" + getSaved(this) + "(<Y>" + identify()+ "<A>)<G>'  "
+        return (isSaved(this) ? "<G>" + prefix + "='<A>" + identify() + "(<Y>" + identifyRaw()+ "<A>)<G>'  "
                 : "<G>" + prefix + "='<Y>" + identify() + "<G>'  ");
     }
 
@@ -291,10 +298,16 @@ public class dLocation extends org.bukkit.Location implements dObject {
     @Override
     public String identify() {
         if (isSaved(this))
-            return "l@" + getSaved(this);
-        else if (getYaw() != 0.0 && getPitch() != 0.0) return "l@" + getX() + "," + getY()
+            return getSaved(this);
+        else return identifyRaw();
+    }
+
+    public String identifyRaw() {
+        if (getYaw() != 0.0 && getPitch() != 0.0)
+            return "l@" + getX() + "," + getY()
                 + "," + getZ() + "," + getPitch() + "," + getYaw() + "," + getWorld().getName();
-        else return "l@" + getX() + "," + getY()
+        else
+            return "l@" + getX() + "," + getY()
                     + "," + getZ() + "," + getWorld().getName();
     }
 

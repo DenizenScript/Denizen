@@ -2683,10 +2683,10 @@ public class WorldScriptHelper implements Listener {
         events.add("player clicks in inventory");
         events.add("player clicks in " + type);
 
-        String interaction = "player " + click + " clicks";
+        String interaction = "player " + click + " clicks ";
 
-        events.add(interaction + " in inventory");
-        events.add(interaction + " in " + type);
+        events.add(interaction + "in inventory");
+        events.add(interaction + "in " + type);
 
         if (event.getCurrentItem() != null) {
 
@@ -2708,7 +2708,7 @@ public class WorldScriptHelper implements Listener {
 
         events = trimEvents(events);
 
-        if (events.size() == 0 ) return;
+        if (events.size() == 0) return;
 
         context.put("item", item);
         context.put("inventory", new dInventory(event.getInventory()));
@@ -3830,7 +3830,7 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player walks over notable
-    // player walks over <notable>
+    // player walks over <location>
     //
     // @Triggers when a player walks over a notable location.
     // @Context
@@ -3844,7 +3844,7 @@ public class WorldScriptHelper implements Listener {
     public void playerMove(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
-        String name = dLocation.getSaved(event.getPlayer().getLocation());
+        String name = dLocation.getSaved(event.getTo());
 
         if (name != null) {
             Map<String, dObject> context = new HashMap<String, dObject>();
@@ -3855,7 +3855,7 @@ public class WorldScriptHelper implements Listener {
                             "player walks over " + name,
                             "walked over notable",
                             "walked over " + name),
-                    null, event.getPlayer(), context);
+                    null, event.getPlayer(), context, true);
 
             if (determination.toUpperCase().startsWith("CANCELLED") ||
                     determination.toUpperCase().startsWith("FROZEN"))
