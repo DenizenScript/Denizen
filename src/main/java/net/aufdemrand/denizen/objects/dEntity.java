@@ -284,7 +284,6 @@ public class dEntity implements dObject, Adjustable {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-
     private Entity entity = null;
     private EntityType entity_type = null;
     private String data1 = null;
