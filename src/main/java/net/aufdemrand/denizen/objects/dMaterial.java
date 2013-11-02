@@ -458,7 +458,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.has_gravity>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the material is affected by gravity.
         // -->
@@ -468,7 +468,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.id>
-        // @returns Element(integer)
+        // @returns Element(Number)
         // @description
         // Returns the material's ID.
         // -->
@@ -478,7 +478,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.is_block>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the material is a placeable block.
         // -->
@@ -488,7 +488,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.is_burnable>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the material is a block that can burn away.
         // -->
@@ -498,7 +498,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.is_edible>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the material is edible.
         // -->
@@ -508,7 +508,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.is_flammable>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the material is a block that can catch fire.
         // -->
@@ -518,7 +518,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.is_occluding>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the material is a block that completely blocks vision.
         // -->
@@ -528,7 +528,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.is_record>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the material is a playable music disc.
         // -->
@@ -538,7 +538,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.is_solid>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the material is a block that is solid (cannot be walked through).
         // -->
@@ -548,7 +548,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.is_transparent>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the material is a block that does not block any light.
         // -->
@@ -558,7 +558,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.max_durability>
-        // @returns Element(integer)
+        // @returns Element(Number)
         // @description
         // Returns the maximum durability of this material.
         // -->
@@ -568,7 +568,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.max_stack_size>
-        // @returns Element(integer)
+        // @returns Element(Number)
         // @description
         // Returns the maximum amount of this material that can be held in a stack.
         // -->
@@ -578,7 +578,7 @@ public class dMaterial implements dObject {
 
         // <--[tag]
         // @attribute <m@material.is_made_of[<material>]>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns true if the material is a variety of the specified material.
         // Example: <m@red_wool.is_made_of[m@wool]> will return true.

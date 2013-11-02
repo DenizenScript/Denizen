@@ -348,7 +348,7 @@ public class Duration implements dObject {
 
         // <--[tag]
         // @attribute <d@duration.in_hours>
-        // @returns Element(double)
+        // @returns Element(Decimal)
         // @description
         // returns the number of hours in the Duration.
         // -->
@@ -358,7 +358,7 @@ public class Duration implements dObject {
 
         // <--[tag]
         // @attribute <d@duration.in_minutes>
-        // @returns Element(double)
+        // @returns Element(Decimal)
         // @description
         // returns the number of minutes in the Duration.
         // -->
@@ -368,7 +368,7 @@ public class Duration implements dObject {
 
         // <--[tag]
         // @attribute <d@duration.in_seconds>
-        // @returns Element(double)
+        // @returns Element(Decimal)
         // @description
         // returns the number of seconds in the Duration.
         // -->
@@ -378,7 +378,7 @@ public class Duration implements dObject {
 
         // <--[tag]
         // @attribute <d@duration.in_ticks>
-        // @returns Element(integer)
+        // @returns Element(Number)
         // @description
         // returns the number of ticks in the Duration. (20t/second)
         // -->

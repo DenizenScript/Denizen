@@ -216,7 +216,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <ch@chunk.average_height>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // returns the average height of the blocks in the chunk.
         // -->

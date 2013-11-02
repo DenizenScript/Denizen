@@ -322,7 +322,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.has_flag[flag_name]>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns true if the Player has the specified flag, otherwise returns false.
         // -->
@@ -340,7 +340,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.money>
-        // @returns Element(number)
+        // @returns Element(Decimal)
         // @description
         // returns the amount of money the player has with the registered Economy system.
         // -->
@@ -461,7 +461,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.first_played>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the millisecond time of when the player first logged on to this server.
         // -->
@@ -471,7 +471,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.has_played_before>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player has played before.
         // -->
@@ -481,7 +481,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.health.is_scaled>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player's health bar is currently being scaled.
         // -->
@@ -491,7 +491,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.health.scale>
-        // @returns Element(number)
+        // @returns Element(Decimal)
         // @description
         // returns the current scale for the player's health bar
         // -->
@@ -501,7 +501,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.is_banned>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is banned.
         // -->
@@ -511,7 +511,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.is_online>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is currently online.
         // -->
@@ -520,7 +520,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.is_op>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is a full server operator.
         // -->
@@ -530,7 +530,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.is_whitelisted>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is whitelisted.
         // -->
@@ -540,7 +540,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.last_played>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the millisecond time of when the player
         // was last seen.
@@ -671,7 +671,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.has_permission[permission.node]>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player has the specified node.
         // -->
@@ -686,7 +686,7 @@ public class dPlayer implements dObject, Adjustable {
 
             // <--[tag]
             // @attribute <p@player.has_permission[permission.node].global>
-            // @returns Element(boolean)
+            // @returns Element(Boolean)
             // @description
             // returns whether the player has the specified node, regardless of world.
             // (Note: this may or may not be functional with your permissions system.)
@@ -704,7 +704,7 @@ public class dPlayer implements dObject, Adjustable {
 
             // <--[tag]
             // @attribute <p@player.has_permission[permission.node].world>
-            // @returns Element(boolean)
+            // @returns Element(Boolean)
             // @description
             // returns whether the player has the specified node in regards to the
             // player's current world.
@@ -718,7 +718,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.in_group[group_name]>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is in the specified group.
         // -->
@@ -733,7 +733,7 @@ public class dPlayer implements dObject, Adjustable {
 
             // <--[tag]
             // @attribute <p@player.in_group[group_name].global>
-            // @returns Element(boolean)
+            // @returns Element(Boolean)
             // @description
             // returns whether the player has the group with no regard to the
             // player's current world.
@@ -752,7 +752,7 @@ public class dPlayer implements dObject, Adjustable {
 
             // <--[tag]
             // @attribute <p@player.in_group[group_name].world>
-            // @returns Element(boolean)
+            // @returns Element(Boolean)
             // @description
             // returns whether the player has the group in regards to the
             // player's current world.
@@ -786,7 +786,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.allowed_flight>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is allowed to fly.
         // -->
@@ -796,7 +796,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.fly_speed>
-        // @returns Element(Float)
+        // @returns Element(Decimal)
         // @description
         // returns the speed the player can fly at.
         // -->
@@ -829,7 +829,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.saturation>
-        // @returns Element(number)
+        // @returns Element(Decimal)
         // @description
         // returns the current saturation of the player.
         // -->
@@ -839,7 +839,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.food_level>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the current food level of the player.
         // -->
@@ -849,7 +849,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.oxygen.max>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns how much air the player can have.
         // -->
@@ -859,7 +859,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.oxygen>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns how much air the player has.
         // -->
@@ -869,7 +869,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.gamemode.id>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure
         // -->
@@ -889,7 +889,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.is_blocking>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is currently blocking.
         // -->
@@ -899,7 +899,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.is_flying>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is currently flying.
         // -->
@@ -909,7 +909,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.is_sleeping>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is currently sleeping.
         // -->
@@ -919,7 +919,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.is_sneaking>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is currently sneaking.
         // -->
@@ -929,7 +929,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.is_sprinting>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether the player is currently sprinting.
         // -->
@@ -961,7 +961,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.walk_speed>
-        // @returns Element(Float)
+        // @returns Element(Decimal)
         // @description
         // returns the speed the player can walk at.
         // -->
@@ -971,7 +971,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.weather>
-        // @returns Element(String)
+        // @returns Element
         // @description
         // returns the type of weather the player is experiencing. This can be different
         // from the weather currently in the world that the player is residing in if
@@ -983,7 +983,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.xp.level>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the number of XP levels the player has.
         // -->
@@ -993,7 +993,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.xp.to_next_level>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the amount of XP needed to get to the next level.
         // -->
@@ -1003,7 +1003,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.xp.total>
-        // @returns Element(number)
+        // @returns Element(Number)
         // @description
         // returns the total amount of experience points.
         // -->
@@ -1013,7 +1013,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.xp>
-        // @returns Element(number)
+        // @returns Element(Decimal)
         // @description
         // returns the percentage of experience points to the next level.
         // -->
@@ -1032,7 +1032,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name level
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the level on the player. Does not affect the current progression
         // of experience towards next level.
@@ -1065,7 +1065,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name health_scale
-        // @input Element(Integer)
+        // @input Element(Decimal)
         // @description
         // Sets the 'health scale' on the Player. Each heart equals '2'. The standard health scale is
         // 20, so for example, indicating a value of 40 will display double the amount of hearts
@@ -1111,7 +1111,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name saturation
-        // @input Element(Integer)
+        // @input Element(Decimal)
         // @description
         // Sets the current food saturation level of a player.
         // @tags
@@ -1125,7 +1125,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name food_level
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the current food level of a player. Typically, '20' is full.
         // @tags
@@ -1153,7 +1153,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name fly_speed
-        // @input Element(Number)
+        // @input Element(Decimal)
         // @description
         // Sets the fly speed of the player. Valid range is 0.0 to 1.0
         // @tags
@@ -1212,7 +1212,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name time
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the time of day the Player is currently experiencing. Setting this will cause the
         // player to have a different time than other Players in the world are experiencing though
@@ -1229,7 +1229,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name freeze_time
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the time of day the Player is currently experiencing and freezes it there. Note:
         // there is a small 'twitch effect' when looking at the sky when time is frozen.
@@ -1265,7 +1265,7 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name walk_speed
-        // @input Element(Number)
+        // @input Element(Decimal)
         // @description
         // Sets the walk speed of the player. The standard value is '0.2'. Valid range is 0.0 to 1.0
         // @tags

@@ -534,7 +534,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.pitch>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the pitch of the object at the location.
         // -->
@@ -571,7 +571,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.yaw.raw>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the raw yaw of the object at the location.
         // -->
@@ -582,7 +582,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.yaw>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the normalized yaw of the object at the location.
         // -->
@@ -857,7 +857,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.x>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the X coordinate of the location.
         // -->
@@ -867,7 +867,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.y>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the Y coordinate of the location.
         // -->
@@ -877,7 +877,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.z>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the Z coordinate of the location.
         // -->
@@ -911,7 +911,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.distance[<location>]>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the distance between 2 locations.
         // -->
@@ -921,7 +921,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
                 // <--[tag]
                 // @attribute <l@location.distance[<location>].horizontal>
-                // @returns Element(Number)
+                // @returns Element(Decimal)
                 // @description
                 // Returns the horizontal distance between 2 locations.
                 // -->
@@ -929,7 +929,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
                     // <--[tag]
                     // @attribute <l@location.distance[<location>].horizontal.multiworld>
-                    // @returns Element(Number)
+                    // @returns Element(Decimal)
                     // @description
                     // Returns the horizontal distance between 2 multiworld locations.
                     // -->
@@ -947,7 +947,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
                 // <--[tag]
                 // @attribute <l@location.distance[<location>].vertical>
-                // @returns Element(Number)
+                // @returns Element(Decimal)
                 // @description
                 // Returns the vertical distance between 2 locations.
                 // -->
@@ -955,7 +955,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
                     // <--[tag]
                     // @attribute <l@location.distance[<location>].vertical.multiworld>
-                    // @returns Element(Number)
+                    // @returns Element(Decimal)
                     // @description
                     // Returns the vertical distance between 2 multiworld locations.
                     // -->
@@ -989,7 +989,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.biome.humidity>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the current humidity at the location.
         // -->
@@ -999,7 +999,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.biome.temperature>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the current temperature at the location.
         // -->

@@ -1300,7 +1300,7 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <e@entity.fall_distance>
-        // @returns Element(Float)
+        // @returns Element(Decimal)
         // @description
         // Returns how far the entity has fallen.
         // -->
@@ -1436,7 +1436,7 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <e@entity.health.max>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the maximum health of the entity.
         // -->
@@ -1446,7 +1446,7 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <e@entity.health.percentage>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the entity's current health as a percentage.
         // -->
@@ -1460,7 +1460,7 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <e@entity.health>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the current health of the entity.
         // -->
@@ -1566,7 +1566,7 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <e@entity.last_damage.amount>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the amount of the last damage taken by the entity.
         // -->

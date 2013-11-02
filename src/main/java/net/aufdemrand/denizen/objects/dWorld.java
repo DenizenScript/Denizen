@@ -271,7 +271,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.spawn_location>
-        // @returns Element(Number)
+        // @returns dLocation
         // @description
         // returns the spawn location of the world.
         // -->
@@ -311,7 +311,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.allows_animals>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether animals can spawn in this world.
         // -->
@@ -321,7 +321,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.allows_monsters>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether monsters can spawn in this world.
         // -->
@@ -331,7 +331,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.allows_pvp>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether player versus player combat is allowed in this world.
         // -->
@@ -361,7 +361,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.can_generate_structures>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns whether the world will generate structures.
         // -->
@@ -481,7 +481,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.has_storm>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns whether there is currently a storm in this world.
         // -->
@@ -491,7 +491,7 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.weather_duration>
-        // @returns Element
+        // @returns Duration
         // @description
         // Returns the duration of storms.
         // -->

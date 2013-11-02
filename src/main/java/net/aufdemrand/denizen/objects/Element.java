@@ -209,7 +209,7 @@ public class Element implements dObject {
 
         // <--[tag]
         // @attribute <el@element.as_double>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the element as a number with a decimal.
         // -->
@@ -324,7 +324,7 @@ public class Element implements dObject {
 
         // <--[tag]
         // @attribute <el@element.as_money>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the element as a number with two decimal places.
         // -->
@@ -633,7 +633,7 @@ public class Element implements dObject {
 
         // <--[tag]
         // @attribute <el@element.abs>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the absolute value of the element.
         // -->
@@ -644,7 +644,7 @@ public class Element implements dObject {
 
         // <--[tag]
         // @attribute <el@element.add[<#>]>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the element plus a number.
         // -->
@@ -656,7 +656,7 @@ public class Element implements dObject {
 
         // <--[tag]
         // @attribute <el@element.div[<#>]>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the element divided by a number.
         // -->
@@ -668,7 +668,7 @@ public class Element implements dObject {
 
         // <--[tag]
         // @attribute <el@element.mod[<#>]>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the remainder of the element divided by a number.
         // -->
@@ -680,7 +680,7 @@ public class Element implements dObject {
 
         // <--[tag]
         // @attribute <el@element.mul[<#>]>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the element multiplied by a number.
         // -->
@@ -692,7 +692,7 @@ public class Element implements dObject {
 
         // <--[tag]
         // @attribute <el@element.sqrt>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the square root of the element.
         // -->
@@ -703,7 +703,7 @@ public class Element implements dObject {
 
         // <--[tag]
         // @attribute <el@element.sub[<#>]>
-        // @returns Element(Number)
+        // @returns Element(Decimal)
         // @description
         // Returns the element minus a number.
         // -->

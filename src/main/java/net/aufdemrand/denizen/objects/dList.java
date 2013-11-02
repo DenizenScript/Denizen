@@ -504,7 +504,7 @@ public class dList extends ArrayList<String> implements dObject {
 
         // <--[tag]
         // @attribute <fl@flag_name.is_expired>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns true of the flag is expired or does not exist, false if it
         // is not yet expired, or has no expiration.
