@@ -42,7 +42,7 @@ public class ObjectFetcher {
         dB.echoApproval("Added objects to the ObjectFetcher " + adding.keySet().toString());
         fetchable_objects.clear();
     }
-    
+
     public static void _registerCoreObjects() throws NoSuchMethodException, ClassNotFoundException, IOException {
 
         // Initialize the ObjectFetcher
@@ -61,9 +61,9 @@ public class ObjectFetcher {
         registerWithObjectFetcher(Element.class);    // el@
         registerWithObjectFetcher(Duration.class);   // d@
         registerWithObjectFetcher(dChunk.class);     // ch@
-        
+
         _initialize();
-        
+
     }
 
     private static ArrayList<Class> fetchable_objects = new ArrayList<Class>();
