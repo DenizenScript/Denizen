@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.objects.*;
 import org.bukkit.Sound;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.List;
 
 /* PLAYSOUND [LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)*/
 
@@ -35,8 +35,14 @@ public class PlaySoundCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("location")
+                    && !scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(dLocation.class))
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+
+            else if (!scriptEntry.hasObject("location")
+                    && !scriptEntry.hasObject("entities")
+                    && arg.matchesArgumentList(dPlayer.class))
+                scriptEntry.addObject("entities", ((dList)arg.asType(dList.class)).filter(dPlayer.class));
 
             else if (!scriptEntry.hasObject("volume")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
@@ -60,7 +66,7 @@ public class PlaySoundCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("sound"))
             throw new InvalidArgumentsException("Missing sound argument!");
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException("Missing location argument!");
 
         scriptEntry.defaultObject("volume", new Element(1));
@@ -68,22 +74,30 @@ public class PlaySoundCommand extends AbstractCommand {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         dLocation location = (dLocation) scriptEntry.getObject("location");
+        List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("entities");
         Element sound = scriptEntry.getElement("sound");
         Element volume = scriptEntry.getElement("volume");
         Element pitch = scriptEntry.getElement("pitch");
 
         dB.report(scriptEntry, getName(),
-                location.debug() +
+                (location != null ? location.debug(): "") +
+                (players != null ? aH.debugObj("entities", players.toString()): "") +
                 sound.debug() +
                 volume.debug() +
                 pitch.debug());
 
         try {
-            location.getWorld().playSound(location, Sound.valueOf(sound.asString().toUpperCase()), volume.asFloat(), pitch.asFloat());
+            if (location != null) location.getWorld().playSound(location, Sound.valueOf(sound.asString().toUpperCase()), volume.asFloat(), pitch.asFloat());
+            else {
+                for (dPlayer player: players) {
+                    player.getPlayerEntity().playSound(player.getLocation(), Sound.valueOf(sound.asString().toUpperCase()), volume.asFloat(), pitch.asFloat());
+                }
+            }
         } catch (Exception e) {
             dB.echoError("Invalid sound!");
         }

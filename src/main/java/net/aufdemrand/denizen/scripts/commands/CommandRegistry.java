@@ -1540,10 +1540,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name PlaySound
-        // @Syntax playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
+        // @Syntax playsound [<location>/<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
         // @Required 2
         // @Stable stable
-        // @Short Plays a sound at the location.
+        // @Short Plays a sound at the location or to a list of players.
         // @Author Todo
         // @Description
         // Todo
@@ -1553,7 +1553,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(PlaySoundCommand.class,
-                "PLAYSOUND", "playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
+                "PLAYSOUND", "playsound [<location>/<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
 
 
         // <--[command]
