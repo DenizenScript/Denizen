@@ -223,7 +223,7 @@ public class UtilTags implements Listener {
                     matchPlayer = player;
                     break;
                 }
-                else if (player.getName().contains(matchInput) && matchPlayer == null) {
+                else if (player.getName().toLowerCase().contains(matchInput) && matchPlayer == null) {
                     matchPlayer = player;
                 }
             }
