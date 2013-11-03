@@ -366,7 +366,7 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <n@npc.has_flag[flag_name]>
-        // @returns Element(boolean)
+        // @returns Element(Boolean)
         // @description
         // returns true if the NPC has the specified flag, otherwise returns false.
         // -->
@@ -610,6 +610,7 @@ public class dNPC implements dObject, Adjustable {
     public void adjust(Mechanism mechanism, Element value) {
 
 
+        // TODO:
 //        getAssignmentTrait().setAssignment();
 //        getAssignmentTrait().removeAssignment();
 //

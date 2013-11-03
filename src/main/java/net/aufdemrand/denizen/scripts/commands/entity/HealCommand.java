@@ -24,7 +24,7 @@ public class HealCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        
+
         boolean specified_targets = false;
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {

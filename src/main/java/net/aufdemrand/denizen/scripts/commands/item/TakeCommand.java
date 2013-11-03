@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.item;
 
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -178,14 +179,15 @@ public class TakeCommand extends AbstractCommand{
                 for (ItemStack it : inventory.getContents()) {
                     if (found_items < qty.asInt() && it != null && it.hasItemMeta() && it.getItemMeta().hasDisplayName() &&
                             it.getItemMeta().getDisplayName().equalsIgnoreCase(displayname.identify())) {
+                        int amt = it.getAmount();
                         if (found_items + it.getAmount() <= qty.asInt()) {
-                            inventory.remove(it);
+                            inventory.getInventory().removeItem(it);
                         }
                         else {
                             it.setAmount(it.getAmount() - (qty.asInt() - found_items));
                             break;
                         }
-                        found_items += it.getAmount();
+                        found_items += amt;
                     }
                 }
                 break;
