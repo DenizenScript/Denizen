@@ -145,7 +145,8 @@ public class ItemScriptHelper implements Listener {
         
         // If the item has no ItemMeta or lore, ignore it.
         if (!event.getItemDrop().getItemStack().hasItemMeta()
-                && !event.getItemDrop().getItemStack().getItemMeta().hasLore())
+                || !event.getItemDrop().getItemStack().getItemMeta().hasLore()
+                || event.getItemDrop().getItemStack().getItemMeta().getLore().isEmpty())
             return;
         
         for (String line : event.getItemDrop().getItemStack().getItemMeta().getLore()) {
