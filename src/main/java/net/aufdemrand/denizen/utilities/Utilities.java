@@ -36,8 +36,17 @@ import org.bukkit.entity.Player;
  */
 public class Utilities {
 
+    // TODO: Javadocs, comments
+    //
     static Random random = new Random();
 
+    public static Random getRandom() {
+        return random;
+    }
+
+
+    // TODO: Javadocs, comments
+    //
     public static Location getWalkableLocationNear(Location location, int range) {
         Location returnable;
 
@@ -49,12 +58,18 @@ public class Utilities {
         else return returnable;
     }
 
+
+    // TODO: Javadocs, comments
+    //
     public static boolean isWalkable(Location location) {
         return ((location.getBlock().getType() == Material.AIR
                 || location.getBlock().getType() == Material.GRASS)
                 && (location.add(0, 1, 0).getBlock().getType() == Material.AIR));
     }
 
+
+    // TODO: Javadocs, comments
+    //
     public static String arrayToString(String[] input, String glue) {
         String output="";
         int length = input.length;
@@ -69,6 +84,9 @@ public class Utilities {
         return output;
     }
 
+
+    // TODO: Javadocs, comments
+    //
     public static String[] wrapWords(String text, int width) {
         StringBuilder sb = new StringBuilder(text);
 
@@ -79,6 +97,7 @@ public class Utilities {
 
         return sb.toString().split("\n");
     }
+
 
     /**
      *
@@ -122,26 +141,17 @@ public class Utilities {
         return -1;
     }
 
+
     /**
-     * Checks if c is in between a and b.
+     * Checks if c is in between a and b, or equal to a or b.
      *
-     * @param a
-     * @param b
-     * @param c
+     * @param a first number
+     * @param b second number
+     * @param c number to check if between
      * @return  true if c is in between.
      */
     public static boolean isBetween(double a, double b, double c) {
-        return b > a ? c > a && c < b : c > b && c < a;
-    }
-
-
-    public static int lastIndexOfLCL(String str) {
-        for(int i=str.length()-1; i>=0; i--) {
-            if(Character.isLowerCase(str.charAt(i))) {
-                return i;
-            }
-        }
-        return -1;
+        return a == c || b == c || (b > a ? c > a && c < b : c > b && c < a);
     }
 
 
@@ -154,16 +164,16 @@ public class Utilities {
         Properties props = new Properties();
         //Set a default just in case.
         props.put("version", "Unknown development build");
-        try    {
-            props.load(this.getClass().getResourceAsStream("/META-INF/maven/net.aufdemrand/denizen/pom.properties"));
-        }
-        catch(Exception e) {
-            //Maybe log?
-        }
+        try { props.load(this.getClass()
+                .getResourceAsStream("/META-INF/maven/net.aufdemrand/denizen/pom.properties"));
+        } catch(Exception e) { }
+
         return props.getProperty("version");
     }
 
 
+    // TODO: Finish?
+    //
     public static List<Block> getRandomSolidBlocks(Location location, int range, int count) {
         List<Block> blocks = new ArrayList<Block>();
 
@@ -193,16 +203,16 @@ public class Utilities {
     }
 
 
+    // TODO: Check why this is no longer used. Possible duplication of code?
+    //
     /**
      * Finds the closest Player to a particular location.
      *
      * @param location    The location to find the closest Player to.
      * @param range    The maximum range to look for the Player.
-     *
      * @return    The closest Player to the location, or null if no Player was found
      *                     within the range specified.
      */
-
     public static Player getClosestPlayer (Location location, int range) {
 
         Player closestPlayer = null;
@@ -222,16 +232,16 @@ public class Utilities {
     }
 
 
+    // TODO: Check why this is no longer used. Possible duplication of code?
+    //
     /**
      * Finds the closest Players to a particular location.
      *
      * @param location    The location to find the closest Player to.
      * @param range    The maximum range to look for the Player.
-     *
      * @return    The closest Player to the location, or null if no Player was found
      *                     within the range specified.
      */
-
     public static List<dPlayer> getClosestPlayers(Location location, int range) {
 
         List<dPlayer> closestPlayers = new ArrayList<dPlayer>();
@@ -250,16 +260,16 @@ public class Utilities {
     }
 
 
+    // TODO: Check why this is no longer used. Possible duplication of code?
+    //
     /**
      * Finds the closest NPC to a particular location.
      *
      * @param location    The location to find the closest NPC to.
      * @param range    The maximum range to look for the NPC.
-     *
      * @return    The closest NPC to the location, or null if no NPC was found
      *                     within the range specified.
      */
-
     public static dNPC getClosestNPC (Location location, int range) {
         dNPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
@@ -275,16 +285,16 @@ public class Utilities {
         }
         return closestNPC;
     }
+
+
     /**
      * Finds the closest NPC to a particular location.
      *
      * @param location    The location to find the closest NPC to.
      * @param range    The maximum range to look for the NPC.
-     *
      * @return    The closest NPC to the location, or null if no NPC was found
      *                     within the range specified.
      */
-
     public static dNPC getClosestNPC_ChatTrigger (Location location, int range) {
         dNPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
@@ -293,7 +303,7 @@ public class Utilities {
             dNPC npc = it.next();
             Location loc = npc.getLocation();
             if (npc.getCitizen().hasTrait(TriggerTrait.class) && npc.getTriggerTrait().hasTrigger("CHAT") &&
-            loc.getWorld().equals(location.getWorld())
+                    loc.getWorld().equals(location.getWorld())
                     && loc.distanceSquared(location) < closestDistance) {
                 closestNPC = npc;
                 closestDistance = npc.getLocation().distanceSquared(location);
@@ -311,7 +321,6 @@ public class Utilities {
      *
      * @return    The list of NPCs within the max range.
      */
-
     public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
         maxRange = (int) Math.pow(maxRange, 2);
         Set<dNPC> closestNPCs = new HashSet<dNPC> ();
@@ -335,7 +344,6 @@ public class Utilities {
      *
      * @return true if within the specified location, false otherwise.
      */
-
     public static boolean checkLocation(LivingEntity entity, Location theLocation, int theLeeway) {
         if (entity.getWorld() != theLocation.getWorld())
             return false;
@@ -352,6 +360,7 @@ public class Utilities {
         return true;
     }
 
+
     /**
      * Checks entity's location against a Location (with leeway). Should be faster than
      * bukkit's built in Location.distance(Location) since there's no sqrt math.
@@ -360,7 +369,6 @@ public class Utilities {
      *
      * @return true if within the specified location, false otherwise.
      */
-
     public static boolean checkLocation(Location baseLocation, Location theLocation, int theLeeway) {
 
         if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName()))
@@ -376,6 +384,9 @@ public class Utilities {
         return true;
     }
 
+
+    // TODO: Javadocs, comments
+    //
     protected static FilenameFilter scriptsFilter;
 
     static {
@@ -389,6 +400,7 @@ public class Utilities {
         };
     }
 
+
     /**
      * Lists all files in the given directory.
      *
@@ -396,7 +408,6 @@ public class Utilities {
      * @param recursive If true subfolders will also get checked
      * @return A {@link File} collection
      */
-
     public static List<File> listDScriptFiles(File dir, boolean recursive) {
         List<File> files = new ArrayList<File>();
         File[] entries = dir.listFiles();
@@ -416,9 +427,6 @@ public class Utilities {
         return files;
     }
 
-    public static Random getRandom() {
-        return random;
-    }
 
     /**
      * Set the lines on a sign to the strings in a string array
@@ -426,7 +434,6 @@ public class Utilities {
      * @param sign  The sign
      * @param lines  The string array
      */
-
     public static void setSignLines(Sign sign, String[] lines) {
 
         int n = 0;
@@ -439,12 +446,12 @@ public class Utilities {
         sign.update();
     }
 
+
     /**
      * Make a wall sign attach itself to an available surface
      *
      * @param signState  The sign's blockState
      */
-
     public static void setSignRotation(BlockState signState) {
 
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
@@ -458,12 +465,14 @@ public class Utilities {
                     && block.getType() != Material.WALL_SIGN) {
 
                 ((org.bukkit.material.Sign) signState.getData())
-                    .setFacingDirection(blockFace.getOppositeFace());
+                        .setFacingDirection(blockFace.getOppositeFace());
                 signState.update();
             }
         }
     }
 
+    // TODO: Javadocs, comments
+    //
     public static void setSignRotation(BlockState signState, String direction) {
 
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
@@ -471,10 +480,11 @@ public class Utilities {
         for (BlockFace blockFace : blockFaces) {
             if (blockFace.name().startsWith(direction.toUpperCase().substring(0, 1)))
                 ((org.bukkit.material.Sign) signState.getData())
-                       .setFacingDirection(blockFace);
+                        .setFacingDirection(blockFace);
         }
         signState.update();
     }
+
 
     /**
      * Check if a block location equals another location.
@@ -482,7 +492,6 @@ public class Utilities {
      * @param location The location to check against.
      * @return Whether or not the block location equals the location.
      */
-
     public static boolean isBlock(Location block, Location location) {
 
         if (!block.getWorld().getName().equals(location.getWorld().getName()))
@@ -498,6 +507,7 @@ public class Utilities {
         return true;
     }
 
+
     /**
      * Extract a file from a zip or jar.
      * @param jarFile The zip/jar file to use
@@ -506,6 +516,7 @@ public class Utilities {
      */
     public static void extractFile(File jarFile, String fileName, String destDir) {
         java.util.jar.JarFile jar = null;
+
         try {
             jar = new java.util.jar.JarFile(jarFile);
             java.util.Enumeration myEnum = jar.entries();
@@ -526,19 +537,16 @@ public class Utilities {
                 }
             }
             dB.echoError(fileName + " not found in the jar!");
-        }
-        catch (IOException e) {
-            if (dB.showStackTraces)
-                e.printStackTrace();
-        }
-        finally {
+
+        } catch (IOException e) {
+            if (dB.showStackTraces) e.printStackTrace();
+
+        } finally {
             if (jar != null) {
                 try {
                     jar.close();
-                }
-                catch (IOException e) {
-                    if (dB.showStackTraces)
-                        e.printStackTrace();
+                } catch (IOException e) {
+                    if (dB.showStackTraces) e.printStackTrace();
                 }
             }
         }
