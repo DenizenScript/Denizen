@@ -112,7 +112,11 @@ public class TagManager implements Listener {
 
         // Find location of the first tag
         int[] positions = locateTag(arg);
-        if (positions == null) return arg;
+        if (positions == null) {
+            // Un-escape \<, \>
+            if (!instant) arg = arg.replace("\\<", "<").replace("\\>", ">");
+            return arg;
+        }
 
         int failsafe = 0;
         do {
@@ -137,10 +141,13 @@ public class TagManager implements Listener {
             }
             // Find new TAG
             positions = locateTag(arg);
-        } while (positions != null || failsafe < 25);
+        } while (positions != null || failsafe < 50);
 
         // Return argument with replacements
         arg = arg.replace((char)0x01, '<').replace((char)0x02, '>');
+
+        // Un-escape \< \>'s
+        if (!instant) arg = arg.replace("\\<", "<").replace("\\>", ">");
         return arg;
     }
 
@@ -148,6 +155,10 @@ public class TagManager implements Listener {
     private static Pattern tagRegex = Pattern.compile("<([^<>]+)>");
 
     private static int[] locateTag(String arg) {
+        // find escaped brackets
+        arg = arg.replace("\\<", "  ")
+            .replace("\\>", "  ");
+
         // find tag brackets pattern
         Matcher tagMatcher = tagRegex.matcher(arg);
         if (tagMatcher.find())
