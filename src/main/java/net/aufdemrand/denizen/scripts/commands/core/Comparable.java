@@ -6,6 +6,37 @@ import org.bukkit.ChatColor;
 
 public class Comparable {
 
+    // TODO: Expand upon this.
+    //
+    // <--[language]
+    // @name Comparable
+    // @group Comparables
+    // @description
+    // A Comparable is a method that the IF command and Element dObject uses to compare objects.
+    // -->
+
+    // <--[language]
+    // @name Operator
+    // @group Comparables
+    // @description
+    // An operator is the type of comparison that a comparable will check. Not all types of
+    // comparables are compatible with all operators. See '!lang comparable' for more information.
+    //
+    // Available Operators include:
+    // EQUALS (==), MATCHES, OR_MORE (>=), OR_LESS (<=), MORE (>), LESS (<), CONTAINS, and IS_EMPTY.
+    //
+    // Operators which have a symbol alternative (as marked by parenthesis) can be referred to by either
+    // their name or symbol. Using a '!' in front of the operator will also reverse logic, effectively
+    // turning 'EQUALS' into 'DOES NOT EQUAL', for example.
+    //
+    // Note: When using an operator in a replaceable tag (such as <el@element.is[...].than[...]>),
+    // keep in mind that < and >, and even >= and <= must be either escaped, or referred to by name.
+    // Example: <player.health.is[\<].than[10]> can alternatively be <player.health.is[LESS].than[10],
+    // but <player.health.is[<].than[10]> will produce undesired results. <>'s must be escaped since
+    // they are normally notation for a replaceable tag. Escaping is not necessary when the argument
+    // contains no replaceable tags.
+    //
+    // -->
     public static enum Operator {
         EQUALS, MATCHES, OR_MORE, OR_LESS, MORE,
         LESS, CONTAINS, IS_EMPTY
@@ -29,6 +60,11 @@ public class Comparable {
 
     public void setNegativeLogic() {
         logic = Logic.NEGATIVE;
+    }
+
+
+    public void setOperator(Operator operator) {
+        this.operator = operator;
     }
 
 
