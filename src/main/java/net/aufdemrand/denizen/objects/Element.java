@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.aH.Argument;
+import net.aufdemrand.denizen.scripts.commands.core.*;
+import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -190,6 +192,46 @@ public class Element implements dObject {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return null;
+
+
+        ////////////////////
+        //   COMPARABLE ATTRIBUTES
+        ////////////////
+
+        // <--[tag]
+        // @attribute <el@element.is[<operator>].to/than[<element>]>
+        // @returns Element(Boolean)
+        // @description
+        // Takes an operator, and compares the value of the element to the supplied
+        // element. Returns the outcome of the comparable, either true or false.
+        // For information on operators, see !lang operator.
+        // -->
+        if (attribute.startsWith("is") && attribute.hasContext(1)
+                && (attribute.startsWith("to", 2) || attribute.startsWith("than", 2)) && attribute.hasContext(2)) {
+
+            // Use the Comparable object as implemented for the IF command. First, a new Comparable!
+            Comparable com = new net.aufdemrand.denizen.scripts.commands.core.Comparable();
+
+            // Comparable is the value of this element
+            com.setComparable(element);
+            // Compared_to is the value of the .to[] context.
+            com.setComparedto(attribute.getContext(2));
+
+            // Check for negative logic
+            String operator;
+            if (attribute.getContext(1).startsWith("!")) {
+                operator = attribute.getContext(1).substring(1);
+                com.setNegativeLogic();
+            } else operator = attribute.getContext(1);
+
+            // Operator is the value of the .is[] context. Valid are Comparable.Operators, same
+            // as used by the IF command.
+            com.setOperator(Comparable.Operator.valueOf(operator
+                    .replace("==", "EQUALS").replace(">=", "OR_MORE").replace("<=", "OR_LESS")
+                    .replace("<", "LESS").replace(">", "MORE").replace("=", "EQUALS")));
+
+            return new Element(com.determineOutcome()).getAttribute(attribute.fulfill(2));
+        }
 
 
         /////////////////////
