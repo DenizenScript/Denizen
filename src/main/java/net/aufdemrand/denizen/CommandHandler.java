@@ -357,7 +357,7 @@ public class CommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+        if (npc.getEntity().getType() != EntityType.PLAYER) {
             Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sit!");
             return;
         }
@@ -595,7 +595,7 @@ public class CommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sneak")
     @Requirements(selected = true, ownership = true)
     public void sneaking(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+        if (npc.getEntity().getType() != EntityType.PLAYER) {
             Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sneak!");
             return;
         }
