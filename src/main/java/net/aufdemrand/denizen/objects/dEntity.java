@@ -1239,10 +1239,11 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.location.cursor_on>
+        // @attribute <e@entity.location.cursor_on[<range>]>
         // @returns dLocation
         // @description
         // Returns the location of the block the entity is looking at.
+        // Optional, specify a maximum range to find the location from.
         // -->
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
