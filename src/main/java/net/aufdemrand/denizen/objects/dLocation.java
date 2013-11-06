@@ -457,10 +457,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("direction.vector")) {
             double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
-            double nx = xzLen * Math.cos(getYaw() * (Math.PI/180));
+            double nx = xzLen * Math.sin(-getYaw() * (Math.PI/180));
             double ny = Math.sin(getPitch() * (Math.PI/180));
-            double nz = xzLen * Math.sin(-getYaw() * (Math.PI/180));
-            return new dLocation(getWorld(), -nx, -ny, nz).getAttribute(attribute.fulfill(2));
+            double nz = xzLen * Math.cos(getYaw() * (Math.PI/180));
+            return new dLocation(getWorld(), nx, -ny, nz).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -911,6 +911,53 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return new dLocation(this.clone().add(dLocation.valueOf(attribute.getContext(1))))
                         .getAttribute(attribute.fulfill(1));
             }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.sub[x,y,z]>
+        // @returns dLocation
+        // @description
+        // Returns the location with the specified coordinates subtracted from it.
+        // -->
+        if (attribute.startsWith("sub")) {
+            if (attribute.hasContext(1) && attribute.getContext(1).split(",").length == 3) {
+                String[] ints = attribute.getContext(1).split(",", 3);
+                if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
+                        && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
+                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2]))) {
+                    return new dLocation(this.clone().subtract(Double.valueOf(ints[0]),
+                            Double.valueOf(ints[1]),
+                            Double.valueOf(ints[2]))).getAttribute(attribute.fulfill(1));
+                }
+            }
+            else if (dLocation.matches(attribute.getContext(1))) {
+                return new dLocation(this.clone().subtract(dLocation.valueOf(attribute.getContext(1))))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.mul[<length>]>
+        // @returns dLocation
+        // @description
+        // Returns the location multiplied by the given length.
+        // -->
+        if (attribute.startsWith("mul") &&
+                attribute.hasContext(1)) {
+            return new dLocation(this.clone().multiply(Double.parseDouble(attribute.getContext(1))))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.div[<length>]>
+        // @returns dLocation
+        // @description
+        // Returns the location divided the given certain length.
+        // -->
+        if (attribute.startsWith("div") &&
+                attribute.hasContext(1)) {
+            return new dLocation(this.clone().multiply(1D / Double.parseDouble(attribute.getContext(1))))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
