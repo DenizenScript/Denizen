@@ -214,7 +214,6 @@ public class Element implements dObject {
         // Takes an operator, and compares the value of the element to the supplied
         // element. Returns the outcome of the comparable, either true or false. For
         // information on operators, see !lang operator.
-        // Note: can use .than instead of .to for better readability with certain operators.
         // -->
         if (attribute.startsWith("is") && attribute.hasContext(1)
                 && (attribute.startsWith("to", 2) || attribute.startsWith("than", 2)) && attribute.hasContext(2)) {

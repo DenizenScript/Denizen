@@ -127,8 +127,8 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         while (it.hasNext ()) {
             NPC    npc = it.next ();
             if (npc.isSpawned()
-                    && npc.getBukkitEntity().getLocation().getWorld().equals(location.getWorld())
-                    && npc.getBukkitEntity().getLocation().distance(location) < maxRange
+                    && npc.getEntity().getLocation().getWorld().equals(location.getWorld())
+                    && npc.getEntity().getLocation().distance(location) < maxRange
                     && npc.hasTrait(TriggerTrait.class)
                     && npc.getTrait(TriggerTrait.class).isEnabled(name)) {
                 closestNPCs.add (npc);

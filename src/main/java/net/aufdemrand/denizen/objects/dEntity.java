@@ -271,8 +271,8 @@ public class dEntity implements dObject, Adjustable {
             this.npc = npc;
 
             if (npc.isSpawned()) {
-                this.entity = npc.getBukkitEntity();
-                this.entity_type = npc.getBukkitEntity().getType();
+                this.entity = npc.getEntity();
+                this.entity_type = npc.getEntity().getType();
                 this.uuid = entity.getUniqueId();
             }
         } else dB.echoError("NPC referenced is null!");
@@ -597,8 +597,8 @@ public class dEntity implements dObject, Adjustable {
                 getNPC().teleport(location, TeleportCause.PLUGIN);
             else {
                 getNPC().spawn(location);
-                entity = getNPC().getBukkitEntity();
-                uuid = getNPC().getBukkitEntity().getUniqueId();
+                entity = getNPC().getEntity();
+                uuid = getNPC().getEntity().getUniqueId();
             }
         }
         else if (entity != null && isUnique()) entity.teleport(location);
@@ -627,7 +627,7 @@ public class dEntity implements dObject, Adjustable {
 
                         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
                         npc.spawn(location);
-                        entity = npc.getBukkitEntity();
+                        entity = npc.getEntity();
                         uuid = entity.getUniqueId();
                     }
                     else if (entity_type.name().matches("FALLING_BLOCK")) {

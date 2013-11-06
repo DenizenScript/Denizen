@@ -23,6 +23,7 @@ import net.minecraft.server.v1_6_R3.EntityLiving;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R3.entity.CraftLivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
@@ -106,30 +107,33 @@ public class dNPC implements dObject, Adjustable {
     public NPC getCitizen() {
         NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
         if (npc == null)
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC. Has this NPC been removed?");
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC. " +
+                    "Has this NPC been removed?");
         return npc;
     }
 
-    public LivingEntity getEntity() {
+    public Entity getEntity() {
         try {
-            return getCitizen().getBukkitEntity();
+            return getCitizen().getEntity();
         } catch (NullPointerException e) {
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. Has this NPC been removed?");
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. " +
+                    "Has this NPC been removed?");
             return null;
         }
     }
 
     public dEntity getDenizenEntity() {
         try {
-            return new dEntity(getCitizen().getBukkitEntity());
+            return new dEntity(getCitizen().getEntity());
         } catch (NullPointerException e) {
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. Has this NPC been removed?");
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. " +
+                    "Has this NPC been removed?");
             return null;
         }
     }
 
     public EntityType getEntityType() {
-        return getCitizen().getBukkitEntity().getType();
+        return getCitizen().getEntity().getType();
     }
 
     public Navigator getNavigator() {
@@ -162,13 +166,13 @@ public class dNPC implements dObject, Adjustable {
 
     public dLocation getLocation() {
         if (isSpawned()) return
-                new dLocation(getCitizen().getBukkitEntity().getLocation(locationCache));
+                new dLocation(getCitizen().getEntity().getLocation(locationCache));
         else return null;
     }
 
     public dLocation getEyeLocation() {
-        if (isSpawned()) return
-                new dLocation(getCitizen().getBukkitEntity().getEyeLocation());
+        if (isSpawned() && getCitizen().getEntity() instanceof LivingEntity) return
+                new dLocation(((LivingEntity) getCitizen().getEntity()).getEyeLocation());
         else return null;
     }
 
@@ -179,7 +183,7 @@ public class dNPC implements dObject, Adjustable {
 
     @Override
     public String toString() {
-        return getCitizen().getName() + "/" + getCitizen().getId();
+        return getCitizen().getName() + '/' + getCitizen().getId();
     }
 
     public boolean isEngaged() {
@@ -188,10 +192,6 @@ public class dNPC implements dObject, Adjustable {
 
     public boolean isSpawned() {
         return getCitizen().isSpawned();
-    }
-
-    public boolean isVulnerable() {
-        return true;
     }
 
     public String getOwner() {
