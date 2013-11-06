@@ -1596,7 +1596,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Push
-        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>)
+        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>)
         // @Required 1
         // @Stable mostly
         // @Short Pushes entities through the air in a straight line.
