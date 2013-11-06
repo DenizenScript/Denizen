@@ -967,8 +967,8 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a furnace smelts an item.
     // @Context
     // <context.location> returns the dLocation of the furnace.
-    // <context.source> returns the dItem that is smelted.
-    // <context.result> returns the dItem that is the result of the smelting.
+    // <context.source_item> returns the dItem that is being smelted.
+    // <context.result_item> returns the dItem that is the result of the smelting.
     //
     // @Determine
     // "CANCELLED" to stop the furnace from smelting the item.
@@ -987,7 +987,7 @@ public class WorldScriptHelper implements Listener {
         context.put("result_item", result);
 
         String determination = doEvents(Arrays.asList
-                ("furnace smelts item",
+                        ("furnace smelts item",
                         "furnace smelts " + source.identify(),
                         "furnace smelts item into " + result.identify(),
                         "furnace smelts " + source.identify() + " into " + result.identify()),

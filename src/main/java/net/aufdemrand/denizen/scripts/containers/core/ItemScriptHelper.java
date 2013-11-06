@@ -142,13 +142,13 @@ public class ItemScriptHelper implements Listener {
 
     @EventHandler
     public void boundDropItem(PlayerDropItemEvent event) {
-        
+
         // If the item has no ItemMeta or lore, ignore it.
         if (!event.getItemDrop().getItemStack().hasItemMeta()
                 || !event.getItemDrop().getItemStack().getItemMeta().hasLore()
                 || event.getItemDrop().getItemStack().getItemMeta().getLore().isEmpty())
             return;
-        
+
         for (String line : event.getItemDrop().getItemStack().getItemMeta().getLore()) {
             // If the item being dropped is bound, don't drop it.
             if (line.startsWith("§0id:")
@@ -158,7 +158,7 @@ public class ItemScriptHelper implements Listener {
                 break;
             }
         }
-        
+
     }
 
     @EventHandler
