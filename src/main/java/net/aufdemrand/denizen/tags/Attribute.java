@@ -62,10 +62,9 @@ public class Attribute {
     }
 
     public boolean startsWith(String string, int attribute) {
-        string = string.toLowerCase();
         if (attributes.isEmpty()) return false;
         if (attributes.size() < attribute) return false;
-        return raw_tag.split(".", attribute)[attribute - 1].toLowerCase().startsWith(string);
+        return getAttribute(attribute).startsWith(string);
     }
 
     public Attribute fulfill(int attributes) {

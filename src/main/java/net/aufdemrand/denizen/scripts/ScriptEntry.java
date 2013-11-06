@@ -47,6 +47,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
         return (ScriptEntry) super.clone();
     }
 
+
     /**
      * Get a hot, fresh, script entry, ready for execution! Just supply a valid command,
      * some arguments, and bonus points for a script container (can be null)!
@@ -98,6 +99,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
             }
         }
     }
+
 
     // As explained, this is really just a micro-performance enhancer
     public boolean has_tags = false;
@@ -301,12 +303,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
     }
 
 
-    public boolean isDone() {
-        // If we're still waiting for, we're not done yet.
-        return !waitfor;
-    }
-
-
     public void setFinished(boolean finished) {
         waitfor = !finished;
     }
@@ -326,6 +322,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
         tracked_objects.add(key.toUpperCase());
         return this;
     }
+
 
 
     /////////////

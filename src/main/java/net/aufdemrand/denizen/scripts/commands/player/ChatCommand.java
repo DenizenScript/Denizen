@@ -109,7 +109,7 @@ public class ChatCommand extends AbstractCommand {
         // Create new speech context
         SpeechContext context = new SpeechContext(message.asString());
 
-        if (targets != Element.FALSE) {
+        if (!targets.equals(Element.FALSE)) {
 
             if (targets instanceof dPlayer) {
                 dPlayer player = (dPlayer) targets;

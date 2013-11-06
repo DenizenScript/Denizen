@@ -27,8 +27,7 @@ public class ScriptEngine {
     public void revolve(ScriptQueue scriptQueue) {
         // Check last ScriptEntry to see if it should be waited for
         if (scriptQueue.getLastEntryExecuted() != null
-                && scriptQueue.getLastEntryExecuted().shouldWaitFor())
-            if (!scriptQueue.getLastEntryExecuted().isDone()) return;
+                && scriptQueue.getLastEntryExecuted().shouldWaitFor()) return;
 
         // Okay to run next scriptEntry
         ScriptEntry scriptEntry = scriptQueue.getNext();
@@ -65,15 +64,8 @@ public class ScriptEngine {
                 scriptEntry = scriptQueue.getNext();
             }
 
-            // ---> What does this do?
-            // else if (scriptQueue.hasInjectedItems) {
-            //    scriptQueue.hasInjectedItems = false;
-            //    break;
-            // }
-
             // If entry isn't instant, end the revolution and wait for another
-            else
-                break;
+            else /* just */ break;
         }
     }
 
