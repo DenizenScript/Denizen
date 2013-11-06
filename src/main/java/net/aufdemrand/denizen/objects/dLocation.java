@@ -907,6 +907,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                             Double.valueOf(ints[2]))).getAttribute(attribute.fulfill(1));
                 }
             }
+            else if (dLocation.matches(attribute.getContext(1))) {
+                return new dLocation(this.clone().add(dLocation.valueOf(attribute.getContext(1))))
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
