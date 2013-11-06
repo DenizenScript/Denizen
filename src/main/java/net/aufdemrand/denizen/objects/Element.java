@@ -205,6 +205,15 @@ public class Element implements dObject {
         // Takes an operator, and compares the value of the element to the supplied
         // element. Returns the outcome of the comparable, either true or false. For
         // information on operators, see !lang operator.
+        // -->
+
+        // <--[tag]
+        // @attribute <el@element.is[<operator>].than[<element>]>
+        // @returns Element(Boolean)
+        // @description
+        // Takes an operator, and compares the value of the element to the supplied
+        // element. Returns the outcome of the comparable, either true or false. For
+        // information on operators, see !lang operator.
         // Note: can use .than instead of .to for better readability with certain operators.
         // -->
         if (attribute.startsWith("is") && attribute.hasContext(1)
