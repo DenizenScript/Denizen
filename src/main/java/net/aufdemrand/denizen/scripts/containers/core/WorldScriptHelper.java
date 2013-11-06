@@ -3495,6 +3495,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
+    // "UNCANCELLED" to ensure other plugins will process the event properly.
     //
     // -->
     @EventHandler
@@ -3565,10 +3566,12 @@ public class WorldScriptHelper implements Listener {
 
         }
 
-        String determination = doEvents(events, null, event.getPlayer(), context, true);
+        String determination = doEvents(events, null, event.getPlayer(), context, true).toUpperCase();
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        if (determination.startsWith("CANCELLED"))
             event.setCancelled(true);
+        else if (determination.startsWith("UNCANCELLED"))
+            event.setCancelled(false);
     }
 
     // <--[event]
