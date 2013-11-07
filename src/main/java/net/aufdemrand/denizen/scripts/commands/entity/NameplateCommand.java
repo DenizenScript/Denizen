@@ -73,11 +73,11 @@ public class NameplateCommand extends AbstractCommand {
 
         if (text != null) {
             if (text.equalsIgnoreCase("none")) {
-                scriptEntry.getNPC().getEntity().setCustomNameVisible(false);
+                scriptEntry.getNPC().getLivingEntity().setCustomNameVisible(false);
                 dB.echoDebug(scriptEntry, "none");
             } else {
-                scriptEntry.getNPC().getEntity().setCustomNameVisible(true);
-                scriptEntry.getNPC().getEntity().setCustomName(text);
+                scriptEntry.getNPC().getLivingEntity().setCustomNameVisible(true);
+                scriptEntry.getNPC().getLivingEntity().setCustomName(text);
                 dB.echoDebug(scriptEntry, text);
             }
 

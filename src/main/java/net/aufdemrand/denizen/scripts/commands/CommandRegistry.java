@@ -629,6 +629,31 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
+        // @Name Despawn
+        // @Syntax Despawn (<npc>|...)
+        // @Required 0
+        // @Stable stable
+        // @Short Temporarily despawns the linked NPC or a list of NPCs.
+        // @Author mcmonkey
+        // @Description
+        // This command will temporarily despawn either the linked NPC or
+        // a list of other NPCs. Despawning means they are no longer visible
+        // or interactable, but they still exist and can be spawned again.
+        // @Tags
+        // <n@npc.is_spawned>
+        // @Usage
+        // Use to despawn the linked NPC.
+        // - despawn
+        //
+        // @Usage
+        // Use to despawn several NPCs.
+        // - despawn <npc>|<player.selected_npc>|n@32
+        // -->
+        registerCoreMember(DespawnCommand.class,
+                "DESPAWN", "despawn (<npc>)", 0);
+
+
+        // <--[command]
         // @Name Determine
         // @Syntax determine [<value>]
         // @Required 1
@@ -1596,7 +1621,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Push
-        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>)
+        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>)
         // @Required 1
         // @Stable mostly
         // @Short Pushes entities through the air in a straight line.
@@ -1672,9 +1697,9 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name Remove
         // @Syntax remove [<entity>|...] (region:<name>)
-        // @Required 0
+        // @Required 1
         // @Stable Todo
-        // @Short Despawns a list of entities.
+        // @Short Despawns a list of entities, fully removing any NPCs.
         // @Author David Cernat
         // @Description
         // Todo
@@ -1684,7 +1709,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(RemoveCommand.class,
-                "REMOVE", "remove [<entity>|...] (<world>) (region:<name>)", 0);
+                "REMOVE", "remove [<entity>|...] (<world>) (region:<name>)", 1);
 
 
         // <--[command]

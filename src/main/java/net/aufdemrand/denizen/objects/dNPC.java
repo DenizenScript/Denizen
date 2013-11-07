@@ -122,6 +122,22 @@ public class dNPC implements dObject, Adjustable {
         }
     }
 
+    public LivingEntity getLivingEntity() {
+        try {
+            if (getCitizen().getEntity() instanceof LivingEntity)
+                return (LivingEntity) getCitizen().getEntity();
+            else {
+                dB.log("Uh oh! Tried to get the Living entity of a non-living NPC!");
+                return null;
+            }
+        } catch (NullPointerException e) {
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. " +
+                    "Has this NPC been removed?");
+            return null;
+        }
+    }
+
+
     public dEntity getDenizenEntity() {
         try {
             return new dEntity(getCitizen().getEntity());
@@ -278,7 +294,7 @@ public class dNPC implements dObject, Adjustable {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <npc.name.nickname>
+        // @attribute <n@npc.name.nickname>
         // @returns Element
         // @description
         // returns the NPC's display name.
@@ -288,7 +304,7 @@ public class dNPC implements dObject, Adjustable {
                     .getNickname() : getName()).getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.name>
+        // @attribute <n@npc.name>
         // @returns Element
         // @description
         // returns the name of the NPC.
@@ -298,7 +314,7 @@ public class dNPC implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <npc.list_traits>
+        // @attribute <n@npc.list_traits>
         // @returns dList
         // @description
         // Returns a list of all of the NPC's traits.
@@ -311,7 +327,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <npc.has_trait[<trait>]>
+        // @attribute <n@npc.has_trait[<trait>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the NPC has a specified trait.
@@ -326,7 +342,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <npc.anchor.list>
+        // @attribute <n@npc.anchor.list>
         // @returns dList
         // @description
         // returns a list of anchor names currently assigned to the NPC.
@@ -340,7 +356,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <npc.has_anchors>
+        // @attribute <n@npc.has_anchors>
         // @returns Element(Boolean)
         // @description
         // returns whether the NPC has anchors assigned.
@@ -351,7 +367,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <npc.anchor[name]>
+        // @attribute <n@npc.anchor[name]>
         // @returns dLocation
         // @description
         // returns the location associated with the specified anchor, or null if it doesn't exist.
@@ -378,7 +394,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <npc.flag[flag_name]>
+        // @attribute <n@npc.flag[flag_name]>
         // @returns Flag dList
         // @description
         // returns the specified flag from the NPC.
@@ -402,7 +418,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <npc.constant[constant_name]>
+        // @attribute <n@npc.constant[constant_name]>
         // @returns Element
         // @description
         // returns the specified constant from the NPC.
@@ -422,7 +438,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <npc.id>
+        // @attribute <n@npc.id>
         // @returns Element(Number)
         // @description
         // returns the NPC's ID number.
@@ -431,7 +447,7 @@ public class dNPC implements dObject, Adjustable {
             return new Element(getId()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <npc.owner>
+        // @attribute <n@npc.owner>
         // @returns dPlayer/Element
         // @description
         // returns the owner of the NPC as a dPlayer if it's a player, otherwise as just the name.
@@ -444,7 +460,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <npc.inventory>
+        // @attribute <n@npc.inventory>
         // @returns dInventory
         // @description
         // Returns the dInventory of the NPC.
@@ -453,7 +469,7 @@ public class dNPC implements dObject, Adjustable {
             return getDenizenEntity().getInventory().getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <npc.is_spawned>
+        // @attribute <n@npc.is_spawned>
         // @returns Element(Boolean)
         // @description
         // returns whether the NPC is spawned.
@@ -462,7 +478,7 @@ public class dNPC implements dObject, Adjustable {
             return new Element(isSpawned()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <npc.location.previous_location>
+        // @attribute <n@npc.location.previous_location>
         // @returns dLocation
         // @description
         // returns the NPC's previous navigated location.
@@ -473,7 +489,7 @@ public class dNPC implements dObject, Adjustable {
                     : "null");
 
         // <--[tag]
-        // @attribute <npc.script>
+        // @attribute <n@npc.script>
         // @returns dScript
         // @description
         // returns the NPC's assigned script.
@@ -490,7 +506,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <npc.navigator.is_navigating>
+        // @attribute <n@npc.navigator.is_navigating>
         // @returns Element(Boolean)
         // @description
         // returns whether the NPC is currently navigating.
@@ -499,7 +515,7 @@ public class dNPC implements dObject, Adjustable {
             return new Element(getNavigator().isNavigating()).getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.navigator.speed>
+        // @attribute <n@npc.navigator.speed>
         // @returns Element(Number)
         // @description
         // returns the current speed of the NPC.
@@ -509,7 +525,7 @@ public class dNPC implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.navigator.range>
+        // @attribute <n@npc.navigator.range>
         // @returns Element(Number)
         // @description
         // returns the maximum pathfinding range.
@@ -519,7 +535,7 @@ public class dNPC implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.navigator.attack_strategy>
+        // @attribute <n@npc.navigator.attack_strategy>
         // @returns Element
         // @description
         // returns the NPC's attack strategy.
@@ -529,7 +545,7 @@ public class dNPC implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.navigator.speed_modifier>
+        // @attribute <n@npc.navigator.speed_modifier>
         // @returns Element(Number)
         // @description
         // returns the NPC movement speed modifier.
@@ -539,7 +555,7 @@ public class dNPC implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.navigator.base_speed>
+        // @attribute <n@npc.navigator.base_speed>
         // @returns Element(Number)
         // @description
         // returns the base navigation speed.
@@ -549,7 +565,7 @@ public class dNPC implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.navigator.avoid_water>
+        // @attribute <n@npc.navigator.avoid_water>
         // @returns Element(Boolean)
         // @description
         // returns whether the NPC will avoid water.
@@ -559,7 +575,7 @@ public class dNPC implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.navigator.target_location>
+        // @attribute <n@npc.navigator.target_location>
         // @returns dLocation
         // @description
         // returns the location the NPC is curently navigating towards.
@@ -570,7 +586,7 @@ public class dNPC implements dObject, Adjustable {
                     : "null");
 
         // <--[tag]
-        // @attribute <npc.navigator.is_fighting>
+        // @attribute <n@npc.navigator.is_fighting>
         // @returns Element(Boolean)
         // @description
         // returns whether the NPC is in combat.
@@ -580,7 +596,7 @@ public class dNPC implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.navigator.target_type>
+        // @attribute <n@npc.navigator.target_type>
         // @returns Element
         // @description
         // returns the entity type of the target.
@@ -590,7 +606,7 @@ public class dNPC implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <npc.navigator.target_entity>
+        // @attribute <n@npc.navigator.target_entity>
         // @returns dEntity
         // @description
         // returns the entity being targeted.

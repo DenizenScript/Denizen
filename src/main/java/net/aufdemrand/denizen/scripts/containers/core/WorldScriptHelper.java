@@ -967,8 +967,8 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a furnace smelts an item.
     // @Context
     // <context.location> returns the dLocation of the furnace.
-    // <context.source> returns the dItem that is smelted.
-    // <context.result> returns the dItem that is the result of the smelting.
+    // <context.source_item> returns the dItem that is being smelted.
+    // <context.result_item> returns the dItem that is the result of the smelting.
     //
     // @Determine
     // "CANCELLED" to stop the furnace from smelting the item.
@@ -987,7 +987,7 @@ public class WorldScriptHelper implements Listener {
         context.put("result_item", result);
 
         String determination = doEvents(Arrays.asList
-                ("furnace smelts item",
+                        ("furnace smelts item",
                         "furnace smelts " + source.identify(),
                         "furnace smelts item into " + result.identify(),
                         "furnace smelts " + source.identify() + " into " + result.identify()),
@@ -3495,6 +3495,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
+    // "CANCELLED:FALSE" to ensure other plugins will process the event properly.
     //
     // -->
     @EventHandler
@@ -3565,9 +3566,11 @@ public class WorldScriptHelper implements Listener {
 
         }
 
-        String determination = doEvents(events, null, event.getPlayer(), context, true);
+        String determination = doEvents(events, null, event.getPlayer(), context, true).toUpperCase();
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        if (determination.startsWith("CANCELLED:FALSE"))
+            event.setCancelled(false);
+        else if (determination.startsWith("CANCELLED"))
             event.setCancelled(true);
     }
 

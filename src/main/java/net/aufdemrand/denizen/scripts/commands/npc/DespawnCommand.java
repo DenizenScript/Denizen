@@ -1,0 +1,59 @@
+package net.aufdemrand.denizen.scripts.commands.npc;
+
+import net.aufdemrand.denizen.exceptions.CommandExecutionException;
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.event.DespawnReason;
+import net.citizensnpcs.api.trait.trait.Spawned;
+
+import java.util.Arrays;
+import java.util.List;
+
+
+public class DespawnCommand extends AbstractCommand {
+
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
+            if (!scriptEntry.hasObject("npcs")
+                    && arg.matchesArgumentList(dNPC.class)) {
+                scriptEntry.addObject("npcs", ((dList) arg.asType(dList.class)).filter(dNPC.class));
+            }
+
+            else arg.reportUnhandled();
+        }
+
+        if (!scriptEntry.hasObject("npcs")) {
+            if (scriptEntry.hasNPC())
+                scriptEntry.addObject("npcs", Arrays.asList(scriptEntry.getNPC()));
+            else
+                throw new InvalidArgumentsException("Must specify a valid list of NPCs!");
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+
+        // Get objects
+        List<dNPC> npcs = (List<dNPC>) scriptEntry.getObject("npcs");
+
+        // Report to dB
+        dB.report(scriptEntry, getName(),
+                aH.debugObj("NPCs", npcs.toString()));
+
+        for (dNPC npc : npcs) {
+            if (npc.isSpawned()) {
+                if (npc.getCitizen().hasTrait(Spawned.class))
+                        npc.getCitizen().getTrait(Spawned.class).setSpawned(false);
+                npc.getCitizen().despawn(DespawnReason.PLUGIN);
+            }
+        }
+    }
+}
