@@ -204,7 +204,7 @@ public class Element implements dObject {
         // @description
         // Takes an operator, and compares the value of the element to the supplied
         // element. Returns the outcome of the comparable, either true or false. For
-        // information on operators, see !lang operator.
+        // information on operators, see <@link language operator>.
         // -->
 
         // <--[tag]
@@ -213,7 +213,7 @@ public class Element implements dObject {
         // @description
         // Takes an operator, and compares the value of the element to the supplied
         // element. Returns the outcome of the comparable, either true or false. For
-        // information on operators, see !lang operator.
+        // information on operators, see <@link language operator>.
         // -->
         if (attribute.startsWith("is") && attribute.hasContext(1)
                 && (attribute.startsWith("to", 2) || attribute.startsWith("than", 2)) && attribute.hasContext(2)) {

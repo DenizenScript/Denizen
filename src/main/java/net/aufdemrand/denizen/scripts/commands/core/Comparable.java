@@ -20,7 +20,7 @@ public class Comparable {
     // @group Comparables
     // @description
     // An operator is the type of comparison that a comparable will check. Not all types of
-    // comparables are compatible with all operators. See '!lang comparable' for more information.
+    // comparables are compatible with all operators. See <@link language comparable> for more information.
     //
     // Available Operators include:
     // EQUALS (==), MATCHES, OR_MORE (>=), OR_LESS (<=), MORE (>), LESS (<), CONTAINS, and IS_EMPTY.
