@@ -812,9 +812,9 @@ public class CommandHandler {
 
         } if (args.hasFlag('e')) {
             if (!dB.showDebug) dB.toggle();
-            dB.showEventsFiring = !dB.showEventsFiring;
-            Messaging.send(sender, ChatColor.YELLOW + (dB.showEventsFiring ? "Denizen dBugger is now logging all " +
-                    "world events fired." : "Denizen dBugger is now hiding fired world events."));
+            dB.showEventsTrimming = !dB.showEventsTrimming;
+            Messaging.send(sender, ChatColor.YELLOW + (dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
+                    "world events." : "Denizen dBugger is now hiding world events."));
 
         } if (args.hasFlag('b')) {
             if (!dB.showDebug) dB.toggle();

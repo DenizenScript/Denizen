@@ -102,6 +102,9 @@ public class WorldScriptHelper implements Listener {
 
     public static List<String> trimEvents(List<String> event) {
         List<String> parsed = new ArrayList<String>();
+
+        if (dB.showEventsTrimming) dB.echoApproval("Trimming world events '" + event.toString() + '\'');
+
         for (String e : event)
             if (events.containsKey("ON " + e.toUpperCase()))
                 parsed.add(e);
@@ -144,7 +147,8 @@ public class WorldScriptHelper implements Listener {
 
         String determination = "none";
 
-        if (dB.showEventsFiring) dB.echoApproval("Fired world events for '" + eventNames.toString() + '\'');
+        // Trim again to catch events that don't trim internally.
+        eventNames = trimEvents(eventNames);
 
         for (String eventName : eventNames) {
 
@@ -3556,8 +3560,8 @@ public class WorldScriptHelper implements Listener {
                 for (dCuboid cuboid : cuboids) {
                     events.add(interaction + " block in " + cuboid.identify());
                     events.add(interaction + " block in cuboid");
-                    events.add(interaction + " " + blockMaterial.identify() + " in " + cuboid.identify());
-                    events.add(interaction + " " + blockMaterial.identify() + " in cuboid");
+                    events.add(interaction + ' ' + blockMaterial.identify() + " in " + cuboid.identify());
+                    events.add(interaction + ' ' + blockMaterial.identify() + " in cuboid");
                     cuboid_context.add(cuboid.identify());
                 }
                 // Add in cuboids context, if inside a cuboid

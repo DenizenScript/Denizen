@@ -60,7 +60,7 @@ public class dB {
     public static boolean showStackTraces = true;
     public static boolean showScriptBuilder = false;
     public static boolean showColor = true;
-    public static boolean showEventsFiring = false;
+    public static boolean showEventsTrimming = false;
 
     public static List<String> filter = new ArrayList<String>();
 
