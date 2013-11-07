@@ -105,15 +105,15 @@ public class ProcedureScriptTag implements Listener {
        // @attribute <proc[ProcedureScript].Context[<element>|...]>
        // @returns Element
        // @description
-       // Returns the 'determine' result of a procedure script with the given context
-       // See !tutorial procedure
+       // Returns the 'determine' result of a procedure script with the given context.
+       // See <@link example Using Procedure Scripts>.
        // -->
        // <--[tag]
        // @attribute <proc[ProcedureScript]>
        // @returns Element
        // @description
-       // Returns the 'determine' result of a procedure script
-       // See !tutorial procedure
+       // Returns the 'determine' result of a procedure script.
+       // See <@link example Using Procedure Scripts>.
        // -->
        if (!event.matches("proc, pr")) return;
 
