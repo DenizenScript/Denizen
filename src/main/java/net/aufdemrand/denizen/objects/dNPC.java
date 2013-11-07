@@ -127,7 +127,7 @@ public class dNPC implements dObject, Adjustable {
             if (getCitizen().getEntity() instanceof LivingEntity)
                 return (LivingEntity) getCitizen().getEntity();
             else {
-                dB.log("Uh oh! Tried to get the Living entity of a non-living NPC!");
+                dB.log("Uh oh! Tried to get the living entity of a non-living NPC!");
                 return null;
             }
         } catch (NullPointerException e) {

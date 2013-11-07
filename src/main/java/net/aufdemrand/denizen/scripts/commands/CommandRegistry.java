@@ -561,6 +561,24 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
+        // @Name Create
+        // @Syntax create [<entity>] [<name>] (<location>)
+        // @Required 1
+        // @Stable experimental
+        // @Short Creates a new NPC, and alternatively spawns it at a location.
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // <server.list_npcs>
+        // @Usage
+        // Todo
+        // -->
+        registerCoreMember(CreateCommand.class,
+                "CREATE", "create [<entity>] [<name>] (<location>)", 1);
+
+
+        // <--[command]
         // @Name CreateWorld
         // @Syntax createworld [<name>] (g:<generator>)
         // @Required 1
@@ -607,7 +625,7 @@ public class CommandRegistry implements dRegistry {
         // Use to make complex tags look less complex, and scripts more readable.
         // - narrate 'You invoke your power of notice...'
         // - define range '<player.flag[range_level].mul[3]>'
-        // - define blocks '<player.flag[noticeable_blocks>'
+        // - define blocks '<player.flag[noticeable_blocks]>'
         // - narrate '[NOTICE] You have noticed <player.location.find.blocks[%blocks%].within[%range].size>
         // blocks in the area that may be of interest.'
 
@@ -635,16 +653,19 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Temporarily despawns the linked NPC or a list of NPCs.
         // @Author mcmonkey
+
         // @Description
         // This command will temporarily despawn either the linked NPC or
         // a list of other NPCs. Despawning means they are no longer visible
-        // or interactable, but they still exist and can be spawned again.
+        // or interactable, but they still exist and can be respawned.
+
         // @Tags
         // <n@npc.is_spawned>
+
         // @Usage
         // Use to despawn the linked NPC.
         // - despawn
-        //
+
         // @Usage
         // Use to despawn several NPCs.
         // - despawn <npc>|<player.selected_npc>|n@32

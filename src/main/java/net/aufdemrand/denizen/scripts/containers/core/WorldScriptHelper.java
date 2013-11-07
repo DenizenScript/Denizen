@@ -3495,7 +3495,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
-    // "CANCELLED:FALSE" to ensure other plugins will process the event properly.
+    // "CANCELLED:FALSE" to uncancel the event. Some plugins may have this cancelled by default.
     //
     // -->
     @EventHandler
