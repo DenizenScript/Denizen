@@ -42,7 +42,6 @@ public class TagManager implements Listener {
         new UtilTags(denizen);
         new ProcedureScriptTag(denizen);
         new ContextTags(denizen);
-        new SpecialCharacterTags(denizen);
         new TextTags(denizen);
 
         // For compatibility

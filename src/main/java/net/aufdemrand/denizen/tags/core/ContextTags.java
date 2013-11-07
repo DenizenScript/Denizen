@@ -65,18 +65,19 @@ public class ContextTags implements Listener {
     public void contextTags(ReplaceableTagEvent event) {
         if (!event.matches("context, c") || event.getScriptEntry() == null) return;
 
-        String type = event.getType();
+        String object = event.getType();
 
         // First, check queue object context.
-        if (event.getScriptEntry().getResidingQueue().hasContext(type)) {
+        if (event.getScriptEntry().getResidingQueue().hasContext(object)) {
             Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
-            event.setReplaced(event.getScriptEntry().getResidingQueue().getContext(type).getAttribute(attribute.fulfill(2)));
+            event.setReplaced(event.getScriptEntry().getResidingQueue()
+                    .getContext(object).getAttribute(attribute.fulfill(2)));
         }
 
         // Next, try to replace with task-script-defined context
         // NOTE: (DEPRECATED -- new RUN command uses definitions system instead)
-        if (!ScriptRegistry.containsScript(event.getScriptEntry().getScript().getName(), TaskScriptContainer.class))
-            return;
+        if (!ScriptRegistry.containsScript(event.getScriptEntry().getScript().getName(),
+                TaskScriptContainer.class)) return;
 
         TaskScriptContainer script = ScriptRegistry.getScriptContainerAs(
                 event.getScriptEntry().getScript().getName(), TaskScriptContainer.class);
@@ -88,8 +89,8 @@ public class ContextTags implements Listener {
             Map<String, String> context = (HashMap<String, String>) entry.getObject("CONTEXT");
             // Build IDs
             Map<String, Integer> id = script.getContextMap();
-            if (context.containsKey( String.valueOf(id.get(type.toUpperCase())))) {
-                event.setReplaced(context.get(String.valueOf(id.get(type.toUpperCase()))));
+            if (context.containsKey( String.valueOf(id.get(object.toUpperCase())))) {
+                event.setReplaced(context.get(String.valueOf(id.get(object.toUpperCase()))));
             }
         }
 
