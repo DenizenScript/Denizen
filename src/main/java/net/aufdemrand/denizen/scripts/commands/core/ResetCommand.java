@@ -8,6 +8,9 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.EntityType;
 
 public class ResetCommand extends AbstractCommand {
 
@@ -16,39 +19,29 @@ public class ResetCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        dScript script = scriptEntry.getScript();
-        Type type = null;
-
         // TODO: UPDATE THIS COMMAND!
 
-        for (String arg : scriptEntry.getArguments()) {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (aH.matchesArg("finishes, finished, finish", arg))
-                type = Type.FINISH;
+            if (arg.matches("finishes, finished, finish")
+                    && !scriptEntry.hasObject("type"))
+                scriptEntry.addObject("type", Type.FINISH);
 
-            else if (aH.matchesArg("fail, fails, failed", arg))
-                type = Type.FAIL;
+            if (arg.matches("fails, failed, fail")
+                    && !scriptEntry.hasObject("type"))
+                scriptEntry.addObject("type", Type.FAIL);
 
-            else if (aH.matchesArg("cooldown", arg))
-                type = Type.PLAYER_COOLDOWN;
+            if (arg.matches("cooldown")
+                    && !scriptEntry.hasObject("type"))
+                scriptEntry.addObject("type", Type.PLAYER_COOLDOWN);
 
-            else if (aH.matchesArg("global_cooldown", arg))
-                type = Type.GLOBAL_COOLDOWN;
-
-            else if (aH.matchesScript(arg))
-                script = aH.getScriptFrom(arg);
+            if (arg.matches("global_cooldown")
+                    && !scriptEntry.hasObject("type"))
+                scriptEntry.addObject("type", Type.GLOBAL_COOLDOWN);
 
             else throw new InvalidArgumentsException("Unknown argument '" + arg + "'!");
         }
 
-        if (type == null)
-            throw new InvalidArgumentsException("Must specify a type! Valid: FAILS, FINISHES, COOLDOWN, GLOBAL_COOLDOWN");
-
-        if (scriptEntry.getPlayer() == null && type != Type.GLOBAL_COOLDOWN)
-            throw new InvalidArgumentsException("Must specify a player!");
-
-        scriptEntry.addObject("script", script)
-                .addObject("type", type);
     }
 
     @Override
