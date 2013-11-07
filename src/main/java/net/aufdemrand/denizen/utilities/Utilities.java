@@ -52,7 +52,7 @@ public class Utilities {
 
         int selected_x = random.nextInt(range * 2);
         int selected_z = random.nextInt(range * 2);
-        returnable = location.add(selected_x - range, 1, selected_z - range);
+        returnable = location.clone().add(selected_x - range, 1, selected_z - range);
 
         if (!isWalkable(returnable)) return getWalkableLocationNear(location, range);
         else return returnable;
