@@ -2723,7 +2723,7 @@ public class WorldScriptHelper implements Listener {
     // <context.slot_type> returns an Element with the name of the slot type that was clicked.
     // <context.slot> returns an Element with the number of the slot that was clicked.
     // <context.is_shift_click> returns true if 'shift' was used while clicking.
-    // <context.action> returns the inventory_action. <@link language Inventory Action>
+    // <context.action> returns the inventory_action. See <@link language Inventory Actions>.
     //
     // @Determine
     // "CANCELLED" to stop the player from clicking.

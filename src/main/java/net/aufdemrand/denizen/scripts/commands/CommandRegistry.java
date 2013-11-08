@@ -552,7 +552,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // <l@location.block. * >
+        // <l@location.material>
         // @Usage
         // Todo
         // -->
@@ -565,14 +565,18 @@ public class CommandRegistry implements dRegistry {
         // @Syntax create [<entity>] [<name>] (<location>)
         // @Required 1
         // @Stable experimental
-        // @Short Creates a new NPC, and alternatively spawns it at a location.
-        // @Author Todo
+        // @Short Creates a new NPC, and optionally spawns it at a location.
+        // @Author aufdemrand
         // @Description
         // Todo
         // @Tags
         // <server.list_npcs>
         // @Usage
-        // Todo
+        // Use to create a despawned NPC for later usage.
+        // - create player Bob
+        // @Usage
+        // Use to create an NPC and spawn it immediately.
+        // - create spider Joe <player.location>
         // -->
         registerCoreMember(CreateCommand.class,
                 "CREATE", "create [<entity>] [<name>] (<location>)", 1);
@@ -1208,7 +1212,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <el@element.is[<operator>].to[<element>]>
         // @Usage
         // Todo
         // -->
@@ -1226,9 +1230,9 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // <player.inventory>
-        // <npc.inventory>
-        // <location.inventory>
+        // <p@player.inventory>
+        // <n@npc.inventory>
+        // <l@location.inventory>
         // @Usage
         // Todo
         // -->
@@ -1674,7 +1678,9 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // <queue. * >
+        // <queue.id>
+        // <queue.size>
+        // <queue.exists[queue_id]>
         // @Usage
         // Todo
         // -->
@@ -2351,7 +2357,10 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // <npc.navigator. * >
+        // <n@npc.navigator.is_navigating>
+        // <n@npc.navigator.speed>
+        // <n@npc.navigator.range>
+        // <n@npc.navigator.target_location>
         // @Usage
         // Todo
         // -->
