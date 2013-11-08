@@ -2658,8 +2658,11 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player clicks in inventory
-    // player (<click type>) clicks (<item>) (in <inventory>)
+    // player clicks in inventory (with <item>)
+    // player (<click type>) clicks (<item>) (in <inventory>) (with <item>)
+    // player (<click type>) clicks (<material>) (in <inventory>) (with <item>)
+    // player (<click type>) clicks (<item>) (in <inventory>) (with <material>)
+    // player (<click type>) clicks (<material>) (in <inventory>) (with <material>)
     //
     // @Triggers when a player clicks in an inventory.
     // @Context
@@ -2677,6 +2680,7 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = null;
+        dItem holding;
 
         Player player = (Player) event.getWhoClicked();
         String type = event.getInventory().getType().name();
@@ -2692,8 +2696,20 @@ public class WorldScriptHelper implements Listener {
         events.add(interaction + "in inventory");
         events.add(interaction + "in " + type);
 
-        if (event.getCurrentItem() != null) {
+        if (event.getCursor() != null) {
+            holding = new dItem(event.getCursor());
 
+            events.add(interaction + "in inventory with " + holding.identify());
+            events.add(interaction + "in " + type + " with " + holding.identify());
+            events.add(interaction + "in inventory with " + holding.identifyMaterial());
+            events.add(interaction + "in " + type + " with " + holding.identifyMaterial());
+            events.add("player clicks in inventory with " + holding.identify());
+            events.add("player clicks in " + type + " with " + holding.identify());
+            events.add("player clicks in inventory with " + holding.identifyMaterial());
+            events.add("player clicks in " + type + " with " + holding.identifyMaterial());
+        }
+
+        if (event.getCurrentItem() != null) {
             item = new dItem(event.getCurrentItem());
 
             events.add("player clicks " +
@@ -2708,6 +2724,35 @@ public class WorldScriptHelper implements Listener {
                     item.identifyMaterial() + " in inventory");
             events.add(interaction +
                     item.identifyMaterial() + " in " + type);
+
+            if (event.getCursor() != null) {
+                holding = new dItem(event.getCursor());
+
+                events.add("player clicks " +
+                        item.identify() + " in inventory with " + holding.identify());
+                events.add(interaction +
+                        item.identify() + " in inventory with " + holding.identify());
+                events.add(interaction +
+                        item.identify() + " in " + type + " with " + holding.identify());
+                events.add("player clicks " +
+                        item.identify() + " in inventory with " + holding.identifyMaterial());
+                events.add(interaction +
+                        item.identify() + " in inventory with " + holding.identifyMaterial());
+                events.add(interaction +
+                        item.identify() + " in " + type + " with " + holding.identifyMaterial());
+                events.add("player clicks " +
+                        item.identifyMaterial() + " in inventory with " + holding.identifyMaterial());
+                events.add(interaction +
+                        item.identifyMaterial() + " in inventory with " + holding.identifyMaterial());
+                events.add(interaction +
+                        item.identifyMaterial() + " in " + type + " with " + holding.identifyMaterial());
+                events.add("player clicks " +
+                        item.identifyMaterial() + " in inventory with " + holding.identify());
+                events.add(interaction +
+                        item.identifyMaterial() + " in inventory with " + holding.identify());
+                events.add(interaction +
+                        item.identifyMaterial() + " in " + type + " with " + holding.identify());
+            }
         }
 
         events = trimEvents(events);
