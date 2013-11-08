@@ -18,6 +18,8 @@ public class StandCommand extends AbstractCommand{
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             arg.reportUnhandled();
         }
+        if (!scriptEntry.hasNPC())
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
 
     }
 

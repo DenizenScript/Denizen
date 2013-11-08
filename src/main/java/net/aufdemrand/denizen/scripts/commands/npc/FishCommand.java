@@ -15,8 +15,7 @@ import org.bukkit.Location;
 public class FishCommand extends AbstractCommand {
 
     @Override
-    public void parseArgs(ScriptEntry scriptEntry)
-            throws InvalidArgumentsException {
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         Location location = null;
         Boolean stopping = false;
         Boolean catchFish = false;
@@ -42,6 +41,9 @@ public class FishCommand extends AbstractCommand {
             .addObject("stopping", stopping)
             .addObject("catchFish", catchFish)
             .addObject("catchPercent", catchPercent);
+
+        if (!scriptEntry.hasNPC())
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
     }
 
     @Override

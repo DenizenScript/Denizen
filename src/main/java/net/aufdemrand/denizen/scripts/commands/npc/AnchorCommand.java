@@ -61,6 +61,8 @@ public class AnchorCommand extends AbstractCommand {
                 arg.reportUnhandled();
         }
 
+        if (!scriptEntry.hasNPC())
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
 
         if (!scriptEntry.hasObject("action"))
             throw new InvalidArgumentsException("Must specify an 'Anchor Action'. Valid: " + Action.values());

@@ -43,6 +43,8 @@ public class FollowCommand extends AbstractCommand {
             else
                 throw new InvalidArgumentsException("This command requires a linked player!");
         }
+        if (!scriptEntry.hasNPC())
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
     }
 
     @Override

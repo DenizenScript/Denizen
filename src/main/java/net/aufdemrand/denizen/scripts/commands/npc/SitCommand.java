@@ -28,6 +28,8 @@ public class SitCommand extends AbstractCommand {
             else
                 arg.reportUnhandled();
         }
+        if (!scriptEntry.hasNPC())
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
 
     }
 
