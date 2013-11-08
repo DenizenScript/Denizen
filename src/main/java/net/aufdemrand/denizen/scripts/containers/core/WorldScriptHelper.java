@@ -945,7 +945,7 @@ public class WorldScriptHelper implements Listener {
     public void furnaceExtract(FurnaceExtractEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial itemMaterial = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        dMaterial itemMaterial = dMaterial.getMaterialFrom(event.getItemType());
         dItem item = new dItem(itemMaterial, event.getItemAmount());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
