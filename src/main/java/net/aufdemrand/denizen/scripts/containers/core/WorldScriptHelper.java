@@ -2656,6 +2656,56 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[language]
+    // @Name Inventory Actions
+    // @Group Useful Lists
+    // @Description
+    // Used by some inventory world events to describe the action of the inventory event.
+    //
+    // Actions, as described by the bukkit javadocs:
+    // CLONE_STACK
+    // A max-size stack of the clicked item is put on the cursor.
+    // COLLECT_TO_CURSOR
+    // The inventory is searched for the same material, and they are put on the cursor up to
+    //      m@material.max_stack_size.
+    // DROP_ALL_CURSOR
+    // The entire cursor item is dropped.
+    // DROP_ALL_SLOT
+    // The entire clicked slot is dropped.
+    // DROP_ONE_CURSOR
+    // One item is dropped from the cursor.
+    // DROP_ONE_SLOT
+    // One item is dropped from the clicked slot.
+    // HOTBAR_MOVE_AND_READD
+    // The clicked item is moved to the hotbar, and the item currently there is re-added to the
+    //      player's inventory.
+    // HOTBAR_SWAP
+    // The clicked slot and the picked hotbar slot are swapped.
+    // MOVE_TO_OTHER_INVENTORY
+    // The item is moved to the opposite inventory if a space is found.
+    // NOTHING
+    // Nothing will happen from the click.
+    // PICKUP_ALL
+    // All of the items on the clicked slot are moved to the cursor.
+    // PICKUP_HALF
+    // Half of the items on the clicked slot are moved to the cursor.
+    // PICKUP_ONE
+    // One of the items on the clicked slot are moved to the cursor.
+    // PICKUP_SOME
+    // Some of the items on the clicked slot are moved to the cursor.
+    // PLACE_ALL
+    // All of the items on the cursor are moved to the clicked slot.
+    // PLACE_ONE
+    // A single item from the cursor is moved to the clicked slot.
+    // PLACE_SOME
+    // Some of the items from the cursor are moved to the clicked slot (usually up to the max stack size).
+    // SWAP_WITH_CURSOR
+    // The clicked item and the cursor are exchanged.
+    // UNKNOWN
+    // An unrecognized ClickType.
+    //
+    // -->
+
     // <--[event]
     // @Events
     // player clicks in inventory (with <item>)
@@ -2667,9 +2717,13 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a player clicks in an inventory.
     // @Context
     // <context.item> returns the dItem the player has clicked on.
-    // <context.item> returns the dInventory.
+    // <context.inventory> returns the dInventory.
+    // <context.cursor_item> returns the item the Player is clicking with.
     // <context.click> returns an Element with the name of the click type.
     // <context.slot_type> returns an Element with the name of the slot type that was clicked.
+    // <context.slot> returns an Element with the number of the slot that was clicked.
+    // <context.is_shift_click> returns true if 'shift' was used while clicking.
+    // <context.action> returns the inventory_action. <@see lang Inventory_Action>
     //
     // @Determine
     // "CANCELLED" to stop the player from clicking.
@@ -2698,6 +2752,7 @@ public class WorldScriptHelper implements Listener {
 
         if (event.getCursor() != null) {
             holding = new dItem(event.getCursor());
+            context.put("cursor_item", holding);
 
             events.add(interaction + "in inventory with " + holding.identify());
             events.add(interaction + "in " + type + " with " + holding.identify());
@@ -2726,8 +2781,6 @@ public class WorldScriptHelper implements Listener {
                     item.identifyMaterial() + " in " + type);
 
             if (event.getCursor() != null) {
-                holding = new dItem(event.getCursor());
-
                 events.add("player clicks " +
                         item.identify() + " in inventory with " + holding.identify());
                 events.add(interaction +
@@ -2763,6 +2816,9 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", new dInventory(event.getInventory()));
         context.put("click", new Element(click));
         context.put("slot_type", new Element(slotType));
+        context.put("slot", new Element(event.getSlot()));
+        context.put("is_shift_click", new Element(event.isShiftClick()));
+        context.put("action", new Element(event.getAction().name()));
 
         String determination = doEvents(events, null, player, context, true);
 

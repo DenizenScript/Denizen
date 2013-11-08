@@ -49,6 +49,7 @@ public class WalkCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException("Must specify a location!");
+
         if (scriptEntry.getNPC() == null
                 || !scriptEntry.getNPC().isValid()
                 || !scriptEntry.getNPC().isSpawned())
