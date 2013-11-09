@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dCuboid;

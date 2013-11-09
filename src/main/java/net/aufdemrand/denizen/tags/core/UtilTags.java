@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;

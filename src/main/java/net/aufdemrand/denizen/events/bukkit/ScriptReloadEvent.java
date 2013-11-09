@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.events;
+package net.aufdemrand.denizen.events.bukkit;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

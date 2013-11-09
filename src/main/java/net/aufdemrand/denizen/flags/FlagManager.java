@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.flags;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -283,7 +283,7 @@ public class FlagManager {
             denizen.getSaves().set(flagPath + "-expiration", null);
             rebuild();
 
-            WorldScriptHelper.doEvents(world_script_events,
+            EventManager.doEvents(world_script_events,
                     npc, player != null ? player.getPlayerEntity() : null, context);
         }
 
@@ -498,7 +498,7 @@ public class FlagManager {
             denizen.getSaves().set(flagPath + "-expiration", (expiration > 0 ? expiration : null));
             rebuild();
 
-            WorldScriptHelper.doEvents(world_script_events,
+            EventManager.doEvents(world_script_events,
                     npc, player != null ? player.getPlayerEntity() : null, context);
 
 

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts;
 
+import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -53,8 +54,8 @@ public class ScriptRegistry {
 
     public static void _buildCoreYamlScriptContainers(FileConfiguration yamlScripts) {
         scriptContainers.clear();
-        WorldScriptHelper.world_scripts.clear();
-        WorldScriptHelper.events.clear();
+        EventManager.world_scripts.clear();
+        EventManager.events.clear();
         ItemScriptHelper.item_scripts.clear();
         // Get a set of key names in concantenated Denizen Scripts
         Set<String> scripts = yamlScripts.getKeys(false);

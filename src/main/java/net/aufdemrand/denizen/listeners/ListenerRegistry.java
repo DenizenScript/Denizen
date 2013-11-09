@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.listeners;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.ListenerCancelEvent;
-import net.aufdemrand.denizen.events.ListenerFinishEvent;
+import net.aufdemrand.denizen.events.bukkit.ListenerCancelEvent;
+import net.aufdemrand.denizen.events.bukkit.ListenerFinishEvent;
 import net.aufdemrand.denizen.interfaces.dRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.listeners.core.*;

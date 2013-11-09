@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.npc;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
-import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
@@ -112,7 +112,7 @@ public class dNPCRegistry implements Listener {
     public void onSpawn(NPCSpawnEvent event) {
         _registerNPC(event.getNPC());
         // Do world script event 'On NPC Completes Navigation'
-        WorldScriptHelper.doEvents(Arrays.asList
+        EventManager.doEvents(Arrays.asList
                 ("npc spawns"),
                 dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
         // On Spawn action
@@ -138,7 +138,7 @@ public class dNPCRegistry implements Listener {
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
         // Do world script event 'On NPC Completes Navigation'
-        WorldScriptHelper.doEvents(Arrays.asList
+        EventManager.doEvents(Arrays.asList
                 ("npc despawns"),
                 dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
 

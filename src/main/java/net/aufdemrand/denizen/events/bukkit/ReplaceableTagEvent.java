@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.events;
+package net.aufdemrand.denizen.events.bukkit;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

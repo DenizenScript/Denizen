@@ -48,20 +48,11 @@ import org.bukkit.util.Vector;
 
 public class dEntity implements dObject, Adjustable {
 
-    /////////////////////
-    //   PATTERNS
-    /////////////////
-
-    final static Pattern entity_by_id = Pattern.compile("(n@|e@|p@)(.+)",
-            Pattern.CASE_INSENSITIVE);
-
-    final static Pattern entity_with_data = Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
-            Pattern.CASE_INSENSITIVE);
-
 
     //////////////////
     //    OBJECT FETCHER
     ////////////////
+
 
     /**
      * Gets a dEntity Object from a string form. </br>
@@ -201,28 +192,39 @@ public class dEntity implements dObject, Adjustable {
     }
 
 
+    final static Pattern entity_by_id = Pattern.compile("(n@|e@|p@)(.+)",
+            Pattern.CASE_INSENSITIVE);
+
+    final static Pattern entity_with_data = Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
+            Pattern.CASE_INSENSITIVE);
+
     public static boolean matches(String arg) {
 
+        // Accept anything that starts with a valid entity object identifier.
         Matcher m;
         m = entity_by_id.matcher(arg);
         if (m.matches()) return true;
 
-        arg = arg.replace("e@", "");
+        // No longer picky about e@.. let's remove it from the arg
+        arg = arg.replace("e@", "").toUpperCase();
 
-        if (arg.equalsIgnoreCase("RANDOM"))
+        // Allow 'random'
+        if (arg.equals("RANDOM"))
             return true;
 
+        // Allow any entity script
         if (ScriptRegistry.containsScript(arg, EntityScriptContainer.class))
             return true;
 
+        // Use regex to make some matcher groups
         m = entity_with_data.matcher(arg);
-
         if (m.matches()) {
-
+            // Check first word with a valid entity_type (other groups are datas used in constructors)
             for (EntityType type : EntityType.values())
-                if (type.name().equalsIgnoreCase(m.group(1))) return true;
+                if (type.name().equals(m.group(1))) return true;
         }
 
+        // No luck otherwise!
         return false;
     }
 

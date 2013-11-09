@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.events.ScriptFailEvent;
+import net.aufdemrand.denizen.events.bukkit.ScriptFailEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.dPlayer;

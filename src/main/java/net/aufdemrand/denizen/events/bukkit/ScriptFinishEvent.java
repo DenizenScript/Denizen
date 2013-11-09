@@ -1,25 +1,23 @@
-package net.aufdemrand.denizen.events;
+package net.aufdemrand.denizen.events.bukkit;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 
 /**
- * Bukkit event for when a dScript FAIL command is executed.
+ * Bukkit event for when a dScript FINISH command is executed.
  *
  * @author Jeremy Schroeder
  *
  */
-
-public class ScriptFailEvent extends Event {
-
+public class ScriptFinishEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private String playerName;
     private String scriptName;
     private int count;
 
-    public ScriptFailEvent(String playerName, String scriptName, int count) {
-        this.scriptName = scriptName;
+    public ScriptFinishEvent(String playerName, String theScript, int count) {
+        this.scriptName = theScript;
         this.playerName = playerName;
         this.count = count;
     }

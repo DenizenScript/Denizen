@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.aufdemrand.denizen.events.SavesReloadEvent;
+import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
@@ -30,7 +31,6 @@ import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.citizensnpcs.Citizens;
@@ -121,6 +121,11 @@ public class Denizen extends JavaPlugin {
     private FlagManager flagManager = new FlagManager(this);
     private TagManager tagManager = new TagManager(this);
     private NotableManager notableManager = new NotableManager();
+    private EventManager eventManager;
+
+    public EventManager eventManager() {
+        return eventManager;
+    }
 
     public FlagManager flagManager() {
         return flagManager;
@@ -198,7 +203,7 @@ public class Denizen extends JavaPlugin {
                     "and restarting the server.");
         }
 
-        ScriptHelper.reloadScripts();
+        // Load the saves.yml into memory
         reloadSaves();
 
         // Create the command script handler for listener
@@ -244,6 +249,8 @@ public class Denizen extends JavaPlugin {
         getRequirementRegistry().registerCoreMembers();
         getListenerRegistry().registerCoreMembers();
         tagManager().registerCoreTags();
+        eventManager = new EventManager();
+        eventManager().registerCoreMembers();
 
         // Register CommandHandler with Citizens
         Depends.citizens.registerCommandClass(CommandHandler.class);
@@ -261,10 +268,9 @@ public class Denizen extends JavaPlugin {
         // Initialize Property Parser
         propertyParser = new PropertyParser();
 
-        dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
-
-        // TODO: Figure out why we need this
         ScriptHelper.reloadScripts();
+
+        dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
         // Fire the 'on Server Start' world event
         ws_helper.serverStartEvent();
