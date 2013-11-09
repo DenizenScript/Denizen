@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import net.aufdemrand.denizen.events.ExhaustedNPCEvent;
+import net.aufdemrand.denizen.events.bukkit.ExhaustedNPCEvent;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;

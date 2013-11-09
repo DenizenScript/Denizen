@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts;
 
-import net.aufdemrand.denizen.events.ScriptReloadEvent;
+import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;

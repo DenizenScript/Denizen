@@ -248,4 +248,8 @@ public class ScriptContainer implements Debuggable {
         return name.equalsIgnoreCase(criteria.replace("s@", ""));
     }
 
+    @Override
+    public String toString() {
+        return "s@" + getName().toLowerCase();
+    }
 }

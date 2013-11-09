@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.Element;

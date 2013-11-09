@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
-import net.aufdemrand.denizen.events.ScriptReloadEvent;
+import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;

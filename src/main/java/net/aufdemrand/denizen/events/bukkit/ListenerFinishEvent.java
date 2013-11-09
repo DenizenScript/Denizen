@@ -1,21 +1,22 @@
-package net.aufdemrand.denizen.events;
+package net.aufdemrand.denizen.events.bukkit;
 
 import net.aufdemrand.denizen.objects.dPlayer;
+
 import org.bukkit.event.HandlerList;
 
 
 /**
- * Triggers when a Player Listener is cancelled.
+ * An event that fires on a Player finishing a ' Player Listener'.
  *
  * @author Jeremy Schroeder
  *
  */
 
-public class ListenerCancelEvent extends ListenerEvent {
+public class ListenerFinishEvent extends ListenerEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    public ListenerCancelEvent(dPlayer player, String id) {
+    public ListenerFinishEvent(dPlayer player, String id) {
         super(player, id);
     }
 

@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.events;
+package net.aufdemrand.denizen.events.bukkit;
 
 import net.citizensnpcs.api.event.NPCEvent;
 import net.citizensnpcs.api.npc.NPC;

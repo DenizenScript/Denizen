@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.events;
+package net.aufdemrand.denizen.events.bukkit;
 
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import org.bukkit.event.Cancellable;

@@ -1,17 +1,23 @@
-package net.aufdemrand.denizen.events;
+package net.aufdemrand.denizen.events.bukkit;
 
-import org.bukkit.event.Event;
+import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.event.HandlerList;
 
+
 /**
- * Bukkit event for when Denizen 'saves' are reloaded.
+ * Triggers when a Player Listener is cancelled.
  *
  * @author Jeremy Schroeder
  *
  */
-public class SavesReloadEvent extends Event {
+
+public class ListenerCancelEvent extends ListenerEvent {
 
     private static final HandlerList handlers = new HandlerList();
+
+    public ListenerCancelEvent(dPlayer player, String id) {
+        super(player, id);
+    }
 
     public HandlerList getHandlers() {
         return handlers;

@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.ScriptEntryExecuteEvent;
+import net.aufdemrand.denizen.events.bukkit.ScriptEntryExecuteEvent;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
