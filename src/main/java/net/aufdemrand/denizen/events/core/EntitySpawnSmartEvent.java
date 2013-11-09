@@ -2,9 +2,7 @@ package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.SmartEvent;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -91,14 +89,20 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
     // <--[event]
     // @Events
     // entity spawns
+    // entity spawns in <notable cuboid>
     // entity spawns because <cause>
+    // entity spawns in <notable cuboid> because <cause>
     // <entity> spawns
+    // <entity> spawns in <notable cuboid>
     // <entity> spawns because <cause>
+    // <entity> spawns in <notable cuboid> because <cause>
     //
     // @Triggers when an entity spawns.
     // @Context
     // <context.entity> returns the dEntity that spawned.
+    // <npc> if the entity spawned is a NPC.
     // <context.reason> returns the reason the entity spawned.
+    // <context.cuboids> returns a list of cuboids that the entity spawned inside.
     //
     // @Determine
     // "CANCELLED" to stop the entity from spawning.
@@ -107,22 +111,43 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
     @EventHandler
     public void creatureSpawn(CreatureSpawnEvent event) {
 
+        List<String> events = new ArrayList<String>();
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         String reason = event.getSpawnReason().name();
 
+        // Look for cuboids that contain the block's location
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getLocation());
+
+        if (cuboids.size() > 0) {
+            dList cuboid_context = new dList();
+            for (dCuboid cuboid : cuboids) {
+                events.add("entity spawns in " + cuboid.identify());
+                events.add("entity spawns in " + cuboid.identify() + " because " + reason);
+                events.add(entity.identifyType() + " spawns in " + cuboid.identify());
+                events.add(entity.identifyType() + " spawns in " + cuboid.identify() + " because " + reason);
+            }
+            // Add in cuboids context, if inside a cuboid
+            context.put("cuboids", cuboid_context);
+        }
+
+        // Add events to fire
+        events.add("entity spawns");
+        events.add("entity spawns because " + reason);
+        events.add(entity.identifyType() + " spawns");
+        events.add(entity.identifyType() + " spawns because " + reason);
+
+        // Add in other contexts associated with this event
         context.put("entity", entity);
         context.put("reason", new Element(reason));
 
-        String determination = EventManager.doEvents(Arrays.asList
-                ("entity spawns",
-                        "entity spawns because " + event.getSpawnReason().name(),
-                        entity.identifyType() + " spawns",
-                        entity.identifyType() + " spawns because " + reason),
-                null, null, context, true);
+        String determination = EventManager.doEvents(events,
+                (entity.isNPC() ? entity.getDenizenNPC() : null), null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
+
+
 
 }
