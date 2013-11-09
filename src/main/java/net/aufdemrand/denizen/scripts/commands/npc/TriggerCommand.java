@@ -62,6 +62,8 @@ public class TriggerCommand extends AbstractCommand {
         scriptEntry.addObject("cooldown", cooldown);
         scriptEntry.addObject("toggle", toggle);
         scriptEntry.addObject("radius", radius);
+        if (!scriptEntry.hasNPC())
+            throw new InvalidArgumentsException("This command requires a linked NPC!");
 
     }
 
