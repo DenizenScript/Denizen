@@ -35,13 +35,12 @@ public class dScript implements dObject {
     // script entries inside of a script container when given a matching dScript object.
     //
     // dScripts also provide a way to access attributes accessed by the replaceable tag system by using the object
-    // fetcher or any other entry point to a dScript object. dScript objects have the object prefix 's'.
+    // fetcher or any other entry point to a dScript object. dScript objects have the object identifier of 's@'.
     // For example: s@script_name
     //
     // 2) The overall 'scripting language' that Denizen implements is referred to as 'dScripting', or 'dScript'.
     // dScripts use YAML + Denizen's Scripting API to parse scripts that are stored as .yml or .dscript files. Scripts
     // go in the .../plugins/Denizen/scripts folder.
-
     //
     // -->
 
@@ -83,7 +82,10 @@ public class dScript implements dObject {
         return null;
     }
 
+
     public static boolean matches(String string) {
+
+        if (string.toLowerCase().startsWith("s@")) return true;
 
         Matcher m = CONTAINER_PATTERN.matcher(string);
         if (m.matches()) {
@@ -120,11 +122,14 @@ public class dScript implements dObject {
     // Instance fields and methods
     /////////////////////
 
+    // Keep track of the corresponding ScriptContainer
     private ScriptContainer container;
-    private String prefix = "Container";
-    private String name = null;
-    private boolean valid = false;
 
+    // Make the default prefix "Container"
+    private String prefix = "Container";
+
+
+    private boolean valid = false;
 
     /**
      * Confirms that the script references a valid name and type in current loaded ScriptsContainers.
@@ -136,6 +141,7 @@ public class dScript implements dObject {
     }
 
 
+
     /**
      * Gets the type of the ScriptContainer, as defined by the TYPE: key.
      *
@@ -145,6 +151,8 @@ public class dScript implements dObject {
         return (container != null ? container.getContainerType() : "invalid");
     }
 
+
+    private String name = null;
 
     /**
      * Gets the name of the ScriptContainer.
@@ -205,10 +213,6 @@ public class dScript implements dObject {
     @Override
     public boolean isUnique() {
         return true;
-    }
-
-    public String colorless_debug() {
-        return prefix + "='" + name + "(" + getType() + ")'";
     }
 
     @Override
@@ -300,7 +304,7 @@ public class dScript implements dObject {
         // debug entry for the object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("debug")) {
-            return new Element(colorless_debug()).getAttribute(attribute.fulfill(1));
+            return new Element(debug()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
