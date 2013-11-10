@@ -46,6 +46,7 @@ public class Element implements dObject {
     public final static Element TRUE = new Element(Boolean.TRUE);
     public final static Element FALSE = new Element(Boolean.FALSE);
     public final static Element SERVER = new Element("server");
+    public final static Element NULL = new Element("null");
 
     final static Pattern VALUE_PATTERN =
             Pattern.compile("el@val(?:ue)?\\[([^\\[\\]]+)\\].*",

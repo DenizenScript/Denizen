@@ -389,7 +389,7 @@ public class dNPC implements dObject, Adjustable {
         if (attribute.startsWith("has_flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return "null";
+            else return Element.NULL.getAttribute(attribute.fulfill(1));
             return new Element(FlagManager.npcHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
@@ -402,7 +402,7 @@ public class dNPC implements dObject, Adjustable {
          if (attribute.startsWith("flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return "null";
+            else return Element.NULL.getAttribute(attribute.fulfill(1));
             attribute.fulfill(1);
             if (attribute.startsWith("is_expired")
                     || attribute.startsWith("isexpired"))
@@ -414,7 +414,7 @@ public class dNPC implements dObject, Adjustable {
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getNPCFlag(getId(), flag_name))
                         .getAttribute(attribute);
-            else return "null";
+            else return Element.NULL.getAttribute(attribute);
         }
 
         // <--[tag]
@@ -432,7 +432,7 @@ public class dNPC implements dObject, Adjustable {
                     .getConstant(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return "null";
+                    return Element.NULL.getAttribute(attribute.fulfill(1));
                 }
             }
         }
@@ -486,7 +486,7 @@ public class dNPC implements dObject, Adjustable {
         if (attribute.startsWith("location.previous_location"))
             return (NPCTags.previousLocations.containsKey(getId())
                     ? NPCTags.previousLocations.get(getId()).getAttribute(attribute.fulfill(2))
-                    : "null");
+                    : Element.NULL.getAttribute(attribute.fulfill(2)));
 
         // <--[tag]
         // @attribute <n@npc.script>
@@ -497,7 +497,7 @@ public class dNPC implements dObject, Adjustable {
         if (attribute.startsWith("script")) {
             NPC citizen = getCitizen();
             if (!citizen.hasTrait(AssignmentTrait.class) || !citizen.getTrait(AssignmentTrait.class).hasAssignment()) {
-                return "null";
+                return Element.NULL.getAttribute(attribute.fulfill(1));
             }
             else {
                 return new Element(citizen.getTrait(AssignmentTrait.class).getAssignment().getName())
@@ -583,7 +583,7 @@ public class dNPC implements dObject, Adjustable {
         if (attribute.startsWith("navigator.target_location"))
             return (getNavigator().getTargetAsLocation() != null
                     ? new dLocation(getNavigator().getTargetAsLocation()).getAttribute(attribute.fulfill(2))
-                    : "null");
+                    : Element.NULL.getAttribute(attribute.fulfill(2)));
 
         // <--[tag]
         // @attribute <n@npc.navigator.is_fighting>
@@ -602,7 +602,8 @@ public class dNPC implements dObject, Adjustable {
         // returns the entity type of the target.
         // -->
         if (attribute.startsWith("navigator.target_type"))
-            return new Element(getNavigator().getTargetType() == null ? "null": getNavigator().getTargetType().toString())
+            return new Element(getNavigator().getTargetType() == null ? Element.NULL.getAttribute(attribute.fulfill(2))
+                    : getNavigator().getTargetType().toString())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -614,7 +615,7 @@ public class dNPC implements dObject, Adjustable {
         if (attribute.startsWith("navigator.target_entity"))
             return (getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().getTarget() != null
                     ? new dEntity(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2))
-                    : "null");
+                    : Element.NULL.getAttribute(attribute.fulfill(2)));
 
         return (getEntity() != null
                 ? new dEntity(getCitizen()).getAttribute(attribute)
@@ -627,18 +628,18 @@ public class dNPC implements dObject, Adjustable {
 
 
         // TODO:
-//        getAssignmentTrait().setAssignment();
-//        getAssignmentTrait().removeAssignment();
-//
-//        getNicknameTrait().setNickname();
-//        getNicknameTrait().removeNickname();
-//
-//        getCitizen().setBukkitEntityType();
-//        getCitizen().setName();
-//        getCitizen().spawn();
-//        getCitizen().despawn();
-//        getCitizen().setProtected();
-//        getCitizen().getTrait(LookClose.class).lookClose();
+        //        getAssignmentTrait().setAssignment();
+        //        getAssignmentTrait().removeAssignment();
+        //
+        //        getNicknameTrait().setNickname();
+        //        getNicknameTrait().removeNickname();
+        //
+        //        getCitizen().setBukkitEntityType();
+        //        getCitizen().setName();
+        //        getCitizen().spawn();
+        //        getCitizen().despawn();
+        //        getCitizen().setProtected();
+        //        getCitizen().getTrait(LookClose.class).lookClose();
 
     }
 }

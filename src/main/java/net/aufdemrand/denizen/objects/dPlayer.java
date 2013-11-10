@@ -207,9 +207,11 @@ public class dPlayer implements dObject, Adjustable {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null) return "null";
+        if (attribute == null)
+            return "null";
 
-        if (player_name == null) return "null";
+        if (player_name == null)
+            return Element.NULL.getAttribute(attribute);
 
         /////////////////////
         //   OFFLINE ATTRIBUTES
@@ -291,8 +293,10 @@ public class dPlayer implements dObject, Adjustable {
             if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
                 x = attribute.getIntContext(1);
             // No playerchathistory? Return null.
-            if (!PlayerTags.playerChatHistory.containsKey(player_name)) return "null";
-            else return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
+            if (!PlayerTags.playerChatHistory.containsKey(player_name))
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -305,7 +309,7 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return "null";
+            else return Element.NULL.getAttribute(attribute.fulfill(1));
             attribute.fulfill(1);
             if (attribute.startsWith("is_expired")
                     || attribute.startsWith("isexpired"))
@@ -317,7 +321,7 @@ public class dPlayer implements dObject, Adjustable {
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getPlayerFlag(getName(), flag_name))
                         .getAttribute(attribute);
-            else return "null";
+            else return Element.NULL.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -329,8 +333,22 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("has_flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return "null";
+            else return Element.NULL.getAttribute(attribute.fulfill(1));
             return new Element(FlagManager.playerHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
+        }
+
+
+        if (attribute.startsWith("current_step")) {
+            String outcome = "null";
+            if (attribute.hasContext(1)) {
+                try {
+                    outcome = DenizenAPI.getCurrentInstance().getSaves().getString("Players." + getName() + ".Scripts."
+                            + dScript.valueOf(attribute.getContext(1)).getName() + ".Current Step");
+                } catch (Exception e) {
+                    outcome = "null";
+                }
+            }
+            return new Element(outcome).getAttribute(attribute.fulfill(1));
         }
 
 
@@ -375,7 +393,7 @@ public class dPlayer implements dObject, Adjustable {
 
             } else {
                 dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-                return null;
+                return Element.NULL.getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -573,7 +591,7 @@ public class dPlayer implements dObject, Adjustable {
             if (getPlayerEntity().hasMetadata("selected"))
                 return getSelectedNPC()
                         .getAttribute(attribute.fulfill(1));
-            else return "null";
+            else return Element.NULL.getAttribute(attribute.fulfill(1));
         }
 
 
@@ -726,7 +744,7 @@ public class dPlayer implements dObject, Adjustable {
                 || attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
                 dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                return "null";
+                return Element.NULL.getAttribute(attribute.fulfill(1));
             }
 
             String group = attribute.getContext(1);
