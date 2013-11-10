@@ -201,7 +201,12 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
     public dObject getdObject(String key) {
         try {
+            // If an ENUM, return as an Element
+            if (objects.get(key.toUpperCase()) instanceof Enum)
+                return new Element(((Enum) objects.get(key.toUpperCase())).name());
+            // Otherwise, just return the stored dObject
             return (dObject) objects.get(key.toUpperCase());
+            // If not a dObject, return null
         } catch (Exception e) { return null; }
     }
 
