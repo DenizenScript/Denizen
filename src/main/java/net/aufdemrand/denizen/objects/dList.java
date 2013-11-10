@@ -161,6 +161,20 @@ public class dList extends ArrayList<String> implements dObject {
         return list.toArray(new String[list.size()]);
     }
 
+    // Returns if the list contains objects from the specified dClass
+    // by using the matches() method.
+    public boolean containsObjectsFrom(Class<? extends dObject> dClass) {
+
+        List<dObject> results = new ArrayList<dObject>();
+
+        // Iterate through elements until one matches() the dClass
+        for (String element : this)
+            if (ObjectFetcher.checkMatch(dClass, element))
+                return true;
+
+        return false;
+    }
+
     // Return a list that includes only strings that match the values
     // of an Enum array
     public List<String> filter(Enum[] values) {
@@ -401,15 +415,15 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("find") &&
                 attribute.hasContext(1)) {
-                for (int i = 0; i < size(); i++) {
-                    if (get(i).equalsIgnoreCase(attribute.getContext(1)))
-                        return new Element(i + 1).getAttribute(attribute.fulfill(1));
-                }
-                for (int i = 0; i < size(); i++) {
-                    if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
-                        return new Element(i + 1).getAttribute(attribute.fulfill(1));
-                }
-                return new Element(-1).getAttribute(attribute.fulfill(1));
+            for (int i = 0; i < size(); i++) {
+                if (get(i).equalsIgnoreCase(attribute.getContext(1)))
+                    return new Element(i + 1).getAttribute(attribute.fulfill(1));
+            }
+            for (int i = 0; i < size(); i++) {
+                if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
+                    return new Element(i + 1).getAttribute(attribute.fulfill(1));
+            }
+            return new Element(-1).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -492,7 +506,7 @@ public class dList extends ArrayList<String> implements dObject {
                 }
                 else {
                     return new Element(this.get(Utilities.getRandom().nextInt(this.size())))
-                        .getAttribute(attribute.fulfill(1));
+                            .getAttribute(attribute.fulfill(1));
                 }
             }
         }
@@ -545,5 +559,6 @@ public class dList extends ArrayList<String> implements dObject {
                 ? new Element(flag.getLast().asString()).getAttribute(attribute)
                 : new Element(identify()).getAttribute(attribute));
     }
+
 
 }

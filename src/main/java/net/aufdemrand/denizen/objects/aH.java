@@ -227,7 +227,7 @@ public class aH {
 
             dList list = new dList(this.getValue().replace("li@", ""));
 
-            return list.filter(dClass) != null;
+            return list.containsObjectsFrom(dClass);
         }
 
 
@@ -250,6 +250,12 @@ public class aH {
 
         public void reportUnhandled() {
             dB.echoError('\'' + raw_value + "' is an unknown argument!");
+        }
+
+
+        @Override
+        public String toString() {
+            return raw_value;
         }
     }
 
