@@ -43,9 +43,9 @@ public class ResetCommand extends AbstractCommand {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
 
             else if (arg.matchesArgumentList(dPlayer.class))
-                scriptEntry.addObject("players", ((dList) arg.asType(dList.class)).filter(dPlayer.class));
+                scriptEntry.addObject("players", arg.asType(dList.class));
 
-            else throw new InvalidArgumentsException("Unknown argument '" + arg + "'!");
+            else arg.reportUnhandled();
         }
 
         // Use attached player if none is specified, and we're not resetting GLOBAL_COOLDOWN
@@ -83,23 +83,26 @@ public class ResetCommand extends AbstractCommand {
 
         // Now deal with the rest
         for (String object : players) {
+
             dPlayer resettable = dPlayer.valueOf(object);
+            if (resettable.isValid()) {
 
-            switch (Type.valueOf(type.asString())) {
-                case FAIL:
-                    FailCommand.resetFails(resettable.getName(), script.getName());
-                    return;
+                switch (Type.valueOf(type.asString())) {
+                    case FAIL:
+                        FailCommand.resetFails(resettable.getName(), script.getName());
+                        return;
 
-                case FINISH:
-                    FinishCommand.resetFinishes(resettable.getName(), script.getName());
-                    return;
+                    case FINISH:
+                        FinishCommand.resetFinishes(resettable.getName(), script.getName());
+                        return;
 
-                case PLAYER_COOLDOWN:
-                    CooldownCommand.setCooldown(resettable.getName(), Duration.ZERO, script.getName(), false);
-                    return;
+                    case PLAYER_COOLDOWN:
+                        CooldownCommand.setCooldown(resettable.getName(), Duration.ZERO, script.getName(), false);
+                        return;
 
-                case SAVES:
-                    DenizenAPI.getCurrentInstance().getSaves().set("Players." + resettable.getName(), null);
+                    case SAVES:
+                        DenizenAPI.getCurrentInstance().getSaves().set("Players." + resettable.getName(), null);
+                }
             }
 
         }
