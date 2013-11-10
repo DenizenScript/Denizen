@@ -23,13 +23,13 @@ public class ShowFakeCommand extends AbstractCommand {
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesArgumentType(dLocation.class))
-                locations.add(arg.getValue());
-
-            else if (arg.matchesArgumentType(dList.class)) {
+            if (arg.matchesArgumentType(dList.class)) {
                 for (String item : dList.valueOf(arg.getValue()))
                     if (dLocation.matches(item)) locations.add(item);
             }
+
+            else if (arg.matchesArgumentType(dLocation.class))
+                locations.add(arg.getValue());
 
             else if (arg.matchesPrefix("d, duration")
                     && arg.matchesArgumentType(Duration.class))
