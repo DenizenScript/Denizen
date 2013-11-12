@@ -1,8 +1,11 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -14,11 +17,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemScriptContainer extends ScriptContainer {
@@ -58,12 +59,12 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - enchantment_name:level
     //   - ...
     //
-    //   # Specifying a material will allow your item script to be crafted. Specify the materials required
-    //   # to craft your item. For an empty slot, use m@air. Currently, Denizen only supports shaped recipes.
+    //   # Specifying a material will allow your item script to be crafted. Specify the items required
+    //   # to craft your item. For an empty slot, use i@air. Currently, Denizen only supports shaped recipes.
     //   recipe:
-    //   - m@material|m@material|m@material
-    //   - m@material|m@material|m@material
-    //   - m@material|m@material|m@material
+    //   - i@item|i@item|i@item
+    //   - i@item|i@item|i@item
+    //   - i@item|i@item|i@item
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
     //   no_id: true/false
@@ -79,10 +80,12 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     // -->
 
+    // A map storing special recipes that use itemscripts as ingredients
+    public static Map<dItem, dList> specialrecipesMap = new HashMap<dItem, dList>();
+
     dNPC npc = null;
     dPlayer player = null;
     public boolean bound = false;
-    List<dMaterial> recipe = null;
 
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
@@ -91,33 +94,69 @@ public class ItemScriptContainer extends ScriptContainer {
 
         // Set Recipe
         if (contains("RECIPE")) {
-            recipe = new ArrayList<dMaterial>();
-            for (String recipeRow : getStringList("RECIPE")) {
-                recipeRow = TagManager.tag(player, npc, recipeRow);
-                String[] row = recipeRow.split("\\|", 3);
-                for (String material : row) {
-                    recipe.add(recipe.size(), dMaterial.valueOf(material));
-                }
-            }
-            ShapedRecipe shapedRecipe = new ShapedRecipe(getItemFrom().getItemStack());
-            shapedRecipe.shape("abc", "def", "ghi");
-            char x = 'a';
-            for (dMaterial material : recipe) {
-                if (!material.getMaterial().name().equals("AIR"))
-                    shapedRecipe.setIngredient(x, material.getMaterialData());
-                x++;
+
+            boolean usesItemscripts = false;
+
+            // Get recipe list from item script
+            List<String> recipeList = getStringList("RECIPE");
+
+            // Process all tags in list
+            for (int n = 0; n < recipeList.size(); n++) {
+                recipeList.set(n, TagManager.tag(player, npc, recipeList.get(n)));
             }
 
-            Bukkit.getServer().addRecipe(shapedRecipe);
+            // Store every ingredient in a dList
+            dList ingredients = new dList();
+
+            for (String recipeRow : recipeList) {
+                String[] elements = recipeRow.split("\\|", 3);
+
+                for (String element : elements) {
+                    ingredients.add(element.replaceAll("[iImM]@", ""));
+                }
+            }
+
+            // Check if this recipe uses itemscripts as ingredients,
+            // or only Bukkit materials
+            for (String ingredient : ingredients) {
+                if (!dMaterial.matches(ingredient)) {
+                    usesItemscripts = true;
+                }
+            }
+
+            // If the recipe uses itemscripts as ingredients, add it to a
+            // map for special recipes that will be checked in a click event
+            // inside ItemScriptHelper
+            if (usesItemscripts) {
+                specialrecipesMap.put(getItemFrom(), ingredients);
+            }
+            // If the recipe does not use itemscripts as ingredients, add it
+            // to Bukkit's regular recipes
+            else {
+                List<dMaterial> recipe = new ArrayList<dMaterial>();
+
+                for (String ingredient : ingredients) {
+                    recipe.add(dMaterial.valueOf(ingredient));
+                }
+
+                ShapedRecipe shapedRecipe = new ShapedRecipe(getItemFrom().getItemStack());
+                shapedRecipe.shape("abc", "def", "ghi");
+                char x = 'a';
+
+                for (dMaterial material : recipe) {
+                    if (!material.name().equals("AIR")) {
+                        shapedRecipe.setIngredient(x, material.getMaterialData());
+                    }
+                    x++;
+                }
+
+                Bukkit.getServer().addRecipe(shapedRecipe);
+            }
         }
     }
 
     public dItem getItemFrom() {
        return getItemFrom(null, null);
-    }
-
-    public List<dMaterial> getRecipe() {
-        return recipe;
     }
 
     public dItem getItemFrom(dPlayer player, dNPC npc) {

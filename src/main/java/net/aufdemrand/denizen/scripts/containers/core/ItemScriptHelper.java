@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -14,9 +13,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -91,6 +92,8 @@ public class ItemScriptHelper implements Listener {
 
     // Remove all recipes added by Denizen
     public static void removeDenizenRecipes() {
+
+        // Remove regular Bukkit recipes added by Denizen
         Iterator<Recipe> recipes = Bukkit.getServer().recipeIterator();
         while (recipes.hasNext()) {
             Recipe current = recipes.next();
@@ -99,6 +102,9 @@ public class ItemScriptHelper implements Listener {
                 recipes.remove();
             }
         }
+
+        // Remove special recipes stored by Denizen
+        ItemScriptContainer.specialrecipesMap.clear();
     }
 
     public static boolean isItemscript(ItemStack item) {
@@ -111,6 +117,73 @@ public class ItemScriptHelper implements Listener {
         }
 
         return false;
+    }
+
+    // Check contents of crafting inventories in order to implement
+    // special Denizen recipes that use itemscripts as ingredients
+    @EventHandler
+    public void specialRecipeProcess(InventoryClickEvent event) {
+
+        // Proceed only if at least one special recipe has been stored
+        if (ItemScriptContainer.specialrecipesMap.isEmpty())
+            return;
+
+        // Proceed only if this is a CraftingInventory
+        if (!(event.getInventory() instanceof CraftingInventory))
+            return;
+
+        // Proceed only if a CRAFTING slot was clicked
+        if (!event.getSlotType().equals(InventoryType.SlotType.CRAFTING))
+            return;
+
+        // Store inventory and player as final variables for task below
+        final CraftingInventory inv = (CraftingInventory) event.getInventory();
+        final Player player = (Player) event.getWhoClicked();
+
+        // Run a task 1 tick later, after the event has occurred, to
+        // check the matrix of the CraftingInventory after the click
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+        new Runnable() {
+            @Override
+            public void run() {
+
+                // Store the matrix
+                ItemStack[] matrix = inv.getMatrix();
+
+                // Iterate through all the special recipes
+                for (Map.Entry<dItem, dList> entry :
+                    ItemScriptContainer.specialrecipesMap.entrySet()) {
+
+                    boolean matchesSpecialRecipe = true;
+
+                    // Check if the items in this special recipe match the
+                    // items in the crafting matrix
+                    for (int n = 0; n < matrix.length - 1; n++) {
+
+                        // Use dItem.valueOf on the entry values to ensure
+                        // correct comparison
+                        if (!dItem.valueOf(entry.getValue().get(n)).identify()
+                                .equals(new dItem(matrix[n]).identify())) {
+
+                            // If the current item does not match, set the
+                            // boolean to false
+                            matchesSpecialRecipe = false;
+                            break;
+                        }
+                    }
+
+                    // If they match, set the result of the crafting
+                    // and update the inventory the player sees
+                    if (matchesSpecialRecipe) {
+                        inv.setResult(entry.getKey().getItemStack());
+                        // Replace with non-deprecated method once one
+                        // is added to Bukkit
+                        player.updateInventory();
+                        break;
+                    }
+                }
+            }
+        }, 2);
     }
 
     @EventHandler
