@@ -1,51 +1,59 @@
 <!-- Denizen build file -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.aufdemrand</groupId>
-	<artifactId>denizen</artifactId>
+    <groupId>net.aufdemrand</groupId>
+    <artifactId>denizen</artifactId>
     <packaging>jar</packaging>
     <version>0.9.3-SNAPSHOT</version>
     <name>Denizen</name>
-	<description>Scriptable NPCs for Citizens2</description>
+    <description>Scriptable NPCs for Citizens2</description>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<craftbukkit.version>1.6.4-R1.1-SNAPSHOT</craftbukkit.version>
-		<json.version>20090211</json.version>
-		<citizens.version>2.0.10-SNAPSHOT</citizens.version>
-		<build.number>Unknown</build.number>
-		<BUILD_NUMBER>Unknown</BUILD_NUMBER>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <craftbukkit.version>1.6.4-R1.1-SNAPSHOT</craftbukkit.version>
+        <json.version>20090211</json.version>
+        <citizens.version>2.0.10-SNAPSHOT</citizens.version>
+        <build.number>Unknown</build.number>
+        <BUILD_NUMBER>Unknown</BUILD_NUMBER>
+    </properties>
 
-	<!-- Repositories -->
-	<repositories>
-		<repository>
-			<id>vault-repo</id>
-			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
-		</repository>
-		<repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public/</url>
-		</repository>
-		<repository>
-			<id>everything</id>
-			<url>http://repo.citizensnpcs.co</url>
-		</repository>
-		<repository>
-			<id>sk89q-repo</id>
-			<url>http://maven.sk89q.com/repo/</url>
-		</repository>
-		<repository>
-			<id>comphenix-repo</id>
-			<url>http://repo.comphenix.net/content/groups/public</url>
-		</repository>
-	</repositories>
+    <!-- Repositories -->
+    <repositories>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
+        </repository>
+        <repository>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>everything</id>
+            <url>http://repo.citizensnpcs.co</url>
+        </repository>
+        <repository>
+            <id>sk89q-repo</id>
+            <url>http://maven.sk89q.com/repo/</url>
+        </repository>
+        <repository>
+            <id>comphenix-repo</id>
+            <url>http://repo.comphenix.net/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>spout-repo</id>
+            <url>http://nexus.spout.org/content/groups/public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
-	<!-- Dependencies -->
-	<dependencies>
+    <!-- Dependencies -->
+    <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
@@ -61,102 +69,102 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-			<groupId>net.citizensnpcs</groupId>
-			<artifactId>citizens</artifactId>
-			<version>${citizens.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>${json.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
+            <groupId>net.citizensnpcs</groupId>
+            <artifactId>citizens</artifactId>
+            <version>${citizens.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${json.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
             <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
-		<dependency>
-			<groupId>org.jmock</groupId>
-			<artifactId>jmock-junit4</artifactId>
-			<version>2.5.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-    		<groupId>org.abstractmeta</groupId>
-    		<artifactId>compilation-toolbox</artifactId>
-    		<version>0.3.2-MODIFIED</version>
-    		<type>jar</type>
-            <scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldedit</artifactId>
-			<version>5.5.8</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldguard</artifactId>
-			<version>5.7.3-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.alicebot</groupId>
-			<artifactId>ab</artifactId>
-			<version>0.0.4.3</version>
-			<scope>compile</scope>
-		</dependency>
         <dependency>
-        	<groupId>org.json</groupId>
-        	<artifactId>org.json</artifactId>
-        	<version>chargebee-1.0</version>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-junit4</artifactId>
+            <version>2.5.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-			<groupId>com.comphenix.protocol</groupId>
-			<artifactId>ProtocolLib</artifactId>
-			<version>2.7.0</version>
-		</dependency>
-	</dependencies>
+            <groupId>org.abstractmeta</groupId>
+            <artifactId>compilation-toolbox</artifactId>
+            <version>0.3.2-MODIFIED</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>5.5.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>5.7.3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alicebot</groupId>
+            <artifactId>ab</artifactId>
+            <version>0.0.4.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>org.json</artifactId>
+            <version>chargebee-1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+    </dependencies>
 
-	<ciManagement>
-		<system>jenkins</system>
-		<url>http://ci.citizensnpcs.co</url>
-	</ciManagement>
-	<scm>
-		<connection>scm:git:git://github.com/aufdemrand/Denizen.git</connection>
-		<developerConnection>scm:git:git:@github.com:aufdemrand/Denizen.git</developerConnection>
-		<url>https://github.com/aufdemrand/Denizen/tree/master/</url>
-	</scm>
+    <ciManagement>
+        <system>jenkins</system>
+        <url>http://ci.citizensnpcs.co</url>
+    </ciManagement>
+    <scm>
+        <connection>scm:git:git://github.com/aufdemrand/Denizen.git</connection>
+        <developerConnection>scm:git:git:@github.com:aufdemrand/Denizen.git</developerConnection>
+        <url>https://github.com/aufdemrand/Denizen/tree/master/</url>
+    </scm>
 
-	<build>
-		<defaultGoal>clean package install</defaultGoal>
-		<resources>
-			<resource>
-				<filtering>false</filtering>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>*.mid</include>
-				</includes>
-			</resource>
-			<resource>
-				<filtering>true</filtering>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>*.yml</include>
-					<include>*.dscript</include>
-				</includes>
-			</resource>
-		</resources>
+    <build>
+        <defaultGoal>clean package install</defaultGoal>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>*.mid</include>
+                </includes>
+            </resource>
+            <resource>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>*.yml</include>
+                    <include>*.dscript</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -181,8 +189,8 @@
                                     <shadedPattern>org.shade.abstractmeta</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                	<pattern>org.json</pattern>
-                                	<shadedPattern>org.shade.json</shadedPattern>
+                                    <pattern>org.json</pattern>
+                                    <shadedPattern>org.shade.json</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -195,13 +203,13 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                	<archive>
-            			<manifest>
-                			<addClasspath>true</addClasspath>
-                			<classpathPrefix>Denizen/lib/</classpathPrefix>
-            			</manifest>
-                	</archive>
-            	</configuration>    
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>Denizen/lib/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -213,23 +221,23 @@
                 </configuration>
             </plugin>
 
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-        			<version>2.9</version>
- 							<configuration>
-							    <stylesheetfile>${basedir}/src/javadoc/stylesheet.css</stylesheetfile>
-          						<javadocDirectory>${basedir}/src/javadoc</javadocDirectory>
-          						<docfilessubdirs>true</docfilessubdirs>
-								<links>
-									<link>http://commons.apache.org/lang/api</link>
-									<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-								</links>
-							</configuration>
-						</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <stylesheetfile>${basedir}/src/javadoc/stylesheet.css</stylesheetfile>
+                    <javadocDirectory>${basedir}/src/javadoc</javadocDirectory>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <links>
+                        <link>http://commons.apache.org/lang/api</link>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                    </links>
+                </configuration>
+            </plugin>
 
         </plugins>
     </build>
 
-	<url>http://wiki.citizensnpcs.co/Denizen</url>
+    <url>http://wiki.citizensnpcs.co/Denizen</url>
 </project>
