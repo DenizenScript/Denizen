@@ -660,6 +660,23 @@ public class dItem implements dObject, Notable, Properties {
             return getMaterial().getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <i@item.has_display>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the item has a custom set display name.
+        // -->
+        if (attribute.startsWith("has_display")) {
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasDisplayName()) {
+                return Element.TRUE
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else {
+                return Element.FALSE
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
         // @attribute <i@item.display>
         // @returns Element
         // @description
