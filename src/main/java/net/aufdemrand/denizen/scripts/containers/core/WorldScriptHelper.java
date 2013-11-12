@@ -593,14 +593,17 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player places block
-    // player places <block>
+    // player places <material>
+    // player place <item>
     // player places block in <notable cuboid>
-    // player places <block> in <notable cuboid>
+    // player places <material> in <notable cuboid>
+    // player places <item> in <notable cuboid>
     //
     // @Triggers when a player places a block.
     // @Context
     // <context.location> returns the dLocation of the block that was placed.
     // <context.material> returns the dMaterial of the block that was placed.
+    // <context.item_in_hand> returns the dItem of the item in hand.
     //
     // @Determine
     // "CANCELLED" to stop the block from being placed.
@@ -611,6 +614,7 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        dItem item = new dItem(event.getItemInHand());
         List<String> events = new ArrayList<String>();
 
         // Look for cuboids that contain the block's location
@@ -621,6 +625,7 @@ public class WorldScriptHelper implements Listener {
             for (dCuboid cuboid : cuboids) {
                 events.add("player places block in " + cuboid.identify());
                 events.add("player places " + material.identify() + " in " + cuboid.identify());
+                events.add("player places " + item.identify() + " in " + cuboid.identify());
                 cuboid_context.add(cuboid.identify());
             }
             // Add in cuboids context, if inside a cuboid
@@ -629,6 +634,7 @@ public class WorldScriptHelper implements Listener {
 
         events.add("player places block");
         events.add("player places " + material.identify());
+        events.add("player places " + item.identify());
 
         // Trim events not used
         events = EventManager.trimEvents(events);
@@ -638,6 +644,7 @@ public class WorldScriptHelper implements Listener {
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
+        context.put("item_in_hand", item);
 
         String determination = EventManager.doEvents(events,
                 null, event.getPlayer(), context, true);
