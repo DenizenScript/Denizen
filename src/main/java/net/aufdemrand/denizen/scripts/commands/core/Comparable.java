@@ -331,6 +331,9 @@ public class Comparable {
                 else if (comparedto.equalsIgnoreCase("duration"))
                     outcome = Duration.matches(comparable);
 
+                else if (comparedto.equalsIgnoreCase("cuboid"))
+                    outcome = dCuboid.matches(comparable);
+
                     // Use aH on primitives
 
                 else if (comparedto.equalsIgnoreCase("double"))
