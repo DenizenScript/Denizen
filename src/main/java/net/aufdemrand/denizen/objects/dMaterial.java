@@ -335,11 +335,41 @@ public class dMaterial implements dObject {
      *
      */
     public static boolean matches(String arg) {
-        if (arg.toUpperCase().matches("(?:m@)?RANDOM"))
+
+        if (arg.toUpperCase().matches("(?:M@)?RANDOM"))
             return true;
 
         Matcher m = materialPattern.matcher(arg);
-        return m.matches();
+
+        if (m.matches()) {
+
+            // If this argument is in an integer, return true if it does not
+            // exceed the number of materials in Bukkit
+            if (aH.matchesInteger(m.group(1))) {
+                if (aH.getIntegerFrom(arg) < Material.values().length)
+                    return true;
+            }
+
+            // Check if this argument matches a Material or a special stored
+            // dMaterial's name
+            else {
+                // Iterate through Materials
+                for (Material material : Material.values()) {
+                    if (material.name().equalsIgnoreCase(m.group(1))) {
+                        return true;
+                    }
+                }
+
+                // Iterate through dMaterials
+                for (dMaterials material : dMaterials.values()) {
+                    if (material.name().equalsIgnoreCase(m.group(1))) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
