@@ -705,7 +705,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("inventory", new dInventory(event.getContents()));
+        context.put("inventory", dInventory.mirrorBukkitInventory(event.getContents()));
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("brewing stand brews"),
@@ -1569,7 +1569,7 @@ public class WorldScriptHelper implements Listener {
 
             // Null check to prevent NPCs from causing an NPE
             if (player != null)
-                context.put("inventory", new dInventory(player.getInventory()));
+                context.put("inventory", dInventory.mirrorBukkitInventory(player.getInventory()));
         }
 
         String determination = EventManager.doEvents(Arrays.asList
@@ -2475,7 +2475,7 @@ public class WorldScriptHelper implements Listener {
         dItem item = new dItem(event.getItem());
 
         context.put("location", new dLocation(event.getEnchantBlock().getLocation()));
-        context.put("inventory", new dInventory(event.getInventory()));
+        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("item", item);
 
         String determination = EventManager.doEvents(Arrays.asList
@@ -2646,7 +2646,7 @@ public class WorldScriptHelper implements Listener {
         if (events.size() == 0) return;
 
         context.put("item", item);
-        context.put("inventory", new dInventory(event.getInventory()));
+        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("click", new Element(click));
         context.put("slot_type", new Element(slotType));
         context.put("slot", new Element(event.getSlot()));
@@ -2677,7 +2677,7 @@ public class WorldScriptHelper implements Listener {
         Player player = (Player) event.getPlayer();
         String type = event.getInventory().getType().name();
 
-        context.put("inventory", new dInventory(event.getInventory()));
+        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
 
         EventManager.doEvents(Arrays.asList
                 ("player closes inventory",
@@ -2736,7 +2736,7 @@ public class WorldScriptHelper implements Listener {
         if (events.size() == 0 ) return;
 
         context.put("item", item);
-        context.put("inventory", new dInventory(event.getInventory()));
+        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
 
         String determination = EventManager.doEvents(events, null, player, context, true);
 
@@ -2784,9 +2784,9 @@ public class WorldScriptHelper implements Listener {
 
         if (events.size() == 0) return;
 
-        context.put("origin", new dInventory(event.getSource()));
-        context.put("destination", new dInventory(event.getDestination()));
-        context.put("initiator", new dInventory(event.getInitiator()));
+        context.put("origin", dInventory.mirrorBukkitInventory(event.getSource()));
+        context.put("destination", dInventory.mirrorBukkitInventory(event.getDestination()));
+        context.put("initiator", dInventory.mirrorBukkitInventory(event.getInitiator()));
         context.put("item", item);
 
         String determination = EventManager.doEvents(events,
@@ -2819,7 +2819,7 @@ public class WorldScriptHelper implements Listener {
         Player player = (Player) event.getPlayer();
         String type = event.getInventory().getType().name();
 
-        context.put("inventory", new dInventory(event.getInventory()));
+        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("player opens inventory",
@@ -2867,7 +2867,7 @@ public class WorldScriptHelper implements Listener {
 
         if (events.size() == 0) return;
 
-        dInventory inventory = new dInventory(event.getInventory());
+        dInventory inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         context.put("inventory", inventory);
         context.put("item", item);
 
