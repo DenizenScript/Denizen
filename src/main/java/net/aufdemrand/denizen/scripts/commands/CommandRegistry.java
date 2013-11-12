@@ -562,7 +562,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Create
-        // @Syntax create [<entity>] [<name>] (<location>)
+        // @Syntax create [<entity>] [<name>] (<location>) (traits:<trait>|...)
         // @Required 1
         // @Stable experimental
         // @Short Creates a new NPC, and optionally spawns it at a location.
