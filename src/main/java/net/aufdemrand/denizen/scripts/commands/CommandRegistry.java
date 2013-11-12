@@ -66,10 +66,10 @@ public class CommandRegistry implements dRegistry {
     // Obviously, the command is 'animatechest'... but what does the rest of it mean?
     //
     // Anything in [brackets] is required... you MUST put it there.
-    // Anything in (parenthesis) is optional... you only need to put it there if you want to
+    // Anything in (parenthesis) is optional... you only need to put it there if you want to.
     // Anything in {braces} is default... the command will just assume this if no argument is actually typed.
-    // Anything in <> is non-literal... you must change what is inside of it
-    // Anything outside of <> is literal... you must put it exactly as-is
+    // Anything in <> is non-literal... you must change what is inside of it.
+    // Anything outside of <> is literal... you must put it exactly as-is.
     // <#> represents a number without a decimal, and <#.#> represents a number with a decimal
     //
     // A few examples:
@@ -1785,10 +1785,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Reset
-        // @Syntax reset [fails/finishes/cooldown] (script:<name>)
+        // @Syntax reset (<player>) [fails/finishes/cooldown/saves/global_cooldown] (<script>)
         // @Required 1
-        // @Stable unstable
-        // @Short Resets a script's fails, finishes, or cooldowns.
+        // @Stable stable
+        // @Short Resets various parts of Denizen's saves.yml, including script finishes/fails, a script's fails, finishes, or cooldowns.
         // @Author Todo
         // @Description
         // Todo
@@ -1798,7 +1798,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(ResetCommand.class,
-                "RESET", "reset [fails/finishes/cooldown] (script:<name>)", 1);
+                "RESET", "reset (<player>) [fails/finishes/cooldown/saves/global_cooldown] (<script>)", 1);
 
 
         // <--[command]
