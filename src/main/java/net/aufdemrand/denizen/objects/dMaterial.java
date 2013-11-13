@@ -336,7 +336,12 @@ public class dMaterial implements dObject {
      */
     public static boolean matches(String arg) {
 
-        if (arg.toUpperCase().matches("(?:M@)?RANDOM"))
+        // Avoid case sensitivity
+        arg = arg.toUpperCase();
+
+        if (arg.startsWith("M@")) return true;
+
+        if (arg.matches("(?:M@)?RANDOM"))
             return true;
 
         Matcher m = materialPattern.matcher(arg);
@@ -640,7 +645,7 @@ public class dMaterial implements dObject {
         // by bukkit and should be used sparingly.
         // -->
         if (attribute.startsWith("data"))
-            return new Element(material.name())
+            return new Element(getData())
                     .getAttribute(attribute.fulfill(1));
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
