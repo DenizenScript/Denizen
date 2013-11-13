@@ -42,7 +42,7 @@ public class CreateCommand extends AbstractCommand {
                 scriptEntry.addObject("name", arg.asElement());
             
             else if (!scriptEntry.hasObject("traits")
-                    && arg.matches("t, trait, traits")
+                    && arg.matchesPrefix("t, trait, traits")
                     && arg.matchesArgumentType(dList.class))
                 scriptEntry.addObject("traits", arg.asType(dList.class));
 
