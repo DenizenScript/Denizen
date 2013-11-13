@@ -119,7 +119,7 @@ public class ItemScriptContainer extends ScriptContainer {
             // Check if this recipe uses itemscripts as ingredients,
             // or only Bukkit materials
             for (String ingredient : ingredients) {
-                if (!dMaterial.matches(ingredient)) {
+                if (dMaterial.valueOf(ingredient) == null) {
                     usesItemscripts = true;
                 }
             }

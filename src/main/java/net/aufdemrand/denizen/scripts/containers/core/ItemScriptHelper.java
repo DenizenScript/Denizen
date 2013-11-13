@@ -176,14 +176,15 @@ public class ItemScriptHelper implements Listener {
                     // and update the inventory the player sees
                     if (matchesSpecialRecipe) {
                         inv.setResult(entry.getKey().getItemStack());
-                        // Replace with non-deprecated method once one
+
+                        // TODO: Replace with non-deprecated method once one
                         // is added to Bukkit
                         player.updateInventory();
                         break;
                     }
                 }
             }
-        }, 2);
+        }, 1);
     }
 
     @EventHandler
