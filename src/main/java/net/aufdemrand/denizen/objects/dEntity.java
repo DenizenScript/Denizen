@@ -1250,7 +1250,7 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
             if (range < 1) range = 50;
-            return new dLocation(getLivingEntity().getTargetBlock(null, range).getLocation())
+            return new dLocation(getLivingEntity().getTargetBlock(null, range).getLocation().clone())
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -1261,7 +1261,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the location of what the entity is standing on.
         // -->
         if (attribute.startsWith("location.standing_on"))
-            return new dLocation(entity.getLocation().add(0, -1, 0))
+            return new dLocation(entity.getLocation().clone().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]

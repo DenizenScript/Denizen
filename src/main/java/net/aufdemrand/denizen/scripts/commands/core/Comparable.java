@@ -317,10 +317,10 @@ public class Comparable {
                     outcome = dPlayer.matches(comparable);
 
                 else if (comparedto.equalsIgnoreCase("offlineplayer"))
-                    outcome = (dPlayer.matches(comparable) && !dPlayer.valueOf(comparable).isOnline());
+                    outcome = (dPlayer.valueOf(comparable) != null && !dPlayer.valueOf(comparable).isOnline());
 
                 else if (comparedto.equalsIgnoreCase("onlineplayer"))
-                    outcome = (dPlayer.matches(comparable) && dPlayer.valueOf(comparable).isOnline());
+                    outcome = (dPlayer.valueOf(comparable) != null && dPlayer.valueOf(comparable).isOnline());
 
                 else if (comparedto.equalsIgnoreCase("item"))
                     outcome = dItem.matches(comparable);
@@ -330,6 +330,9 @@ public class Comparable {
 
                 else if (comparedto.equalsIgnoreCase("duration"))
                     outcome = Duration.matches(comparable);
+
+                else if (comparedto.equalsIgnoreCase("cuboid"))
+                    outcome = dCuboid.matches(comparable);
 
                     // Use aH on primitives
 

@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.v1_6_R3.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -32,6 +33,16 @@ public class dInventory implements dObject, Notable {
 
     // The maximum number of slots a Bukkit inventory can have
     final static public int maxSlots = 54;
+
+    public static dInventory mirrorBukkitInventory(Inventory inventory) {
+        // Iterate through Notable Inventories
+        for (dObject inv : NotableManager.getAllType(dInventory.class)) {
+            if (((CraftInventory) ((dInventory) inv).inventory).getInventory().equals(((CraftInventory) inventory).getInventory()))
+                return (dInventory) inv;
+        }
+
+        return new dInventory(inventory);
+    }
 
     /////////////////////
     //   PATTERNS
@@ -134,7 +145,8 @@ public class dInventory implements dObject, Notable {
 
         if (m.matches()) {
             if (ScriptRegistry.containsScript(m.group(2), InventoryScriptContainer.class))
-                return ScriptRegistry.getScriptContainerAs(m.group(2), InventoryScriptContainer.class).getInventoryFrom(player, npc);
+                return ScriptRegistry.getScriptContainerAs(m.group(2), InventoryScriptContainer.class)
+                        .getInventoryFrom(player, npc);
 
             if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dInventory.class))
                 return (dInventory) NotableManager.getSavedObject(m.group(2));
@@ -595,7 +607,9 @@ public class dInventory implements dObject, Notable {
     }
 
     public String identify() {
-        return "in@" + (idType.equals("script") || idType.equals("notable")
+        if (isUnique())
+            return "in@" + NotableManager.getSavedId(this);
+        else return "in@" + (idType.equals("script") || idType.equals("notable")
                 ? idHolder : (idType + '[' + idHolder + ']'));
     }
 

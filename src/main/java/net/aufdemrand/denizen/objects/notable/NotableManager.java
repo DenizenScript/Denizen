@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects.notable;
 
+import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -97,7 +98,7 @@ public class NotableManager {
     public static List<dObject> getAllType(Class<? extends dObject> type) {
         List<dObject> objects = new ArrayList<dObject>();
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
-            dB.log(notable.toString());
+            // dB.log(notable.toString());
             if (isType(notable.getKey(), type))
                 objects.add((dObject) notable.getValue());
         }

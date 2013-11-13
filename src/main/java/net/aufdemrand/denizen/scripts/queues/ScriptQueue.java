@@ -254,7 +254,8 @@ public abstract class ScriptQueue implements Debuggable {
      * @param value  the value of the context
      */
     public void addContext(String id, dObject value) {
-        context.put(id.toLowerCase(), value);
+        if (value != null && id != null)
+            context.put(id.toLowerCase(), value);
     }
 
 

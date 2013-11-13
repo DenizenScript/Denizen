@@ -321,7 +321,7 @@ public class dPlayer implements dObject, Adjustable {
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getPlayerFlag(getName(), flag_name))
                         .getAttribute(attribute);
-            else return Element.NULL.getAttribute(attribute.fulfill(1));
+            else return Element.NULL.getAttribute(attribute);
         }
 
         // <--[tag]

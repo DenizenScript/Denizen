@@ -597,6 +597,8 @@ public class Element implements dObject {
             if (attribute.startsWith("with")) {
                 if (attribute.hasContext(1)) {
                     replacement = attribute.getContext(1);
+                    if (replacement == null)
+                        replacement = "";
                     attribute.fulfill(1);
                 }
             }
@@ -768,10 +770,10 @@ public class Element implements dObject {
 
         // Unfilled attributes past this point probably means the tag is spelled
         // incorrectly. So instead of just passing through what's been resolved
-        // so far, 'null' shall be returned with an error message.
+        // so far, 'null' shall be returned with a debug message.
 
         if (attribute.attributes.size() > 0) {
-            dB.echoError("Unfilled attributes '" + attribute.attributes.toString() + "'" +
+            dB.echoDebug(attribute.getScriptEntry(), "Unfilled attributes '" + attribute.attributes.toString() + "'" +
                     "for tag <" + attribute.getOrigin() + ">!");
             return "null";
         } else {
