@@ -59,8 +59,8 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - enchantment_name:level
     //   - ...
     //
-    //   # Specifying a material will allow your item script to be crafted. Specify the items required
-    //   # to craft your item. For an empty slot, use i@air. Currently, Denizen only supports shaped recipes.
+    //   # You can Specify the items required to craft your item. For an empty slot, use i@air. Currently, Denizen only
+    //   # supports shaped recipes.
     //   recipe:
     //   - i@item|i@item|i@item
     //   - i@item|i@item|i@item
