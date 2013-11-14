@@ -46,7 +46,7 @@ public class CreateWorldCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Debug the execution
-        // dB.report(getName(), required_integer.debug() + required_location.debug());
+        // dB.report(scriptEntry, getName(), required_integer.debug() + required_location.debug());
 
         World world;
 
