@@ -145,11 +145,12 @@ public class Comparable {
         }
 
         else if (comparable instanceof Double) {
-            compare_as_numbers();
+            if (comparedto instanceof Double) {
+                compare_as_numbers();
+            }
         }
 
         else if (comparable instanceof Boolean) {
-
             // Check to make sure comparedto is Boolean
             if (comparedto instanceof Boolean) {
                 // Comparing booleans.. let's do the logic
@@ -193,7 +194,6 @@ public class Comparable {
                 if (comparable.compareTo(comparedto) < 0) outcome = true;
                 break;
         }
-
     }
 
 
