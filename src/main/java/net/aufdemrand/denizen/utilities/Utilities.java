@@ -539,14 +539,14 @@ public class Utilities {
             dB.echoError(fileName + " not found in the jar!");
 
         } catch (IOException e) {
-            if (dB.showStackTraces) e.printStackTrace();
+            dB.echoError(e);
 
         } finally {
             if (jar != null) {
                 try {
                     jar.close();
                 } catch (IOException e) {
-                    if (dB.showStackTraces) e.printStackTrace();
+                    dB.echoError(e);
                 }
             }
         }

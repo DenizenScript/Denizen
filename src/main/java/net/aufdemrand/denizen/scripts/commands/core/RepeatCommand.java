@@ -67,7 +67,7 @@ public class RepeatCommand extends BracedCommand {
                     newEntries.add(toAdd);
                 }
                 catch (Throwable e) {
-                    e.printStackTrace();
+                    dB.echoError(e);
                 }
             }
             ScriptQueue queue = new InstantQueue(queueId);

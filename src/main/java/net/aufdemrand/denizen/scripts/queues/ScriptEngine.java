@@ -41,9 +41,7 @@ public class ScriptEngine {
 
             catch (Throwable e) {
                 dB.echoError("Woah! An exception has been called with this command!");
-                if (!dB.showStackTraces)
-                    dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
-                else e.printStackTrace();
+                dB.echoError(e);
             }
             // Set as last entry executed
             scriptQueue.setLastEntryExecuted(scriptEntry);

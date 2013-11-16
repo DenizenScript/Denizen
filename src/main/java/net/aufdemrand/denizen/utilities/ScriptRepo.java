@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.util.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -78,13 +79,13 @@ public class ScriptRepo {
                     Messaging.send(cs, "Reloaded scripts!");
                 } catch (IOException e) {
                     Messaging.send(cs, "Looks like something went wrong while writing the file. Check console for details.");
-                    e.printStackTrace();
+                    dB.echoError(e);
                 } finally {
                     if (bw != null) {
                         try {
                             bw.close();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            dB.echoError(e);
                         }
                     }
                 }
@@ -108,9 +109,9 @@ public class ScriptRepo {
                 is.close();
             }
         }catch(IOException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }catch(JSONException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         return j;
     }

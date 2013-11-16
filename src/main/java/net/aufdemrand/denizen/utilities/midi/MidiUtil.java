@@ -15,6 +15,7 @@ import javax.sound.midi.Sequencer;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Sound;
 
 /**
@@ -54,7 +55,9 @@ public class MidiUtil
 
             startSequencer(file, tempo, receiver);
         }
-        catch (Exception e) { e.printStackTrace(); }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
     }
 
     public static void playMidi(File file, float tempo, dLocation location)
@@ -68,7 +71,9 @@ public class MidiUtil
 
             startSequencer(file, tempo, receiver);
         }
-        catch (Exception e) { e.printStackTrace(); }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
     }
 
     public static void stopMidi(String object) {

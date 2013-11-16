@@ -117,7 +117,7 @@ public class ListenCommand extends AbstractCommand {
                     // Just print the stacktrace if anything else, so we can debug other possible
                     // problems.
                     else
-                        e.printStackTrace();
+                        dB.echoError(e);
 
                     // Deconstruct the listener in case it was partially created while erroring out.
                     try { denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id.asString()).cancel(); }

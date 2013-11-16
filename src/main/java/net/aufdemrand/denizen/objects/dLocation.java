@@ -962,6 +962,17 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         // <--[tag]
+        // @attribute <l@location.vector_length>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the 3D length of the vector/location.
+        // -->
+        if (attribute.startsWith("vector_length")) {
+            return new Element(Math.sqrt(Math.pow(getX(), 2) + Math.pow(getY(), 2) + Math.pow(getZ(), 2)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.distance[<location>]>
         // @returns Element(Decimal)
         // @description

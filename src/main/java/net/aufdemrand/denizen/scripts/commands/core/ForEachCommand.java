@@ -70,7 +70,7 @@ public class ForEachCommand extends BracedCommand {
                     toAdd.getObjects().clear();
                     newEntries.add(toAdd);
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    dB.echoError(e);
                 }
             }
 

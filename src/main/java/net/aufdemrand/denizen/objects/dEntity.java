@@ -753,7 +753,7 @@ public class dEntity implements dObject, Adjustable {
                                 }
 
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                dB.echoError(e);
                             }
                         }
                     }
@@ -1272,6 +1272,18 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("location")) {
             return new dLocation(entity.getLocation())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.velocity>
+        // @returns dLocation
+        // @description
+        // Returns the movement velocity of the entity.
+        // Note: Does not accurately calculate player clientside movement velocity.
+        // -->
+        if (attribute.startsWith("velocity")) {
+            return new dLocation(entity.getVelocity().toLocation(entity.getWorld()))
                     .getAttribute(attribute.fulfill(1));
         }
 

@@ -2,10 +2,7 @@ package net.aufdemrand.denizen.tags;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
-import net.aufdemrand.denizen.objects.ObjectFetcher;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -90,7 +87,7 @@ public class TagManager implements Listener {
             event.setReplaced(arg.getAttribute(attribute.fulfill(1)));
         } catch (Exception e) {
             dB.echoError("Uh oh! Report this to aufdemrand! Err: TagManagerObjectReflection");
-            e.printStackTrace();
+            dB.echoError(e);
         }
     }
 
@@ -128,14 +125,14 @@ public class TagManager implements Listener {
                 if (event.isInstant() != instant) {
                     // Not the right type of tag, change out brackets so it doesn't get parsed again
                     arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
-                            + event.getReplaced() + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
+                            + event.getReplaced().replace("|", dList.internal_escape) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
                 } else {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
                     if ((!event.replaced() && event.getAlternative() != null)
                             || (event.getReplaced().equals("null") && event.getAlternative() != null))
                         event.setReplaced(event.getAlternative());
-                    arg = arg.substring(0, positions[0]) + event.getReplaced() + arg.substring(positions[1] + 1, arg.length());
+                    arg = arg.substring(0, positions[0]) + event.getReplaced().replace("|", dList.internal_escape) + arg.substring(positions[1] + 1, arg.length());
                 }
             }
             // Find new TAG
@@ -143,7 +140,7 @@ public class TagManager implements Listener {
         } while (positions != null || failsafe < 50);
 
         // Return argument with replacements
-        arg = arg.replace((char)0x01, '<').replace((char)0x02, '>');
+        arg = arg.replace((char)0x01, '<').replace((char)0x02, '>').replace(dList.internal_escape, "|");
 
         // Un-escape \< \>'s
         if (!instant) arg = arg.replace("\\<", "<").replace("\\>", ">");

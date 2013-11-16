@@ -180,6 +180,23 @@ public class dB {
                 + ChatColor.WHITE + trimMessage(message));
     }
 
+    public static void echoError(Throwable ex) {
+        if (!showDebug) return;
+        if (!showStackTraces) {
+            dB.echoError("Exception! Enable '/denizen stacktrace' for the nitty-gritty.");
+        }
+        else {
+            ex.printStackTrace();
+            if (dB.record) {
+                String prefix = ConsoleSender.dateFormat.format(new Date()) + " [SEVERE] ";
+                dB.Recording.append(URLEncoder.encode(prefix + ex.toString() + "\n"));
+                for (StackTraceElement ste: ex.getStackTrace()) {
+                    dB.Recording.append(URLEncoder.encode(prefix + ste.toString() + "\n"));
+                }
+            }
+        }
+    }
+
 
     public static void log(String message) {
         if (!showDebug) return;
@@ -191,6 +208,22 @@ public class dB {
     }
 
 
+    public static void log(DebugElement element, String string) {
+        if (!showDebug) return;
+        StringBuilder sb = new StringBuilder(24);
+
+        switch(element) {
+            case Footer:
+                sb.append(ChatColor.LIGHT_PURPLE).append("+---------------------+");
+                break;
+
+            case Header:
+                sb.append(ChatColor.LIGHT_PURPLE).append("+- ").append(string).append(" ---------+");
+                break;
+        }
+
+        ConsoleSender.sendMessage(sb.toString());
+    }
 
     ///////////////
     // Private Helper Methods
@@ -246,7 +279,7 @@ public class dB {
 
         // Bukkit CommandSender sends color nicely to the logger, so we'll use that.
         static CommandSender commandSender = null;
-        static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        public static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         static boolean skipFooter = false;
 
         // Use this method for sending a message

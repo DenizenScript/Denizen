@@ -259,7 +259,7 @@ public class Denizen extends JavaPlugin {
         try {
             ObjectFetcher._registerCoreObjects();
         } catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         // Initialize non-standard dMaterials

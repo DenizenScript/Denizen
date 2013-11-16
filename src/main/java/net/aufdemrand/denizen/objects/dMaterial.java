@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
@@ -213,7 +214,7 @@ public class dMaterial implements dObject {
                 dMaterial mat = (dMaterial) field.get(null);
                 registerVariety(mat);
             } catch (Exception e) {
-                e.printStackTrace();
+                dB.echoError(e);
             }
         }
     }
@@ -316,7 +317,7 @@ public class dMaterial implements dObject {
                             // Should be pretty safe, unless there's an enum without a matching field.
                             return (dMaterial) field.get(null);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            dB.echoError(e);
                         }
                     }
                 }

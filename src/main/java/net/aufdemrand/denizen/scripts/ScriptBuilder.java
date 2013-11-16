@@ -74,7 +74,7 @@ public class ScriptBuilder {
                 ScriptEntry newEntry = new ScriptEntry(scriptEntry[0], args, parent).setPlayer(player).setNPC(npc);
                 scriptCommands.add(newEntry);
             } catch (Exception e) {
-                if (dB.showStackTraces) e.printStackTrace();
+                dB.echoError(e);
             }
         }
 

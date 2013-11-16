@@ -109,11 +109,10 @@ public class InteractScriptHelper {
             } catch (Exception e) {
                 // Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
                 dB.echoError(ChatColor.RED + "'" + entry + "' has a bad requirement, skipping.");
-                if (!dB.showStackTraces) dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
-                else e.printStackTrace();
+                dB.echoError(e);
             }
 
-            dB.log(dB.DebugElement.Spacer.toString()); // TODO: ???? toString(), or...?
+            dB.log(dB.DebugElement.Spacer, null);
             // Next entry!
         }
 

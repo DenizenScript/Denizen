@@ -177,9 +177,7 @@ public class CommandExecuter {
 
             keepGoing = false;
             dB.echoError("Woah! An exception has been called with this command!");
-            if (!dB.showStackTraces)
-                dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
-            else e.printStackTrace();
+            dB.echoError(e);
             dB.echoDebug(scriptEntry, DebugElement.Footer);
 
         } finally {
@@ -198,9 +196,7 @@ public class CommandExecuter {
                     else dB.echoDebug(scriptEntry, "ScriptEntry has been cancelled.");
                 } catch (Exception e) {
                     dB.echoError("Woah!! An exception has been called with this command!");
-                    if (!dB.showStackTraces)
-                        dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
-                    else e.printStackTrace();
+                    dB.echoError(e);
                 }
 
         }

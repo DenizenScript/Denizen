@@ -245,9 +245,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
         } catch (Exception e) {
             dB.echoError("Woah! An exception has been called with this item script!");
-            if (!dB.showStackTraces)
-                dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
-            else e.printStackTrace();
+            dB.echoError(e);
             stack = null;
         }
 

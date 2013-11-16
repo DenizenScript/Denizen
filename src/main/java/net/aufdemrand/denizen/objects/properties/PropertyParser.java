@@ -76,9 +76,9 @@ public class PropertyParser {
             }
 
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         // Return the list of properties
@@ -95,9 +95,9 @@ public class PropertyParser {
             }
 
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         return props;
