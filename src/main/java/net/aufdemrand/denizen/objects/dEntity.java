@@ -1276,6 +1276,18 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.velocity>
+        // @returns dLocation
+        // @description
+        // Returns the movement velocity of the entity.
+        // Note: Does not accurately calculate player clientside movement velocity.
+        // -->
+        if (attribute.startsWith("velocity")) {
+            return new dLocation(entity.getVelocity().toLocation(entity.getWorld()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.world>
         // @returns dWorld
         // @description
