@@ -1093,20 +1093,27 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Give
-        // @Syntax give [money/<item>|...] (qty:<#>) (engrave) (to:<inventory>)
+        // @Syntax give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>)
         // @Required 1
         // @Stable stable
-        // @Short Gives the player an item or money.
+        // @Short Gives the player an item, xp, or money.
         // @Author Todo
         // @Description
         // Todo
         // @Tags
         // <p@player.money>
         // @Usage
-        // Todo
+        // Use to give money to the player.
+        // - give money qty:10
+        // @Usage
+        // Use to give XP to the player.
+        // - give xp qty:10
+        // @Usage
+        // Use to give an item to the player.
+        // - give i@iron_sword qty:1
         // -->
         registerCoreMember(GiveCommand.class,
-                "GIVE", "give [money/<item>|...] (qty:<#>) (engrave) (to:<inventory>)", 1);
+                "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>)", 1);
 
 
         // <--[command]
@@ -1226,7 +1233,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
-        // @Author David Cernat, morphan1
+        // @Author David Cernat, Morphan1
         // @Description
         // Todo
         // @Tags
@@ -1289,7 +1296,14 @@ public class CommandRegistry implements dRegistry {
         // <e@entity.is_leashed>
         // <e@entity.get_leash_holder>
         // @Usage
-        // Todo
+        // Use to attach hold an entity in hand.
+        // - leash <npc> holder:<player>
+        // @Usage
+        // Use to attach an entity to a fence post.
+        // - leash <npc> holder:<player.location.cursor_on>
+        // @Usage
+        // Use to release an entity.
+        // - leash cancel <npc>
         // -->
         registerCoreMember(LeashCommand.class,
                 "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
@@ -1361,7 +1375,8 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
+        // Use to log some information to a file.
+        // - log "Security breach on level 3!" type:info file:securitylog.txt
         // -->
         registerCoreMember(LogCommand.class,
                 "LOG", "log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]", 2);
@@ -1380,7 +1395,11 @@ public class CommandRegistry implements dRegistry {
         // <l@location.yaw>
         // <l@location.pitch>
         // @Usage
-        // Todo
+        // Use to point an npc towards a spot.
+        // - look <npc> <player.location>
+        // @Usage
+        // Use to force a player to stare at a spot for some time.
+        // - look <player> <npc.location> duration:10s
         // -->
         registerCoreMember(LookCommand.class,
                 "LOOK", "look (<entity>|...) [<location>] (duration:<duration>)", 1);
@@ -1398,7 +1417,11 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
+        // Use to cause the NPC to begin looking at nearby players.
+        // - lookclose state:true
+        // @Usage
+        // Use to cause the NPC to stop looking at nearby players.
+        // - lookclose state:false
         // -->
         registerCoreMember(LookcloseCommand.class,
                 "LOOKCLOSE", "lookclose [state:true/false]", 1);
@@ -1455,7 +1478,17 @@ public class CommandRegistry implements dRegistry {
         // <e@entity.get_vehicle>
         // <e@entity.is_inside_vehicle>
         // @Usage
-        // Todo
+        // Use to mount an NPC on top of a player.
+        // - mount <npc>|<player>
+        // @Usage
+        // Use to spawn a mutant pile of mobs.
+        // - mount cow|pig|sheep|chicken
+        // @Usage
+        // Use to place a diamond block above a player's head.
+        // - mount falling_block,diamond_block|<player>
+        // @Usage
+        // Use to force an entity in a vehicle.
+        // - mount <player>|boat
         // -->
         registerCoreMember(MountCommand.class,
                 "MOUNT", "mount (cancel) [<entity>|...] (<location>)", 0);
