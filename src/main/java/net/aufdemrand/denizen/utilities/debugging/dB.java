@@ -187,6 +187,13 @@ public class dB {
         }
         else {
             ex.printStackTrace();
+            if (dB.record) {
+                String prefix = ConsoleSender.dateFormat.format(new Date()) + " [SEVERE] ";
+                dB.Recording.append(URLEncoder.encode(prefix + ex.toString() + "\n"));
+                for (StackTraceElement ste: ex.getStackTrace()) {
+                    dB.Recording.append(URLEncoder.encode(prefix + ste.toString() + "\n"));
+                }
+            }
         }
     }
 
@@ -272,7 +279,7 @@ public class dB {
 
         // Bukkit CommandSender sends color nicely to the logger, so we'll use that.
         static CommandSender commandSender = null;
-        static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        public static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         static boolean skipFooter = false;
 
         // Use this method for sending a message
