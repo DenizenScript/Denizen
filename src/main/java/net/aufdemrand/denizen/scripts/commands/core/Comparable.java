@@ -71,7 +71,9 @@ public class Comparable {
     public void setComparable(String arg) {
 
         // If a Number
-        if (aH.matchesDouble(arg) || aH.matchesInteger(arg))
+        if (aH.matchesInteger(arg))
+            comparable = aH.getIntegerFrom(arg);
+        else if (aH.matchesDouble(arg))
             comparable = aH.getDoubleFrom(arg);
 
             // If a Boolean
@@ -100,8 +102,10 @@ public class Comparable {
             comparedto = arg;
 
             // Comparable is a Number, return Double
-        else if (comparable instanceof Double) {
-            if (aH.matchesDouble(arg) || aH.matchesInteger(arg))
+        else if (comparable instanceof Double || comparable instanceof Integer) {
+            if (aH.matchesInteger(arg))
+                comparedto = aH.getIntegerFrom(arg);
+            else if (aH.matchesDouble(arg))
                 comparedto = aH.getDoubleFrom(arg);
             else {
                 dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
@@ -144,8 +148,8 @@ public class Comparable {
             compare_as_list();
         }
 
-        else if (comparable instanceof Double) {
-            if (comparedto instanceof Double) {
+        else if (comparable instanceof Double || comparable instanceof Integer) {
+            if (comparedto instanceof Double || comparedto instanceof Integer) {
                 compare_as_numbers();
             }
         }
@@ -169,8 +173,16 @@ public class Comparable {
 
         outcome = false;
 
-        Double comparable = (Double) this.comparable;
-        Double comparedto = (Double) this.comparedto;
+        Double comparable;
+        if (this.comparable instanceof Double)
+            comparable = (Double) this.comparable;
+        else
+            comparable = ((Integer) this.comparable).doubleValue();
+        Double comparedto;
+        if (this.comparedto instanceof Double)
+            comparedto = (Double) this.comparedto;
+        else
+            comparedto = ((Integer) this.comparedto).doubleValue();
 
         switch(operator) {
 
