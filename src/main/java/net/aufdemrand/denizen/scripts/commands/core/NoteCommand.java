@@ -65,7 +65,7 @@ public class NoteCommand extends AbstractCommand {
 
         } catch (Exception e) {
             dB.echoError("Uh oh! Report this to aufdemrand! Err: TagManagerObjectReflection");
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
 

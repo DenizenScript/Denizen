@@ -74,7 +74,10 @@ public class PauseCommand extends AbstractCommand {
         if (duration > 0) {
             if (durations.containsKey(dNPC.getCitizen().getId() + pauseType.name())) {
                 try { denizen.getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name())); }
-                catch (Exception e) { dB.echoError("There was an error pausing that!"); e.printStackTrace(); }
+                catch (Exception e) {
+                    dB.echoError("There was an error pausing that!");
+                    dB.echoError(e);
+                }
 
             }
             dB.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());

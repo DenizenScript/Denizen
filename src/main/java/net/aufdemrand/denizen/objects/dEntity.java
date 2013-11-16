@@ -753,7 +753,7 @@ public class dEntity implements dObject, Adjustable {
                                 }
 
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                dB.echoError(e);
                             }
                         }
                     }

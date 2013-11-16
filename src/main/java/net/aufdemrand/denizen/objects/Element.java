@@ -777,7 +777,8 @@ public class Element implements dObject {
                     "for tag <" + attribute.getOrigin() + ">!");
             return "null";
         } else {
-            dB.echoDebug(attribute.getScriptEntry(), "Filled tag <" + attribute.getOrigin() + "> with '" + element + "'.");
+            dB.echoDebug(attribute.getScriptEntry(), "Filled tag <" + attribute.getOrigin() + "> with '" +
+                    element.replace((char)0x01, '<').replace((char)0x02, '>').replace(dList.internal_escape, "|") + "'.");
             return element;
         }
     }

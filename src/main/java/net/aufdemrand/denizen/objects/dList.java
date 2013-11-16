@@ -218,7 +218,7 @@ public class dList extends ArrayList<String> implements dObject {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                dB.echoError(e);
             }
         }
 

@@ -30,7 +30,7 @@ public class TriggerRegistry implements dRegistry {
                 member.onDisable();
             } catch (Exception e) {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
-                if (dB.showStackTraces) e.printStackTrace();
+                dB.echoError(e);
             }
     }
 

@@ -2430,7 +2430,7 @@ public class CommandRegistry implements dRegistry {
                 cmd.newInstance().activate().as(name).withOptions(hint, args);
             } catch(Exception e) {
                 dB.echoError("Could not register command " + name + ": " + e.getMessage());
-                if (dB.showStackTraces) e.printStackTrace();
+                dB.echoError(e);
             }
         }
     }
@@ -2442,7 +2442,7 @@ public class CommandRegistry implements dRegistry {
                 member.onDisable();
             } catch (Exception e) {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
-                if (dB.showStackTraces) e.printStackTrace();
+                dB.echoError(e);
             }
     }
 

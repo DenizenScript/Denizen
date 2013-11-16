@@ -32,9 +32,7 @@ public class DebugSubmit extends Thread {
             in.close();
         }
         catch (Exception e) {
-            if (dB.showStackTraces) {
-                e.printStackTrace();
-            }
+            dB.echoError(e);
         }
         finally {
             try {
@@ -42,9 +40,7 @@ public class DebugSubmit extends Thread {
                 in.close();
             }
             catch (Exception e) {
-                if (dB.showStackTraces) {
-                    e.printStackTrace();
-                }
+                dB.echoError(e);
             }
         }
     }

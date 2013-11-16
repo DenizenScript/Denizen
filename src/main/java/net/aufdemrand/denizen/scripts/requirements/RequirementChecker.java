@@ -134,8 +134,7 @@ public class RequirementChecker {
                             dB.echoError("Usage: " + requirement.getUsageHint());
                         } else {
                             dB.echoError("Woah! An exception has been called " + (requirement != null ? "for Requirement '" + requirement.getName() + "'" : "") + "!");
-                            if (!dB.showStackTraces) dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
-                            else e.printStackTrace();
+                            dB.echoError(e);
                         }
                     }
                 }

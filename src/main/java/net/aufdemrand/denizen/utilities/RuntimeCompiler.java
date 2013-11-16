@@ -67,7 +67,7 @@ public class RuntimeCompiler {
                                 dB.echoError("No JDK found! External .java files will not be loaded.");
                             else {
                                 dB.echoError(ChatColor.RED + "Woah! Error compiling " + fileName + "!");
-                                e.printStackTrace();
+                                dB.echoError(e);
                             }
                         }
                     }

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.listeners;
 
 
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 
 import net.aufdemrand.denizen.Denizen;
@@ -33,11 +34,9 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
             denizen.getListenerRegistry().addListenerFor(player, instanceClass.newInstance(), listenerId);
             return denizen.getListenerRegistry().getListenerFor(player, listenerId);
         } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            dB.echoError(e);
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            dB.echoError(e);
         }
         return null;
     }

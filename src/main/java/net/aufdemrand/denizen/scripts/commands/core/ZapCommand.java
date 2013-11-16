@@ -155,7 +155,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
                                         execute(scriptEntry);
                                     } catch (CommandExecutionException e) {
                                         dB.echoError("Could not run delayed task!");
-                                        if (dB.showStackTraces) e.printStackTrace();
+                                        dB.echoError(e);
                                     }
                                 }
                             }, delay));

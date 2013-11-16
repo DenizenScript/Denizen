@@ -243,11 +243,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         try {
             cancelled = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
-            // e.printStackTrace();
+            // dB.echoError(e);
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         } catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         event.setCancelled(cancelled);

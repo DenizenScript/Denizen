@@ -118,7 +118,7 @@ public class EventManager implements Listener {
 
             command = c.newInstance(name, plugin);
         } catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         return command;
@@ -135,13 +135,13 @@ public class EventManager implements Listener {
                 commandMap = (CommandMap) f.get(Bukkit.getPluginManager());
             }
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         } catch (SecurityException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         return commandMap;

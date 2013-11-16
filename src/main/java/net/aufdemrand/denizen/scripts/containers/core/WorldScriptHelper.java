@@ -2918,11 +2918,11 @@ public class WorldScriptHelper implements Listener {
             determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
             // TODO: Need to find a way to fix this eventually
-            // e.printStackTrace();
+            // dB.echoError(e);
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         } catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         if (determination == null)

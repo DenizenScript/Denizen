@@ -293,11 +293,7 @@ public class IfCommand extends AbstractCommand {
 
             } catch (ScriptEntryCreationException e) {
                 dB.echoError("There has been a problem running the Command. Check syntax.");
-                if (dB.showStackTraces) {
-                    dB.log("STACKTRACE follows:");
-                    e.printStackTrace();
-                }
-                else dB.log("Use '/denizen debug -s' for the nitty-gritty.");
+                dB.echoError(e);
             }
         }
 

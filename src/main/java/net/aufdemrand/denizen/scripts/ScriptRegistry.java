@@ -75,7 +75,7 @@ public class ScriptRegistry {
                     scriptContainers.put(scriptName, typeClass.getConstructor(ConfigurationSection.class, String.class)
                             .newInstance(ScriptHelper._gs().getConfigurationSection(scriptName), scriptName));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    dB.echoError(e);
                 }
             }
     }

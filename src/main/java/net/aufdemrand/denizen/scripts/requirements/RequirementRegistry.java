@@ -27,7 +27,7 @@ public class RequirementRegistry implements dRegistry {
                 member.onDisable();
             } catch (Exception e) {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
-                if (dB.showStackTraces) e.printStackTrace();
+                dB.echoError(e);
             }
     }
 
@@ -445,7 +445,7 @@ public class RequirementRegistry implements dRegistry {
             requirement.newInstance().activate().as(name).withOptions("(-)" + hint, args);
         } catch(Exception e) {
             dB.echoError("Could not register requirement " + name + ": " + e.getMessage());
-            if (dB.showStackTraces) e.printStackTrace();
+            dB.echoError(e);
         }
     }
 

@@ -33,7 +33,7 @@ public class ScriptHelper {
             _yamlScripts.loadFromString(concatenated);
         } catch (InvalidConfigurationException e) {
             dB.echoError("Could not load scripts!");
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         // Remove all recipes added by Denizen item scripts
@@ -109,11 +109,7 @@ public class ScriptHelper {
                     } catch (RuntimeException e) {
                         dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "!");
                         HadAnError = true;
-                        if (dB.showStackTraces) {
-                            dB.log("STACKTRACE follows:");
-                            e.printStackTrace();
-                        }
-                        else dB.log("Use '/denizen debug -s' for the nitty-gritty.");
+                        dB.echoError(e);
                     }
                 }
 
@@ -124,10 +120,10 @@ public class ScriptHelper {
                 HadAnError = true;
             }
 
-        } catch (Exception error) {
+        } catch (Exception e) {
             dB.echoError(ChatColor.RED + "Woah! No script folder found in /plugins/Denizen/scripts/");
             HadAnError = true;
-            if (dB.showStackTraces) error.printStackTrace();
+            dB.echoError(e);
         }
 
         return "";

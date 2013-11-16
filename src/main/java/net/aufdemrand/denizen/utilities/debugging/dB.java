@@ -180,6 +180,16 @@ public class dB {
                 + ChatColor.WHITE + trimMessage(message));
     }
 
+    public static void echoError(Throwable ex) {
+        if (!showDebug) return;
+        if (!showStackTraces) {
+            dB.echoError("Exception! Enable '/denizen stacktrace' for the nitty-gritty.");
+        }
+        else {
+            ex.printStackTrace();
+        }
+    }
+
 
     public static void log(String message) {
         if (!showDebug) return;
@@ -191,6 +201,22 @@ public class dB {
     }
 
 
+    public static void log(DebugElement element, String string) {
+        if (!showDebug) return;
+        StringBuilder sb = new StringBuilder(24);
+
+        switch(element) {
+            case Footer:
+                sb.append(ChatColor.LIGHT_PURPLE).append("+---------------------+");
+                break;
+
+            case Header:
+                sb.append(ChatColor.LIGHT_PURPLE).append("+- ").append(string).append(" ---------+");
+                break;
+        }
+
+        ConsoleSender.sendMessage(sb.toString());
+    }
 
     ///////////////
     // Private Helper Methods

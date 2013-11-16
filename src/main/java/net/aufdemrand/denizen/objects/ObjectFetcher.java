@@ -89,7 +89,7 @@ public class ObjectFetcher {
         try {
             return (Boolean) matches.get(dClass).invoke(null, value);
         } catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         return false;
@@ -100,7 +100,7 @@ public class ObjectFetcher {
         try {
             return (dObject) valueof.get(dClass).invoke(null, value);
         } catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         return null;
