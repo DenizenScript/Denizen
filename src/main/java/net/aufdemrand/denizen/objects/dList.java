@@ -21,7 +21,8 @@ public class dList extends ArrayList<String> implements dObject {
             Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
                     Pattern.CASE_INSENSITIVE);
 
-    final static Pattern split_char = Pattern.compile("\\|");
+    public final static String internal_escape = String.valueOf((char)0x05);
+    final static Pattern split_char = Pattern.compile("[\\|" + internal_escape + "]");
     final static Pattern identifier = Pattern.compile("li@", Pattern.CASE_INSENSITIVE);
 
     @Fetchable("li, fl")
@@ -69,7 +70,7 @@ public class dList extends ArrayList<String> implements dObject {
         Matcher m;
         m = flag_by_id.matcher(arg);
 
-        return m.matches() || arg.contains("|") || arg.toLowerCase().startsWith("li@");
+        return m.matches() || arg.contains("|") || arg.contains(internal_escape) || arg.toLowerCase().startsWith("li@");
     }
 
 
