@@ -671,11 +671,13 @@ public class Element implements dObject {
             int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
             int ending_index;
             if (attribute.getContext(1).split(",").length > 1)
-                ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]) - 1;
+                ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]);
             else
                 ending_index = element.length();
             if (beginning_index < 0) beginning_index = 0;
+            if (beginning_index > element.length()) beginning_index = element.length();
             if (ending_index > element.length()) ending_index = element.length();
+            if (ending_index < beginning_index) ending_index = beginning_index;
             return new Element(element.substring(beginning_index, ending_index))
                     .getAttribute(attribute.fulfill(1));
         }
