@@ -40,7 +40,7 @@ public class CreateCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("name"))
                 scriptEntry.addObject("name", arg.asElement());
-            
+
             else if (!scriptEntry.hasObject("traits")
                     && arg.matchesPrefix("t, trait, traits")
                     && arg.matchesArgumentType(dList.class))
@@ -59,7 +59,7 @@ public class CreateCommand extends AbstractCommand {
         dLocation loc = (dLocation) scriptEntry.getObject("spawn_location");
         dList traits = (dList) scriptEntry.getObject("traits");
 
-        dB.report(scriptEntry, getName(), name.debug() + type.debug() + (loc != null ? loc.debug() : "") 
+        dB.report(scriptEntry, getName(), name.debug() + type.debug() + (loc != null ? loc.debug() : "")
                 + (traits != null ? traits.debug() : ""));
 
         // Add the created NPC into the script entry so it can be utilized if need be.

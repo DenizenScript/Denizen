@@ -183,7 +183,7 @@ public class dB {
     public static void echoError(Throwable ex) {
         if (!showDebug) return;
         if (!showStackTraces) {
-            dB.echoError("Exception! Enable '/denizen stacktrace' for the nitty-gritty.");
+            dB.echoError("Exception! Enable '/denizen debug -s' for the nitty-gritty.");
         }
         else {
             ex.printStackTrace();
