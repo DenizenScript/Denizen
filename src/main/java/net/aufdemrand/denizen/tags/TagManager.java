@@ -128,14 +128,14 @@ public class TagManager implements Listener {
                 if (event.isInstant() != instant) {
                     // Not the right type of tag, change out brackets so it doesn't get parsed again
                     arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
-                            + event.getReplaced() + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
+                            + event.getReplaced().replace('|', (char)0x05) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
                 } else {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
                     if ((!event.replaced() && event.getAlternative() != null)
                             || (event.getReplaced().equals("null") && event.getAlternative() != null))
                         event.setReplaced(event.getAlternative());
-                    arg = arg.substring(0, positions[0]) + event.getReplaced() + arg.substring(positions[1] + 1, arg.length());
+                    arg = arg.substring(0, positions[0]) + event.getReplaced().replace('|', (char)0x05) + arg.substring(positions[1] + 1, arg.length());
                 }
             }
             // Find new TAG
@@ -143,7 +143,7 @@ public class TagManager implements Listener {
         } while (positions != null || failsafe < 50);
 
         // Return argument with replacements
-        arg = arg.replace((char)0x01, '<').replace((char)0x02, '>');
+        arg = arg.replace((char)0x01, '<').replace((char)0x02, '>').replace((char)0x05, '|');
 
         // Un-escape \< \>'s
         if (!instant) arg = arg.replace("\\<", "<").replace("\\>", ">");
