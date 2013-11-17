@@ -36,7 +36,6 @@ permissions:
       denizen.basic: true
       denizen.notable: true
       denizen.notable.basic: true
-      denizen.repo: true
       denizen.flag: true
       denizen.dscript: true
       denizen.ex: true
