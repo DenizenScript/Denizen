@@ -1,111 +1,106 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URLDecoder;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.DebugLog;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-/**
- * Lets script authors create their own debug logs to check Denizen actions.
- * Useful for scripts that sometimes need checking the actions.
- *
- * <b>Logs are getting stored inside the <code>denizen/log</code> folder.</b>
- *
- * Usage: <code>log "message" (type:severe|info|warning|fine|finer|finest) [file:filename]</code>
- *
- * @author spaceemotion
- */
 public class LogCommand extends AbstractCommand {
 
-    protected static File logDirectory;
-    public enum Type { SEVERE, INFO, WARNING, FINE, FINER, FINEST }
-
-    public LogCommand() {
-        if(logDirectory == null) return;
-
-        logDirectory = new File(DenizenAPI.getCurrentInstance().getDataFolder(), "logs");
-        logDirectory.mkdirs();
-    }
+    public enum Type { SEVERE, INFO, WARNING, FINE, FINER, FINEST, NONE }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        String message = null, fileName = "";
-        Type type = Type.INFO;
 
-        if(scriptEntry.getArguments().size() < 2) {
-            throw new InvalidArgumentsException("Needs at least 2 arguments (message and file)!");
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            if (!scriptEntry.hasObject("type")
+                &&arg.matchesPrefix("type")
+                && arg.matchesEnum(Type.values()))
+                scriptEntry.addObject("type", arg.asElement());
+
+            else if (!scriptEntry.hasObject("file")
+                    && arg.matchesPrefix("file"))
+                scriptEntry.addObject("file", arg.asElement());
+
+            else if (!scriptEntry.hasObject("message"))
+                scriptEntry.addObject("message", arg.asElement());
+
+            else
+                arg.reportUnhandled();
         }
 
-        // TODO: UPDATE THIS COMMAND!
-
-        for(String arg : scriptEntry.getArguments()) {
-            if(aH.matchesValueArg("type", arg, aH.ArgumentType.String)) {
-                try {
-                    type = Type.valueOf(aH.getStringFrom(arg));
-                } catch(Exception e) {
-                    dB.echoError("Invalid type: " + e.getMessage());
-                }
-            } else if(aH.matchesValueArg("file", arg, aH.ArgumentType.String)) {
-                fileName = aH.getStringFrom(arg);
-            } else {
-                message = arg;
-            }
-        }
-
-        if(message == null)
+        if(!scriptEntry.hasObject("message"))
             throw new InvalidArgumentsException("Must specify a message.");
 
-        if(fileName.isEmpty())
+        if(!scriptEntry.hasObject("file"))
             throw new InvalidArgumentsException("Must specify a file.");
 
-        File file = new File(logDirectory, fileName);
-        DebugLog log = new DebugLog("Denizen-ScriptLog-" + fileName, file.getAbsolutePath());
-
-        scriptEntry.addObject("message", message);
-        scriptEntry.addObject("name", fileName); // Just for debugging
-        scriptEntry.addObject("type", type);
-        scriptEntry.addObject("log", log);
+        if (!scriptEntry.hasObject("type"))
+            scriptEntry.addObject("type", new Element("INFO"));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        String message = (String) scriptEntry.getObject("message");
-        String fileName = (String) scriptEntry.getObject("name");
-        Type type = (Type) scriptEntry.getObject("type");
-        DebugLog log = (DebugLog) scriptEntry.getObject("log");
+        Element message =  scriptEntry.getElement("message");
+        Element fileName = scriptEntry.getElement("file");
+        Element typeElement = scriptEntry.getElement("type");
 
          dB.report(scriptEntry, getName(),
-                aH.debugObj("Type", type) + aH.debugObj("Filename", fileName)
-                + aH.debugObj("Message", message));
+                 message.debug() + fileName.debug() + typeElement.debug());
+
+        Type type = Type.valueOf(typeElement.asString().toUpperCase());
+
+        String directory = URLDecoder.decode(System.getProperty("user.dir"));
+        File file = new File(directory, fileName.asString());
+
+        if (type == Type.NONE) {
+            try {
+                file.getParentFile().mkdirs();
+                FileWriter fw = new FileWriter(file, true);
+                fw.write(message + "\n");
+                fw.close();
+            }
+            catch (IOException e) {
+                dB.echoError("Error logging to file...");
+                dB.echoError(e);
+            }
+            return;
+        }
+
+        DebugLog log = new DebugLog("Denizen-ScriptLog-" + fileName, file.getAbsolutePath());
 
         switch(type) {
             case SEVERE:
-                log.severe(message);
+                log.severe(message.asString());
                 break;
 
             case INFO:
-                log.info(message);
+                log.info(message.asString());
                 break;
 
             case WARNING:
-                log.warning(message);
+                log.warning(message.asString());
                 break;
 
             case FINE:
-                log.fine(message);
+                log.fine(message.asString());
                 break;
 
             case FINER:
-                log.finer(message);
+                log.finer(message.asString());
                 break;
 
             case FINEST:
-                log.finest(message);
+                log.finest(message.asString());
         }
 
         log.close();

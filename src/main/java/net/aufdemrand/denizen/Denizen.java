@@ -143,7 +143,7 @@ public class Denizen extends JavaPlugin {
 
 
     /*
-     * Sets up Denizen on start of the craftbukkit server.
+     * Sets up Denizen on start of the CraftBukkit server.
      */
     @Override
     public void onEnable() {
@@ -181,16 +181,15 @@ public class Denizen extends JavaPlugin {
         reloadConfig();
 
         // Ensure the Scripts and Midi folder exist
-        String directory = URLDecoder.decode(System.getProperty("user.dir"));
-        new File(directory + "/plugins/Denizen/scripts").mkdirs();
-        new File(directory + "/plugins/Denizen/midi").mkdirs();
-        new File(directory + "/plugins/Denizen/schematics").mkdirs();
+        new File(getDataFolder() + "/scripts").mkdirs();
+        new File(getDataFolder() + "/midi").mkdirs();
+        new File(getDataFolder() + "/schematics").mkdirs();
 
         // Ensure the example Denizen.mid sound file is available
-        if (!new File(directory + "/plugins/Denizen/midi/Denizen.mid").exists()) {
+        if (!new File(getDataFolder() + "/midi/Denizen.mid").exists()) {
             String sourceFile = URLDecoder.decode(Denizen.class.getProtectionDomain().getCodeSource().getLocation().getFile());
             dB.log("Denizen.mid not found, extracting from " + sourceFile);
-            Utilities.extractFile(new File(sourceFile), "Denizen.mid", directory + "/plugins/Denizen/midi/");
+            Utilities.extractFile(new File(sourceFile), "Denizen.mid", getDataFolder() + "/midi/");
         }
 
         // Warn if configuration is outdated / too new
