@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import net.aufdemrand.denizen.Settings;
 
@@ -198,13 +200,16 @@ public class dB {
         }
     }
 
+    private static final Map<Class<?>, String> classNameCache = new WeakHashMap<Class<?>, String>();
 
     public static void log(String message) {
         if (!showDebug) return;
+        Class<?> caller = sun.reflect.Reflection.getCallerClass(2);
+        String callerName = classNameCache.get(caller);
+        if (callerName == null)
+            classNameCache.put(caller, callerName = sun.reflect.Reflection.getCallerClass(2).getSimpleName());
         ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
-                + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
-                sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
-                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] "
+                + (callerName.length() > 16 ? callerName.substring(0, 12) + "..." : callerName) + "] "
                 + ChatColor.WHITE + trimMessage(message));
     }
 
@@ -220,6 +225,9 @@ public class dB {
 
             case Header:
                 sb.append(ChatColor.LIGHT_PURPLE).append("+- ").append(string).append(" ---------+");
+                break;
+
+            default:
                 break;
         }
 
@@ -290,9 +298,9 @@ public class dB {
             // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
             // than having a bunch of ChatColor.XXXX
             string = string
-                    .replace("<Y>", ChatColor.YELLOW + "")
-                    .replace("<G>", ChatColor.DARK_GRAY + "")
-                    .replace("<A>", ChatColor.AQUA + "");
+                    .replace("<Y>", ChatColor.YELLOW.toString())
+                    .replace("<G>", ChatColor.DARK_GRAY.toString())
+                    .replace("<A>", ChatColor.AQUA.toString());
 
             // 'Hack-fix' for disallowing multiple 'footers' to print in a row
             if (string.equals(ChatColor.LIGHT_PURPLE + "+---------------------+")) {
@@ -302,26 +310,28 @@ public class dB {
 
             // Create buffer for wrapping debug text nicely. This is mostly needed for Windows logging.
             String[] words = string.split(" ");
-            String buffer = "";
+            StringBuilder buffer = new StringBuilder();
             int length = 0;
             for (String word : words) { // # of total chars * # of lines - timestamp
-                if (length + ChatColor.stripColor(word).length() + 1  < Settings.ConsoleWidth()) {
-                    buffer = buffer + word + " ";
-                    length = length + ChatColor.stripColor(word).length() + 1;
+                int strippedLength = ChatColor.stripColor(word).length() + 1;
+                if (length + strippedLength  < Settings.ConsoleWidth()) {
+                    buffer.append(word).append(" ");
+                    length = length + strippedLength;
                 } else {
                     // Increase # of lines to account for
-                    length = ChatColor.stripColor(word).length() + 1;
+                    length = strippedLength;
                     // Leave spaces to account for timestamp and indent
-                    buffer = buffer + "\n" + "                   " + word + " ";
+                    buffer.append("\n                   ").append(word).append(" ");
                 }                          // 16:05:06 [INFO]
             }
 
+            String result = buffer.toString();
             // Record current buffer to the to-be-submitted buffer
             if (dB.record) dB.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
-                    + " [INFO] " + buffer.replace(ChatColor.COLOR_CHAR, (char)0x01) + "\n"));
+                    + " [INFO] " + result.replace(ChatColor.COLOR_CHAR, (char)0x01) + "\n"));
 
             // Send buffer to the player
-            commandSender.sendMessage(showColor ? buffer : ChatColor.stripColor(buffer));
+            commandSender.sendMessage(showColor ? result : ChatColor.stripColor(result));
         }
     }
 
