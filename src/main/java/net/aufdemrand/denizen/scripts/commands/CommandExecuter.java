@@ -1,28 +1,29 @@
 package net.aufdemrand.denizen.scripts.commands;
 
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ScriptEntryExecuteEvent;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.tags.TagManager;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.events.bukkit.ScriptEntryExecuteEvent;
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+
 public class CommandExecuter {
 
-    private Denizen plugin;
-    final Pattern definition_pattern = Pattern.compile("%(.+?)%");
+    private final Denizen plugin;
+    private static final Pattern definition_pattern = Pattern.compile("%(.+?)%");
 
 
     public CommandExecuter(Denizen denizen) {
@@ -34,15 +35,12 @@ public class CommandExecuter {
      */
 
     public boolean execute(ScriptEntry scriptEntry) {
-
         Matcher m = definition_pattern.matcher(scriptEntry.getCommandName());
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
-            if (scriptEntry.getResidingQueue().hasDefinition(m.group(1).toLowerCase()))
-                m.appendReplacement(sb,
-                        scriptEntry.getResidingQueue().getDefinition(m.group(1).toLowerCase()));
-
-            else m.appendReplacement(sb, "null");
+            String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
+            if (definition == null) definition = "null";
+            m.appendReplacement(sb, definition);
         }
         m.appendTail(sb);
         scriptEntry.setCommandName(sb.toString());
@@ -105,12 +103,9 @@ public class CommandExecuter {
                 m = definition_pattern.matcher(arg.raw_value);
                 sb = new StringBuffer();
                 while (m.find()) {
-                    if (scriptEntry.getResidingQueue().hasDefinition(m.group(1).toLowerCase()))
-                        m.appendReplacement(sb,
-                                scriptEntry.getResidingQueue()
-                                        .getDefinition(m.group(1).toLowerCase()));
-
-                    else m.appendReplacement(sb, "null");
+                    String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
+                    if (definition == null) definition = "null";
+                    m.appendReplacement(sb, definition);
                 }
                 m.appendTail(sb);
                 arg = aH.Argument.valueOf(sb.toString());

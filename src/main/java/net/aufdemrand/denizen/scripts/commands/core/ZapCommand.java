@@ -1,19 +1,20 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.event.Listener;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.bukkit.event.Listener;
 
 /**
  * <p>Changes a Player's current step for a script. Reminder: ZAP does NOT trigger anything. It merely
@@ -51,7 +52,6 @@ public class ZapCommand extends AbstractCommand implements Listener{
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             // If the scripter uses the 'script:step' format, handle it.

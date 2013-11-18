@@ -1,15 +1,16 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
-import net.aufdemrand.denizen.Settings;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import net.aufdemrand.denizen.Settings;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 /**
  * Preferred method of outputting debugger information with Denizen and

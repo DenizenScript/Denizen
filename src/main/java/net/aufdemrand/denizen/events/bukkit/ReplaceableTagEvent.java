@@ -37,13 +37,11 @@ import org.bukkit.event.HandlerList;
 public class ReplaceableTagEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private dPlayer player;
-    private dNPC npc;
+    private final dPlayer player;
+    private final dNPC npc;
 
     private boolean instant = false;
     private boolean wasReplaced = false;
-
-    private String baseContext = null;
 
     private String name = null;
     private String nameContext = null;
@@ -65,23 +63,23 @@ public class ReplaceableTagEvent extends Event {
 
     private ScriptEntry scriptEntry = null;
 
-    // Base context pattern that matches initial brackets in tag
-    Pattern basecontextRegex = Pattern.compile("^( )?\\[.*?\\]");
+
+    private static Pattern bracketReplaceRegex = Pattern.compile("[\\[\\]]");
 
     // Alternative text pattern that matches everything after ||
-    Pattern alternativeRegex = Pattern.compile("\\|\\|.*");
+    private static Pattern alternativeRegex = Pattern.compile("\\|\\|(.*)");
 
     // Bracket pattern that matches brackets
-    Pattern bracketRegex = Pattern.compile("\\[.*?\\]");
+    private static Pattern bracketRegex = Pattern.compile("\\[.*?\\]");
 
     // Value pattern that matches everything after the last : found
     // that isn't followed by ] without being followed by [ first,
     // and is therefore not between brackets
-    Pattern valueRegex = Pattern.compile(":[^\\]]+(\\[([^\\[])+)?$");
+    private static Pattern valueRegex = Pattern.compile(":([^\\]]+(\\[([^\\[])+)?)$");
 
     // Component pattern that matches groups of characters that are not
     // [] or . and that optionally contain [] and a . at the end
-    Pattern componentRegex = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?");
+    private static Pattern componentRegex = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?");
 
     public String raw_tag;
 
@@ -89,8 +87,8 @@ public class ReplaceableTagEvent extends Event {
         this(player, npc, tag, null);
     }
 
-    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry) {
 
+    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry) {
         // Add ScriptEntry if available
         this.scriptEntry = scriptEntry;
 
@@ -100,10 +98,13 @@ public class ReplaceableTagEvent extends Event {
         this.npc = npc;
 
         // check if tag is 'instant'
-        if (tag.startsWith("!") || tag.startsWith("^"))
-        {
-            instant = true;
-            tag = tag.substring(1);
+        if (tag.length() > 0) {
+            char start = tag.charAt(0);
+            if (start == '!' || start == '^')
+            {
+                instant = true;
+                tag = tag.substring(1);
+            }
         }
 
         // Get alternative text
@@ -112,9 +113,8 @@ public class ReplaceableTagEvent extends Event {
         if (alternativeMatcher.find())
         {
             tag = tag.substring(0, alternativeMatcher.start()).trim(); // remove found alternative from tag
-            alternative = alternativeMatcher.group()
-                    .substring(2).trim(); // get rid of the || at the alternative's start
-            // and any trailing spaces
+            alternative = alternativeMatcher.group(1).trim();
+            // get rid of the || at the alternative's start and any trailing spaces
         }
 
         // Alternatives are stripped, base context is stripped, let's remember the raw tag for
@@ -129,21 +129,18 @@ public class ReplaceableTagEvent extends Event {
         {
             tag = tag.substring(0, valueMatcher.start()); // remove found value from tag
 
-            value = valueMatcher.group().substring(1); // get rid of the : at the value's start
+            value = valueMatcher.group(1); // get rid of the : at the value's start
             bracketMatcher = bracketRegex.matcher(value);
 
             if (bracketMatcher.find())
             {
-                valueContext = bracketMatcher.group().replace("[", "")
-                        .replace("]", "");
+                valueContext = bracketReplaceRegex.matcher(bracketMatcher.group()).replaceAll("");
                 value = value.substring(0, bracketMatcher.start()) +
                         value.substring(bracketMatcher.end());
+                // TODO: could use matcher.appendReplacement / matcher.appendTail
             }
         }
 
-        // Get name, type, subType and specifier, and all their contexts
-        String[] components = new String[4];
-        String[] contexts = new String[4];
         String tagPart = null;
         int n = 0;
 
@@ -154,26 +151,36 @@ public class ReplaceableTagEvent extends Event {
             tagPart = componentMatcher.group();
             bracketMatcher = bracketRegex.matcher(tagPart);
 
-            if (bracketMatcher.find())
-            {
-                components[n] = tagPart.substring(0, bracketMatcher.start());
-                contexts[n] = bracketMatcher.group().replace("[", "")
-                        .replace("]", "");
+            String component = null, context = null;
+
+            if (bracketMatcher.find()) {
+                component = tagPart.substring(0, bracketMatcher.start());
+                context = bracketReplaceRegex.matcher(bracketMatcher.group()).replaceAll("");
+            } else {
+                component = tagPart.replace(".", "");
             }
-            else
-                components[n] = tagPart.replace(".", "");
+
+            switch(n) {
+                case 0:
+                    name = component;
+                    nameContext = context;
+                    break;
+                case 1:
+                    type = component;
+                    typeContext = context;
+                    break;
+                case 2:
+                    subType = component;
+                    subTypeContext = context;
+                    break;
+                case 3:
+                    specifier = component;
+                    specifierContext = context;
+                    break;
+            }
 
             n++;
         }
-
-        name = components[0];
-        nameContext = contexts[0];
-        type = components[1];
-        typeContext = contexts[1];
-        subType = components[2];
-        subTypeContext = contexts[2];
-        specifier = components[3];
-        specifierContext = contexts[3];
     }
 
     public String getName() {

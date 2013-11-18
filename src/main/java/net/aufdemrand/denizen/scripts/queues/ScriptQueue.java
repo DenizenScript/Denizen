@@ -1,15 +1,21 @@
 package net.aufdemrand.denizen.scripts.queues;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Bukkit;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import org.bukkit.Bukkit;
 
 /**
  * ScriptQueues hold/control ScriptEntries while being sent
@@ -20,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public abstract class ScriptQueue implements Debuggable {
-
+    private static final Map<Class<? extends ScriptQueue>, String> classNameCache = new WeakHashMap<Class<? extends ScriptQueue>, String>();
 
     protected static long total_queues = 0;
 
@@ -121,7 +127,7 @@ public abstract class ScriptQueue implements Debuggable {
 
 
     // List of ScriptEntries in the queue
-    private List<ScriptEntry>
+    private final List<ScriptEntry>
             script_entries = new ArrayList<ScriptEntry>();
 
 
@@ -141,7 +147,7 @@ public abstract class ScriptQueue implements Debuggable {
     // 'Definitions' system uses this map.
     // This information is fetched by using
     // %definition_name%
-    private Map<String, String>
+    private final Map<String, String>
             definitions = new ConcurrentHashMap<String, String>(8, 0.9f, 1);
 
 
@@ -150,16 +156,16 @@ public abstract class ScriptQueue implements Debuggable {
     // inside scriptEntries, but within the scope of the entire
     // queue.
     // To access this context, use <c.context_name> or <context.context_name>
-    private Map<String, dObject>
-            context = new ConcurrentHashMap<String, dObject>();
+    private final Map<String, dObject>
+            context = new ConcurrentHashMap<String, dObject>(8, 0.9f, 1);
 
 
     // Held script entries can be recalled later in the script
     // and their scriptEntry context can be recalled. Good for
     // commands that contain unique items/objects that it's
     // created.
-    private Map<String, ScriptEntry>
-            held_entries = new ConcurrentHashMap<String, ScriptEntry>();
+    private final Map<String, ScriptEntry>
+            held_entries = new ConcurrentHashMap<String, ScriptEntry>(8, 0.9f, 1);
 
     /**
      * Creates a ScriptQueue instance. Users of
@@ -378,12 +384,9 @@ public abstract class ScriptQueue implements Debuggable {
 
         // Set as started, and check for a valid delay_time.
         is_started = true;
-        boolean is_delayed = false;
-        if (delay_time > System.currentTimeMillis())
-            is_delayed = true;
+        boolean is_delayed = delay_time > System.currentTimeMillis();
 
         // If it's delayed, schedule it for later
-
         if (is_delayed) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
@@ -399,11 +402,15 @@ public abstract class ScriptQueue implements Debuggable {
             // If it's not, start the engine now!
             onStart();
 
+        Class<? extends ScriptQueue> clazz = getClass();
+        String name = classNameCache.get(clazz);
+        if (name == null)
+            classNameCache.put(clazz, name = clazz.getSimpleName());
         if (is_delayed) {
-            dB.echoDebug(this, "Delaying " + getClass().getSimpleName() + " '" + id + "'" + " for '"
+            dB.echoDebug(this, "Delaying " + name + " '" + id + "'" + " for '"
                     + new Duration((delay_time - System.currentTimeMillis()) / 1000 * 20).identify() + "'.");
         } else
-            dB.echoDebug(this, "Starting " + getClass().getSimpleName() + " '" + id + "'");
+            dB.echoDebug(this, "Starting " + name + " '" + id + "'");
 
     }
 
