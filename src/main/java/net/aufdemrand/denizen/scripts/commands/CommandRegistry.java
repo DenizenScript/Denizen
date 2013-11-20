@@ -2416,8 +2416,8 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Trigger
-        // @Syntax trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)
-        // @Required 2
+        // @Syntax trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<#.#>) (radius:<#>)
+        // @Required 1
         // @Stable stable
         // @Short Enables or disables a trigger.
         // @Author aufdemrand
@@ -2429,7 +2429,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(TriggerCommand.class,
-                "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)", 2);
+                "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<#.#>) (radius:<#>)", 1);
 
         // <--[command]
         // @Name Viewer
