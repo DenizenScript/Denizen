@@ -3,13 +3,12 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.npc.NPC;
 
 /**
  * Configures the TriggerTrait for a NPC.
@@ -24,44 +23,36 @@ public class TriggerCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize required fields
-        String trigger = null;
-        Toggle toggle = Toggle.TOGGLE;
-        Duration cooldown = new Duration(-1d);
-        int radius = -1;
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        // Parse arguments
-        for (String arg : scriptEntry.getArguments()) {
+            if (!scriptEntry.hasObject("cooldown")
+                    && arg.matchesPrefix("cooldown")
+                    && arg.matchesArgumentType(Duration.class))
+                scriptEntry.addObject("cooldown", arg.asType(Duration.class));
 
-            if (aH.matchesValueArg("COOLDOWN", arg, ArgumentType.Duration)) {
-                cooldown = aH.getDurationFrom(arg);
-                cooldown.setPrefix("Cooldown");
-            }
+            else if (!scriptEntry.hasObject("radius")
+                    && arg.matchesPrefix("radius")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                scriptEntry.addObject("radius", arg.asElement());
 
-            else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Integer))
-                radius = aH.getIntegerFrom(arg);
+            else if (!scriptEntry.hasObject("trigger")
+                    && arg.matchesPrefix("name"))
+                scriptEntry.addObject("trigger", arg.asElement());
 
-            else if (aH.matchesState(arg))
-                toggle = Toggle.valueOf(aH.getStringFrom(arg.toUpperCase()));
-
-            else if (aH.matchesValueArg("NAME", arg, ArgumentType.String))
-                trigger = aH.getStringFrom(arg);
-
-            else if (denizen.getTriggerRegistry().get(arg) != null)
-                trigger = aH.getStringFrom(arg);
+            else if (!scriptEntry.hasObject("toggle")
+                    && arg.matchesEnum(Toggle.values()))
+                scriptEntry.addObject("toggle", arg.asElement());
 
             else
-                dB.echoError("Unknown argument '" + arg + "'");
+                arg.reportUnhandled();
         }
 
-        // Check required arguments
-        if (trigger == null) throw new InvalidArgumentsException("Missing name argument!");
+        if (!scriptEntry.hasObject("trigger"))
+            throw new InvalidArgumentsException("Missing name argument!");
 
-        // Store objects in ScriptEntry for execute()
-        scriptEntry.addObject("trigger", trigger);
-        scriptEntry.addObject("cooldown", cooldown);
-        scriptEntry.addObject("toggle", toggle);
-        scriptEntry.addObject("radius", radius);
+        if (!scriptEntry.hasObject("toggle"))
+            scriptEntry.addObject("toggle", new Element("TOGGLE"));
+
         if (!scriptEntry.hasNPC())
             throw new InvalidArgumentsException("This command requires a linked NPC!");
 
@@ -70,35 +61,38 @@ public class TriggerCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        Toggle toggle = (Toggle) scriptEntry.getObject("toggle");
-        String trigger = (String) scriptEntry.getObject("trigger");
-        Integer radius = (Integer) scriptEntry.getObject("radius");
+        Element toggle = scriptEntry.getElement("toggle");
+        Element trigger = scriptEntry.getElement("trigger");
+        Element radius = scriptEntry.getElement("radius");
         Duration cooldown = (Duration) scriptEntry.getObject("cooldown");
-        NPC npc = scriptEntry.getNPC().getCitizen();
 
-        dB.echoApproval("Executing '" + getName() + "': "
-                + "Trigger='" + trigger + "', "
-                + "Toggle='" + toggle.toString() + "', "
-                + (radius > 0 ? "Radius='" + radius + "', " : "Radius='Unchanged', ")
-                + (cooldown.getSeconds() > 0 ? "Cooldown='" + cooldown.debug() + "', " : "Cooldown='Unchanged', ")
-                + "NPC='" + scriptEntry.getNPC() + "'");
+        dB.report(scriptEntry, getName(),
+                  trigger.debug() + toggle.debug() +
+                  (radius != null ? radius.debug(): "") +
+                  (cooldown != null ? cooldown.debug(): ""));
 
         // Add trigger trait
-        if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
+        if (!scriptEntry.getNPC().getCitizen().hasTrait(TriggerTrait.class)) scriptEntry.getNPC().getCitizen().addTrait(TriggerTrait.class);
 
-        TriggerTrait trait = npc.getTrait(TriggerTrait.class);
+        TriggerTrait trait = scriptEntry.getNPC().getCitizen().getTrait(TriggerTrait.class);
 
-        if (toggle == Toggle.TOGGLE)
-            trait.toggleTrigger(trigger);
-        else if (toggle == Toggle.TRUE)
-            trait.toggleTrigger(trigger, true);
-        else trait.toggleTrigger(trigger, false);
+        switch (Toggle.valueOf(toggle.asString().toUpperCase())) {
+            case TOGGLE:
+                trait.toggleTrigger(trigger.asString());
+                break;
+            case TRUE:
+                trait.toggleTrigger(trigger.asString(), true);
+                break;
+            case FALSE:
+                trait.toggleTrigger(trigger.asString(), false);
+                break;
+        }
 
-        if (radius > 0)
-            trait.setLocalRadius(trigger, radius);
+        if (radius != null)
+            trait.setLocalRadius(trigger.asString(), radius.asInt());
 
-        if (cooldown.getSeconds() > 0)
-            trait.setLocalCooldown(trigger, cooldown.getSeconds());
+        if (cooldown != null && cooldown.getSeconds() > 0)
+            trait.setLocalCooldown(trigger.asString(), cooldown.getSeconds());
     }
 
 }

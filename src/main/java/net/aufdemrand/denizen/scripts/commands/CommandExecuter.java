@@ -164,7 +164,8 @@ public class CommandExecuter {
             keepGoing = false;
             // Give usage hint if InvalidArgumentsException was called.
             dB.echoError("Woah! Invalid arguments were specified!");
-            dB.log(ChatColor.YELLOW + "+> MESSAGE follows: " + ChatColor.WHITE + "'" + e.getMessage() + "'");
+            if (e.getMessage() != null && e.getMessage().length() > 0)
+                dB.log(ChatColor.YELLOW + "+> MESSAGE follows: " + ChatColor.WHITE + "'" + e.getMessage() + "'");
             dB.log("Usage: " + command.getUsageHint());
             dB.echoDebug(scriptEntry, DebugElement.Footer);
 
