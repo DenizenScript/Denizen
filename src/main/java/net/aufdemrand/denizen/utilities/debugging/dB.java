@@ -207,7 +207,7 @@ public class dB {
         Class<?> caller = sun.reflect.Reflection.getCallerClass(2);
         String callerName = classNameCache.get(caller);
         if (callerName == null)
-            classNameCache.put(caller, callerName = sun.reflect.Reflection.getCallerClass(2).getSimpleName());
+            classNameCache.put(caller, callerName = caller.getSimpleName());
         ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
                 + (callerName.length() > 16 ? callerName.substring(0, 12) + "..." : callerName) + "] "
                 + ChatColor.WHITE + trimMessage(message));
