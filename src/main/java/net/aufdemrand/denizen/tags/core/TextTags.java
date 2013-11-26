@@ -540,6 +540,15 @@ public class TextTags implements Listener {
         else if (event.getName().equalsIgnoreCase("&gt"))
             event.setReplaced(new Element(String.valueOf((char)0x02)).getAttribute(attribute.fulfill(1)));
 
+            // <--[tag]
+            // @attribute <&bs>
+            // @returns Element
+            // @description
+            // Returns a backslash symbol: \
+            // -->
+        else if (event.getName().equalsIgnoreCase("&bs"))
+            event.setReplaced(new Element("\\").getAttribute(attribute.fulfill(1)));
+
     }
 
 }
