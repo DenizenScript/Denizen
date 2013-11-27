@@ -184,6 +184,7 @@ public class PushCommand extends AbstractCommand {
 
         BukkitRunnable task = new BukkitRunnable() {
             int runs = 0;
+            dLocation lastLocation;
             @Override
             public void run() {
 
@@ -206,6 +207,7 @@ public class PushCommand extends AbstractCommand {
                     if (lastEntity.getLocation().add(v3).getBlock().getType() != Material.AIR) {
                         runs = maxTicks;
                     }
+                    lastLocation = lastEntity.getLocation();
                 }
                 else {
                     this.cancel();
@@ -218,6 +220,8 @@ public class PushCommand extends AbstractCommand {
                         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
                         if (lastEntity.getLocation() != null)
                             queue.addDefinition("location", lastEntity.getLocation().identify());
+                        else
+                            queue.addDefinition("location", lastLocation.identify());
                         queue.addDefinition("pushed_entities", entityList.toString());
                         queue.addDefinition("last_entity", lastEntity.identify());
                         queue.start();
