@@ -131,7 +131,9 @@ public class ChatCommand extends AbstractCommand {
             if (dNPC.matches(talker)) {
                 dNPC npc = dNPC.valueOf(talker);
                 context.setTalker(npc.getEntity());
-                npc.getCitizen().getDefaultSpeechController().speak(context, "chat");
+                if (npc.isSpawned())
+                    npc.getCitizen().getDefaultSpeechController().speak(context, "chat");
+                else dB.echoDebug(scriptEntry, "NPC Talker is not spawned! Cannot talk.");
 
             } else if (dPlayer.matches(talker)) {
 
