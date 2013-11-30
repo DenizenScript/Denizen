@@ -106,11 +106,13 @@ public class TagManager implements Listener {
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return arg;
 
+        // Parse \escaping down to internal escaping.
         if (!instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));
 
         // Find location of the first tag
         int[] positions = locateTag(arg);
         if (positions == null) {
+            // Unescape internal escape codes.
             arg = arg.replace((char)0x01, '<').replace((char)0x02, '>').replace(dList.internal_escape, "|");
             return arg;
         }
@@ -124,7 +126,7 @@ public class TagManager implements Listener {
             else {
                 event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]), scriptEntry);
                 if (event.isInstant() != instant) {
-                    // Not the right type of tag, change out brackets so it doesn't get parsed again
+                    // Not the right type of tag, escape the brackets so it doesn't get parsed again
                     arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
                             + event.getReplaced().replace("|", dList.internal_escape) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
                 } else {
@@ -136,11 +138,11 @@ public class TagManager implements Listener {
                     arg = arg.substring(0, positions[0]) + event.getReplaced().replace("|", dList.internal_escape) + arg.substring(positions[1] + 1, arg.length());
                 }
             }
-            // Find new TAG
+            // Find new tag
             positions = locateTag(arg);
         } while (positions != null || failsafe < 50);
 
-        // Return argument with replacements
+        // Unescape internal escape codes.
         arg = arg.replace((char)0x01, '<').replace((char)0x02, '>').replace(dList.internal_escape, "|");
 
         return arg;
