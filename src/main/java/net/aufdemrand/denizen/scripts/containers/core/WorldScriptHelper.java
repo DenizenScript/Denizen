@@ -11,10 +11,8 @@ import java.util.concurrent.ExecutionException;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.aH.Argument;
-import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
@@ -41,6 +39,7 @@ import org.bukkit.event.weather.*;
 import org.bukkit.event.world.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.util.BlockIterator;
 
 @SuppressWarnings("deprecation")
@@ -2931,6 +2930,61 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
         else if (!determination.equals("none")) {
             event.setMessage(determination);
+        }
+    }
+
+
+    // <--[event]
+    // @Events
+    // player edits book
+    // player signs book
+    //
+    // @Triggers when a player edits or signs a book.
+    // @Context
+    // <context.title> returns the name of the book, if any.
+    // <context.pages> returns the number of pages in the book.
+    // <context.book> returns the book item being edited.
+    // <context.signing> returns whether the book is about to be signed.
+    //
+    // @Determine
+    // "CANCELLED" to prevent the book from being edited.
+    // "NOT_SIGNING" to prevent the book from being signed.
+    // dScript to set the book information to set it to instead.
+    //
+    // -->
+    @EventHandler
+    public void playerEditBook(PlayerEditBookEvent event) {
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        if (event.isSigning()) context.put("title", new Element(event.getNewBookMeta().getTitle()));
+        context.put("pages", new Element(event.getNewBookMeta().getPageCount()));
+        context.put("book", new dItem(event.getPlayer().getInventory().getItem(event.getSlot())));
+        context.put("signing", new Element(event.isSigning()));
+
+        ArrayList<String> events = new ArrayList<String>();
+
+        events.add("player edits book");
+        if (event.isSigning()) {
+            events.add("player signs book");
+        }
+
+        String determination = EventManager.doEvents(events,
+                null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (determination.toUpperCase().startsWith("NOT_SIGNING"))
+            event.setSigning(false);
+        else if (dScript.matches(determination)) {
+            dScript script = dScript.valueOf(determination);
+            if (script.getContainer() instanceof BookScriptContainer) {
+                dItem book = ((BookScriptContainer)script.getContainer()).getBookFrom(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+                event.setNewBookMeta((BookMeta) book.getItemStack().getItemMeta());
+                if (book.getItemStack().getType() == Material.BOOK_AND_QUILL)
+                    event.setSigning(false);
+            }
+            else {
+                dB.echoError("Script '"  + determination + "' is valid, but not of type 'book'!");
+            }
         }
     }
 
