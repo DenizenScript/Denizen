@@ -14,6 +14,37 @@ import java.util.List;
 
 public class BookScriptContainer extends ScriptContainer {
 
+    // <--[language]
+    // @name Book Script Containers
+    // @group Script Container System
+    // @description
+    // Book script containers are similar to item script containers, except they are specifically
+    // for the book items. They work with with the dItem object, and can be fetched
+    // with the Object Fetcher by using the dItem constructor i@book_script_name
+    // Example: - give <player> i@my_book
+    //
+    // <code>
+    // Book Script Name:
+    //
+    //   type: book
+    //
+    //   # The 'custom name' can be anything you wish.
+    //   title: custom name
+    //
+    //   # The 'custom name' can be anything you wish.
+    //   author: custom name
+    //
+    //   # Defaults to true. Set to false to spawn a 'book and quill' instead of a 'written book'.
+    //   signed: true/false
+    //
+    //   # Each -line in the text section represents an entire page.
+    //   # To create a newline, use the tag <n>. To create a paragraph, use <p>.
+    //   text:
+    //   - page
+    //   - ...
+    // </code>
+    //
+    // -->
     public BookScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
@@ -35,6 +66,12 @@ public class BookScriptContainer extends ScriptContainer {
             String title = getString("TITLE");
             title = TagManager.tag(player, npc, title, false);
             bookInfo.setTitle(title);
+        }
+
+        if (contains("SIGNED")) {
+            if (getString("SIGNED").equalsIgnoreCase("false")) {
+                book.getItemStack().setType(Material.BOOK_AND_QUILL);
+            }
         }
 
         if (contains("AUTHOR")) {

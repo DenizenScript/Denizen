@@ -26,6 +26,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
     // <--[language]
     // @name Item Script Containers
+    // @group Script Container System
     // @description
     // Item script containers are an easy way to pre-define custom items for use within scripts. Item
     // scripts work with the dItem object, and can be fetched with the Object Fetcher by using the
