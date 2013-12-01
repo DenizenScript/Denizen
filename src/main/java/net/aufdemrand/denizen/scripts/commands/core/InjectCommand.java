@@ -115,7 +115,8 @@ public class InjectCommand extends AbstractCommand {
                 scriptEntry.addObject("local", new Element(true));
 
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class))
+                    && arg.matchesArgumentType(dScript.class)
+                    && !arg.matchesPrefix("p, path"))
                 scriptEntry.addObject("script", arg.asType(dScript.class));
 
             else if (!scriptEntry.hasObject("path"))

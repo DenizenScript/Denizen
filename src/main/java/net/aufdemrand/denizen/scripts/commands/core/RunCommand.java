@@ -55,9 +55,9 @@ public class RunCommand extends AbstractCommand {
     //
     //
     //   # Local Script support by Denizen allows you to stash more scripts. Just specify
-    //   # a new node. To run this script from other containers, specify a path as well as
-    //   # the local script name node. For example, to run the script below, type
-    //   # /ex run 's@Local Script Tutorial' 'subscript_1'
+    //   # a new node. To run this script from other containers, specify the script as well as
+    //   # the local script name node with a 'p' or 'path:' prefix. For example, to run the
+    //   # script below, type /ex run 's@Local Script Tutorial' 'p:subscript_1'
     //
     //   subscript_1:
     //   - narrate "This is a 'local script' in the task script container 'LocalScript Tutorial'."
@@ -65,8 +65,9 @@ public class RunCommand extends AbstractCommand {
     //   # But wait, there's more! If wanting to run a local script that is within the
     //   # same container, the run command can be even simpler by specifying 'local'
     //   # in place of the script name. Take a look at the next two local scripts. Type
-    //   # /ex run 's@Local Script Tutorial' 'subscript_2' .. to run the script below
-    //   # which will in turn run 'subscript_3' locally.
+    //   # /ex run 's@Local Script Tutorial' 'p:subscript_2' .. to run the script below
+    //   # which will in turn run 'subscript_3' locally. Notice if you specify locally,
+    //   # the script used is
     //
     //   subscript_2:
     //   - narrate "This is the second 'local script' in this task script container."
@@ -116,7 +117,8 @@ public class RunCommand extends AbstractCommand {
                 scriptEntry.addObject("local", new Element(true));
 
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class))
+                    && arg.matchesArgumentType(dScript.class)
+                    && !arg.matchesPrefix("p, path"))
                 scriptEntry.addObject("script", arg.asType(dScript.class));
 
             else if (!scriptEntry.hasObject("path"))
