@@ -95,6 +95,7 @@ public class ItemScriptHelper implements Listener {
     // Remove all recipes added by Denizen
     public static void removeDenizenRecipes() {
 
+        try {
         // Remove regular Bukkit recipes added by Denizen
         Iterator<Recipe> recipes = Bukkit.getServer().recipeIterator();
         while (recipes.hasNext()) {
@@ -107,6 +108,10 @@ public class ItemScriptHelper implements Listener {
 
         // Remove special recipes stored by Denizen
         ItemScriptContainer.specialrecipesMap.clear();
+        }
+        catch (Throwable e) {
+            dB.echoError(e);
+        }
     }
 
     public static boolean isItemscript(ItemStack item) {
