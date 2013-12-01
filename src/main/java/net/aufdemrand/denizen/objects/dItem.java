@@ -17,7 +17,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dItem implements dObject, Notable, Properties {
+public class dItem implements dObject, Notable, Properties, Adjustable {
 
     // An item pattern with the following groups:
     //
@@ -871,6 +873,28 @@ public class dItem implements dObject, Notable, Properties {
 
 
         return new Element(identify()).getAttribute(attribute);
+    }
+
+
+    @Override
+    public void adjust(Mechanism mechanism, Element value) {
+
+        // <--[mechanism]
+        // @object dItem
+        // @name set_display
+        // @input <element>
+        // @description
+        // Changes the items display name.
+        // @tags
+        // <i@item.display>
+        // -->
+        if (mechanism.matches("set_display")) {
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(value.asString());
+            item.setItemMeta(meta);
+            return;
+        }
+
     }
 
 }
