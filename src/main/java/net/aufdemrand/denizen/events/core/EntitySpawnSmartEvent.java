@@ -70,6 +70,7 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
         // Yipee! Register this class with Bukkit's EventListener
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
+        dB.log("Loaded Entity Spawn SmartEvent.");
     }
 
 
