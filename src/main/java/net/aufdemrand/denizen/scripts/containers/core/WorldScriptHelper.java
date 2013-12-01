@@ -225,6 +225,10 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void blockCanBuild(BlockCanBuildEvent event) {
 
+        // TODO: Remove when Bukkit fixes error?
+        if (event.getMaterial() == null)
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dMaterial oldMaterial = dMaterial.getMaterialFrom(event.getBlock().getType());
         dMaterial newMaterial = dMaterial.getMaterialFrom(event.getMaterial());
