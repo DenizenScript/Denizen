@@ -18,7 +18,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class dCuboid implements dObject, Notable {
+public class dCuboid implements dObject, Notable, Adjustable {
 
 
     /////////////////////
@@ -97,9 +97,11 @@ public class dCuboid implements dObject, Notable {
 
 
     public static boolean matches(String string) {
+        // Starts with cu@? Assume match.
+        if (string.toLowerCase().startsWith("cu@")) return true;
 
         // regex patterns used for matching
-        final Pattern location_by_saved = Pattern.compile("(cu@)(.+)");
+        final Pattern location_by_saved = Pattern.compile("(cu@)?(.+)");
         final Pattern location =
                 Pattern.compile("((-?\\d+,){3})[\\w\\s]+\\|((-?\\d+,){3})[\\w\\s]+",
                         Pattern.CASE_INSENSITIVE);
@@ -122,6 +124,29 @@ public class dCuboid implements dObject, Notable {
         int x_distance;
         int y_distance;
         int z_distance;
+
+        public void generateDistances() {
+
+            // TODO: Use this code instead of what is in the constructor/addPair of dCuboid
+
+            int x_high = (loc_1.getBlockX() >= loc_2.getBlockX()
+                    ? loc_1.getBlockX() : loc_2.getBlockX());
+            int x_low = (loc_1.getBlockX() <= loc_2.getBlockX()
+                    ? loc_1.getBlockX() : loc_2.getBlockX());
+            x_distance = x_high - x_low;
+
+            int y_high = (loc_1.getBlockY() >= loc_2.getBlockY()
+                    ? loc_1.getBlockY() : loc_2.getBlockY());
+            int y_low = (loc_1.getBlockY() <= loc_2.getBlockY()
+                    ? loc_1.getBlockY() : loc_2.getBlockY());
+            y_distance = y_high - y_low;
+
+            int z_high = (loc_1.getBlockZ() >= loc_2.getBlockZ()
+                    ? loc_1.getBlockZ() : loc_2.getBlockZ());
+            int z_low = (loc_1.getBlockZ() <= loc_2.getBlockZ()
+                    ? loc_1.getBlockZ() : loc_2.getBlockZ());
+            z_distance = z_high - z_low;
+        }
     }
 
 
@@ -169,7 +194,6 @@ public class dCuboid implements dObject, Notable {
         // Add defining locations to the pair
         pair.loc_1 = new dLocation(world, x_low, y_low, z_low);
         pair.loc_2 = new dLocation(world, x_high, y_high, z_high);
-
         // Add pair to pairs array
         pairs.add(pair);
     }
@@ -179,11 +203,11 @@ public class dCuboid implements dObject, Notable {
         for (LocationPair pair : pairs) {
             if (!location.getWorld().equals(pair.loc_1.getWorld()))
                 continue;
-            if (!Utilities.isBetween(pair.loc_1.getX(), pair.loc_2.getX(), location.getX()))
+            if (!Utilities.isBetween(pair.loc_1.getBlockX(), pair.loc_2.getBlockX(), location.getBlockX()))
                 continue;
-            if (!Utilities.isBetween(pair.loc_1.getY(), pair.loc_2.getY(), location.getY()))
+            if (!Utilities.isBetween(pair.loc_1.getBlockY(), pair.loc_2.getBlockY(), location.getBlockY()))
                 continue;
-            if (Utilities.isBetween(pair.loc_1.getZ(), pair.loc_2.getZ(), location.getZ()))
+            if (Utilities.isBetween(pair.loc_1.getBlockZ(), pair.loc_2.getBlockZ(), location.getZ()))
                 return true;
         }
 
@@ -595,7 +619,7 @@ public class dCuboid implements dObject, Notable {
         // -->
         if (attribute.startsWith("max")) {
             if (!attribute.hasContext(1))
-            return pairs.get(0).loc_2.getAttribute(attribute.fulfill(1));
+                return pairs.get(0).loc_2.getAttribute(attribute.fulfill(1));
             else {
                 int member = attribute.getIntContext(1);
                 if (member == 0)
@@ -615,7 +639,7 @@ public class dCuboid implements dObject, Notable {
         // -->
         if (attribute.startsWith("min")) {
             if (!attribute.hasContext(1))
-            return pairs.get(0).loc_1.getAttribute(attribute.fulfill(1));
+                return pairs.get(0).loc_1.getAttribute(attribute.fulfill(1));
             else {
                 int member = attribute.getIntContext(1);
                 if (member == 0)
@@ -631,4 +655,36 @@ public class dCuboid implements dObject, Notable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+
+    @Override
+    public void adjust(Mechanism mechanism, Element value) {
+
+
+        // <--[mechanism]
+        // @object dCuboid
+        // @name outset
+        // @input Element(Number)
+        // @description
+        // Expands the area of a dCuboid by the number specified, or 1 if not
+        // specified. Example: - adjust cu@my_cuboid outset:5
+        // @tags
+        // <player.xp.level>
+        // -->
+        if (mechanism.matches("outset")) {
+            int mod = 1;
+            if (value != null)
+                mod = value.asInt();
+            for (LocationPair pair : pairs) {
+                pair.loc_1.add(-1 * mod, -1 * mod,-1 * mod);
+                pair.loc_2.add(mod, mod, mod);
+                // Modify the locations, need to readjust the distances generated
+                pair.generateDistances();
+            }
+
+            // TODO: Make sure negative numbers don't collapse (and invert)
+            // the Cuboid
+            return;
+        }
+
+    }
 }
