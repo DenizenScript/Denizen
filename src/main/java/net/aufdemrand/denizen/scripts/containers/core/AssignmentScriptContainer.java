@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import org.bukkit.configuration.ConfigurationSection;
 
 // <--[language]
-// @name Assignment Script-Containers
+// @name Assignment Script Containers
 // @group Script Container System
 // @description
 // Assignment script-containers provide functionality to NPCs by 'assignment' of the container. Assignment

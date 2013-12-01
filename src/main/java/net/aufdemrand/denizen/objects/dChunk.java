@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_7_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

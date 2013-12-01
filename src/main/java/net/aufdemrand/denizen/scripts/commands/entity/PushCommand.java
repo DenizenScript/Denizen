@@ -207,6 +207,8 @@ public class PushCommand extends AbstractCommand {
                     if (lastEntity.getLocation().add(v3).getBlock().getType() != Material.AIR) {
                         runs = maxTicks;
                     }
+
+                    // Record the location in case the entity gets lost (EG, if a pushed arrow hits a mob)
                     lastLocation = lastEntity.getLocation();
                 }
                 else {

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.craftbukkit.v1_6_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;

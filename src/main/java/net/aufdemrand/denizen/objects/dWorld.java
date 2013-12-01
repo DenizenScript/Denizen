@@ -8,7 +8,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_7_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 

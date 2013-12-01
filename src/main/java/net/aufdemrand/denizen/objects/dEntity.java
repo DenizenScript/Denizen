@@ -13,16 +13,16 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_6_R3.EntityLiving;
+import net.minecraft.server.v1_7_R1.EntityLiving;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
@@ -130,7 +130,7 @@ public class dEntity implements dObject, Adjustable {
                     Entity entity = null;
 
                     for (World world : Bukkit.getWorlds()) {
-                        net.minecraft.server.v1_6_R3.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
+                        net.minecraft.server.v1_7_R1.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
 
                         // Make sure the nmsEntity is valid, to prevent
                         // unpleasant errors

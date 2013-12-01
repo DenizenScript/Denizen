@@ -9,10 +9,10 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_6_R3.Block;
+import net.minecraft.server.v1_7_R1.Block;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -121,7 +121,7 @@ public class SwitchCommand extends AbstractCommand {
 
             try {
 
-                Block.byId[interactLocation.getBlock().getType().getId()]
+                Block.e(interactLocation.getBlock().getType().getId())
                     .interact(((CraftWorld)world).getHandle(),
                               interactLocation.getBlockX(),
                               interactLocation.getBlockY(),

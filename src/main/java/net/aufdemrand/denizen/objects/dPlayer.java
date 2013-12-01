@@ -1287,7 +1287,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the walk speed of the player. The standard value is '0.2'. Valid range is 0.0 to 1.0
         // @tags
-        // <player.fly_speed>
+        // <player.walk_speed>
         // -->
         if (mechanism.matches("walk_speed")) {
             getPlayerEntity().setWalkSpeed(value.asFloat());
