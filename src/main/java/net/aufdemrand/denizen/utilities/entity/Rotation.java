@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.entity;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftEntity;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -46,7 +46,7 @@ public class Rotation {
         }
 
         else {
-            net.minecraft.server.v1_6_R3.Entity handle = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_7_R1.Entity handle = ((CraftEntity) entity).getHandle();
             handle.yaw = yaw;
             handle.pitch = pitch;
         }

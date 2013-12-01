@@ -1373,7 +1373,7 @@ public class WorldScriptHelper implements Listener {
             // <context.entity> returns the dEntity that was damaged.
             // <context.damage> returns the amount of damage dealt.
             // <context.damager> returns the dEntity damaging the other entity.
-            // <context.shooter> returns the shooter of the entity, if any.
+            // <context.projectile> returns the projectile, if one caused the event.
             //
             // @Determine
             // "CANCELLED" to stop the entity from being damaged.
@@ -1392,14 +1392,6 @@ public class WorldScriptHelper implements Listener {
             dEntity projectile = null;
             dEntity damager = new dEntity(subEvent.getDamager());
 
-            // The decision for the contexts below, for posterity:
-            //
-            // <davidcernat> aufdemrand, let me ask you something...
-            // <davidcernat> Suppose an entity gets shot by an arrow from a player.
-            // <davidcernat> What should <context.damager> be in "on entity damaged"?
-            // <aufdemrand> the entity that shot the arrow
-            // <davidcernat> Okay.
-            // <aufdemrand> the arrow should be <c.projectile>
             if (damager.isProjectile()) {
                 projectile = damager;
                 context.put("projectile", projectile);
@@ -1480,7 +1472,7 @@ public class WorldScriptHelper implements Listener {
                 // <context.cause> returns the reason the entity was killed.
                 // <context.entity> returns the dEntity that was killed.
                 // <context.damager> returns the dEntity killing the other entity.
-                // <context.shooter> returns the shooter of the entity, if any.
+                // <context.projectile> returns the projectile, if one caused the event.
                 //
                 // @Determine
                 // "CANCELLED" to stop the entity from being killed.

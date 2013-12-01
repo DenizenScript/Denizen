@@ -7,17 +7,18 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
-import net.minecraft.server.v1_6_R3.EntityFishingHook;
-import net.minecraft.server.v1_6_R3.EntityHuman;
-import net.minecraft.server.v1_6_R3.EntityItem;
-import net.minecraft.server.v1_6_R3.Item;
-import net.minecraft.server.v1_6_R3.ItemStack;
-import net.minecraft.server.v1_6_R3.MathHelper;
-import net.minecraft.server.v1_6_R3.WorldServer;
+import net.minecraft.server.v1_7_R1.EntityFishingHook;
+import net.minecraft.server.v1_7_R1.EntityHuman;
+import net.minecraft.server.v1_7_R1.EntityItem;
+import net.minecraft.server.v1_7_R1.Item;
+import net.minecraft.server.v1_7_R1.ItemStack;
+import net.minecraft.server.v1_7_R1.MathHelper;
+import net.minecraft.server.v1_7_R1.WorldServer;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.util.Vector;
@@ -212,6 +213,8 @@ public class FishingTrait extends Trait {
             try{
                 fish.getBukkitEntity().remove();
             } catch(Exception e) { }
+            // TODO: Repair this! (Update Fishing Trait to use new Fishing system)
+            /*
             fish = new EntityItem(nmsworld, fishHook.locX, fishHook.locY, fishHook.locZ, new ItemStack(Item.RAW_FISH));
             double d5 = npc.getBukkitEntity().getLocation().getX() - fishHook.locX;
             double d6 = npc.getBukkitEntity().getLocation().getY() - fishHook.locY;
@@ -223,6 +226,7 @@ public class FishingTrait extends Trait {
             fish.motY = d6 * d9 + (double) MathHelper.sqrt(d8) * 0.08D;
             fish.motZ = d7 * d9;
             nmsworld.addEntity(fish);
+            */
             DenizenAPI.getDenizenNPC(npc).action("catch fish", null);
         }
 
