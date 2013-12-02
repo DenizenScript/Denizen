@@ -102,6 +102,15 @@ public class dNPCRegistry implements Listener {
         return npcs;
     }
 
+    // <--[action]
+    // @Actions
+    // spawn
+    // @Triggers when the NPC is spawned.
+    // This will fire whenever an NPC's chunk is loaded, or a spawn command is issued.
+    //
+    // @Context
+    // None
+    // -->
     /**
      * Fires the 'On Spawn:' action in an NPCs Assignment, if set.
      *
@@ -124,7 +133,7 @@ public class dNPCRegistry implements Listener {
     // @Actions
     // despawn
     // @Triggers when the NPC is despawned.
-    // This can be because a command was issues, or a chunk has been unloaded.
+    // This can be because a command was issued, or a chunk has been unloaded.
     //
     // @Context
     // None
