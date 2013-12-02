@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -217,7 +218,11 @@ public class dInventory implements dObject, Notable {
         InventoryHolder holder = inventory.getHolder();
 
         if (holder != null) {
-            if (holder instanceof Player) {
+            if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
+                idType = "npc";
+                idHolder = "n@" + CitizensAPI.getNPCRegistry().getNPC((Entity) holder).getId();
+            }
+            else if (holder instanceof Player) {
                 idType = "player";
                 idHolder = "p@" + ((Player) holder).getName();
             }
