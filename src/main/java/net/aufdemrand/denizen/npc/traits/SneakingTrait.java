@@ -33,7 +33,7 @@ public class SneakingTrait extends Trait implements Listener  {
     // None
     //
     // -->
-    /**x
+    /**
      * Makes the NPC sneak
      */
     public void sneak() {
