@@ -16,22 +16,6 @@ import org.bukkit.event.Listener;
  */
 public class DefineCommand extends AbstractCommand implements Listener {
 
-    public static String getHelp() {
-        return  "Defines a script/queue-level variable. Once the queue is" +
-                "completed, this definition is destroyed. Definitions are meant" +
-                "to be used as temporary variables, if any kind of persistence " +
-                "is required, use a flag instead. Definitions can be recalled" +
-                "by any script entry in the same queue by using '%' characters" +
-                "enclosing the variable name.\n" +
-                " \n" +
-                "- define doomed_player p@mastaba \n" +
-                "- strike %doomed_player% \n";
-    }
-
-    public static String getUsage() {
-        return "- define [<id>] [<value>]";
-    }
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

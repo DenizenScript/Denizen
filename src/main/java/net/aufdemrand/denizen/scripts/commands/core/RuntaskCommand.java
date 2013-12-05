@@ -90,7 +90,7 @@ public class RuntaskCommand extends AbstractCommand {
                 dB.log("SPEED argument has been removed from RUNTASK! Instead, specify " +
                         "a speed on the task script itself, or use the 'QUEUE SET_SPEED:#' command " +
                         "inside the task script. This warning will be removed in version 1.0 " +
-                        "and this argument deprecated.");
+                        "and this command will be deprecated.");
 
             }   // Gets a new, randomly named queue
             else if (aH.matchesArg("QUEUE", arg)) {

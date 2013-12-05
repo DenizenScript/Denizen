@@ -1,8 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -118,34 +116,64 @@ public class dCuboid implements dObject, Notable, Adjustable {
     }
 
 
+    ///////////////
+    //  LocationPairs
+    /////////////
+
+
     public static class LocationPair {
-        dLocation loc_1;
-        dLocation loc_2;
+        dLocation  low;
+        dLocation high;
+        dLocation point_1;
+        dLocation point_2;
         int x_distance;
         int y_distance;
         int z_distance;
 
+        public LocationPair(dLocation point_1, dLocation point_2) {
+            this.point_1 = point_1;
+            this.point_2 = point_2;
+            regenerate();
+        }
+
+        public void changePoint(int number, dLocation point) {
+            if (number == 1)
+                this.point_1 = point;
+            else if (number == 2)
+                this.point_2 = point;
+            regenerate();
+        }
+
+        public void regenerate() {
+            World world = point_1.getWorld();
+
+            // Find the low and high locations based on the points
+            // specified
+            int x_high = (point_1.getBlockX() >= point_2.getBlockX()
+                    ? point_1.getBlockX() : point_2.getBlockX());
+            int x_low = (point_1.getBlockX() <= point_2.getBlockX()
+                    ? point_1.getBlockX() : point_2.getBlockX());
+
+            int y_high = (point_1.getBlockY() >= point_2.getBlockY()
+                    ? point_1.getBlockY() : point_2.getBlockY());
+            int y_low = (point_1.getBlockY() <= point_2.getBlockY()
+                    ? point_1.getBlockY() : point_2.getBlockY());
+
+            int z_high = (point_1.getBlockZ() >= point_2.getBlockZ()
+                    ? point_1.getBlockZ() : point_2.getBlockZ());
+            int z_low = (point_1.getBlockZ() <= point_2.getBlockZ()
+                    ? point_1.getBlockZ() : point_2.getBlockZ());
+
+            // Specify defining locations to the pair
+            low = new dLocation(world, x_low, y_low, z_low);
+            high = new dLocation(world, x_high, y_high, z_high);
+            generateDistances();
+        }
+
         public void generateDistances() {
-
-            // TODO: Use this code instead of what is in the constructor/addPair of dCuboid
-
-            int x_high = (loc_1.getBlockX() >= loc_2.getBlockX()
-                    ? loc_1.getBlockX() : loc_2.getBlockX());
-            int x_low = (loc_1.getBlockX() <= loc_2.getBlockX()
-                    ? loc_1.getBlockX() : loc_2.getBlockX());
-            x_distance = x_high - x_low;
-
-            int y_high = (loc_1.getBlockY() >= loc_2.getBlockY()
-                    ? loc_1.getBlockY() : loc_2.getBlockY());
-            int y_low = (loc_1.getBlockY() <= loc_2.getBlockY()
-                    ? loc_1.getBlockY() : loc_2.getBlockY());
-            y_distance = y_high - y_low;
-
-            int z_high = (loc_1.getBlockZ() >= loc_2.getBlockZ()
-                    ? loc_1.getBlockZ() : loc_2.getBlockZ());
-            int z_low = (loc_1.getBlockZ() <= loc_2.getBlockZ()
-                    ? loc_1.getBlockZ() : loc_2.getBlockZ());
-            z_distance = z_high - z_low;
+            x_distance = high.getBlockX() - low.getBlockX();
+            y_distance = high.getBlockY() - low.getBlockY();
+            z_distance = high.getBlockZ() - low.getBlockZ();
         }
     }
 
@@ -154,7 +182,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
     //  Constructors/Instance Methods
     //////////////////
 
-    // Location Pairs (loc_1, loc_2) that make up the dCuboid
+    // Location Pairs (low, high) that make up the dCuboid
     List<LocationPair> pairs = new ArrayList<LocationPair>();
 
     // Only put dMaterials in filter.
@@ -168,46 +196,21 @@ public class dCuboid implements dObject, Notable, Adjustable {
 
     public void addPair(Location point_1, Location point_2) {
         // Make a new pair
-        LocationPair pair = new LocationPair();
-
-        World world = point_1.getWorld();
-
-        // Calculate distances in the pair
-        int x_high = (point_1.getBlockX() >= point_2.getBlockX()
-                ? point_1.getBlockX() : point_2.getBlockX());
-        int x_low = (point_1.getBlockX() <= point_2.getBlockX()
-                ? point_1.getBlockX() : point_2.getBlockX());
-        pair.x_distance = x_high - x_low;
-
-        int y_high = (point_1.getBlockY() >= point_2.getBlockY()
-                ? point_1.getBlockY() : point_2.getBlockY());
-        int y_low = (point_1.getBlockY() <= point_2.getBlockY()
-                ? point_1.getBlockY() : point_2.getBlockY());
-        pair.y_distance = y_high - y_low;
-
-        int z_high = (point_1.getBlockZ() >= point_2.getBlockZ()
-                ? point_1.getBlockZ() : point_2.getBlockZ());
-        int z_low = (point_1.getBlockZ() <= point_2.getBlockZ()
-                ? point_1.getBlockZ() : point_2.getBlockZ());
-        pair.z_distance = z_high - z_low;
-
-        // Add defining locations to the pair
-        pair.loc_1 = new dLocation(world, x_low, y_low, z_low);
-        pair.loc_2 = new dLocation(world, x_high, y_high, z_high);
-        // Add pair to pairs array
+        LocationPair pair = new LocationPair(new dLocation(point_1), new dLocation(point_2));
+        // Add it to the Cuboid pairs list
         pairs.add(pair);
     }
 
 
     public boolean isInsideCuboid(Location location) {
         for (LocationPair pair : pairs) {
-            if (!location.getWorld().equals(pair.loc_1.getWorld()))
+            if (!location.getWorld().equals(pair.low.getWorld()))
                 continue;
-            if (!Utilities.isBetween(pair.loc_1.getBlockX(), pair.loc_2.getBlockX(), location.getBlockX()))
+            if (!Utilities.isBetween(pair.low.getBlockX(), pair.high.getBlockX(), location.getBlockX()))
                 continue;
-            if (!Utilities.isBetween(pair.loc_1.getBlockY(), pair.loc_2.getBlockY(), location.getBlockY()))
+            if (!Utilities.isBetween(pair.low.getBlockY(), pair.high.getBlockY(), location.getBlockY()))
                 continue;
-            if (Utilities.isBetween(pair.loc_1.getBlockZ(), pair.loc_2.getBlockZ(), location.getZ()))
+            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ(), location.getZ()))
                 return true;
         }
 
@@ -242,27 +245,19 @@ public class dCuboid implements dObject, Notable, Adjustable {
 
     public dList getOutline() {
 
-        //  +-----+
-        //  |     |
-        //  |     |
+        //    +-----2
+        //   /|    /|
+        //  +-----+ |
+        //  | +---|-+
+        //  |/    |/
         //  1-----+
-
-        //  +     +
-        //
-        //
-        //  +     +
-
-        //  +-----2
-        //  |     |
-        //  |     |
-        //  +-----+
 
         dList list = new dList();
 
         for (LocationPair pair : pairs) {
 
-            dLocation loc_1 = pair.loc_1;
-            dLocation loc_2 = pair.loc_2;
+            dLocation loc_1 = pair.low;
+            dLocation loc_2 = pair.high;
             int y_distance = pair.y_distance;
             int z_distance = pair.z_distance;
             int x_distance = pair.x_distance;
@@ -344,7 +339,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
 
         for (LocationPair pair : pairs) {
 
-            dLocation loc_1 = pair.loc_1;
+            dLocation loc_1 = pair.low;
             int y_distance = pair.y_distance;
             int z_distance = pair.z_distance;
             int x_distance = pair.x_distance;
@@ -385,7 +380,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
 
         for (LocationPair pair : pairs) {
 
-            dLocation loc_1 = pair.loc_1;
+            dLocation loc_1 = pair.low;
             int y_distance = pair.y_distance;
             int z_distance = pair.z_distance;
             int x_distance = pair.x_distance;
@@ -432,11 +427,11 @@ public class dCuboid implements dObject, Notable, Adjustable {
         StringBuilder sb = new StringBuilder();
 
         for (LocationPair pair : pairs) {
-            sb.append(pair.loc_1.getBlockX() + ',' + pair.loc_1.getBlockY()
-                    + "," + pair.loc_1.getBlockZ() + ',' + pair.loc_1.getWorld().getName()
+            sb.append(pair.low.getBlockX() + ',' + pair.low.getBlockY()
+                    + "," + pair.low.getBlockZ() + ',' + pair.low.getWorld().getName()
                     + '|'
-                    + pair.loc_2.getBlockX() + ',' + pair.loc_2.getBlockY()
-                    + ',' + pair.loc_2.getBlockZ() + ',' + pair.loc_2.getWorld().getName()
+                    + pair.high.getBlockX() + ',' + pair.high.getBlockY()
+                    + ',' + pair.high.getBlockZ() + ',' + pair.high.getWorld().getName()
                     + '|');
         }
 
@@ -502,11 +497,11 @@ public class dCuboid implements dObject, Notable, Adjustable {
             sb.append("cu@");
 
             for (LocationPair pair : pairs) {
-                sb.append(pair.loc_1.getBlockX() + ',' + pair.loc_1.getBlockY()
-                        + "," + pair.loc_1.getBlockZ() + ',' + pair.loc_1.getWorld().getName()
+                sb.append(pair.low.getBlockX() + ',' + pair.low.getBlockY()
+                        + "," + pair.low.getBlockZ() + ',' + pair.low.getWorld().getName()
                         + '|'
-                        + pair.loc_2.getBlockX() + ',' + pair.loc_2.getBlockY()
-                        + ',' + pair.loc_2.getBlockZ() + ',' + pair.loc_2.getWorld().getName()
+                        + pair.high.getBlockX() + ',' + pair.high.getBlockY()
+                        + ',' + pair.high.getBlockZ() + ',' + pair.high.getWorld().getName()
                         + '|');
             }
 
@@ -563,7 +558,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
                 return "null";
             if (member - 1 > pairs.size())
                 return "null";
-            return new dCuboid(pairs.get(member - 1).loc_1, pairs.get(member - 1).loc_2)
+            return new dCuboid(pairs.get(member - 1).low, pairs.get(member - 1).high)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -619,14 +614,14 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("max")) {
             if (!attribute.hasContext(1))
-                return pairs.get(0).loc_2.getAttribute(attribute.fulfill(1));
+                return pairs.get(0).high.getAttribute(attribute.fulfill(1));
             else {
                 int member = attribute.getIntContext(1);
                 if (member == 0)
                     return "null";
                 if (member - 1 > pairs.size())
                     return "null";
-                return pairs.get(member - 1).loc_2.getAttribute(attribute.fulfill(1));
+                return pairs.get(member - 1).high.getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -639,14 +634,14 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("min")) {
             if (!attribute.hasContext(1))
-                return pairs.get(0).loc_1.getAttribute(attribute.fulfill(1));
+                return pairs.get(0).low.getAttribute(attribute.fulfill(1));
             else {
                 int member = attribute.getIntContext(1);
                 if (member == 0)
                     return "null";
                 if (member - 1 > pairs.size())
                     return "null";
-                return pairs.get(member - 1).loc_1.getAttribute(attribute.fulfill(1));
+                return pairs.get(member - 1).low.getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -665,18 +660,48 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // @name outset
         // @input Element(Number)
         // @description
-        // Expands the area of a dCuboid by the number specified, or 1 if not
+        // 'Outsets' the area of a dCuboid by the number specified, or 1 if not
         // specified. Example: - adjust cu@my_cuboid outset:5
+        // Outsetting a cuboid expands it in all directions. Use negative numbers
+        // to 'inset' instead.
         // @tags
-        // <player.xp.level>
+        // <cu@cuboid.get_outline>
         // -->
         if (mechanism.matches("outset")) {
             int mod = 1;
             if (value != null)
                 mod = value.asInt();
             for (LocationPair pair : pairs) {
-                pair.loc_1.add(-1 * mod, -1 * mod,-1 * mod);
-                pair.loc_2.add(mod, mod, mod);
+                pair.low.add(-1 * mod, -1 * mod, -1 * mod);
+                pair.high.add(mod, mod, mod);
+                // Modify the locations, need to readjust the distances generated
+                pair.generateDistances();
+            }
+
+            // TODO: Make sure negative numbers don't collapse (and invert) the Cuboid
+            return;
+        }
+
+        // <--[mechanism]
+        // @object dCuboid
+        // @name expand
+        // @input Element(Number)
+        // @description
+        // Expands the area of a dCuboid by the number specified, or 1 if not
+        // specified, in a specified direction. Example: - adjust cu@my_cuboid expand:5|north
+        // Use negative numbers to 'reduce' instead.
+        // @tags
+        // <e@entity.location.direction>
+        // <e@entity.location.pitch>
+        // <cu@cuboid.get_outline>
+        // -->
+        if (mechanism.matches("expand")) {
+            int mod = 1;
+            if (value != null)
+                mod = value.asInt();
+            for (LocationPair pair : pairs) {
+                pair.low.add(-1 * mod, -1 * mod, -1 * mod);
+                pair.high.add(mod, mod, mod);
                 // Modify the locations, need to readjust the distances generated
                 pair.generateDistances();
             }
@@ -685,6 +710,36 @@ public class dCuboid implements dObject, Notable, Adjustable {
             // the Cuboid
             return;
         }
+
+        // <--[mechanism]
+        // @object dCuboid
+        // @name set_location
+        // @input Element(Number)
+        // @description
+        // Sets one of two defining locations. dCuboid will take the location into
+        // account when recalculating the low and high locations as well as distances
+        // belonging to the cuboid.
+        // @tags
+        // <cu@cuboid.low>
+        // <cu@cuboid.high>
+        // -->
+        if (mechanism.matches("set_location")) {
+            int mod = 1;
+            if (value != null)
+                mod = value.asInt();
+            for (LocationPair pair : pairs) {
+                pair.low.add(-1 * mod, -1 * mod, -1 * mod);
+                pair.high.add(mod, mod, mod);
+                // Modify the locations, need to readjust the distances generated
+                pair.generateDistances();
+            }
+
+            // TODO: Make sure negative numbers don't collapse (and invert)
+            // the Cuboid
+            return;
+        }
+
+
 
     }
 }
