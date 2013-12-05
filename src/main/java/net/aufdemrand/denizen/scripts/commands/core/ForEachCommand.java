@@ -51,7 +51,7 @@ public class ForEachCommand extends BracedCommand {
         dList list = (dList) scriptEntry.getObject("list");
         ArrayList<ScriptEntry> bracedCommands = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("FOREACH");
         if (bracedCommands == null || bracedCommands.isEmpty()) {
-            dB.echoError("Empty braces!");
+            // dB.echoError("Empty braces!");
             return;
         }
 
