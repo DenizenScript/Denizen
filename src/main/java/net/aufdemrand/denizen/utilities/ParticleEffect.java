@@ -1,24 +1,30 @@
 package net.aufdemrand.denizen.utilities;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.aufdemrand.denizen.utilities.ReflectionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
-* ParticleEffect Library v1.0
-*
-* This particle effect library was created by DarkBlade12 based off content from microgeek
-* You are free to use it, modify it and redistribute it under the condition to give credit to me and microgeek
-*
-* @author DarkBlade12
-*/
+ * ParticleEffect Library v1.2
+ *
+ * This library was created by @DarkBlade12 based on content related to particles of @microgeek (names and packet values) and allows you to display all Minecraft particle effects on a Bukkit server
+ *
+ * You are welcome to use it, modify it and redistribute it under the following conditions:
+ * 1. Credit us if you publish a plugin that uses this library
+ * 2. Don't remove this text
+ *
+ * @author DarkBlade12
+ */
 public enum ParticleEffect {
 
     // <--[language]
@@ -65,8 +71,24 @@ public enum ParticleEffect {
     SLIME("slime", 29),
     HEART("heart", 30),
     ANGRY_VILLAGER("angryVillager", 31),
-    HAPPY_VILLAGER("happyVillager", 32),
-    RANDOM("random", 33);
+    HAPPY_VILLAGER("happyVillager", 32);
+
+    private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<String, ParticleEffect>();
+    private static final Map<Integer, ParticleEffect> ID_MAP = new HashMap<Integer, ParticleEffect>();
+    private static final double MAX_RANGE = 20.0D;
+    private static Constructor<?> PARTICLE_PACKET_CONSTRUCTOR;
+
+    static {
+        for (ParticleEffect effect : values()) {
+            NAME_MAP.put(effect.name, effect);
+            ID_MAP.put(effect.id, effect);
+        }
+        try {
+            PARTICLE_PACKET_CONSTRUCTOR = ReflectionUtil.getConstructor(ReflectionUtil.getClass("PacketPlayOutWorldParticles", ReflectionUtil.DynamicPackage.MINECRAFT_SERVER));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private String name;
     private int id;
@@ -84,24 +106,11 @@ public enum ParticleEffect {
         return id;
     }
 
-    private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<String, ParticleEffect>();
-    private static final Map<Integer, ParticleEffect> ID_MAP = new HashMap<Integer, ParticleEffect>();
-    static {
-        for (ParticleEffect effect : values()) {
-            NAME_MAP.put(effect.name, effect);
-            ID_MAP.put(effect.id, effect);
-        }
-    }
-
     public static ParticleEffect fromName(String name) {
-        if (name == null) {
-            return null;
-        }
-        for (Entry<String, ParticleEffect> e : NAME_MAP.entrySet()) {
-            if (e.getKey().equalsIgnoreCase(name)) {
-                return e.getValue();
-            }
-        }
+        if (name != null)
+            for (Entry<String, ParticleEffect> e : NAME_MAP.entrySet())
+                if (e.getKey().equalsIgnoreCase(name))
+                    return e.getValue();
         return null;
     }
 
@@ -109,183 +118,152 @@ public enum ParticleEffect {
         return ID_MAP.get(id);
     }
 
-    /**
-    * Plays a particle effect at a location which is only shown to a specific player.
-    */
-    public void play(Player p, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        sendPacket(p, createNormalPacket(this, loc, offsetX, offsetY, offsetZ, speed, amount));
+    private static List<Player> getPlayersInRange(Location loc, double range) {
+        List<Player> players = new ArrayList<Player>();
+        double sqr = range * range;
+        for (Player p : loc.getWorld().getPlayers())
+            if (p.getLocation().distanceSquared(loc) <= sqr)
+                players.add(p);
+        return players;
     }
 
-    /**
-    * Plays a particle effect at a location which is shown to all players in the current world.
-    */
-    public void play(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        Object packet = createNormalPacket(this, loc, offsetX, offsetY, offsetZ, speed, amount);
-        for (Player p : loc.getWorld().getPlayers()) {
-            sendPacket(p, packet);
-        }
-    }
-
-    /**
-    * Plays a particle effect at a location which is shown to all players within a certain range in the current world.
-    */
-    public void play(Location loc, double range, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        Object packet = createNormalPacket(this, loc, offsetX, offsetY, offsetZ, speed, amount);
-        for (Player p : loc.getWorld().getPlayers()) {
-            if (p.getLocation().distance(loc) <= range) {
-                sendPacket(p, packet);
-            }
-        }
-    }
-
-    /**
-    * Plays a tilecrack effect at a location which is only shown to a specific player.
-    */
-    public static void playTileCrack(Player p, Location loc, int id, byte data, float offsetX, float offsetY, float offsetZ, int amount) {
-        sendPacket(p, createTileCrackPacket(id, data, loc, offsetX, offsetY, offsetZ, amount));
-    }
-
-    /**
-    * Plays a tilecrack effect at a location which is shown to all players in the current world.
-    */
-    public static void playTileCrack(Location loc, int id, byte data, float offsetX, float offsetY, float offsetZ, int amount) {
-        Object packet = createTileCrackPacket(id, data, loc, offsetX, offsetY, offsetZ, amount);
-        for (Player p : loc.getWorld().getPlayers()) {
-            sendPacket(p, packet);
-        }
-    }
-
-    /**
-    * Plays a tilecrack effect at a location which is shown to all players within a certain range in the current world.
-    */
-    public static void playTileCrack(Location loc, double range, int id, byte data, float offsetX, float offsetY, float offsetZ, int amount) {
-        Object packet = createTileCrackPacket(id, data, loc, offsetX, offsetY, offsetZ, amount);
-        for (Player p : loc.getWorld().getPlayers()) {
-            if (p.getLocation().distance(loc) <= range) {
-                sendPacket(p, packet);
-            }
-        }
-    }
-
-    /**
-    * Plays an iconcrack effect at a location which is only shown to a specific player.
-    */
-    public static void playIconCrack(Player p, Location loc, int id, float offsetX, float offsetY, float offsetZ, int amount) {
-        sendPacket(p, createIconCrackPacket(id, loc, offsetX, offsetY, offsetZ, amount));
-    }
-
-    /**
-    * Plays an iconcrack effect at a location which is shown to all players in the current world.
-    */
-    public static void playIconCrack(Location loc, int id, float offsetX, float offsetY, float offsetZ, int amount) {
-        Object packet = createIconCrackPacket(id, loc, offsetX, offsetY, offsetZ, amount);
-        for (Player p : loc.getWorld().getPlayers()) {
-            sendPacket(p, packet);
-        }
-    }
-
-    /**
-    * Plays an iconcrack effect at a location which is shown to all players within a certain range in the current world.
-    */
-    public static void playIconCrack(Location loc, double range, int id, float offsetX, float offsetY, float offsetZ, int amount) {
-        Object packet = createIconCrackPacket(id, loc, offsetX, offsetY, offsetZ, amount);
-        for (Player p : loc.getWorld().getPlayers()) {
-            if (p.getLocation().distance(loc) <= range) {
-                sendPacket(p, packet);
-            }
-        }
-    }
-
-    private Object createNormalPacket(ParticleEffect effect, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-
-        // Get another effect if "RANDOM" is used
-        if (effect.equals(ParticleEffect.RANDOM)) {
-
-            // Make sure the new effect is not "RANDOM" or an invisible effect
-            while (effect.toString().matches("^(RANDOM|BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) {
-
-                effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
-            }
-        }
-
-        return createPacket(effect.getName(), loc, offsetX, offsetY, offsetZ, speed, amount);
-    }
-
-    private static Object createTileCrackPacket(int id, byte data, Location loc, float offsetX, float offsetY, float offsetZ, int amount) {
-        return createPacket("tilecrack_" + id + "_" + data, loc, offsetX, offsetY, offsetZ, 0.1F, amount);
-    }
-
-    private static Object createIconCrackPacket(int id, Location loc, float offsetX, float offsetY, float offsetZ, int amount) {
-        return createPacket("iconcrack_" + id, loc, offsetX, offsetY, offsetZ, 0.1F, amount);
-    }
-
-    private static Object createPacket(String effectName, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+    private static Object createPacket(String name, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        if (amount <= 0)
+            throw new IllegalArgumentException("Amount of particles has to be greater than 0");
         try {
-            if (amount <= 0) {
-                throw new IllegalArgumentException("Amount of particles has to be greater than 0!");
-            }
-            Object packet = ReflectionUtil.getClass("Packet63WorldParticles");
-            ReflectionUtil.setValue(packet, "a", effectName);
-            ReflectionUtil.setValue(packet, "b", (float) loc.getX());
-            ReflectionUtil.setValue(packet, "c", (float) loc.getY());
-            ReflectionUtil.setValue(packet, "d", (float) loc.getZ());
-            ReflectionUtil.setValue(packet, "e", offsetX);
-            ReflectionUtil.setValue(packet, "f", offsetY);
-            ReflectionUtil.setValue(packet, "g", offsetZ);
-            ReflectionUtil.setValue(packet, "h", speed);
-            ReflectionUtil.setValue(packet, "i", amount);
-            return packet;
+            Object p = PARTICLE_PACKET_CONSTRUCTOR.newInstance();
+            ReflectionUtil.setValues(p, new ReflectionUtil.FieldEntry("a", name), new ReflectionUtil.FieldEntry("b", (float) loc.getX()), new ReflectionUtil.FieldEntry("c", (float) loc.getY()), new ReflectionUtil.FieldEntry("d", (float) loc.getZ()), new ReflectionUtil.FieldEntry("e",
+                    offsetX), new ReflectionUtil.FieldEntry("f", offsetY), new ReflectionUtil.FieldEntry("g", offsetZ), new ReflectionUtil.FieldEntry("h", speed), new ReflectionUtil.FieldEntry("i", amount));
+            return p;
         } catch (Exception e) {
             Bukkit.getLogger().warning("[ParticleEffect] Failed to create a particle packet!");
             return null;
         }
     }
 
+    private Object createPacket(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        return createPacket(this.getName(), loc, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
+    private static Object createIconCrackPacket(int id, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        return createPacket("iconcrack_" + id, loc, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
+    private static Object createBlockCrackPacket(int id, byte data, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        return createPacket("blockcrack_" + id + "_" + data, loc, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
+    private static Object createBlockDustPacket(int id, byte data, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        return createPacket("blockdust_" + id + "_" + data, loc, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
     private static void sendPacket(Player p, Object packet) {
-        if (packet == null) {
-            return;
-        }
-        try {
-            Object entityPlayer = ReflectionUtil.getMethod("getHandle", p.getClass(), 0).invoke(p);
-            Object playerConnection = entityPlayer.getClass().getField("playerConnection").get(entityPlayer);
-            ReflectionUtil.getMethod("sendPacket", playerConnection.getClass(), 1).invoke(playerConnection, packet);
-        } catch (Exception e) {
-            Bukkit.getLogger().warning("[ParticleEffect] Failed to send a particle packet to " + p.getName() + "!");
-        }
+        if (packet != null)
+            try {
+                Object entityPlayer = ReflectionUtil.invokeMethod("getHandle", p.getClass(), p);
+                Object playerConnection = ReflectionUtil.getValue("playerConnection", entityPlayer);
+                ReflectionUtil.invokeMethod("sendPacket", playerConnection.getClass(), playerConnection, packet);
+            } catch (Exception e) {
+                Bukkit.getLogger().warning("[ParticleEffect] Failed to send a particle packet to " + p.getName() + "!");
+            }
     }
 
-    private static class ReflectionUtil {
-        public static Object getClass(String name, Object... args) throws Exception {
-            Class<?> c = Class.forName(ReflectionUtil.getPackageName() + "." + name);
-            int params = 0;
-            if (args != null) {
-                params = args.length;
-            }
-            for (Constructor<?> co : c.getConstructors()) {
-                if (co.getParameterTypes().length == params) {
-                    return co.newInstance(args);
-                }
-            }
-            return null;
-        }
-
-        public static Method getMethod(String name, Class<?> c, int params) {
-            for (Method m : c.getMethods()) {
-                if (m.getName().equals(name) && m.getParameterTypes().length == params) {
-                    return m;
-                }
-            }
-            return null;
-        }
-
-        public static void setValue(Object instance, String fieldName, Object value) throws Exception {
-            Field field = instance.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(instance, value);
-        }
-
-        public static String getPackageName() {
-            return "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        }
+    private static void sendPacket(Collection<Player> players, Object packet) {
+        for (Player p : players)
+            sendPacket(p, packet);
     }
+
+    /**
+     * Displays a particle effect which is only visible for specific players
+     */
+    public void display(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount, Player... players) {
+        sendPacket(Arrays.asList(players), createPacket(loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+    /**
+     * Displays a particle effect which is visible for all players whitin the maximum range of 20 blocks in the world of @param loc
+     */
+    public void display(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        display(loc, MAX_RANGE, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
+    /**
+     * Displays a particle effect which is visible for all players whitin a certain range in the the world of @param loc
+     */
+    public void display(Location loc, double range, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        if (range > MAX_RANGE)
+            throw new IllegalArgumentException("Range has to be lower/equal the maximum of 20");
+        sendPacket(getPlayersInRange(loc, range), createPacket(loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+    /**
+     * Displays an icon crack (item break) effect which is only visible for specific players
+     */
+    public static void displayIconCrack(Location loc, int id, float offsetX, float offsetY, float offsetZ, float speed, int amount, Player... players) {
+        sendPacket(Arrays.asList(players), createIconCrackPacket(id, loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+    /**
+     * Displays an icon crack (item break) effect which is visible for all players whitin the maximum range of 20 blocks in the world of @param loc
+     */
+    public static void displayIconCrack(Location loc, int id, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        displayIconCrack(loc, MAX_RANGE, id, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
+    /**
+     * Displays an icon crack (item break) effect which is visible for all players whitin a certain range in the the world of @param loc
+     */
+    public static void displayIconCrack(Location loc, double range, int id, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        if (range > MAX_RANGE)
+            throw new IllegalArgumentException("Range has to be lower/equal the maximum of 20");
+        sendPacket(getPlayersInRange(loc, range), createIconCrackPacket(id, loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+    /**
+     * Displays a block crack (block break) effect which is only visible for specific players
+     */
+    public static void displayBlockCrack(Location loc, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount, Player... players) {
+        sendPacket(Arrays.asList(players), createBlockCrackPacket(id, data, loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+    /**
+     * Displays a block crack (block break) effect which is visible for all players whitin the maximum range of 20 blocks in the world of @param loc
+     */
+    public static void displayBlockCrack(Location loc, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        displayBlockCrack(loc, MAX_RANGE, id, data, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
+    /**
+     * Displays a block crack (block break) effect which is visible for all players whitin a certain range in the the world of @param loc
+     */
+    public static void displayBlockCrack(Location loc, double range, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        if (range > MAX_RANGE)
+            throw new IllegalArgumentException("Range has to be lower/equal the maximum of 20");
+        sendPacket(getPlayersInRange(loc, range), createBlockCrackPacket(id, data, loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+    /**
+     * Displays a block dust effect which is only visible for specific players
+     */
+    public static void displayBlockDust(Location loc, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount, Player... players) {
+        sendPacket(Arrays.asList(players), createBlockDustPacket(id, data, loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+    /**
+     * Displays a block dust effect which is visible for all players whitin the maximum range of 20 blocks in the world of @param loc
+     */
+    public static void displayBlockDust(Location loc, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        displayBlockDust(loc, MAX_RANGE, id, data, offsetX, offsetY, offsetZ, speed, amount);
+    }
+
+    /**
+     * Displays a block dust effect which is visible for all players whitin a certain range in the the world of @param loc
+     */
+    public static void displayBlockDust(Location loc, double range, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        if (range > MAX_RANGE)
+            throw new IllegalArgumentException("Range has to be lower/equal the maximum of 20");
+        sendPacket(getPlayersInRange(loc, range), createBlockDustPacket(id, data, loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+
 }

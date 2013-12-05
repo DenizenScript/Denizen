@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.utilities.Utilities;
 import org.bukkit.Effect;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -47,12 +48,21 @@ public class PlayEffectCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("effect") &&
-                     !scriptEntry.hasObject("particleeffect")) {
+                    !scriptEntry.hasObject("particleeffect")) {
 
                 if (arg.matchesEnum(Effect.values())) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
-                }
-                else if (arg.matchesEnum(ParticleEffect.values())) {
+                } else if (arg.matchesEnum(ParticleEffect.values())) {
+                    scriptEntry.addObject("particleeffect",
+                            ParticleEffect.valueOf(arg.getValue().toUpperCase()));
+                } else if (arg.matches("random")) {
+                    // Get another effect if "RANDOM" is used
+                    ParticleEffect effect = null;
+                    // Make sure the new effect is not an invisible effect
+                    while (effect == null || effect.toString().matches("^(BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) {
+                        effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
+                        if (effect == null) break;
+                    }
                     scriptEntry.addObject("particleeffect",
                             ParticleEffect.valueOf(arg.getValue().toUpperCase()));
                 }
@@ -102,7 +112,7 @@ public class PlayEffectCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
 
         if (!scriptEntry.hasObject("effect") &&
-            !scriptEntry.hasObject("particleeffect"))
+                !scriptEntry.hasObject("particleeffect"))
             throw new InvalidArgumentsException("Missing effect argument!");
 
         if (!scriptEntry.hasObject("location"))
@@ -127,12 +137,12 @@ public class PlayEffectCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
-                                               aH.debugObj("special effect", particleEffect.name())) +
-                             aH.debugObj("location", location.toString()) +
-                             aH.debugObj("radius", visibility) +
-                             aH.debugObj("data", data) +
-                             aH.debugObj("qty", qty) +
-                             (effect != null ? "" : aH.debugObj("offset", offset)));
+                aH.debugObj("special effect", particleEffect.name())) +
+                aH.debugObj("location", location.toString()) +
+                aH.debugObj("radius", visibility) +
+                aH.debugObj("data", data) +
+                aH.debugObj("qty", qty) +
+                (effect != null ? "" : aH.debugObj("offset", offset)));
 
         // Play the Bukkit effect the number of times specified
         if (effect != null) {
@@ -144,8 +154,8 @@ public class PlayEffectCommand extends AbstractCommand {
         // Play a ParticleEffect
         else {
             ParticleEffect.valueOf(particleEffect.name())
-                .play(location, visibility.asDouble(),
-                      offset.asFloat(), offset.asFloat(), offset.asFloat(), data.asFloat(), qty.asInt());
+                    .display(location, visibility.asDouble(),
+                            offset.asFloat(), offset.asFloat(), offset.asFloat(), data.asFloat(), qty.asInt());
         }
     }
 }
