@@ -30,20 +30,21 @@ public class AttackCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cancel")
-                && arg.matches("cancel, stop")) {
+                    && arg.matches("cancel, stop")) {
 
                 scriptEntry.addObject("cancel", "");
             }
 
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentType(dEntity.class)
-                    && arg.matchesPrefix("target")) {
+                    && arg.matchesPrefix("target, t")) {
                 // Single entity arg
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
 
             else if (!scriptEntry.hasObject("entities")
-                     && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(dEntity.class)
+                    && !arg.matchesPrefix("target, t")) {
                 // Entity dList arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
@@ -78,8 +79,8 @@ public class AttackCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
-                             aH.debugObj("entities", entities.toString()) +
-                             (target != null ? aH.debugObj("target", target) : ""));
+                aH.debugObj("entities", entities.toString()) +
+                (target != null ? aH.debugObj("target", target) : ""));
 
         // Go through all the entities and make them either attack
         // the target or stop attacking
@@ -94,8 +95,8 @@ public class AttackCommand extends AbstractCommand {
                 else {
                     // Only cancel navigation if the NPC is attacking something
                     if (nav.isNavigating()
-                        && nav.getTargetType().equals(TargetType.ENTITY)
-                        && nav.getEntityTarget().isAggressive()) {
+                            && nav.getTargetType().equals(TargetType.ENTITY)
+                            && nav.getEntityTarget().isAggressive()) {
 
                         nav.cancelNavigation();
                     }
