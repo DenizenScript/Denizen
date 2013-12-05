@@ -13,6 +13,9 @@ Scripts:
       On time changes:
         Frequency of check: 250t
   Queue speed: 0.5s
+  Scripts location:
+    Use default script folder: true
+    Alternative folder path: 'plugins/Denizen'
   Load scripts in subfolders: true
 
 # The default options for new Denizens

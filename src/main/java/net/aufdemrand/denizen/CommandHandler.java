@@ -975,10 +975,10 @@ public class CommandHandler {
         if (args.hasFlag('a')) {
             denizen.reloadSaves();
             denizen.reloadConfig();
-            ScriptHelper.resetHadAnError();
+            ScriptHelper.resetError();
             ScriptHelper.reloadScripts();
             Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml, Denizen/config.yml, and Denizen/scripts/... reloaded from disk to memory.");
-            if (ScriptHelper.getHadAnError()) {
+            if (ScriptHelper.hadError()) {
                 Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
             }
             List<String> events = new ArrayList<String>();
@@ -986,7 +986,7 @@ public class CommandHandler {
             events.add("reload scripts");
             context.put("all", Element.TRUE);
             context.put("sender", new Element(sender.getName()));
-            context.put("haderror", new Element(ScriptHelper.getHadAnError()));
+            context.put("haderror", new Element(ScriptHelper.hadError()));
             EventManager.doEvents(events, null, (sender instanceof Player) ? ((Player) sender) : null, context);
             return;
         }
@@ -1001,17 +1001,17 @@ public class CommandHandler {
                 Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
                 return;
             } else if (args.getString(1).equalsIgnoreCase("scripts")) {
-                ScriptHelper.resetHadAnError();
+                ScriptHelper.resetError();
                 ScriptHelper.reloadScripts();
                 Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
-                if (ScriptHelper.getHadAnError()) {
+                if (ScriptHelper.hadError()) {
                     Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
                 }
                 List<String> events = new ArrayList<String>();
                 Map<String, dObject> context = new HashMap<String, dObject>();
                 events.add("reload scripts");
                 context.put("all", Element.FALSE);
-                context.put("haderror", new Element(ScriptHelper.getHadAnError()));
+                context.put("haderror", new Element(ScriptHelper.hadError()));
                 context.put("sender", new Element(sender.getName()));
                 EventManager.doEvents(events, null, (sender instanceof Player) ? ((Player) sender) : null, context);
                 return;

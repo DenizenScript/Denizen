@@ -7,6 +7,23 @@ public class Settings {
 
     /*
 
+    # Scripts location settings
+
+    */
+
+    public static boolean useDefaultScriptPath() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Scripts location.Use default script folder", true);
+    }
+
+    public static String getAlternateScriptPath() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+        .getString("Scripts location.Alternative folder path", "plugins/Denizen");
+    }
+
+
+    /*
+
     # Whether Denizen should display debug in the console
 
     */

@@ -53,25 +53,40 @@ public class ScriptHelper {
         }
         return _yamlScripts;
     }
-    private static boolean HadAnError = false;
-    public static boolean getHadAnError() {
-        return HadAnError;
+
+
+    // Console will be alerted if error was had during reload
+    private static boolean hadError = false;
+
+    public static boolean hadError() {
+        return hadError;
     }
-    public static void resetHadAnError() {
-        HadAnError = false;
+
+    public static void resetError() {
+        hadError = false;
     }
+
+
     private static String _concatenateCoreScripts() {
 
         try {
-            File file = new File(DenizenAPI.getCurrentInstance()
-                    .getDataFolder() + File.separator + "scripts");
+            File file = null;
+            // Get the script directory
+            if (Settings.useDefaultScriptPath())
+                file = new File(DenizenAPI.getCurrentInstance()
+                        .getDataFolder() + File.separator + "scripts");
+            else
+                file = new File(Settings.getAlternateScriptPath().replace("/", File.separator));
+
+            // Check if the directory exists
             if(!file.exists()) {
                 dB.echoError("No script folder found, please create one.");
-                HadAnError = true;
+                hadError = true;
                 return "";
             }
 
-            // Get files
+
+            // Get files using script directory
             List<File> files = Utilities.listDScriptFiles(file, Settings.LoadScriptsInSubfolders());
 
             if (files.size() > 0) {
@@ -79,7 +94,8 @@ public class ScriptHelper {
 
                 YamlConfiguration yaml;
                 dB.log("Processing 'util.dscript'... ");
-                yaml = YamlConfiguration.loadConfiguration(DenizenAPI.getCurrentInstance().getResource("util.dscript"));
+                yaml = YamlConfiguration.loadConfiguration(DenizenAPI.getCurrentInstance()
+                        .getResource("util.dscript"));
                 sb.append(yaml.saveToString() + "\r\n");
 
                 dB.log("Processing outside scripts... ");
@@ -88,7 +104,7 @@ public class ScriptHelper {
                         sb.append(outsideConfig.saveToString() + "\r\n");
                     } catch (Exception e) {
                         dB.echoError("Woah! Error parsing outside scripts!");
-                        HadAnError = true;
+                        hadError = true;
                     }
                 }
 
@@ -103,12 +119,12 @@ public class ScriptHelper {
                             sb.append(saved + "\r\n");
                         else {
                             dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. See console for YAML errors.");
-                            HadAnError = true;
+                            hadError = true;
                         }
 
                     } catch (RuntimeException e) {
                         dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "!");
-                        HadAnError = true;
+                        hadError = true;
                         dB.echoError(e);
                     }
                 }
@@ -117,12 +133,12 @@ public class ScriptHelper {
                 return yamlKeysToUpperCase(sb.toString());
             } else {
                 dB.echoError(ChatColor.RED + "Woah! No scripts in /plugins/Denizen/scripts/ to load!");
-                HadAnError = true;
+                hadError = true;
             }
 
         } catch (Exception e) {
             dB.echoError(ChatColor.RED + "Woah! No script folder found in /plugins/Denizen/scripts/");
-            HadAnError = true;
+            hadError = true;
             dB.echoError(e);
         }
 
