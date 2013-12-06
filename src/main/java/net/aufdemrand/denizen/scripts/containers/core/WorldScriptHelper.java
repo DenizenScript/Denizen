@@ -3595,6 +3595,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getRightClicked().getLocation()));
         context.put("entity", entity.getDenizenObject());
+        context.put("item", item);
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
 
