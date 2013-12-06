@@ -1,8 +1,7 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
-import net.aufdemrand.denizen.events.core.CuboidEnterExitSmartEvent;
-import net.aufdemrand.denizen.events.core.EntitySpawnSmartEvent;
+import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dObject;
@@ -278,6 +277,7 @@ public class EventManager implements Listener {
         // Register all the 'Core' SmartEvents. This is called by Denizen's onEnable().
         registerSmartEvent(new EntitySpawnSmartEvent());
         registerSmartEvent(new CuboidEnterExitSmartEvent());
+        registerSmartEvent(new PlayerJumpSmartEvent());
     }
 
 
