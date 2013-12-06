@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-public class HealthCommand extends AbstractCommand  {
+public class HealthCommand extends AbstractCommand {
 
 
     @Override
@@ -20,19 +20,19 @@ public class HealthCommand extends AbstractCommand  {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("target")
-                    && arg.matches("player")){
+                    && arg.matches("player")) {
                 if (!scriptEntry.hasPlayer())
                     throw new InvalidArgumentsException("No player attached!");
                 scriptEntry.addObject("target", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("qty")
-                  && arg.matchesPrimitive(aH.PrimitiveType.Integer))
-                  scriptEntry.addObject("qty", arg.asElement());
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                scriptEntry.addObject("qty", arg.asElement());
 
             else if (!scriptEntry.hasObject("action")
-                && arg.matchesPrefix("state"))
-                    scriptEntry.addObject("action", arg.asElement());
+                    && arg.matchesPrefix("state"))
+                scriptEntry.addObject("action", arg.asElement());
 
             else arg.reportUnhandled();
         }
@@ -60,20 +60,24 @@ public class HealthCommand extends AbstractCommand  {
         Element action = scriptEntry.getElement("action");
         boolean isplayer = scriptEntry.getElement("target").asString().equalsIgnoreCase("player");
 
-        dB.report(scriptEntry, getName(), (qty != null?qty.debug():"") + (action != null?action.debug():""));
+        dB.report(scriptEntry, getName(), (qty != null ? qty.debug() : "") +
+                                          (action != null ? action.debug() : ""));
 
         if (qty == null && action == null)
             dB.echoError("Null quantity!");
-        if (action != null) {
+
+        if (action == null)
+            action = Element.TRUE;
+
+        if (!isplayer) {
             if (action.asString().equalsIgnoreCase("true"))
                 scriptEntry.getNPC().getCitizen().addTrait(HealthTrait.class);
             else if (action.asString().equalsIgnoreCase("false"))
                 scriptEntry.getNPC().getCitizen().removeTrait(HealthTrait.class);
+            else if (scriptEntry.getNPC().getCitizen().hasTrait(HealthTrait.class))
+                scriptEntry.getNPC().getCitizen().removeTrait(HealthTrait.class);
             else
-                if (scriptEntry.getNPC().getCitizen().hasTrait(HealthTrait.class))
-                    scriptEntry.getNPC().getCitizen().removeTrait(HealthTrait.class);
-                else
-                    scriptEntry.getNPC().getCitizen().addTrait(HealthTrait.class);
+                scriptEntry.getNPC().getCitizen().addTrait(HealthTrait.class);
         }
         if (qty != null) {
             if (isplayer) {

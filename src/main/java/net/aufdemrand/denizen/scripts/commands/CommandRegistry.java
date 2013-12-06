@@ -1265,7 +1265,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Health
-        // @Syntax health (target:player/{npc}) [<#>]
+        // @Syntax health (target:player/{npc}) [<#>] (state:{true}/false/toggle)
         // @Required 1
         // @Stable stable
         // @Short Changes the target's maximum health.
@@ -1275,11 +1275,12 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <e@entity.health>
         // <e@entity.health.max>
+        // <n@npc.has_trait[health]>
         // @Usage
         // Todo
         // -->
         registerCoreMember(HealthCommand.class,
-                "HEALTH", "health (target:player/{npc}) [<#>]", 1);
+                "HEALTH", "health (target:player/{npc}) [<#>] (state:{true}/false/toggle)", 1);
 
 
         // <--[command]
@@ -2527,8 +2528,8 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Syntax yaml [load/create/savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
-        // @Required 1
+        // @Syntax yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
+        // @Required 2
         // @Stable Todo
         // @Short Edits a YAML configuration file.
         // @Author Todo
@@ -2539,10 +2540,20 @@ public class CommandRegistry implements dRegistry {
         // <yaml[<idname>].read[<path>]>
         // <yaml[<idname>].list_keys[<path>]>
         // @Usage
-        // Todo
+        // Use to create a new YAML file
+        // - yaml create id:myfile
+        // @Usage
+        // Use to write to a YAML file
+        // - yaml write:my.key value:myvalue id:myfile
+        // @Usage
+        // Use to save a YAML file to disk
+        // - yaml savefile:myfile.yml id:myfile
+        // @Usage
+        // Use to load a YAML file from disk
+        // - yaml load:myfile.yml id:myfile
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [load/create/savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 1);
+                "YAML", "yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 2);
 
         // <--[command]
         // @Name Zap

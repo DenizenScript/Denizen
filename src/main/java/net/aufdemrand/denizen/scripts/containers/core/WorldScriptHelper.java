@@ -2306,11 +2306,9 @@ public class WorldScriptHelper implements Listener {
             // <--[event]
             // @Events
             // entity shoots block
-            // entity shoots <material>
-            // entity shoots <material> with <projectile>
+            // entity shoots <material> (with <projectile>)
             // <entity> shoots block
-            // <entity> shoots <material>
-            // <entity> shoots <material> with <projectile>
+            // <entity> shoots <material> (with <projectile>)
             //
             // @Triggers when a projectile shot by an entity hits a block.
             // @Context
@@ -2534,7 +2532,6 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player clicks in inventory (with <item>)
     // player (<click type>) clicks (<item>) (in <inventory>) (with <item>)
     // player (<click type>) clicks (<material>) (in <inventory>) (with <item>)
     // player (<click type>) clicks (<item>) (in <inventory>) (with <material>)
@@ -2741,7 +2738,6 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // item moves from inventory
     // item moves from inventory (to <inventory>)
     // item moves from <inventory> (to <inventory>)
     //
@@ -3129,10 +3125,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player changes world
-    // player changes world from <world>
-    // player changes world to <world>
-    // player changes world from <world> to <world>
+    // player changes world (from <world>) to (<world>)
     //
     // @Triggers when a player moves to a different world.
     // @Context
@@ -3241,8 +3234,7 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // command
-    // <command_name> command
-    // <command_name> command in <notable cuboid>
+    // <command_name> command (in <notable cuboid>)
     //
     // @Triggers when a player or console runs a Bukkit command. This happens before
     // any code of established commands allowing scripters to 'override' existing commands.
@@ -3386,8 +3378,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player fishes
-    // player fishes while <state>
+    // player fishes (while <state>)
     //
     // @Triggers when a player uses a fishing rod.
     // @Context
@@ -3433,8 +3424,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player changes gamemode
-    // player changes gamemode to <gamemode>
+    // player changes gamemode (to <gamemode>)
     //
     // @Triggers when a player's gamemode is changed.
     // @Context
@@ -3462,17 +3452,8 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player (<click type>) clicks (<material>) (with <item>)
-    // player right clicks block
-    // player left clicks block
-    // player right clicks block with <item>
-    // player left clicks block with <item>
-    // player right clicks <material>
-    // player left clicks <material>
-    // player right clicks <material> with <item>
-    // player left clicks <material> with <item>
-    // player right clicks <material> in <notable cuboid>
-    // player left clicks <material> in <notable cuboid>
+    // player <click type> clicks (<material>) (with <item>) (in <notable cuboid>)
+    // player <click type> clicks block (with <item>)
     // player stands on <pressure plate>
     //
     // @Triggers when a player clicks on a block or stands on a pressure plate.
@@ -3564,12 +3545,10 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player right clicks entity
-    // player right clicks entity with <item>
+    // player right clicks entity (with <item>)
     // player right clicks entity in <notable cuboid>
     // player right clicks entity in cuboid
-    // player right clicks <entity>
-    // player right clicks <entity> with <item>
+    // player right clicks <entity> (with <item>)
     // player right clicks <entity> in <notable cuboid>
     // player right clicks <entity> in cuboid
 
@@ -3595,6 +3574,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getRightClicked().getLocation()));
         context.put("entity", entity.getDenizenObject());
+        context.put("item", item);
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
 
