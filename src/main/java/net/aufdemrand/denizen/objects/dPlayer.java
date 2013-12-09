@@ -412,11 +412,29 @@ public class dPlayer implements dObject, Adjustable {
         /////////////////////
         //   ENTITY LIST ATTRIBUTES
         /////////////////
+        
+        // <--[tag]
+        // @attribute <p@player.target>
+        // @returns dEntity
+        // @description
+        // Returns Entity that the player is looking at in 50 range.
+        // -->
+        
         if (attribute.startsWith("target")) {
             int range = 50;
-            
-            if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
-             range = attribute.getIntContext(1);
+            int attribs = 1;
+
+            // <--[tag]
+            // @attribute <p@player.target.within[#]>
+            // @returns dEntity
+            // @description
+            // Returns Entity that the player is looking at in the specified range.
+            if (attribute.getAttribute(2).startsWith("within") &&
+                    attribute.hasContext(2) &&
+                    aH.matchesInteger(attribute.getContext(2))) {
+             attribs = 2;
+             range = attribute.getIntContext(2);
+            }
 
             List<Entity> entities = getPlayerEntity().getNearbyEntities(range, range, range);
             ArrayList<LivingEntity> possibleTargets = new ArrayList<LivingEntity>();
@@ -448,7 +466,6 @@ public class dPlayer implements dObject, Adjustable {
                 
                 if (b.getType() != Material.AIR) {
                     // Line of sight is broken
-                    Bukkit.broadcastMessage(b.getType().name());
                     break;
                 }
                 else {
@@ -463,12 +480,12 @@ public class dPlayer implements dObject, Adjustable {
                             (bz - .75 <= ez && ez <= bz + 1.75) &&
                             (by - 1 <= ey && ey <= by + 2.5)) {
                             // Entity is close enough, so return it
-                            return new dEntity(possibleTarget).getAttribute(attribute.fulfill(1));
+                            return new dEntity(possibleTarget).getAttribute(attribute.fulfill(attribs));
                         }
                     }
                 }
             }
-            return Element.NULL.getAttribute(attribute.fulfill(1));
+            return Element.NULL.getAttribute(attribute.fulfill(attribs));
         }
         
         // <--[tag]
