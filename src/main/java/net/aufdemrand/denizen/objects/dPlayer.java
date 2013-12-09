@@ -12,8 +12,19 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 
-import org.bukkit.*;
+import org.bukkit.Achievement;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.WeatherType;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BlockIterator;
 
 public class dPlayer implements dObject, Adjustable {
 
@@ -401,7 +412,65 @@ public class dPlayer implements dObject, Adjustable {
         /////////////////////
         //   ENTITY LIST ATTRIBUTES
         /////////////////
+        if (attribute.startsWith("target")) {
+            int range = 50;
+            
+            if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
+             range = attribute.getIntContext(1);
 
+            List<Entity> entities = getPlayerEntity().getNearbyEntities(range, range, range);
+            ArrayList<LivingEntity> possibleTargets = new ArrayList<LivingEntity>();
+            for (Entity entity : entities) {
+                if (entity instanceof LivingEntity) {
+                    possibleTargets.add((LivingEntity) entity);
+                }
+            }
+            
+            // Find the valid target
+            BlockIterator bi;
+            try {
+                bi = new BlockIterator(getPlayerEntity(), range);
+            }
+            catch (IllegalStateException e) {
+                return null;
+            }
+            Block b;
+            Location l;
+            int bx, by, bz;
+            double ex, ey, ez;
+            
+            // Loop through player's line of sight
+            while (bi.hasNext()) {
+                b = bi.next();
+                bx = b.getX();
+                by = b.getY();
+                bz = b.getZ();
+                
+                if (b.getType() != Material.AIR) {
+                    // Line of sight is broken
+                    Bukkit.broadcastMessage(b.getType().name());
+                    break;
+                }
+                else {
+                    // Check for entities near this block in the line of sight
+                    for (LivingEntity possibleTarget : possibleTargets) {
+                        l = possibleTarget.getLocation();
+                        ex = l.getX();
+                        ey = l.getY();
+                        ez = l.getZ();
+                        
+                        if ((bx - .75 <= ex && ex <= bx + 1.75) &&
+                            (bz - .75 <= ez && ez <= bz + 1.75) &&
+                            (by - 1 <= ey && ey <= by + 2.5)) {
+                            // Entity is close enough, so return it
+                            return new dEntity(possibleTarget).getAttribute(attribute.fulfill(1));
+                        }
+                    }
+                }
+            }
+            return Element.NULL.getAttribute(attribute.fulfill(1));
+        }
+        
         // <--[tag]
         // @attribute <p@player.list>
         // @returns dList(dPlayer)
