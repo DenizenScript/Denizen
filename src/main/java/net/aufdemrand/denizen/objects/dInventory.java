@@ -812,6 +812,16 @@ public class dInventory implements dObject, Notable {
         if (attribute.startsWith("equipment")) {
             return getEquipment().getAttribute(attribute.fulfill(1));
         }
+        
+        // <--[tag]
+        // @attribute <in@inventory.title>
+        // @returns Element
+        // @description
+        // Returns the title of the inventory.
+        // -->
+        if (attribute.startsWith("title")) {
+            return inventory.getTitle();
+        }
 
         // <--[tag]
         // @attribute <in@inventory.list_contents>

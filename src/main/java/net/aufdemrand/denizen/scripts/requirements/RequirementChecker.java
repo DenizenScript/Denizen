@@ -73,6 +73,25 @@ public class RequirementChecker {
             //
             // Evaluate the requirement
             //
+            
+            // <--[requirement]
+            // @Name ValueOf
+            // @Syntax valueof [<tag>]
+            // @Required 1
+            // @Stable stable
+            // @Short Checks if the tag is true.
+            //
+            // @Description
+            // Checks if a specified tag or value of some sort returns "true".
+            //
+            // @Usage
+            // Check if a simple tag is true.
+            // - valueof <player.is_player>
+            //
+            // @Usage
+            // Check a comparator (See <@link language operator> for more information...)
+            // - valueof <player.health.is[LESS].than[10]>
+            // -->
             if (reqString.equalsIgnoreCase("valueof")) {
                 String arg = argumentList.get(1);
 
