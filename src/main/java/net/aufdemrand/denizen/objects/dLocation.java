@@ -739,20 +739,40 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.entities.within[X]>
+            // @attribute <l@location.find.entities[<entity>|...].within[X]>
             // @returns dList
             // @description
-            // Returns a list of entities within a radius.
+            // Returns a list of entities within a radius, with an optional search parameter
+            // for the entity type.
             // -->
             else if (attribute.startsWith("entities")
                 && attribute.getAttribute(2).startsWith("within")
                 && attribute.hasContext(2)) {
+                dList ent_list = new dList();
+                if (attribute.hasContext(1)) {
+                    for (String ent : attribute.getContext(1).split("\\|")) {
+                        if (dEntity.matches(ent)) 
+                            ent_list.add(ent.toUpperCase());
+                    }
+                }
                 ArrayList<dEntity> found = new ArrayList<dEntity>();
                 int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 attribute.fulfill(2);
-                for (Entity entity : getWorld().getEntities())
-                    if (Utilities.checkLocation(this, entity.getLocation(), radius))
-                                found.add(new dEntity(entity));
+                for (Entity entity : getWorld().getEntities()) {
+                    if (Utilities.checkLocation(this, entity.getLocation(), radius)) {
+                        dEntity current = new dEntity(entity);
+                        if (!ent_list.isEmpty()) {
+                            for (String ent : ent_list) {
+                                if (entity.getType().name().equals(ent) || current.identify().equalsIgnoreCase(ent)) {
+                                    found.add(current);
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                            found.add(current);
+                    }
+                }
 
                 Collections.sort(found, new Comparator<dEntity>() {
                     @Override
