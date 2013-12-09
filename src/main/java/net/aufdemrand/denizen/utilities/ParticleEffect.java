@@ -75,7 +75,7 @@ public enum ParticleEffect {
 
     private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<String, ParticleEffect>();
     private static final Map<Integer, ParticleEffect> ID_MAP = new HashMap<Integer, ParticleEffect>();
-    private static final double MAX_RANGE = 20.0D;
+    private static final double MAX_RANGE = 100.0D; // When auf updated, it was 20.0 max range
     private static Constructor<?> PARTICLE_PACKET_CONSTRUCTOR;
 
     static {
@@ -192,7 +192,7 @@ public enum ParticleEffect {
      */
     public void display(Location loc, double range, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         if (range > MAX_RANGE)
-            throw new IllegalArgumentException("Range has to be lower/equal the maximum of 20");
+            throw new IllegalArgumentException("Radius effect has to be lower/equal the maximum of 100");
         sendPacket(getPlayersInRange(loc, range), createPacket(loc, offsetX, offsetY, offsetZ, speed, amount));
     }
 
