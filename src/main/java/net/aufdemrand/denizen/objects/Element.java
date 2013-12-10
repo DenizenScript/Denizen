@@ -236,11 +236,22 @@ public class Element implements dObject {
 
             // Operator is the value of the .is[] context. Valid are Comparable.Operators, same
             // as used by the IF command.
-            com.setOperator(Comparable.Operator.valueOf(operator
-                    .replace("==", "EQUALS").replace(">=", "OR_MORE").replace("<=", "OR_LESS")
-                    .replace("<", "LESS").replace(">", "MORE").replace("=", "EQUALS")));
+            Comparable.Operator comparableOperator = null;
+            try {
+                comparableOperator = Comparable.Operator.valueOf(operator.replace("==", "EQUALS")
+                        .replace(">=", "OR_MORE").replace("<=", "OR_LESS").replace("<", "LESS")
+                        .replace(">", "MORE").replace("=", "EQUALS").toUpperCase());
+            }
+            catch (IllegalArgumentException e) { }
 
-            return new Element(com.determineOutcome()).getAttribute(attribute.fulfill(2));
+            if (comparableOperator != null) {
+                com.setOperator(comparableOperator);
+
+                return new Element(com.determineOutcome()).getAttribute(attribute.fulfill(2));
+            }
+            else {
+                dB.echoError("Unknown operator '" + operator + "'.");
+            }
         }
 
 
