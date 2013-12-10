@@ -417,7 +417,8 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.target>
         // @returns dEntity
         // @description
-        // Returns Entity that the player is looking at in 50 range.
+        // Returns the entity that the player is looking at, within a maximum range of 50 blocks,
+        // or null if the player is not looking at an entity.
         // -->
 
         if (attribute.startsWith("target")) {
@@ -428,7 +429,8 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.target.within[#]>
             // @returns dEntity
             // @description
-            // Returns Entity that the player is looking at in the specified range.
+            // Returns the entity that the player is looking at within the specified range limit,
+            // or null if the player is not looking at an entity.
             if (attribute.getAttribute(2).startsWith("within") &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {

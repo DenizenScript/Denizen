@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.aufdemrand.denizen.utilities.ReflectionUtil;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -75,7 +76,7 @@ public enum ParticleEffect {
 
     private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<String, ParticleEffect>();
     private static final Map<Integer, ParticleEffect> ID_MAP = new HashMap<Integer, ParticleEffect>();
-    private static final double MAX_RANGE = 100.0D; // When auf updated, it was 20.0 max range
+    private static final double MAX_RANGE = 100.0D; // Denizen: Modified from original range of 20.0D
     private static Constructor<?> PARTICLE_PACKET_CONSTRUCTOR;
 
     static {
@@ -158,7 +159,8 @@ public enum ParticleEffect {
     }
 
     private static void sendPacket(Player p, Object packet) {
-        if (packet != null)
+        // Denizen: Check player against NPC registry to prevent errors
+        if (packet != null && !CitizensAPI.getNPCRegistry().isNPC(p))
             try {
                 Object entityPlayer = ReflectionUtil.invokeMethod("getHandle", p.getClass(), p);
                 Object playerConnection = ReflectionUtil.getValue("playerConnection", entityPlayer);
@@ -188,11 +190,12 @@ public enum ParticleEffect {
     }
 
     /**
-     * Displays a particle effect which is visible for all players whitin a certain range in the the world of @param loc
+     * Displays a particle effect which is visible for all players within a certain range in the the world of @param loc
      */
     public void display(Location loc, double range, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        // Denizen: Clean invalid range message (Also on following matching messages)
         if (range > MAX_RANGE)
-            throw new IllegalArgumentException("Radius effect has to be lower/equal the maximum of 100");
+            throw new IllegalArgumentException("Effect radius must be less than or equal to the maximum range of 100 blocks");
         sendPacket(getPlayersInRange(loc, range), createPacket(loc, offsetX, offsetY, offsetZ, speed, amount));
     }
 
@@ -204,18 +207,18 @@ public enum ParticleEffect {
     }
 
     /**
-     * Displays an icon crack (item break) effect which is visible for all players whitin the maximum range of 20 blocks in the world of @param loc
+     * Displays an icon crack (item break) effect which is visible for all players within the maximum range of 20 blocks in the world of @param loc
      */
     public static void displayIconCrack(Location loc, int id, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         displayIconCrack(loc, MAX_RANGE, id, offsetX, offsetY, offsetZ, speed, amount);
     }
 
     /**
-     * Displays an icon crack (item break) effect which is visible for all players whitin a certain range in the the world of @param loc
+     * Displays an icon crack (item break) effect which is visible for all players within a certain range in the the world of @param loc
      */
     public static void displayIconCrack(Location loc, double range, int id, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         if (range > MAX_RANGE)
-            throw new IllegalArgumentException("Range has to be lower/equal the maximum of 20");
+            throw new IllegalArgumentException("Effect radius must be less than or equal to the maximum range of 100 blocks");
         sendPacket(getPlayersInRange(loc, range), createIconCrackPacket(id, loc, offsetX, offsetY, offsetZ, speed, amount));
     }
 
@@ -227,18 +230,18 @@ public enum ParticleEffect {
     }
 
     /**
-     * Displays a block crack (block break) effect which is visible for all players whitin the maximum range of 20 blocks in the world of @param loc
+     * Displays a block crack (block break) effect which is visible for all players within the maximum range of 20 blocks in the world of @param loc
      */
     public static void displayBlockCrack(Location loc, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         displayBlockCrack(loc, MAX_RANGE, id, data, offsetX, offsetY, offsetZ, speed, amount);
     }
 
     /**
-     * Displays a block crack (block break) effect which is visible for all players whitin a certain range in the the world of @param loc
+     * Displays a block crack (block break) effect which is visible for all players within a certain range in the the world of @param loc
      */
     public static void displayBlockCrack(Location loc, double range, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         if (range > MAX_RANGE)
-            throw new IllegalArgumentException("Range has to be lower/equal the maximum of 20");
+            throw new IllegalArgumentException("Effect radius must be less than or equal to the maximum range of 100 blocks");
         sendPacket(getPlayersInRange(loc, range), createBlockCrackPacket(id, data, loc, offsetX, offsetY, offsetZ, speed, amount));
     }
 
@@ -250,18 +253,18 @@ public enum ParticleEffect {
     }
 
     /**
-     * Displays a block dust effect which is visible for all players whitin the maximum range of 20 blocks in the world of @param loc
+     * Displays a block dust effect which is visible for all players within the maximum range of 20 blocks in the world of @param loc
      */
     public static void displayBlockDust(Location loc, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         displayBlockDust(loc, MAX_RANGE, id, data, offsetX, offsetY, offsetZ, speed, amount);
     }
 
     /**
-     * Displays a block dust effect which is visible for all players whitin a certain range in the the world of @param loc
+     * Displays a block dust effect which is visible for all players within a certain range in the the world of @param loc
      */
     public static void displayBlockDust(Location loc, double range, int id, byte data, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         if (range > MAX_RANGE)
-            throw new IllegalArgumentException("Range has to be lower/equal the maximum of 20");
+            throw new IllegalArgumentException("Effect radius must be less than or equal to the maximum range of 100 blocks");
         sendPacket(getPlayersInRange(loc, range), createBlockDustPacket(id, data, loc, offsetX, offsetY, offsetZ, speed, amount));
     }
 

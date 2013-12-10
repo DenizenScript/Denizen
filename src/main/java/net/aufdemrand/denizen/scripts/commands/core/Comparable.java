@@ -13,6 +13,8 @@ public class Comparable {
     // @group Comparables
     // @description
     // A Comparable is a method that the IF command and Element dObject uses to compare objects.
+    // (This lang is TODO! )
+    // See <@link language operator>
     // -->
 
     // <--[language]
