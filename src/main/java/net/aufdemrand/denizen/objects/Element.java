@@ -689,6 +689,29 @@ public class Element implements dObject {
             return new Element(element.toLowerCase()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <e@element.totitlecase>
+        // @returns Element
+        // @description
+        // Returns The Value Of An Element In Title Case.
+        // -->
+        if (attribute.startsWith("totitlecase")) {
+            if (element.length() == 0) {
+                return new Element("").getAttribute(attribute.fulfill(1));
+            }
+            StringBuilder TitleCase = new StringBuilder(element.length());
+            String Upper = element.toUpperCase();
+            String Lower = element.toLowerCase();
+            TitleCase.append(Upper.charAt(0));
+            for (int i = 1; i < element.length(); i++) {
+                if (element.charAt(i - 1) == ' ')
+                    TitleCase.append(Upper.charAt(i));
+                else
+                    TitleCase.append(Lower.charAt(i));
+            }
+            return new Element(TitleCase.toString()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <el@element.substring[<#>(,<#>)]>
         // @returns Element
         // @description
