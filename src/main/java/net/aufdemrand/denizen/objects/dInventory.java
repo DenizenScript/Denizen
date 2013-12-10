@@ -812,7 +812,7 @@ public class dInventory implements dObject, Notable {
         if (attribute.startsWith("equipment")) {
             return getEquipment().getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <in@inventory.title>
         // @returns Element

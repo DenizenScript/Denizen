@@ -572,7 +572,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         // <--[tag]
         // @attribute <l@location.yaw.simple>
-        // @returns Element(Decimal)
+        // @returns Element
         // @description
         // Returns the yaw as 'North', 'South', 'East', or 'West'.
         // -->

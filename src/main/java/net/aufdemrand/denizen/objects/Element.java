@@ -662,7 +662,7 @@ public class Element implements dObject {
             return new Element(ChatColor.stripColor(element)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@element.trim>
+        // @attribute <el@element.trim>
         // @returns Element
         // @description
         // Returns the value of an element minus any leading or trailing whitespace.
@@ -671,7 +671,7 @@ public class Element implements dObject {
             return new Element(element.trim()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@element.upper>
+        // @attribute <el@element.upper>
         // @returns Element
         // @description
         // Returns the value of an element in all uppercase letters.
@@ -680,7 +680,7 @@ public class Element implements dObject {
             return new Element(element.toUpperCase()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@element.lower>
+        // @attribute <el@element.lower>
         // @returns Element
         // @description
         // Returns the value of an element in all lowercase letters.
@@ -689,7 +689,7 @@ public class Element implements dObject {
             return new Element(element.toLowerCase()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@element.totitlecase>
+        // @attribute <el@element.totitlecase>
         // @returns Element
         // @description
         // Returns The Value Of An Element In Title Case.
