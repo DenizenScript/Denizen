@@ -571,6 +571,30 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         // <--[tag]
+        // @attribute <l@location.yaw.simple>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the yaw as 'North', 'South', 'East', or 'West'.
+        // -->
+        if (attribute.startsWith("yaw.simple")) {
+            if (getYaw() < 45)
+                return new Element("South")
+                    .getAttribute(attribute.fulfill(2));
+            else if (getYaw() < 135)
+                return new Element("West")
+                        .getAttribute(attribute.fulfill(2));
+            else if (getYaw() < 225)
+                return new Element("North")
+                        .getAttribute(attribute.fulfill(2));
+            else if (getYaw() < 315)
+                return new Element("East")
+                        .getAttribute(attribute.fulfill(2));
+            else
+                return new Element("South")
+                        .getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
         // @attribute <l@location.yaw.raw>
         // @returns Element(Decimal)
         // @description
@@ -751,7 +775,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 dList ent_list = new dList();
                 if (attribute.hasContext(1)) {
                     for (String ent : attribute.getContext(1).split("\\|")) {
-                        if (dEntity.matches(ent)) 
+                        if (dEntity.matches(ent))
                             ent_list.add(ent.toUpperCase());
                     }
                 }
