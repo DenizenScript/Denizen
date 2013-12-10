@@ -412,14 +412,15 @@ public class dPlayer implements dObject, Adjustable {
         /////////////////////
         //   ENTITY LIST ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <p@player.target>
         // @returns dEntity
         // @description
-        // Returns Entity that the player is looking at in 50 range.
+        // Returns the entity that the player is looking at, within a maximum range of 50 blocks,
+        // or null if the player is not looking at an entity.
         // -->
-        
+
         if (attribute.startsWith("target")) {
             int range = 50;
             int attribs = 1;
@@ -428,7 +429,8 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.target.within[#]>
             // @returns dEntity
             // @description
-            // Returns Entity that the player is looking at in the specified range.
+            // Returns the entity that the player is looking at within the specified range limit,
+            // or null if the player is not looking at an entity.
             if (attribute.getAttribute(2).startsWith("within") &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {
@@ -443,27 +445,27 @@ public class dPlayer implements dObject, Adjustable {
                     possibleTargets.add((LivingEntity) entity);
                 }
             }
-            
+
             // Find the valid target
             BlockIterator bi;
             try {
                 bi = new BlockIterator(getPlayerEntity(), range);
             }
             catch (IllegalStateException e) {
-                return null;
+                return Element.NULL.getAttribute(attribute.fulfill(attribs));
             }
             Block b;
             Location l;
             int bx, by, bz;
             double ex, ey, ez;
-            
+
             // Loop through player's line of sight
             while (bi.hasNext()) {
                 b = bi.next();
                 bx = b.getX();
                 by = b.getY();
                 bz = b.getZ();
-                
+
                 if (b.getType() != Material.AIR) {
                     // Line of sight is broken
                     break;
@@ -475,7 +477,7 @@ public class dPlayer implements dObject, Adjustable {
                         ex = l.getX();
                         ey = l.getY();
                         ez = l.getZ();
-                        
+
                         if ((bx - .75 <= ex && ex <= bx + 1.75) &&
                             (bz - .75 <= ez && ez <= bz + 1.75) &&
                             (by - 1 <= ey && ey <= by + 2.5)) {
@@ -487,7 +489,7 @@ public class dPlayer implements dObject, Adjustable {
             }
             return Element.NULL.getAttribute(attribute.fulfill(attribs));
         }
-        
+
         // <--[tag]
         // @attribute <p@player.list>
         // @returns dList(dPlayer)

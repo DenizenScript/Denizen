@@ -236,11 +236,22 @@ public class Element implements dObject {
 
             // Operator is the value of the .is[] context. Valid are Comparable.Operators, same
             // as used by the IF command.
-            com.setOperator(Comparable.Operator.valueOf(operator
-                    .replace("==", "EQUALS").replace(">=", "OR_MORE").replace("<=", "OR_LESS")
-                    .replace("<", "LESS").replace(">", "MORE").replace("=", "EQUALS")));
+            Comparable.Operator comparableOperator = null;
+            try {
+                comparableOperator = Comparable.Operator.valueOf(operator.replace("==", "EQUALS")
+                        .replace(">=", "OR_MORE").replace("<=", "OR_LESS").replace("<", "LESS")
+                        .replace(">", "MORE").replace("=", "EQUALS").toUpperCase());
+            }
+            catch (IllegalArgumentException e) { }
 
-            return new Element(com.determineOutcome()).getAttribute(attribute.fulfill(2));
+            if (comparableOperator != null) {
+                com.setOperator(comparableOperator);
+
+                return new Element(com.determineOutcome()).getAttribute(attribute.fulfill(2));
+            }
+            else {
+                dB.echoError("Unknown operator '" + operator + "'.");
+            }
         }
 
 
@@ -651,7 +662,7 @@ public class Element implements dObject {
             return new Element(ChatColor.stripColor(element)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@element.trim>
+        // @attribute <el@element.trim>
         // @returns Element
         // @description
         // Returns the value of an element minus any leading or trailing whitespace.
@@ -660,7 +671,7 @@ public class Element implements dObject {
             return new Element(element.trim()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@element.upper>
+        // @attribute <el@element.upper>
         // @returns Element
         // @description
         // Returns the value of an element in all uppercase letters.
@@ -669,13 +680,36 @@ public class Element implements dObject {
             return new Element(element.toUpperCase()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@element.lower>
+        // @attribute <el@element.lower>
         // @returns Element
         // @description
         // Returns the value of an element in all lowercase letters.
         // -->
         if (attribute.startsWith("lower"))
             return new Element(element.toLowerCase()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.totitlecase>
+        // @returns Element
+        // @description
+        // Returns The Value Of An Element In Title Case.
+        // -->
+        if (attribute.startsWith("totitlecase")) {
+            if (element.length() == 0) {
+                return new Element("").getAttribute(attribute.fulfill(1));
+            }
+            StringBuilder TitleCase = new StringBuilder(element.length());
+            String Upper = element.toUpperCase();
+            String Lower = element.toLowerCase();
+            TitleCase.append(Upper.charAt(0));
+            for (int i = 1; i < element.length(); i++) {
+                if (element.charAt(i - 1) == ' ')
+                    TitleCase.append(Upper.charAt(i));
+                else
+                    TitleCase.append(Lower.charAt(i));
+            }
+            return new Element(TitleCase.toString()).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.substring[<#>(,<#>)]>

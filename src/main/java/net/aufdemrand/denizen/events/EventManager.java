@@ -95,12 +95,11 @@ public class EventManager implements Listener {
 
         }
 
-        // Register any custom commands found with Bukkit
-        // TODO:
+        // TODO: Register any custom commands found with Bukkit
 
     }
 
-    private Plugin plugin  = DenizenAPI.getCurrentInstance();
+    private Plugin plugin = DenizenAPI.getCurrentInstance();
 
     public void registerCommand(String... aliases) {
         PluginCommand command = getCommand(aliases[0], plugin);
@@ -153,6 +152,18 @@ public class EventManager implements Listener {
 
         if (dB.showEventsTrimming) dB.echoApproval("Trimming world events '" + event.toString() + '\'');
 
+        // Remove any duplicate event names
+        for (int i = 0; i < event.size(); i++) {
+            for (int x = 0; x < event.size(); x++) {
+                if (i != x && event.get(i).equalsIgnoreCase(event.get(x))) {
+                    event.remove(i);
+                    i--;
+                    break;
+                }
+            }
+        }
+
+        // Create a new list, only containing events that have existing scripts
         for (String e : event)
             if (events.containsKey("ON " + e.toUpperCase()))
                 parsed.add(e);
