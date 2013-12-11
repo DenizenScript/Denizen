@@ -244,7 +244,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
     }
 
     public dLocation(World world, double x, double y, double z, float yaw, float pitch) {
-        super(world, x, y, z, pitch, yaw);
+        super(world, x, y, z, yaw, pitch);
     }
 
 
