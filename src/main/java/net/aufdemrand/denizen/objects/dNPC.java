@@ -17,7 +17,9 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
+import net.citizensnpcs.trait.Poses;
 import net.citizensnpcs.util.Anchor;
+import net.citizensnpcs.util.Pose;
 import net.minecraft.server.v1_7_R1.EntityLiving;
 
 import org.bukkit.ChatColor;
@@ -367,7 +369,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <n@npc.anchor[name]>
+        // @attribute <n@npc.anchor[<name>]>
         // @returns dLocation
         // @description
         // returns the location associated with the specified anchor, or null if it doesn't exist.
@@ -381,7 +383,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <n@npc.has_flag[flag_name]>
+        // @attribute <n@npc.has_flag[<flag_name>]>
         // @returns Element(Boolean)
         // @description
         // returns true if the NPC has the specified flag, otherwise returns false.
@@ -394,7 +396,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <n@npc.flag[flag_name]>
+        // @attribute <n@npc.flag[<flag_name>]>
         // @returns Flag dList
         // @description
         // returns the specified flag from the NPC.
@@ -418,7 +420,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <n@npc.constant[constant_name]>
+        // @attribute <n@npc.constant[<constant_name>]>
         // @returns Element
         // @description
         // returns the specified constant from the NPC.
@@ -435,6 +437,37 @@ public class dNPC implements dObject, Adjustable {
                     return Element.NULL.getAttribute(attribute.fulfill(1));
                 }
             }
+        }
+
+        // <--[tag]
+        // @attribute <n@npc.has_pose[<name>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the NPC has the specified pose, otherwise returns false.
+        // -->
+        if (attribute.startsWith("has_pose")) {
+            if (attribute.hasContext(1))
+                return new Element(getCitizen().getTrait(Poses.class).hasPose(attribute.getContext(1)))
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <n@npc.get_pose[<name>]>
+        // @returns dLocation
+        // @description
+        // Returns the pose as a dLocation with x, y, and z set to 0, and the world set to the first
+        // possible available world Bukkit knows about.
+        // -->
+        if (attribute.startsWith("get_pose")) {
+            if (attribute.hasContext(1)) {
+                Pose pose = getCitizen().getTrait(Poses.class).getPose(attribute.getContext(1));
+                return new dLocation(org.bukkit.Bukkit.getWorlds().get(0), 0, 0 ,0, pose.getYaw(), pose.getPitch())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else
+                return Element.NULL.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
