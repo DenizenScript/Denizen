@@ -56,12 +56,14 @@ import net.aufdemrand.denizen.tags.Attribute;
 // | object notation: l@    can reference unique objects: no     can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   l@<x>,<y>,<z>,<world_name> - fetches a specific location
+// |   l@<x>,<y>,<z>,<pitch>,<yaw>,<world_name> - fetches a specific location and direction
 // |   l@<notable_location_name> - fetches the location that has been 'noted' with the specified ID
 //
 // + ----- dEntity ------+
 // | object notation: e@    can reference unique objects: yes    can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   e@<entity_type> - fetches a new entity with the specified type as implemented by Bukkit's entity type enumeration
+// |   e@<entity_type>,<setting> - fetches a new entity of the specified type with a custom setting unique to the type
 // |   e@<entity_script_name> - fetches a new custom entity as specified by the referenced entity script (soon)
 // |   e@<entity_id> - fetches the entity that has the (temporary) entity ID set by Bukkit
 // |   e@random - fetches a new, random entity
