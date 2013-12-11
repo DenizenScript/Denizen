@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
@@ -414,11 +415,12 @@ public class dPlayer implements dObject, Adjustable {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.target>
+        // @attribute <p@player.target[npc/<entity>/<entity.type>|..]>
         // @returns dEntity
         // @description
         // Returns the entity that the player is looking at, within a maximum range of 50 blocks,
         // or null if the player is not looking at an entity.
+        // The player can use a list of entities or entity types to filter the possible targets.
         // -->
 
         if (attribute.startsWith("target")) {
@@ -426,11 +428,12 @@ public class dPlayer implements dObject, Adjustable {
             int attribs = 1;
 
             // <--[tag]
-            // @attribute <p@player.target.within[#]>
+            // @attribute <p@player.target[npc/<entity>/<entity.type>|..].within[#]>
             // @returns dEntity
             // @description
             // Returns the entity that the player is looking at within the specified range limit,
             // or null if the player is not looking at an entity.
+            // The player can use a list of entities or entity types to filter the possible targets.
             if (attribute.getAttribute(2).startsWith("within") &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {
@@ -442,7 +445,32 @@ public class dPlayer implements dObject, Adjustable {
             ArrayList<LivingEntity> possibleTargets = new ArrayList<LivingEntity>();
             for (Entity entity : entities) {
                 if (entity instanceof LivingEntity) {
-                    possibleTargets.add((LivingEntity) entity);
+                        
+                    // if we have a context for entity types, check the entity
+                    if (attribute.hasContext(1)) {
+                        for (String ent : attribute.getContext(1).split("\\|")) {
+                            boolean valid = false;
+
+                            if (ent.equalsIgnoreCase("npc") && CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                                valid = true;
+                            }
+                            else if (dEntity.matches(ent)) {
+                                // only accept generic entities that are not npcs
+                                if (dEntity.valueOf(ent).isGeneric()) {
+                                    if (!CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                                        valid = true;
+                                    }
+                                }
+                                else {
+                                    valid = true;
+                                }
+                            }
+                            if (valid) possibleTargets.add((LivingEntity) entity);
+                        }
+                    } else { // no entity type specified
+                        possibleTargets.add((LivingEntity) entity);
+                        entity.getType();
+                    }
                 }
             }
 
@@ -478,8 +506,8 @@ public class dPlayer implements dObject, Adjustable {
                         ey = l.getY();
                         ez = l.getZ();
 
-                        if ((bx - .75 <= ex && ex <= bx + 1.75) &&
-                            (bz - .75 <= ez && ez <= bz + 1.75) &&
+                        if ((bx - .50 <= ex && ex <= bx + 1.50) &&
+                            (bz - .50 <= ez && ez <= bz + 1.50) &&
                             (by - 1 <= ey && ey <= by + 2.5)) {
                             // Entity is close enough, so return it
                             return new dEntity(possibleTarget).getAttribute(attribute.fulfill(attribs));
