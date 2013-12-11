@@ -18,7 +18,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class InventoryCommand extends AbstractCommand {
 
-    private enum Action { OPEN, COPY, MOVE, SWAP, ADD, REMOVE, KEEP, EXCLUDE, FILL, CLEAR }
+    private enum Action { OPEN, COPY, MOVE, SWAP, ADD, REMOVE, KEEP, EXCLUDE, FILL, CLEAR, UPDATE }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -138,6 +138,13 @@ public class InventoryCommand extends AbstractCommand {
                 case CLEAR:
                     destination.clear();
                     break;
+
+                // If this is a player inventory, update it
+                case UPDATE:
+                    if (!destination.update())
+                        throw new CommandExecutionException("Only player inventories can be force-updated!");
+                    break;
+
             }
         }
     }

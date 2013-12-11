@@ -1321,7 +1321,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Inventory
-        // @Syntax inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (destination:<inventory>) (origin:<inventory>/<item>|...)
+        // @Syntax inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)
         // @Required 1
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
@@ -1336,7 +1336,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (destination:<inventory>) (origin:<inventory>/<item>|...)", 1);
+                "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)", 1);
 
 
         // <--[command]
