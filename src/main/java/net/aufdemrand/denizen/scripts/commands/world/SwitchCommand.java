@@ -9,10 +9,15 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_7_R1.Block;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -82,8 +87,9 @@ public class SwitchCommand extends AbstractCommand {
         int duration = ((Duration)scriptEntry.getObject("duration")).getSecondsAsInt();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
 
+        final Player player = scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getPlayerEntity(): null;
         // Switch the Block
-        switchBlock(interactLocation, switchState);
+        switchBlock(interactLocation, switchState, player);
 
         // TODO: Rewrite the below code to not use freakin' NMS!
         // If duration set, schedule a delayed task.
@@ -99,10 +105,10 @@ public class SwitchCommand extends AbstractCommand {
                     // Check to see if the state of the block is what is expected. If switched during
                     // the duration, the switchback is cancelled.
                     if (switchState == SwitchState.OFF && !((interactLocation.getBlock().getData() & 0x8) > 0))
-                        switchBlock(interactLocation, SwitchState.ON);
+                        switchBlock(interactLocation, SwitchState.ON, player);
                     else if (switchState == SwitchState.ON && ((interactLocation.getBlock().getData() & 0x8) > 0))
-                        switchBlock(interactLocation, SwitchState.OFF);
-                    else if (switchState == SwitchState.TOGGLE) switchBlock(interactLocation, SwitchState.TOGGLE);
+                        switchBlock(interactLocation, SwitchState.OFF, player);
+                    else if (switchState == SwitchState.TOGGLE) switchBlock(interactLocation, SwitchState.TOGGLE, player);
                 }
             }, duration * 20));
         }
@@ -110,10 +116,28 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
-    public void switchBlock(Location interactLocation, SwitchState switchState) {
+    public void switchBlock(Location interactLocation, SwitchState switchState, Player player) {
         World world = interactLocation.getWorld();
         boolean currentState = (interactLocation.getBlock().getData() & 0x8) > 0;
         String state = switchState.toString();
+
+        // Try for a linked player
+        CraftPlayer craftPlayer = (CraftPlayer) player;
+        if (craftPlayer == null && Bukkit.getOnlinePlayers().length > 0) {
+            // If there's none, link any player
+            if (Bukkit.getOnlinePlayers().length > 0) {
+                craftPlayer = (CraftPlayer) Bukkit.getOnlinePlayers()[0];
+            }
+            else {
+                // If there are no players, link any Human NPC
+                for (NPC npc: CitizensAPI.getNPCRegistry()) {
+                    if (npc.isSpawned() && npc.getEntity() instanceof Player) {
+                        craftPlayer = (CraftPlayer) npc.getEntity();
+                        break;
+                    }
+                }
+            }
+        }
 
         if ((state.equals("ON") && !currentState) ||
             (state.equals("OFF") && currentState) ||
@@ -126,13 +150,12 @@ public class SwitchCommand extends AbstractCommand {
                               interactLocation.getBlockX(),
                               interactLocation.getBlockY(),
                               interactLocation.getBlockZ(),
-                              null, 0, 0f, 0f, 0f);
+                              craftPlayer != null ? craftPlayer.getHandle(): null, 0, 0f, 0f, 0f);
 
                 dB.log("Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
                         ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
 
             } catch (NullPointerException e) {
-
                 dB.echoError("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
             }
         }
