@@ -316,6 +316,13 @@ public class dInventory implements dObject, Notable {
         inventory.setContents(contents);
     }
 
+    public boolean update() {
+        if (idType.equals("player")) {
+            dPlayer.valueOf(idHolder).getPlayerEntity().updateInventory();
+            return true;
+        }
+        return false;
+    }
 
     /////////////////////
     //   INVENTORY MANIPULATION
@@ -721,7 +728,7 @@ public class dInventory implements dObject, Notable {
         // @attribute <in@inventory.id_holder>
         // @returns Element
         // @description
-        // Returns Denizen's holder ID for this inventory
+        // Returns Denizen's holder ID for this inventory. (p@aufdemrand, l@123,321,123, etc.)
         // -->
         if (attribute.startsWith("id_holder")) {
             return new Element(idHolder).getAttribute(attribute.fulfill(1));
@@ -731,7 +738,7 @@ public class dInventory implements dObject, Notable {
         // @attribute <in@inventory.id_type>
         // @returns Element
         // @description
-        // Returns Denizen's type ID for this inventory
+        // Returns Denizen's type ID for this inventory. (player, location, etc.)
         // -->
         if (attribute.startsWith("id_type")) {
             return new Element(idType).getAttribute(attribute.fulfill(1));
