@@ -879,21 +879,39 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
     @Override
     public void adjust(Mechanism mechanism, Element value) {
 
+        ItemMeta meta = item.getItemMeta();
+
         // <--[mechanism]
         // @object dItem
         // @name set_display
-        // @input <element>
+        // @input Element
         // @description
         // Changes the items display name.
         // @tags
         // <i@item.display>
         // -->
         if (mechanism.matches("set_display")) {
-            ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(value.asString());
-            item.setItemMeta(meta);
-            return;
         }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name set_lore
+        // @input dList
+        // @description
+        // Sets the item's lore.
+        // @tags
+        // <i@item.lore>
+        // -->
+        if (mechanism.matches("set_lore")) {
+            meta.setLore(dList.valueOf(value.asString()));
+        }
+
+        if (mechanism.matches("add_enchant")) {
+            // meta.addEnchant(Enchantment.getByName(value.asString()), TODO:(int) level, TODO:(boolean) ignoreLevelRestriction);
+        }
+
+        item.setItemMeta(meta);
 
     }
 
