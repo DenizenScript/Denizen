@@ -122,7 +122,7 @@ public class UtilTags implements Listener {
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
         // <--[tag]
-        // @attribute <server.has_flag[flag_name]>
+        // @attribute <server.has_flag[<flag_name>]>
         // @returns Element(boolean)
         // @description
         // returns true if the Player has the specified flag, otherwise returns false.
