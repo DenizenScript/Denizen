@@ -313,7 +313,7 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <p@player.flag[flag_name]>
+        // @attribute <p@player.flag[<flag_name>]>
         // @returns Flag dList
         // @description
         // returns the specified flag from the player.
@@ -337,7 +337,7 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <p@player.has_flag[flag_name]>
+        // @attribute <p@player.has_flag[<flag_name>]>
         // @returns Element(Boolean)
         // @description
         // returns true if the Player has the specified flag, otherwise returns false.
@@ -415,12 +415,12 @@ public class dPlayer implements dObject, Adjustable {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.target[npc/<entity>/<entity.type>|..]>
+        // @attribute <p@player.target[(<entity>|...)]>
         // @returns dEntity
         // @description
         // Returns the entity that the player is looking at, within a maximum range of 50 blocks,
         // or null if the player is not looking at an entity.
-        // The player can use a list of entities or entity types to filter the possible targets.
+        // Optionally, specify a list of entities, entity types, or 'npc' to only count those targets.
         // -->
 
         if (attribute.startsWith("target")) {
@@ -428,12 +428,12 @@ public class dPlayer implements dObject, Adjustable {
             int attribs = 1;
 
             // <--[tag]
-            // @attribute <p@player.target[npc/<entity>/<entity.type>|..].within[#]>
+            // @attribute <p@player.target[(<entity>|...)].within[(<#>)]>
             // @returns dEntity
             // @description
             // Returns the entity that the player is looking at within the specified range limit,
             // or null if the player is not looking at an entity.
-            // The player can use a list of entities or entity types to filter the possible targets.
+            // Optionally, specify a list of entities, entity types, or 'npc' to only count those targets.
             if (attribute.getAttribute(2).startsWith("within") &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {
@@ -445,17 +445,20 @@ public class dPlayer implements dObject, Adjustable {
             ArrayList<LivingEntity> possibleTargets = new ArrayList<LivingEntity>();
             for (Entity entity : entities) {
                 if (entity instanceof LivingEntity) {
-                        
+
                     // if we have a context for entity types, check the entity
                     if (attribute.hasContext(1)) {
-                        for (String ent : attribute.getContext(1).split("\\|")) {
+                        String context = attribute.getContext(1);
+                        if (context.toLowerCase().startsWith("li@"))
+                            context = context.substring(3);
+                        for (String ent: context.split("\\|")) {
                             boolean valid = false;
 
                             if (ent.equalsIgnoreCase("npc") && CitizensAPI.getNPCRegistry().isNPC(entity)) {
                                 valid = true;
                             }
                             else if (dEntity.matches(ent)) {
-                                // only accept generic entities that are not npcs
+                                // only accept generic entities that are not NPCs
                                 if (dEntity.valueOf(ent).isGeneric()) {
                                     if (!CitizensAPI.getNPCRegistry().isNPC(entity)) {
                                         valid = true;
@@ -851,7 +854,7 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <p@player.in_group[group_name]>
+        // @attribute <p@player.in_group[<group_name>]>
         // @returns Element(Boolean)
         // @description
         // returns whether the player is in the specified group.
@@ -866,7 +869,7 @@ public class dPlayer implements dObject, Adjustable {
             String group = attribute.getContext(1);
 
             // <--[tag]
-            // @attribute <p@player.in_group[group_name].global>
+            // @attribute <p@player.in_group[<group_name>].global>
             // @returns Element(Boolean)
             // @description
             // returns whether the player has the group with no regard to the
@@ -885,7 +888,7 @@ public class dPlayer implements dObject, Adjustable {
                         .getAttribute(attribute.fulfill(2));
 
             // <--[tag]
-            // @attribute <p@player.in_group[group_name].world>
+            // @attribute <p@player.in_group[<group_name>].world>
             // @returns Element(Boolean)
             // @description
             // returns whether the player has the group in regards to the

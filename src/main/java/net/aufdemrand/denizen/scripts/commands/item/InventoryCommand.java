@@ -142,7 +142,7 @@ public class InventoryCommand extends AbstractCommand {
                 // If this is a player inventory, update it
                 case UPDATE:
                     if (!destination.update())
-                        throw new CommandExecutionException("Only player inventories can be force-updated!");
+                        dB.echoError("Only player inventories can be force-updated!");
                     break;
 
             }
