@@ -1821,6 +1821,19 @@ public class dEntity implements dObject, Adjustable {
         if (mechanism.matches("remaining_air"))
             getLivingEntity().setRemainingAir(value.asInt());
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name tame
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity is considered tame.
+        // @tags
+        // <e@entity.is_tamed>
+        // <e@entity.is_tameable>
+        // -->
+        if (mechanism.matches("tame")) // TODO: Verify that entity is tameable first
+            ((Tameable)getLivingEntity()).setTamed(value.asBoolean());
+
 
     }
 
