@@ -13,10 +13,12 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
+import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
+import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
@@ -234,6 +236,12 @@ public class dNPC implements dObject, Adjustable {
         return getCitizen().getTrait(HealthTrait.class);
     }
 
+    public LookClose getLookCloseTrait() {
+        if (!getCitizen().hasTrait(LookClose.class))
+            getCitizen().addTrait(LookClose.class);
+        return getCitizen().getTrait(LookClose.class);
+    }
+
     public TriggerTrait getTriggerTrait() {
         if (!getCitizen().hasTrait(TriggerTrait.class))
             getCitizen().addTrait(TriggerTrait.class);
@@ -294,6 +302,18 @@ public class dNPC implements dObject, Adjustable {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return "null";
+
+        // <--[tag]
+        // @attribute <n@npc.has_nickname>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the NPC has a nickname.
+        // -->
+        if (attribute.startsWith("has_nickname")) {
+            NPC citizen = getCitizen();
+            return new Element(citizen.hasTrait(NicknameTrait.class) && citizen.getTrait(NicknameTrait.class).hasNickname())
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <n@npc.name.nickname>
@@ -511,6 +531,33 @@ public class dNPC implements dObject, Adjustable {
             return new Element(isSpawned()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <n@npc.is_protected>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the NPC is protected.
+        // -->
+        if (attribute.startsWith("is_protected"))
+            return new Element(getCitizen().isProtected()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <n@npc.lookclose>
+        // @returns Element(Boolean)
+        // @description
+        // Returns the NPC's "lookclose" value.
+        // -->
+        if (attribute.startsWith("lookclose")) {
+            NPC citizen = getCitizen();
+            if (citizen.hasTrait(LookClose.class)) {
+                // There is no method to check if the NPC has LookClose enabled...
+                // LookClose.toString() returns "LookClose{" + enabled + "}"
+                String lookclose = citizen.getTrait(LookClose.class).toString();
+                lookclose = lookclose.substring(10, lookclose.length() - 1);
+                return new Element(Boolean.valueOf(lookclose)).getAttribute(attribute.fulfill(1));
+            }
+            return Element.FALSE.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <n@npc.location.previous_location>
         // @returns dLocation
         // @description
@@ -520,6 +567,18 @@ public class dNPC implements dObject, Adjustable {
             return (NPCTags.previousLocations.containsKey(getId())
                     ? NPCTags.previousLocations.get(getId()).getAttribute(attribute.fulfill(2))
                     : Element.NULL.getAttribute(attribute.fulfill(2)));
+
+        // <--[tag]
+        // @attribute <n@npc.has_script>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the NPC has an assignment script.
+        // -->
+        if (attribute.startsWith("has_script")) {
+            NPC citizen = getCitizen();
+            return new Element(citizen.hasTrait(AssignmentTrait.class) && citizen.getTrait(AssignmentTrait.class).hasAssignment())
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <n@npc.script>
@@ -659,20 +718,139 @@ public class dNPC implements dObject, Adjustable {
     @Override
     public void adjust(Mechanism mechanism, Element value) {
 
+        // <--[mechanism]
+        // @object dNPC
+        // @name set_assignment
+        // @input dScript
+        // @description
+        // Sets the NPC's assignment script.
+        // @tags
+        // <n@npc.script>
+        // -->
+        if (mechanism.matches("set_assignment") && value.matchesType(dScript.class)) {
+            getAssignmentTrait().setAssignment(value.asType(dScript.class).getName(), null);
+        }
 
-        // TODO:
-        //        getAssignmentTrait().setAssignment();
-        //        getAssignmentTrait().removeAssignment();
-        //
-        //        getNicknameTrait().setNickname();
-        //        getNicknameTrait().removeNickname();
-        //
-        //        getCitizen().setBukkitEntityType();
-        //        getCitizen().setName();
-        //        getCitizen().spawn();
-        //        getCitizen().despawn();
-        //        getCitizen().setProtected();
-        //        getCitizen().getTrait(LookClose.class).lookClose();
+        // <--[mechanism]
+        // @object dNPC
+        // @name remove_assignment
+        // @input none
+        // @description
+        // Removes the NPC's assigment script.
+        // @tags
+        // <n@npc.has_script>
+        // -->
+        if (mechanism.matches("remove_assignment")) {
+            getAssignmentTrait().removeAssignment(null);
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name set_nickname
+        // @input Element
+        // @description
+        // Sets the NPC's nickname.
+        // @tags
+        // <n@npc.name.nickname>
+        // -->
+        if (mechanism.matches("set_nickname")) {
+            getNicknameTrait().setNickname(value.asString());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name remove_nickname
+        // @input none
+        // @description
+        // Removes the NPC's nickname.
+        // @tags
+        // <n@npc.has_nickname>
+        // -->
+        if (mechanism.matches("remove_nickname")) {
+            getNicknameTrait().removeNickname();
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name set_entity_type
+        // @input dEntity
+        // @description
+        // Sets the NPC's entity type.
+        // @tags
+        // <n@npc.entity_type>
+        // -->
+        if (mechanism.matches("set_entity_type") && value.matchesType(dEntity.class)) {
+            getCitizen().setBukkitEntityType(value.asType(dEntity.class).getEntityType());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name set_name
+        // @input Element
+        // @description
+        // Sets the name of the NPC.
+        // @tags
+        // <n@npc.name>
+        // -->
+        if (mechanism.matches("set_name")) {
+            getCitizen().setName(value.asString());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name spawn
+        // @input dLocation
+        // @description
+        // Spawns the NPC at a location. If no location is specified, the NPC will spawn
+        // at its last known location.
+        // @tags
+        // <n@npc.is_spawned>
+        // -->
+        if (mechanism.matches("spawn")) {
+            if (value.matchesType(dLocation.class))
+                getCitizen().spawn(value.asType(dLocation.class));
+            else
+                getCitizen().spawn(getCitizen().getStoredLocation());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name despawn
+        // @input none
+        // @description
+        // Despawns the NPC.
+        // @tags
+        // <n@npc.is_spawned>
+        // -->
+        if (mechanism.matches("despawn")) {
+            getCitizen().despawn(DespawnReason.PLUGIN);
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name set_protected
+        // @input Element(Boolean)
+        // @description
+        // Sets whether or not the NPC is protected.
+        // @tags
+        // <n@npc.is_protected>
+        // -->
+        if (mechanism.matches("set_protected")) {
+            getCitizen().setProtected(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name set_lookclose
+        // @input Element(Boolean)
+        // @description
+        // Sets the NPC's lookclose value.
+        // @tags
+        // <n@npc.lookclose>
+        // -->
+        if (mechanism.matches("lookclose")) {
+            getLookCloseTrait().lookClose(value.asBoolean());
+        }
 
     }
 }
