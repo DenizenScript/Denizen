@@ -151,6 +151,14 @@ public class Element implements dObject {
         return element;
     }
 
+    public boolean matchesType(Class<? extends dObject> dClass) {
+        return ObjectFetcher.checkMatch(dClass, element);
+    }
+
+    public <T extends dObject> T asType(Class<T> dClass) {
+        return ObjectFetcher.getObjectFrom(dClass, element);
+    }
+
     private String prefix;
 
     @Override
