@@ -151,8 +151,7 @@ public class PlayEffectCommand extends AbstractCommand {
         }
         // Play a ParticleEffect
         else {
-            ParticleEffect.valueOf(particleEffect.name())
-                    .display(location, visibility.asDouble(),
+            particleEffect.display(location, visibility.asDouble(),
                             offset.asFloat(), offset.asFloat(), offset.asFloat(), data.asFloat(), qty.asInt());
         }
     }
