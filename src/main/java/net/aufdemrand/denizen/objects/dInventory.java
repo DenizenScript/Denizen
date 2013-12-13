@@ -694,6 +694,44 @@ public class dInventory implements dObject, Notable {
         }
 
         // <--[tag]
+        // @attribute <in@inventory.contains.material[<material>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory contains an item with the specified material.
+        // -->
+        if (attribute.startsWith("contains.material")) {
+            if (attribute.hasContext(2)) {
+                int qty = 1;
+                int attribs = 2;
+                dMaterial material = dMaterial.valueOf(attribute.getContext(2));
+
+                // <--[tag]
+                // @attribute <in@inventory.contains.material[<material>].qty[<#>]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item with the
+                // specified material.
+                // -->
+                if (attribute.getAttribute(3).startsWith("qty") &&
+                        attribute.hasContext(3) &&
+                        aH.matchesInteger(attribute.getContext(3))) {
+                    qty = attribute.getIntContext(3);
+                    attribs = 3;
+                }
+
+                int found_items = 0;
+
+                for (ItemStack item : getContents()) {
+                    if (item != null && item.getType() == material.getMaterial())
+                        found_items += item.getAmount();
+                }
+
+                return (found_items >= qty ? Element.TRUE.getAttribute(attribute.fulfill(attribs))
+                        : Element.FALSE.getAttribute(attribute.fulfill(attribs)));
+            }
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.contains[<item>]>
         // @returns Element(Boolean)
         // @description

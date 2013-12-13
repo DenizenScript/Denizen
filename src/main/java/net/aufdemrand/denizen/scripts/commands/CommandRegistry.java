@@ -510,7 +510,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Chat
-        // @Syntax chat ["<text>"] (targets:<entity>|...)
+        // @Syntax chat ["<text>"] (no_target/targets:<entity>|...)
         // @Required 1
         // @Stable stable
         // @Short Causes the NPC to send a chat message to nearby players.
@@ -520,7 +520,8 @@ public class CommandRegistry implements dRegistry {
         // Chat uses a NPCs SpeechController provided by Citizens2, typically inside 'interact' or 'task'
         // script-containers. Typically there is already player and NPC context inside a queue that is using
         // the 'chat' command. In this case, only a text string is required. Alternatively, target entities
-        // can be specified to have the NPC chat to a different target/targets.
+        // can be specified to have the NPC chat to a different target/targets, or specify 'no_target' to
+        // not send the message to any specific player.
         //
         // Chat from a NPC is formatted by the settings present in Citizens' config.yml. Players being chatted
         // to see a slightly different message than surrounding players. By default, a 'chat' will allow other
@@ -532,7 +533,7 @@ public class CommandRegistry implements dRegistry {
         // 'Jack says to you, Hello!', however surrounding entities will see something along the lines of
         // 'Jack says to aufdemrand, Hello!'. The format for this is configurable.
         //
-        // If sending messages to the Player without any surrounding entities hearing the message is desireable,
+        // If sending messages to the Player without any surrounding entities hearing the message is desirable,
         // it is often times recommended to instead use the 'narrate' command. Alternatively, on a server-wide scale,
         // the configuration node for the 'max range' can be set to 0, however this is discouraged.
 
@@ -554,7 +555,7 @@ public class CommandRegistry implements dRegistry {
 
         // -->
         registerCoreMember(ChatCommand.class,
-                "CHAT", "chat [\"<text>\"] (targets:<entity>|...)", 1);
+                "CHAT", "chat [\"<text>\"] (no_target/targets:<entity>|...)", 1);
 
 
         // <--[command]
