@@ -96,9 +96,9 @@ public class ObjectFetcher {
 
     }
 
-    public static dObject getObjectFrom(Class<? extends dObject> dClass, String value) {
+    public static <T extends dObject> T getObjectFrom(Class<T> dClass, String value) {
         try {
-            return (dObject) valueof.get(dClass).invoke(null, value);
+            return (T) valueof.get(dClass).invoke(null, value);
         } catch (Exception e) {
             dB.echoError(e);
         }

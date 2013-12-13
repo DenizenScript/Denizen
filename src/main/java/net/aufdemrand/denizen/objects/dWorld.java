@@ -7,6 +7,7 @@ import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Difficulty;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_7_R1.CraftChunk;
 import org.bukkit.entity.Entity;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class dWorld implements dObject {
+public class dWorld implements dObject, Adjustable {
 
 
     /////////////////////
@@ -234,16 +235,14 @@ public class dWorld implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <w@world.random_loaded_chunk>
-        // @returns dChunk
+        // @attribute <w@world.can_generate_structures>
+        // @returns Element(Boolean)
         // @description
-        // returns a random loaded chunk.
+        // Returns whether the world will generate structures.
         // -->
-        if (attribute.startsWith("random_loaded_chunk")) {
-            int random = Utilities.getRandom().nextInt(getWorld().getLoadedChunks().length);
-            return new dChunk((CraftChunk) getWorld().getLoadedChunks()[random])
+        if (attribute.startsWith("can_generate_structures"))
+            return new Element(getWorld().canGenerateStructures())
                     .getAttribute(attribute.fulfill(1));
-        }
 
         // <--[tag]
         // @attribute <w@world.loaded_chunks>
@@ -257,6 +256,18 @@ public class dWorld implements dObject {
                 chunks.add(new dChunk((CraftChunk) ent).identify());
 
             return chunks.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <w@world.random_loaded_chunk>
+        // @returns dChunk
+        // @description
+        // returns a random loaded chunk.
+        // -->
+        if (attribute.startsWith("random_loaded_chunk")) {
+            int random = Utilities.getRandom().nextInt(getWorld().getLoadedChunks().length);
+            return new dChunk((CraftChunk) getWorld().getLoadedChunks()[random])
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -360,13 +371,13 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <w@world.can_generate_structures>
+        // @attribute <w@world.auto_save>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the world will generate structures.
+        // Returns whether the world automatically saves.
         // -->
-        if (attribute.startsWith("can_generate_structures"))
-            return new Element(getWorld().canGenerateStructures())
+        if (attribute.startsWith("auto_save"))
+            return new Element(getWorld().isAutoSave())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -376,6 +387,16 @@ public class dWorld implements dObject {
         // returns the name of the difficulty level.
         // -->
         if (attribute.startsWith("difficulty"))
+            return new Element(getWorld().getDifficulty().name())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <w@world.keep_spawn>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the world's spawn area should be kept loaded into memory.
+        // -->
+        if (attribute.startsWith("keep_spawn"))
             return new Element(getWorld().getDifficulty().name())
                     .getAttribute(attribute.fulfill(1));
 
@@ -401,22 +422,22 @@ public class dWorld implements dObject {
 
         // <--[tag]
         // @attribute <w@world.ticks_per_animal_spawn>
-        // @returns Element(Number)
+        // @returns Duration
         // @description
         // Returns the world's ticks per animal spawn value.
         // -->
         if (attribute.startsWith("ticks_per_animal_spawn"))
-            return new Element(getWorld().getTicksPerAnimalSpawns() )
+            return new Duration(getWorld().getTicksPerAnimalSpawns() )
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <w@world.ticks_per_monster_spawn>
-        // @returns Element(Number)
+        // @returns Duration
         // @description
         // Returns the world's ticks per monster spawn value.
         // -->
         if (attribute.startsWith("ticks_per_monster_spawn"))
-            return new Element(getWorld().getTicksPerMonsterSpawns() )
+            return new Duration(getWorld().getTicksPerMonsterSpawns() )
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -454,10 +475,19 @@ public class dWorld implements dObject {
         }
 
         // <--[tag]
+        // @attribute <w@world.time.full>
+        // @returns Duration
+        // @description
+        // Returns the in-game time of this world.
+        if (attribute.startsWith("time.full"))
+            return new Element(getWorld().getFullTime())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <w@world.time>
         // @returns Element(Number)
         // @description
-        // returns the current time in ticks.
+        // Returns the relative in-game time of this world.
         // -->
         if (attribute.startsWith("time"))
             return new Element(getWorld().getTime())
@@ -490,18 +520,274 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <w@world.thunder_duration>
+        // @returns Duration
+        // @description
+        // Returns the duration of thunder.
+        // -->
+        if (attribute.startsWith("thunder_duration"))
+            return new Duration((long) getWorld().getThunderDuration())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <w@world.thundering>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether it is currently thundering in this world.
+        if (attribute.startsWith("thundering"))
+            return new Element(getWorld().isThundering())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <w@world.weather_duration>
         // @returns Duration
         // @description
         // Returns the duration of storms.
         // -->
         if (attribute.startsWith("weather_duration"))
-            return Duration.valueOf(getWorld().getWeatherDuration() + "t")
+            return new Duration((long) getWorld().getWeatherDuration())
                     .getAttribute(attribute.fulfill(1));
 
 
 
         return new Element(identify()).getAttribute(attribute);
+    }
+
+
+    @Override
+    public void adjust(Mechanism mechanism, Element value) {
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name ambient_spawn_limit
+        // @input Element(Integer)
+        // @description
+        // Sets the limit for number of ambient mobs that can spawn in a chunk in this world.
+        // @tags
+        // <w@world.ambient_spawn_limit>
+        // -->
+        if (mechanism.matches("ambient_spawn_limit")) {
+            getWorld().setAmbientSpawnLimit(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name animal_spawn_limit
+        // @input Element(Integer)
+        // @description
+        // Sets the limit for number of animals that can spawn in a chunk in this world.
+        // @tags
+        // <w@world.animal_spawn_limit>
+        // -->
+        if (mechanism.matches("animal_spawn_limit")) {
+            getWorld().setAnimalSpawnLimit(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name auto_save
+        // @input Element(Integer)
+        // @description
+        // Sets the limit for number of animals that can spawn in a chunk in this world.
+        // @tags
+        // <w@world.animal_spawn_limit>
+        // -->
+        if (mechanism.matches("auto_save")) {
+            getWorld().setAutoSave(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name difficulty
+        // @input Element
+        // @description
+        // Sets the limit for number of animals that can spawn in a chunk in this world.
+        // @tags
+        // <w@world.difficulty>
+        // -->
+        if (mechanism.matches("difficulty")) {
+            String upper = value.asString().toUpperCase();
+            Difficulty diff = null;
+            if (upper.matches("(PEACEFUL|EASY|NORMAL|HARD)")) {
+                diff = Difficulty.valueOf(upper);
+            }
+            else {
+                diff = Difficulty.getByValue(value.asInt());
+            }
+            if (diff != null)
+                getWorld().setDifficulty(diff);
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name full_time
+        // @input Element(Integer)
+        // @description
+        // Sets the in-game time on the server.
+        // @tags
+        // <w@world.time.full>
+        // -->
+        if (mechanism.matches("full_time")) {
+            getWorld().setFullTime(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name keep_spawn
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the world's spawn area should be kept loaded into memory.
+        // @tags
+        // <w@world.time.full>
+        // -->
+        if (mechanism.matches("keep_spawn")) {
+            getWorld().setKeepSpawnInMemory(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name monster_spawn_limit
+        // @input Element(Integer)
+        // @description
+        // Sets the limit for number of monsters that can spawn in a chunk in this world.
+        // @tags
+        // <w@world.monster_spawn_limit>
+        // -->
+        if (mechanism.matches("monster_spawn_limit")) {
+            getWorld().setMonsterSpawnLimit(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name allow_pvp
+        // @input Element(Boolean)
+        // @description
+        // Sets whether player versus player combat is allowed in this world.
+        // @tags
+        // <w@world.allows_pvp>
+        // -->
+        if (mechanism.matches("allow_pvp")) {
+            getWorld().setPVP(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name spawn_location
+        // @input dLocation
+        // @description
+        // Sets the spawn location of this world. (This ignores the world value of the dLocation.)
+        // @tags
+        // <w@world.spawn_location>
+        // -->
+        if (mechanism.matches("spawn_location") && value.matchesType(dLocation.class)) {
+            dLocation loc = value.asType(dLocation.class);
+            getWorld().setSpawnLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name storming
+        // @input Element(Boolean)
+        // @description
+        // Sets whether there is a storm.
+        // @tags
+        // <w@world.has_storm>
+        // -->
+        if (mechanism.matches("storming")) {
+            getWorld().setStorm(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name thunder_duration
+        // @input Duration
+        // @description
+        // Sets the duration of thunder.
+        // @tags
+        // <w@world.thunder_duration>
+        // -->
+        if (mechanism.matches("thunder_duration")) {
+            getWorld().setThunderDuration(value.asType(Duration.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name thundering
+        // @input Element(Boolean)
+        // @description
+        // Sets whether it is thundering.
+        // @tags
+        // <w@world.thundering>
+        // -->
+        if (mechanism.matches("thundering")) {
+            getWorld().setThundering(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name ticks_per_animal_spawns
+        // @input Duration
+        // @description
+        // Sets the time between animal spawns.
+        // @tags
+        // <w@world.ticks_per_animal_spawns>
+        // -->
+        if (mechanism.matches("ticks_per_animal_spawns")) {
+            getWorld().setTicksPerAnimalSpawns(value.asType(Duration.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name ticks_per_monster_spawns
+        // @input Duration
+        // @description
+        // Sets the time between monster spawns.
+        // @tags
+        // <w@world.ticks_per_monster_spawns>
+        // -->
+        if (mechanism.matches("ticks_per_monster_spawns")) {
+            getWorld().setTicksPerMonsterSpawns(value.asType(Duration.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name time
+        // @input Element(Integer)
+        // @description
+        // Sets the relative in-game time on the server.
+        // @tags
+        // <w@world.time>
+        // -->
+        if (mechanism.matches("time")) {
+            getWorld().setTime(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name water_animal_spawn_limit
+        // @input Element(Integer)
+        // @description
+        // Sets the limit for number of water animals that can spawn in a chunk in this world.
+        // @tags
+        // <w@world.water_animal_spawn_limit>
+        // -->
+        if (mechanism.matches("water_animal_spawn_limit")) {
+            getWorld().setWaterAnimalSpawnLimit(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name weather_duration
+        // @input Duration
+        // @description
+        // Set the remaining time in ticks of the current conditions.
+        // @tags
+        // <w@world.weather_duration>
+        // -->
+        if (mechanism.matches("weather_duration")) {
+            getWorld().setWeatherDuration(value.asType(Duration.class).getTicksAsInt());
+        }
+
     }
 
 }
