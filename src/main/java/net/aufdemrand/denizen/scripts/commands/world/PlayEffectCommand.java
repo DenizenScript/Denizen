@@ -61,10 +61,8 @@ public class PlayEffectCommand extends AbstractCommand {
                     // Make sure the new effect is not an invisible effect
                     while (effect == null || effect.toString().matches("^(BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) {
                         effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
-                        if (effect == null) break;
                     }
-                    scriptEntry.addObject("particleeffect",
-                            ParticleEffect.valueOf(arg.getValue().toUpperCase()));
+                    scriptEntry.addObject("particleeffect", effect);
                 }
             }
 
