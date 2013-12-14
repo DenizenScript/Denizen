@@ -236,7 +236,7 @@ public class aH {
         }
 
 
-        public <T extends dObject> T asType(Class<? extends dObject> clazz) {
+        public <T extends dObject> T asType(Class<T> clazz) {
 
             dObject arg = ObjectFetcher.getObjectFrom(clazz, value);
 
