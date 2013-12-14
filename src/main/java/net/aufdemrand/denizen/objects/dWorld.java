@@ -794,7 +794,7 @@ public class dWorld implements dObject, Adjustable {
         }
 
         if (!mechanism.fulfilled())
-            dB.echoError("Invalid mechanism specified: " + mechanism.getName());
+            mechanism.reportInvalid();
 
     }
 

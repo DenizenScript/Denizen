@@ -741,7 +741,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
         }
 
         if (!mechanism.fulfilled())
-            dB.echoError("Invalid mechanism specified: " + mechanism.getName());
+            mechanism.reportInvalid();
 
     }
 }

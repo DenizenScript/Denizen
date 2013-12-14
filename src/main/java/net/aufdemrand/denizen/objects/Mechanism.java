@@ -114,4 +114,8 @@ public class Mechanism {
         return false;
     }
 
+    public void reportInvalid() {
+        dB.echoError("Invalid mechanism specified: " + raw_mechanism);
+    }
+
 }

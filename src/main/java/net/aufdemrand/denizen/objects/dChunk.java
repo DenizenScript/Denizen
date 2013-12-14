@@ -290,7 +290,6 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("unload_safely")) {
             unload(true, true);
-            return;
         }
 
         // <--[mechanism]
@@ -304,7 +303,6 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("unload_without_saving")) {
             unload(false);
-            return;
         }
 
         // <--[mechanism]
@@ -318,7 +316,6 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("load")) {
             load(true);
-            return;
         }
 
         // <--[mechanism]
@@ -332,11 +329,10 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("regenerate")) {
             getWorld().regenerateChunk(getX(), getZ());
-            return;
         }
 
         if (!mechanism.fulfilled())
-            dB.echoError("Invalid mechanism specified: " + mechanism.getName());
+            mechanism.reportInvalid();
 
     }
 
