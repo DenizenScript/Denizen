@@ -914,7 +914,7 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
 
         item.setItemMeta(meta);
         if (!mechanism.fulfilled())
-            dB.echoError("Invalid dItem mechanism specified.");
+            dB.echoError("Invalid mechanism specified: " + mechanism.getName());
 
     }
 

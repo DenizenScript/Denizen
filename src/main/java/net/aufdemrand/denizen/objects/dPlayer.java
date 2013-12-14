@@ -1400,7 +1400,6 @@ public class dPlayer implements dObject, Adjustable {
 
         // Pass along to dEntity mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
-            dB.echoError("Invalid dPlayer mechanism specified. Checking dEntity mechanisms...");
             Adjustable entity = new dEntity(getPlayerEntity());
             entity.adjust(mechanism);
         }

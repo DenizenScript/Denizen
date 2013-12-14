@@ -856,7 +856,6 @@ public class dNPC implements dObject, Adjustable {
 
         // Pass along to dEntity mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
-            dB.echoError("Invalid dNPC mechanism specified. Checking dEntity mechanisms...");
             Adjustable entity = new dEntity(getEntity());
             entity.adjust(mechanism);
         }

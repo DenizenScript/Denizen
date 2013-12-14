@@ -24,6 +24,10 @@ public class Mechanism {
         return fulfilled;
     }
 
+    public String getName() {
+        return raw_mechanism;
+    }
+
     public Element getValue() {
         return value;
     }

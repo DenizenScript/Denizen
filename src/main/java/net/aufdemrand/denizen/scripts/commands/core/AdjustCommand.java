@@ -36,9 +36,9 @@ public class AdjustCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         dB.report(scriptEntry, getName(),
-                scriptEntry.getElement("object").setPrefix("object").debug()
-                    + scriptEntry.getElement("mechanism").setPrefix("mechanism").debug()
-                    + scriptEntry.getElement("mechanism_value").setPrefix("value").debug());
+                scriptEntry.getElement("object").debug()
+                    + scriptEntry.getElement("mechanism").debug()
+                    + scriptEntry.getElement("mechanism_value").debug());
 
         String object = scriptEntry.getElement("object").asString();
 
@@ -61,7 +61,8 @@ public class AdjustCommand extends AbstractCommand {
             throw new CommandExecutionException('\'' + object + "' is not adjustable.");
 
         // Do the adjustment!
-        ((Adjustable) fetched).adjust(new Mechanism(scriptEntry.getElement("mechanism"), scriptEntry.getElement("mechanism_value")));
+        ((Adjustable) fetched).adjust(new Mechanism(scriptEntry.getElement("mechanism"),
+                scriptEntry.getElement("mechanism_value")));
 
         // :)
 

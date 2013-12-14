@@ -336,7 +336,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         }
 
         if (!mechanism.fulfilled())
-            dB.echoError("Invalid dChunk mechanism specified.");
+            dB.echoError("Invalid mechanism specified: " + mechanism.getName());
 
     }
 
