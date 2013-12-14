@@ -1517,24 +1517,35 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name LookClose
-        // @Syntax lookclose [state:true/false]
-        // @Required 1
-        // @Stable unstable
-        // @Short Toggles whether the NPC will automatically look at nearby players.
+        // @Group NPC Commands
+        // @Syntax lookclose (<boolean>) (range:<#>) (realistic) (<npc>)
+        // @Required 0
+        // @Stable stable
+        // @Short Interacts with a NPCs 'lookclose' trait as provided by Citizens2.
         // @Author aufdemrand
+
         // @Description
-        // Todo
-        // @Tags
-        // Todo
+        // Use this command with any NPC to alter the state and options of its 'lookclose'
+        // trait. When a NPC's 'lookclose' trait is toggled to true, the NPC's head will
+        // follow nearby players. Specifying realistic will enable a higher precision
+        // and detection of players, while taking into account 'line-of-sight', however can
+        // use more CPU cycles. You may also specify a range integer to specify the number
+        // of blocks that will trigger the NPC's attention.
+
         // @Usage
         // Use to cause the NPC to begin looking at nearby players.
-        // - lookclose state:true
+        // - lookclose true <npc>
+
         // @Usage
         // Use to cause the NPC to stop looking at nearby players.
-        // - lookclose state:false
+        // - lookclose false <npc>
+
+        // @Usage
+        // Change up the range and make the NPC more realistic
+        // - lookclose true range:10 realistic
         // -->
         registerCoreMember(LookcloseCommand.class,
-                "LOOKCLOSE", "lookclose [state:true/false]", 1);
+                "LOOKCLOSE", "lookclose (<boolean>) (range:<#>) (realistic) (<npc>)", 1);
 
 
         // <--[command]
