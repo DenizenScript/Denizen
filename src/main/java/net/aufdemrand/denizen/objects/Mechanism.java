@@ -29,7 +29,11 @@ public class Mechanism {
     }
 
     public boolean matches(String string) {
-        return (string.equalsIgnoreCase(raw_mechanism));
+        if (string.equalsIgnoreCase(raw_mechanism)) {
+            fulfill("");
+            return true;
+        }
+        return false;
     }
 
     public boolean requireBoolean() {
@@ -58,7 +62,6 @@ public class Mechanism {
     }
 
     public boolean requireBoolean(String error) {
-        fulfill("");
         if (value.isBoolean())
             return true;
         dB.echoError(error);
@@ -66,7 +69,6 @@ public class Mechanism {
     }
 
     public boolean requireDouble(String error) {
-        fulfill("");
         if (value.isDouble())
             return true;
         dB.echoError(error);
@@ -74,7 +76,6 @@ public class Mechanism {
     }
 
     public boolean requireEnum(String error, boolean allowInt, Enum<?>... values) {
-        fulfill("");
         if (allowInt && value.isInt() && value.asInt() < values.length)
             return true;
         if (value.isString()) {
@@ -89,7 +90,6 @@ public class Mechanism {
     }
 
     public boolean requireFloat(String error) {
-        fulfill("");
         if (value.isFloat())
             return true;
         dB.echoError(error);
@@ -97,7 +97,6 @@ public class Mechanism {
     }
 
     public boolean requireInteger(String error) {
-        fulfill("");
         if (value.isInt())
             return true;
         dB.echoError(error);
@@ -105,7 +104,6 @@ public class Mechanism {
     }
 
     public <T extends dObject> boolean requireObject(String error, Class<T> type) {
-        fulfill("");
         if (value.matchesType(type))
             return true;
         dB.echoError(error);
