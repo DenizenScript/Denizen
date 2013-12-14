@@ -343,4 +343,20 @@ public class ScriptEntry implements Cloneable, Debuggable {
     public boolean shouldFilter(String criteria) throws Exception {
         return script.getName().equalsIgnoreCase(criteria.replace("s@", ""));
     }
+
+    public String reportObject(String id) {
+        // If this script entry doesn't have the object being reported,
+        // just return nothing.
+        if (!hasObject(id))
+            return "";
+
+        // If the object is a dObject, there's a method for reporting them
+        // in the proper format.
+        if (getObject(id) instanceof dObject)
+            return getdObject(id).debug();
+
+        // If all else fails, fall back on the toString() method with the id of the
+        // object being passed to aH.report(...)
+        else return aH.debugObj(id, getObject(id));
+    }
 }

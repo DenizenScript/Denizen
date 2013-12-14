@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
@@ -18,74 +20,61 @@ import net.citizensnpcs.trait.LookClose;
 
 public class LookcloseCommand extends AbstractCommand {
 
-    /* LOOKCLOSE [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)  */
 
-    /*
-     * Arguments: [] - Required, () - Optional
-     *
-     */
-
-    boolean toggle;
-    boolean realistic;
-    Double range;
-    NPC npc;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Set some defaults based on the scriptEntry
-        npc = null;
-        range = null;
-        realistic = false;
-        toggle = true;
-        if (scriptEntry.getNPC() != null) npc = scriptEntry.getNPC().getCitizen();
-
         // Parse Arguments
-        for (String arg : scriptEntry.getArguments()) {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (aH.matchesArg("REALISTIC", arg)) {
-                realistic = true;
+            if (arg.matches("realistic, realisctically"))
+                scriptEntry.addObject("realistic", Element.TRUE);
 
-            }
-            else if (aH.matchesValueArg("RANGE", arg, ArgumentType.Double)) {
-                range = aH.getDoubleFrom(arg);
+            else if (arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                scriptEntry.addObject("range", arg.asElement());
 
-            }
-            else if (aH.matchesState(arg)) {
-                toggle = aH.getBooleanFrom(arg);
+            else if (arg.matchesPrimitive(aH.PrimitiveType.Boolean))
+                scriptEntry.addObject("toggle", arg.asElement());
 
-            }
-            else dB.echoError("Unknown argument '" + arg + "'");
+            else if (arg.matchesArgumentType(dNPC.class))
+                scriptEntry.setNPC((dNPC) arg.asType(dNPC.class));
+
+            else arg.reportUnhandled();
         }
 
+        // Only required thing is a valid NPC. This may be an already linked
+        // NPC, or one specified by arguments
         if (scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException("This command requires a linked NPC!");
+            throw new InvalidArgumentsException("This command requires a NPC!");
 
-
-        scriptEntry.addObject("realistic", realistic)
-                .addObject("range", range)
-                .addObject("toggle", toggle);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-
+        dB.report(scriptEntry, getName(), scriptEntry.getNPC().debug()
+                + scriptEntry.reportObject("realistic")
+                + scriptEntry.reportObject("range")
+                + scriptEntry.reportObject("toggle"));
 
         // Get the instance of the trait that belongs to the target NPC
-        LookClose trait = npc.getTrait(LookClose.class);
-        trait.lookClose(toggle);
-        if (realistic) {
+        LookClose trait = scriptEntry.getNPC().getCitizen().getTrait(LookClose.class);
+
+        // Handle toggle
+        if (scriptEntry.hasObject("toggle"))
+            trait.lookClose(scriptEntry.getElement("toggle").asBoolean());
+
+        // Handle realistic
+        if (scriptEntry.hasObject("realistic"))
             trait.setRealisticLooking(true);
+        else trait.setRealisticLooking(false);
+
+        // Handle range
+        if (scriptEntry.hasObject("range")) {
+            trait.setRange(scriptEntry.getElement("range").asInt());
         }
 
-        if (range != null) {
-            trait.setRange(range.intValue());
-        }
     }
 
-    @Override
-    public void onEnable() {
-
-    }
 }
