@@ -151,6 +151,38 @@ public class Element implements dObject {
         return element;
     }
 
+    public boolean isBoolean() {
+        return (element != null && (element.equalsIgnoreCase("true") || element.equalsIgnoreCase("false")));
+    }
+
+    public boolean isDouble() {
+        try {
+            if (Double.valueOf(element) != null)
+                return true;
+        } catch (Exception e) {}
+        return false;
+    }
+
+    public boolean isFloat() {
+        try {
+            if (Float.valueOf(element) != null)
+                return true;
+        } catch (Exception e) {}
+        return false;
+    }
+
+    public boolean isInt() {
+        try {
+            if (Integer.valueOf(element) != null)
+                return true;
+        } catch (Exception e) {}
+        return false;
+    }
+
+    public boolean isString() {
+        return (element != null && !element.isEmpty());
+    }
+
     public boolean matchesType(Class<? extends dObject> dClass) {
         return ObjectFetcher.checkMatch(dClass, element);
     }

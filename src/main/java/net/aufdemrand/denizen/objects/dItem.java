@@ -877,8 +877,9 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
 
 
     @Override
-    public void adjust(Mechanism mechanism, Element value) {
+    public void adjust(Mechanism mechanism) {
 
+        Element value = mechanism.getValue();
         ItemMeta meta = item.getItemMeta();
 
         // <--[mechanism]
@@ -903,7 +904,7 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // @tags
         // <i@item.lore>
         // -->
-        if (mechanism.matches("set_lore")) {
+        if (mechanism.matches("set_lore") && mechanism.requireObject(dList.class)) {
             meta.setLore(dList.valueOf(value.asString()));
         }
 
@@ -912,6 +913,8 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         }
 
         item.setItemMeta(meta);
+        if (!mechanism.fulfilled())
+            dB.echoError("Invalid dItem mechanism specified.");
 
     }
 

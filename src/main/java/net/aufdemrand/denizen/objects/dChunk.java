@@ -264,7 +264,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
     }
 
     @Override
-    public void adjust(Mechanism mechanism, Element value) {
+    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object dChunk
@@ -277,7 +277,6 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("unload")) {
             unload(true);
-            return;
         }
 
         // <--[mechanism]
@@ -336,6 +335,8 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
             return;
         }
 
+        if (!mechanism.fulfilled())
+            dB.echoError("Invalid dChunk mechanism specified.");
 
     }
 

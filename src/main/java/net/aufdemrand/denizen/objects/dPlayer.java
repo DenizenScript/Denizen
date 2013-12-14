@@ -1163,8 +1163,9 @@ public class dPlayer implements dObject, Adjustable {
 
 
     @Override
-    public void adjust(Mechanism mechanism, Element value) {
+    public void adjust(Mechanism mechanism) {
 
+        Element value = mechanism.getValue();
 
         // <--[mechanism]
         // @object dPlayer
@@ -1176,9 +1177,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.xp.level>
         // -->
-        if (mechanism.matches("level")) {
+        if (mechanism.matches("level") && mechanism.requireInteger()) {
             getPlayerEntity().setLevel(value.asInt());
-            return;
         }
 
         // <--[mechanism]
@@ -1194,9 +1194,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // None
         // -->
-        if (mechanism.matches("award_achievement")) {
+        if (mechanism.matches("award_achievement")&& mechanism.requireEnum(false, Achievement.values())) {
             getPlayerEntity().awardAchievement(Achievement.valueOf(value.asString().toUpperCase()));
-            return;
         }
 
         // <--[mechanism]
@@ -1211,9 +1210,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.health.scale>
         // -->
-        if (mechanism.matches("health_scale")) {
+        if (mechanism.matches("health_scale") && mechanism.requireDouble()) {
             getPlayerEntity().setHealthScale(value.asDouble());
-            return;
         }
 
         // <--[mechanism]
@@ -1226,9 +1224,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.health.is_scaled>
         // -->
-        if (mechanism.matches("scale_health")) {
+        if (mechanism.matches("scale_health") && mechanism.requireBoolean()) {
             getPlayerEntity().setHealthScaled(value.asBoolean());
-            return;
         }
 
         // <--[mechanism]
@@ -1242,7 +1239,6 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("texture_pack")) {
             getPlayerEntity().setTexturePack(value.asString());
-            return;
         }
 
         // <--[mechanism]
@@ -1254,9 +1250,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.saturation>
         // -->
-        if (mechanism.matches("saturation")) {
+        if (mechanism.matches("saturation") && mechanism.requireFloat()) {
             getPlayerEntity().setSaturation(value.asFloat());
-            return;
         }
 
         // <--[mechanism]
@@ -1268,9 +1263,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.food_level>
         // -->
-        if (mechanism.matches("food_level")) {
+        if (mechanism.matches("food_level") && mechanism.requireInteger()) {
             getPlayerEntity().setFoodLevel(value.asInt());
-            return;
         }
 
         // <--[mechanism]
@@ -1282,9 +1276,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.bed_spawn>
         // -->
-        if (mechanism.matches("bed_spawn_location")) {
+        if (mechanism.matches("bed_spawn_location") && mechanism.requireObject(dLocation.class)) {
             getPlayerEntity().setBedSpawnLocation(dLocation.valueOf(value.asString()));
-            return;
         }
 
         // <--[mechanism]
@@ -1296,9 +1289,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.fly_speed>
         // -->
-        if (mechanism.matches("fly_speed")) {
+        if (mechanism.matches("fly_speed") && mechanism.requireFloat()) {
             getPlayerEntity().setFlySpeed(value.asFloat());
-            return;
         }
 
         // <--[mechanism]
@@ -1312,9 +1304,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.weather>
         // -->
-        if (mechanism.matches("weather")) {
+        if (mechanism.matches("weather") && mechanism.requireEnum(false, WeatherType.values())) {
             getPlayerEntity().setPlayerWeather(WeatherType.valueOf(value.asString().toUpperCase()));
-            return;
         }
 
         // <--[mechanism]
@@ -1329,7 +1320,6 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("reset_weather")) {
             getPlayerEntity().resetPlayerWeather();
-            return;
         }
 
         // <--[mechanism]
@@ -1343,7 +1333,6 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("player_list_name")) {
             getPlayerEntity().setPlayerListName(value.asString());
-            return;
         }
 
         // <--[mechanism]
@@ -1358,9 +1347,8 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.time>
         // -->
-        if (mechanism.matches("time")) {
+        if (mechanism.matches("time") && mechanism.requireInteger()) {
             getPlayerEntity().setPlayerTime(value.asInt(), true);
-            return;
         }
 
         // <--[mechanism]
@@ -1377,11 +1365,10 @@ public class dPlayer implements dObject, Adjustable {
         // <player.time>
         // -->
         if (mechanism.matches("freeze_time")) {
-            if (value == null)
-                getPlayerEntity().setPlayerTime(getPlayerEntity().getWorld().getTime(), false);
-            else
+            if (mechanism.requireInteger("Invalid integer specified. Assuming current world time."))
                 getPlayerEntity().setPlayerTime(value.asInt(), false);
-            return;
+            else
+                getPlayerEntity().setPlayerTime(getPlayerEntity().getWorld().getTime(), false);
         }
 
         // <--[mechanism]
@@ -1396,7 +1383,6 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("reset_time")) {
             getPlayerEntity().resetPlayerTime();
-            return;
         }
 
         // <--[mechanism]
@@ -1408,14 +1394,16 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // <player.walk_speed>
         // -->
-        if (mechanism.matches("walk_speed")) {
+        if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
             getPlayerEntity().setWalkSpeed(value.asFloat());
-            return;
         }
 
         // Pass along to dEntity mechanism handler if not already handled.
-        Adjustable entity = new dEntity(getPlayerEntity());
-        entity.adjust(mechanism, value);
+        if (!mechanism.fulfilled()) {
+            dB.echoError("Invalid dPlayer mechanism specified. Checking dEntity mechanisms...");
+            Adjustable entity = new dEntity(getPlayerEntity());
+            entity.adjust(mechanism);
+        }
 
     }
 }

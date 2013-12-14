@@ -716,7 +716,9 @@ public class dNPC implements dObject, Adjustable {
     }
 
     @Override
-    public void adjust(Mechanism mechanism, Element value) {
+    public void adjust(Mechanism mechanism) {
+
+        Element value = mechanism.getValue();
 
         // <--[mechanism]
         // @object dNPC
@@ -727,7 +729,7 @@ public class dNPC implements dObject, Adjustable {
         // @tags
         // <n@npc.script>
         // -->
-        if (mechanism.matches("set_assignment") && value.matchesType(dScript.class)) {
+        if (mechanism.matches("set_assignment") && mechanism.requireObject(dScript.class)) {
             getAssignmentTrait().setAssignment(value.asType(dScript.class).getName(), null);
         }
 
@@ -779,7 +781,7 @@ public class dNPC implements dObject, Adjustable {
         // @tags
         // <n@npc.entity_type>
         // -->
-        if (mechanism.matches("set_entity_type") && value.matchesType(dEntity.class)) {
+        if (mechanism.matches("set_entity_type") && mechanism.requireObject(dEntity.class)) {
             getCitizen().setBukkitEntityType(value.asType(dEntity.class).getEntityType());
         }
 
@@ -807,7 +809,7 @@ public class dNPC implements dObject, Adjustable {
         // <n@npc.is_spawned>
         // -->
         if (mechanism.matches("spawn")) {
-            if (value.matchesType(dLocation.class))
+            if (mechanism.requireObject("Invalid dLocation specified. Assuming last known NPC location.", dLocation.class))
                 getCitizen().spawn(value.asType(dLocation.class));
             else
                 getCitizen().spawn(getCitizen().getStoredLocation());
@@ -835,7 +837,7 @@ public class dNPC implements dObject, Adjustable {
         // @tags
         // <n@npc.is_protected>
         // -->
-        if (mechanism.matches("set_protected")) {
+        if (mechanism.matches("set_protected") && mechanism.requireBoolean()) {
             getCitizen().setProtected(value.asBoolean());
         }
 
@@ -848,8 +850,15 @@ public class dNPC implements dObject, Adjustable {
         // @tags
         // <n@npc.lookclose>
         // -->
-        if (mechanism.matches("lookclose")) {
+        if (mechanism.matches("lookclose") && mechanism.requireBoolean()) {
             getLookCloseTrait().lookClose(value.asBoolean());
+        }
+
+        // Pass along to dEntity mechanism handler if not already handled.
+        if (!mechanism.fulfilled()) {
+            dB.echoError("Invalid dNPC mechanism specified. Checking dEntity mechanisms...");
+            Adjustable entity = new dEntity(getEntity());
+            entity.adjust(mechanism);
         }
 
     }

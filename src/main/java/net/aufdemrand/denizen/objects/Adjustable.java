@@ -8,6 +8,6 @@ public interface Adjustable {
      * @param mechanism  the name of mechanism to change
      * @param value      the value to input into the mechanism
      */
-    public void adjust(Mechanism mechanism, Element value);
-    // TODO?: * @return  a string result of the fetched attribute
+    public void adjust(Mechanism mechanism);
+
 }

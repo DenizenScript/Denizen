@@ -1072,6 +1072,16 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.custom_name.visible>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the entity's custom name is visible.
+        // -->
+        if (attribute.startsWith("custom_name.visible"))
+            return new Element(getLivingEntity().isCustomNameVisible())
+                    .getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
         // @attribute <e@entity.eid>
         // @returns Element(Number)
         // @description
@@ -1610,6 +1620,36 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
+        // @attribute <e@entity.oxygen.max>
+        // @returns Duration
+        // @description
+        // Returns the maximum duration of oxygen the entity can have.
+        // -->
+        if (attribute.startsWith("oxygen.max"))
+            return new Duration((long) getLivingEntity().getMaximumAir())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.oxygen>
+        // @returns Duration
+        // @description
+        // Returns the duration of oxygen the entity has left.
+        // -->
+        if (attribute.startsWith("oxygen"))
+            return new Duration((long) getLivingEntity().getRemainingAir())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.remove_when_far>
+        // @returns Element(Boolean)
+        // @description
+        // Returns if the entity despawns when away from players.
+        // -->
+        if (attribute.startsWith("remove_when_far"))
+            return new Element(getLivingEntity().getRemoveWhenFarAway())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <e@entity.time_lived>
         // @returns Duration
         // @description
@@ -1727,35 +1767,21 @@ public class dEntity implements dObject, Adjustable {
 
 
     @Override
-    public void adjust(Mechanism mechanism, Element value) {
+    public void adjust(Mechanism mechanism) {
+
+        Element value = mechanism.getValue();
 
         // <--[mechanism]
         // @object dEntity
-        // @name remove_effects
-        // @input None
-        // @description
-        // Removes all potion effects from the entity.
-        // @tags
-        // <e@entity.has_effect[<effect>]>
-        // -->
-        if (mechanism.matches("remove_effects")) {
-            for (PotionEffect potionEffect : this.getLivingEntity().getActivePotionEffects())
-                getLivingEntity().removePotionEffect(potionEffect.getType());
-            return;
-        }
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name remove_when_far_away
+        // @name can_pickup_items
         // @input Element(Boolean)
         // @description
-        // Sets whether the entity should be removed entirely when despawned.
+        // Sets whether the entity can pick up items.
         // @tags
-        // None
+        // <e@entity.can_pickup_items>
         // -->
-        // TODO: Tag for this
-        if (mechanism.matches("remove_when_far_away"))
-            getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
+        if (mechanism.matches("can_pickup_items") && mechanism.requireBoolean())
+            getLivingEntity().setCanPickupItems(value.asBoolean());
 
         // <--[mechanism]
         // @object dEntity
@@ -1776,23 +1802,34 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Sets whether the custom name is visible.
         // @tags
-        // None
+        // <e@entity.custom_name.visible>
         // -->
-        // TODO: Tag for this
-        if (mechanism.matches("custom_name_visibility"))
+        if (mechanism.matches("custom_name_visibility") && mechanism.requireBoolean())
             getLivingEntity().setCustomNameVisible(value.asBoolean());
 
         // <--[mechanism]
         // @object dEntity
-        // @name can_pickup_items
-        // @input Element(Boolean)
+        // @name fall_distance
+        // @input Element(Float)
         // @description
-        // Sets whether the entity can pick up items.
+        // Sets the fall distance.
         // @tags
-        // <e@entity.can_pickup_items>
+        // <e@entity.fall_distance>
         // -->
-        if (mechanism.matches("can_pickup_items"))
-            getLivingEntity().setCanPickupItems(value.asBoolean());
+        if (mechanism.matches("fall_distance") && mechanism.requireFloat())
+            entity.setFallDistance(value.asFloat());
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name fire_time
+        // @input Duration
+        // @description
+        // Sets the entity's current fire time (time before the entity stops being on fire).
+        // @tags
+        // <e@entity.fire_time>
+        // -->
+        if (mechanism.matches("fire_time") && mechanism.requireObject(Duration.class))
+            entity.setFireTicks(value.asType(Duration.class).getTicksAsInt());
 
         // <--[mechanism]
         // @object dEntity
@@ -1804,8 +1841,33 @@ public class dEntity implements dObject, Adjustable {
         // <e@entity.is_leashed>
         // <e@entity.get_leash_holder>
         // -->
-        if (mechanism.matches("leash_holder")) // TODO: Make sure value is a valid entity... also valid bool/int/etc for other inputs...
-            getLivingEntity().setLeashHolder(dEntity.valueOf(value.asString()).getBukkitEntity());
+        if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class))
+            getLivingEntity().setLeashHolder(value.asType(dEntity.class).getBukkitEntity());
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name passenger
+        // @input dEntity
+        // @description
+        // Sets the passenger of this entity.
+        // @tags
+        // <e@entity.get_passenger>
+        // <e@entity.is_empty>
+        // -->
+        if (mechanism.matches("passenger") && mechanism.requireObject(dEntity.class))
+            entity.setPassenger(value.asType(dEntity.class).getBukkitEntity());
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name time_lived
+        // @input Duration
+        // @description
+        // Sets the amount of time this entity has lived for.
+        // @tags
+        // <e@entity.time_lived>
+        // -->
+        if (mechanism.matches("time_lived") && mechanism.requireObject(Duration.class))
+            entity.setTicksLived(value.asType(Duration.class).getTicksAsInt());
 
         // <--[mechanism]
         // @object dEntity
@@ -1814,26 +1876,57 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Sets how much air the entity has remaining before it drowns.
         // @tags
-        // <p@player.oxygen>
-        // <p@player.oxygen.max>
+        // <e@entity.oxygen>
+        // <e@entity.oxygen.max>
         // -->
-        // TODO: Make those tags available for dEntities XOR make this mechanism for players only.
-        if (mechanism.matches("remaining_air"))
+        if (mechanism.matches("remaining_air") && mechanism.requireInteger())
             getLivingEntity().setRemainingAir(value.asInt());
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name remove_effects
+        // @input None
+        // @description
+        // Removes all potion effects from the entity.
+        // @tags
+        // <e@entity.has_effect[<effect>]>
+        // -->
+        if (mechanism.matches("remove_effects"))
+            for (PotionEffect potionEffect : this.getLivingEntity().getActivePotionEffects())
+                getLivingEntity().removePotionEffect(potionEffect.getType());
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name remove_when_far_away
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity should be removed entirely when despawned.
+        // @tags
+        // <e@entity.remove_when_far>
+        // -->
+        if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean())
+            getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
 
         // <--[mechanism]
         // @object dEntity
         // @name tame
         // @input Element(Boolean)
         // @description
-        // Sets whether the entity is considered tame.
+        // Sets whether the entity has been tamed.
         // @tags
         // <e@entity.is_tamed>
         // <e@entity.is_tameable>
         // -->
-        if (mechanism.matches("tame")) // TODO: Verify that entity is tameable first
+        if (mechanism.matches("tame") && mechanism.requireBoolean()) {
+            if (!(entity instanceof Tameable)) {
+                dB.echoError("That dEntity is not tameable.");
+                return;
+            }
             ((Tameable)getLivingEntity()).setTamed(value.asBoolean());
+        }
 
+        if (!mechanism.fulfilled())
+            dB.echoError("Invalid dEntity mechanism specified.");
 
     }
 
