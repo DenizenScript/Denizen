@@ -1,18 +1,19 @@
-package net.aufdemrand.denizen.objects.properties;
+package net.aufdemrand.denizen.objects.properties.Item;
 
 
 import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
-import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.material.Colorable;
 
 public class ItemColor implements Property {
 
     public static boolean describes(dObject item) {
-        if (!(item instanceof dItem)) return false;
-        return ((dItem) item).getItemStack() instanceof Colorable;
+        return item instanceof dItem
+                && ((dItem) item).getItemStack() instanceof Colorable;
     }
 
     public static ItemColor getFrom(dItem item) {
@@ -21,16 +22,19 @@ public class ItemColor implements Property {
     }
 
 
-    private ItemColor(dItem item) {
-        colorable = item;
+    private ItemColor(dItem _item) {
+        item = _item;
+        color = getColor();
     }
 
-    dItem colorable;
+    dItem item;
     dColor color;
 
     public dColor getColor() {
-        return new dColor(Color.RED);
-
+        if (((Colorable)item).getColor() != DyeColor.WHITE)
+            return new dColor(((Colorable) item).getColor());
+        else
+            return null;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class ItemColor implements Property {
 
     @Override
     public String getPropertyString() {
-        return getPropertyId() + '=' + color.identify() + ';';
+        return color.identify();
     }
 
     @Override

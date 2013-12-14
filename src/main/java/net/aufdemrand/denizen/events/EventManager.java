@@ -147,7 +147,9 @@ public class EventManager implements Listener {
     }
 
 
-    public static List<String> trimEvents(List<String> event) {
+    public static List<String> trimEvents(List<String> original) {
+        List<String> event = new ArrayList<String>();
+        event.addAll(original);
         List<String> parsed = new ArrayList<String>();
 
         if (dB.showEventsTrimming) dB.echoApproval("Trimming world events '" + event.toString() + '\'');
