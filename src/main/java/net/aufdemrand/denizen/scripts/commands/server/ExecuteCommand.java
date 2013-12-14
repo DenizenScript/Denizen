@@ -1,8 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
 import net.aufdemrand.denizen.objects.Element;
-import net.citizensnpcs.api.event.DespawnReason;
-import net.citizensnpcs.trait.CurrentLocation;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 

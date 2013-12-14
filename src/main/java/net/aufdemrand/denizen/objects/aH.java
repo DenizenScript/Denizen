@@ -6,8 +6,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,11 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.objects.Fetchable;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 

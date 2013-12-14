@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.objects.notable;
 
-import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

@@ -1,8 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;

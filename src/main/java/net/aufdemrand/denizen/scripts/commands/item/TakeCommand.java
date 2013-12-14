@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.item;
 
 import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 

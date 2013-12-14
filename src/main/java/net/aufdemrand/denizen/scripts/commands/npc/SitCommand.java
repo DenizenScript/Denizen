@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Wolf;
 

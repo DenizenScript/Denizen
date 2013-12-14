@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Location;
 

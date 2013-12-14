@@ -10,13 +10,9 @@ import net.citizensnpcs.util.PlayerAnimation;
 import net.minecraft.server.v1_7_R1.EntityFishingHook;
 import net.minecraft.server.v1_7_R1.EntityHuman;
 import net.minecraft.server.v1_7_R1.EntityItem;
-import net.minecraft.server.v1_7_R1.Item;
-import net.minecraft.server.v1_7_R1.ItemStack;
-import net.minecraft.server.v1_7_R1.MathHelper;
 import net.minecraft.server.v1_7_R1.WorldServer;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;

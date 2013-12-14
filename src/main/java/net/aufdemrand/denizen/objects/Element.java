@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.aH.Argument;
-import net.aufdemrand.denizen.scripts.commands.core.*;
 import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;

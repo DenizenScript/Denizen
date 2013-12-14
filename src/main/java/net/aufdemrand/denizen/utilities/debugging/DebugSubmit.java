@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;

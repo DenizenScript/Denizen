@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import java.util.List;
 
 import net.aufdemrand.denizen.objects.properties.EntityAge;
-import org.bukkit.entity.Zombie;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;

@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.ai.speech.SpeechContext;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
