@@ -652,8 +652,9 @@ public class dCuboid implements dObject, Notable, Adjustable {
 
 
     @Override
-    public void adjust(Mechanism mechanism, Element value) {
+    public void adjust(Mechanism mechanism) {
 
+        Element value = mechanism.getValue();
 
         // <--[mechanism]
         // @object dCuboid
@@ -669,7 +670,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // -->
         if (mechanism.matches("outset")) {
             int mod = 1;
-            if (value != null)
+            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."));
                 mod = value.asInt();
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
@@ -697,7 +698,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // -->
         if (mechanism.matches("expand")) {
             int mod = 1;
-            if (value != null)
+            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
                 mod = value.asInt();
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
@@ -725,7 +726,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // -->
         if (mechanism.matches("set_location")) {
             int mod = 1;
-            if (value != null)
+            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
                 mod = value.asInt();
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
@@ -739,7 +740,8 @@ public class dCuboid implements dObject, Notable, Adjustable {
             return;
         }
 
-
+        if (!mechanism.fulfilled())
+            mechanism.reportInvalid();
 
     }
 }

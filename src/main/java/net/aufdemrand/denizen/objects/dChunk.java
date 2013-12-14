@@ -264,7 +264,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
     }
 
     @Override
-    public void adjust(Mechanism mechanism, Element value) {
+    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object dChunk
@@ -277,7 +277,6 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("unload")) {
             unload(true);
-            return;
         }
 
         // <--[mechanism]
@@ -291,7 +290,6 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("unload_safely")) {
             unload(true, true);
-            return;
         }
 
         // <--[mechanism]
@@ -305,7 +303,6 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("unload_without_saving")) {
             unload(false);
-            return;
         }
 
         // <--[mechanism]
@@ -319,7 +316,6 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("load")) {
             load(true);
-            return;
         }
 
         // <--[mechanism]
@@ -333,9 +329,10 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (mechanism.matches("regenerate")) {
             getWorld().regenerateChunk(getX(), getZ());
-            return;
         }
 
+        if (!mechanism.fulfilled())
+            mechanism.reportInvalid();
 
     }
 

@@ -5,8 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-
-import java.lang.reflect.InvocationTargetException;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
 public class AdjustCommand extends AbstractCommand {
@@ -30,17 +29,16 @@ public class AdjustCommand extends AbstractCommand {
 
         }
 
-        // Check for valid object
-
-        // Check for valid mechanism
-
     }
 
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // TODO: ADD REPORT!
+        dB.report(scriptEntry, getName(),
+                scriptEntry.getElement("object").debug()
+                    + scriptEntry.getElement("mechanism").debug()
+                    + scriptEntry.getElement("mechanism_value").debug());
 
         String object = scriptEntry.getElement("object").asString();
 
@@ -63,8 +61,8 @@ public class AdjustCommand extends AbstractCommand {
             throw new CommandExecutionException('\'' + object + "' is not adjustable.");
 
         // Do the adjustment!
-        ((Adjustable) fetched).adjust(new Mechanism(scriptEntry.getElement("mechanism").asString()),
-                scriptEntry.getElement("mechanism_value"));
+        ((Adjustable) fetched).adjust(new Mechanism(scriptEntry.getElement("mechanism"),
+                scriptEntry.getElement("mechanism_value")));
 
         // :)
 
