@@ -53,7 +53,7 @@ public class PoseCommand extends AbstractCommand {
 
         // Even if the target is a player, this command requires an NPC to get the pose from.
         if (!scriptEntry.hasNPC())
-            throw new InvalidArgumentsException("This command requires a linked NPC!");
+            throw new InvalidArgumentsException("This command requires an NPC!");
 
         // It also requires a pose ID
         if (!scriptEntry.hasObject("id"))

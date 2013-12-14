@@ -38,7 +38,7 @@ public class LookcloseCommand extends AbstractCommand {
                 scriptEntry.addObject("toggle", arg.asElement());
 
             else if (arg.matchesArgumentType(dNPC.class))
-                scriptEntry.setNPC((dNPC) arg.asType(dNPC.class));
+                scriptEntry.setNPC(arg.asType(dNPC.class));
 
             else arg.reportUnhandled();
         }
@@ -46,7 +46,7 @@ public class LookcloseCommand extends AbstractCommand {
         // Only required thing is a valid NPC. This may be an already linked
         // NPC, or one specified by arguments
         if (scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException("This command requires a NPC!");
+            throw new InvalidArgumentsException("This command requires an NPC!");
 
     }
 

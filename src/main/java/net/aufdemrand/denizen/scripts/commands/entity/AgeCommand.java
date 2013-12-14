@@ -85,41 +85,32 @@ public class AgeCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("entities")
-                && arg.matchesArgumentList(dEntity.class)) {
-
-                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
-            }
+                    && arg.matchesArgumentList(dEntity.class))
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
 
             else if (!scriptEntry.hasObject("agetype")
-                    && arg.matchesEnum(AgeType.values())) {
-                // add Action
+                    && arg.matchesEnum(AgeType.values()))
                 scriptEntry.addObject("agetype", AgeType.valueOf(arg.getValue().toUpperCase()));
-            }
-
 
             else if (!scriptEntry.hasObject("age")
-                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
-
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("age", arg.asElement());
-            }
 
             else if (!scriptEntry.hasObject("lock")
-                     && arg.matches("lock")) {
+                    && arg.matches("lock"))
+                scriptEntry.addObject("lock", Element.TRUE);
 
-                scriptEntry.addObject("lock", "");
-            }
 
             else arg.reportUnhandled();
         }
 
         // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("entities"))
-            throw new InvalidArgumentsException("Must specify entity/entities!");
+            throw new InvalidArgumentsException("No valid entities specified.");
 
-        // Use default duration if one is not specified
-
+        // Use default age if one is not specified
         scriptEntry.defaultObject("age", new Element(1));
+
     }
 
     @SuppressWarnings("unchecked")
@@ -134,9 +125,9 @@ public class AgeCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), (lock ? aH.debugObj("lock", lock) : "") +
-                             (ageType != null ? aH.debugObj("agetype", ageType)
-                                              : aH.debugObj("age", age)) +
-                             aH.debugObj("entities", entities.toString()));
+                (ageType != null ? aH.debugObj("agetype", ageType)
+                        : aH.debugObj("age", age)) +
+                aH.debugObj("entities", entities.toString()));
 
         // Go through all the entities and set their ages
         for (dEntity entity : entities) {
