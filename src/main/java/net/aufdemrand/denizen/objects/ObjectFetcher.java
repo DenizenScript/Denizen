@@ -112,7 +112,8 @@ public class ObjectFetcher {
                 String[] properties = m.group(2).split(";");
                 for (String property: properties) {
                     String[] data = property.split("=", 2);
-                    ((Adjustable) gotten).adjust(new Mechanism(new Element(data[0]), new Element(data[1])));
+                    ((Adjustable) gotten).adjust(new Mechanism(new Element(data[0]),
+                            new Element(data[1].replace((char)0x2011, ';'))));
                 }
             }
             return gotten;

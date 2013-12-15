@@ -36,6 +36,7 @@ public class PropertyParser {
         // register core dItem properties
         registerProperty(ItemEnchantments.class, dItem.class);
         registerProperty(ItemDisplayname.class, dItem.class);
+        registerProperty(ItemLore.class, dItem.class);
 
     }
 
@@ -73,7 +74,8 @@ public class PropertyParser {
         for (Property property: getProperties(object)) {
             String description = property.getPropertyString();
             if (description != null) {
-                prop_string.append(property.getPropertyId()).append('=').append(description).append(';');
+                prop_string.append(property.getPropertyId()).append('=')
+                        .append(description.replace(';', (char)0x2011)).append(';');
             }
         }
 

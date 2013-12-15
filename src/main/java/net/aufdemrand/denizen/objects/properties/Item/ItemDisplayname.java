@@ -42,7 +42,6 @@ public class ItemDisplayname implements Property {
             return new Element(item.getItemStack().getItemMeta().getDisplayName())
                 .getAttribute(attribute.fulfill(1));
 
-
         return null;
     }
 

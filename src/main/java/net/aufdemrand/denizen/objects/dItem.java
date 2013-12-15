@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.properties.Item.ItemDisplayname;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -662,14 +663,10 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // Returns whether the item has a custom set display name.
         // -->
         if (attribute.startsWith("has_display")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasDisplayName()) {
-                return Element.TRUE
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return Element.FALSE
-                        .getAttribute(attribute.fulfill(1));
-            }
+            if (ItemDisplayname.describes(this))
+                return Element.TRUE.getAttribute(attribute.fulfill(1));
+            else
+                return Element.FALSE.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -762,28 +759,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                 return new Element(getLore(itemscriptIdentifier))
                         .getAttribute(attribute.fulfill(1));
             }
-
-        // <--[tag]
-        // @attribute <i@item.lore>
-        // @returns dList
-        // @description
-        // Returns lore as a dList. Excludes the custom-script-id lore.
-        // To get that information, use <i@item.scriptname>.
-        // -->
-        if (attribute.startsWith("lore")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
-
-                List<String> loreList = new ArrayList<String>();
-
-                for (String itemLore : getItemStack().getItemMeta().getLore()) {
-                    if (!itemLore.startsWith(itemscriptIdentifier)) {
-                        loreList.add(itemLore);
-                    }
-                }
-                return new dList(loreList).getAttribute(attribute.fulfill(1));
-            }
-            else return new dList("").getAttribute(attribute.fulfill(1));
-        }
 
         if (attribute.startsWith("prefix"))
             return new Element(prefix)

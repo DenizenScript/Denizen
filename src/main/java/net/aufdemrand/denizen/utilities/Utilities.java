@@ -108,7 +108,7 @@ public class Utilities {
      *
      */
     public static void talkToNPC(String message, dPlayer player, dNPC npc, double range) {
-        String replacer = String.valueOf((char)0x03);
+        String replacer = String.valueOf((char)0x04);
         // Get formats from Settings, and fill in <TEXT>
         String talkFormat = Settings.ChatToNpcFormat()
                 .replace("<TEXT>", replacer).replace("<text>", replacer).replace("<Text>", replacer);
