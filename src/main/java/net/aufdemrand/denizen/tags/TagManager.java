@@ -32,10 +32,12 @@ public class TagManager implements Listener {
     }
 
     public void registerCoreTags() {
+        // Objects
         new PlayerTags(denizen);
         new NPCTags(denizen);
         new LocationTags(denizen);
 
+        // Utilities
         new UtilTags(denizen);
         new ProcedureScriptTag(denizen);
         new ContextTags(denizen);

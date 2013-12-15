@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.objects.properties;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.properties.Entity.*;
+import net.aufdemrand.denizen.objects.properties.Item.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.lang.reflect.InvocationTargetException;
@@ -10,8 +12,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 public class PropertyParser {
-
-    public static String NONE = "";
 
     // Keep track of which Property belongs to which dObject
     static Map<Class<? extends dObject>, List<Class>> properties
@@ -34,7 +34,7 @@ public class PropertyParser {
         registerProperty(EntityInfected.class, dEntity.class);
 
         // register core dItem properties
-        registerProperty(ItemColor.class, dItem.class);
+        registerProperty(ItemEnchantments.class, dItem.class);
 
     }
 
@@ -69,20 +69,18 @@ public class PropertyParser {
 
         // Iterate through each property associated with the dObject type, invoke 'describes'
         // and if 'true', add property string from the property to the prop_string.
-        try {
-            for (Class property : properties.get(object.getClass())) {
-                if ((Boolean) describes.get(property).invoke(null, object))
-                    prop_string.append(((Property) getFrom.get(property).invoke(null, object)).getPropertyString());
+        for (Property property: getProperties(object)) {
+            String description = property.getPropertyString();
+            if (description != null) {
+                prop_string.append(property.getPropertyId()).append('=').append(description).append(';');
             }
-
-        } catch (IllegalAccessException e) {
-            dB.echoError(e);
-        } catch (InvocationTargetException e) {
-            dB.echoError(e);
         }
 
         // Return the list of properties
-        return prop_string.toString();
+        if (prop_string.length() > 0) // Remove final semicolon
+            return "[" + prop_string.substring(0, prop_string.length() - 1) + "]";
+        else
+            return "";
     }
 
     public static List<Property> getProperties(dObject object) {

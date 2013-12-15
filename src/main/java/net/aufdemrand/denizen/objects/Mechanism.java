@@ -62,7 +62,8 @@ public class Mechanism {
     }
 
     public <T extends dObject> boolean requireObject(Class<T> type) {
-        return requireObject("Invalid " + type.getName() + " specified.", type);
+        // TODO: Remove getSimpleName(), or simplify somehow.
+        return requireObject("Invalid " + type.getSimpleName() + " specified.", type);
     }
 
     public boolean requireBoolean(String error) {
