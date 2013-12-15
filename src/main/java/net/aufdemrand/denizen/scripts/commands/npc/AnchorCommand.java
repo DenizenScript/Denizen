@@ -24,9 +24,6 @@ public class AnchorCommand extends AbstractCommand {
 
     private enum Action { ADD, REMOVE, ASSUME, WALKTO, WALKNEAR }
 
-    public static final    String  RANGE_ARG = "range, r";
-    public static final    String     ID_ARG = "id, i";
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -35,34 +32,30 @@ public class AnchorCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values()))
-                // add Action
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
 
 
             else if (!scriptEntry.hasObject("range")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix(RANGE_ARG))
-                // add range (for WALKNEAR)
+                    && arg.matchesPrefix("range, r"))
                 scriptEntry.addObject("range", arg.asElement());
 
 
             else if (!scriptEntry.hasObject("id")
-                    && arg.matchesPrefix(ID_ARG))
-                // add anchor ID
+                    && arg.matchesPrefix("id, i"))
                 scriptEntry.addObject("id", arg.asElement());
 
 
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
-                // add location (for ADD)
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-            else
-                arg.reportUnhandled();
+            else arg.reportUnhandled();
         }
 
+        // Check required arguments
         if (!scriptEntry.hasNPC())
-            throw new InvalidArgumentsException("This command requires a linked NPC!");
+            throw new InvalidArgumentsException("NPC linked was missing or invalid.");
 
         if (!scriptEntry.hasObject("action"))
             throw new InvalidArgumentsException("Must specify an 'Anchor Action'. Valid: " + Action.values());

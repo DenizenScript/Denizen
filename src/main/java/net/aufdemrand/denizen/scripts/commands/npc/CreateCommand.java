@@ -7,11 +7,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.event.DespawnReason;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
-
-import org.bukkit.Location;
 
 /**
  * Creates a NPC.
@@ -28,7 +24,8 @@ public class CreateCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("entity_type")
                     && arg.matchesArgumentType(dEntity.class)) {
-                dEntity ent = dEntity.valueOf(arg.getValue());
+                // Avoid duplication of objects
+                dEntity ent = arg.asType(dEntity.class);
                 if (!ent.isGeneric())
                     throw new InvalidArgumentsException("Entity supplied must be generic!");
                 scriptEntry.addObject("entity_type", ent);

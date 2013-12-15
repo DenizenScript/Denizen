@@ -10,72 +10,64 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
- * TODO: Document usage
+ * Controls a NPC's 'Assignment' trait.
  *
  * @author Jeremy Schroeder
  *
  */
 public class AssignmentCommand extends AbstractCommand {
 
-    private enum Action {SET, REMOVE}
+    private enum Action { SET, REMOVE }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        // Initialize fields
-        dScript script = null;
-        Action action = Action.SET;
 
-        // Parse arguments
-        for (String arg : scriptEntry.getArguments()) {
+        // Parse Arguments
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            // If script argument, check the type -- must be 'assignment'
-            if (aH.matchesScript(arg)) {
-                script = aH.getScriptFrom(arg);
-                if (script != null && !script.getType().equalsIgnoreCase("assignment")) {
-                    dB.echoError("Script type must be 'ASSIGNMENT'. Script specified is '" + script.getType() + "'.");
-                    script = null;
-                }
+            if (arg.matchesEnum(Action.values())
+                    && !scriptEntry.hasObject("action"))
+                scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
+
+
+            else if (arg.matchesArgumentType(dScript.class)
+                    && !scriptEntry.hasObject("script")) {
+                // Check the type of script.. it must be an assignment-type container
+                if (arg.asType(dScript.class) != null
+                        && arg.asType(dScript.class).getType().equalsIgnoreCase("assignment"))
+                    scriptEntry.addObject("script", arg.asType(dScript.class));
+                else
+                    throw new InvalidArgumentsException("Script specified is not an 'assignment-type' container.");
             }
 
-            // Get desired action
-            else if (aH.matchesArg("SET, REMOVE", arg))
-                action = Action.valueOf(arg.toUpperCase());
 
-            else
-                dB.echoError("Unnknown argument '" + arg + "'");
+            else arg.reportUnhandled();
         }
 
-        // If 'SET'ting with no 'script' throws an error.
-        if (action == Action.SET && script == null)
-            throw new InvalidArgumentsException("Missing 'script' argument!");
-        // If no NPC attached, throw an error
+        // Check required arguments
         if (scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException("This command requires a linked npc!");
+            throw new InvalidArgumentsException("NPC linked was missing or invalid.");
 
-        // Add objects that need to be passed to execute() to the scriptEntry
-        scriptEntry.addObject("script", script)
-                .addObject("action", action);
+        if (scriptEntry.getObject("action").equals(Action.SET) && !scriptEntry.hasObject("script"))
+            throw new InvalidArgumentsException("Script specified was missing or invalid.");
+
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        // Fetch objects
-        Action action = (Action) scriptEntry.getObject("action");
-        dScript script = (dScript) scriptEntry.getObject("script");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("Action", action.toString())
-                        + (script != null ? script.debug() : "")
-                        + aH.debugObj("NPC", scriptEntry.getNPC().toString()));
+        dB.report(scriptEntry, getName(), scriptEntry.getNPC().debug()
+                + scriptEntry.reportObject("action")
+                + scriptEntry.reportObject("script"));
 
         // Perform desired action
-        if (action == Action.SET)
+        if (scriptEntry.getObject("action").equals(Action.SET))
             scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)
-                    .setAssignment(script.getName(), scriptEntry.getPlayer());
+                    .setAssignment(scriptEntry.getdObjectAs("script", dScript.class).getName(),
+                            scriptEntry.getPlayer());
 
-        else
-        if (action == Action.REMOVE)
+        else if (scriptEntry.getObject("action").equals(Action.REMOVE))
             scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)
                     .removeAssignment(scriptEntry.getPlayer());
     }

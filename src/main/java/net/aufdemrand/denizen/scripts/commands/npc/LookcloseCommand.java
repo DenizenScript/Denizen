@@ -7,9 +7,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.LookClose;
 
 /**
@@ -46,7 +44,7 @@ public class LookcloseCommand extends AbstractCommand {
         // Only required thing is a valid NPC. This may be an already linked
         // NPC, or one specified by arguments
         if (scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException("This command requires an NPC!");
+            throw new InvalidArgumentsException("NPC linked was missing or invalid.");
 
     }
 
