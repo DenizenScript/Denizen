@@ -110,7 +110,9 @@ public class ItemScriptHelper implements Listener {
         ItemScriptContainer.specialrecipesMap.clear();
         }
         catch (Throwable e) {
-            dB.echoError(e);
+            // Disable until bukkit fixes the issue, no sense worrying people about
+            // something we can't control.
+            // dB.echoError(e);
         }
     }
 

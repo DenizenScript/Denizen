@@ -10,7 +10,10 @@ import java.util.WeakHashMap;
 
 import net.aufdemrand.denizen.Settings;
 
+import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -97,6 +100,23 @@ public class dB {
     //////
 
 
+    // <--[language]
+    // @Name 'show_command_reports' player flag
+    // @Group Useful flags
+
+    // @Description
+    // Giving a player the flag 'show_command_reports' will tell the Denizen dBugger to output
+    // command reports to the player involved with the ScriptEntry. This can be useful for
+    // script debugging, though it not an all-inclusive view of debugging information.
+    //
+    // To turn on and turn off the flag, just use:
+    // <code>
+    // /ex flag <player> show_command_reports
+    // /ex flag <player> show_command_reports:!
+    // </code>
+    //
+    // -->
+
     /**
      * Used by Commands to report how the supplied arguments were parsed.
      * Should be supplied a concatenated String with aH.debugObject() or dObject.debug() of all
@@ -110,12 +130,22 @@ public class dB {
         if (!showDebug) return;
         echo("<Y>+> <G>Executing '<Y>" + name + "<G>': "
                 + trimMessage(report), caller);
+
+        if (caller instanceof ScriptEntry) {
+            if (((ScriptEntry) caller).hasPlayer()) {
+                if (FlagManager.playerHasFlag(((ScriptEntry) caller).getPlayer(), "show_command_reports")) {
+                    String message = "<Y>+> <G>Executing '<Y>" + name + "<G>': "
+                            + trimMessage(report);
+
+                    ((ScriptEntry) caller).getPlayer().getPlayerEntity()
+                            .sendRawMessage(message.replace("<Y>", ChatColor.YELLOW.toString())
+                                    .replace("<G>", ChatColor.DARK_GRAY.toString())
+                                    .replace("<A>", ChatColor.AQUA.toString()));
+                }
+            }
+        }
     }
 
-
-    // Used by the various parts of Denizen that output debuggable information
-    // to help scripters see what is going on. Debugging an element is usually
-    // for formatting debug information.
     public static void echoDebug(Debuggable caller, DebugElement element) {
         if (!showDebug) return;
         echoDebug(caller, element, null);
