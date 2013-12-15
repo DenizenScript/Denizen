@@ -59,11 +59,28 @@ public class TagManager implements Listener {
     // 0x05: |
     // 0x2011: ;
 
+    /**
+     * Cleans escaped symbols generated within Tag Manager so that
+     * they can be parsed now.
+     *
+     * @param input the potentially escaped input string.
+     * @return the cleaned output string.
+     */
     public static String CleanOutput(String input) {
         return input.replace((char)0x01, '<').replace((char)0x02, '>')
                 /*.replace((char)0x2011, ';')*/.replace(dList.internal_escape_char, '|');
     }
 
+    /**
+     * Cleans any potential internal escape characters (secret characters
+     * used to hold the place of symbols that might get parsed weirdly
+     * like > or | ) back into their proper form. Use this function
+     * when outputting information that is going to be read by a
+     * person.
+     *
+     * @param input the potentially escaped input string.
+     * @return the cleaned output string.
+     */
     public static String CleanOutputFully(String input) {
         return input.replace((char)0x01, '<').replace((char)0x02, '>')
                 .replace((char)0x2011, ';').replace(dList.internal_escape_char, '|');
