@@ -35,6 +35,7 @@ public class PropertyParser {
 
         // register core dItem properties
         registerProperty(ItemEnchantments.class, dItem.class);
+        registerProperty(ItemDisplayname.class, dItem.class);
 
     }
 

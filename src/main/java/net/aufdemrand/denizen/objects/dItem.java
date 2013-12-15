@@ -673,17 +673,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <i@item.display>
-        // @returns Element
-        // @description
-        // Returns the display name of the item, as set by plugin or an anvil.
-        // -->
-        if (attribute.startsWith("display"))
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasDisplayName())
-                return new Element(getItemStack().getItemMeta().getDisplayName())
-                        .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <i@item.skin>
         // @returns Element
         // @description
@@ -833,14 +822,14 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
 
         // <--[mechanism]
         // @object dItem
-        // @name set_display
+        // @name display_name
         // @input Element
         // @description
         // Changes the items display name.
         // @tags
         // <i@item.display>
         // -->
-        if (mechanism.matches("set_display")) {
+        if (mechanism.matches("display_name")) {
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(value.asString());
             item.setItemMeta(meta);
@@ -848,14 +837,14 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
 
         // <--[mechanism]
         // @object dItem
-        // @name set_lore
+        // @name lore
         // @input dList
         // @description
         // Sets the item's lore.
         // @tags
         // <i@item.lore>
         // -->
-        if (mechanism.matches("set_lore")) {
+        if (mechanism.matches("lore")) {
             ItemMeta meta = item.getItemMeta();
             meta.setLore(value.asType(dList.class));
             item.setItemMeta(meta);

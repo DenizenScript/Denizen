@@ -6,13 +6,11 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.enchantments.Enchantment;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ItemEnchantments implements Property {
 
