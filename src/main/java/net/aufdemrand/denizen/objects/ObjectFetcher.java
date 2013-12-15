@@ -106,7 +106,7 @@ public class ObjectFetcher {
         try {
             Matcher m = PROPERTIES_PATTERN.matcher(value);
             boolean matched = m.matches();
-            T gotten = (T) ((dClass.equals(dItem.class)) ? dItem.valueOf(matched ? m.group(1): value):
+            T gotten = (T) ((dClass.equals(dItem.class)) ? dItem.valueOf(matched ? m.group(1): value, player, npc):
                     valueof.get(dClass).invoke(null, matched ? m.group(1): value));
             if (gotten != null && gotten instanceof Adjustable && matched) {
                 String[] properties = m.group(2).split(";");

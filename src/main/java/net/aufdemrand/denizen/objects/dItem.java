@@ -663,10 +663,8 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // Returns whether the item has a custom set display name.
         // -->
         if (attribute.startsWith("has_display")) {
-            if (ItemDisplayname.describes(this))
-                return Element.TRUE.getAttribute(attribute.fulfill(1));
-            else
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
+            return new Element(ItemDisplayname.describes(this))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

@@ -210,7 +210,8 @@ public class dList extends ArrayList<String> implements dObject {
                 if (ObjectFetcher.checkMatch(dClass, element)) {
 
                     dObject object = ObjectFetcher.getObjectFrom(dClass, element,
-                                        entry.getPlayer(), entry.getNPC());
+                            (entry != null ? entry.getPlayer(): null),
+                            (entry != null ? entry.getNPC(): null));
 
                     // Only add the object if it is not null, thus filtering useless
                     // list items

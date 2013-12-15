@@ -1157,11 +1157,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Heal
-        // @Syntax heal (<#.#>) (<entity>|...)
+        // @Syntax heal (<#.#>) ({player}/<entity>|...)
         // @Required 0
         // @Stable stable
-        // @Short Heals the player.
-        // @Author aufdemrand, Jeebiss, morphan1, mcmonkey
+        // @Short Heals the player or list of entities.
+        // @Author aufdemrand, Jeebiss, Morphan1, mcmonkey
         // @Description
         // Todo
         // @Tags
@@ -1170,27 +1170,44 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(HealCommand.class,
-                "HEAL", "heal (<#.#>) (<entity>|...)", 0);
+                "HEAL", "heal (<#.#>) ({player}/<entity>|...)", 0);
 
 
         // <--[command]
         // @Name Health
-        // @Syntax health (target:player/{npc}) [<#>] (state:{true}/false/toggle)
+        // @Syntax health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)
         // @Required 1
         // @Stable stable
         // @Short Changes the target's maximum health.
         // @Author mcmonkey
         // @Description
-        // Todo
+        // Use this command to modify an entity's maximum health. If the target is an NPC,
+        // you can use the 'state' argument to enable, disable, or toggle the Health trait
+        // (which is used to track the NPC's health, and handle actions such as 'on death')
+        // the Health trait will be enabled by default.
+        // By default, this command will target the linked NPC but can be set to target any
+        // other living entity, such as a player or mob.
+        // Additionally, you may input a list of entities, each one will calculate the effects
+        // explained above.
         // @Tags
         // <e@entity.health>
         // <e@entity.health.max>
         // <n@npc.has_trait[health]>
         // @Usage
-        // Todo
+        // Use to set the NPC's maximum health to 50.
+        // - health 50
+        // @Usage
+        // Use to disable tracking of health value on the NPC.
+        // - health state:false
+        // @Usage
+        // Use to change a player's health limit to 50.
+        // - health <player> 50
+        // @Usage
+        // Use to change a list of entities' health limits all to 50.
+        // - health <player.location.find.living_entities.within[10]> 50
         // -->
         registerCoreMember(HealthCommand.class,
-                "HEALTH", "health (target:player/{npc}) [<#>] (state:{true}/false/toggle)", 1);
+                "HEALTH", "health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)", 1);
 
 
         // <--[command]

@@ -5,9 +5,14 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class HealthCommand extends AbstractCommand {
 
@@ -23,12 +28,16 @@ public class HealthCommand extends AbstractCommand {
                     && arg.matches("player")) {
                 if (!scriptEntry.hasPlayer())
                     throw new InvalidArgumentsException("No player attached!");
-                scriptEntry.addObject("target", arg.asElement());
+                scriptEntry.addObject("target", Arrays.asList(scriptEntry.getPlayer()));
             }
 
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("qty", arg.asElement());
+
+            else if (!scriptEntry.hasObject("target")
+                    && arg.matchesArgumentList(dEntity.class))
+                scriptEntry.addObject("target", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
 
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesPrefix("state"))
@@ -45,7 +54,7 @@ public class HealthCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("target")) {
             if (!scriptEntry.hasNPC())
                 throw new InvalidArgumentsException("Missing NPC!");
-            scriptEntry.addObject("target", Element.valueOf("npc"));
+            scriptEntry.addObject("target", Arrays.asList(scriptEntry.getNPC()));
         }
 
     }
@@ -54,14 +63,13 @@ public class HealthCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // Fetch required objects
-
         Element qty = scriptEntry.getElement("qty");
         Element action = scriptEntry.getElement("action");
-        boolean isplayer = scriptEntry.getElement("target").asString().equalsIgnoreCase("player");
+        List<dEntity> targets = (List<dEntity>) scriptEntry.getObject("target");
 
         dB.report(scriptEntry, getName(), (qty != null ? qty.debug() : "") +
-                                          (action != null ? action.debug() : ""));
+                                          (action != null ? action.debug() : "") +
+                                          aH.debugObj("target", targets.toString()));
 
         if (qty == null && action == null)
             dB.echoError("Null quantity!");
@@ -69,28 +77,32 @@ public class HealthCommand extends AbstractCommand {
         if (action == null)
             action = Element.TRUE;
 
-        if (!isplayer) {
-            if (action.asString().equalsIgnoreCase("true"))
-                scriptEntry.getNPC().getCitizen().addTrait(HealthTrait.class);
-            else if (action.asString().equalsIgnoreCase("false"))
-                scriptEntry.getNPC().getCitizen().removeTrait(HealthTrait.class);
-            else if (scriptEntry.getNPC().getCitizen().hasTrait(HealthTrait.class))
-                scriptEntry.getNPC().getCitizen().removeTrait(HealthTrait.class);
-            else
-                scriptEntry.getNPC().getCitizen().addTrait(HealthTrait.class);
-        }
-        if (qty != null) {
-            if (isplayer) {
-                scriptEntry.getPlayer().getPlayerEntity().setMaxHealth(qty.asDouble());
-            }
-            else {
-                if (scriptEntry.getNPC().getCitizen().hasTrait(HealthTrait.class))
-                    scriptEntry.getNPC().getHealthTrait().setMaxhealth(qty.asInt());
+        for (dEntity target: targets) {
+            if (target.isNPC()) {
+                if (action.asString().equalsIgnoreCase("true"))
+                    target.getNPC().addTrait(HealthTrait.class);
+                else if (action.asString().equalsIgnoreCase("false"))
+                    target.getNPC().removeTrait(HealthTrait.class);
+                else if (target.getNPC().hasTrait(HealthTrait.class))
+                    target.getNPC().removeTrait(HealthTrait.class);
                 else
-                    dB.echoError("NPC doesn't have health trait!");
+                    target.getNPC().addTrait(HealthTrait.class);
+            }
+
+            if (qty != null) {
+                if (target.isNPC()) {
+                    if (target.getNPC().hasTrait(HealthTrait.class))
+                        target.getNPC().getTrait(HealthTrait.class).setMaxhealth(qty.asInt());
+                    else
+                        dB.echoError("NPC doesn't have health trait!");
+                }
+                else if (target.isLivingEntity()) {
+                    target.getLivingEntity().setMaxHealth(qty.asDouble());
+                }
+                else {
+                    dB.echoError("Entity '" + target.identify() + "'is not alive!");
+                }
             }
         }
     }
-
-
 }
