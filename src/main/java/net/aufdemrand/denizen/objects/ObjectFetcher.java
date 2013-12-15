@@ -5,6 +5,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -82,9 +84,12 @@ public class ObjectFetcher {
             return null;
     }
 
+    final static Pattern PROPERTIES_PATTERN = Pattern.compile("(.+)\\[(.+=.+)\\]", Pattern.CASE_INSENSITIVE);
+
     public static boolean checkMatch(Class<? extends dObject> dClass, String value) {
         try {
-            return (Boolean) matches.get(dClass).invoke(null, value);
+            Matcher m = PROPERTIES_PATTERN.matcher(value);
+            return (Boolean) matches.get(dClass).invoke(null, m.matches() ? m.group(1): value);
         } catch (Exception e) {
             dB.echoError(e);
         }
@@ -94,8 +99,24 @@ public class ObjectFetcher {
     }
 
     public static <T extends dObject> T getObjectFrom(Class<T> dClass, String value) {
+        return getObjectFrom(dClass, value, null, null);
+    }
+
+    public static <T extends dObject> T getObjectFrom(Class<T> dClass, String value, dPlayer player, dNPC npc) {
         try {
-            return (T) valueof.get(dClass).invoke(null, value);
+            Matcher m = PROPERTIES_PATTERN.matcher(value);
+            boolean matched = m.matches();
+            T gotten = (T) ((dClass.equals(dItem.class)) ? dItem.valueOf(matched ? m.group(1): value):
+                    valueof.get(dClass).invoke(null, matched ? m.group(1): value));
+            if (gotten != null && gotten instanceof Adjustable && matched) {
+                String[] properties = m.group(2).split(";");
+                for (String property: properties) {
+                    String[] data = property.split("=", 2);
+                    ((Adjustable) gotten).adjust(new Mechanism(new Element(data[0]),
+                            new Element(data[1].replace((char)0x2011, ';'))));
+                }
+            }
+            return gotten;
         } catch (Exception e) {
             dB.echoError(e);
         }

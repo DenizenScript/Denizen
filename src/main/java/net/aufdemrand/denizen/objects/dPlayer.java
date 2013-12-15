@@ -1337,6 +1337,20 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name display_name
+        // @input Element
+        // @description
+        // Sets the name displayed for the player when chatting.
+        // @tags
+        // <player.name.display>
+        // -->
+        if (mechanism.matches("display_name")) {
+            getPlayerEntity().setDisplayName(value.asString());
+            return;
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name time
         // @input Element(Number)
         // @description

@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 
@@ -102,7 +103,7 @@ public class ChatCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug());
 
         // Create new speech context
-        SpeechContext context = new SpeechContext(message.asString());
+        SpeechContext context = new SpeechContext(TagManager.CleanOutputFully(message.asString()));
 
         if (!targets.equals(Element.FALSE)) {
 

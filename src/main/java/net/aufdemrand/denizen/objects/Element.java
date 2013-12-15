@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.apache.commons.lang.StringUtils;
@@ -871,7 +872,7 @@ public class Element implements dObject {
             return "null";
         } else {
             dB.echoDebug(attribute.getScriptEntry(), "Filled tag <" + attribute.getOrigin() + "> with '" +
-                    element.replace((char)0x01, '<').replace((char)0x02, '>').replace(dList.internal_escape, "|") + "'.");
+                    element + "'.");
             return element;
         }
     }

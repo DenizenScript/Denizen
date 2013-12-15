@@ -1,8 +1,11 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.objects.properties.ItemColor;
+import net.aufdemrand.denizen.objects.properties.Item.ItemDisplayname;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
@@ -43,13 +46,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                     Pattern.CASE_INSENSITIVE);
 
     final public static String itemscriptIdentifier = "§0id:";
-
-
-    // List of classes to check for properties
-
-    final static Class[] PROPERTIES = {
-            ItemColor.class
-    };
 
 
     //////////////////
@@ -489,7 +485,7 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         }
 
         // Else, return the material name
-        return "i@" + identifyMaterial().replace("m@", "");
+        return "i@" + identifyMaterial().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
 
     public String identifyMaterial() {
@@ -667,74 +663,10 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // Returns whether the item has a custom set display name.
         // -->
         if (attribute.startsWith("has_display")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasDisplayName()) {
-                return Element.TRUE
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return Element.FALSE
-                        .getAttribute(attribute.fulfill(1));
-            }
-        }
-
-        // <--[tag]
-        // @attribute <i@item.display>
-        // @returns Element
-        // @description
-        // Returns the display name of the item, as set by plugin or an anvil.
-        // -->
-        if (attribute.startsWith("display"))
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasDisplayName())
-                return new Element(getItemStack().getItemMeta().getDisplayName())
-                        .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.enchantments.with_levels>
-        // @returns dList
-        // @description
-        // Returns a list of enchantments on the item, with their levels listed too.
-        // In the format of ENCHANTMENT,LEVEL - EG: DAMAGE_ALL,3
-        // -->
-        if (attribute.startsWith("enchantments.with_levels")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
-                List<String> enchants = new ArrayList<String>();
-                for (Map.Entry<Enchantment, Integer> enchantment : getItemStack().getEnchantments().entrySet())
-                    enchants.add(enchantment.getKey().getName() + "," + enchantment.getValue());
-                return new dList(enchants)
-                        .getAttribute(attribute.fulfill(2));
-            }
-        }
-
-        // <--[tag]
-        // @attribute <i@item.enchantments.levels>
-        // @returns dList
-        // @description
-        // Returns a list of enchantments on the item, showing only the level.
-        // -->
-        if (attribute.startsWith("enchantments.levels")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
-                List<String> enchants = new ArrayList<String>();
-                for (Map.Entry<Enchantment, Integer> enchantment : getItemStack().getEnchantments().entrySet())
-                    enchants.add(String.valueOf(enchantment.getValue()));
-                return new dList(enchants)
-                        .getAttribute(attribute.fulfill(2));
-            }
-        }
-
-        // <--[tag]
-        // @attribute <i@item.enchantments>
-        // @returns dList
-        // @description
-        // Returns a list of enchantments on the item.
-        // -->
-        if (attribute.startsWith("enchantments")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
-                List<String> enchants = new ArrayList<String>();
-                for (Map.Entry<Enchantment, Integer> enchantment : getItemStack().getEnchantments().entrySet())
-                    enchants.add(enchantment.getKey().getName());
-                return new dList(enchants)
-                        .getAttribute(attribute.fulfill(1));
-            }
+            if (ItemDisplayname.describes(this))
+                return Element.TRUE.getAttribute(attribute.fulfill(1));
+            else
+                return Element.FALSE.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -828,28 +760,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                         .getAttribute(attribute.fulfill(1));
             }
 
-        // <--[tag]
-        // @attribute <i@item.lore>
-        // @returns dList
-        // @description
-        // Returns lore as a dList. Excludes the custom-script-id lore.
-        // To get that information, use <i@item.scriptname>.
-        // -->
-        if (attribute.startsWith("lore")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
-
-                List<String> loreList = new ArrayList<String>();
-
-                for (String itemLore : getItemStack().getItemMeta().getLore()) {
-                    if (!itemLore.startsWith(itemscriptIdentifier)) {
-                        loreList.add(itemLore);
-                    }
-                }
-                return new dList(loreList).getAttribute(attribute.fulfill(1));
-            }
-            else return new dList("").getAttribute(attribute.fulfill(1));
-        }
-
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
@@ -870,6 +780,11 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
 
         return new Element(identify()).getAttribute(attribute);
     }
@@ -879,39 +794,69 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
     public void adjust(Mechanism mechanism) {
 
         Element value = mechanism.getValue();
-        ItemMeta meta = item.getItemMeta();
 
         // <--[mechanism]
         // @object dItem
-        // @name set_display
+        // @name display_name
         // @input Element
         // @description
         // Changes the items display name.
         // @tags
         // <i@item.display>
         // -->
-        if (mechanism.matches("set_display")) {
+        if (mechanism.matches("display_name")) {
+            ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(value.asString());
+            item.setItemMeta(meta);
         }
 
         // <--[mechanism]
         // @object dItem
-        // @name set_lore
+        // @name lore
         // @input dList
         // @description
         // Sets the item's lore.
         // @tags
         // <i@item.lore>
         // -->
-        if (mechanism.matches("set_lore") && mechanism.requireObject(dList.class)) {
-            meta.setLore(dList.valueOf(value.asString()));
+        if (mechanism.matches("lore")) {
+            ItemMeta meta = item.getItemMeta();
+            meta.setLore(value.asType(dList.class));
+            item.setItemMeta(meta);
         }
 
-        if (mechanism.matches("add_enchant")) {
-            // meta.addEnchant(Enchantment.getByName(value.asString()), TODO:(int) level, TODO:(boolean) ignoreLevelRestriction);
+        // <--[mechanism]
+        // @object dItem
+        // @name enchantments
+        // @input dList
+        // @description
+        // Sets the item's enchantments.
+        // @tags
+        // <i@item.enchantments>
+        // <i@item.enchantments.levels>
+        // <i@item.enchantments.with_levels>
+        // -->
+        if (mechanism.matches("enchantments")) {
+            dList enchants = value.asType(dList.class);
+            for (String enchant: value.asType(dList.class)) {
+                if (!enchant.contains(","))
+                    dB.echoError("Invalid enchantment format, use name,level|...");
+                else {
+                    String[] data = enchant.split(",", 2);
+                    if (Integer.valueOf(data[1]) == null)
+                        dB.echoError("Cannot apply enchantment '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
+                    else {
+                        try {
+                            item.addEnchantment(Enchantment.getByName(data[0].toUpperCase()), Integer.valueOf(data[1]));
+                        }
+                        catch (NullPointerException e) {
+                            dB.echoError("Unknown enchantment '" + data[0] + "'");
+                        }
+                    }
+                }
+            }
         }
 
-        item.setItemMeta(meta);
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
 

@@ -21,8 +21,9 @@ public class dList extends ArrayList<String> implements dObject {
             Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
                     Pattern.CASE_INSENSITIVE);
 
-    public final static String internal_escape = String.valueOf((char)0x05);
-    final static Pattern split_char = Pattern.compile("[\\|" + internal_escape + "]");
+    public final static char internal_escape_char = (char)0x05;
+    public final static String internal_escape = String.valueOf(internal_escape_char);
+    final static Pattern split_char = Pattern.compile("(?!\\[[^\\[]*)\\b*[\\|" + internal_escape +  "]\\b*(?![^\\[]*\\])");
     final static Pattern identifier = Pattern.compile("li@", Pattern.CASE_INSENSITIVE);
 
     @Fetchable("li, fl")
@@ -60,7 +61,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
         }
 
-        // Use value of string, which will seperate values by the use of a pipe '|'
+        // Use value of string, which will separate values by the use of a pipe '|'
         return new dList(string.replaceFirst(identifier.pattern(), ""));
     }
 
@@ -89,7 +90,9 @@ public class dList extends ArrayList<String> implements dObject {
 
     // A string of items, split by '|'
     public dList(String items) {
-        if (items != null) addAll(Arrays.asList(split_char.split(items)));
+        if (items != null) {
+            addAll(Arrays.asList(split_char.split(items)));
+        }
     }
 
     // A List<String> of items
@@ -206,9 +209,8 @@ public class dList extends ArrayList<String> implements dObject {
             try {
                 if (ObjectFetcher.checkMatch(dClass, element)) {
 
-                    dObject object = (dClass.equals(dItem.class) && entry != null ?
-                            dItem.valueOf(element, entry.getPlayer(), entry.getNPC()):
-                            ObjectFetcher.getObjectFrom(dClass, element));
+                    dObject object = ObjectFetcher.getObjectFrom(dClass, element,
+                                        entry.getPlayer(), entry.getNPC());
 
                     // Only add the object if it is not null, thus filtering useless
                     // list items

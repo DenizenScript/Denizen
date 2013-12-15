@@ -1753,7 +1753,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("describe"))
             return new Element("e@" + getEntityType().name().toLowerCase()
-                    + '[' + PropertyParser.getPropertiesString(this) + ']')
+                    + PropertyParser.getPropertiesString(this))
                     .getAttribute(attribute.fulfill(1));
 
         // Iterate through this object's properties' attributes

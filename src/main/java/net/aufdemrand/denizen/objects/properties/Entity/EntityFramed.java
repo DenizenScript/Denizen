@@ -1,10 +1,11 @@
-package net.aufdemrand.denizen.objects.properties;
+package net.aufdemrand.denizen.objects.properties.Entity;
 
 
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.Rotation;
 import org.bukkit.entity.*;
@@ -55,9 +56,12 @@ public class EntityFramed implements Property {
 
     @Override
     public String getPropertyString() {
-        return getPropertyId() + '=' + getItem().getMaterial().identify()
-                + (getItemFrameEntity().getRotation() == Rotation.NONE ? ';'
-                : '|' + getItemFrameEntity().getRotation().name().toLowerCase() + ';');
+        if (hasItem())
+            return getItem().getMaterial().identify()
+                + (getItemFrameEntity().getRotation() == Rotation.NONE ? ""
+                : '|' + getItemFrameEntity().getRotation().name().toLowerCase());
+        else
+            return null;
     }
 
     @Override
