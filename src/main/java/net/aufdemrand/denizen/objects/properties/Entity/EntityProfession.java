@@ -1,9 +1,10 @@
-package net.aufdemrand.denizen.objects.properties;
+package net.aufdemrand.denizen.objects.properties.Entity;
 
 
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
@@ -52,7 +53,7 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyString() {
-        return getPropertyId() + '=' + getProfession().name().toLowerCase() + ';';
+        return getProfession().name().toLowerCase();
     }
 
     @Override

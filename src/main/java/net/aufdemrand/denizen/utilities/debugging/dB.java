@@ -10,6 +10,7 @@ import java.util.WeakHashMap;
 
 import net.aufdemrand.denizen.Settings;
 
+import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -297,10 +298,10 @@ public class dB {
 
             // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
             // than having a bunch of ChatColor.XXXX
-            string = string
+            string = TagManager.CleanOutputFully(string
                     .replace("<Y>", ChatColor.YELLOW.toString())
                     .replace("<G>", ChatColor.DARK_GRAY.toString())
-                    .replace("<A>", ChatColor.AQUA.toString());
+                    .replace("<A>", ChatColor.AQUA.toString()));
 
             // 'Hack-fix' for disallowing multiple 'footers' to print in a row
             if (string.equals(ChatColor.LIGHT_PURPLE + "+---------------------+")) {

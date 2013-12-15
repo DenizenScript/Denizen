@@ -9,6 +9,7 @@ import org.bukkit.Color;
 
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.DyeColor;
 
 public class dColor implements dObject {
 
@@ -106,6 +107,10 @@ public class dColor implements dObject {
 
     public dColor(Color color) {
         this.color = color;
+    }
+
+    public dColor(DyeColor dyeColor) {
+        this.color = dyeColor.getColor();
     }
 
 

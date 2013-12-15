@@ -1368,7 +1368,11 @@ public class WorldScriptHelper implements Listener {
             // @Events
             // entity damages entity
             // entity damages <entity>
+            // entity damaged by entity
+            // entity damaged by <entity>
             // <entity> damages entity
+            // <entity> damaged by entity
+            // <entity> damaged by <entity>
             // <entity> damages <entity>
             //
             // @Triggers when an entity damages another entity.

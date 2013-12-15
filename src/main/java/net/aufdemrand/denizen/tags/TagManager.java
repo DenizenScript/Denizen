@@ -32,10 +32,12 @@ public class TagManager implements Listener {
     }
 
     public void registerCoreTags() {
+        // Objects
         new PlayerTags(denizen);
         new NPCTags(denizen);
         new LocationTags(denizen);
 
+        // Utilities
         new UtilTags(denizen);
         new ProcedureScriptTag(denizen);
         new ContextTags(denizen);
@@ -48,6 +50,23 @@ public class TagManager implements Listener {
         new NotableLocationTags(denizen);
 
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+    }
+
+    // INTERNAL MAPPING NOTE:
+    // 0x01: <
+    // 0x02: >
+    // 0x04: Exclusively For Utilities.talkToNPC()
+    // 0x05: |
+    // 0x2011: ;
+
+    public static String CleanOutput(String input) {
+        return input.replace((char)0x01, '<').replace((char)0x02, '>')
+                /*.replace((char)0x2011, ';')*/.replace(dList.internal_escape_char, '|');
+    }
+
+    public static String CleanOutputFully(String input) {
+        return input.replace((char)0x01, '<').replace((char)0x02, '>')
+                .replace((char)0x2011, ';').replace(dList.internal_escape_char, '|');
     }
 
     @EventHandler
@@ -112,9 +131,7 @@ public class TagManager implements Listener {
         // Find location of the first tag
         int[] positions = locateTag(arg);
         if (positions == null) {
-            // Unescape internal escape codes.
-            arg = arg.replace((char)0x01, '<').replace((char)0x02, '>').replace(dList.internal_escape, "|");
-            return arg;
+            return CleanOutput(arg);
         }
 
         int failsafe = 0;
@@ -142,10 +159,7 @@ public class TagManager implements Listener {
             positions = locateTag(arg);
         } while (positions != null || failsafe < 50);
 
-        // Unescape internal escape codes.
-        arg = arg.replace((char)0x01, '<').replace((char)0x02, '>').replace(dList.internal_escape, "|");
-
-        return arg;
+        return CleanOutput(arg);
     }
 
     // Match all < > brackets that don't contain < > inside them

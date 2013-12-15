@@ -1,9 +1,10 @@
-package net.aufdemrand.denizen.objects.properties;
+package net.aufdemrand.denizen.objects.properties.Entity;
 
 
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
@@ -102,9 +103,9 @@ public class EntityAge implements Property {
     @Override
     public String getPropertyString() {
         if (getAge() != 1)
-            return getPropertyId() + '=' + (getAge() == 0
-                    ? "baby" : getAge() + ';');
-        else return PropertyParser.NONE;
+            return String.valueOf(getAge());
+        else
+            return null;
     }
 
     @Override

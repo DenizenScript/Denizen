@@ -1,9 +1,10 @@
-package net.aufdemrand.denizen.objects.properties;
+package net.aufdemrand.denizen.objects.properties.Entity;
 
 
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.ZombieModifier;
@@ -88,9 +89,8 @@ public class EntityInfected implements Property {
     @Override
     public String getPropertyString() {
         if (isInfected())
-            return getPropertyId();
-        // Don't describe if not infected.. this is unnecessary.
-        else return PropertyParser.NONE;
+            return "true";
+        else return null;
     }
 
     @Override

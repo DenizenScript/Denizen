@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
@@ -50,7 +51,7 @@ public class NarrateCommand extends AbstractCommand {
             // Use raw_value as to not accidentally strip a value before any :'s.
             else {
                 if (!scriptEntry.hasObject("text"))
-                    scriptEntry.addObject("text", new Element(arg.raw_value));
+                    scriptEntry.addObject("text", new Element(TagManager.CleanOutputFully(arg.raw_value)));
             }
         }
 

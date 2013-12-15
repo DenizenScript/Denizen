@@ -469,6 +469,15 @@ public class TextTags implements Listener {
             event.setReplaced(new Element(":").getAttribute(attribute.fulfill(1)));
 
             // <--[tag]
+            // @attribute <&sc>
+            // @returns Element
+            // @description
+            // Returns a semicolon symbol: ;
+            // -->
+        else if (event.getName().equalsIgnoreCase("&sc"))
+            event.setReplaced(new Element(String.valueOf((char)0x2011)).getAttribute(attribute.fulfill(1)));
+
+            // <--[tag]
             // @attribute <&rb>
             // @returns Element
             // @description
