@@ -39,6 +39,7 @@ public class PropertyParser {
         registerProperty(ItemLore.class, dItem.class);
         registerProperty(ItemQuantity.class, dItem.class);
         registerProperty(ItemDurability.class, dItem.class);
+        registerProperty(ItemSkullskin.class, dItem.class);
 
     }
 

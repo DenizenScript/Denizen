@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
-import org.bukkit.inventory.meta.Repairable;
 
 public class ItemDurability implements Property {
 

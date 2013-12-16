@@ -2,8 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.objects.properties.Item.ItemDisplayname;
-import net.aufdemrand.denizen.objects.properties.Item.ItemDurability;
+import net.aufdemrand.denizen.objects.properties.Item.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -530,6 +529,16 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <i@item.has_lore>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the item has lore set on it.
+        // -->
+        if (attribute.startsWith("has_lore"))
+            return new Element(ItemLore.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <i@item.material.formatted>
         // @returns Element
         // @description
@@ -595,24 +604,7 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <i@item.skin>
-        // @returns Element
-        // @description
-        // Returns the name of the player whose skin a skull item uses.
-        // Note: Item must be a 'skull_item' with a skin.
-        // -->
-        if (attribute.startsWith("skin")) {
-            if (getItemStack().getType() == Material.SKULL_ITEM) {
-                SkullMeta skullInfo = (SkullMeta) getItemStack().getItemMeta();
-
-                if (skullInfo.hasOwner()) {
-                    return new Element(skullInfo.getOwner())
-                            .getAttribute(attribute.fulfill(1));
-                }
-            }
-        }
-
+        // TODO: Property for Book info
         if (attribute.startsWith("book")) {
             if (getItemStack().getType() == Material.WRITTEN_BOOK) {
                 attribute.fulfill(1);
@@ -808,10 +800,30 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // <i@item.repairable>
         // -->
         if (mechanism.matches("durability") && mechanism.requireInteger()) {
-            if (isRepairable())
+            if (ItemDurability.describes(this))
                 item.setDurability((short)value.asInt());
             else
                 dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' is not repairable.");
+        }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name skull_skin
+        // @input Element
+        // @description
+        // Changes the durability of damageable items.
+        // @tags
+        // <i@item.skin>
+        // <i@item.has_skin>
+        // -->
+        if (mechanism.matches("skull_skin")) {
+            if (ItemSkullskin.describes(this)) {
+                SkullMeta meta = (SkullMeta) item.getItemMeta();
+                meta.setOwner(value.asString());
+                item.setItemMeta(meta);
+            }
+            else
+                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' cannot hold a skin.");
         }
 
 
