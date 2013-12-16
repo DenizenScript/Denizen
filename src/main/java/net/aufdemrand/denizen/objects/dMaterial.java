@@ -34,8 +34,16 @@ public class dMaterial implements dObject {
         YELLOW_CARPET, LIME_CARPET, PINK_CARPET, GRAY_CARPET, LIGHT_GRAY_CARPET, CYAN_CARPET, PURPLE_CARPET,
         BLUE_CARPET, BROWN_CARPET, GREEN_CARPET, RED_CARPET, BLACK_CARPET, WHITE_CLAY, ORANGE_CLAY,
         MAGENTA_CLAY, LIGHT_BLUE_CLAY, YELLOW_CLAY, LIME_CLAY, PINK_CLAY, GRAY_CLAY, LIGHT_GRAY_CLAY,
-        CYAN_CLAY, PURPLE_CLAY, BLUE_CLAY, BROWN_CLAY, GREEN_CLAY, RED_CLAY, BLACK_CLAY, NATURAL_COAL,
-        CHARCOAL, OAK_PLANKS, SPRUCE_PLANKS, BIRCH_PLANKS, JUNGLE_PLANKS, OAK_SAPLING, SPRUCE_SAPLING,
+        CYAN_CLAY, PURPLE_CLAY, BLUE_CLAY, BROWN_CLAY, GREEN_CLAY, RED_CLAY, BLACK_CLAY, WHITE_STAINED_GLASS,
+        ORANGE_STAINED_GLASS, MAGENTA_STAINED_GLASS, LIGHT_BLUE_STAINED_GLASS, YELLOW_STAINED_GLASS,
+        LIME_STAINED_GLASS, PINK_STAINED_GLASS, GRAY_STAINED_GLASS, LIGHT_GRAY_STAINED_GLASS,
+        CYAN_STAINED_GLASS, PURPLE_STAINED_GLASS, BLUE_STAINED_GLASS, BROWN_STAINED_GLASS,
+        GREEN_STAINED_GLASS, RED_STAINED_GLASS, BLACK_STAINED_GLASS, WHITE_STAINED_GLASS_PANE,
+        ORANGE_STAINED_GLASS_PANE, MAGENTA_STAINED_GLASS_PANE, LIGHT_BLUE_STAINED_GLASS_PANE,
+        YELLOW_STAINED_GLASS_PANE, LIME_STAINED_GLASS_PANE, PINK_STAINED_GLASS_PANE, GRAY_STAINED_GLASS_PANE,
+        LIGHT_GRAY_STAINED_GLASS_PANE, CYAN_STAINED_GLASS_PANE, PURPLE_STAINED_GLASS_PANE, BLUE_STAINED_GLASS_PANE,
+        BROWN_STAINED_GLASS_PANE, GREEN_STAINED_GLASS_PANE, RED_STAINED_GLASS_PANE, BLACK_STAINED_GLASS_PANE,
+        NATURAL_COAL, CHARCOAL, OAK_PLANKS, SPRUCE_PLANKS, BIRCH_PLANKS, JUNGLE_PLANKS, OAK_SAPLING, SPRUCE_SAPLING,
         BIRCH_SAPLING, JUNGLE_SAPLING, OAK_LEAVES, SPRUCE_LEAVES, BIRCH_LEAVES, JUNGLE_LEAVES, OAK_LOG,
         SPRUCE_LOG, BIRCH_LOG, JUNGLE_LOG, NATURAL_SANDSTONE, CHISELED_SANDSTONE, SMOOTH_SANDSTONE,
         STONE_BRICK, MOSSY_STONE_BRICK, CRACKED_STONE_BRICK, CHISELED_STONE_BRICK, INK, RED_DYE,
@@ -99,6 +107,40 @@ public class dMaterial implements dObject {
     public final static dMaterial GREEN_CLAY = new dMaterial(Material.STAINED_CLAY, 13).forceIdentifyAs("GREEN_CLAY");
     public final static dMaterial RED_CLAY = new dMaterial(Material.STAINED_CLAY, 14).forceIdentifyAs("RED_CLAY");
     public final static dMaterial BLACK_CLAY = new dMaterial(Material.STAINED_CLAY, 15).forceIdentifyAs("BLACK_CLAY");
+
+    public final static dMaterial WHITE_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 0).forceIdentifyAs("WHITE_STAINED_GLASS");
+    public final static dMaterial ORANGE_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 1).forceIdentifyAs("ORANGE_STAINED_GLASS");
+    public final static dMaterial MAGENTA_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 2).forceIdentifyAs("MAGENTA_STAINED_GLASS");
+    public final static dMaterial LIGHT_BLUE_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 3).forceIdentifyAs("LIGHT_BLUE_STAINED_GLASS");
+    public final static dMaterial YELLOW_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 4).forceIdentifyAs("YELLOW_STAINED_GLASS");
+    public final static dMaterial LIME_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 5).forceIdentifyAs("LIME_STAINED_GLASS");
+    public final static dMaterial PINK_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 6).forceIdentifyAs("PINK_STAINED_GLASS");
+    public final static dMaterial GRAY_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 7).forceIdentifyAs("GRAY_STAINED_GLASS");
+    public final static dMaterial LIGHT_GRAY_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 8).forceIdentifyAs("LIGHT_GRAY_STAINED_GLASS");
+    public final static dMaterial CYAN_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 9).forceIdentifyAs("CYAN_STAINED_GLASS");
+    public final static dMaterial PURPLE_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 10).forceIdentifyAs("PURPLE_STAINED_GLASS");
+    public final static dMaterial BLUE_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 11).forceIdentifyAs("BLUE_STAINED_GLASS");
+    public final static dMaterial BROWN_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 12).forceIdentifyAs("BROWN_STAINED_GLASS");
+    public final static dMaterial GREEN_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 13).forceIdentifyAs("GREEN_STAINED_GLASS");
+    public final static dMaterial RED_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 14).forceIdentifyAs("RED_STAINED_GLASS");
+    public final static dMaterial BLACK_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 15).forceIdentifyAs("BLACK_STAINED_GLASS");
+
+    public final static dMaterial WHITE_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 0).forceIdentifyAs("WHITE_STAINED_GLASS_PANE");
+    public final static dMaterial ORANGE_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 1).forceIdentifyAs("ORANGE_STAINED_GLASS_PANE");
+    public final static dMaterial MAGENTA_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 2).forceIdentifyAs("MAGENTA_STAINED_GLASS_PANE");
+    public final static dMaterial LIGHT_BLUE_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 3).forceIdentifyAs("LIGHT_BLUE_STAINED_GLASS_PANE");
+    public final static dMaterial YELLOW_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 4).forceIdentifyAs("YELLOW_STAINED_GLASS_PANE");
+    public final static dMaterial LIME_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 5).forceIdentifyAs("LIME_STAINED_GLASS_PANE");
+    public final static dMaterial PINK_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 6).forceIdentifyAs("PINK_STAINED_GLASS_PANE");
+    public final static dMaterial GRAY_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 7).forceIdentifyAs("GRAY_STAINED_GLASS_PANE");
+    public final static dMaterial LIGHT_GRAY_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 8).forceIdentifyAs("LIGHT_GRAY_STAINED_GLASS_PANE");
+    public final static dMaterial CYAN_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 9).forceIdentifyAs("CYAN_STAINED_GLASS_PANE");
+    public final static dMaterial PURPLE_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 10).forceIdentifyAs("PURPLE_STAINED_GLASS_PANE");
+    public final static dMaterial BLUE_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 11).forceIdentifyAs("BLUE_STAINED_GLASS_PANE");
+    public final static dMaterial BROWN_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 12).forceIdentifyAs("BROWN_STAINED_GLASS_PANE");
+    public final static dMaterial GREEN_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 13).forceIdentifyAs("GREEN_STAINED_GLASS_PANE");
+    public final static dMaterial RED_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 14).forceIdentifyAs("RED_STAINED_GLASS_PANE");
+    public final static dMaterial BLACK_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 15).forceIdentifyAs("BLACK_STAINED_GLASS_PANE");
 
     public final static dMaterial NATURAL_COAL = new dMaterial(Material.COAL, 0).forceIdentifyAs("NATURAL_COAL");
     public final static dMaterial CHARCOAL = new dMaterial(Material.COAL, 1).forceIdentifyAs("CHARCOAL");
