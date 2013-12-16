@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.Item.ItemDisplayname;
+import net.aufdemrand.denizen.objects.properties.Item.ItemDurability;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -403,36 +404,7 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
     }
 
     public boolean isRepairable() {
-        switch (getItemStack().getType()) {
-            case BOW:
-            case DIAMOND_AXE:
-            case DIAMOND_HOE:
-            case DIAMOND_PICKAXE:
-            case DIAMOND_SPADE:
-            case DIAMOND_SWORD:
-            case FISHING_ROD:
-            case GOLD_AXE:
-            case GOLD_HOE:
-            case GOLD_PICKAXE:
-            case GOLD_SPADE:
-            case GOLD_SWORD:
-            case IRON_AXE:
-            case IRON_HOE:
-            case IRON_PICKAXE:
-            case IRON_SPADE:
-            case IRON_SWORD:
-            case SHEARS:
-            case WOOD_AXE:
-            case WOOD_HOE:
-            case WOOD_PICKAXE:
-            case WOOD_SPADE:
-            case WOOD_SWORD:
-                return true;
-
-            default:
-                return getItemStack().getType().getId() >= Material.LEATHER_HELMET.getId()
-                        && getItemStack().getType().getId() <= Material.GOLD_BOOTS.getId();
-        }
+        return item.getType().getMaxDurability() > 0;
     }
 
 
@@ -548,23 +520,13 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <i@item.durability>
-        // @returns Element(Number)
-        // @description
-        // Returns the current durability of the item.
-        // -->
-        if (attribute.startsWith("durability"))
-            return new Element(getItemStack().getDurability())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <i@item.repairable>
         // @returns Element(Boolean)
         // @description
         // Returns whether the item can be repaired.
         // -->
         if (attribute.startsWith("repairable"))
-            return new Element(isRepairable())
+            return new Element(ItemDurability.describes(this))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -832,6 +794,24 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // -->
         if (mechanism.matches("quantity") && mechanism.requireInteger()) {
             item.setAmount(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name durability
+        // @input Element(Number)
+        // @description
+        // Changes the durability of damageable items.
+        // @tags
+        // <i@item.durability>
+        // <i@item.max_durability>
+        // <i@item.repairable>
+        // -->
+        if (mechanism.matches("durability") && mechanism.requireInteger()) {
+            if (isRepairable())
+                item.setDurability((short)value.asInt());
+            else
+                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' is not repairable.");
         }
 
 

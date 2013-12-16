@@ -38,6 +38,7 @@ public class PropertyParser {
         registerProperty(ItemDisplayname.class, dItem.class);
         registerProperty(ItemLore.class, dItem.class);
         registerProperty(ItemQuantity.class, dItem.class);
+        registerProperty(ItemDurability.class, dItem.class);
 
     }
 
@@ -91,9 +92,11 @@ public class PropertyParser {
         List<Property> props = new ArrayList<Property>();
 
         try {
-            for (Class property : properties.get(object.getClass())) {
-                if ((Boolean) describes.get(property).invoke(null, object))
-                    props.add((Property) getFrom.get(property).invoke(null, object));
+            if (properties.containsKey(object.getClass())) {
+                for (Class property : properties.get(object.getClass())) {
+                    if ((Boolean) describes.get(property).invoke(null, object))
+                        props.add((Property) getFrom.get(property).invoke(null, object));
+                }
             }
 
         } catch (IllegalAccessException e) {

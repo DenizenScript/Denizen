@@ -45,12 +45,12 @@ public class dMaterial implements dObject {
         YELLOW_STAINED_GLASS_PANE, LIME_STAINED_GLASS_PANE, PINK_STAINED_GLASS_PANE, GRAY_STAINED_GLASS_PANE,
         LIGHT_GRAY_STAINED_GLASS_PANE, CYAN_STAINED_GLASS_PANE, PURPLE_STAINED_GLASS_PANE, BLUE_STAINED_GLASS_PANE,
         BROWN_STAINED_GLASS_PANE, GREEN_STAINED_GLASS_PANE, RED_STAINED_GLASS_PANE, BLACK_STAINED_GLASS_PANE,
-        NATURAL_COAL, CHARCOAL, OAK_PLANKS, SPRUCE_PLANKS, BIRCH_PLANKS, JUNGLE_PLANKS, ACACIA_PLANKS, DARKOAK_PLANKS,
+        CHARCOAL, OAK_PLANKS, SPRUCE_PLANKS, BIRCH_PLANKS, JUNGLE_PLANKS, ACACIA_PLANKS, DARKOAK_PLANKS,
         OAK_SAPLING, SPRUCE_SAPLING, BIRCH_SAPLING, JUNGLE_SAPLING, ACACIA_SAPLING, DARKOAK_SAPLING, OAK_LEAVES,
         SPRUCE_LEAVES, BIRCH_LEAVES, JUNGLE_LEAVES, ACACIA_LEAVES, DARKOAK_LEAVES, POPPY, BLUE_ORCHID, ALLIUM,
         AZURE_BLUET, RED_TULIP, ORANGE_TULIP, WHITE_TULIP, PINK_TULIP, OXEYE_DAISY, SUNFLOWER, LILAC,
         DOUBLE_TALLGRASS, ROSE_BUSH, LARGE_FERN, PEONY, OAK_LOG, SPRUCE_LOG, BIRCH_LOG, JUNGLE_LOG,
-        ACACIA_LOG, DARKOAK_LOG, NATURAL_SANDSTONE, CHISELED_SANDSTONE, SMOOTH_SANDSTONE, STONE_BRICK,
+        ACACIA_LOG, DARKOAK_LOG, CHISELED_SANDSTONE, SMOOTH_SANDSTONE, STONE_BRICK,
         MOSSY_STONE_BRICK, CRACKED_STONE_BRICK, CHISELED_STONE_BRICK, INK, RED_DYE, GREEN_DYE, COCOA_BEANS,
         LAPIS_LAZULI, PURPLE_DYE, CYAN_DYE, LIGHT_GRAY_DYE, GRAY_DYE, PINK_DYE, LIME_DYE, YELLOW_DYE,
         LIGHT_BLUE_DYE, MAGENTA_DYE, ORANGE_DYE, BONE_MEAL, TALL_GRASS, FERN, SHRUB, EMPTY_POT, POTTED_POPPY,
@@ -61,7 +61,7 @@ public class dMaterial implements dObject {
         PILLAR_QUARTZ_BLOCK_NORTH, OAK_LOG_EAST, OAK_LOG_NORTH, OAK_LOG_BALL, SPRUCE_LOG_EAST, SPRUCE_LOG_NORTH,
         SPRUCE_LOG_BALL, BIRCH_LOG_EAST, BIRCH_LOG_NORTH, BIRCH_LOG_BALL, JUNGLE_LOG_EAST, JUNGLE_LOG_NORTH,
         JUNGLE_LOG_BALL, ACACIA_LOG_EAST, ACACIA_LOG_NORTH, ACACIA_LOG_BALL, DARKOAK_LOG_EAST,
-        DARKOAK_LOG_NORTH, DARKLOAG_LOG_BALL, DOUBLEPLANT_TOP }
+        DARKOAK_LOG_NORTH, DARKOAK_LOG_BALL, DOUBLEPLANT_TOP }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
@@ -207,7 +207,6 @@ public class dMaterial implements dObject {
     public final static dMaterial DARKOAK_LOG_BALL = new dMaterial(Material.LOG_2, 13).forceIdentifyAs("DARKOAK_LOG_BALL");
 
     // Sandstone
-    public final static dMaterial NATURAL_SANDSTONE = new dMaterial(Material.SANDSTONE, 0).forceIdentifyAs("NATURAL_SANDSTONE");
     public final static dMaterial CHISELED_SANDSTONE = new dMaterial(Material.SANDSTONE, 1).forceIdentifyAs("CHISELED_SANDSTONE");
     public final static dMaterial SMOOTH_SANDSTONE = new dMaterial(Material.SANDSTONE, 2).forceIdentifyAs("SMOOTH_SANDSTONE");
 
@@ -304,8 +303,8 @@ public class dMaterial implements dObject {
     // TODO: The following would be walls of useless materials, make properties for these instead of custom mats
     // Step rotations [rotation=(north/west/south/east)(up/down)] for each of the step blocks
     // Rotations for chests/furnaces/pumpkins/etc [rotation=(north/south/east/west)] for each of those types
+    // Rotations and open/closedness for doors/gates/etc. [Unknown?]
     // Plant growths [growth=(0-15)]
-    // Durability [durability=#]
     // Potions [potion_effect=(<name>)(<level>)(splash?)]
     // Leather colors [leather_color=(<dColor>)] or [leather_color=(dye_one)(dye_two)]
 
