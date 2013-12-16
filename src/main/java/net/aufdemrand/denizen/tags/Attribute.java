@@ -44,12 +44,15 @@ public class Attribute {
             return;
         }
 
-        Pattern attributer = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?");
+        Pattern attributer = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?(\\d+[^\\.]*\\.?)*");
         List<String> matches = new ArrayList<String>();
         Matcher matcher = attributer.matcher(attributes);
 
         while (matcher.find()) {
-            matches.add(matcher.group());
+            String result = matcher.group();
+            if (result.endsWith("."))
+                result = result.substring(0, result.length() - 1);
+            matches.add(result);
         }
 
         this.attributes = matches;

@@ -45,8 +45,10 @@ public class GiveCommand  extends AbstractCommand {
 
             if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrefix("q, qty, quantity")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
+                scriptEntry.addObject("set_quantity", Element.TRUE);
+            }
 
             else if (!scriptEntry.hasObject("type")
                         && arg.matches("money, coins"))
@@ -118,7 +120,8 @@ public class GiveCommand  extends AbstractCommand {
             case ITEM:
                 for (dItem item : items) {
                     ItemStack is = item.getItemStack();
-                    is.setAmount(qty.asInt());
+                    if (scriptEntry.hasObject("set_quantity"))
+                        is.setAmount(qty.asInt());
                     if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
 
                     HashMap<Integer, ItemStack> leftovers = inventory.addWithLeftovers(is);

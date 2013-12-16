@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
@@ -43,22 +45,36 @@ public class dMaterial implements dObject {
         YELLOW_STAINED_GLASS_PANE, LIME_STAINED_GLASS_PANE, PINK_STAINED_GLASS_PANE, GRAY_STAINED_GLASS_PANE,
         LIGHT_GRAY_STAINED_GLASS_PANE, CYAN_STAINED_GLASS_PANE, PURPLE_STAINED_GLASS_PANE, BLUE_STAINED_GLASS_PANE,
         BROWN_STAINED_GLASS_PANE, GREEN_STAINED_GLASS_PANE, RED_STAINED_GLASS_PANE, BLACK_STAINED_GLASS_PANE,
-        NATURAL_COAL, CHARCOAL, OAK_PLANKS, SPRUCE_PLANKS, BIRCH_PLANKS, JUNGLE_PLANKS, ACACIA_PLANKS, DARKOAK_PLANKS,
+        CHARCOAL, OAK_PLANKS, SPRUCE_PLANKS, BIRCH_PLANKS, JUNGLE_PLANKS, ACACIA_PLANKS, DARKOAK_PLANKS,
         OAK_SAPLING, SPRUCE_SAPLING, BIRCH_SAPLING, JUNGLE_SAPLING, ACACIA_SAPLING, DARKOAK_SAPLING, OAK_LEAVES,
         SPRUCE_LEAVES, BIRCH_LEAVES, JUNGLE_LEAVES, ACACIA_LEAVES, DARKOAK_LEAVES, POPPY, BLUE_ORCHID, ALLIUM,
         AZURE_BLUET, RED_TULIP, ORANGE_TULIP, WHITE_TULIP, PINK_TULIP, OXEYE_DAISY, SUNFLOWER, LILAC,
         DOUBLE_TALLGRASS, ROSE_BUSH, LARGE_FERN, PEONY, OAK_LOG, SPRUCE_LOG, BIRCH_LOG, JUNGLE_LOG,
-        ACACIA_LOG, DARKOAK_LOG, NATURAL_SANDSTONE, CHISELED_SANDSTONE, SMOOTH_SANDSTONE, STONE_BRICK,
+        ACACIA_LOG, DARKOAK_LOG, CHISELED_SANDSTONE, SMOOTH_SANDSTONE, STONE_BRICK,
         MOSSY_STONE_BRICK, CRACKED_STONE_BRICK, CHISELED_STONE_BRICK, INK, RED_DYE, GREEN_DYE, COCOA_BEANS,
         LAPIS_LAZULI, PURPLE_DYE, CYAN_DYE, LIGHT_GRAY_DYE, GRAY_DYE, PINK_DYE, LIME_DYE, YELLOW_DYE,
         LIGHT_BLUE_DYE, MAGENTA_DYE, ORANGE_DYE, BONE_MEAL, TALL_GRASS, FERN, SHRUB, EMPTY_POT, POTTED_POPPY,
         POTTED_DAISY, POTTED_OAK_SAPLING, POTTED_SPRUCE_SAPLING, POTTED_BIRCH_SAPLING, POTTED_JUNGLE_SAPLING,
-        POTTED_RED_MUSHROOM, POTTED_BROWN_MUSHROOM, POTTED_CACTUS, POTTED_SHRUB, POTTED_FERN, SKELETON_SKULL,
-        WITHERSKELETON_SKULL, ZOMBIE_SKULL, HUMAN_SKULL, CREEPER_SKULL }
+        POTTED_RED_MUSHROOM, POTTED_BROWN_MUSHROOM, POTTED_CACTUS, POTTED_SHRUB, POTTED_FERN, POTTED_ACACIA_SAPLING,
+        POTTED_DARKOAK_SAPLING, SKELETON_SKULL, WITHERSKELETON_SKULL, ZOMBIE_SKULL, HUMAN_SKULL, CREEPER_SKULL,
+        RED_SAND, MOSSY_COBBLE_WALL, CHISELED_QUARTZ_BLOCK, PILLAR_QUARTZ_BLOCK, PILLAR_QUARTZ_BLOCK_EAST,
+        PILLAR_QUARTZ_BLOCK_NORTH, OAK_LOG_EAST, OAK_LOG_NORTH, OAK_LOG_BALL, SPRUCE_LOG_EAST, SPRUCE_LOG_NORTH,
+        SPRUCE_LOG_BALL, BIRCH_LOG_EAST, BIRCH_LOG_NORTH, BIRCH_LOG_BALL, JUNGLE_LOG_EAST, JUNGLE_LOG_NORTH,
+        JUNGLE_LOG_BALL, ACACIA_LOG_EAST, ACACIA_LOG_NORTH, ACACIA_LOG_BALL, DARKOAK_LOG_EAST,
+        DARKOAK_LOG_NORTH, DARKOAK_LOG_BALL, DOUBLEPLANT_TOP, STONE_SLAB, SANDSTONE_SLAB, WOODEN_SLAB,
+        COBBLESTONE_SLAB, BRICKS_SLAB, STONEBRICKS_SLAB, NETHERBRICK_SLAB, QUARTZ_SLAB, OAK_WOOD_SLAB,
+        SPRUCE_WOOD_SLAB, BIRCH_WOOD_SLAB, JUNGLE_WOOD_SLAB, ACACIA_WOOD_SLAB, DARKOAK_WOOD_SLAB, STONE_SLAB_UP,
+        SANDSTONE_SLAB_UP, WOODEN_SLAB_UP, COBBLESTONE_SLAB_UP, BRICKS_SLAB_UP, STONEBRICKS_SLAB_UP,
+        NETHERBRICK_SLAB_UP, QUARTZ_SLAB_UP, OAK_WOOD_SLAB_UP, SPRUCE_WOOD_SLAB_UP, BIRCH_WOOD_SLAB_UP,
+        JUNGLE_WOOD_SLAB_UP, ACACIA_WOOD_SLAB_UP, DARKOAK_WOOD_SLAB_UP, STONE_DOUBLESLAB, SANDSTONE_DOUBLESLAB,
+        WOODEN_DOUBLESLAB, COBBLESTONE_DOUBLESLAB, BRICKS_DOUBLESLAB, STONEBRICKS_DOUBLESLAB, NETHERBRICK_DOUBLESLAB,
+        QUARTZ_DOUBLESLAB, OAK_WOOD_DOUBLESLAB, SPRUCE_WOOD_DOUBLESLAB, BIRCH_WOOD_DOUBLESLAB, JUNGLE_WOOD_DOUBLESLAB,
+        ACACIA_WOOD_DOUBLESLAB, DARKOAK_WOOD_DOUBLESLAB }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
 
+    // Colored Wool
     public final static dMaterial WHITE_WOOL = new dMaterial(Material.WOOL, 0).forceIdentifyAs("WHITE_WOOL");
     public final static dMaterial ORANGE_WOOL = new dMaterial(Material.WOOL, 1).forceIdentifyAs("ORANGE_WOOL");
     public final static dMaterial MAGENTA_WOOL = new dMaterial(Material.WOOL, 2).forceIdentifyAs("MAGENTA_WOOL");
@@ -76,6 +92,7 @@ public class dMaterial implements dObject {
     public final static dMaterial RED_WOOL = new dMaterial(Material.WOOL, 14).forceIdentifyAs("RED_WOOL");
     public final static dMaterial BLACK_WOOL = new dMaterial(Material.WOOL, 15).forceIdentifyAs("BLACK_WOOL");
 
+    // Colored Carpets
     public final static dMaterial WHITE_CARPET = new dMaterial(Material.CARPET, 0).forceIdentifyAs("WHITE_CARPET");
     public final static dMaterial ORANGE_CARPET = new dMaterial(Material.CARPET, 1).forceIdentifyAs("ORANGE_CARPET");
     public final static dMaterial MAGENTA_CARPET = new dMaterial(Material.CARPET, 2).forceIdentifyAs("MAGENTA_CARPET");
@@ -93,6 +110,7 @@ public class dMaterial implements dObject {
     public final static dMaterial RED_CARPET =  new dMaterial(Material.CARPET, 14).forceIdentifyAs("RED_CARPET");
     public final static dMaterial BLACK_CARPET = new dMaterial(Material.CARPET, 15).forceIdentifyAs("BLACK_CARPET");
 
+    // Colored Clay
     public final static dMaterial WHITE_CLAY = new dMaterial(Material.STAINED_CLAY, 0).forceIdentifyAs("WHITE_CLAY");
     public final static dMaterial ORANGE_CLAY = new dMaterial(Material.STAINED_CLAY, 1).forceIdentifyAs("ORANGE_CLAY");
     public final static dMaterial MAGENTA_CLAY = new dMaterial(Material.STAINED_CLAY, 2).forceIdentifyAs("MAGENTA_CLAY");
@@ -110,6 +128,7 @@ public class dMaterial implements dObject {
     public final static dMaterial RED_CLAY = new dMaterial(Material.STAINED_CLAY, 14).forceIdentifyAs("RED_CLAY");
     public final static dMaterial BLACK_CLAY = new dMaterial(Material.STAINED_CLAY, 15).forceIdentifyAs("BLACK_CLAY");
 
+    // Stained Glass
     public final static dMaterial WHITE_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 0).forceIdentifyAs("WHITE_STAINED_GLASS");
     public final static dMaterial ORANGE_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 1).forceIdentifyAs("ORANGE_STAINED_GLASS");
     public final static dMaterial MAGENTA_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 2).forceIdentifyAs("MAGENTA_STAINED_GLASS");
@@ -127,6 +146,7 @@ public class dMaterial implements dObject {
     public final static dMaterial RED_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 14).forceIdentifyAs("RED_STAINED_GLASS");
     public final static dMaterial BLACK_STAINED_GLASS = new dMaterial(Material.STAINED_GLASS, 15).forceIdentifyAs("BLACK_STAINED_GLASS");
 
+    // Stained Glass Panes
     public final static dMaterial WHITE_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 0).forceIdentifyAs("WHITE_STAINED_GLASS_PANE");
     public final static dMaterial ORANGE_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 1).forceIdentifyAs("ORANGE_STAINED_GLASS_PANE");
     public final static dMaterial MAGENTA_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 2).forceIdentifyAs("MAGENTA_STAINED_GLASS_PANE");
@@ -144,9 +164,7 @@ public class dMaterial implements dObject {
     public final static dMaterial RED_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 14).forceIdentifyAs("RED_STAINED_GLASS_PANE");
     public final static dMaterial BLACK_STAINED_GLASS_PANE = new dMaterial(Material.STAINED_GLASS_PANE, 15).forceIdentifyAs("BLACK_STAINED_GLASS_PANE");
 
-    public final static dMaterial NATURAL_COAL = new dMaterial(Material.COAL, 0).forceIdentifyAs("NATURAL_COAL");
-    public final static dMaterial CHARCOAL = new dMaterial(Material.COAL, 1).forceIdentifyAs("CHARCOAL");
-
+    // Planks
     public final static dMaterial OAK_PLANKS = new dMaterial(Material.WOOD, 0).forceIdentifyAs("OAK_PLANKS");
     public final static dMaterial SPRUCE_PLANKS = new dMaterial(Material.WOOD, 1).forceIdentifyAs("SPRUCE_PLANKS");
     public final static dMaterial BIRCH_PLANKS = new dMaterial(Material.WOOD, 2).forceIdentifyAs("BIRCH_PLANKS");
@@ -154,6 +172,7 @@ public class dMaterial implements dObject {
     public final static dMaterial ACACIA_PLANKS = new dMaterial(Material.WOOD, 4).forceIdentifyAs("ACACIA_PLANKS");
     public final static dMaterial DARKOAK_PLANKS = new dMaterial(Material.WOOD, 5).forceIdentifyAs("DARKOAK_PLANKS");
 
+    // Saplings
     public final static dMaterial OAK_SAPLING = new dMaterial(Material.SAPLING, 0).forceIdentifyAs("OAK_SAPLING");
     public final static dMaterial SPRUCE_SAPLING = new dMaterial(Material.SAPLING, 1).forceIdentifyAs("SPRUCE_SAPLING");
     public final static dMaterial BIRCH_SAPLING = new dMaterial(Material.SAPLING, 2).forceIdentifyAs("BIRCH_SAPLING");
@@ -161,6 +180,7 @@ public class dMaterial implements dObject {
     public final static dMaterial ACACIA_SAPLING = new dMaterial(Material.SAPLING, 4).forceIdentifyAs("ACACIA_SAPLING");
     public final static dMaterial DARKOAK_SAPLING = new dMaterial(Material.SAPLING, 5).forceIdentifyAs("DARKOAK_SAPLING");
 
+    // Leaves
     public final static dMaterial OAK_LEAVES = new dMaterial(Material.LEAVES, 0).forceIdentifyAs("OAK_LEAVES");
     public final static dMaterial SPRUCE_LEAVES = new dMaterial(Material.LEAVES, 1).forceIdentifyAs("SPRUCE_LEAVES");
     public final static dMaterial BIRCH_LEAVES = new dMaterial(Material.LEAVES, 2).forceIdentifyAs("BIRCH_LEAVES");
@@ -168,24 +188,49 @@ public class dMaterial implements dObject {
     public final static dMaterial ACACIA_LEAVES = new dMaterial(Material.LEAVES_2, 0).forceIdentifyAs("ACACIA_LEAVES");
     public final static dMaterial DARKOAK_LEAVES = new dMaterial(Material.LEAVES_2, 1).forceIdentifyAs("DARKOAK_LEAVES");
 
-    // TODO: Need to find a way to handle horizontal logs/etc. Should they be a different dMaterial?
-    // TODO: Also, rotations of steps, pumpkins, plant growth, ...
+    // Logs
     public final static dMaterial OAK_LOG = new dMaterial(Material.LOG, 0).forceIdentifyAs("OAK_LOG");
     public final static dMaterial SPRUCE_LOG = new dMaterial(Material.LOG, 1).forceIdentifyAs("SPRUCE_LOG");
     public final static dMaterial BIRCH_LOG = new dMaterial(Material.LOG, 2).forceIdentifyAs("BIRCH_LOG");
     public final static dMaterial JUNGLE_LOG = new dMaterial(Material.LOG, 3).forceIdentifyAs("JUNGLE_LOG");
     public final static dMaterial ACACIA_LOG = new dMaterial(Material.LOG_2, 0).forceIdentifyAs("ACACIA_LOG");
     public final static dMaterial DARKOAK_LOG = new dMaterial(Material.LOG_2, 1).forceIdentifyAs("DARKOAK_LOG");
+    public final static dMaterial OAK_LOG_EAST = new dMaterial(Material.LOG, 4).forceIdentifyAs("OAK_LOG_EAST");
+    public final static dMaterial SPRUCE_LOG_EAST = new dMaterial(Material.LOG, 5).forceIdentifyAs("SPRUCE_LOG_EAST");
+    public final static dMaterial BIRCH_LOG_EAST = new dMaterial(Material.LOG, 6).forceIdentifyAs("BIRCH_LOG_EAST");
+    public final static dMaterial JUNGLE_LOG_EAST = new dMaterial(Material.LOG, 7).forceIdentifyAs("JUNGLE_LOG_EAST");
+    public final static dMaterial ACACIA_LOG_EAST = new dMaterial(Material.LOG_2, 4).forceIdentifyAs("ACACIA_LOG_EAST");
+    public final static dMaterial DARKOAK_LOG_EAST = new dMaterial(Material.LOG_2, 5).forceIdentifyAs("DARKOAK_LOG_EAST");
+    public final static dMaterial OAK_LOG_NORTH = new dMaterial(Material.LOG, 8).forceIdentifyAs("OAK_LOG_NORTH");
+    public final static dMaterial SPRUCE_LOG_NORTH = new dMaterial(Material.LOG, 9).forceIdentifyAs("SPRUCE_LOG_NORTH");
+    public final static dMaterial BIRCH_LOG_NORTH = new dMaterial(Material.LOG, 10).forceIdentifyAs("BIRCH_LOG_NORTH");
+    public final static dMaterial JUNGLE_LOG_NORTH = new dMaterial(Material.LOG, 11).forceIdentifyAs("JUNGLE_LOG_NORTH");
+    public final static dMaterial ACACIA_LOG_NORTH = new dMaterial(Material.LOG_2, 8).forceIdentifyAs("ACACIA_LOG_NORTH");
+    public final static dMaterial DARKOAK_LOG_NORTH = new dMaterial(Material.LOG_2, 9).forceIdentifyAs("DARKOAK_LOG_NORTH");
+    public final static dMaterial OAK_LOG_BALL = new dMaterial(Material.LOG, 12).forceIdentifyAs("OAK_LOG_BALL");
+    public final static dMaterial SPRUCE_LOG_BALL = new dMaterial(Material.LOG, 13).forceIdentifyAs("SPRUCE_LOG_BALL");
+    public final static dMaterial BIRCH_LOG_BALL = new dMaterial(Material.LOG, 14).forceIdentifyAs("BIRCH_LOG_BALL");
+    public final static dMaterial JUNGLE_LOG_BALL = new dMaterial(Material.LOG, 15).forceIdentifyAs("JUNGLE_LOG_BALL");
+    public final static dMaterial ACACIA_LOG_BALL = new dMaterial(Material.LOG_2, 12).forceIdentifyAs("ACACIA_LOG_BALL");
+    public final static dMaterial DARKOAK_LOG_BALL = new dMaterial(Material.LOG_2, 13).forceIdentifyAs("DARKOAK_LOG_BALL");
 
-    public final static dMaterial NATURAL_SANDSTONE = new dMaterial(Material.SANDSTONE, 0).forceIdentifyAs("NATURAL_SANDSTONE");
+    // Sandstone
     public final static dMaterial CHISELED_SANDSTONE = new dMaterial(Material.SANDSTONE, 1).forceIdentifyAs("CHISELED_SANDSTONE");
     public final static dMaterial SMOOTH_SANDSTONE = new dMaterial(Material.SANDSTONE, 2).forceIdentifyAs("SMOOTH_SANDSTONE");
 
+    // Stone Bricks
     public final static dMaterial STONE_BRICK = new dMaterial(Material.SMOOTH_BRICK, 0).forceIdentifyAs("STONE_BRICK");
     public final static dMaterial MOSSY_STONE_BRICK = new dMaterial(Material.SMOOTH_BRICK, 1).forceIdentifyAs("MOSSY_STONE_BRICK");
     public final static dMaterial CRACKED_STONE_BRICK = new dMaterial(Material.SMOOTH_BRICK, 2).forceIdentifyAs("CRACKED_STONE_BRICK");
     public final static dMaterial CHISELED_STONE_BRICK = new dMaterial(Material.SMOOTH_BRICK, 3).forceIdentifyAs("CHISELED_STONE_BRICK");
 
+    // Quartz Block
+    public final static dMaterial CHISELED_QUARTZ_BLOCK = new dMaterial(Material.QUARTZ_BLOCK, 1).forceIdentifyAs("CHISELED_QUARTZ_BLOCK");
+    public final static dMaterial PILLAR_QUARTZ_BLOCK = new dMaterial(Material.QUARTZ_BLOCK, 2).forceIdentifyAs("PILLAR_QUARTZ_BLOCK");
+    public final static dMaterial PILLAR_QUARTZ_BLOCK_EAST = new dMaterial(Material.QUARTZ_BLOCK, 3).forceIdentifyAs("PILLAR_QUARTZ_BLOCK_EAST");
+    public final static dMaterial PILLAR_QUARTZ_BLOCK_NORTH = new dMaterial(Material.QUARTZ_BLOCK, 4).forceIdentifyAs("PILLAR_QUARTZ_BLOCK_NORTH");
+
+    // Colored Ink
     public final static dMaterial INK = new dMaterial(Material.INK_SACK, 0).forceIdentifyAs("INK");
     public final static dMaterial RED_DYE = new dMaterial(Material.INK_SACK, 1).forceIdentifyAs("RED_DYE");
     public final static dMaterial GREEN_DYE = new dMaterial(Material.INK_SACK, 2).forceIdentifyAs("GREEN_DYE");
@@ -203,10 +248,12 @@ public class dMaterial implements dObject {
     public final static dMaterial ORANGE_DYE = new dMaterial(Material.INK_SACK, 14).forceIdentifyAs("ORANGE_DYE");
     public final static dMaterial BONE_MEAL = new dMaterial(Material.INK_SACK, 15).forceIdentifyAs("BONE_MEAL");
 
+    // Tall Grass
     public final static dMaterial SHRUB = new dMaterial(Material.LONG_GRASS, 0).forceIdentifyAs("SHRUB");
     public final static dMaterial TALL_GRASS = new dMaterial(Material.LONG_GRASS, 1).forceIdentifyAs("TALL_GRASS");
     public final static dMaterial FERN = new dMaterial(Material.LONG_GRASS, 2).forceIdentifyAs("FERN");
 
+    // Flowers
     public final static dMaterial POPPY = new dMaterial(Material.RED_ROSE, 0).forceIdentifyAs("POPPY");
     public final static dMaterial BLUE_ORCHID = new dMaterial(Material.RED_ROSE, 1).forceIdentifyAs("BLUE_ORCHID");
     public final static dMaterial ALLIUM = new dMaterial(Material.RED_ROSE, 2).forceIdentifyAs("ALLIUM");
@@ -217,13 +264,16 @@ public class dMaterial implements dObject {
     public final static dMaterial PINK_TULIP = new dMaterial(Material.RED_ROSE, 7).forceIdentifyAs("PINK_TULIP");
     public final static dMaterial OXEYE_DAISY = new dMaterial(Material.RED_ROSE, 8).forceIdentifyAs("OXEYE_DAISY");
 
+    // Double-tall Plants
     public final static dMaterial SUNFLOWER = new dMaterial(Material.DOUBLE_PLANT, 0).forceIdentifyAs("SUNFLOWER");
     public final static dMaterial LILAC = new dMaterial(Material.DOUBLE_PLANT, 1).forceIdentifyAs("LILAC");
     public final static dMaterial DOUBLE_TALLGRASS = new dMaterial(Material.DOUBLE_PLANT, 2).forceIdentifyAs("DOUBLE_TALLGRASS");
     public final static dMaterial LARGE_FERN = new dMaterial(Material.DOUBLE_PLANT, 3).forceIdentifyAs("LARGE_FERN");
     public final static dMaterial ROSE_BUSH = new dMaterial(Material.DOUBLE_PLANT, 4).forceIdentifyAs("ROSE_BUSH");
     public final static dMaterial PEONY = new dMaterial(Material.DOUBLE_PLANT, 5).forceIdentifyAs("PEONY");
+    public final static dMaterial DOUBLEPLANT_TOP = new dMaterial(Material.DOUBLE_PLANT, 8).forceIdentifyAs("DOUBLEPLANT_TOP");
 
+    // Potted Plants
     public final static dMaterial EMPTY_POT = new dMaterial(Material.FLOWER_POT, 0).forceIdentifyAs("EMPTY_POT");
     public final static dMaterial POTTED_POPPY = new dMaterial(Material.FLOWER_POT, 1).forceIdentifyAs("POTTED_POPPY");
     public final static dMaterial POTTED_DAISY = new dMaterial(Material.FLOWER_POT, 2).forceIdentifyAs("POTTED_DAISY");
@@ -236,16 +286,82 @@ public class dMaterial implements dObject {
     public final static dMaterial POTTED_CACTUS = new dMaterial(Material.FLOWER_POT, 9).forceIdentifyAs("POTTED_CACTUS");
     public final static dMaterial POTTED_SHRUB = new dMaterial(Material.FLOWER_POT, 10).forceIdentifyAs("POTTED_SHRUB");
     public final static dMaterial POTTED_FERN = new dMaterial(Material.FLOWER_POT, 11).forceIdentifyAs("POTTED_FERN");
+    public final static dMaterial POTTED_ACACIA_SAPLING = new dMaterial(Material.FLOWER_POT, 12).forceIdentifyAs("POTTED_ACACIA_SAPLING");
+    public final static dMaterial POTTED_DARKOAK_SAPLING = new dMaterial(Material.FLOWER_POT, 13).forceIdentifyAs("POTTED_DARKOAK_SAPLING");
 
+    // Steps
+    public final static dMaterial STONE_SLAB = new dMaterial(Material.STEP, 0).forceIdentifyAs("STONE_SLAB");
+    public final static dMaterial SANDSTONE_SLAB = new dMaterial(Material.STEP, 1).forceIdentifyAs("SANDSTONE_SLAB");
+    public final static dMaterial WOODEN_SLAB = new dMaterial(Material.STEP, 2).forceIdentifyAs("WOODEN_SLAB");
+    public final static dMaterial COBBLESTONE_SLAB = new dMaterial(Material.STEP, 3).forceIdentifyAs("COBBLESTONE_SLAB");
+    public final static dMaterial BRICKS_SLAB = new dMaterial(Material.STEP, 4).forceIdentifyAs("BRICKS_SLAB");
+    public final static dMaterial STONEBRICKS_SLAB = new dMaterial(Material.STEP, 5).forceIdentifyAs("STONEBRICKS_SLAB");
+    public final static dMaterial NETHERBRICK_SLAB = new dMaterial(Material.STEP, 6).forceIdentifyAs("NETHERBRICK_SLAB");
+    public final static dMaterial QUARTZ_SLAB = new dMaterial(Material.STEP, 7).forceIdentifyAs("QUARTZ_SLAB");
+    public final static dMaterial STONE_SLAB_UP = new dMaterial(Material.STEP, 8).forceIdentifyAs("STONE_SLAB_UP");
+    public final static dMaterial SANDSTONE_SLAB_UP = new dMaterial(Material.STEP, 9).forceIdentifyAs("SANDSTONE_SLAB_UP");
+    public final static dMaterial WOODEN_SLAB_UP = new dMaterial(Material.STEP, 10).forceIdentifyAs("WOODEN_SLAB_UP");
+    public final static dMaterial COBBLESTONE_SLAB_UP = new dMaterial(Material.STEP, 11).forceIdentifyAs("COBBLESTONE_SLAB_UP");
+    public final static dMaterial BRICKS_SLAB_UP = new dMaterial(Material.STEP, 12).forceIdentifyAs("BRICKS_SLAB_UP");
+    public final static dMaterial STONEBRICKS_SLAB_UP = new dMaterial(Material.STEP, 13).forceIdentifyAs("STONEBRICKS_SLAB_UP");
+    public final static dMaterial NETHERBRICK_SLAB_UP = new dMaterial(Material.STEP, 14).forceIdentifyAs("NETHERBRICK_SLAB_UP");
+    public final static dMaterial QUARTZ_SLAB_UP = new dMaterial(Material.STEP, 15).forceIdentifyAs("QUARTZ_SLAB_UP");
+
+    // Wood Steps
+    public final static dMaterial OAK_WOOD_SLAB = new dMaterial(Material.WOOD_STEP, 0).forceIdentifyAs("OAK_WOOD_SLAB");
+    public final static dMaterial SPRUCE_WOOD_SLAB = new dMaterial(Material.WOOD_STEP, 1).forceIdentifyAs("SPRUCE_WOOD_SLAB");
+    public final static dMaterial BIRCH_WOOD_SLAB = new dMaterial(Material.WOOD_STEP, 2).forceIdentifyAs("BIRCH_WOOD_SLAB");
+    public final static dMaterial JUNGLE_WOOD_SLAB = new dMaterial(Material.WOOD_STEP, 3).forceIdentifyAs("JUNGLE_WOOD_SLAB");
+    public final static dMaterial ACACIA_WOOD_SLAB = new dMaterial(Material.WOOD_STEP, 4).forceIdentifyAs("ACACIA_WOOD_SLAB");
+    public final static dMaterial DARKOAK_WOOD_SLAB = new dMaterial(Material.WOOD_STEP, 5).forceIdentifyAs("DARKOAK_WOOD_SLAB");
+    public final static dMaterial OAK_WOOD_SLAB_UP = new dMaterial(Material.WOOD_STEP, 8).forceIdentifyAs("OAK_WOOD_SLAB_UP");
+    public final static dMaterial SPRUCE_WOOD_SLAB_UP = new dMaterial(Material.WOOD_STEP, 9).forceIdentifyAs("SPRUCE_WOOD_SLAB_UP");
+    public final static dMaterial BIRCH_WOOD_SLAB_UP = new dMaterial(Material.WOOD_STEP, 10).forceIdentifyAs("BIRCH_WOOD_SLAB_UP");
+    public final static dMaterial JUNGLE_WOOD_SLAB_UP = new dMaterial(Material.WOOD_STEP, 11).forceIdentifyAs("JUNGLE_WOOD_SLAB_UP");
+    public final static dMaterial ACACIA_WOOD_SLAB_UP = new dMaterial(Material.WOOD_STEP, 12).forceIdentifyAs("ACACIA_WOOD_SLAB_UP");
+    public final static dMaterial DARKOAK_WOOD_SLAB_UP = new dMaterial(Material.WOOD_STEP, 13).forceIdentifyAs("DARKOAK_WOOD_SLAB_UP");
+
+    // Double Steps
+    public final static dMaterial STONE_DOUBLESLAB = new dMaterial(Material.DOUBLE_STEP, 0).forceIdentifyAs("STONE_DOUBLESLAB");
+    public final static dMaterial SANDSTONE_DOUBLESLAB = new dMaterial(Material.DOUBLE_STEP, 1).forceIdentifyAs("SANDSTONE_DOUBLESLAB");
+    public final static dMaterial WOODEN_DOUBLESLAB = new dMaterial(Material.DOUBLE_STEP, 2).forceIdentifyAs("WOODEN_DOUBLESLAB");
+    public final static dMaterial COBBLESTONE_DOUBLESLAB = new dMaterial(Material.DOUBLE_STEP, 3).forceIdentifyAs("COBBLESTONE_DOUBLESLAB");
+    public final static dMaterial BRICKS_DOUBLESLAB = new dMaterial(Material.DOUBLE_STEP, 4).forceIdentifyAs("BRICKS_DOUBLESLAB");
+    public final static dMaterial STONEBRICKS_DOUBLESLAB = new dMaterial(Material.DOUBLE_STEP, 5).forceIdentifyAs("STONEBRICKS_DOUBLESLAB");
+    public final static dMaterial NETHERBRICK_DOUBLESLAB = new dMaterial(Material.DOUBLE_STEP, 6).forceIdentifyAs("NETHERBRICK_DOUBLESLAB");
+    public final static dMaterial QUARTZ_DOUBLESLAB = new dMaterial(Material.DOUBLE_STEP, 7).forceIdentifyAs("QUARTZ_DOUBLESLAB");
+    public final static dMaterial STONE_SLABBALL = new dMaterial(Material.DOUBLE_STEP, 8).forceIdentifyAs("STONE_SLABBALL");
+    public final static dMaterial SANDSTONE_SLABBALL = new dMaterial(Material.DOUBLE_STEP, 9).forceIdentifyAs("SANDSTONE_SLABBALL");
+
+    // Wood Double Steps
+    public final static dMaterial OAK_WOOD_DOUBLESLAB = new dMaterial(Material.WOOD_DOUBLE_STEP, 0).forceIdentifyAs("OAK_WOOD_DOUBLESLAB");
+    public final static dMaterial SPRUCE_WOOD_DOUBLESLAB = new dMaterial(Material.WOOD_DOUBLE_STEP, 1).forceIdentifyAs("SPRUCE_WOOD_DOUBLESLAB");
+    public final static dMaterial BIRCH_WOOD_DOUBLESLAB = new dMaterial(Material.WOOD_DOUBLE_STEP, 2).forceIdentifyAs("BIRCH_WOOD_DOUBLESLAB");
+    public final static dMaterial JUNGLE_WOOD_DOUBLESLAB = new dMaterial(Material.WOOD_DOUBLE_STEP, 3).forceIdentifyAs("JUNGLE_WOOD_DOUBLESLAB");
+    public final static dMaterial ACACIA_WOOD_DOUBLESLAB = new dMaterial(Material.WOOD_DOUBLE_STEP, 4).forceIdentifyAs("ACACIA_WOOD_DOUBLESLAB");
+    public final static dMaterial DARKOAK_WOOD_DOUBLESLAB = new dMaterial(Material.WOOD_DOUBLE_STEP, 5).forceIdentifyAs("DARKOAK_WOOD_DOUBLESLAB");
+    // Skull Items
     public final static dMaterial SKELETON_SKULL = new dMaterial(Material.SKULL_ITEM, 0).forceIdentifyAs("SKELETON_SKULL");
     public final static dMaterial WITHERSKELETON_SKULL = new dMaterial(Material.SKULL_ITEM, 1).forceIdentifyAs("WITHERSKELETON_SKULL");
     public final static dMaterial ZOMBIE_SKULL = new dMaterial(Material.SKULL_ITEM, 2).forceIdentifyAs("ZOMBIE_SKULL");
     public final static dMaterial HUMAN_SKULL = new dMaterial(Material.SKULL_ITEM, 3).forceIdentifyAs("HUMAN_SKULL");
     public final static dMaterial CREEPER_SKULL = new dMaterial(Material.SKULL_ITEM, 4).forceIdentifyAs("CREEPER_SKULL");
 
+    // One-Offs (Don't have their own group)
+    public final static dMaterial CHARCOAL = new dMaterial(Material.COAL, 1).forceIdentifyAs("CHARCOAL");
+    public final static dMaterial RED_SAND = new dMaterial(Material.SAND, 1).forceIdentifyAs("RED_SAND");
+    // Note: Yes, Podzol is dirt:2. No, dirt:1 isn't anything.
+    public final static dMaterial PODZOL = new dMaterial(Material.DIRT, 2).forceIdentifyAs("PODZOL");
+    public final static dMaterial MOSSY_COBBLE_WALL = new dMaterial(Material.COBBLE_WALL, 1).forceIdentifyAs("MOSSY_COBBLE_WALL");
 
 
-    // TODO: Add potions, etc.
+    // TODO: The following would be walls of useless materials, make properties for these instead of custom mats
+    // Step rotations [rotation=(north/west/south/east)(up/down)] for each of the step blocks
+    // Rotations for chests/furnaces/pumpkins/etc [rotation=(north/south/east/west)] for each of those types
+    // Rotations and open/closedness for doors/gates/etc. [Unknown?]
+    // Plant growths [growth=(0-15)]
+    // Potions [potion_effect=(<name>)(<level>)(splash?)]
+    // Leather colors [leather_color=(<dColor>)] or [leather_color=(dye_one)(dye_two)]
 
 
     // Built on startup's call to initialize_ based on the dMaterials enum and available
@@ -718,6 +834,12 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("data"))
             return new Element(getData())
                     .getAttribute(attribute.fulfill(1));
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }

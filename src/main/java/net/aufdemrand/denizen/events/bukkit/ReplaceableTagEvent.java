@@ -79,7 +79,7 @@ public class ReplaceableTagEvent extends Event {
 
     // Component pattern that matches groups of characters that are not
     // [] or . and that optionally contain [] and a . at the end
-    private static Pattern componentRegex = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?");
+    private static Pattern componentRegex = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?(\\d+[^\\.]*\\.?)*");
 
     public String raw_tag;
 
@@ -157,7 +157,7 @@ public class ReplaceableTagEvent extends Event {
                 component = tagPart.substring(0, bracketMatcher.start());
                 context = bracketReplaceRegex.matcher(bracketMatcher.group()).replaceAll("");
             } else {
-                component = tagPart.replace(".", "");
+                component = tagPart.endsWith(".") ? tagPart.substring(0, tagPart.length() - 1): tagPart;
             }
 
             switch(n) {

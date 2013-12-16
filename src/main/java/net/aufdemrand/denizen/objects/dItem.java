@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.objects.properties.Item.ItemDisplayname;
+import net.aufdemrand.denizen.objects.properties.Item.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -403,36 +403,7 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
     }
 
     public boolean isRepairable() {
-        switch (getItemStack().getType()) {
-            case BOW:
-            case DIAMOND_AXE:
-            case DIAMOND_HOE:
-            case DIAMOND_PICKAXE:
-            case DIAMOND_SPADE:
-            case DIAMOND_SWORD:
-            case FISHING_ROD:
-            case GOLD_AXE:
-            case GOLD_HOE:
-            case GOLD_PICKAXE:
-            case GOLD_SPADE:
-            case GOLD_SWORD:
-            case IRON_AXE:
-            case IRON_HOE:
-            case IRON_PICKAXE:
-            case IRON_SPADE:
-            case IRON_SWORD:
-            case SHEARS:
-            case WOOD_AXE:
-            case WOOD_HOE:
-            case WOOD_PICKAXE:
-            case WOOD_SPADE:
-            case WOOD_SWORD:
-                return true;
-
-            default:
-                return getItemStack().getType().getId() >= Material.LEATHER_HELMET.getId()
-                        && getItemStack().getType().getId() <= Material.GOLD_BOOTS.getId();
-        }
+        return item.getType().getMaxDurability() > 0;
     }
 
 
@@ -527,27 +498,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <i@item.qty>
-        // @returns Element(Number)
-        // @description
-        // Returns the number of items in the dItem's itemstack.
-        // -->
-        if (attribute.startsWith("qty"))
-            return new Element(getItemStack().getAmount())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.identify>
-        // @returns Element
-        // @description
-        // Returns a valid identification for the item.
-        // -->
-        if (attribute.startsWith("identify")) {
-            return new Element(identify())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <i@item.id>
         // @returns Element(Number)
         // @description
@@ -555,16 +505,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // -->
         if (attribute.startsWith("id"))
             return new Element(getItemStack().getTypeId())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.max_stack>
-        // @returns Element(Number)
-        // @description
-        // Returns the max number of this item possible in a single stack of this type.
-        // -->
-        if (attribute.startsWith("max_stack"))
-            return new Element(getItemStack().getMaxStackSize())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -579,23 +519,23 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <i@item.durability>
-        // @returns Element(Number)
-        // @description
-        // Returns the current durability of the item.
-        // -->
-        if (attribute.startsWith("durability"))
-            return new Element(getItemStack().getDurability())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <i@item.repairable>
         // @returns Element(Boolean)
         // @description
         // Returns whether the item can be repaired.
         // -->
         if (attribute.startsWith("repairable"))
-            return new Element(isRepairable())
+            return new Element(ItemDurability.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <i@item.has_lore>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the item has lore set on it.
+        // -->
+        if (attribute.startsWith("has_lore"))
+            return new Element(ItemLore.describes(this))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -664,24 +604,7 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <i@item.skin>
-        // @returns Element
-        // @description
-        // Returns the name of the player whose skin a skull item uses.
-        // Note: Item must be a 'skull_item' with a skin.
-        // -->
-        if (attribute.startsWith("skin")) {
-            if (getItemStack().getType() == Material.SKULL_ITEM) {
-                SkullMeta skullInfo = (SkullMeta) getItemStack().getItemMeta();
-
-                if (skullInfo.hasOwner()) {
-                    return new Element(skullInfo.getOwner())
-                            .getAttribute(attribute.fulfill(1));
-                }
-            }
-        }
-
+        // TODO: Property for Book info
         if (attribute.startsWith("book")) {
             if (getItemStack().getType() == Material.WRITTEN_BOOK) {
                 attribute.fulfill(1);
@@ -832,7 +755,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // <i@item.enchantments.with_levels>
         // -->
         if (mechanism.matches("enchantments")) {
-            dList enchants = value.asType(dList.class);
             for (String enchant: value.asType(dList.class)) {
                 if (!enchant.contains(","))
                     dB.echoError("Invalid enchantment format, use name,level|...");
@@ -851,6 +773,59 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                 }
             }
         }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name quantity
+        // @input Element(Number)
+        // @description
+        // Changes the number of items in this stack.
+        // @tags
+        // <i@item.qty>
+        // <i@item.max_stack>
+        // -->
+        if (mechanism.matches("quantity") && mechanism.requireInteger()) {
+            item.setAmount(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name durability
+        // @input Element(Number)
+        // @description
+        // Changes the durability of damageable items.
+        // @tags
+        // <i@item.durability>
+        // <i@item.max_durability>
+        // <i@item.repairable>
+        // -->
+        if (mechanism.matches("durability") && mechanism.requireInteger()) {
+            if (ItemDurability.describes(this))
+                item.setDurability((short)value.asInt());
+            else
+                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' is not repairable.");
+        }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name skull_skin
+        // @input Element
+        // @description
+        // Changes the durability of damageable items.
+        // @tags
+        // <i@item.skin>
+        // <i@item.has_skin>
+        // -->
+        if (mechanism.matches("skull_skin")) {
+            if (ItemSkullskin.describes(this)) {
+                SkullMeta meta = (SkullMeta) item.getItemMeta();
+                meta.setOwner(value.asString());
+                item.setItemMeta(meta);
+            }
+            else
+                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' cannot hold a skin.");
+        }
+
 
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
