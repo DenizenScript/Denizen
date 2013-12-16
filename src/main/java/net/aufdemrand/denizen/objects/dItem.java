@@ -527,27 +527,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <i@item.qty>
-        // @returns Element(Number)
-        // @description
-        // Returns the number of items in the dItem's itemstack.
-        // -->
-        if (attribute.startsWith("qty"))
-            return new Element(getItemStack().getAmount())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.identify>
-        // @returns Element
-        // @description
-        // Returns a valid identification for the item.
-        // -->
-        if (attribute.startsWith("identify")) {
-            return new Element(identify())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <i@item.id>
         // @returns Element(Number)
         // @description
@@ -555,16 +534,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // -->
         if (attribute.startsWith("id"))
             return new Element(getItemStack().getTypeId())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.max_stack>
-        // @returns Element(Number)
-        // @description
-        // Returns the max number of this item possible in a single stack of this type.
-        // -->
-        if (attribute.startsWith("max_stack"))
-            return new Element(getItemStack().getMaxStackSize())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -832,7 +801,6 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
         // <i@item.enchantments.with_levels>
         // -->
         if (mechanism.matches("enchantments")) {
-            dList enchants = value.asType(dList.class);
             for (String enchant: value.asType(dList.class)) {
                 if (!enchant.contains(","))
                     dB.echoError("Invalid enchantment format, use name,level|...");
@@ -851,6 +819,21 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                 }
             }
         }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name quantity
+        // @input Element(Number)
+        // @description
+        // Changes the number of items in this stack.
+        // @tags
+        // <i@item.qty>
+        // <i@item.max_stack>
+        // -->
+        if (mechanism.matches("quantity") && mechanism.requireInteger()) {
+            item.setAmount(value.asInt());
+        }
+
 
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
