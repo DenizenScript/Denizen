@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -1226,6 +1228,12 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
             return new dList(WorldGuardUtilities.getRegions(this))
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);

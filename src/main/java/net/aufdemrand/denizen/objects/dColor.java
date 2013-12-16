@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.utilities.Utilities;
 import org.bukkit.Color;
 
@@ -175,6 +177,12 @@ public class dColor implements dObject {
 
     @Override
     public String getAttribute(Attribute attribute) {
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
+
         return new Element(identify()).getAttribute(attribute);
     }
 

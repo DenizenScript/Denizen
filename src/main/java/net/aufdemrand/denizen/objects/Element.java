@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.aH.Argument;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -861,6 +863,11 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
 
         // Unfilled attributes past this point probably means the tag is spelled
         // incorrectly. So instead of just passing through what's been resolved

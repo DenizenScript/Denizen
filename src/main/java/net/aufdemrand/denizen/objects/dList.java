@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -558,6 +560,12 @@ public class dList extends ArrayList<String> implements dObject {
         // Use as_list to return a list representation of the flag.
         // If this is NOT a flag, but instead a normal dList, return an element
         // with dList's identify() value.
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
 
         return (flag != null
                 ? new Element(flag.getLast().asString()).getAttribute(attribute)

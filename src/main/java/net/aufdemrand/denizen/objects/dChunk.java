@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.*;
@@ -259,6 +261,13 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
 
             return surface_blocks.getAttribute(attribute.fulfill(1));
         }
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
+
 
         return new Element(identify()).getAttribute(attribute);
     }

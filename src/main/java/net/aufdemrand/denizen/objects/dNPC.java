@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
@@ -708,6 +710,12 @@ public class dNPC implements dObject, Adjustable {
             return (getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().getTarget() != null
                     ? new dEntity(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2))
                     : Element.NULL.getAttribute(attribute.fulfill(2)));
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
 
         return (getEntity() != null
                 ? new dEntity(getCitizen()).getAttribute(attribute)

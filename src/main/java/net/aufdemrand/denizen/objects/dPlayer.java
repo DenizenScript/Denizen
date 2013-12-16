@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -1157,6 +1159,12 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("xp"))
             return new Element(getPlayerEntity().getExp() * 100)
                     .getAttribute(attribute.fulfill(1));
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
 
         return new dEntity(getPlayerEntity()).getAttribute(attribute);
     }

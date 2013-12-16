@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
@@ -330,7 +332,11 @@ public class dScript implements dObject {
             return new Element(getObjectType()).getAttribute(attribute.fulfill(1));
         }
 
-
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
 
         return new Element(identify()).getAttribute(attribute);
     }

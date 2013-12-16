@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
 import com.google.common.primitives.Ints;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -449,6 +451,12 @@ public class Duration implements dObject {
 
             return new Element(timeString.trim())
                         .getAttribute(attribute.fulfill(1));
+        }
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
