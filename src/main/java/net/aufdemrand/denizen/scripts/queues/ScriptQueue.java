@@ -503,9 +503,7 @@ public abstract class ScriptQueue implements Debuggable {
 
     public ScriptEntry getNext() {
         if (!script_entries.isEmpty()) {
-            ScriptEntry entry = script_entries.get(0);
-            script_entries.remove(0);
-            return entry;
+            return script_entries.remove(0);
         }
         else return null;
     }
