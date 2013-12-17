@@ -627,7 +627,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             attribute.fulfill(1);
 
             // <--[tag]
-            // @attribute <l@location.find.blocks[<block>|...].within[X]>
+            // @attribute <l@location.find.blocks[<block>|...].within[<#>]>
             // @returns dList
             // @description
             // Returns a list of matching blocks within a radius.
@@ -666,7 +666,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.surface_blocks[<block>|...].within[X]>
+            // @attribute <l@location.find.surface_blocks[<block>|...].within[<#>]>
             // @returns dList
             // @description
             // Returns a list of matching surface blocks within a radius.
@@ -713,7 +713,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.players.within[X]>
+            // @attribute <l@location.find.players.within[<#>]>
             // @returns dList
             // @description
             // Returns a list of players within a radius.
@@ -739,7 +739,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.npcs.within[X]>
+            // @attribute <l@location.find.npcs.within[<#>]>
             // @returns dList
             // @description
             // Returns a list of NPCs within a radius.
@@ -765,7 +765,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.entities[<entity>|...].within[X]>
+            // @attribute <l@location.find.entities[<entity>|...].within[<#>]>
             // @returns dList
             // @description
             // Returns a list of entities within a radius, with an optional search parameter
@@ -811,7 +811,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.living_entities.within[X]>
+            // @attribute <l@location.find.living_entities.within[<#>]>
             // @returns dList
             // @description
             // Returns a list of living entities within a radius.
