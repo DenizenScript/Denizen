@@ -631,7 +631,7 @@ public class CommandRegistry implements dRegistry {
         // - narrate 'You invoke your power of notice...'
         // - define range '<player.flag[range_level].mul[3]>'
         // - define blocks '<player.flag[noticeable_blocks]>'
-        // - narrate '[NOTICE] You have noticed <player.location.find.blocks[%blocks%].within[%range].size>
+        // - narrate '[NOTICE] You have noticed <player.location.find.blocks[%blocks%].within[%range%].size>
         // blocks in the area that may be of interest.'
 
         // @Usage

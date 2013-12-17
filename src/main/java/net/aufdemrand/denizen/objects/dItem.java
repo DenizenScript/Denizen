@@ -10,10 +10,7 @@ import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -21,12 +18,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.material.CocoaPlant;
+import org.bukkit.material.Crops;
+import org.bukkit.material.NetherWarts;
 
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dItem implements dObject, Notable, Properties, Adjustable {
+public class dItem implements dObject, Notable, Adjustable {
 
     // An item pattern with the following groups:
     //
@@ -214,7 +214,7 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
     }
 
     public dItem(dMaterial material, int qty) {
-        item = new ItemStack(material.getMaterial(), qty);
+        item = new ItemStack(material.getMaterial(), qty, (short)0, material.getData());
     }
 
     public dItem(int type, int qty) {
@@ -539,6 +539,16 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <i@item.is_crop>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the item is a growable crop.
+        // -->
+        if (attribute.startsWith("is_crop"))
+            return new Element(ItemPlantgrowth.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <i@item.material.formatted>
         // @returns Element
         // @description
@@ -824,6 +834,33 @@ public class dItem implements dObject, Notable, Properties, Adjustable {
             }
             else
                 dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' cannot hold a skin.");
+        }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name plant_growth
+        // @input Element
+        // @description
+        // Changes the growth level of plant items.
+        // See <@link tag i@item.plant_growth> for valid inputs.
+        // @tags
+        // <i@item.is_crop>
+        // <i@item.plant_growth>
+        // -->
+        if (mechanism.matches("plant_growth")) {
+            if (ItemPlantgrowth.describes(this)) {
+                Element inputValue = new Element(value.asString().toUpperCase());
+                if (item.getData() instanceof Crops && inputValue.matchesEnum(CropState.values()))
+                    ((Crops)item.getData()).setState(CropState.valueOf(value.asString().toUpperCase()));
+                else if (item.getData() instanceof NetherWarts && inputValue.matchesEnum(NetherWartsState.values()))
+                    ((NetherWarts)item.getData()).setState(NetherWartsState.valueOf(value.asString().toUpperCase()));
+                else if (item.getData() instanceof CocoaPlant && inputValue.matchesEnum(CocoaPlant.CocoaPlantSize.values()))
+                    ((CocoaPlant)item.getData()).setSize(CocoaPlant.CocoaPlantSize.valueOf(value.asString().toUpperCase()));
+                else if (mechanism.requireInteger())
+                    item.getData().setData((byte) value.asInt());
+            }
+            else
+                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' is not a plant.");
         }
 
 

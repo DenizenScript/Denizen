@@ -193,6 +193,14 @@ public class Element implements dObject {
         return ObjectFetcher.getObjectFrom(dClass, element);
     }
 
+    public boolean matchesEnum(Enum[] values) {
+        for (Enum value : values)
+            if (value.name().replace("_", "").equalsIgnoreCase(element.replace("_", "")))
+                return true;
+
+        return false;
+    }
+
     private String prefix;
 
     @Override

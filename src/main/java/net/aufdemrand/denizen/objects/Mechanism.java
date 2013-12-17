@@ -49,8 +49,9 @@ public class Mechanism {
     }
 
     public boolean requireEnum(boolean allowInt, Enum<?>... values) {
-        return requireEnum("Invalid " + values[0].getDeclaringClass().getName() + "."
-                + " Must specify valid name" + (allowInt ? " or number" : "") + ".", allowInt, values);
+        // TODO: Remove getSimpleName(), or simplify somehow.
+        return requireEnum("Invalid " + values[0].getDeclaringClass().getSimpleName() + "."
+                + " Must specify a valid name" + (allowInt ? " or number" : "") + ".", allowInt, values);
     }
 
     public boolean requireFloat() {
