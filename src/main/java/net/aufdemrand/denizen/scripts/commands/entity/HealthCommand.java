@@ -28,7 +28,7 @@ public class HealthCommand extends AbstractCommand {
                     && arg.matches("player")) {
                 if (!scriptEntry.hasPlayer())
                     throw new InvalidArgumentsException("No player attached!");
-                scriptEntry.addObject("target", Arrays.asList(scriptEntry.getPlayer()));
+                scriptEntry.addObject("target", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
             }
 
             else if (!scriptEntry.hasObject("qty")
@@ -54,7 +54,7 @@ public class HealthCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("target")) {
             if (!scriptEntry.hasNPC())
                 throw new InvalidArgumentsException("Missing NPC!");
-            scriptEntry.addObject("target", Arrays.asList(scriptEntry.getNPC()));
+            scriptEntry.addObject("target", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
         }
 
     }
