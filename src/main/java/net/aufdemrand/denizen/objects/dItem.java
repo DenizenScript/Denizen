@@ -22,6 +22,7 @@ import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.Crops;
 import org.bukkit.material.NetherWarts;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -549,6 +550,28 @@ public class dItem implements dObject, Notable, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <i@item.has_display>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the item has a custom set display name.
+        // -->
+        if (attribute.startsWith("has_display")) {
+            return new Element(ItemDisplayname.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <i@item.is_book>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the item is considered an editable book.
+        // -->
+        if (attribute.startsWith("is_book")) {
+            return new Element(ItemBook.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <i@item.material.formatted>
         // @returns Element
         // @description
@@ -602,79 +625,6 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("material"))
             return getMaterial().getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.has_display>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the item has a custom set display name.
-        // -->
-        if (attribute.startsWith("has_display")) {
-            return new Element(ItemDisplayname.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // TODO: Property for Book info
-        if (attribute.startsWith("book")) {
-            if (getItemStack().getType() == Material.WRITTEN_BOOK) {
-                attribute.fulfill(1);
-                BookMeta bookInfo = (BookMeta) getItemStack().getItemMeta();
-
-                // <--[tag]
-                // @attribute <i@item.book.author>
-                // @returns Element
-                // @description
-                // Returns the author of the book. Note: Item must be a 'written_book'.
-                // -->
-                if (attribute.startsWith("author"))
-                    return new Element(bookInfo.getAuthor())
-                            .getAttribute(attribute.fulfill(1));
-
-                // <--[tag]
-                // @attribute <i@item.book.title>
-                // @returns Element
-                // @description
-                // Returns the title of the book. Note: Item must be a 'written_book'.
-                // -->
-                if (attribute.startsWith("title"))
-                    return new Element(bookInfo.getTitle())
-                            .getAttribute(attribute.fulfill(1));
-
-                // <--[tag]
-                // @attribute <i@item.book.page_count>
-                // @returns Element(Number)
-                // @description
-                // Returns the number of pages in the book. Note: Item must be a 'written_book'.
-                // -->
-                if (attribute.startsWith("page_count"))
-                    return new Element(bookInfo.getPageCount())
-                            .getAttribute(attribute.fulfill(1));
-
-                // <--[tag]
-                // @attribute <i@item.book.get_page[<#>]>
-                // @returns Element
-                // @description
-                // Returns the page specified from the book as an element. Note: Item must be a 'written_book'.
-                // -->
-                if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
-                    return new Element(bookInfo.getPage(attribute.getIntContext(1)))
-                            .getAttribute(attribute.fulfill(1));
-
-                // <--[tag]
-                // @attribute <i@item.book.pages>
-                // @returns dList
-                // @description
-                // Returns the pages of the book as a dList. Note: Item must be a 'written_book'.
-                // -->
-                if (attribute.startsWith("pages"))
-                    return new dList(bookInfo.getPages())
-                            .getAttribute(attribute.fulfill(1));
-
-            } else  {
-                dB.echoError("Item referenced is not a written book!");
-                return "null";
-            }
-        }
 
         // <--[tag]
         // @attribute <i@item.scriptname>
@@ -862,6 +812,61 @@ public class dItem implements dObject, Notable, Adjustable {
             else
                 dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' is not a plant.");
         }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name book
+        // @input Element
+        // @description
+        // Changes the information on a book item.
+        // Accepts simple symbol escaping as follows:
+        // | = &pipe;   < = &lt;   > = &gt;   newline = &nl;   & = &amp;
+        // @tags
+        // <i@item.is_book>
+        // <i@item.book.author>
+        // <i@item.book.title>
+        // <i@item.book.page_count>
+        // <i@item.book.get_page[<#>]>
+        // <i@item.book.pages>
+        // <i@item.book>
+        // -->
+        if (mechanism.matches("book")) {
+            if (ItemBook.describes(this)) {
+                BookMeta meta = (BookMeta) item.getItemMeta();
+                dList data = value.asType(dList.class);
+                if (data.size() < 2) {
+                    dB.echoError("Invalid book input!");
+                }
+                else {
+                    if (data.size() > 4 && data.get(0).equalsIgnoreCase("author")
+                            && data.get(2).equalsIgnoreCase("title")) {
+                        if (!item.getType().equals(Material.WRITTEN_BOOK)) {
+                            dB.echoError("That type of book cannot have title or author!");
+                        }
+                        else {
+                            meta.setAuthor(ItemBook.unEscape(data.get(1)));
+                            meta.setTitle(ItemBook.unEscape(data.get(3)));
+                            for (int i = 0; i < 4; i++)
+                                data.remove(0); // No .removeRange?
+                        }
+                    }
+                    if (!data.get(0).equalsIgnoreCase("pages")) {
+                        dB.echoError("Invalid book input!");
+                    }
+                    else {
+                        ArrayList<String> newPages = new ArrayList<String>();
+                        for (int i = 1; i < data.size(); i++) {
+                            newPages.add(ItemBook.unEscape(data.get(i)));
+                        }
+                        meta.setPages(newPages);
+                    }
+                    item.setItemMeta(meta);
+                }
+            }
+            else
+                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' is not a book.");
+        }
+
 
 
         if (!mechanism.fulfilled())

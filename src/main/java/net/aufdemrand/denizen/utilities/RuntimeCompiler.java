@@ -52,14 +52,14 @@ public class RuntimeCompiler {
                 dependencies.add(f.getPath());
                 dB.log("Loaded  " + f.getName());
             }
-        } catch (Exception error) { 
-            dB.log("No dependencies to load."); 
+        } catch (Exception error) {
+            dB.log("No dependencies to load.");
         }
 
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals");
             File[] files = file.listFiles(javaFilter);
-            if (files.length > 0){
+            if (files != null && files.length > 0) {
                 for (File f : files){
                     String fileName = f.getName();
 
@@ -69,7 +69,7 @@ public class RuntimeCompiler {
                     JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
                     if (!dependencies.isEmpty()) compilationUnit.addClassPathEntries(dependencies);
                     compilationUnit.addClassPathEntries(Arrays.asList(denizen.getDataFolder().list(jarFilter)));
-                    compilationUnit.addClassPathEntries(Arrays.asList(pluginsFolder.list(jarFilter)))
+                    compilationUnit.addClassPathEntries(Arrays.asList(pluginsFolder.list(jarFilter)));
 
                     try {
                         compilationUnit.addJavaSource(fileName.replace(".java", ""), readFile(f.getAbsolutePath()));
@@ -83,13 +83,13 @@ public class RuntimeCompiler {
                             dB.echoError(e);
                         }
                         else {
-                            dB.echoError(ChatColor.RED + "Woah! Error compiling " + fileName + "!");
+                            dB.echoError(ChatColor.RED + "Error compiling " + fileName + "!");
                             dB.echoError(e);
                         }
                     }
                 }
                 dB.echoApproval("All externals loaded!");
-            } else dB.echoError("Woah! No externals in /plugins/Denizen/externals/.../ to load!");
+            }
         } catch (Exception error) {
             dB.echoError(error);
         }
