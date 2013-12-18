@@ -50,12 +50,11 @@ public class PlayEffectCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("effect") &&
                     !scriptEntry.hasObject("particleeffect")) {
 
-                if (arg.matchesEnum(Effect.values())) {
-                    scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
-                } else if (arg.matchesEnum(ParticleEffect.values())) {
+                if (arg.matchesEnum(ParticleEffect.values())) {
                     scriptEntry.addObject("particleeffect",
                             ParticleEffect.valueOf(arg.getValue().toUpperCase()));
-                } else if (arg.matches("random")) {
+                }
+                else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used
                     ParticleEffect effect = null;
                     // Make sure the new effect is not an invisible effect
@@ -63,6 +62,9 @@ public class PlayEffectCommand extends AbstractCommand {
                         effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
                     }
                     scriptEntry.addObject("particleeffect", effect);
+                }
+                else if (arg.matchesEnum(Effect.values())) {
+                    scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
                 }
             }
 
