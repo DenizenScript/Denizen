@@ -724,7 +724,7 @@ public class dItem implements dObject, Notable, Adjustable {
                         dB.echoError("Cannot apply enchantment '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
                     else {
                         try {
-                            item.addEnchantment(Enchantment.getByName(data[0].toUpperCase()), Integer.valueOf(data[1]));
+                            item.addUnsafeEnchantment(Enchantment.getByName(data[0].toUpperCase()), Integer.valueOf(data[1]));
                         }
                         catch (NullPointerException e) {
                             dB.echoError("Unknown enchantment '" + data[0] + "'");
