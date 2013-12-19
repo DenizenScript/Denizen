@@ -481,6 +481,7 @@ public class dWorld implements dObject, Adjustable {
         // @returns Duration
         // @description
         // Returns the in-game time of this world.
+        // -->
         if (attribute.startsWith("time.full"))
             return new Element(getWorld().getFullTime())
                     .getAttribute(attribute.fulfill(1));

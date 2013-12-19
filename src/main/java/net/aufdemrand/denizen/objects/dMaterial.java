@@ -357,9 +357,8 @@ public class dMaterial implements dObject {
 
     // TODO: The following would be walls of useless materials, make properties for these instead of custom mats
     // Step rotations [rotation=(north/west/south/east)(up/down)] for each of the step blocks
-    // Rotations for chests/furnaces/pumpkins/etc [rotation=(north/south/east/west)] for each of those types
+    // Rotations for chests/furnaces/pumpkins/cocoa/etc [rotation=(north/south/east/west)] for each of those types
     // Rotations and open/closedness for doors/gates/etc. [Unknown?]
-    // Plant growths [growth=(0-15)]
     // Potions [potion_effect=(<name>)(<level>)(splash?)]
     // Leather colors [leather_color=(<dColor>)] or [leather_color=(dye_one)(dye_two)]
 
@@ -833,6 +832,16 @@ public class dMaterial implements dObject {
         // -->
         if (attribute.startsWith("data"))
             return new Element(getData())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <m@material.item>
+        // @returns dItem
+        // @description
+        // Returns an item of the material.
+        // -->
+        if (attribute.startsWith("item"))
+            return new dItem(this, 1)
                     .getAttribute(attribute.fulfill(1));
 
         // Iterate through this object's properties' attributes

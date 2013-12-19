@@ -61,6 +61,13 @@ public class ShootCommand extends AbstractCommand {
                 scriptEntry.addObject("height", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("speed")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("speed")) {
+
+                scriptEntry.addObject("speed", arg.asElement());
+            }
+
             else if (!scriptEntry.hasObject("script")
                      && arg.matchesArgumentType(dScript.class)) {
 
@@ -70,7 +77,7 @@ public class ShootCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                      && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
             // Don't document this argument; it is for debug purposes only
@@ -133,15 +140,17 @@ public class ShootCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dScript script = (dScript) scriptEntry.getObject("script");
 
-        double height = ((Element) scriptEntry.getObject("height")).asDouble();
-        Element gravity = (Element) scriptEntry.getObject("gravity");
+        Element height = scriptEntry.getElement("height");
+        Element gravity = scriptEntry.getElement("gravity");
+        Element speed = scriptEntry.getElement("speed");
 
         // Report to dB
         dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                              aH.debugObj("entities", entities.toString()) +
-                             aH.debugObj("destination", destination) +
-                             aH.debugObj("height", height) +
-                             aH.debugObj("gravity", gravity) +
+                             destination.debug() +
+                             height.debug() +
+                             (gravity != null ? gravity.debug(): "") +
+                             (speed != null ? speed.debug(): "") +
                              (script != null ? script.debug() : ""));
 
         // Keep a dList of entities that can be called using <entry[name].shot_entities>
@@ -187,7 +196,6 @@ public class ShootCommand extends AbstractCommand {
                 if (defaultGravity.name().equals(entityType)) {
 
                     gravity = new Element(defaultGravity.getGravity());
-                    dB.echoDebug(scriptEntry, "Gravity: " + gravity);
                 }
             }
 
@@ -197,11 +205,15 @@ public class ShootCommand extends AbstractCommand {
             }
         }
 
-        Vector v1 = lastEntity.getLocation().toVector();
-        Vector v2 = destination.toVector();
-        Vector v3 = Velocity.calculate(v1, v2, gravity.asDouble(), height);
-
-        lastEntity.setVelocity(v3);
+        if (speed == null) {
+            Vector v1 = lastEntity.getLocation().toVector();
+            Vector v2 = destination.toVector();
+            Vector v3 = Velocity.calculate(v1, v2, gravity.asDouble(), height.asDouble());
+            lastEntity.setVelocity(v3);
+        }
+        else {
+            lastEntity.setVelocity(originLocation.getDirection().multiply(speed.asDouble()));
+        }
 
         // A task used to trigger a script if the entity is no longer
         // being shot, when the script argument is used

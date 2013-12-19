@@ -2279,6 +2279,9 @@ public class WorldScriptHelper implements Listener {
         if (projectile.getLocation() == null)
             return; // No, I can't explain how or why this would ever happen... nonetheless, it appears it does happen sometimes.
 
+        if (Double.isNaN(projectile.getLocation().getDirection().normalize().getX()))
+            return; // I can't explain this one either. It also chooses to happen whenever it pleases.
+
         Block block = null;
         BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(), projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
         while(bi.hasNext()) {

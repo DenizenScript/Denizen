@@ -40,6 +40,8 @@ public class PropertyParser {
         registerProperty(ItemQuantity.class, dItem.class);
         registerProperty(ItemDurability.class, dItem.class);
         registerProperty(ItemSkullskin.class, dItem.class);
+        registerProperty(ItemPlantgrowth.class, dItem.class);
+        registerProperty(ItemBook.class, dItem.class);
 
     }
 

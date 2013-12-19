@@ -631,7 +631,7 @@ public class CommandRegistry implements dRegistry {
         // - narrate 'You invoke your power of notice...'
         // - define range '<player.flag[range_level].mul[3]>'
         // - define blocks '<player.flag[noticeable_blocks]>'
-        // - narrate '[NOTICE] You have noticed <player.location.find.blocks[%blocks%].within[%range].size>
+        // - narrate '[NOTICE] You have noticed <player.location.find.blocks[%blocks%].within[%range%].size>
         // blocks in the area that may be of interest.'
 
         // @Usage
@@ -2156,7 +2156,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>)
+        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>)
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air up to a certain height.
@@ -2166,10 +2166,14 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
+        // Use to shoot an arrow from the NPC to perfectly hit the player.
+        // - shoot arrow origin:<npc> destination:<player.location>
+        // @Usage
+        // Use to shoot an arrow out of the player with a given speed.
+        // - shoot arrow origin:<player> speed:2
         // -->
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>)", 1);
 
 
         // <--[command]
