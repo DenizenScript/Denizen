@@ -344,7 +344,7 @@ public class Utilities {
      *
      * @return true if within the specified location, false otherwise.
      */
-    public static boolean checkLocation(LivingEntity entity, Location theLocation, int theLeeway) {
+    public static boolean checkLocation(LivingEntity entity, Location theLocation, double theLeeway) {
         if (entity.getWorld() != theLocation.getWorld())
             return false;
 
@@ -369,7 +369,7 @@ public class Utilities {
      *
      * @return true if within the specified location, false otherwise.
      */
-    public static boolean checkLocation(Location baseLocation, Location theLocation, int theLeeway) {
+    public static boolean checkLocation(Location baseLocation, Location theLocation, double theLeeway) {
 
         if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName()))
             return false;

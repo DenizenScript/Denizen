@@ -627,7 +627,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             attribute.fulfill(1);
 
             // <--[tag]
-            // @attribute <l@location.find.blocks[<block>|...].within[<#>]>
+            // @attribute <l@location.find.blocks[<block>|...].within[<#.#>]>
             // @returns dList
             // @description
             // Returns a list of matching blocks within a radius.
@@ -636,7 +636,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dLocation> found = new ArrayList<dLocation>();
-                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 List<dObject> materials = new ArrayList<dObject>();
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
@@ -644,16 +644,16 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
 
-                for (int x = -(radius); x <= radius; x++)
-                    for (int y = -(radius); y <= radius; y++)
-                        for (int z = -(radius); z <= radius; z++)
+                for (double x = -(radius); x <= radius; x++)
+                    for (double y = -(radius); y <= radius; y++)
+                        for (double z = -(radius); z <= radius; z++)
                             if (!materials.isEmpty()) {
                                 for (dObject material : materials)
                                     if (((dMaterial) material).matchesMaterialData(getBlock()
-                                            .getRelative(x,y,z).getType().getNewData(getBlock()
-                                                    .getRelative(x,y,z).getData())))
-                                        found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
-                            } else found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
+                                            .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
+                                                    .getLocation().add(x,y,z).getBlock().getData())))
+                                        found.add(new dLocation(getBlock().getLocation().add(x,y,z)));
+                            } else found.add(new dLocation(getBlock().getLocation().add(x,y,z)));
 
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
@@ -666,7 +666,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.surface_blocks[<block>|...].within[<#>]>
+            // @attribute <l@location.find.surface_blocks[<block>|...].within[<#.#>]>
             // @returns dList
             // @description
             // Returns a list of matching surface blocks within a radius.
@@ -675,31 +675,31 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dLocation> found = new ArrayList<dLocation>();
-                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 List<dObject> materials = new ArrayList<dObject>();
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
 
                 attribute.fulfill(2);
 
-                for (int x = -(radius); x <= radius; x++)
-                    for (int y = -(radius); y <= radius; y++)
-                        for (int z = -(radius); z <= radius; z++)
+                for (double x = -(radius); x <= radius; x++)
+                    for (double y = -(radius); y <= radius; y++)
+                        for (double z = -(radius); z <= radius; z++)
                             if (!materials.isEmpty()) {
                                 for (dObject material : materials)
                                     if (((dMaterial) material).matchesMaterialData(getBlock()
-                                            .getRelative(x,y,z).getType().getNewData(getBlock()
-                                                    .getRelative(x,y,z).getData()))) {
-                                        Location l = getBlock().getRelative(x,y,z).getLocation();
+                                            .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
+                                                    .getLocation().add(x,y,z).getBlock().getData()))) {
+                                        Location l = getBlock().getLocation().add(x,y,z);
                                         if (l.add(0,1,0).getBlock().getType() == Material.AIR
                                                 && l.add(0,1,0).getBlock().getType() == Material.AIR)
-                                            found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
+                                            found.add(new dLocation(getBlock().getLocation().add(x,y,z)));
                                     }
                             } else {
-                                Location l = getBlock().getRelative(x,y,z).getLocation();
+                                Location l = getBlock().getLocation().add(x,y,z);
                                 if (l.add(0,1,0).getBlock().getType() == Material.AIR
                                         && l.add(0,1,0).getBlock().getType() == Material.AIR)
-                                    found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
+                                    found.add(new dLocation(getBlock().getLocation().add(x,y,z)));
                             }
 
                 Collections.sort(found, new Comparator<dLocation>() {
@@ -713,7 +713,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.players.within[<#>]>
+            // @attribute <l@location.find.players.within[<#.#>]>
             // @returns dList
             // @description
             // Returns a list of players within a radius.
@@ -722,7 +722,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 && attribute.getAttribute(2).startsWith("within")
                 && attribute.hasContext(2)) {
                 ArrayList<dPlayer> found = new ArrayList<dPlayer>();
-                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers())
                     if (!player.isDead() && Utilities.checkLocation(this, player.getLocation(), radius))
@@ -739,7 +739,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.npcs.within[<#>]>
+            // @attribute <l@location.find.npcs.within[<#.#>]>
             // @returns dList
             // @description
             // Returns a list of NPCs within a radius.
@@ -748,7 +748,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 && attribute.getAttribute(2).startsWith("within")
                 && attribute.hasContext(2)) {
                 ArrayList<dNPC> found = new ArrayList<dNPC>();
-                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (dNPC npc : DenizenAPI.getSpawnedNPCs())
                     if (Utilities.checkLocation(this, npc.getLocation(), radius))
@@ -765,7 +765,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.entities[<entity>|...].within[<#>]>
+            // @attribute <l@location.find.entities[<entity>|...].within[<#.#>]>
             // @returns dList
             // @description
             // Returns a list of entities within a radius, with an optional search parameter
@@ -782,7 +782,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     }
                 }
                 ArrayList<dEntity> found = new ArrayList<dEntity>();
-                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (Entity entity : getWorld().getEntities()) {
                     if (Utilities.checkLocation(this, entity.getLocation(), radius)) {
@@ -811,7 +811,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
 
             // <--[tag]
-            // @attribute <l@location.find.living_entities.within[<#>]>
+            // @attribute <l@location.find.living_entities.within[<#.#>]>
             // @returns dList
             // @description
             // Returns a list of living entities within a radius.
@@ -820,7 +820,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dEntity> found = new ArrayList<dEntity>();
-                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (Entity entity : getWorld().getEntities())
                     if (entity instanceof LivingEntity

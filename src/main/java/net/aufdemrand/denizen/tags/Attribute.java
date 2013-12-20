@@ -107,10 +107,18 @@ public class Attribute {
 
     public int getIntContext(int attribute) {
         try {
-        if (hasContext(attribute))
-            return Integer.valueOf(getAttribute(attribute).split("\\[", 2)[1].replace("]", ""));
+            if (hasContext(attribute))
+                return Integer.valueOf(getContext(attribute));
         } catch (Exception e) { }
 
+        return 0;
+    }
+
+    public double getDoubleContext(int attribute) {
+        try {
+            if (hasContext(attribute))
+                return Double.valueOf(getContext(attribute));
+        } catch (Exception e) { }
         return 0;
     }
 

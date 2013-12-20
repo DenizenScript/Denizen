@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 
@@ -39,7 +40,10 @@ import org.bukkit.event.weather.*;
 import org.bukkit.event.world.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 
 @SuppressWarnings("deprecation")
@@ -59,7 +63,6 @@ public class WorldScriptHelper implements Listener {
     // Store the UUIDs of dying entities along with the dEntities of their killers,
     // to bring <context.damager> from "on entity killed" to "on entity dies"
     public static Map<UUID, dEntity> entityKillers = new HashMap<UUID, dEntity>();
-
 
 
     /////////////////////
@@ -337,9 +340,16 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getItem());
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        dLocation location = new dLocation(event.getBlock().getLocation());
 
-        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("location", location);
         context.put("item", item);
+
+        if (item.isArmor()) {
+            for (Player player : location.getWorld().getPlayers())
+                if (Utilities.checkLocation(player, location, 1.5))
+                    playerEquipsArmorEvent(player, event.getItem(), player.getInventory().firstEmpty());
+        }
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("block dispenses item",
@@ -1022,6 +1032,45 @@ public class WorldScriptHelper implements Listener {
         }
     }
 
+    public void playerEquipsArmorEvent(final Player player, final ItemStack item, final int replaceSlot) {
+        
+        // Run this as a not-so-delayed Runnable...
+        // This is to force Bukkit to see any newly equipped armor
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                dItem armor = new dItem(item);
+                ItemStack[] armor_contents = player.getInventory().getArmorContents();
+
+                dB.log("equipped? lets get the type");
+                int type = 3-((item.getTypeId()-298)%4);
+                dB.log("type:" + type);
+                if (armor.comparesTo(armor_contents[type]) == -1) {
+                    for (ItemStack item : player.getInventory().getArmorContents()) {
+                        dB.log("Item: " + item.getType().name());
+                    }
+                    return;
+                }
+
+                Map<String, dObject> context = new HashMap<String, dObject>();
+                context.put("armor", armor);
+
+                String determination = EventManager.doEvents(Arrays.asList
+                        ("player equips armor",
+                            "player equips " + armor.identify(),
+                            "player equips " + armor.identifyMaterial()),
+                        null, player, context).toUpperCase();
+
+                if (determination.startsWith("CANCELLED")) {
+                    armor_contents[type] = new ItemStack(Material.AIR);
+                    player.getInventory().setArmorContents(armor_contents);
+                    player.getInventory().setItem(replaceSlot, item);
+                }
+            }
+        }.runTaskLater(DenizenAPI.getCurrentInstance(), 0);
+
+    }
+
 
     /////////////////////
     //   HANGING EVENTS
@@ -1529,15 +1578,16 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity that died.
     // <context.damager> returns the dEntity damaging the other entity, if any.
-    // <context.message> returns an Element of the death message,
-    //                   only available for player deaths.
-    // <context.inventory> returns the dInventory of the entity,
-    //                   currently only available for players.
+    // <context.message> returns an Element of a player's death message.
+    // <context.inventory> returns the dInventory of a player
     //
     // @Determine
     // Element(String) to change the death message.
-    // "NO_DROPS" to specify the Player's drops should be removed.
-    // "DROPS <i@item|...>" to specify new items to be dropped.
+    // "NO_DROPS" to specify that any drops should be removed.
+    // "NO_DROPS_OR_XP" to specify that any drops or XP orbs should be removed.
+    // "NO_XP" to specify that any XP orbs should be removed.
+    // dList(dItem) to specify new items to be dropped.
+    // Element(Number) to specify the new amount of XP to be dropped.
     //
     // -->
     @EventHandler
@@ -1576,14 +1626,23 @@ public class WorldScriptHelper implements Listener {
                         entity.identifyType() + " dies",
                         "entity death",
                         entity.identifyType() + " death"),
-                npc, player, context, true);
+                npc, player, context, true).toUpperCase();
 
         // Handle message
-        if (determination.equalsIgnoreCase("NO_DROPS")) {
-            event.getDrops().clear();
-
+        if (determination.startsWith("DROPS ")) {
+            determination = determination.substring(6);
         }
-        else if (determination.toUpperCase().startsWith("DROPS ")) {
+
+        if (determination.startsWith("NO_DROPS")) {
+            event.getDrops().clear();
+            if (determination.endsWith("_OR_XP")) {
+                event.setDroppedExp(0);
+            }
+        }
+        else if (determination.equals("NO_XP")) {
+            event.setDroppedExp(0);
+        }
+        else if (Argument.valueOf(determination).matchesArgumentList(dItem.class)) {
             dList drops = dList.valueOf(determination.substring(6));
             drops.filter(dItem.class);
             event.getDrops().clear();
@@ -1594,8 +1653,13 @@ public class WorldScriptHelper implements Listener {
             }
 
         }
+        else if (Argument.valueOf(determination)
+                .matchesPrimitive(aH.PrimitiveType.Integer)) {
+            int xp = Integer.valueOf(determination.substring(3));
+            event.setDroppedExp(xp);
+        }
 
-        else if (!determination.equalsIgnoreCase("NONE")) {
+        else if (!determination.equals("NONE")) {
             if (event instanceof PlayerDeathEvent) {
                 subEvent.setDeathMessage(determination);
             }
@@ -2678,6 +2742,15 @@ public class WorldScriptHelper implements Listener {
 
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
 
+        if (event.getInventory().getHolder() instanceof Player) {
+            PlayerInventory inv = (PlayerInventory) event.getInventory();
+            ItemStack[] armor_contents = inv.getArmorContents();
+            for (int s = 0; s < 4; s++) {
+                if (armor_contents[0].getType() != Material.AIR)
+                    playerEquipsArmorEvent((Player) inv.getHolder(), armor_contents[s], inv.firstEmpty());
+            }
+        }
+
         EventManager.doEvents(Arrays.asList
                 ("player closes inventory",
                         "player closes " + type),
@@ -3480,6 +3553,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         Action action = event.getAction();
         dItem item = null;
+        Player player = event.getPlayer();
 
         List<String> events = new ArrayList<String>();
 
@@ -3498,6 +3572,10 @@ public class WorldScriptHelper implements Listener {
         if (event.hasItem()) {
             item = new dItem(event.getItem());
             context.put("item", item);
+
+            if (interaction.equals("player right clicks") && item.isArmor()) {
+                playerEquipsArmorEvent(player, event.getItem(), player.getInventory().getHeldItemSlot());
+            }
 
             events.add(interaction + " with item");
             events.add(interaction + " with " + item.identify());
@@ -3542,7 +3620,7 @@ public class WorldScriptHelper implements Listener {
 
         }
 
-        String determination = EventManager.doEvents(events, null, event.getPlayer(), context, true).toUpperCase();
+        String determination = EventManager.doEvents(events, null, player, context, true).toUpperCase();
 
         if (determination.startsWith("CANCELLED:FALSE"))
             event.setCancelled(false);
