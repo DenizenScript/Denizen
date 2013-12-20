@@ -1238,15 +1238,15 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
-        // @name texture_pack
+        // @name resource_pack
         // @input Element
         // @description
-        // Sets the current texture pack by specifying a valid URL to a texture pack.
+        // Sets the current resource pack by specifying a valid URL to a resource pack.
         // @tags
         // None
         // -->
-        if (mechanism.matches("texture_pack")) {
-            getPlayerEntity().setTexturePack(value.asString());
+        if (mechanism.matches("resource_pack") || mechanism.matches("texture_pack")) {
+            getPlayerEntity().setResourcePack(value.asString());
         }
 
         // <--[mechanism]
