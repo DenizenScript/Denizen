@@ -82,10 +82,21 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 
     @Override
     public void onBuild(List<aH.Argument> args) {
+
         for (aH.Argument arg : args) {
 
             if (type == null && arg.matchesEnum(TravelType.values()))
                 type = TravelType.valueOf(arg.getValue().toUpperCase());
+
+            // Distance/radius should be first, that way they aren't accidently
+            // intrepreted as NPCs.
+            else if (arg.matchesPrefix("d, distance")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                distance_required = aH.getIntegerFrom(arg.getValue());
+
+            else if (arg.matchesPrefix("r, radius")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                radius = aH.getIntegerFrom(arg.getValue());
 
             else if (arg.matchesArgumentType(dCuboid.class))
                 end_cuboid = arg.asType(dCuboid.class);
@@ -96,14 +107,6 @@ public class TravelListenerInstance extends AbstractListener implements Listener
             else if (arg.matchesArgumentType(dNPC.class))
                 target = arg.asType(dNPC.class);
 
-            else if (arg.matchesPrefix("d, distance")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
-                distance_required = aH.getIntegerFrom(arg.getValue());
-
-            else if (arg.matchesPrefix("r, radius")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
-                radius = aH.getIntegerFrom(arg.getValue());
-
         }
 
         //
@@ -113,6 +116,28 @@ public class TravelListenerInstance extends AbstractListener implements Listener
             dB.echoError("Missing TYPE argument! Valid: DISTANCE, TOLOCATION, TONPC, TOCUBOID");
             cancel();
         }
+
+        if (type == TravelType.DISTANCE && distance_required == null) {
+            dB.echoError("Missing 'distance' argument!");
+            cancel();
+        }
+
+        if (type == TravelType.TOCUBOID && end_cuboid == null) {
+            dB.echoError("Missing 'cuboid' argument!");
+            cancel();
+        }
+
+        if (type == TravelType.TOLOCATION && end_point == null) {
+            dB.echoError("Missing 'location' argument!");
+            cancel();
+        }
+
+        if (type == TravelType.TONPC && target == null) {
+            dB.echoError("Missing 'npc' argument!");
+            cancel();
+        }
+
+
     }
 
     @Override

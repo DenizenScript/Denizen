@@ -76,6 +76,11 @@ public class dNPC implements dObject, Adjustable {
 
 
     public static boolean matches(String string) {
+
+        // If using object notation, assume it's valid
+        if (string.toLowerCase().startsWith("n@")) return true;
+
+        // Otherwise, let's do checks
         string = string.toUpperCase().replace("N@", "");
         NPC npc;
         if (aH.matchesInteger(string)) {
