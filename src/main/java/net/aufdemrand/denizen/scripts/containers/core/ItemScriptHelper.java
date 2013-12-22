@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,13 +16,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,48 +41,49 @@ public class ItemScriptHelper implements Listener {
     //   EVENT HANDLER
     /////////////////
 
-    public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, Object> context) {
+    public static String doEvents(String scriptName, 
+            List<String> eventNames, dNPC npc, Player player, Map<String, Object> context) {
 
         String determination = "none";
 
-        for (ItemScriptContainer script : item_scripts.values()) {
+        ItemScriptContainer script = item_scripts.get(scriptName);
 
-            if (script == null) continue;
+        if (script == null) return determination;
 
-            for (String eventName : eventNames) {
+        for (String eventName : eventNames) {
 
-                if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
+            if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
 
-                List<ScriptEntry> entries = script.getEntries
-                        (player != null ? new dPlayer(player) : null,
-                         npc, "events.on " + eventName);
-                if (entries.isEmpty()) continue;
+            List<ScriptEntry> entries = script.getEntries
+                    (player != null ? new dPlayer(player) : null,
+                     npc, "events.on " + eventName);
+            if (entries.isEmpty()) continue;
 
-                dB.report(script, "Event",
-                        aH.debugObj("Type", "On " + eventName)
-                        + script.getAsScriptArg().debug()
-                        + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
-                        + (player != null ? aH.debugObj("Player", player.getName()) : "")
-                        + (context != null ? aH.debugObj("Context", context.toString()) : ""));
+            dB.report(script, "Event",
+                    aH.debugObj("Type", "On " + eventName)
+                    + script.getAsScriptArg().debug()
+                    + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
+                    + (player != null ? aH.debugObj("Player", player.getName()) : "")
+                    + (context != null ? aH.debugObj("Context", context.toString()) : ""));
 
-                dB.echoDebug(script, dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
+            dB.echoDebug(script, dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
 
-                if (context != null) {
-                    for (Map.Entry<String, Object> entry : context.entrySet()) {
-                        ScriptBuilder.addObjectToEntries(entries, entry.getKey(), entry.getValue());
-                    }
+            if (context != null) {
+                for (Map.Entry<String, Object> entry : context.entrySet()) {
+                    ScriptBuilder.addObjectToEntries(entries, entry.getKey(), entry.getValue());
                 }
+            }
 
-                // Create new ID -- this is what we will look for when determining an outcome
-                long id = DetermineCommand.getNewId();
+            // Create new ID -- this is what we will look for when determining an outcome
+            long id = DetermineCommand.getNewId();
 
-                // Add the reqId to each of the entries
-                ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
-                InstantQueue.getQueue(null).addEntries(entries).start();
+            // Add the reqId to each of the entries
+            ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+            InstantQueue.getQueue(null).addEntries(entries).start();
 
-                if (DetermineCommand.hasOutcome(id))
-                    determination =  DetermineCommand.getOutcome(id);
-                }
+            if (DetermineCommand.hasOutcome(id))
+                determination =  DetermineCommand.getOutcome(id);
+
         }
 
         return determination;
@@ -114,6 +111,10 @@ public class ItemScriptHelper implements Listener {
         }
     }
 
+    public static boolean isBound(ItemStack item) {
+        return (isItemscript(item) && getItemScriptContainer(item).bound);
+    }
+
     public static boolean isItemscript(ItemStack item) {
         if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
             for (String itemLore : item.getItemMeta().getLore()) {
@@ -124,6 +125,16 @@ public class ItemScriptHelper implements Listener {
         }
 
         return false;
+    }
+
+    public static ItemScriptContainer getItemScriptContainer(ItemStack item) {
+        if (isItemscript(item)) {
+            for (String itemLore : item.getItemMeta().getLore()) {
+                if (itemLore.startsWith(dItem.itemscriptIdentifier))
+                    return item_scripts.get(itemLore.replace(dItem.itemscriptIdentifier, ""));
+            }
+        }
+        return null;
     }
 
     // When special Denizen recipes that have itemscripts as ingredients
@@ -320,62 +331,93 @@ public class ItemScriptHelper implements Listener {
     }
 
     @EventHandler
-    public void boundPrepareItem(PrepareItemCraftEvent event) {
-        // Since the crafting matrix uses an array, we need a cloned version as a list
-        List<ItemStack> clonedMatrix = new ArrayList<ItemStack>(Arrays.asList(event.getInventory().getMatrix()));
-        // Now that we have all of the items, we need to make sure one of them is bound
-        for (int i=0; i < clonedMatrix.size(); i++) {
-            ItemStack stack = clonedMatrix.get(i);
-            if (stack == null) continue;
-            // We need to check this manually, since the event is a bit different than others
-            if (!stack.hasItemMeta()) continue;
-            if (!stack.getItemMeta().hasLore()) continue;
-            for (String line : stack.getItemMeta().getLore()) {
-                // Make sure it's an item script AND that's it's bound to the player
-                if (ChatColor.stripColor(line).substring(0, 3).equalsIgnoreCase("id:")
-                        && dScript.matches(ChatColor.stripColor(line).substring(3))
-                        && dScript.valueOf(ChatColor.stripColor(line).substring(3)).getContainer().getAsContainerType(ItemScriptContainer.class).bound) {
-                    // If it's a bound item, don't let it get away!
-                    clonedMatrix.remove(stack);
-                    event.getView().getPlayer().getInventory().addItem(stack);
-                    break;
-                }
-            }
+    public void boundInventoryClickEvent(InventoryClickEvent event) {
+        // Proceed only if this is a CraftingInventory
+        if (!(event.getInventory() instanceof CraftingInventory))
+            return;
+
+        // Proceed only if the click has a cursor item that is bound
+        ItemStack item = event.getCursor();
+        if (item == null || !isBound(item))
+            return;
+
+        // If they're trying to use the item as an ingredient, cancel it!
+        if (event.getSlotType() == SlotType.CRAFTING) {
+            removeBoundItems((CraftingInventory) event.getInventory(), (Player) event.getWhoClicked(), item);
         }
-        // Now, return the modified matrix back to the crafting screen
-        event.getInventory().setMatrix(clonedMatrix.toArray(new ItemStack[clonedMatrix.size()]));
+    }
+
+    @EventHandler
+    public void boundInventoryDragEvent(InventoryDragEvent event) {
+        // Proceed only if this is a CraftingInventory
+        if (!(event.getInventory() instanceof CraftingInventory))
+            return;
+
+        // Proceed only if the items are bound
+        ItemStack item = event.getOldCursor();
+        if (item == null || !isBound(item))
+            return;
+
+        // If they're trying to use the item as an ingredient, cancel it!
+        // Manually check if the slot numbers are the same. If they are, then the player clicked
+        // in the crafting matrix. If not, that means they clicked in their inventory and we should
+        // ignore it.
+        if (event.getInventorySlots().toArray()[0] == event.getRawSlots().toArray()[0]) {
+            removeBoundItems((CraftingInventory) event.getInventory(), (Player) event.getWhoClicked(), item);
+            // Manually set cursor to null to prevent empty-handed
+            // duplication with event.getOldCursor()
+            event.setCursor(null);
+        }
+    }
+
+    public void removeBoundItems(final CraftingInventory inventory, final Player player, final ItemStack oldCursor) {
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        // Store the crafting matrix
+                        ItemStack[] matrix = inventory.getMatrix();
+
+                        // Loop through items in the matrix
+                        boolean removedItems = false;
+                        for (int i = 0; i < matrix.length-1; i++) {
+                            if (isBound(matrix[i])) {
+                                matrix[i] = null;
+                                removedItems = true;
+                            }
+                        }
+
+                        // Add the edited matrix back to the inventory
+                        inventory.setMatrix(matrix);
+                        if (removedItems) {
+                            player.getInventory().addItem(oldCursor);
+                        }
+                        player.updateInventory();
+
+                    }
+        }, 1);
+
     }
 
     @EventHandler
     public void boundDropItem(PlayerDropItemEvent event) {
-
-        // If the item has no ItemMeta or lore, ignore it.
-        if (!event.getItemDrop().getItemStack().hasItemMeta()
-                || !event.getItemDrop().getItemStack().getItemMeta().hasLore()
-                || event.getItemDrop().getItemStack().getItemMeta().getLore().isEmpty())
-            return;
-
-        for (String line : event.getItemDrop().getItemStack().getItemMeta().getLore()) {
-            // If the item being dropped is bound, don't drop it.
-            if (line.startsWith("§0id:")
-                    && dScript.matches(line.replace("§0id:", ""))
-                    && dScript.valueOf(line.replace("§0id:", "")).getContainer().getAsContainerType(ItemScriptContainer.class).bound) {
-                event.setCancelled(true);
-                break;
-            }
+        // If the item is bound, don't let them drop it!
+        if (isBound(event.getItemDrop().getItemStack())) {
+            event.setCancelled(true);
+            event.getPlayer().updateInventory();
         }
-
     }
 
     @EventHandler
     public void dropItem(PlayerDropItemEvent event) {
         // Run a script on drop of an item script
-        if (isItemscript(event.getItemDrop().getItemStack())) {
+        ItemStack item = event.getItemDrop().getItemStack();
+        if (isItemscript(item)) {
             Map<String, Object> context = new HashMap<String, Object>();
             context.put("location", new dLocation(event.getItemDrop().getLocation()));
-            String determination = doEvents(Arrays.asList
-                    ("drop"),
-                    null, event.getPlayer(), context);
+            String determination = doEvents(getItemScriptContainer(item).getName(),
+                    Arrays.asList("drop"), null, event.getPlayer(), context);
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
         }
