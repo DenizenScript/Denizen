@@ -2743,7 +2743,8 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
 
         if (event.getInventory().getHolder() instanceof Player) {
-            PlayerInventory inv = (PlayerInventory) event.getInventory();
+            // Don't use event.getInventory() or event.getPlayer().getInventory() here...
+            PlayerInventory inv = (PlayerInventory) event.getInventory().getHolder().getInventory();
             ItemStack[] armor_contents = inv.getArmorContents();
             for (int s = 0; s < 4; s++) {
                 if (armor_contents[0].getType() != Material.AIR)
