@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.aH.Argument;
+import net.aufdemrand.denizen.objects.aH.PrimitiveType;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
@@ -42,7 +43,6 @@ import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 
@@ -2743,7 +2743,8 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
 
         if (event.getInventory().getHolder() instanceof Player) {
-            PlayerInventory inv = (PlayerInventory) event.getInventory();
+            // Don't use event.getInventory() or event.getPlayer().getInventory() here...
+            PlayerInventory inv = (PlayerInventory) event.getInventory().getHolder().getInventory();
             ItemStack[] armor_contents = inv.getArmorContents();
             for (int s = 0; s < 4; s++) {
                 if (armor_contents[0].getType() != Material.AIR)
@@ -3454,6 +3455,38 @@ public class WorldScriptHelper implements Listener {
             event.setHatching(true);
             event.setHatchingType(dEntity.valueOf(determination).getEntityType());
         }
+    }
+
+    // <--[event]
+    // @Events
+    // player changes xp
+    //
+    // @Triggers when a player's experience amount changes.
+    // @Context
+    // <context.amount> returns the amount of changed experience.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from changing experience.
+    // Element(Number) to set the amount of changed experience.
+    //
+    // -->
+    @EventHandler
+    public void playerExpChange(PlayerExpChangeEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("amount", new Element(event.getAmount()));
+
+        String determination = EventManager.doEvents(Arrays.asList
+                ("player changes xp"),
+                null, event.getPlayer(), context).toUpperCase();
+
+        if (determination.equals("CANCELLED")) {
+            event.setAmount(0);
+        }
+        else if (Argument.valueOf(determination).matchesPrimitive(PrimitiveType.Integer)) {
+            event.setAmount(Integer.valueOf(determination));
+        }
+
     }
 
     // <--[event]
