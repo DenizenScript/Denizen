@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.command.exception.CommandException;
@@ -139,11 +140,18 @@ public class ConstantsTrait extends Trait {
             assignmentConstants.clear();
         } else return assignmentConstants;
 
-        if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS"))
-            for (String constant : ScriptRegistry.getScriptContainer(assignment).getConfigurationSection("DEFAULT CONSTANTS").getKeys(false))
-                assignmentConstants.put(constant.toLowerCase(),
+        try {
+            if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS"))
+                for (String constant : ScriptRegistry.getScriptContainer(assignment)
+                        .getConfigurationSection("DEFAULT CONSTANTS").getKeys(false))
+                    assignmentConstants.put(constant.toLowerCase(),
                         ScriptRegistry.getScriptContainer(assignment)
                                 .getString("DEFAULT CONSTANTS." + constant.toUpperCase(), ""));
+        }
+        catch (NullPointerException e) {
+            dB.echoError("Constants in assignment script '" + npc.getTrait(AssignmentTrait.class)
+                    .getAssignment().getName() + "' improperly defined, no constants will be set.");
+        }
 
         return assignmentConstants;
     }
