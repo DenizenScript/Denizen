@@ -46,7 +46,7 @@ public class InteractScriptHelper {
         if (assignedScripts.isEmpty()) return null;
 
         // Alert the dBugger -- trying to find a good interact script!
-        dB.log(dB.DebugElement.Header + "Getting interact script: " + npc.getName() + "/" + player.getName());
+        dB.log(dB.DebugElement.Header, "Getting interact script: " + npc.getName() + "/" + player.getName());
 
         //
         // Get scripts that meet requirements and add them to interactableScripts.
@@ -124,14 +124,14 @@ public class InteractScriptHelper {
         if (interactableScripts.size() == 1) {
             String script = interactableScripts.get(0).getName();
             dB.echoApproval("Highest scoring script is " + script + ".");
-            dB.log(dB.DebugElement.Footer.toString()); // TODO: Above
+            dB.log(dB.DebugElement.Footer, "");
             return ScriptRegistry.getScriptContainerAs(script.replace("^", ""), InteractScriptContainer.class);
         }
 
         // Or, if list is empty.. no scripts meet requirements!
         else if (interactableScripts.isEmpty()) {
             dB.log(ChatColor.YELLOW + "+> " + ChatColor.WHITE + "No scripts meet requirements!");
-            dB.log(dB.DebugElement.Footer.toString());
+            dB.log(dB.DebugElement.Footer, "");
             return null;
         }
 
@@ -156,7 +156,7 @@ public class InteractScriptHelper {
                 if (interactScript.containsTriggerInStep(getCurrentStep(player, interactScript.getName()), trigger)) {
                     dB.log("...found trigger!");
                     dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
-                    dB.log(dB.DebugElement.Footer.toString());
+                    dB.log(dB.DebugElement.Footer, "");
                     return interactScript;
                 }
 
@@ -168,7 +168,7 @@ public class InteractScriptHelper {
                 dB.log("...script is good!");
                 dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
                 dB.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
-                dB.log(dB.DebugElement.Footer.toString());
+                dB.log(dB.DebugElement.Footer, "");
                 return interactScript;
             }
         }
