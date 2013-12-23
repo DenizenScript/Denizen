@@ -39,7 +39,7 @@ public class PoseCommand extends AbstractCommand {
 
             else if (arg.matchesPrefix("id")) {
                 scriptEntry.addObject("pose_id", arg.getValue());
-            } 
+            }
 
             else if (arg.matches("player")) {
                 scriptEntry.addObject("target", TargetType.PLAYER);
