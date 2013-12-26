@@ -99,6 +99,9 @@ public class CommandRegistry implements dRegistry {
         // interface to deal with those adjustments. To easily accomplish this, use this command with a valid object
         // mechanism, and sometimes accompanying value.
 
+        // @Tags
+        // <entry[saveName].result> returns the adjusted object.
+
         // @Usage
         // Use to set a custom display name on an entity.
         // - adjust e@1000 'set_custom_name:ANGRY!'
@@ -572,6 +575,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // @Tags
         // <server.list_npcs>
+        // <entry[saveName].created_npc> returns the NPC that was created.
         // @Usage
         // Use to create a despawned NPC for later usage.
         // - create player Bob
@@ -2242,6 +2246,7 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <e@entity.is_spawned>
         // <util.entity_is_spawned[<entity>]>
+        // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
         // @Usage
         // Todo
         // -->
