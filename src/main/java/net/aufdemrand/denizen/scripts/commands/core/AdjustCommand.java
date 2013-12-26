@@ -64,6 +64,9 @@ public class AdjustCommand extends AbstractCommand {
         ((Adjustable) fetched).adjust(new Mechanism(scriptEntry.getElement("mechanism"),
                 scriptEntry.getElement("mechanism_value")));
 
+        // Add it to the entry for later access
+        scriptEntry.addObject("result", fetched);
+
         // :)
 
     }

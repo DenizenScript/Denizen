@@ -1033,7 +1033,7 @@ public class WorldScriptHelper implements Listener {
     }
 
     public void playerEquipsArmorEvent(final Player player, final ItemStack item, final int replaceSlot) {
-        
+
         // Run this as a not-so-delayed Runnable...
         // This is to force Bukkit to see any newly equipped armor
         new BukkitRunnable() {
@@ -1042,12 +1042,9 @@ public class WorldScriptHelper implements Listener {
                 dItem armor = new dItem(item);
                 ItemStack[] armor_contents = player.getInventory().getArmorContents();
 
-                dB.log("equipped? lets get the type");
                 int type = 3-((item.getTypeId()-298)%4);
-                dB.log("type:" + type);
                 if (armor.comparesTo(armor_contents[type]) == -1) {
                     for (ItemStack item : player.getInventory().getArmorContents()) {
-                        dB.log("Item: " + item.getType().name());
                     }
                     return;
                 }
@@ -3059,6 +3056,31 @@ public class WorldScriptHelper implements Listener {
                 dB.echoError("Script '"  + determination + "' is valid, but not of type 'book'!");
             }
         }
+    }
+
+    // <--[event]
+    // @Events
+    // player breaks item
+    // player breaks <item>
+    //
+    // @Triggers when a player breaks the item they are holding.
+    // @Context
+    // <context.item> returns the item that broke.
+    //
+    // -->
+    @EventHandler
+    public void playerBreakItem(PlayerItemBreakEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dItem item = new dItem(event.getBrokenItem());
+        context.put("item", item);
+
+        String determination = EventManager.doEvents(Arrays.asList
+                ("player breaks item",
+                        "player breaks " + item.identify(),
+                        "player breaks " + event.getBrokenItem().getType().toString()),
+                null, event.getPlayer(), context);
+
     }
 
     // <--[event]

@@ -41,7 +41,7 @@ public class ItemScriptHelper implements Listener {
     //   EVENT HANDLER
     /////////////////
 
-    public static String doEvents(String scriptName, 
+    public static String doEvents(String scriptName,
             List<String> eventNames, dNPC npc, Player player, Map<String, Object> context) {
 
         String determination = "none";
