@@ -3060,6 +3060,31 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // player breaks item
+    // player breaks <item>
+    //
+    // @Triggers when a player breaks the item they are holding.
+    // @Context
+    // <context.item> returns the item that broke.
+    //
+    // -->
+    @EventHandler
+    public void playerBreakItem(PlayerItemBreakEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dItem item = new dItem(event.getBrokenItem());
+        context.put("item", item);
+
+        String determination = EventManager.doEvents(Arrays.asList
+                ("player breaks item",
+                        "player breaks " + item.identify(),
+                        "player breaks " + event.getBrokenItem().getType().toString()),
+                null, event.getPlayer(), context);
+
+    }
+
+    // <--[event]
+    // @Events
     // player animates (<animation>)
     //
     // @Triggers when a player performs an animation.
