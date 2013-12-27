@@ -3068,7 +3068,7 @@ public class WorldScriptHelper implements Listener {
     // <context.item> returns the item that broke.
     //
     // @Determine
-    // "CANCELLED" to prevent the item from breaking.
+    // "CANCELLED" to prevent the item from breaking, restoring it with one usage left.
     // -->
     @EventHandler
     public void playerBreakItem(PlayerItemBreakEvent event) {
@@ -3091,10 +3091,12 @@ public class WorldScriptHelper implements Listener {
             // The event automatically resets durability to 0... instead,
             // let's delay a tick and set it back to what it was before.
             final short durability = itemstack.getDurability();
+            final Player player = event.getPlayer();
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    itemstack.setDurability(durability);
+                    itemstack.setDurability(itemstack.getType().getMaxDurability());
+                    player.updateInventory();
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
