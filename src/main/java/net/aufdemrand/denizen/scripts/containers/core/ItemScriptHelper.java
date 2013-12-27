@@ -245,7 +245,7 @@ public class ItemScriptHelper implements Listener {
             boolean matchesSpecialRecipe = true;
 
             // Check if the two sets of items match each other
-            for (int n = 0; n < matrix.length - 1; n++) {
+            for (int n = 0; n < 9; n++) {
 
                 // Use dItem.valueOf on the entry values to ensure
                 // correct comparison

@@ -3067,19 +3067,39 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.item> returns the item that broke.
     //
+    // @Determine
+    // "CANCELLED" to prevent the item from breaking, restoring it with one usage left.
     // -->
     @EventHandler
     public void playerBreakItem(PlayerItemBreakEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = new dItem(event.getBrokenItem());
+        final ItemStack itemstack = event.getBrokenItem();
+        dItem item = new dItem(itemstack);
         context.put("item", item);
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("player breaks item",
                         "player breaks " + item.identify(),
-                        "player breaks " + event.getBrokenItem().getType().toString()),
-                null, event.getPlayer(), context);
+                        "player breaks " + item.identifyMaterial()),
+                null, event.getPlayer(), context).toUpperCase();
+
+        if (determination.startsWith("CANCELLED")) {
+            // The ItemStack isn't really gone yet, only set to stack size 0.
+            // So just add 1 more item to the stack.
+            itemstack.setAmount(itemstack.getAmount()+1);
+            // The event automatically resets durability to 0... instead,
+            // let's delay a tick and set it back to what it was before.
+            final short durability = itemstack.getDurability();
+            final Player player = event.getPlayer();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    itemstack.setDurability(itemstack.getType().getMaxDurability());
+                    player.updateInventory();
+                }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+        }
 
     }
 
