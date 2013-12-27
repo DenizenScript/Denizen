@@ -232,7 +232,8 @@ public class Duration implements dObject {
      * @return  the number of milliseconds.
      */
     public long getMillis() {
-        return (long) (seconds * 1000);
+        Double millis = seconds * 1000;
+        return millis.longValue();
     }
 
 
