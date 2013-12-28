@@ -8,6 +8,8 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -307,19 +309,7 @@ public class Duration implements dObject {
      */
     @Override
     public String identify() {
-        double seconds = getTicks() / 20;
-        double days = seconds / 86400;
-        double hours = seconds / 3600;
-        double minutes = seconds / 60;
-
-        if (days >= 1)
-            return days + "d";
-        if (hours >= 2)
-            return hours + "h";
-        if (minutes >= 2)
-            return minutes + "m";
-
-        else return seconds + "s";
+        return getTicks() + "t";
     }
 
     /**
@@ -380,14 +370,99 @@ public class Duration implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <d@duration.in_milliseconds>
+        // @returns Element(Decimal)
+        // @description
+        // returns the number of milliseconds in the Duration.
+        // -->
+        if (attribute.startsWith("in_milliseconds") || attribute.startsWith("milliseconds"))
+            return new Element(seconds * 1000)
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <d@duration.in_ticks>
         // @returns Element(Number)
         // @description
         // returns the number of ticks in the Duration. (20t/second)
         // -->
         if (attribute.startsWith("in_ticks") || attribute.startsWith("ticks"))
-            return new Element(getTicksAsInt())
+            return new Element(getTicks())
                     .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <d@duration.time>
+        // @returns Element(Number)
+        // @description
+        // returns the date-time specified by the duration object.
+        // -->
+        if (attribute.startsWith("time")) {
+
+            Date currentDate = new Date(getTicks() * 50);
+            SimpleDateFormat format = new SimpleDateFormat();
+
+            attribute = attribute.fulfill(1);
+
+            // <--[tag]
+            // @attribute <d@duration.time.year>
+            // @returns Element(Number)
+            // @description
+            // Returns the current year of the time specified by the duration object.
+            // -->
+            if (attribute.startsWith("year"))
+                return new Element(currentDate.getYear()).getAttribute(attribute.fulfill(1));
+
+                // <--[tag]
+                // @attribute <d@duration.time.month>
+                // @returns Element(Number)
+                // @description
+                // Returns the current month of the time specified by the duration object.
+                // -->
+            else if (attribute.startsWith("month"))
+                return new Element(currentDate.getMonth() + 1).getAttribute(attribute.fulfill(1));
+
+                // <--[tag]
+                // @attribute <d@duration.time.day>
+                // @returns Element(Number)
+                // @description
+                // Returns the current day of the time specified by the duration object.
+                // -->
+            else if (attribute.startsWith("day"))
+                return new Element(currentDate.getDate()).getAttribute(attribute.fulfill(1));
+
+                // <--[tag]
+                // @attribute <d@duration.time.hour>
+                // @returns Element(Number)
+                // @description
+                // Returns the current hour of the time specified by the duration object.
+                // -->
+            else if (attribute.startsWith("hour"))
+                return new Element(currentDate.getHours()).getAttribute(attribute.fulfill(1));
+
+                // <--[tag]
+                // @attribute <d@duration.time.minute>
+                // @returns Element(Number)
+                // @description
+                // Returns the current minute of the time specified by the duration object.
+                // -->
+            else if (attribute.startsWith("minute"))
+                return new Element(currentDate.getMinutes()).getAttribute(attribute.fulfill(1));
+
+                // <--[tag]
+                // @attribute <d@duration.time.second>
+                // @returns Element(Number)
+                // @description
+                // Returns the current second of the time specified by the duration object.
+                // -->
+            else if (attribute.startsWith("second"))
+                return new Element(currentDate.getSeconds()).getAttribute(attribute.fulfill(1));
+
+            else {
+                format.applyPattern("EEE, d MMM yyyy HH:mm:ss");
+                return new Element(format.format(currentDate))
+                        .getAttribute(attribute);
+            }
+        }
+
 
 
         /////////////////////
