@@ -351,16 +351,19 @@ public class Comparable {
                     // Use aH on primitives
 
                 else if (comparedto.equalsIgnoreCase("double")
-                        || comparedto.equalsIgnoreCase("number"))
+                        || comparedto.equalsIgnoreCase("decimal"))
                     outcome = aH.matchesDouble(comparable);
 
-                else if (comparedto.equalsIgnoreCase("integer"))
+                else if (comparedto.equalsIgnoreCase("integer")
+                        || comparedto.equalsIgnoreCase("number"))
                     outcome = aH.matchesInteger(comparable);
 
-                else if (comparedto.equalsIgnoreCase("even integer"))
+                else if (comparedto.equalsIgnoreCase("even integer")
+                        || comparedto.equalsIgnoreCase("event number"))
                     outcome = aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 0;
 
-                else if (comparedto.equalsIgnoreCase("odd integer"))
+                else if (comparedto.equalsIgnoreCase("odd integer")
+                        || comparedto.equalsIgnoreCase("odd number"))
                     outcome = aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 1;
 
                 else if (comparedto.equalsIgnoreCase("boolean"))
