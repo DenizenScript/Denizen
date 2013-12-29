@@ -600,13 +600,19 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.first_played>
-        // @returns Element(Number)
+        // @returns Duration
         // @description
         // returns the millisecond time of when the player first logged on to this server.
         // -->
-        if (attribute.startsWith("first_played"))
-            return new Element(getOfflinePlayer().getFirstPlayed())
+        if (attribute.startsWith("first_played")) {
+            attribute = attribute.fulfill(1);
+            if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds"))
+                return new Element(getOfflinePlayer().getFirstPlayed())
                     .getAttribute(attribute.fulfill(1));
+            else
+                return new Duration(getOfflinePlayer().getFirstPlayed() / 50)
+                    .getAttribute(attribute);
+        }
 
         // <--[tag]
         // @attribute <p@player.has_played_before>
@@ -679,14 +685,20 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.last_played>
-        // @returns Element(Number)
+        // @returns Duration
         // @description
         // returns the millisecond time of when the player
         // was last seen.
         // -->
-        if (attribute.startsWith("last_played"))
-            return new Element(getOfflinePlayer().getLastPlayed())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("last_played")) {
+            attribute = attribute.fulfill(1);
+            if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds"))
+                return new Element(getOfflinePlayer().getLastPlayed())
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new Duration(getOfflinePlayer().getLastPlayed() / 50)
+                    .getAttribute(attribute);
+        }
 
 
         /////////////////////
