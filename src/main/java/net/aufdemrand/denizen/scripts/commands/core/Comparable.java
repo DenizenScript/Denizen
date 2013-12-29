@@ -350,7 +350,8 @@ public class Comparable {
 
                     // Use aH on primitives
 
-                else if (comparedto.equalsIgnoreCase("double"))
+                else if (comparedto.equalsIgnoreCase("double")
+                        || comparedto.equalsIgnoreCase("number"))
                     outcome = aH.matchesDouble(comparable);
 
                 else if (comparedto.equalsIgnoreCase("integer"))
