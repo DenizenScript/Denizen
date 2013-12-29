@@ -6,7 +6,9 @@ import java.util.*;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -235,6 +237,30 @@ public class UtilTags implements Listener {
             }
 
             return;
+        }
+
+        // <--[tag]
+        // @attribute <server.get_npcs_assigned[<assignment_script>]>
+        // @returns dList(dNPC)
+        // @description
+        // Returns a list of all NPCs assigned to a specified script.
+        // -->
+        if (attribute.startsWith("get_npcs_assigned")
+                && attribute.hasContext(1)) {
+            dScript script = dScript.valueOf(attribute.getContext(1));
+            if (script == null || !(script.getContainer() instanceof AssignmentScriptContainer)) {
+                dB.echoError("Invalid script specified.");
+            }
+            else {
+                ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+                for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                    if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()
+                            && npc.getTrait(AssignmentTrait.class).getAssignment().getName().equalsIgnoreCase(script.getName()))
+                    npcs.add(dNPC.mirrorCitizensNPC(npc));
+                }
+                event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+                return;
+            }
         }
 
         // <--[tag]
