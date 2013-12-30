@@ -457,12 +457,12 @@ public class dItem implements dObject, Notable, Adjustable {
 
             // If saved item, return that
             if (isUnique()) {
-                return "i@" + NotableManager.getSavedId(this);
+                return "i@" + NotableManager.getSavedId(this) + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
             }
 
             // If not a saved item, but is a custom item, return the script id
             else if (isItemscript()) {
-                return "i@" + getLore(itemscriptIdentifier);
+                return "i@" + getLore(itemscriptIdentifier) + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
             }
         }
 
