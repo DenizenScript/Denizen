@@ -48,7 +48,7 @@ public class ItemDisplayname implements Property {
 
     @Override
     public String getPropertyString() {
-        return item.getItemStack().getItemMeta().getDisplayName();
+        return ItemBook.Escape(item.getItemStack().getItemMeta().getDisplayName());
     }
 
     @Override

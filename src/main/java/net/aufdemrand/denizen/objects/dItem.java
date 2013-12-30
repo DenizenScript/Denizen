@@ -692,12 +692,13 @@ public class dItem implements dObject, Notable, Adjustable {
         // @input Element
         // @description
         // Changes the items display name.
+        // See <@link language Property Escaping>
         // @tags
         // <i@item.display>
         // -->
         if (mechanism.matches("display_name")) {
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(value.asString());
+            meta.setDisplayName(ItemBook.unEscape(value.asString()));
             item.setItemMeta(meta);
         }
 
@@ -707,12 +708,17 @@ public class dItem implements dObject, Notable, Adjustable {
         // @input dList
         // @description
         // Sets the item's lore.
+        // See <@link language Property Escaping>
         // @tags
         // <i@item.lore>
         // -->
         if (mechanism.matches("lore")) {
             ItemMeta meta = item.getItemMeta();
-            meta.setLore(value.asType(dList.class));
+            dList lore = value.asType(dList.class);
+            for (int i = 0; i < lore.size(); i++) {
+                lore.set(i, ItemBook.unEscape(lore.get(i)));
+            }
+            meta.setLore(lore);
             item.setItemMeta(meta);
         }
 
@@ -832,8 +838,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // @input Element
         // @description
         // Changes the information on a book item.
-        // Accepts simple symbol escaping as follows:
-        // | = &pipe;   < = &lt;   > = &gt;   newline = &nl;   & = &amp;
+        // See <@link language Property Escaping>
         // @tags
         // <i@item.is_book>
         // <i@item.book.author>

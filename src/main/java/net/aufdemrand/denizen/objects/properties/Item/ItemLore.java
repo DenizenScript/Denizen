@@ -62,7 +62,7 @@ public class ItemLore implements Property {
         StringBuilder output = new StringBuilder();
         for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
             if (!itemLore.startsWith(dItem.itemscriptIdentifier)) {
-                output.append(itemLore).append("|");
+                output.append(ItemBook.Escape(itemLore)).append("|");
             }
         }
         return (output.length() == 0) ? "": output.substring(0, output.length() - 1);

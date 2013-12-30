@@ -108,6 +108,26 @@ public class ItemBook implements Property {
         return null;
     }
 
+    // <--[language]
+    // @name Property Escaping
+    // @group Useful Lists
+    // @description
+    // Some item properties (and corresponding mechanisms) need to escape their
+    // text output/input to prevent players using them to cheat the system
+    // (EG, if a player set the display name of an item to:
+    //      'name;enchantments=damage_all,3', he would get a free enchantment!)
+    // This are the escape codes used to prevent that:
+    //
+    // | = &pipe;
+    // < = &lt;
+    // > = &gt;
+    // newline = &nl;
+    // & = &amp;
+    // semicolons are just simplified to ‑ (a non-breaking hyphen)
+    // Semicolons can also be input as &sc;
+    // If you're directly typing this into a script, use <&sc> for semicolons
+    // (That means for all of escapes, EG: &pipe<&sc>)
+    // -->
     /**
      * A quick function to escape book Strings.
      * This is just to prevent tag reading errors.
@@ -131,7 +151,7 @@ public class ItemBook implements Property {
     public static String unEscape(String input) {
         return input.replace("&pipe;", "|").replace("&nl;", "\n")
                 .replace("&gt;", ">").replace("&lt;", "<")
-                .replace("&amp;", "&");
+                .replace("&amp;", "&").replace("&sc;", ";");
     }
 
     @Override
