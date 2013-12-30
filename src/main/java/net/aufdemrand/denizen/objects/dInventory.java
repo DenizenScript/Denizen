@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventory;
@@ -868,6 +869,35 @@ public class dInventory implements dObject, Notable {
         // -->
         if (attribute.startsWith("title")) {
             return inventory.getTitle();
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.list_contents.with_lore[<element>]>
+        // @returns dList(dItem)
+        // @description
+        // Returns a list of all items in the inventory with the specified
+        // lore. Color codes are ignored.
+        // -->
+        if (attribute.startsWith("list_contents.with_lore")) {
+
+            // Must specify lore to check
+            if (!attribute.hasContext(2)) return Element.NULL.getAttribute(attribute.fulfill(2));
+
+            ArrayList<dItem> items = new ArrayList<dItem>();
+            for (ItemStack item : getContents()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                        for (String lore : item.getItemMeta().getLore())
+                            // Add the item to the list if it contains the lore specified in
+                            // the context
+                            if (ChatColor.stripColor(lore).equalsIgnoreCase(attribute.getContext(2)))
+                                items.add(new dItem(item));
+
+                    }
+                }
+            }
+
+            return new dList(items).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
