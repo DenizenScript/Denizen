@@ -290,6 +290,7 @@ public class EventManager implements Listener {
         registerSmartEvent(new EntitySpawnSmartEvent());
         registerSmartEvent(new CuboidEnterExitSmartEvent());
         registerSmartEvent(new PlayerJumpSmartEvent());
+        registerSmartEvent(new PlayerEquipsArmorSmartEvent());
     }
 
 
