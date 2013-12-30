@@ -345,12 +345,6 @@ public class WorldScriptHelper implements Listener {
         context.put("location", location);
         context.put("item", item);
 
-        if (item.isArmor()) {
-            for (Player player : location.getWorld().getPlayers())
-                if (Utilities.checkLocation(player, location, 1.5))
-                    playerEquipsArmorEvent(player, event.getItem(), player.getInventory().firstEmpty());
-        }
-
         String determination = EventManager.doEvents(Arrays.asList
                 ("block dispenses item",
                         "block dispenses " + item.identify(),
@@ -1032,41 +1026,6 @@ public class WorldScriptHelper implements Listener {
         }
     }
 
-    public void playerEquipsArmorEvent(final Player player, final ItemStack item, final int replaceSlot) {
-
-        // Run this as a not-so-delayed Runnable...
-        // This is to force Bukkit to see any newly equipped armor
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                dItem armor = new dItem(item);
-                ItemStack[] armor_contents = player.getInventory().getArmorContents();
-
-                int type = 3-((item.getTypeId()-298)%4);
-                if (armor.comparesTo(armor_contents[type]) == -1) {
-                    for (ItemStack item : player.getInventory().getArmorContents()) {
-                    }
-                    return;
-                }
-
-                Map<String, dObject> context = new HashMap<String, dObject>();
-                context.put("armor", armor);
-
-                String determination = EventManager.doEvents(Arrays.asList
-                        ("player equips armor",
-                            "player equips " + armor.identify(),
-                            "player equips " + armor.identifyMaterial()),
-                        null, player, context).toUpperCase();
-
-                if (determination.startsWith("CANCELLED")) {
-                    armor_contents[type] = new ItemStack(Material.AIR);
-                    player.getInventory().setArmorContents(armor_contents);
-                    player.getInventory().setItem(replaceSlot, item);
-                }
-            }
-        }.runTaskLater(DenizenAPI.getCurrentInstance(), 0);
-
-    }
 
 
     /////////////////////
@@ -1623,24 +1582,27 @@ public class WorldScriptHelper implements Listener {
                         entity.identifyType() + " dies",
                         "entity death",
                         entity.identifyType() + " death"),
-                npc, player, context, true).toUpperCase();
+                npc, player, context, true);
 
         // Handle message
-        if (determination.startsWith("DROPS ")) {
+        if (determination.toUpperCase().startsWith("DROPS ")) {
             determination = determination.substring(6);
         }
 
-        if (determination.startsWith("NO_DROPS")) {
+        if (determination.toUpperCase().startsWith("NO_DROPS")) {
             event.getDrops().clear();
             if (determination.endsWith("_OR_XP")) {
                 event.setDroppedExp(0);
             }
         }
-        else if (determination.equals("NO_XP")) {
+
+        else if (determination.toUpperCase().equals("NO_XP")) {
             event.setDroppedExp(0);
         }
+
+        // Drops
         else if (Argument.valueOf(determination).matchesArgumentList(dItem.class)) {
-            dList drops = dList.valueOf(determination.substring(6));
+            dList drops = dList.valueOf(determination);
             drops.filter(dItem.class);
             event.getDrops().clear();
             for (String drop : drops) {
@@ -1650,6 +1612,8 @@ public class WorldScriptHelper implements Listener {
             }
 
         }
+
+        // XP
         else if (Argument.valueOf(determination)
                 .matchesPrimitive(aH.PrimitiveType.Integer)) {
             int xp = Integer.valueOf(determination.substring(3));
@@ -2739,16 +2703,6 @@ public class WorldScriptHelper implements Listener {
 
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
 
-        if (event.getInventory().getHolder() instanceof Player) {
-            // Don't use event.getInventory() or event.getPlayer().getInventory() here...
-            PlayerInventory inv = (PlayerInventory) event.getInventory().getHolder().getInventory();
-            ItemStack[] armor_contents = inv.getArmorContents();
-            for (int s = 0; s < 4; s++) {
-                if (armor_contents[0].getType() != Material.AIR)
-                    playerEquipsArmorEvent((Player) inv.getHolder(), armor_contents[s], inv.firstEmpty());
-            }
-        }
-
         EventManager.doEvents(Arrays.asList
                 ("player closes inventory",
                         "player closes " + type),
@@ -3647,10 +3601,6 @@ public class WorldScriptHelper implements Listener {
         if (event.hasItem()) {
             item = new dItem(event.getItem());
             context.put("item", item);
-
-            if (interaction.equals("player right clicks") && item.isArmor()) {
-                playerEquipsArmorEvent(player, event.getItem(), player.getInventory().getHeldItemSlot());
-            }
 
             events.add(interaction + " with item");
             events.add(interaction + " with " + item.identify());
