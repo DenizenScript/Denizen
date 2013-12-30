@@ -8,6 +8,7 @@ import java.util.Map;
 import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.objects.dPlayer;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -131,6 +132,7 @@ public class ScoreboardHelper {
      */
     public static void _saveScoreboards() {
 
+        try {
         // Clear scoreboards.yml
         DenizenAPI.getCurrentInstance().getScoreboards()
             .set("Scoreboards", null);
@@ -191,6 +193,10 @@ public class ScoreboardHelper {
                 }
             }
         }
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
     }
 
 
@@ -201,9 +207,9 @@ public class ScoreboardHelper {
     /**
      * Add a score to an Objective for an OfflinePlayer.
      *
-     * @param Scoreboard  the Objective to add the score to
-     * @param OfflinePlayer  the OfflinePlayer to set the score for
-     * @param int  the score
+     * @param o  the Objective to add the score to
+     * @param player  the OfflinePlayer to set the score for
+     * @param score  the score
      *
      */
     public static void addScore(Objective o, OfflinePlayer player, int score) {
@@ -220,8 +226,8 @@ public class ScoreboardHelper {
     /**
      * Remove a score from an Objective for an OfflinePlayer.
      *
-     * @param Scoreboard  the Objective to remove the score from
-     * @param String  the OfflinePlayer to remove the score for
+     * @param o  the Objective to remove the score from
+     * @param player  the OfflinePlayer to remove the score for
      *
      */
     public static void removeScore(Objective o, OfflinePlayer player) {
@@ -263,7 +269,7 @@ public class ScoreboardHelper {
      * Clears all the objectives from a Scoreboard, making
      * it empty.
      *
-     * @param Scoreboard  the Scoreboard to clear
+     * @param board  the Scoreboard to clear
      *
      */
     public static void clearScoreboard(Scoreboard board) {
@@ -288,7 +294,7 @@ public class ScoreboardHelper {
      * Creates a new Scoreboard with a certain id and
      * stories it in the scoreboards map.
      *
-     * @param String  the id of the new Scoreboard
+     * @param id  the id of the new Scoreboard
      * @return  the new Scoreboard
      *
      */
@@ -303,7 +309,7 @@ public class ScoreboardHelper {
      * the scoreboards map, unless it is the server's main
      * scoreboard, in which case it is just cleared.
      *
-     * @param String  the id of the Scoreboard
+     * @param id  the id of the Scoreboard
      *
      */
     public static void deleteScoreboard(String id) {
@@ -330,7 +336,7 @@ public class ScoreboardHelper {
     /**
      * Returns a Scoreboard from the scoreboards map.
      *
-     * @param String  the id of the Scoreboard
+     * @param id  the id of the Scoreboard
      * @return  the Scoreboard returned
      *
      */
@@ -342,7 +348,7 @@ public class ScoreboardHelper {
      * Returns true if the scoreboards map contains a certain
      * scoreboard id.
      *
-     * @param String  the id of the Scoreboard
+     * @param id  the id of the Scoreboard
      * @return  true or false
      *
      */
@@ -355,8 +361,8 @@ public class ScoreboardHelper {
      * Removes all the scores of an OfflinePlayer from a
      * Scoreboard.
      *
-     * @param String  the id of the Scoreboard
-     * @param OfflinePlayer  the OfflinePlayer
+     * @param id  the id of the Scoreboard
+     * @param player  the OfflinePlayer
      *
      */
     public static void removePlayer(String id, OfflinePlayer player) {

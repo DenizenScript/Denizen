@@ -887,12 +887,14 @@ public class dInventory implements dObject, Notable {
             for (ItemStack item : getContents()) {
                 if (item != null && item.getType() != Material.AIR) {
                     if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                        for (String lore : item.getItemMeta().getLore())
+                        for (String lore : item.getItemMeta().getLore()) {
                             // Add the item to the list if it contains the lore specified in
                             // the context
-                            if (ChatColor.stripColor(lore).equalsIgnoreCase(attribute.getContext(2)))
+                            if (ChatColor.stripColor(lore).equalsIgnoreCase(attribute.getContext(2))) {
                                 items.add(new dItem(item));
-
+                                break;
+                            }
+                        }
                     }
                 }
             }

@@ -32,7 +32,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on player (?:enters|exits) (notable cuboid|cu@\\w+)", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on player (?:enters|exits) (notable cuboid|(cu@)?\\w+)", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {
@@ -67,7 +67,6 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
 
     @Override
     public void _initialize() {
-        // Yipee! Register this class with Bukkit's EventListener
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
         dB.log("Loaded Cuboid Enter & Exit SmartEvent.");
@@ -76,7 +75,6 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
 
     @Override
     public void breakDown() {
-        // Deregister CreatureSpawnEvent's ties to this SmartEvent
         PlayerMoveEvent.getHandlerList().unregister(this);
     }
 
@@ -86,6 +84,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     //  MECHANICS
     ///////////
 
+    // TODO: Actually use these variables?
     private boolean broad_detection = false;
     private Map<String, List<dCuboid>> player_cuboids = new ConcurrentHashMap<String, List<dCuboid>>();
 
