@@ -1623,24 +1623,27 @@ public class WorldScriptHelper implements Listener {
                         entity.identifyType() + " dies",
                         "entity death",
                         entity.identifyType() + " death"),
-                npc, player, context, true).toUpperCase();
+                npc, player, context, true);
 
         // Handle message
-        if (determination.startsWith("DROPS ")) {
+        if (determination.toUpperCase().startsWith("DROPS ")) {
             determination = determination.substring(6);
         }
 
-        if (determination.startsWith("NO_DROPS")) {
+        if (determination.toUpperCase().startsWith("NO_DROPS")) {
             event.getDrops().clear();
             if (determination.endsWith("_OR_XP")) {
                 event.setDroppedExp(0);
             }
         }
-        else if (determination.equals("NO_XP")) {
+
+        else if (determination.toUpperCase().equals("NO_XP")) {
             event.setDroppedExp(0);
         }
+
+        // Drops
         else if (Argument.valueOf(determination).matchesArgumentList(dItem.class)) {
-            dList drops = dList.valueOf(determination.substring(6));
+            dList drops = dList.valueOf(determination);
             drops.filter(dItem.class);
             event.getDrops().clear();
             for (String drop : drops) {
@@ -1650,6 +1653,8 @@ public class WorldScriptHelper implements Listener {
             }
 
         }
+
+        // XP
         else if (Argument.valueOf(determination)
                 .matchesPrimitive(aH.PrimitiveType.Integer)) {
             int xp = Integer.valueOf(determination.substring(3));
