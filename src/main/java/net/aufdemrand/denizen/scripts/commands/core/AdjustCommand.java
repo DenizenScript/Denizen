@@ -14,31 +14,44 @@ public class AdjustCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-
             if (!scriptEntry.hasObject("object")) {
                 scriptEntry.addObject("object", arg.asElement());
+            }
 
-            } else if (!scriptEntry.hasObject("mechanism")) {
+            else if (!scriptEntry.hasObject("mechanism")) {
                 if (arg.hasPrefix()) {
                     scriptEntry.addObject("mechanism", new Element(arg.getPrefix().getValue()));
                     scriptEntry.addObject("mechanism_value", arg.asElement());
-                } else
+                }
+                else {
                     scriptEntry.addObject("mechanism", arg.asElement());
+                    scriptEntry.addObject("mechanism_value", new Element(""));
+                }
 
             }
 
+            else
+                arg.reportUnhandled();
         }
 
+        if (!scriptEntry.hasObject("object"))
+            throw new InvalidArgumentsException("You must specify an object!");
+
+        if (!scriptEntry.hasObject("mechanism"))
+            throw new InvalidArgumentsException("You must specify a mechanism!");
     }
 
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
+        Element mechanism = scriptEntry.getElement("mechanism");
+        Element value = scriptEntry.getElement("mechanism_value");
+
         dB.report(scriptEntry, getName(),
                 scriptEntry.getElement("object").debug()
-                    + scriptEntry.getElement("mechanism").debug()
-                    + scriptEntry.getElement("mechanism_value").debug());
+                    + mechanism.debug()
+                    + value.debug());
 
         String object = scriptEntry.getElement("object").asString();
 
@@ -61,8 +74,7 @@ public class AdjustCommand extends AbstractCommand {
             throw new CommandExecutionException('\'' + object + "' is not adjustable.");
 
         // Do the adjustment!
-        ((Adjustable) fetched).adjust(new Mechanism(scriptEntry.getElement("mechanism"),
-                scriptEntry.getElement("mechanism_value")));
+        ((Adjustable) fetched).adjust(new Mechanism(mechanism, value));
 
         // Add it to the entry for later access
         scriptEntry.addObject("result", fetched);

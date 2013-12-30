@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Achievement;
@@ -1430,6 +1431,24 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
             getPlayerEntity().setWalkSpeed(value.asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name show_boss_bar
+        // @input Element
+        // @description
+        // Shows the player a boss health bar with the specified text as a name.
+        // Use with no input value to remove the bar.
+        // @tags
+        // None
+        // -->
+        // TODO: Possibly rework into a full command?
+        if (mechanism.matches("show_boss_bar")) {
+            if (value.asString().length() > 0)
+                BossHealthBar.displayTextBar(value.asString(), getPlayerEntity());
+            else
+                BossHealthBar.removeTextBar(getPlayerEntity());
         }
 
         // Pass along to dEntity mechanism handler if not already handled.
