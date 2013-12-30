@@ -422,10 +422,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Chat
-        // @Syntax chat ["<text>"] (no_target/targets:<entity>|...)
+        // @Syntax chat ["<text>"] (no_target/targets:<entity>|...) (talkers:<npc>|...)
         // @Required 1
         // @Stable stable
-        // @Short Causes the NPC to send a chat message to nearby players.
+        // @Short Causes a NPC/NPCs to send a chat message to nearby players.
         // @Author aufdemrand
 
         // @Description
