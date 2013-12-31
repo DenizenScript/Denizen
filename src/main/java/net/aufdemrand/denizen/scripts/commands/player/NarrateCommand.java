@@ -23,9 +23,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class NarrateCommand extends AbstractCommand {
 
-    public static final    String  FORMAT_ARG = "format, f";
-    public static final    String  TARGET_ARG = "target, targets, t";
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -35,7 +32,8 @@ public class NarrateCommand extends AbstractCommand {
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            if (!scriptEntry.hasObject("format") && arg.matchesPrefix(FORMAT_ARG)) {
+            if (!scriptEntry.hasObject("format")
+                    && arg.matchesPrefix("format, f")) {
                 FormatScriptContainer format = null;
                 String formatStr = arg.getValue();
                 format = ScriptRegistry.getScriptContainerAs(formatStr, FormatScriptContainer.class);
@@ -44,15 +42,18 @@ public class NarrateCommand extends AbstractCommand {
             }
 
             // Add players to target list
-            else if ((arg.matchesPrefix("target") || arg.matchesPrefix(TARGET_ARG))) {
-                scriptEntry.addObject("targets", ((dList)arg.asType(dList.class)).filter(dPlayer.class));
+            else if (!scriptEntry.hasObject("targets")
+                    && arg.matchesPrefix("target, targets, t")) {
+                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
             }
 
             // Use raw_value as to not accidentally strip a value before any :'s.
-            else {
-                if (!scriptEntry.hasObject("text"))
+            else if (!scriptEntry.hasObject("text"))
                     scriptEntry.addObject("text", new Element(TagManager.CleanOutputFully(arg.raw_value)));
-            }
+
+            else
+                arg.reportUnhandled();
+
         }
 
         // If there are no targets, check if you can add this player
