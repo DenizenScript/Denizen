@@ -69,8 +69,12 @@ public class ChatCommand extends AbstractCommand {
                     scriptEntry.addObject("talkers", arg.asType(dList.class));
                 specified_talker = true;
 
-            } else
+            }
+            else if (!scriptEntry.hasObject("message"))
                 scriptEntry.addObject("message", new Element(arg.raw_value));
+
+            else
+                arg.reportUnhandled();
         }
 
         // Add default recipient as the attached Player if no recipients set otherwise
