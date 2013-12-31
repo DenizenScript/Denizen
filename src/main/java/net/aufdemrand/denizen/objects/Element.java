@@ -69,13 +69,7 @@ public class Element implements dObject {
         // Allow construction of elements with el@val[<value>]
         if (m.matches()) {
             String value = m.group(1);
-            Argument arg = Argument.valueOf(value);
-
-            if (arg.matchesPrimitive(aH.PrimitiveType.Integer))
-                return new Element(aH.getIntegerFrom(value));
-            else if (arg.matchesPrimitive(aH.PrimitiveType.Double))
-                return new Element(aH.getDoubleFrom(value));
-            else return new Element(value);
+            return new Element(value);
         }
 
         return new Element(string);
