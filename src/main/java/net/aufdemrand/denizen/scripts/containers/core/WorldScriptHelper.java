@@ -1620,7 +1620,7 @@ public class WorldScriptHelper implements Listener {
             event.setDroppedExp(xp);
         }
 
-        else if (!determination.equals("NONE")) {
+        else if (!determination.toUpperCase().equals("NONE")) {
             if (event instanceof PlayerDeathEvent) {
                 subEvent.setDeathMessage(determination);
             }
