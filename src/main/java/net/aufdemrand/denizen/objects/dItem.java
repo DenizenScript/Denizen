@@ -198,6 +198,8 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public static boolean matches(String arg) {
 
+        if (arg == null) return false;
+
         // All dObjects should 'match' if there is a proper
         // ObjectFetcher identifier
         if (arg.toLowerCase().startsWith("i@"))
