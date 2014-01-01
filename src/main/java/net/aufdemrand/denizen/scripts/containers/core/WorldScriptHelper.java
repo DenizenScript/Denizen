@@ -1793,6 +1793,8 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity that shot the bow.
     // <context.projectile> returns a dEntity of the projectile.
+    // <context.bow> returns the bow item used to shoot.
+    // <context.force> returns the force of the shot.
     //
     // @Determine
     // "CANCELLED" to stop the entity from shooting the bow.
@@ -1813,6 +1815,7 @@ public class WorldScriptHelper implements Listener {
         context.put("bow", bow);
         context.put("projectile", projectile);
         context.put("entity", entity.getDenizenObject());
+        context.put("force", new Element(event.getForce() * 3));
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
