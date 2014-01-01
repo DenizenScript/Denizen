@@ -156,8 +156,8 @@ public class dList extends ArrayList<String> implements dObject {
         return "List";
     }
 
-    public String[] toArray() {
 
+    public String[] toArray() {
         List<String> list = new ArrayList<String>();
 
         for (String string : this) {
@@ -167,10 +167,10 @@ public class dList extends ArrayList<String> implements dObject {
         return list.toArray(new String[list.size()]);
     }
 
+
     // Returns if the list contains objects from the specified dClass
     // by using the matches() method.
     public boolean containsObjectsFrom(Class<? extends dObject> dClass) {
-
         List<dObject> results = new ArrayList<dObject>();
 
         // Iterate through elements until one matches() the dClass
@@ -180,6 +180,7 @@ public class dList extends ArrayList<String> implements dObject {
 
         return false;
     }
+
 
     // Return a list that includes only strings that match the values
     // of an Enum array
@@ -197,13 +198,14 @@ public class dList extends ArrayList<String> implements dObject {
         else return null;
     }
 
+
     // Return a list that includes only elements belonging to a certain class
     public List<dObject> filter(Class<? extends  dObject> dClass) {
         return filter(dClass, null);
     }
 
-    public List<dObject> filter(Class<? extends dObject> dClass, ScriptEntry entry) {
 
+    public List<dObject> filter(Class<? extends dObject> dClass, ScriptEntry entry) {
         List<dObject> results = new ArrayList<dObject>();
 
         for (String element : this) {
@@ -231,10 +233,12 @@ public class dList extends ArrayList<String> implements dObject {
         else return null;
     }
 
+
     @Override
     public String toString() {
         return identify();
     }
+
 
     @Override
     public String identify() {

@@ -72,6 +72,7 @@ public class ContextTags implements Listener {
             Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
             event.setReplaced(event.getScriptEntry().getResidingQueue()
                     .getContext(object).getAttribute(attribute.fulfill(2)));
+            return;
         }
 
         // Next, try to replace with task-script-defined context

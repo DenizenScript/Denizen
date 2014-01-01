@@ -98,7 +98,9 @@ public class EventManager implements Listener {
 
     }
 
+
     private Plugin plugin = DenizenAPI.getCurrentInstance();
+
 
     public void registerCommand(String... aliases) {
         PluginCommand command = getCommand(aliases[0], plugin);
@@ -106,6 +108,7 @@ public class EventManager implements Listener {
         command.setAliases(Arrays.asList(aliases));
         getCommandMap().register(plugin.getDescription().getName(), command);
     }
+
 
     private static PluginCommand getCommand(String name, Plugin plugin) {
         PluginCommand command = null;
@@ -121,6 +124,7 @@ public class EventManager implements Listener {
 
         return command;
     }
+
 
     private static CommandMap getCommandMap() {
         CommandMap commandMap = null;
