@@ -53,33 +53,41 @@ public class AdjustCommand extends AbstractCommand {
                     + mechanism.debug()
                     + value.debug());
 
-        String object = scriptEntry.getElement("object").asString();
+        dList objects = dList.valueOf(scriptEntry.getElement("object").asString());
 
-        Class object_class = ObjectFetcher.getObjectClass(object.split("@")[0]);
+        dList result = new dList();
 
-        if (object_class == null)
-            throw new CommandExecutionException("Unfetchable object found '" + object + '\'');
+        for (String object: objects) {
+            Class object_class = ObjectFetcher.getObjectClass(object.split("@")[0]);
 
-        dObject fetched;
+            if (object_class == null)
+                throw new CommandExecutionException("Unfetchable object found '" + object + '\'');
+
+            dObject fetched;
 
         // Check to make sure this is a valid constructor by checking the 'matches' static method
-        if (!ObjectFetcher.checkMatch(object_class, object))
-            throw new CommandExecutionException('\'' + object + "' is returning null.");
+            if (!ObjectFetcher.checkMatch(object_class, object))
+                throw new CommandExecutionException('\'' + object + "' is returning null.");
 
-        // Get the object with the 'valueOf' static method
-        fetched = ObjectFetcher.getObjectFrom(object_class, object);
+            // Get the object with the 'valueOf' static method
+            fetched = ObjectFetcher.getObjectFrom(object_class, object);
 
-        // Make sure this object is Adjustable
-        if (!(fetched instanceof Adjustable))
-            throw new CommandExecutionException('\'' + object + "' is not adjustable.");
+            // Make sure this object is Adjustable
+            if (!(fetched instanceof Adjustable))
+                throw new CommandExecutionException('\'' + object + "' is not adjustable.");
 
-        // Do the adjustment!
-        ((Adjustable) fetched).adjust(new Mechanism(mechanism, value));
+            // Do the adjustment!
+            ((Adjustable) fetched).adjust(new Mechanism(mechanism, value));
 
-        // Add it to the entry for later access
-        scriptEntry.addObject("result", fetched);
+            // Add it to the entry for later access
+            if (objects.size() == 1)
+                scriptEntry.addObject("result", fetched);
+            result.add(fetched.identify());
 
-        // :)
+            // :)
+        }
+
+        scriptEntry.addObject("result_list", result);
 
     }
 
