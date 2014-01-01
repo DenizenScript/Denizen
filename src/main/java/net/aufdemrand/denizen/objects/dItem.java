@@ -43,6 +43,9 @@ public class dItem implements dObject, Notable, Adjustable {
             Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
                     Pattern.CASE_INSENSITIVE);
 
+    final static Pattern DESCRIBED_PATTERN =
+            Pattern.compile(".+\\[.+=.+\\]");
+
     final public static String itemscriptIdentifier = "§0id:";
 
 
@@ -72,6 +75,13 @@ public class dItem implements dObject, Notable, Adjustable {
 
         Matcher m;
         dItem stack = null;
+
+        ///////
+        // Handle objects with properties through the object fetecher
+        m = DESCRIBED_PATTERN.matcher(string);
+        if (m.matches()) {
+            return ObjectFetcher.getObjectFrom(dItem.class, string, player, npc);
+        }
 
         ///////
         // Match @object format for spawned Item entities

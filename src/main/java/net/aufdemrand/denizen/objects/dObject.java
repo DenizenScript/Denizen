@@ -224,7 +224,7 @@ public interface dObject {
      * won't include the exactness that identify() uses.
      *
      * <code>
-     * Example: i@gold_sword     vs.    i@gold_sword[display=Shiny Sword]
+     * Example: i@gold_sword     vs.    i@gold_sword[display_name=Shiny Sword]
      *          ^                       ^
      *          +--- identifySimple()   +--- identify()
      * </code>

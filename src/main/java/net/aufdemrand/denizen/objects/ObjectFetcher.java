@@ -105,10 +105,10 @@ public class ObjectFetcher {
     public static <T extends dObject> T getObjectFrom(Class<T> dClass, String value, dPlayer player, dNPC npc) {
         try {
             Matcher m = PROPERTIES_PATTERN.matcher(value);
-            boolean matched = m.matches();
+            boolean matched = m.matches() && Adjustable.class.isAssignableFrom(dClass);
             T gotten = (T) ((dClass.equals(dItem.class)) ? dItem.valueOf(matched ? m.group(1): value, player, npc):
                     valueof.get(dClass).invoke(null, matched ? m.group(1): value));
-            if (gotten != null && gotten instanceof Adjustable && matched) {
+            if (gotten != null && matched) {
                 String[] properties = m.group(2).split(";");
                 for (String property: properties) {
                     String[] data = property.split("=", 2);
