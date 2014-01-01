@@ -935,6 +935,7 @@ public class dEntity implements dObject, Adjustable {
         if (entity != null) {
             if (isNPC())
                 return "n@" + getNPC().getId();
+
             else if (isPlayer())
                 return "p@" + getPlayer().getName();
 
@@ -952,6 +953,14 @@ public class dEntity implements dObject, Adjustable {
 
         return "null";
     }
+
+
+    @Override
+    public String identifySimple() {
+        // TODO: Change up when entities identify with properties
+        return identify();
+    }
+
 
     public String identifyType() {
         if (isNPC()) return "npc";

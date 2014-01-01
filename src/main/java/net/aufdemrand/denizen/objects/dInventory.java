@@ -598,29 +598,40 @@ public class dInventory implements dObject, Notable {
         if (inventory != null) inventory.clear();
     }
 
+
+
     ////////////////////////
     //  dObject Methods
     /////////////////////
 
     private String prefix = getObjectType();
 
+    @Override
     public String getObjectType() {
         return "Inventory";
     }
 
+
+    @Override
     public String getPrefix() {
         return prefix;
     }
 
+
+    @Override
     public dInventory setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
 
+
+    @Override
     public String debug() {
         return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
     }
 
+
+    @Override
     public String identify() {
         if (isUnique())
             return "in@" + NotableManager.getSavedId(this);
@@ -628,10 +639,24 @@ public class dInventory implements dObject, Notable {
                 ? idHolder : (idType + '[' + idHolder + ']'));
     }
 
+
+    @Override
+    public String identifySimple() {
+        return identify();
+    }
+
+
     @Override
     public String toString() {
         return identify();
     }
+
+
+
+    ////////////////////////
+    //  Attributes
+    /////////////////////
+
 
     public String getAttribute(Attribute attribute) {
 

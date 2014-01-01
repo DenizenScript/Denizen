@@ -219,6 +219,25 @@ public interface dObject {
 
 
     /**
+     * Gets an overall string representation of this dObject.
+     * This should give the basic jist of the object being identified, but
+     * won't include the exactness that identify() uses.
+     *
+     * <code>
+     * Example: i@gold_sword     vs.    i@gold_sword[display=Shiny Sword]
+     *          ^                       ^
+     *          +--- identifySimple()   +--- identify()
+     * </code>
+     *
+     * This may produce the same results as identify(), depending on the complexity
+     * of the object being identified.
+     *
+     * @return  a single-line, 'simple' string representation of this argument
+     */
+    public String identifySimple();
+
+
+    /**
      * Sets the prefix for this argument, otherwise uses the default.
      *
      * @return  the dObject
