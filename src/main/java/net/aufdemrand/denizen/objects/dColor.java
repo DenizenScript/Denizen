@@ -164,6 +164,11 @@ public class dColor implements dObject {
     }
 
     @Override
+    public String identifySimple() {
+        return identify();
+    }
+
+    @Override
     public String toString() {
         return identify();
     }

@@ -173,6 +173,7 @@ public class InjectCommand extends AbstractCommand {
             for (ScriptEntry entry : entries)
                     entry.setInstant(true);
 
+        // For determine
         ScriptBuilder.addObjectToEntries(entries, "ReqId", scriptEntry.getObject("ReqId"));
 
         // Inject the entries into the current scriptqueue

@@ -215,6 +215,11 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     @Override
+    public String identifySimple() {
+        return identify();
+    }
+
+    @Override
     public String toString() {
         return identify();
     }

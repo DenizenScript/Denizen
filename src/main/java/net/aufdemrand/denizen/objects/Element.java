@@ -224,6 +224,11 @@ public class Element implements dObject {
     }
 
     @Override
+    public String identifySimple() {
+        return identify();
+    }
+
+    @Override
     public String toString() {
         return identify();
     }
@@ -879,6 +884,7 @@ public class Element implements dObject {
             dB.echoDebug(attribute.getScriptEntry(), "Unfilled attributes '" + attribute.attributes.toString() +
                     "' for tag <" + attribute.getOrigin() + ">!");
             return "null";
+
         } else {
             dB.echoDebug(attribute.getScriptEntry(), "Filled tag <" + attribute.getOrigin() + "> with '" +
                     element + "'.");

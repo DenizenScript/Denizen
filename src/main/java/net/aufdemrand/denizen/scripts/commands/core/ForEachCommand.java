@@ -49,20 +49,27 @@ public class ForEachCommand extends BracedCommand {
 
         // Get objects
         dList list = (dList) scriptEntry.getObject("list");
-        ArrayList<ScriptEntry> bracedCommands = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("FOREACH");
+        ArrayList<ScriptEntry> bracedCommands =
+                ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces"))
+                        .get("FOREACH");
+
         if (bracedCommands == null || bracedCommands.isEmpty()) {
             dB.echoError("Empty braces!");
             return;
         }
 
-
         // Report to dB
         dB.report(scriptEntry, getName(), list.debug());
 
+        // Get new queue id (from UUID)
         String queueId = UUID.randomUUID().toString();
+
+        // Start iteration
         for (String value : list) {
+            // Check if Queue was cleared (end the foreach if so!)
             if (scriptEntry.getResidingQueue().getWasCleared())
                 return;
+            // Build cloned script entries for this iteration
             ArrayList<ScriptEntry> newEntries = new ArrayList<ScriptEntry>();
             for (ScriptEntry entry : bracedCommands) {
                 try {
@@ -73,16 +80,18 @@ public class ForEachCommand extends BracedCommand {
                     dB.echoError(e);
                 }
             }
-
+            // Build new queue, get contexts from existing queue
             ScriptQueue queue = new InstantQueue(queueId);
             for (Map.Entry<String, dObject> entry : scriptEntry.getResidingQueue().getAllContext().entrySet())
                 queue.addContext(entry.getKey(), entry.getValue());
-
+            // Add definitions to the new queue
             queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
             scriptEntry.getResidingQueue().addDefinition("value", value);
             queue.addDefinition("value", value);
             queue.getAllDefinitions().putAll(scriptEntry.getResidingQueue().getAllDefinitions());
+            // Add entries
             queue.addEntries(newEntries);
+            // Start the queue
             queue.start();
         }
 

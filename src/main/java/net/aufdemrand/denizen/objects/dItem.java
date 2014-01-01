@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 public class dItem implements dObject, Notable, Adjustable {
 
+    // TODO: Check out this pattern, is this going to/does it conflict with our new properties system?
     // An item pattern with the following groups:
     //
     // 1) An optional item: prefix.
@@ -38,7 +39,6 @@ public class dItem implements dObject, Notable, Adjustable {
     //    of the item
     // 4) Digits between [] brackets that specify the
     //    quantity of the item
-
     final static Pattern ITEM_PATTERN =
             Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
                     Pattern.CASE_INSENSITIVE);
@@ -47,6 +47,7 @@ public class dItem implements dObject, Notable, Adjustable {
             Pattern.compile(".+\\[.+=.+\\]");
 
     final public static String itemscriptIdentifier = "§0id:";
+
 
 
     //////////////////
@@ -193,9 +194,18 @@ public class dItem implements dObject, Notable, Adjustable {
         return null;
     }
 
+    // :( boolean for technicality, can be fixed
+    // by making matches() method better.
     public static boolean nope = false;
 
+
     public static boolean matches(String arg) {
+
+        // All dObjects should 'match' if there is a proper
+        // ObjectFetcher identifier
+        if (arg.toLowerCase().startsWith("i@"))
+            return true;
+
         // TODO: Make this better. Probably creating some unnecessary
         // objects by doing this :(
         nope = true;
@@ -206,6 +216,7 @@ public class dItem implements dObject, Notable, Adjustable {
         nope = false;
         return false;
     }
+
 
 
     ///////////////
@@ -239,6 +250,7 @@ public class dItem implements dObject, Notable, Adjustable {
     public dItem(Item item) {
         this.item = item.getItemStack();
     }
+
 
 
     /////////////////////
@@ -480,19 +492,46 @@ public class dItem implements dObject, Notable, Adjustable {
         return "i@" + identifyMaterial().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
 
+
+    @Override
+    public String identifySimple() {
+        if (item == null) return "null";
+
+        if (item.getTypeId() != 0) {
+
+            // If saved item, return that
+            if (isUnique()) {
+                return "i@" + NotableManager.getSavedId(this);
+            }
+
+            // If not a saved item, but is a custom item, return the script id
+            else if (isItemscript()) {
+                return "i@" + getLore(itemscriptIdentifier);
+            }
+        }
+
+        // Else, return the material name
+        return "i@" + identifyMaterial().replace("m@", "");
+    }
+
+
+    // Special-case that essentially fetches the material of the items and uses its 'identify()' method
     public String identifyMaterial() {
         return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identify();
     }
+
 
     @Override
     public String toString() {
         return identify();
     }
 
+
     @Override
     public boolean isUnique() {
         return NotableManager.isSaved(this);
     }
+
 
     @Override
     public Object getSaveObject() {
@@ -505,15 +544,22 @@ public class dItem implements dObject, Notable, Adjustable {
         return sb.toString();
     }
 
+
     @Override
     public void makeUnique(String id) {
         NotableManager.saveAs(this, id);
     }
 
+
     @Override
     public void forget() {
         NotableManager.remove(this);
     }
+
+
+    /////////////////
+    // ATTRIBUTES
+    /////////
 
 
     @Override

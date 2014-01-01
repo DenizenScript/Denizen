@@ -123,10 +123,10 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
         if (cuboids.size() > 0) {
             dList cuboid_context = new dList();
             for (dCuboid cuboid : cuboids) {
-                events.add("entity spawns in " + cuboid.identify());
-                events.add("entity spawns in " + cuboid.identify() + " because " + reason);
-                events.add(entity.identifyType() + " spawns in " + cuboid.identify());
-                events.add(entity.identifyType() + " spawns in " + cuboid.identify() + " because " + reason);
+                events.add("entity spawns in " + cuboid.identifySimple());
+                events.add("entity spawns in " + cuboid.identifySimple() + " because " + reason);
+                events.add(entity.identifyType() + " spawns in " + cuboid.identifySimple());
+                events.add(entity.identifyType() + " spawns in " + cuboid.identifySimple() + " because " + reason);
             }
             // Add in cuboids context, if inside a cuboid
             context.put("cuboids", cuboid_context);

@@ -69,7 +69,7 @@ public class dMaterial implements dObject {
         JUNGLE_WOOD_SLAB_UP, ACACIA_WOOD_SLAB_UP, DARKOAK_WOOD_SLAB_UP, STONE_DOUBLESLAB, SANDSTONE_DOUBLESLAB,
         WOODEN_DOUBLESLAB, COBBLESTONE_DOUBLESLAB, BRICKS_DOUBLESLAB, STONEBRICKS_DOUBLESLAB, NETHERBRICK_DOUBLESLAB,
         QUARTZ_DOUBLESLAB, OAK_WOOD_DOUBLESLAB, SPRUCE_WOOD_DOUBLESLAB, BIRCH_WOOD_DOUBLESLAB, JUNGLE_WOOD_DOUBLESLAB,
-        ACACIA_WOOD_DOUBLESLAB, DARKOAK_WOOD_DOUBLESLAB }
+        ACACIA_WOOD_DOUBLESLAB, DARKOAK_WOOD_DOUBLESLAB, SKELETON_EGG }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
@@ -340,6 +340,7 @@ public class dMaterial implements dObject {
     public final static dMaterial JUNGLE_WOOD_DOUBLESLAB = new dMaterial(Material.WOOD_DOUBLE_STEP, 3).forceIdentifyAs("JUNGLE_WOOD_DOUBLESLAB");
     public final static dMaterial ACACIA_WOOD_DOUBLESLAB = new dMaterial(Material.WOOD_DOUBLE_STEP, 4).forceIdentifyAs("ACACIA_WOOD_DOUBLESLAB");
     public final static dMaterial DARKOAK_WOOD_DOUBLESLAB = new dMaterial(Material.WOOD_DOUBLE_STEP, 5).forceIdentifyAs("DARKOAK_WOOD_DOUBLESLAB");
+
     // Skull Items
     public final static dMaterial SKELETON_SKULL = new dMaterial(Material.SKULL_ITEM, 0).forceIdentifyAs("SKELETON_SKULL");
     public final static dMaterial WITHERSKELETON_SKULL = new dMaterial(Material.SKULL_ITEM, 1).forceIdentifyAs("WITHERSKELETON_SKULL");
@@ -347,10 +348,13 @@ public class dMaterial implements dObject {
     public final static dMaterial HUMAN_SKULL = new dMaterial(Material.SKULL_ITEM, 3).forceIdentifyAs("HUMAN_SKULL");
     public final static dMaterial CREEPER_SKULL = new dMaterial(Material.SKULL_ITEM, 4).forceIdentifyAs("CREEPER_SKULL");
 
+    // Monster Eggs
+    // TODO: I will add rest of eggs (I needed this one quick for a project)
+    public final static dMaterial SKELETON_EGG = new dMaterial(Material.MONSTER_EGG, 51).forceIdentifyAs("SKELETON_EGG");
+
     // One-Offs (Don't have their own group)
     public final static dMaterial CHARCOAL = new dMaterial(Material.COAL, 1).forceIdentifyAs("CHARCOAL");
     public final static dMaterial RED_SAND = new dMaterial(Material.SAND, 1).forceIdentifyAs("RED_SAND");
-    // Note: Yes, Podzol is dirt:2. No, dirt:1 isn't anything.
     public final static dMaterial PODZOL = new dMaterial(Material.DIRT, 2).forceIdentifyAs("PODZOL");
     public final static dMaterial MOSSY_COBBLE_WALL = new dMaterial(Material.COBBLE_WALL, 1).forceIdentifyAs("MOSSY_COBBLE_WALL");
 
@@ -660,6 +664,11 @@ public class dMaterial implements dObject {
     public String identify() {
         if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase();
         return "m@" + material.name().toLowerCase();
+    }
+
+    @Override
+    public String identifySimple() {
+        return identify();
     }
 
     @Override

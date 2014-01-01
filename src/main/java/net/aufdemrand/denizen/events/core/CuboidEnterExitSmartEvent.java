@@ -126,11 +126,11 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
 
         if (!exits.isEmpty())
             for (dCuboid cuboid : exits)
-                events.add("player exits " + cuboid.identify());
+                events.add("player exits " + cuboid.identifySimple());
 
         if (!enters.isEmpty())
             for (dCuboid cuboid : enters)
-                events.add("player enters " + cuboid.identify());
+                events.add("player enters " + cuboid.identifySimple());
 
         String determination = EventManager.doEvents(events,
                 null, event.getPlayer(), context, true);

@@ -192,6 +192,11 @@ public class dScript implements dObject {
     }
 
     @Override
+    public String identifySimple() {
+        return identify();
+    }
+
+    @Override
     public String toString() {
         return identify();
     }
@@ -216,6 +221,8 @@ public class dScript implements dObject {
     public boolean isUnique() {
         return true;
     }
+
+
 
     @Override
     public String getAttribute(Attribute attribute) {
