@@ -323,6 +323,12 @@ public class dLocation extends org.bukkit.Location implements dObject {
         else return identifyRaw();
     }
 
+    @Override
+    public String identifySimple() {
+        return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
+                + "," + getWorld().getName();
+    }
+
     public String identifyRaw() {
         if (getYaw() != 0.0 && getPitch() != 0.0)
             return "l@" + getX() + "," + getY()

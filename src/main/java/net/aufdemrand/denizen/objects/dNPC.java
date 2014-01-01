@@ -301,6 +301,11 @@ public class dNPC implements dObject, Adjustable {
     }
 
     @Override
+    public String identifySimple() {
+        return identify();
+    }
+
+    @Override
     public dNPC setPrefix(String prefix) {
         return this;
     }

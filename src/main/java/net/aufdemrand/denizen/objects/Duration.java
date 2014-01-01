@@ -312,6 +312,11 @@ public class Duration implements dObject {
         return getTicks() + "t";
     }
 
+    @Override
+    public String identifySimple() {
+        return identify();
+    }
+
     /**
      * Acts just like identify().
      *

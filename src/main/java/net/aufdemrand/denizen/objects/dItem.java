@@ -547,7 +547,9 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
 
-
+    /////////////////
+    // ATTRIBUTES
+    /////////
 
 
     @Override

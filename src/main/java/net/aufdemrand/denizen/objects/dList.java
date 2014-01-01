@@ -254,6 +254,13 @@ public class dList extends ArrayList<String> implements dObject {
         return dScriptArg.toString().substring(0, dScriptArg.length() - 1);
     }
 
+
+    @Override
+    public String identifySimple() {
+        return identify();
+    }
+
+
     @Override
     public String getAttribute(Attribute attribute) {
 
