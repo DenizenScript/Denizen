@@ -138,7 +138,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
 
                 String determination = EventManager.doEvents(Arrays.asList
                         ("player equips armor",
-                                "player equips " + armor.identify(),
+                                "player equips " + armor.identifySimple(),
                                 "player equips " + armor.identifyMaterial()),
                         null, player, context).toUpperCase();
 
