@@ -1841,7 +1841,8 @@ public class WorldScriptHelper implements Listener {
 
             // Go through all the entities, spawning/teleporting them
             for (dEntity newProjectile : newProjectiles) {
-                newProjectile.spawnAt(projectile.getLocation());
+                newProjectile.spawnAt(entity.getEyeLocation()
+                        .add(entity.getEyeLocation().getDirection()));
 
                 // Set the entity as the shooter of the projectile,
                 // where applicable
@@ -1860,7 +1861,9 @@ public class WorldScriptHelper implements Listener {
 
             // Give it the same velocity as the arrow that would
             // have been shot by the bow
-            lastProjectile.setVelocity(projectile.getVelocity());
+            // Note: No, I can't explain why this has to be multiplied by three, it just does.
+            lastProjectile.setVelocity(event.getEntity().getLocation()
+                    .getDirection().multiply(event.getForce() * 3));
         }
     }
 
