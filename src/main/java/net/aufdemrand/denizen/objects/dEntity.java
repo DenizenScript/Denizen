@@ -74,6 +74,16 @@ public class dEntity implements dObject, Adjustable {
     public static dEntity valueOf(String string) {
         if (string == null) return null;
 
+        Matcher m;
+
+        ///////
+        // Handle objects with properties through the object fetcher
+        m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
+        if (m.matches()) {
+            return ObjectFetcher.getObjectFrom(dEntity.class, string);
+        }
+
+
         // Choose a random entity type if "RANDOM" is used
         if (string.equalsIgnoreCase("RANDOM")) {
 
@@ -96,7 +106,6 @@ public class dEntity implements dObject, Adjustable {
 
         // Make sure string matches what this interpreter can accept.
 
-        Matcher m;
         m = entity_by_id.matcher(string);
 
         if (m.matches()) {
@@ -761,6 +770,11 @@ public class dEntity implements dObject, Adjustable {
             }
 
             else dB.echoError("Cannot spawn a null dEntity!");
+
+            for (Mechanism mechanism: mechanisms) {
+                adjust(mechanism);
+            }
+            mechanisms.clear();
         }
     }
 
@@ -1774,9 +1788,15 @@ public class dEntity implements dObject, Adjustable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+    private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
 
     @Override
     public void adjust(Mechanism mechanism) {
+
+        if (isGeneric()) {
+            mechanisms.add(mechanism);
+            return;
+        }
 
         Element value = mechanism.getValue();
 
