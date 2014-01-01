@@ -808,7 +808,7 @@ public class dNPC implements dObject, Adjustable {
         // <n@npc.name>
         // -->
         if (mechanism.matches("set_name")) {
-            getCitizen().setName(value.asString());
+            getCitizen().setName(value.asString().length() > 16 ? value.asString().substring(0, 16): value.asString());
         }
 
         // <--[mechanism]

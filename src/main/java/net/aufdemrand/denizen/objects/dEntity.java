@@ -1925,6 +1925,19 @@ public class dEntity implements dObject, Adjustable {
             ((Tameable)getLivingEntity()).setTamed(value.asBoolean());
         }
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name velocity
+        // @input dLocation
+        // @description
+        // Sets the entity's movement velocity.
+        // @tags
+        // <e@entity.velocity>
+        // -->
+        if (mechanism.matches("velocity") && mechanism.requireObject(dLocation.class)) {
+            entity.setVelocity(value.asType(dLocation.class).toVector());
+        }
+
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
 

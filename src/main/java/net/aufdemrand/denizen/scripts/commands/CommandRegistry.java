@@ -88,7 +88,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Adjust
-        // @Syntax adjust [<dObject>] [<mechanism>](:<value>)
+        // @Syntax adjust [<dObject>|...] [<mechanism>](:<value>)
         // @Required 2
         // @Stable stable
         // @Short Adjusts a dObjects mechanism.
@@ -101,6 +101,7 @@ public class CommandRegistry implements dRegistry {
 
         // @Tags
         // <entry[saveName].result> returns the adjusted object.
+        // <entry[saveName].result_list> returns a dList of adjusted objects.
 
         // @Usage
         // Use to set a custom display name on an entity.
@@ -108,7 +109,7 @@ public class CommandRegistry implements dRegistry {
 
         // -->
         registerCoreMember(AdjustCommand.class,
-                "ADJUST", "adjust [<dObject>] [<mechanism>](:<value>)", 2);
+                "ADJUST", "adjust [<dObject>|...] [<mechanism>](:<value>)", 2);
 
         // <--[command]
         // @Name Age

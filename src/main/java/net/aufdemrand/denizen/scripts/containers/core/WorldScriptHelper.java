@@ -1793,6 +1793,8 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity that shot the bow.
     // <context.projectile> returns a dEntity of the projectile.
+    // <context.bow> returns the bow item used to shoot.
+    // <context.force> returns the force of the shot.
     //
     // @Determine
     // "CANCELLED" to stop the entity from shooting the bow.
@@ -1813,6 +1815,7 @@ public class WorldScriptHelper implements Listener {
         context.put("bow", bow);
         context.put("projectile", projectile);
         context.put("entity", entity.getDenizenObject());
+        context.put("force", new Element(event.getForce() * 3));
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
@@ -1841,7 +1844,8 @@ public class WorldScriptHelper implements Listener {
 
             // Go through all the entities, spawning/teleporting them
             for (dEntity newProjectile : newProjectiles) {
-                newProjectile.spawnAt(projectile.getLocation());
+                newProjectile.spawnAt(entity.getEyeLocation()
+                        .add(entity.getEyeLocation().getDirection()));
 
                 // Set the entity as the shooter of the projectile,
                 // where applicable
@@ -1860,7 +1864,9 @@ public class WorldScriptHelper implements Listener {
 
             // Give it the same velocity as the arrow that would
             // have been shot by the bow
-            lastProjectile.setVelocity(projectile.getVelocity());
+            // Note: No, I can't explain why this has to be multiplied by three, it just does.
+            lastProjectile.setVelocity(event.getEntity().getLocation()
+                    .getDirection().multiply(event.getForce() * 3));
         }
     }
 

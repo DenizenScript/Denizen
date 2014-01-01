@@ -212,7 +212,8 @@ public class ShootCommand extends AbstractCommand {
             lastEntity.setVelocity(v3);
         }
         else {
-            lastEntity.setVelocity(originLocation.getDirection().multiply(speed.asDouble()));
+            lastEntity.setVelocity(destination.subtract(originLocation).toVector()
+                    .normalize().multiply(speed.asDouble()));
         }
 
         // A task used to trigger a script if the entity is no longer

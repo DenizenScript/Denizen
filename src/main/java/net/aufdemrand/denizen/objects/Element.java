@@ -715,30 +715,30 @@ public class Element implements dObject {
             return new Element(element.trim()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <el@element.upper>
+        // @attribute <el@element.to_uppercase>
         // @returns Element
         // @description
         // Returns the value of an element in all uppercase letters.
         // -->
-        if (attribute.startsWith("upper"))
+        if (attribute.startsWith("to_uppercase") || attribute.startsWith("upper"))
             return new Element(element.toUpperCase()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <el@element.lower>
+        // @attribute <el@element.to_lowercase>
         // @returns Element
         // @description
         // Returns the value of an element in all lowercase letters.
         // -->
-        if (attribute.startsWith("lower"))
+        if (attribute.startsWith("to_lowercase") || attribute.startsWith("lower"))
             return new Element(element.toLowerCase()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <el@element.totitlecase>
+        // @attribute <el@element.to_titlecase>
         // @returns Element
         // @description
         // Returns The Value Of An Element In Title Case.
         // -->
-        if (attribute.startsWith("totitlecase")) {
+        if (attribute.startsWith("to_titlecase") || attribute.startsWith("totitlecase")) {
             if (element.length() == 0) {
                 return new Element("").getAttribute(attribute.fulfill(1));
             }
