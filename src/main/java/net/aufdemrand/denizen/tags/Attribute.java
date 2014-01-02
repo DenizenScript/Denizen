@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.tags;
 
 
+import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class Attribute {
 
     String raw_tag;
     String origin;
+    public static Pattern attributer = ReplaceableTagEvent.componentRegex;
 
     public ScriptEntry getScriptEntry() {
         return scriptEntry;
@@ -44,7 +46,6 @@ public class Attribute {
             return;
         }
 
-        Pattern attributer = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?(\\d+[^\\.]*\\.?)*");
         List<String> matches = new ArrayList<String>();
         Matcher matcher = attributer.matcher(attributes);
 
