@@ -2186,7 +2186,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ShowFake
-        // @Syntax showfake [<material>] [<location>|...] (d:<duration>{10s})
+        // @Syntax showfake [<material>] [<location>|...] (to:<player>|...) (d:<duration>{10s})
         // @Required 2
         // @Stable stable
         // @Short Makes the player see a block change that didn't actually happen.

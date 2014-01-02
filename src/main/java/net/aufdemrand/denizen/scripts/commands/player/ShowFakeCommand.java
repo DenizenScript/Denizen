@@ -19,11 +19,20 @@ public class ShowFakeCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         dList locations = new dList();
+        dList entities = new dList();
+        boolean added_entities = false;
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesArgumentType(dList.class)) {
+
+            if (arg.matchesPrefix("to, e, entities")) {
+                for (String entity : dList.valueOf(arg.getValue()))
+                    if (dPlayer.matches(entity)) entities.add(entity);
+                added_entities = true;
+            }
+
+            else if (arg.matchesArgumentType(dList.class)) {
                 for (String item : dList.valueOf(arg.getValue()))
                     if (dLocation.matches(item)) locations.add(item);
             }
@@ -42,12 +51,19 @@ public class ShowFakeCommand extends AbstractCommand {
                 arg.reportUnhandled();
         }
 
+        if (entities.isEmpty())
+            entities.add(scriptEntry.getPlayer().identify());
+
         if (locations.isEmpty())
             throw new InvalidArgumentsException("Must specify at least one valid location!");
 
-        if (scriptEntry.getPlayer() == null || !scriptEntry.getPlayer().isOnline())
+        if (!added_entities && (scriptEntry.getPlayer() == null || !scriptEntry.getPlayer().isOnline()))
             throw new InvalidArgumentsException("Must have a valid, online player attached!");
 
+        if (entities.isEmpty() && added_entities)
+            throw new InvalidArgumentsException("Must specify valid targets!");
+
+        scriptEntry.addObject("entities", entities);
         scriptEntry.addObject("locations", locations);
     }
 
@@ -59,12 +75,19 @@ public class ShowFakeCommand extends AbstractCommand {
                 (Duration) scriptEntry.getObject("duration");
         dMaterial material = (dMaterial) scriptEntry.getObject("material");
         dList list = (dList) scriptEntry.getObject("locations");
+        dList players = (dList) scriptEntry.getObject("entities");
 
         dB.report(scriptEntry, getName(), material.debug()
                 + list.debug() + scriptEntry.getPlayer().debug() + duration.debug());
 
-        for (dObject obj : list.filter(dLocation.class)) {
-            new FakeBlock(scriptEntry.getPlayer(), (dLocation) obj, material, duration);
+        for (dObject plr : players.filter(dPlayer.class)) {
+
+            if (plr == null || !((dPlayer) plr).isOnline()) continue;
+
+            for (dObject obj : list.filter(dLocation.class)) {
+                new FakeBlock((dPlayer) plr, (dLocation) obj, material, duration);
+            }
+
         }
     }
 
