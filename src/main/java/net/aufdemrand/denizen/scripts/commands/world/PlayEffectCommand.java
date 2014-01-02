@@ -48,7 +48,8 @@ public class PlayEffectCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("effect") &&
-                    !scriptEntry.hasObject("particleeffect")) {
+                    !scriptEntry.hasObject("particleeffect") &&
+                    !scriptEntry.hasObject("iconcrack")) {
 
                 if (arg.matchesEnum(ParticleEffect.values())) {
                     scriptEntry.addObject("particleeffect",
@@ -62,6 +63,12 @@ public class PlayEffectCommand extends AbstractCommand {
                         effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
                     }
                     scriptEntry.addObject("particleeffect", effect);
+                }
+                else if (arg.startsWith("iconcrack_")) {
+                    // Allow iconcrack_[id] for item break effects (ex: iconcrack_1)
+                    Element typeId = new Element(arg.getValue().substring(10));
+                    if (typeId.isInt())
+                        scriptEntry.addObject("iconcrack", typeId);
                 }
                 else if (arg.matchesEnum(Effect.values())) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
@@ -112,7 +119,8 @@ public class PlayEffectCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
 
         if (!scriptEntry.hasObject("effect") &&
-                !scriptEntry.hasObject("particleeffect"))
+                !scriptEntry.hasObject("particleeffect") &&
+                !scriptEntry.hasObject("iconcrack"))
             throw new InvalidArgumentsException("Missing effect argument!");
 
         if (!scriptEntry.hasObject("location"))
@@ -126,10 +134,11 @@ public class PlayEffectCommand extends AbstractCommand {
         dLocation location = (dLocation) scriptEntry.getObject("location");
         Effect effect = (Effect) scriptEntry.getObject("effect");
         ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("particleeffect");
-        Element visibility = (Element) scriptEntry.getObject("visibility");
-        Element data = (Element) scriptEntry.getObject("data");
-        Element qty = (Element) scriptEntry.getObject("qty");
-        Element offset = (Element) scriptEntry.getObject("offset");
+        int iconcrack = scriptEntry.getElement("iconcrack").asInt();
+        double visibility = scriptEntry.getElement("visibility").asDouble();
+        float data = scriptEntry.getElement("data").asFloat();
+        int qty = scriptEntry.getElement("qty").asInt();
+        float offset = scriptEntry.getElement("offset").asFloat();
 
         // Slightly increase the location's Y so effects don't seem
         // to come out of the ground
@@ -137,7 +146,8 @@ public class PlayEffectCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
-                aH.debugObj("special effect", particleEffect.name())) +
+                particleEffect != null ? aH.debugObj("special effect", particleEffect.name()) :
+                aH.debugObj("iconcrack", iconcrack)) +
                 aH.debugObj("location", location.toString()) +
                 aH.debugObj("radius", visibility) +
                 aH.debugObj("data", data) +
@@ -147,14 +157,17 @@ public class PlayEffectCommand extends AbstractCommand {
         // Play the Bukkit effect the number of times specified
         if (effect != null) {
 
-            for (int n = 0; n < qty.asInt(); n++) {
-                location.getWorld().playEffect(location, effect, data.asInt(), visibility.asInt());
+            for (int n = 0; n < qty; n++) {
+                location.getWorld().playEffect(location, effect, (int)data, (int)visibility);
             }
         }
         // Play a ParticleEffect
+        else if (particleEffect != null) {
+            particleEffect.display(location, visibility, offset, offset, offset, data, qty);
+        }
+        // Play a iconcrack (item break) effect
         else {
-            particleEffect.display(location, visibility.asDouble(),
-                            offset.asFloat(), offset.asFloat(), offset.asFloat(), data.asFloat(), qty.asInt());
+            ParticleEffect.displayIconCrack(location, visibility, iconcrack, offset, offset, offset, data, qty);
         }
     }
 }
