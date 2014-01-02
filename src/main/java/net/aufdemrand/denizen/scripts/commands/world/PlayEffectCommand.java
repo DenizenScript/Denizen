@@ -75,11 +75,11 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
             }
 
-            else if (!scriptEntry.hasObject("visibility")
+            else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("visibility, v, radius, r")) {
 
-                scriptEntry.addObject("visibility", arg.asElement());
+                scriptEntry.addObject("radius", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("data")
@@ -112,7 +112,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
         scriptEntry.defaultObject("data", new Element(0));
-        scriptEntry.defaultObject("visibility", new Element(15));
+        scriptEntry.defaultObject("radius", new Element(15));
         scriptEntry.defaultObject("qty", new Element(1));
         scriptEntry.defaultObject("offset", new Element(0.5));
 
@@ -134,11 +134,11 @@ public class PlayEffectCommand extends AbstractCommand {
         dLocation location = (dLocation) scriptEntry.getObject("location");
         Effect effect = (Effect) scriptEntry.getObject("effect");
         ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("particleeffect");
-        int iconcrack = scriptEntry.getElement("iconcrack").asInt();
-        double visibility = scriptEntry.getElement("visibility").asDouble();
-        float data = scriptEntry.getElement("data").asFloat();
-        int qty = scriptEntry.getElement("qty").asInt();
-        float offset = scriptEntry.getElement("offset").asFloat();
+        Element iconcrack = scriptEntry.getElement("iconcrack");
+        Element radius = scriptEntry.getElement("radius");
+        Element data = scriptEntry.getElement("data");
+        Element qty = scriptEntry.getElement("qty");
+        Element offset = scriptEntry.getElement("offset");
 
         // Slightly increase the location's Y so effects don't seem
         // to come out of the ground
@@ -147,27 +147,30 @@ public class PlayEffectCommand extends AbstractCommand {
         // Report to dB
         dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
                 particleEffect != null ? aH.debugObj("special effect", particleEffect.name()) :
-                aH.debugObj("iconcrack", iconcrack)) +
-                aH.debugObj("location", location.toString()) +
-                aH.debugObj("radius", visibility) +
-                aH.debugObj("data", data) +
-                aH.debugObj("qty", qty) +
-                (effect != null ? "" : aH.debugObj("offset", offset)));
+                iconcrack.debug()) +
+                location.debug() +
+                radius.debug() +
+                data.debug() +
+                qty.debug() +
+                (effect != null ? "" : offset.debug()));
 
         // Play the Bukkit effect the number of times specified
         if (effect != null) {
 
-            for (int n = 0; n < qty; n++) {
-                location.getWorld().playEffect(location, effect, (int)data, (int)visibility);
+            for (int n = 0; n < qty.asInt(); n++) {
+                location.getWorld().playEffect(location, effect, data.asInt(), radius.asInt());
             }
         }
         // Play a ParticleEffect
         else if (particleEffect != null) {
-            particleEffect.display(location, visibility, offset, offset, offset, data, qty);
+            float os = offset.asFloat();
+            particleEffect.display(location, radius.asDouble(), os, os, os, data.asFloat(), qty.asInt());
         }
         // Play a iconcrack (item break) effect
         else {
-            ParticleEffect.displayIconCrack(location, visibility, iconcrack, offset, offset, offset, data, qty);
+            float os = offset.asFloat();
+            ParticleEffect.displayIconCrack(location, radius.asDouble(), iconcrack.asInt(),
+                    os, os, os, data.asFloat(), qty.asInt());
         }
     }
 }
