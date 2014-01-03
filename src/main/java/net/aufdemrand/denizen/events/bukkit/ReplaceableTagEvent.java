@@ -70,7 +70,7 @@ public class ReplaceableTagEvent extends Event {
     private static Pattern alternativeRegex = Pattern.compile("\\|\\|(.*)");
 
     // Bracket pattern that matches brackets
-    private static Pattern bracketRegex = Pattern.compile("\\[.*?\\]");
+    private static Pattern bracketRegex = Pattern.compile("\\[[^\\]\\[]*?\\](?=\\.?$)");
 
     // Value pattern that matches everything after the last : found
     // that isn't followed by ] without being followed by [ first,
@@ -79,7 +79,7 @@ public class ReplaceableTagEvent extends Event {
 
     // Component pattern that matches groups of characters that are not
     // [] or . and that optionally contain [] and a . at the end
-    private static Pattern componentRegex = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?(\\d+[^\\.]*\\.?)*");
+    public static Pattern componentRegex = Pattern.compile("[^\\.]+(\\.)?(\\d+[^\\.]*\\.?)*");
 
     public String raw_tag;
 
