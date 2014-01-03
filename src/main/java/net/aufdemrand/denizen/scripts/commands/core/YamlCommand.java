@@ -56,7 +56,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             }
 
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matchesPrefix("SAVE, SAVEFILE, FILESAVE")) {
+                    arg.matchesPrefix("SAVEFILE, FILESAVE")) {
                 scriptEntry.addObject("action", new Element("SAVE"));
                 scriptEntry.addObject("filename", arg.asElement());
             }
@@ -96,6 +96,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
         if (!scriptEntry.hasObject("key") &&
                 scriptEntry.getElement("action").asString().equalsIgnoreCase("write"))
             throw new InvalidArgumentsException("Must specify a key!");
+
+        scriptEntry.defaultObject("value", new Element(""));
     }
 
 
