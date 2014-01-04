@@ -941,7 +941,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.has_failed[<script>]>
         // @returns dLocation
         // @description
-        // returns the if the Player has finished the specified script.
+        // returns the if the Player has failed the specified script.
         // -->
         if (attribute.startsWith("has_failed")) {
             dScript script = dScript.valueOf(attribute.getContext(1));
