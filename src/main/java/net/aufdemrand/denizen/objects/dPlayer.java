@@ -8,6 +8,8 @@ import java.util.Map;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -920,6 +922,35 @@ public class dPlayer implements dObject, Adjustable {
             return new Element(Depends.permissions.playerInGroup(getPlayerEntity(), group))
                     .getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <p@player.has_finished[<script>]>
+        // @returns dLocation
+        // @description
+        // returns the if the Player has finished the specified script.
+        // -->
+        if (attribute.startsWith("has_finished")) {
+            dScript script = dScript.valueOf(attribute.getContext(1));
+            if (script == null) return Element.FALSE.getAttribute(attribute.fulfill(1));
+
+            return new Element(FinishCommand.getScriptCompletes(getName(), script.getName()) > 0)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.has_failed[<script>]>
+        // @returns dLocation
+        // @description
+        // returns the if the Player has finished the specified script.
+        // -->
+        if (attribute.startsWith("has_failed")) {
+            dScript script = dScript.valueOf(attribute.getContext(1));
+            if (script == null) return Element.FALSE.getAttribute(attribute.fulfill(1));
+
+            return new Element(FailCommand.getScriptFails(getName(), script.getName()) > 0)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
 
 
         /////////////////////
