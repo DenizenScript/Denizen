@@ -325,7 +325,9 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
     @Override
     public String identifySimple() {
-        return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
+        if (isSaved(this))
+            return getSaved(this);
+        else return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
                 + "," + getWorld().getName();
     }
 
@@ -585,16 +587,17 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns the yaw as 'North', 'South', 'East', or 'West'.
         // -->
         if (attribute.startsWith("yaw.simple")) {
-            if (getYaw() < 45)
+            float yaw = Rotation.normalizeYaw(getYaw());
+            if (yaw < 45)
                 return new Element("South")
                     .getAttribute(attribute.fulfill(2));
-            else if (getYaw() < 135)
+            else if (yaw < 135)
                 return new Element("West")
                         .getAttribute(attribute.fulfill(2));
-            else if (getYaw() < 225)
+            else if (yaw < 225)
                 return new Element("North")
                         .getAttribute(attribute.fulfill(2));
-            else if (getYaw() < 315)
+            else if (yaw < 315)
                 return new Element("East")
                         .getAttribute(attribute.fulfill(2));
             else
