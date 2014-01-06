@@ -25,7 +25,6 @@ public class ShowFakeCommand extends AbstractCommand {
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-
             if (arg.matchesPrefix("to, e, entities")) {
                 for (String entity : dList.valueOf(arg.getValue()))
                     if (dPlayer.matches(entity)) entities.add(entity);
@@ -49,9 +48,10 @@ public class ShowFakeCommand extends AbstractCommand {
 
             else
                 arg.reportUnhandled();
+
         }
 
-        if (entities.isEmpty())
+        if (entities.isEmpty() && scriptEntry.hasPlayer())
             entities.add(scriptEntry.getPlayer().identify());
 
         if (locations.isEmpty())
