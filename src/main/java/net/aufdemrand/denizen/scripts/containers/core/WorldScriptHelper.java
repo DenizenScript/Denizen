@@ -4183,6 +4183,9 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void serverCommand(ServerCommandEvent event) {
 
+        if (event.getCommand().trim().length() == 0)
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         String message = event.getCommand().replace('<', (char)0x01)

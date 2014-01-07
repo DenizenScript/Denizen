@@ -1641,21 +1641,29 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
-        // @Name Pause
-        // @Syntax pause [waypoints/navigation]
+        // @Name Pause, Resume
+        // @Syntax pause [waypoints/activity] (<duration>)
         // @Required 1
         // @Stable unstable
-        // @Short Pauses an NPC's navigation.
-        // @Author Todo
+        // @Short Pauses/resumes an NPC's waypoint navigation or goal activity temporarily or permanently.
+        // @Author aufdemrand
         // @Description
         // Todo
         // @Tags
         // <n@npc.navigator>
         // @Usage
-        // Todo
+        // Use to pause an NPC's waypoint navigation permanently.
+        // @Usage
+        // - pause waypoints
+        // Use to pause an NPC's goal activity temporarily.
+        // - pause activity 1m
+        // @Usage
+        // Use to pause an NPC's waypoint navigation and then resume it.
+        // - pause navigation
+        // - resume navigation
         // -->
         registerCoreMember(PauseCommand.class,
-                "PAUSE", "pause [waypoints/navigation]", 1);
+                "PAUSE, RESUME", "pause [waypoints/activity] (<duration>)", 1);
 
 
         // <--[command]
