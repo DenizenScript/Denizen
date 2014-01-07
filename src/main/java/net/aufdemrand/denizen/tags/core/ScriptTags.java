@@ -36,7 +36,7 @@ public class ScriptTags implements Listener {
         else if (event.getScriptEntry().getScript() != null)
             script = event.getScriptEntry().getScript();
         else if (event.getScriptEntry().hasObject("script"))
-            script = (dScript) event.getScriptEntry().getObject("location");
+            script = (dScript) event.getScriptEntry().getObject("script");
 
         // Build and fill attributes
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());

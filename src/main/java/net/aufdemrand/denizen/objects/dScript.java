@@ -300,7 +300,7 @@ public class dScript implements dObject {
         }
 
         // <--[tag]
-        // @attribute <s@script.cons[constant_name]>
+        // @attribute <s@script.constant[<constant_name>]>
         // @returns Element or dList
         // @description
         // Returns the value of the constant as either an Element or dList.
