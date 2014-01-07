@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.List;
 
-import net.aufdemrand.denizen.objects.properties.Entity.EntityAge;
+import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;

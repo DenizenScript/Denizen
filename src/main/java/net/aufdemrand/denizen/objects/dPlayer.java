@@ -444,6 +444,7 @@ public class dPlayer implements dObject, Adjustable {
             // Returns the entity that the player is looking at within the specified range limit,
             // or null if the player is not looking at an entity.
             // Optionally, specify a list of entities, entity types, or 'npc' to only count those targets.
+            // -->
             if (attribute.getAttribute(2).startsWith("within") &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {

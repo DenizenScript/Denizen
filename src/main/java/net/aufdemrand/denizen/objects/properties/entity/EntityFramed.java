@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.objects.properties.Entity;
+package net.aufdemrand.denizen.objects.properties.entity;
 
 
 import net.aufdemrand.denizen.objects.Element;

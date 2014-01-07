@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.objects.properties.Item;
+package net.aufdemrand.denizen.objects.properties.item;
 
 
 import net.aufdemrand.denizen.objects.Element;
@@ -7,20 +7,20 @@ import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 
-public class ItemDurability implements Property {
+public class ItemQuantity implements Property {
 
     public static boolean describes(dObject item) {
-        return item instanceof dItem
-                && ((dItem) item).isRepairable();
+        // all items can have a quantity
+        return item instanceof dItem;
     }
 
-    public static ItemDurability getFrom(dObject _item) {
+    public static ItemQuantity getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemDurability((dItem)_item);
+        else return new ItemQuantity((dItem)_item);
     }
 
 
-    private ItemDurability(dItem _item) {
+    private ItemQuantity(dItem _item) {
         item = _item;
     }
 
@@ -32,23 +32,23 @@ public class ItemDurability implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <i@item.durability>
+        // @attribute <i@item.qty>
         // @returns Element(Number)
         // @description
-        // Returns the current durability (number of uses) on the item.
+        // Returns the number of items in the dItem's itemstack.
         // -->
-        if (attribute.startsWith("durability"))
-            return new Element(item.getItemStack().getDurability())
+        if (attribute.startsWith("qty"))
+            return new Element(item.getItemStack().getAmount())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <i@item.max_durability>
+        // @attribute <i@item.max_stack>
         // @returns Element(Number)
         // @description
-        // Returns the maximum durability (number of uses) of this item.
+        // Returns the max number of this item possible in a single stack of this type.
         // -->
-        if (attribute.startsWith("max_durability"))
-            return new Element(item.getMaterial().getMaterial().getMaxDurability())
+        if (attribute.startsWith("max_stack"))
+            return new Element(item.getItemStack().getMaxStackSize())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
@@ -57,14 +57,14 @@ public class ItemDurability implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().getDurability() != 0)
-            return String.valueOf(item.getItemStack().getDurability());
+        if (item.getItemStack().getAmount() > 1)
+            return String.valueOf(item.getItemStack().getAmount());
         else
             return null;
     }
 
     @Override
     public String getPropertyId() {
-        return "durability";
+        return "quantity";
     }
 }
