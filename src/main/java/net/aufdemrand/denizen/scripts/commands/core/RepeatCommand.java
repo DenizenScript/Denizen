@@ -1,5 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -10,11 +15,6 @@ import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class RepeatCommand extends BracedCommand {
 
@@ -46,11 +46,12 @@ public class RepeatCommand extends BracedCommand {
 
         // Get objects
         Element qty = scriptEntry.getElement("qty");
-        ArrayList<ScriptEntry> bracedCommands = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("REPEAT");
-        if (bracedCommands == null || bracedCommands.isEmpty()) {
+        ArrayList<ScriptEntry> bracedCommandsList = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("REPEAT");
+        if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
             dB.echoError("Empty braces!");
             return;
         }
+        ScriptEntry[] bracedCommands = bracedCommandsList.toArray(new ScriptEntry[bracedCommandsList.size()]);
 
         // Report to dB
         dB.report(scriptEntry, getName(), qty.debug());

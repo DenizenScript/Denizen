@@ -3,8 +3,8 @@ package net.aufdemrand.denizen.objects.properties;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.properties.Entity.*;
-import net.aufdemrand.denizen.objects.properties.Item.*;
+import net.aufdemrand.denizen.objects.properties.entity.*;
+import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.lang.reflect.InvocationTargetException;
