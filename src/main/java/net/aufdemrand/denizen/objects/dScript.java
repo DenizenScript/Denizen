@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -298,6 +299,28 @@ public class dScript implements dObject {
 
         }
 
+        // <--[tag]
+        // @attribute <s@script.cons[constant_name]>
+        // @returns Element or dList
+        // @description
+        // Returns the value of the constant as either an Element or dList.
+        // -->
+        if (attribute.startsWith("cons")) {
+            if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
+
+            Object obj = getContainer().getConfigurationSection("").get(attribute.getContext(1).toUpperCase());
+            if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+
+            if (obj instanceof List) {
+                dList list = new dList("");
+                for (Object each : (List<Object>) obj)
+                    list.add(each.toString());
+                return list.getAttribute(attribute.fulfill(1));
+
+            }
+            else return new Element(obj.toString())
+                    .getAttribute(attribute.fulfill(1));
+        }
 
 
         /////////////////
