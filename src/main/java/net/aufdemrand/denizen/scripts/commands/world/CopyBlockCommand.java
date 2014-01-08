@@ -2,16 +2,22 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.InventoryHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copies a block to another location, keeping all special
@@ -25,70 +31,91 @@ public class CopyBlockCommand extends AbstractCommand{
     @Override
     public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
 
-        dLocation copy_location = null;
-        dLocation destination = null;
         boolean remove_original = false;
 
-        for (String arg : scriptEntry.getArguments()) {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (aH.matchesLocation(arg))
-                copy_location = aH.getLocationFrom(arg);
+            // CopyBlock can move a single 'location' ...
+            if (arg.matchesArgumentType(dLocation.class)
+                    && !scriptEntry.hasObject("location")
+                    && !arg.matchesPrefix("t, to"))
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-            else if (aH.matchesValueArg("to", arg, ArgumentType.Location))
-                destination = aH.getLocationFrom(arg);
+                // ... or and entire cuboid ...
+            else if (arg.matchesArgumentType(dCuboid.class)
+                    && !scriptEntry.hasObject("cuboid"))
+                scriptEntry.addObject("cuboid", arg.asType(dCuboid.class));
 
-            else if (aH.matchesArg("and_remove", arg))
-                remove_original = true;
+                // ... to a location.
+            else if (arg.matchesArgumentType(dLocation.class)
+                    && arg.matchesPrefix("t, to"))
+                scriptEntry.addObject("destination", arg.asType(dLocation.class));
 
-            else
-                dB.echoError("Unknown argument '" + arg + "'");
+            else if (arg.matches("and_remove"))
+                scriptEntry.addObject("remove", Element.TRUE);
+
+            else arg.reportUnhandled();
         }
 
-        if (copy_location == null || destination == null)
-            throw  new InvalidArgumentsException("Missing location argument!");
+        // Check required arguments
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cuboid"))
+            throw new InvalidArgumentsException("Must specify a source loaction or cuboid.");
 
-        scriptEntry.addObject("copy_location", copy_location)
-                .addObject("destination", destination)
-                .addObject("remove_original", remove_original);
+        if (!scriptEntry.hasObject("destination"))
+            throw new InvalidArgumentsException("Must specify a destination location.");
+
+        // Set defaults
+        scriptEntry.defaultObject("remove", Element.FALSE);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dLocation copy_location = (dLocation) scriptEntry.getObject("copy_location");
+        dLocation copy_location = (dLocation) scriptEntry.getObject("location");
         dLocation destination = (dLocation) scriptEntry.getObject("destination");
-        Boolean remove_original = (Boolean) scriptEntry.getObject("remove_original");
+        dCuboid copy_cuboid = (dCuboid) scriptEntry.getObject("cuboid");
+        Element remove_original = (Element) scriptEntry.getObject("remove");
 
-        Block source = copy_location.getBlock();
-        BlockState sourceState = source.getState();
-        Block update = destination.getBlock();
 
-        update.setTypeIdAndData(source.getTypeId(), source.getData(), false);
+        List<Location> locations = new ArrayList<Location>();
 
-        BlockState updateState = update.getState();
+        if (copy_location != null) locations.add(copy_location);
+        else if (copy_cuboid != null) locations.addAll(copy_cuboid.getBlockLocations());
 
-        // Note: only a BlockState, not a Block, is actually an instance
-        // of InventoryHolder
-        if (sourceState instanceof InventoryHolder) {
 
-            ((InventoryHolder) updateState).getInventory()
-                    .setContents(((InventoryHolder) sourceState).getInventory().getContents());
-        }
-        else if (sourceState instanceof Sign) {
+        for (Location loc : locations) {
 
-            int n = 0;
+            Block source = copy_location.getBlock();
+            BlockState sourceState = source.getState();
+            Block update = destination.getBlock();
 
-            for (String line : ((Sign) sourceState).getLines()) {
+            update.setTypeIdAndData(source.getTypeId(), source.getData(), false);
 
-                ((Sign) updateState).setLine(n, line);
-                n++;
+            BlockState updateState = update.getState();
+
+            // Note: only a BlockState, not a Block, is actually an instance
+            // of InventoryHolder
+            if (sourceState instanceof InventoryHolder) {
+
+                ((InventoryHolder) updateState).getInventory()
+                        .setContents(((InventoryHolder) sourceState).getInventory().getContents());
+            }
+            else if (sourceState instanceof Sign) {
+
+                int n = 0;
+
+                for (String line : ((Sign) sourceState).getLines()) {
+
+                    ((Sign) updateState).setLine(n, line);
+                    n++;
+                }
+
+                updateState.update();
             }
 
-            updateState.update();
+
+            // TODO: Account for Noteblock, Skull, Jukebox
+
         }
-
-
-        // TODO: Account for Noteblock, Skull, Jukebox
-
     }
 }

@@ -25,39 +25,41 @@ public class ContextTags implements Listener {
     public void scriptTags(ReplaceableTagEvent event) {
         if (!event.matches("script, s") || event.getScriptEntry() == null) return;
 
-        // Get script
-        ScriptContainer script = event.getScriptEntry().getScript().getContainer();
-        // Get type/subtype/specifier
-        String type = event.getType();
+        // TODO: Reimpelment
 
-        String sub_type = "";
-        if (event.hasSubType()) sub_type = event.getSubType();
-        String specifier = "";
-        if (event.hasSpecifier()) specifier = event.getSpecifier();
-
-        // User is attempting to specify a different scriptcontainer
-        if (event.hasTypeContext())
-            script = ScriptRegistry.getScriptContainer(event.getTypeContext());
-
-        // Requirements
-        if (type.equalsIgnoreCase("REQUIREMENTS")) {
-            if (sub_type.equalsIgnoreCase("CHECK"))
-                event.setReplaced(String.valueOf(event.getScriptEntry().getScript().getContainer()
-                        .checkBaseRequirements(event.getPlayer(), event.getNPC())));
-        }
-
-        else if (type.equalsIgnoreCase("TYPE")) {
-            event.setReplaced(script.getContainerType());
-        }
-
-        else if (type.equalsIgnoreCase("SPEED")) {
-            if (script.contains("SPEED"))
-                event.setReplaced(script.getString("SPEED"));
-        }
-
-        else if (type.equalsIgnoreCase("NAME")) {
-            event.setReplaced(script.getName());
-        }
+//        // Get script
+//        ScriptContainer script = event.getScriptEntry().getScript().getContainer();
+//        // Get type/subtype/specifier
+//        String type = event.getType();
+//
+//        String sub_type = "";
+//        if (event.hasSubType()) sub_type = event.getSubType();
+//        String specifier = "";
+//        if (event.hasSpecifier()) specifier = event.getSpecifier();
+//
+//        // User is attempting to specify a different scriptcontainer
+//        if (event.hasTypeContext())
+//            script = ScriptRegistry.getScriptContainer(event.getTypeContext());
+//
+//        // Requirements
+//        if (type.equalsIgnoreCase("REQUIREMENTS")) {
+//            if (sub_type.equalsIgnoreCase("CHECK"))
+//                event.setReplaced(String.valueOf(event.getScriptEntry().getScript().getContainer()
+//                        .checkBaseRequirements(event.getPlayer(), event.getNPC())));
+//        }
+//
+//        else if (type.equalsIgnoreCase("TYPE")) {
+//            event.setReplaced(script.getContainerType());
+//        }
+//
+//        else if (type.equalsIgnoreCase("SPEED")) {
+//            if (script.contains("SPEED"))
+//                event.setReplaced(script.getString("SPEED"));
+//        }
+//
+//        else if (type.equalsIgnoreCase("NAME")) {
+//            event.setReplaced(script.getName());
+//        }
     }
 
     // Get scriptqueue context!

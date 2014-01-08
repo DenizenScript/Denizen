@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.tags;
 
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,14 +48,43 @@ public class Attribute {
             return;
         }
 
-        List<String> matches = new ArrayList<String>();
-        Matcher matcher = attributer.matcher(attributes);
+        // dB.log("1) " + attributes);
 
-        while (matcher.find()) {
-            String result = matcher.group();
-            if (result.endsWith("."))
-                result = result.substring(0, result.length() - 1);
-            matches.add(result);
+        List<String> matches = new ArrayList<String>(5);
+
+        //
+        // TODO: Watch out for bugs!
+        // This allow .'s inside [] contexts for tags.. the regex that was being utilized before
+        // does not allow such a thing.
+
+        int x1 = 0, x2 = -1;
+        int braced = 0;
+
+        for (int x = 0; x < attributes.length(); x++) {
+
+            if (attributes.charAt(x) == '[')
+                braced++;
+
+            else if (x == attributes.length() - 1) {
+                x2 = x + 1;
+            }
+
+            else if (attributes.charAt(x) == ']') {
+                if (braced > 0) braced--;
+            }
+
+            else if (attributes.charAt(x) == '.'
+                    && !StringUtils.isNumeric(Character.toString(attributes.charAt(x + 1)))
+                    && braced == 0)
+                x2 = x;
+
+            if (x2 > -1) {
+                // dB.log(attributes.substring(x1, x2));
+                matches.add(attributes.substring(x1, x2));
+                x2 = -1;
+                x1 = x + 1;
+            }
+
         }
 
         this.attributes = matches;
@@ -86,8 +117,8 @@ public class Attribute {
             sb.append(attribute).append(".");
         raw_tag = sb.toString();
         if (raw_tag.length() > 1)
-        raw_tag = raw_tag.substring(0, raw_tag.length() - 1);
-   }
+            raw_tag = raw_tag.substring(0, raw_tag.length() - 1);
+    }
 
     public boolean hasContext(int attribute) {
         return getAttribute(attribute).contains("[");
@@ -95,6 +126,8 @@ public class Attribute {
 
     public String getContext(int attribute) {
         if (hasContext(attribute)) {
+
+            dB.log(getAttribute(attribute));
 
             String text = getAttribute(attribute);
             Matcher contextMatcher = Pattern.compile("\\[.+\\]").matcher(text);

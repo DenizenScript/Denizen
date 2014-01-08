@@ -388,6 +388,17 @@ public abstract class ScriptQueue implements Debuggable {
         is_started = true;
         boolean is_delayed = delay_time > System.currentTimeMillis();
 
+        // Debug info
+        Class<? extends ScriptQueue> clazz = this.cachedClass == null ? this.cachedClass = getClass() : this.cachedClass;
+        String name = classNameCache.get(clazz);
+        if (name == null)
+            classNameCache.put(clazz, name = clazz.getSimpleName());
+        if (is_delayed) {
+            dB.echoDebug(this, "Delaying " + name + " '" + id + "'" + " for '"
+                    + new Duration((delay_time - System.currentTimeMillis()) / 1000 * 20).identify() + "'.");
+        } else
+            dB.echoDebug(this, "Starting " + name + " '" + id + "'");
+
         // If it's delayed, schedule it for later
         if (is_delayed) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
@@ -403,17 +414,6 @@ public abstract class ScriptQueue implements Debuggable {
         } else
             // If it's not, start the engine now!
             onStart();
-
-        Class<? extends ScriptQueue> clazz = this.cachedClass == null ? this.cachedClass = getClass() : this.cachedClass;
-        String name = classNameCache.get(clazz);
-        if (name == null)
-            classNameCache.put(clazz, name = clazz.getSimpleName());
-        if (is_delayed) {
-            dB.echoDebug(this, "Delaying " + name + " '" + id + "'" + " for '"
-                    + new Duration((delay_time - System.currentTimeMillis()) / 1000 * 20).identify() + "'.");
-        } else
-            dB.echoDebug(this, "Starting " + name + " '" + id + "'");
-
     }
 
 

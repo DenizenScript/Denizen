@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
+import org.bukkit.util.Vector;
 
 /**
  * Displays an item in the world. This item will not disappear (unless set to)
@@ -63,9 +64,11 @@ public class DisplayItemCommand extends AbstractCommand {
                 + location.debug());
 
         // Drop the item
-        final Item dropped = location.getBlock().getLocation().add(0, 1, 0).getWorld().dropItem(location, item.getItemStack());
-        dropped.setPickupDelay(Integer.MAX_VALUE);
-        dropped.setTicksLived(Integer.MAX_VALUE);
+        final Item dropped = location.getWorld()
+                .dropItem(location.getBlock().getLocation().clone().add(0.5,1.5,0.5), item.getItemStack());
+        dropped.setVelocity(dropped.getVelocity().multiply(0));
+        dropped.setPickupDelay(duration.getTicksAsInt() + 1000);
+        dropped.setTicksLived(duration.getTicksAsInt() + 1000);
 
         // Remember the item entity
         scriptEntry.addObject("dropped", new dEntity(dropped));

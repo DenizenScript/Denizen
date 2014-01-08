@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
@@ -26,22 +27,25 @@ public class TriggerCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cooldown")
-                    && arg.matchesPrefix("cooldown")
+                    && arg.matchesPrefix("cooldown, c")
                     && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("cooldown", arg.asType(Duration.class));
 
             else if (!scriptEntry.hasObject("radius")
-                    && arg.matchesPrefix("radius")
+                    && arg.matchesPrefix("radius, r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("radius", arg.asElement());
-
-            else if (!scriptEntry.hasObject("trigger")
-                    && arg.matchesPrefix("name"))
-                scriptEntry.addObject("trigger", arg.asElement());
 
             else if (!scriptEntry.hasObject("toggle")
                     && arg.matchesEnum(Toggle.values()))
                 scriptEntry.addObject("toggle", arg.asElement());
+
+            else if (!scriptEntry.hasObject("npc")
+                    && arg.matchesArgumentType(dNPC.class))
+                scriptEntry.addObject("npc", arg.asType(dNPC.class));
+
+            else if (!scriptEntry.hasObject("trigger"))
+                scriptEntry.addObject("trigger", arg.asElement());
 
             else
                 arg.reportUnhandled();
@@ -53,7 +57,7 @@ public class TriggerCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("toggle"))
             scriptEntry.addObject("toggle", new Element("TOGGLE"));
 
-        if (!scriptEntry.hasNPC())
+        if (!scriptEntry.hasNPC() && !scriptEntry.hasObject("npc"))
             throw new InvalidArgumentsException("This command requires a linked NPC!");
 
     }
@@ -65,24 +69,29 @@ public class TriggerCommand extends AbstractCommand {
         Element trigger = scriptEntry.getElement("trigger");
         Element radius = scriptEntry.getElement("radius");
         Duration cooldown = (Duration) scriptEntry.getObject("cooldown");
+        dNPC npc = scriptEntry.hasObject("npc") ? (dNPC) scriptEntry.getObject("npc") : scriptEntry.getNPC();
 
         dB.report(scriptEntry, getName(),
-                  trigger.debug() + toggle.debug() +
-                  (radius != null ? radius.debug(): "") +
-                  (cooldown != null ? cooldown.debug(): ""));
+                trigger.debug() + toggle.debug() +
+                        (radius != null ? radius.debug(): "") +
+                        (cooldown != null ? cooldown.debug(): "") +
+                        npc.debug());
 
         // Add trigger trait
-        if (!scriptEntry.getNPC().getCitizen().hasTrait(TriggerTrait.class)) scriptEntry.getNPC().getCitizen().addTrait(TriggerTrait.class);
+        if (!npc.getCitizen().hasTrait(TriggerTrait.class)) npc.getCitizen().addTrait(TriggerTrait.class);
 
-        TriggerTrait trait = scriptEntry.getNPC().getCitizen().getTrait(TriggerTrait.class);
+        TriggerTrait trait = npc.getCitizen().getTrait(TriggerTrait.class);
 
         switch (Toggle.valueOf(toggle.asString().toUpperCase())) {
+
             case TOGGLE:
                 trait.toggleTrigger(trigger.asString());
                 break;
+
             case TRUE:
                 trait.toggleTrigger(trigger.asString(), true);
                 break;
+
             case FALSE:
                 trait.toggleTrigger(trigger.asString(), false);
                 break;
