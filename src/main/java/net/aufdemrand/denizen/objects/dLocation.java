@@ -661,8 +661,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
                                     if (((dMaterial) material).matchesMaterialData(getBlock()
                                             .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
                                                     .getLocation().add(x,y,z).getBlock().getData())))
-                                        found.add(new dLocation(getBlock().getLocation().add(x,y,z)));
-                            } else found.add(new dLocation(getBlock().getLocation().add(x,y,z)));
+                                        found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                            } else found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
 
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
@@ -702,13 +702,13 @@ public class dLocation extends org.bukkit.Location implements dObject {
                                         Location l = getBlock().getLocation().add(x,y,z);
                                         if (l.add(0,1,0).getBlock().getType() == Material.AIR
                                                 && l.add(0,1,0).getBlock().getType() == Material.AIR)
-                                            found.add(new dLocation(getBlock().getLocation().add(x,y,z)));
+                                            found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5 )));
                                     }
                             } else {
                                 Location l = getBlock().getLocation().add(x,y,z);
                                 if (l.add(0,1,0).getBlock().getType() == Material.AIR
                                         && l.add(0,1,0).getBlock().getType() == Material.AIR)
-                                    found.add(new dLocation(getBlock().getLocation().add(x,y,z)));
+                                    found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5 )));
                             }
 
                 Collections.sort(found, new Comparator<dLocation>() {
