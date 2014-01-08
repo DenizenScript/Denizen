@@ -2503,7 +2503,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Syntax yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
+        // @Syntax yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)] [id:<name>]
         // @Required 2
         // @Stable Todo
         // @Short Edits a YAML configuration file.
@@ -2513,6 +2513,7 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // <yaml[<idname>].contains[<path>]>
         // <yaml[<idname>].read[<path>]>
+        // <yaml[<idname>].read[<path>].as_list>
         // <yaml[<idname>].list_keys[<path>]>
         // @Usage
         // Use to create a new YAML file
@@ -2528,7 +2529,7 @@ public class CommandRegistry implements dRegistry {
         // - yaml load:myfile.yml id:myfile
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 2);
+                "YAML", "yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)] [id:<name>]", 2);
 
         // <--[command]
         // @Name Zap
