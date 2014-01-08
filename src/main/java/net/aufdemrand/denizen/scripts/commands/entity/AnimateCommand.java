@@ -32,11 +32,11 @@ public class AnimateCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
-                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
             if (!scriptEntry.hasObject("animation") &&
-                !scriptEntry.hasObject("effect")) {
+                    !scriptEntry.hasObject("effect")) {
 
                 if (arg.matchesEnum(PlayerAnimation.values())) {
                     scriptEntry.addObject("animation", PlayerAnimation.valueOf(arg.getValue().toUpperCase()));
@@ -69,31 +69,36 @@ public class AnimateCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), (animation != null ?
-                                  aH.debugObj("animation", animation.name()) :
-                                  aH.debugObj("effect", effect.name())) +
-                             aH.debugObj("entities", entities.toString()));
+                aH.debugObj("animation", animation.name()) :
+                aH.debugObj("effect", effect.name())) +
+                aH.debugObj("entities", entities.toString()));
 
         // Go through all the entities and animate them
         for (dEntity entity : entities) {
             if (entity.isSpawned()) {
-                if (animation != null && entity.getBukkitEntity() instanceof Player) {
 
-                    Player player = (Player) entity.getBukkitEntity();
+                try {
+                    if (animation != null && entity.getBukkitEntity() instanceof Player) {
 
-                    // Go through Citizens' PlayerAnimations and find the one
-                    // that matches
-                    PlayerAnimation[] animationArray = PlayerAnimation.class.getEnumConstants();
+                        Player player = (Player) entity.getBukkitEntity();
 
-                    for (PlayerAnimation current : animationArray) {
+                        // Go through Citizens' PlayerAnimations and find the one
+                        // that matches
+                        PlayerAnimation[] animationArray = PlayerAnimation.class.getEnumConstants();
 
-                          if (current.equals(animation)) {
-                               current.play(player);
-                               break;
-                          }
-                    }
-                }
-                else entity.getBukkitEntity().playEffect(effect);
+                        for (PlayerAnimation current : animationArray) {
+
+                            if (current.equals(animation)) {
+                                current.play(player);
+                                break;
+                            }
+                        }
+                    } else entity.getBukkitEntity().playEffect(effect);
+
+                } catch (Exception e) {  } // We tried!
             }
         }
+
+        return;
     }
 }
