@@ -110,6 +110,8 @@ public class dInventory implements dObject, Notable {
             // Set the type of the inventory holder
             String type = m.group(2);
             // Set the name/id/location of the inventory holder
+            // TODO: Make this work with InventoryHolder property
+            //       (and possibly also the current method, for backwards-compatibility?)
             String holder = m.group(3);
 
             if (type.equalsIgnoreCase("generic")) {
@@ -636,13 +638,16 @@ public class dInventory implements dObject, Notable {
         if (isUnique())
             return "in@" + NotableManager.getSavedId(this);
         else return "in@" + (idType.equals("script") || idType.equals("notable")
-                ? idHolder : (idType + '[' + idHolder + ']'));
+                ? idHolder : (idType + PropertyParser.getPropertiesString(this)));
     }
 
 
     @Override
     public String identifySimple() {
-        return identify();
+        if (isUnique())
+            return "in@" + NotableManager.getSavedId(this);
+        else return "in@" + (idType.equals("script") || idType.equals("notable")
+                ? idHolder : (idType + "[" + idHolder + ']'));
     }
 
 
@@ -791,16 +796,6 @@ public class dInventory implements dObject, Notable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.id_holder>
-        // @returns Element
-        // @description
-        // Returns Denizen's holder ID for this inventory. (p@aufdemrand, l@123,321,123, etc.)
-        // -->
-        if (attribute.startsWith("id_holder")) {
-            return new Element(idHolder).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <in@inventory.id_type>
         // @returns Element
         // @description
@@ -838,16 +833,6 @@ public class dInventory implements dObject, Notable {
             else
                 return new Element(count(null, false))
                         .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <in@inventory.size>
-        // @returns Element(Number)
-        // @description
-        // Return the number of slots in the inventory.
-        // -->
-        if (attribute.startsWith("size"))
-            return new Element(getSize())
-                    .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <in@inventory.stacks>
@@ -894,52 +879,6 @@ public class dInventory implements dObject, Notable {
         // -->
         if (attribute.startsWith("title")) {
             return inventory.getTitle();
-        }
-
-        // <--[tag]
-        // @attribute <in@inventory.list_contents.with_lore[<element>]>
-        // @returns dList(dItem)
-        // @description
-        // Returns a list of all items in the inventory with the specified
-        // lore. Color codes are ignored.
-        // -->
-        if (attribute.startsWith("list_contents.with_lore")) {
-
-            // Must specify lore to check
-            if (!attribute.hasContext(2)) return Element.NULL.getAttribute(attribute.fulfill(2));
-
-            ArrayList<dItem> items = new ArrayList<dItem>();
-            for (ItemStack item : getContents()) {
-                if (item != null && item.getType() != Material.AIR) {
-                    if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                        for (String lore : item.getItemMeta().getLore()) {
-                            // Add the item to the list if it contains the lore specified in
-                            // the context
-                            if (ChatColor.stripColor(lore).equalsIgnoreCase(attribute.getContext(2))) {
-                                items.add(new dItem(item));
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return new dList(items).getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <in@inventory.list_contents>
-        // @returns dList(dItem)
-        // @description
-        // Returns a list of all items in the inventory.
-        // -->
-        if (attribute.startsWith("list_contents")) {
-            ArrayList<dItem> items = new ArrayList<dItem>();
-            for (ItemStack item : getContents()) {
-                if (item != null && item.getType() != Material.AIR)
-                    items.add(new dItem(item));
-            }
-            return new dList(items).getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes

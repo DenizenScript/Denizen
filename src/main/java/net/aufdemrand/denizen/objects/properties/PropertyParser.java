@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.objects.properties;
 
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.entity.*;
+import net.aufdemrand.denizen.objects.properties.inventory.*;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -32,6 +34,11 @@ public class PropertyParser {
         registerProperty(EntityAge.class, dEntity.class);
         registerProperty(EntityFramed.class, dEntity.class);
         registerProperty(EntityInfected.class, dEntity.class);
+
+        // register core dInventory properties
+        registerProperty(InventoryContents.class, dInventory.class);
+        registerProperty(InventoryHolder.class, dInventory.class);
+        registerProperty(InventorySize.class, dInventory.class);
 
         // register core dItem properties
         registerProperty(ItemEnchantments.class, dItem.class);
