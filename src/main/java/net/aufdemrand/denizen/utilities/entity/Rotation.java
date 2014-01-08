@@ -62,7 +62,7 @@ public class Rotation {
 
     public static void faceLocation(Entity from, Location at) {
         if (from.getWorld() != at.getWorld()) return;
-        Location loc = from.getLocation();
+        Location loc = from.getLocation().getBlock().getLocation().clone().add(0.5,0.5,0.5);
 
         double xDiff = at.getX() - loc.getX();
         double yDiff = at.getY() - loc.getY();
@@ -72,7 +72,8 @@ public class Rotation {
         double distanceY = Math.sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
 
         double yaw = Math.toDegrees(Math.acos(xDiff / distanceXZ));
-        double pitch = Math.toDegrees(Math.acos(yDiff / distanceY)) - 90;
+        double pitch = Math.toDegrees(Math.acos(yDiff / distanceY)) - 70;
+
         if (zDiff < 0.0) {
             yaw = yaw + (Math.abs(180 - yaw) * 2);
         }
