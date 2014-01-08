@@ -1,14 +1,18 @@
 package net.aufdemrand.denizen.objects;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -84,14 +88,15 @@ public class aH {
             raw_value = string;
             string = string.trim();
 
-            int first_colon = string.indexOf(":");
-            int first_space = string.indexOf(" ");
+            int first_colon = string.indexOf(':');
+            int first_space = string.indexOf(' ');
 
             if ((first_space > -1 && first_space < first_colon) || first_colon == -1)  value = string;
             else {
                 has_prefix = true;
-                prefix = string.split(":", 2)[0];
-                value = string.split(":", 2)[1];
+                String[] split = string.split(":", 2);
+                prefix = split[0].toLowerCase();
+                value = split[1].toLowerCase();
             }
 
         }
@@ -103,7 +108,7 @@ public class aH {
 
 
         public boolean startsWith(String string) {
-            return value.toLowerCase().startsWith(string.toLowerCase());
+            return value.startsWith(string.toLowerCase());
         }
 
 
@@ -120,10 +125,18 @@ public class aH {
 
 
         public boolean matches(String values) {
-            for (String value : values.split(","))
-                if (value.trim().equalsIgnoreCase(this.value))
+            for (String value : values.split(",")) {
+                if (value.trim().toLowerCase().equals(this.value))
                     return true;
+            }
+            return false;
+        }
 
+        public boolean matches(String... values) {
+            for (String value : values) {
+                if (value.toLowerCase().equals(this.value))
+                    return true;
+            }
             return false;
         }
 
@@ -138,8 +151,8 @@ public class aH {
         }
 
 
-        public boolean matchesEnum(Enum[] values) {
-            for (Enum value : values)
+        public boolean matchesEnum(Enum<?>[] values) {
+            for (Enum<?> value : values)
                 if (value.name().replace("_", "").equalsIgnoreCase(this.value.replace("_", "")))
                     return true;
 
@@ -148,11 +161,11 @@ public class aH {
 
 
         // Check if this argument matches a dList of Enum values
-        public boolean matchesEnumList(Enum[] values) {
+        public boolean matchesEnumList(Enum<?>[] values) {
             dList list = dList.valueOf(this.value);
 
             for (String string : list) {
-                for (Enum value : values)
+                for (Enum<?> value : values)
                     if (value.name().replace("_", "").equalsIgnoreCase(string.replace("_", "")))
                         return true;
             }
@@ -163,10 +176,19 @@ public class aH {
 
         public boolean matchesPrefix(String values) {
             if (!hasPrefix()) return false;
-            for (String value : values.split(","))
-                if (value.trim().equalsIgnoreCase(prefix))
+            for (String value : values.split(",")) {
+                if (value.trim().toLowerCase().equals(prefix))
                     return true;
+            }
+            return false;
+        }
 
+        public boolean matchesPrefix(String... values) {
+            if (!hasPrefix()) return false;
+            for (String value : values) {
+                if (value.toLowerCase().equals(prefix))
+                    return true;
+            }
             return false;
         }
 
@@ -235,13 +257,11 @@ public class aH {
 
 
         public <T extends dObject> T asType(Class<T> clazz) {
-
             dObject arg = ObjectFetcher.getObjectFrom(clazz, value);
-
             if (arg != null) {
-                return (T) clazz.cast(arg).setPrefix(prefix);
+                arg.setPrefix(prefix);
+                return clazz.cast(arg);
             }
-
             return null;
         }
 
@@ -273,10 +293,13 @@ public class aH {
      */
     public static List<Argument> interpret(List<String> args) {
         List<Argument> arg_list = new ArrayList<Argument>();
-        for (String string : args)
+        for (String string : args) {
             arg_list.add(new Argument(string.trim()));
+        }
         return arg_list;
     }
+
+    private static final Pattern argsRegex = Pattern.compile("[^\\s\"'¨]+|\"([^\"]*)\"|'([^']*)'|¨([^¨]*)¨");
 
 
     /**
@@ -288,19 +311,17 @@ public class aH {
      *
      */
     public static String[] buildArgs(String stringArgs) {
-        final Pattern regex =
-                Pattern.compile("[^\\s\"'¨]+|\"([^\"]*)\"|'([^']*)'|¨([^¨]*)¨");
-
         if (stringArgs == null) return null;
         java.util.List<String> matchList = new ArrayList<String>();
-        Matcher regexMatcher = regex.matcher(stringArgs);
+        Matcher regexMatcher = argsRegex.matcher(stringArgs);
         while (regexMatcher.find()) {
-            if (regexMatcher.group(1) != null)
+            if (regexMatcher.group(1) != null) {
                 matchList.add(regexMatcher.group(1));
-            else if (regexMatcher.group(2) != null)
+            } else if (regexMatcher.group(2) != null) {
                 matchList.add(regexMatcher.group(2));
-            else
+            } else {
                 matchList.add(regexMatcher.group());
+            }
         }
 
         if (dB.showScriptBuilder)

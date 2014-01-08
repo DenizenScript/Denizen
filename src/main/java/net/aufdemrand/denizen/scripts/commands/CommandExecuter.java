@@ -45,15 +45,15 @@ public class CommandExecuter {
         m.appendTail(sb);
         scriptEntry.setCommandName(sb.toString());
 
-        if (plugin.getCommandRegistry().get(scriptEntry.getCommandName()) == null) {
+        // Get the command instance ready for the execution of the scriptEntry
+        AbstractCommand command = plugin.getCommandRegistry().get(scriptEntry.getCommandName());
+
+        if (command == null) {
             dB.echoDebug(scriptEntry, DebugElement.Header, "Executing command: " + scriptEntry.getCommandName());
             dB.echoError(scriptEntry.getCommandName() + " is an invalid dCommand! Are you sure it loaded?");
             dB.echoDebug(scriptEntry, DebugElement.Footer);
             return false;
         }
-
-        // Get the command instance ready for the execution of the scriptEntry
-        AbstractCommand command = plugin.getCommandRegistry().get(scriptEntry.getCommandName());
 
         // Debugger information
         if (scriptEntry.getPlayer() != null)
@@ -88,9 +88,7 @@ public class CommandExecuter {
             // prematurely
             boolean if_ignore = false;
 
-
             for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-
                 if (arg.getValue().equals("{")) nested_depth++;
                 if (arg.getValue().equals("}")) nested_depth--;
 

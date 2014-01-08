@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ScriptBuilder {
-
     /**
      * Adds an object to a list of ScriptEntries. Can later be retrieved from the ScriptEntry
      * by using getObject(String key)
@@ -58,12 +57,13 @@ public class ScriptBuilder {
             // }
 
             String[] scriptEntry = new String[2];
+            String[] splitEntry = entry.split(" ", 2);
 
-            if (entry.split(" ", 2).length == 1) {
+            if (splitEntry.length == 1) {
                 scriptEntry[0] = entry;
                 scriptEntry[1] = null;
             } else {
-                scriptEntry = entry.split(" ", 2);
+                scriptEntry = splitEntry;
             }
 
             try {

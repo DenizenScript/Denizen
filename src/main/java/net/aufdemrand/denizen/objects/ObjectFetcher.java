@@ -1,12 +1,15 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
  *
@@ -90,8 +93,8 @@ public class ObjectFetcher {
             Pattern.compile(".+\\[.+=.+\\]");
 
     public static boolean checkMatch(Class<? extends dObject> dClass, String value) {
+        Matcher m = PROPERTIES_PATTERN.matcher(value);
         try {
-            Matcher m = PROPERTIES_PATTERN.matcher(value);
             return (Boolean) matches.get(dClass).invoke(null, m.matches() ? m.group(1): value);
         } catch (Exception e) {
             dB.echoError(e);
