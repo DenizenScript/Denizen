@@ -368,6 +368,40 @@ public class dCuboid implements dObject, Notable, Adjustable {
         return list;
     }
 
+    public List<dLocation> getBlockLocations() {
+        dLocation loc;
+        List<dLocation> list = new ArrayList<dLocation>();
+
+        for (LocationPair pair : pairs) {
+
+            dLocation loc_1 = pair.low;
+            int y_distance = pair.y_distance;
+            int z_distance = pair.z_distance;
+            int x_distance = pair.x_distance;
+
+            for (int x = 0; x != x_distance + 1; x++) {
+                for (int z = 0; z != z_distance + 1; z++) {
+                    for (int y = 0; y != y_distance + 1; y++) {
+                        loc = new dLocation(loc_1.clone()
+                                .add(x, y, z));
+                        if (!filter.isEmpty()) {
+                            // Check filter
+                            for (dObject material : filter)
+                                if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
+                                        .getMaterial().name()))
+                                    list.add(loc);
+                        } else
+                            list.add(loc);
+                    }
+                }
+            }
+
+        }
+
+        return list;
+    }
+
+
     /**
      * Returns a dList of dLocations with 2 vertical blocks of air
      * that are safe for players and similar entities to spawn in,
