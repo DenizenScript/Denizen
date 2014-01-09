@@ -55,7 +55,7 @@ public class BreakCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("entity"))
             throw new InvalidArgumentsException("Must specify an entity!");
 
-        scriptEntry.defaultObject("radius", new Element(1));
+        scriptEntry.defaultObject("radius", new Element(2));
 
     }
 
@@ -81,9 +81,11 @@ public class BreakCommand extends AbstractCommand {
 
         final BlockBreaker breaker = BlockBreaker.createWithConfiguration(entity.getLivingEntity(),
                 location.getBlock(), config);
-        TaskRunnable run = new TaskRunnable(breaker);
-        int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, run, 0, 1);
-        run.taskId = taskId;
+        if (breaker.shouldExecute()) {
+            TaskRunnable run = new TaskRunnable(breaker);
+            int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, run, 0, 1);
+            run.taskId = taskId;
+        }
     }
 
     private static class TaskRunnable implements Runnable {
@@ -98,6 +100,7 @@ public class BreakCommand extends AbstractCommand {
         public void run() {
             if (breaker.run() != BehaviorStatus.RUNNING) {
                 Bukkit.getScheduler().cancelTask(taskId);
+                breaker.reset();
             }
         }
     }
