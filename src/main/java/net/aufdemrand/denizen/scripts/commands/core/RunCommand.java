@@ -99,7 +99,7 @@ public class RunCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dNPC.class))
                 scriptEntry.setNPC((dNPC) arg.asType(dNPC.class));
 
-            // Catch invalid entry for 'as' argument
+                // Catch invalid entry for 'as' argument
             else if (arg.matchesPrefix("a, as"))
                 dB.echoDebug(scriptEntry, "Specified target was not attached. Value must contain a valid PLAYER or NPC object.");
 
@@ -178,8 +178,14 @@ public class RunCommand extends AbstractCommand {
         ScriptQueue queue;
         if (scriptEntry.hasObject("instant"))
             queue = InstantQueue.getQueue(id).addEntries(entries);
-        else queue = TimedQueue.getQueue(id).addEntries(entries);
+        else {
+            queue = TimedQueue.getQueue(id).addEntries(entries);
 
+            // Check speed of the script if a TimedQueue -- if identified, use the speed from the script.
+            if (script.getContainer().contains("speed"))
+                ((TimedQueue) queue).setSpeed(Duration.valueOf(script.getContainer().getString("speed")).getTicks());
+
+        }
         // Set any delay
         if (scriptEntry.hasObject("delay"))
             queue.delayUntil(System.currentTimeMillis() + ((Duration) scriptEntry.getObject("delay")).getMillis());
