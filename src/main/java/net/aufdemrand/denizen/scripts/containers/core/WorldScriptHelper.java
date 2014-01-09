@@ -17,7 +17,6 @@ import net.aufdemrand.denizen.objects.aH.PrimitiveType;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 
@@ -41,7 +40,6 @@ import org.bukkit.event.weather.*;
 import org.bukkit.event.world.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
@@ -2314,12 +2312,20 @@ public class WorldScriptHelper implements Listener {
             return; // I can't explain this one either. It also chooses to happen whenever it pleases.
 
         Block block = null;
-        BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(), projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
-        while(bi.hasNext()) {
-            block = bi.next();
-            if(block.getTypeId() != 0) {
-                break;
+        try {
+            BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(),
+                    projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
+            while(bi.hasNext()) {
+                block = bi.next();
+                if(block.getTypeId() != 0) {
+                    break;
+                }
             }
+        }
+        catch (IllegalStateException ex) {
+            // This happens because it can. Also not explainable whatsoever.
+            // As this error happens on no fault of the user, display no error message... just cancel the event.
+            return;
         }
 
         if (block == null)
