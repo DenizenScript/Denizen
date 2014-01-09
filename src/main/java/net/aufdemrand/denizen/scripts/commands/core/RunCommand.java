@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -144,7 +146,6 @@ public class RunCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
         dB.report(scriptEntry, getName(),
                 (scriptEntry.hasObject("script") ? scriptEntry.getdObject("script").debug() : scriptEntry.getScript().debug())
                         + (scriptEntry.hasObject("instant") ? scriptEntry.getdObject("instant").debug() : "")

@@ -11,7 +11,10 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.npc.ai.BlockBreaker;
+
+import org.bukkit.Bukkit;
 
 /**
  * Breaks a block using Citizens' BlockBreaker
@@ -75,8 +78,26 @@ public class BreakCommand extends AbstractCommand {
                     }
                 });
 
-        BlockBreaker breaker = BlockBreaker.createWithConfiguration(entity.getLivingEntity(), location.getBlock(), config);
-        breaker.run();
+        final BlockBreaker breaker = BlockBreaker.createWithConfiguration(entity.getLivingEntity(),
+                location.getBlock(), config);
+        TaskRunnable run = new TaskRunnable(breaker);
+        int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, run, 0, 1);
+        run.taskId = taskId;
     }
 
+    private static class TaskRunnable implements Runnable {
+        private int taskId;
+        private final BlockBreaker breaker;
+
+        public TaskRunnable(BlockBreaker breaker) {
+            this.breaker = breaker;
+        }
+
+        @Override
+        public void run() {
+            if (breaker.run() != BehaviorStatus.RUNNING) {
+                Bukkit.getScheduler().cancelTask(taskId);
+            }
+        }
+    }
 }
