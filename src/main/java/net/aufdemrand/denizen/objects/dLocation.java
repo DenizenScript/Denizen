@@ -227,7 +227,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // higher than 0, because Minecraft yaws are weird and can have
         // negative values
         super(location.getWorld(), location.getX(), location.getY(), location.getZ(),
-              location.getYaw(), location.getPitch());
+                location.getYaw(), location.getPitch());
     }
 
     /**
@@ -334,7 +334,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public String identifyRaw() {
         if (getYaw() != 0.0 && getPitch() != 0.0)
             return "l@" + getX() + "," + getY()
-                + "," + getZ() + "," + getPitch() + "," + getYaw() + "," + getWorld().getName();
+                    + "," + getZ() + "," + getPitch() + "," + getYaw() + "," + getWorld().getName();
         else
             return "l@" + getX() + "," + getY()
                     + "," + getZ() + "," + getWorld().getName();
@@ -453,7 +453,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("simple"))
             return new Element(getBlockX() + "," + getBlockY() + "," + getBlockZ()
-            + "," + getWorld().getName()).getAttribute(attribute.fulfill(1));
+                    + "," + getWorld().getName()).getAttribute(attribute.fulfill(1));
 
 
         /////////////////////
@@ -522,8 +522,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 // entity or location, within a specified degree range.
                 // -->
                 if (attribute.getAttribute(2).startsWith("degrees") &&
-                    attribute.hasContext(2) &&
-                    aH.matchesInteger(attribute.getContext(2))) {
+                        attribute.hasContext(2) &&
+                        aH.matchesInteger(attribute.getContext(2))) {
 
                     degrees = attribute.getIntContext(2);
                     attributePos++;
@@ -532,13 +532,13 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 if (dLocation.matches(attribute.getContext(1))) {
                     return new Element(Rotation.isFacingLocation
                             (this, dLocation.valueOf(attribute.getContext(1)), degrees))
-                               .getAttribute(attribute.fulfill(attributePos));
+                            .getAttribute(attribute.fulfill(attributePos));
                 }
                 else if (dEntity.matches(attribute.getContext(1))) {
                     return new Element(Rotation.isFacingLocation
                             (this, dEntity.valueOf(attribute.getContext(1))
                                     .getBukkitEntity().getLocation(), degrees))
-                               .getAttribute(attribute.fulfill(attributePos));
+                            .getAttribute(attribute.fulfill(attributePos));
                 }
             }
         }
@@ -590,7 +590,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             float yaw = Rotation.normalizeYaw(getYaw());
             if (yaw < 45)
                 return new Element("South")
-                    .getAttribute(attribute.fulfill(2));
+                        .getAttribute(attribute.fulfill(2));
             else if (yaw < 135)
                 return new Element("West")
                         .getAttribute(attribute.fulfill(2));
@@ -649,6 +649,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 List<dObject> materials = new ArrayList<dObject>();
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
+                // Avoid NPE from invalid materials
+                if (materials == null) return Element.NULL.getAttribute(attribute.fulfill(2));
 
                 // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
@@ -688,6 +690,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 List<dObject> materials = new ArrayList<dObject>();
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
+                // Avoid NPE from invalid materials
+                if (materials == null) return Element.NULL.getAttribute(attribute.fulfill(2));
 
                 attribute.fulfill(2);
 
@@ -728,8 +732,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
             // Returns a list of players within a radius.
             // -->
             else if (attribute.startsWith("players")
-                && attribute.getAttribute(2).startsWith("within")
-                && attribute.hasContext(2)) {
+                    && attribute.getAttribute(2).startsWith("within")
+                    && attribute.hasContext(2)) {
                 ArrayList<dPlayer> found = new ArrayList<dPlayer>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
@@ -754,8 +758,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
             // Returns a list of NPCs within a radius.
             // -->
             else if (attribute.startsWith("npcs")
-                && attribute.getAttribute(2).startsWith("within")
-                && attribute.hasContext(2)) {
+                    && attribute.getAttribute(2).startsWith("within")
+                    && attribute.hasContext(2)) {
                 ArrayList<dNPC> found = new ArrayList<dNPC>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
@@ -781,8 +785,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
             // for the entity type.
             // -->
             else if (attribute.startsWith("entities")
-                && attribute.getAttribute(2).startsWith("within")
-                && attribute.hasContext(2)) {
+                    && attribute.getAttribute(2).startsWith("within")
+                    && attribute.hasContext(2)) {
                 dList ent_list = new dList();
                 if (attribute.hasContext(1)) {
                     for (String ent : attribute.getContext(1).split("\\|")) {
@@ -884,7 +888,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // returns the chunk that this location belongs to.
         // -->
         if (attribute.startsWith("get_chunk") ||
-            attribute.startsWith("chunk"))
+                attribute.startsWith("chunk"))
             return new dChunk(this).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1054,12 +1058,12 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     if (attribute.getAttribute(3).startsWith("multiworld"))
                         return new Element(Math.sqrt(
                                 Math.pow(this.getX() - toLocation.getX(), 2) +
-                                Math.pow(this.getZ() - toLocation.getZ(), 2)))
+                                        Math.pow(this.getZ() - toLocation.getZ(), 2)))
                                 .getAttribute(attribute.fulfill(3));
                     else if (this.getWorld() == toLocation.getWorld())
                         return new Element(Math.sqrt(
                                 Math.pow(this.getX() - toLocation.getX(), 2) +
-                                Math.pow(this.getZ() - toLocation.getZ(), 2)))
+                                        Math.pow(this.getZ() - toLocation.getZ(), 2)))
                                 .getAttribute(attribute.fulfill(2));
                 }
 
@@ -1220,7 +1224,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             // Check if the location is in any region
             else {
                 return new Element(WorldGuardUtilities.inRegion(this))
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 
