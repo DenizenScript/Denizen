@@ -20,42 +20,10 @@ import java.util.regex.Pattern;
 
 public class Attribute {
 
-    public static String RETURN_NULL = "null";
 
-    public List<String> attributes;
+    public static List<String> seperate_attributes(String attributes) {
 
-    ScriptEntry scriptEntry;
-
-    String raw_tag;
-    String origin;
-    public static Pattern attributer = ReplaceableTagEvent.componentRegex;
-
-    public ScriptEntry getScriptEntry() {
-        return scriptEntry;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public Attribute(String attributes, ScriptEntry scriptEntry) {
-        raw_tag = attributes;
-        origin = attributes;
-        this.scriptEntry = scriptEntry;
-
-        if (attributes == null) {
-            this.attributes = Collections.emptyList();
-            return;
-        }
-
-        // dB.log("1) " + attributes);
-
-        List<String> matches = new ArrayList<String>(5);
-
-        //
-        // TODO: Watch out for bugs!
-        // This allow .'s inside [] contexts for tags.. the regex that was being utilized before
-        // does not allow such a thing.
+        List<String> matches = new ArrayList<String>();
 
         int x1 = 0, x2 = -1;
         int braced = 0;
@@ -86,6 +54,45 @@ public class Attribute {
             }
 
         }
+
+        return matches;
+    }
+
+
+
+    public static String RETURN_NULL = "null";
+
+    public List<String> attributes;
+
+    ScriptEntry scriptEntry;
+
+    String raw_tag;
+    String origin;
+    public static Pattern attributer = ReplaceableTagEvent.componentRegex;
+
+    public ScriptEntry getScriptEntry() {
+        return scriptEntry;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public Attribute(String attributes, ScriptEntry scriptEntry) {
+        raw_tag = attributes;
+        origin = attributes;
+        this.scriptEntry = scriptEntry;
+
+        if (attributes == null) {
+            this.attributes = Collections.emptyList();
+            return;
+        }
+
+        // dB.log("1) " + attributes);
+
+        List<String> matches = seperate_attributes(attributes);
+
+
 
         this.attributes = matches;
     }
