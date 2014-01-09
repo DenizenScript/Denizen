@@ -629,8 +629,11 @@ public class dMaterial implements dObject {
     }
 
     public boolean matchesMaterialData(MaterialData data) {
+        // If this material has data, check datas
         if (hasData())
-            return (material == data.getItemType() && data.getData() == data.getData());
+            return (material == data.getItemType() && this.data == data.getData());
+
+        // Else, return matched itemType/materialType
         else return material == data.getItemType();
     }
 
@@ -816,7 +819,8 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_made_of")) {
             dMaterial compared = dMaterial.valueOf(attribute.getContext(1));
             if (compared == null) return Element.FALSE.getAttribute(attribute.fulfill(1));
-            else return new Element(material.name().equalsIgnoreCase(compared.getMaterial().name()))
+            else return new Element(material.name().equalsIgnoreCase(compared.forcedIdentity != null
+                    ? compared.forcedIdentity : compared.getMaterial().name()))
                     .getAttribute(attribute.fulfill(1));
         }
 
