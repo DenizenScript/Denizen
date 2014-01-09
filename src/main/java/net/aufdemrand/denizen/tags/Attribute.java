@@ -127,7 +127,7 @@ public class Attribute {
     public String getContext(int attribute) {
         if (hasContext(attribute)) {
 
-            dB.log(getAttribute(attribute));
+            // dB.log(getAttribute(attribute));
 
             String text = getAttribute(attribute);
             Matcher contextMatcher = Pattern.compile("\\[.+\\]").matcher(text);
