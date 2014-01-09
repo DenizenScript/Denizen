@@ -646,7 +646,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     && attribute.hasContext(2)) {
                 ArrayList<dLocation> found = new ArrayList<dLocation>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
-                List<dObject> materials = new ArrayList<dObject>();
+                List<dMaterial> materials = new ArrayList<dMaterial>();
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
 
@@ -657,8 +657,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++)
                             if (!materials.isEmpty()) {
-                                for (dObject material : materials)
-                                    if (((dMaterial) material).matchesMaterialData(getBlock()
+                                for (dMaterial material : materials)
+                                    if (material.matchesMaterialData(getBlock()
                                             .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
                                                     .getLocation().add(x,y,z).getBlock().getData())))
                                         found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
@@ -685,7 +685,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     && attribute.hasContext(2)) {
                 ArrayList<dLocation> found = new ArrayList<dLocation>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
-                List<dObject> materials = new ArrayList<dObject>();
+                List<dMaterial> materials = new ArrayList<dMaterial>();
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
 
@@ -695,8 +695,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++)
                             if (!materials.isEmpty()) {
-                                for (dObject material : materials)
-                                    if (((dMaterial) material).matchesMaterialData(getBlock()
+                                for (dMaterial material : materials)
+                                    if (material.matchesMaterialData(getBlock()
                                             .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
                                                     .getLocation().add(x,y,z).getBlock().getData()))) {
                                         Location l = getBlock().getLocation().add(x,y,z);

@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.objects.properties.inventory;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
@@ -41,8 +40,9 @@ public class InventoryHolder implements Property {
     }
 
     public dObject getHolder() {
-        org.bukkit.inventory.InventoryHolder holder =
-                inventory.getInventory().getHolder();
+        if (inventory.getInventory() == null)
+            return null;
+        org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
         
         if (holder != null) {
             if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
@@ -63,6 +63,10 @@ public class InventoryHolder implements Property {
         }
 
         return null;
+    }
+
+    public void setHolder(dObject object) {
+        inventory.setInventory(new dInventory(object).getInventory());
     }
 
 
@@ -92,7 +96,7 @@ public class InventoryHolder implements Property {
 
         // <--[tag]
         // @attribute <in@inventory.id_holder>
-        // @returns Element
+        // @returns dObject
         // @description
         // Returns Denizen's holder ID for this inventory. (p@aufdemrand, l@123,321,123, etc.)
         // -->

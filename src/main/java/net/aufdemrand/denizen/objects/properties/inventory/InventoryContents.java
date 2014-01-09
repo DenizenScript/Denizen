@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
+import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +38,7 @@ public class InventoryContents implements Property {
 
     public dList getContents(boolean simple) {
         dList contents = new dList();
-        for (ItemStack item : inventory.getContents()) {
+        for (ItemStack item : inventory.getInventory().getContents()) {
             if (item != null && item.getType() != Material.AIR)
                 if (simple)
                     contents.add(new dItem(item).identify());
@@ -49,7 +50,7 @@ public class InventoryContents implements Property {
 
     public dList getContentsWithLore(String lore, boolean simple) {
         dList contents = new dList();
-        for (ItemStack item : inventory.getContents()) {
+        for (ItemStack item : inventory.getInventory().getContents()) {
             if (item != null && item.getType() != Material.AIR) {
                 if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
                     for (String line : item.getItemMeta().getLore()) {
@@ -67,6 +68,23 @@ public class InventoryContents implements Property {
             }
         }
         return contents;
+    }
+
+    public void setContents(dList list) {
+        int size = inventory.getInventory().getSize();
+        ItemStack[] contents = new ItemStack[size];
+        ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+        int filled = 0;
+        for (dItem item : list.filter(dItem.class)) {
+            contents[filled] = item.getItemStack();
+            filled++;
+        }
+        final ItemStack air = new ItemStack(Material.AIR);
+        while (filled < size) {
+            contents[filled] = air;
+            filled ++;
+        }
+        inventory.getInventory().setContents(contents);
     }
 
 

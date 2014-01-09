@@ -1,10 +1,14 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
+
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class InventorySize implements Property {
 
@@ -31,6 +35,28 @@ public class InventorySize implements Property {
 
     public int getSize() {
         return inventory.getInventory().getSize();
+    }
+
+    public void setSize(int size) {
+        if (size <= 0 || !inventory.getIdType().equals("generic"))
+            return;
+        else if (size%9 != 0)
+            dB.echoError("InventorySize must be multiple of 9.");
+        else {
+            int oldSize = getSize();
+            ItemStack[] oldContents = inventory.getInventory().getContents();
+            if (oldSize > size) {
+                ItemStack[] newContents = new ItemStack[size];
+                for (int i = 0; i < size; i++)
+                    newContents[i] = oldContents[i];
+                inventory.setInventory(Bukkit.getServer().createInventory(null, size));
+                inventory.setContents(newContents);
+            }
+            else {
+                inventory.setInventory(Bukkit.getServer().createInventory(null, size));
+                inventory.setContents(oldContents);
+            }
+        }
     }
 
 
