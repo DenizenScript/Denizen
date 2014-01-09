@@ -255,7 +255,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
             }
             else {
-                event.setReplaced(new Element(value).getAttribute(attribute.fulfill(1)));
+                event.setReplaced(new Element(value).getAttribute(attribute));
                 return;
             }
         }
