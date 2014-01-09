@@ -1,17 +1,19 @@
 package net.aufdemrand.denizen.objects;
 
-import com.google.common.primitives.Ints;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
 import org.bukkit.ChatColor;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.primitives.Ints;
 
 
 /**
@@ -96,11 +98,10 @@ public class Duration implements dObject {
         string = string.replace("d@", "");
 
         // Pick a duration between a high and low number if there is a '-' present.
-        if (string.indexOf("-") > 0
-                && Duration.matches(string.split("-", 2)[0])
-                && Duration.matches(string.split("-", 2)[1])) {
-
-            String[] split = string.split("-", 2);
+        String[] split = string.split("-", 2);
+        if (split.length == 2
+                && Duration.matches(split[0])
+                && Duration.matches(split[1])) {
             Duration low = Duration.valueOf(split[0]);
             Duration high = Duration.valueOf(split[1]);
 
@@ -264,7 +265,7 @@ public class Duration implements dObject {
     private int round(double d){
         double dAbs = Math.abs(d);
         int i = (int) dAbs;
-        double result = dAbs - (double) i;
+        double result = dAbs - i;
         if(result<0.5){
             return d<0 ? -i : i;
         }else{

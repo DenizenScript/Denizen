@@ -2,10 +2,10 @@ package net.aufdemrand.denizen.scripts.queues;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.aufdemrand.denizen.objects.Duration;
@@ -26,7 +26,7 @@ import org.bukkit.Bukkit;
  */
 
 public abstract class ScriptQueue implements Debuggable {
-    private static final Map<Class<? extends ScriptQueue>, String> classNameCache = new WeakHashMap<Class<? extends ScriptQueue>, String>();
+    private static final Map<Class<? extends ScriptQueue>, String> classNameCache = new HashMap<Class<? extends ScriptQueue>, String>();
 
     protected static long total_queues = 0;
 
@@ -378,6 +378,8 @@ public abstract class ScriptQueue implements Debuggable {
 
     protected boolean is_started;
 
+    private Class<? extends ScriptQueue> cachedClass;
+
 
     public void start() {
         if (is_started) return;
@@ -387,7 +389,7 @@ public abstract class ScriptQueue implements Debuggable {
         boolean is_delayed = delay_time > System.currentTimeMillis();
 
         // Debug info
-        Class<? extends ScriptQueue> clazz = getClass();
+        Class<? extends ScriptQueue> clazz = this.cachedClass == null ? this.cachedClass = getClass() : this.cachedClass;
         String name = classNameCache.get(clazz);
         if (name == null)
             classNameCache.put(clazz, name = clazz.getSimpleName());
@@ -412,7 +414,6 @@ public abstract class ScriptQueue implements Debuggable {
         } else
             // If it's not, start the engine now!
             onStart();
-
     }
 
 

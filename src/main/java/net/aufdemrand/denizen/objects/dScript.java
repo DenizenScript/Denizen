@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.objects;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class dScript implements dObject {
 
@@ -215,7 +215,7 @@ public class dScript implements dObject {
 
     @Override
     public String debug() {
-        return "<G>" + prefix + "='<A>" + name + "<Y>(" + getType() + ")<G>'  ";
+        return String.format("<G>%s='<A>%s<Y>(%s)<G>'  ", prefix, name, getType());
     }
 
     @Override

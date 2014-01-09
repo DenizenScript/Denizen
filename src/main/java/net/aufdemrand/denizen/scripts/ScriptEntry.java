@@ -1,13 +1,22 @@
 package net.aufdemrand.denizen.scripts;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
-
-import java.util.*;
 
 
 /**
@@ -38,7 +47,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     private ScriptQueue queue = null;
 
     // ScriptEntry Context
-    private Map<String, Object> objects = new HashMap<String, Object>();
+    private final Map<String, Object> objects = new HashMap<String, Object>();
 
 
     // Allow cloning of the scriptEntry. Can be useful in 'loops', etc.
@@ -73,29 +82,40 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
         // Check if this is an 'instant' or 'waitfor' command. These are
         // features that are used with 'TimedScriptQueues'
-        if (command.startsWith("^")) {
-            instant = true;
-            this.command = command.substring(1);
-        } else if (command.startsWith("~")) {
-            waitfor = true;
-            this.command = command.substring(1);
+        if (command.length() > 0) {
+            if (command.charAt(0) == '^') {
+                instant = true;
+                this.command = command.substring(1);
+            } else if (command.charAt(0) == '~') {
+                waitfor = true;
+                this.command = command.substring(1);
+            }
         }
 
         // Store the args. The CommandExecuter will fill these out.
-        this.args = new ArrayList<String>();
         if (arguments != null) {
             this.args = Arrays.asList(arguments);
             // Keep seperate list for 'un-tagged' copy of the arguments.
             // This will be useful if cloning the script entry for use in a loop, etc.
             this.pre_tagged_args = Arrays.asList(arguments);
+        } else {
+            this.args = new ArrayList<String>();
         }
 
         // Check for replaceable tags. We'll try not to make a habit of checking for tags/doing
         // tag stuff if the script entry doesn't have any to begin with.
-        for (String arg : args) {
-            if (arg.contains("<") && arg.contains(">")) {
-                has_tags = true;
-                break;
+        argLoop: for (String arg : args) {
+            boolean left = false, right = false;
+            for (int i = 0; i < arg.length(); i++) {
+                char c = arg.charAt(i);
+                if (c == '<')
+                    left = true;
+                if (c == '>')
+                    right = true;
+                if (left && right) {
+                    has_tags = true;
+                    break argLoop;
+                }
             }
         }
     }
@@ -230,8 +250,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
 
     public boolean hasObject(String key) {
-        return (objects.containsKey(key.toUpperCase())
-                && objects.get(key.toUpperCase()) != null);
+        return objects.containsKey(key.toUpperCase());
     }
 
 

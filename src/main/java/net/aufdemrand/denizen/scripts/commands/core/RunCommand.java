@@ -1,16 +1,22 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.List;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
-import java.util.List;
 
 /**
  * Runs a task script in a new ScriptQueue.
@@ -88,37 +94,37 @@ public class RunCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesPrefix("i, id"))
+            if (arg.matchesPrefix("i", "id"))
                 scriptEntry.addObject("id", arg.asElement());
 
-            else if (arg.matchesPrefix("a, as")
+            else if (arg.matchesPrefix("a", "as")
                     && arg.matchesArgumentType(dPlayer.class))
-                scriptEntry.setPlayer((dPlayer) arg.asType(dPlayer.class));
+                scriptEntry.setPlayer(arg.asType(dPlayer.class));
 
-            else if (arg.matchesPrefix("a, as")
+            else if (arg.matchesPrefix("a", "as")
                     && arg.matchesArgumentType(dNPC.class))
-                scriptEntry.setNPC((dNPC) arg.asType(dNPC.class));
+                scriptEntry.setNPC(arg.asType(dNPC.class));
 
-                // Catch invalid entry for 'as' argument
-            else if (arg.matchesPrefix("a, as"))
+            // Catch invalid entry for 'as' argument
+            else if (arg.matchesPrefix("a", "as"))
                 dB.echoDebug(scriptEntry, "Specified target was not attached. Value must contain a valid PLAYER or NPC object.");
 
-            else if (arg.matchesPrefix("d, def, define, c, context"))
+            else if (arg.matchesPrefix("d", "def", "define", "c", "context"))
                 scriptEntry.addObject("definitions", arg.asType(dList.class));
 
-            else if (arg.matches("instant, instantly"))
+            else if (arg.matches("instant", "instantly"))
                 scriptEntry.addObject("instant", new Element(true));
 
             else if (arg.matchesPrefix("delay")
                     && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("delay", arg.asType(Duration.class));
 
-            else if (arg.matches("local, locally"))
+            else if (arg.matches("local", "locally"))
                 scriptEntry.addObject("local", new Element(true));
 
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)
-                    && !arg.matchesPrefix("p, path"))
+                    && !arg.matchesPrefix("p", "path"))
                 scriptEntry.addObject("script", arg.asType(dScript.class));
 
             else if (!scriptEntry.hasObject("path"))
