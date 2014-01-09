@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import java.util.Arrays;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -50,9 +48,12 @@ public class BreakCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a location!");
 
         // Use the NPC or the Player as the default entity
-        scriptEntry.defaultObject("entities",
-                (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
-                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
+        scriptEntry.defaultObject("entity",
+                (scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null),
+                (scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() : null));
+
+        if (!scriptEntry.hasObject("entity"))
+            throw new InvalidArgumentsException("Must specify an entity!");
 
         scriptEntry.defaultObject("radius", new Element(1));
 
