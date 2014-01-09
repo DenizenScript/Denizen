@@ -182,7 +182,7 @@ public class RunCommand extends AbstractCommand {
             queue = TimedQueue.getQueue(id).addEntries(entries);
 
             // Check speed of the script if a TimedQueue -- if identified, use the speed from the script.
-            if (script.getContainer().contains("speed"))
+            if (script.getContainer() != null && script.getContainer().contains("speed"))
                 ((TimedQueue) queue).setSpeed(Duration.valueOf(script.getContainer().getString("speed")).getTicks());
 
         }
