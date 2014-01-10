@@ -80,7 +80,9 @@ public class aH {
 
         public String raw_value;
         String prefix = null;
+        String lowerPrefix = null;
         String value;
+        String lowerValue;
         boolean has_prefix = false;
 
         // Construction
@@ -96,7 +98,9 @@ public class aH {
                 has_prefix = true;
                 String[] split = string.split(":", 2);
                 prefix = split[0];
+                lowerPrefix = prefix.toLowerCase();
                 value = split[1];
+                lowerValue = value.toLowerCase();
             }
 
         }
@@ -108,7 +112,7 @@ public class aH {
 
 
         public boolean startsWith(String string) {
-            return value.startsWith(string.toLowerCase());
+            return lowerValue.startsWith(string.toLowerCase());
         }
 
 
@@ -126,7 +130,7 @@ public class aH {
 
         public boolean matches(String values) {
             for (String value : values.split(",")) {
-                if (value.trim().toLowerCase().equals(this.value))
+                if (value.trim().toLowerCase().equals(lowerValue))
                     return true;
             }
             return false;
@@ -134,7 +138,7 @@ public class aH {
 
         public boolean matches(String... values) {
             for (String value : values) {
-                if (value.toLowerCase().equals(this.value))
+                if (value.toLowerCase().equals(lowerValue))
                     return true;
             }
             return false;
@@ -143,6 +147,7 @@ public class aH {
 
         public void replaceValue(String string) {
             value = string;
+            lowerValue = value.toLowerCase();
         }
 
 
@@ -177,7 +182,7 @@ public class aH {
         public boolean matchesPrefix(String values) {
             if (!hasPrefix()) return false;
             for (String value : values.split(",")) {
-                if (value.trim().toLowerCase().equals(prefix))
+                if (value.trim().toLowerCase().equals(lowerPrefix))
                     return true;
             }
             return false;
@@ -186,7 +191,7 @@ public class aH {
         public boolean matchesPrefix(String... values) {
             if (!hasPrefix()) return false;
             for (String value : values) {
-                if (value.toLowerCase().equals(prefix))
+                if (value.toLowerCase().equals(lowerPrefix))
                     return true;
             }
             return false;
@@ -245,7 +250,7 @@ public class aH {
         // Check if this argument matches a dList of a certain dObject
         public boolean matchesArgumentList(Class<? extends dObject> dClass) {
 
-            dList list = new dList(this.getValue().replace("li@", ""));
+            dList list = new dList(this.value.replace("li@", ""));
 
             return list.containsObjectsFrom(dClass);
         }
