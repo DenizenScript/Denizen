@@ -2,8 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
