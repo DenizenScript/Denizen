@@ -100,8 +100,8 @@ public class aH {
                 prefix = split[0];
                 lowerPrefix = prefix.toLowerCase();
                 value = split[1];
-                lowerValue = value.toLowerCase();
             }
+            lowerValue = value.toLowerCase();
 
         }
 

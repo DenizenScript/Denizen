@@ -6,10 +6,9 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.objects.properties.inventory.InventoryContents;
-import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
@@ -209,14 +208,22 @@ public class dInventory implements dObject, Notable, Adjustable {
         loadIdentifiers();
     }
 
+    public dInventory(int size, String title) {
+        if (size <= 0 || size%9 != 0) {
+            dB.echoError("InventorySize must be multiple of 9, and greater than 0.");
+            return;
+        }
+        inventory = Bukkit.getServer().createInventory(null, size, title);
+        loadIdentifiers();
+    }
+
     public dInventory(InventoryType type) {
         inventory = Bukkit.getServer().createInventory(null, type);
         loadIdentifiers();
     }
 
     public dInventory(int size) {
-        inventory = Bukkit.getServer().createInventory(null, size);
-        loadIdentifiers();
+        this(size, "Chest");
     }
 
     public dInventory(String idType) {
@@ -233,8 +240,13 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (element.matchesEnum(InventoryType.values()))
                 inventory = Bukkit.getServer().createInventory(null,
                         InventoryType.valueOf(((Element) object).asString().toUpperCase()));
-            else if (element.isInt())
-                inventory = Bukkit.getServer().createInventory(null, element.asInt());
+            else if (element.isInt()) {
+                String title = null;
+                if (inventory != null)
+                    title = inventory.getTitle();
+                inventory = Bukkit.getServer().createInventory(null, element.asInt(),
+                        title != null ? title : "Chest");
+            }
         }
         if (inventory != null)
             loadIdentifiers();
@@ -264,6 +276,47 @@ public class dInventory implements dObject, Notable, Adjustable {
      */
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+        loadIdentifiers();
+    }
+
+    public void setTitle(String title) {
+        if (!idType.equals("generic") || title == null)
+            return;
+        else if (inventory == null) {
+            inventory = Bukkit.getServer().createInventory(null, maxSlots, title);
+            loadIdentifiers();
+            return;
+        }
+        ItemStack[] contents = inventory.getContents();
+        inventory = Bukkit.createInventory(null, inventory.getSize(), title);
+        inventory.setContents(contents);
+        loadIdentifiers();
+    }
+
+    public void setSize(int size) {
+        if (!idType.equals("generic"))
+            return;
+        else if (size <= 0 || size%9 != 0) {
+            dB.echoError("InventorySize must be multiple of 9, and greater than 0.");
+            return;
+        }
+        else if (inventory == null) {
+            inventory = Bukkit.getServer().createInventory(null, size, "Chest");
+            loadIdentifiers();
+            return;
+        }
+        int oldSize = inventory.getSize();
+        ItemStack[] oldContents = inventory.getContents();
+        ItemStack[] newContents = new ItemStack[size];
+        if (oldSize > size)
+            for (int i = 0; i < size; i++)
+                newContents[i] = oldContents[i];
+        else
+            newContents = oldContents;
+        String title = inventory.getTitle();
+        inventory = Bukkit.getServer().createInventory(null, size,
+                (title != null ? title : inventory.getType().getDefaultTitle()));
+        inventory.setContents(newContents);
         loadIdentifiers();
     }
 
@@ -366,6 +419,22 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public void setContents(ItemStack[] contents) {
+        inventory.setContents(contents);
+    }
+
+    public void setContents(dList list) {
+        int size = inventory.getSize();
+        ItemStack[] contents = new ItemStack[size];
+        int filled = 0;
+        for (dItem item : list.filter(dItem.class)) {
+            contents[filled] = item.getItemStack();
+            filled++;
+        }
+        final ItemStack air = new ItemStack(Material.AIR);
+        while (filled < size) {
+            contents[filled] = air;
+            filled ++;
+        }
         inventory.setContents(contents);
     }
 
@@ -919,16 +988,6 @@ public class dInventory implements dObject, Notable, Adjustable {
             return getEquipment().getAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <in@inventory.title>
-        // @returns Element
-        // @description
-        // Returns the title of the inventory.
-        // -->
-        if (attribute.startsWith("title")) {
-            return inventory.getTitle();
-        }
-
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
@@ -956,7 +1015,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // <in@inventory.list_contents.with_lore[<lore>].simple>
         // -->
         if (mechanism.matches("contents") && idType.equals("generic")) {
-            InventoryContents.getFrom(this).setContents(value.asType(dList.class));
+            setContents(value.asType(dList.class));
         }
 
         // <--[mechanism]
@@ -970,7 +1029,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (mechanism.matches("size") && idType.equals("generic")
                 && mechanism.requireInteger()) {
-            InventorySize.getFrom(this).setSize(value.asInt());
+            setSize(value.asInt());
+        }
+
+        if (mechanism.matches("title") && idType.equals("generic")) {
+            setTitle(value.asString());
         }
 
         // <--[mechanism]
