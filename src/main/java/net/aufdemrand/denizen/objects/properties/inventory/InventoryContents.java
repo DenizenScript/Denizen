@@ -94,6 +94,8 @@ public class InventoryContents implements Property {
 
     @Override
     public String getPropertyString() {
+        if (!inventory.getIdType().equals("generic"))
+            return null;
         return getContents(false).identify();
     }
 

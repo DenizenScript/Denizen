@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.objects.Element;
@@ -34,6 +35,8 @@ public class InventorySize implements Property {
     }
 
     public int getSize() {
+        if (inventory.getInventory() == null)
+            return 0;
         return inventory.getInventory().getSize();
     }
 
@@ -44,18 +47,23 @@ public class InventorySize implements Property {
             dB.echoError("InventorySize must be multiple of 9.");
         else {
             int oldSize = getSize();
-            ItemStack[] oldContents = inventory.getInventory().getContents();
-            if (oldSize > size) {
-                ItemStack[] newContents = new ItemStack[size];
-                for (int i = 0; i < size; i++)
-                    newContents[i] = oldContents[i];
-                inventory.setInventory(Bukkit.getServer().createInventory(null, size));
-                inventory.setContents(newContents);
+            ItemStack[] oldContents;
+            if (inventory.getInventory() != null) {
+                oldContents = inventory.getInventory().getContents();
+                if (oldSize > size) {
+                    ItemStack[] newContents = new ItemStack[size];
+                    for (int i = 0; i < size; i++)
+                        newContents[i] = oldContents[i];
+                    inventory.setInventory(Bukkit.getServer().createInventory(null, size));
+                    inventory.setContents(newContents);
+                }
+                else {
+                    inventory.setInventory(Bukkit.getServer().createInventory(null, size));
+                    inventory.setContents(oldContents);
+                }
             }
-            else {
+            else
                 inventory.setInventory(Bukkit.getServer().createInventory(null, size));
-                inventory.setContents(oldContents);
-            }
         }
     }
 
@@ -66,7 +74,7 @@ public class InventorySize implements Property {
 
     @Override
     public String getPropertyString() {
-        if (getSize() > 0)
+        if (getSize() > 0 && inventory.getIdType().equals("generic"))
             return String.valueOf(getSize());
         else
             return null;

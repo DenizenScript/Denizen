@@ -959,7 +959,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         if (mechanism.matches("size") && idType.equals("generic")
-                && idHolder.equals("CHEST") && mechanism.requireInteger()) {
+                && mechanism.requireInteger()) {
             InventorySize.getFrom(this).setSize(value.asInt());
         }
 
