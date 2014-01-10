@@ -53,11 +53,12 @@ public class FlagTags implements Listener {
         }
 
         // Get index, if specified
-        if (event.hasValueContext()) {
-            try {
-                index = Integer.valueOf(event.getValueContext());
-            } catch (NumberFormatException e) { index = -1; }
-        }
+        // TODO: Remove this code at 1.0 release. This call been deprecated and is now removed!
+        // if (event.hasValueContext()) {
+        //    try {
+        //        index = Integer.valueOf(event.getValueContext());
+        //    } catch (NumberFormatException e) { index = -1; }
+        // }
 
         // Check flag replacement type
         if (event.getType().toUpperCase().startsWith("G")) {

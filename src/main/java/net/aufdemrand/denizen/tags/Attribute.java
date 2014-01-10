@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class Attribute {
 
 
-    public static List<String> seperate_attributes(String attributes) {
+    private static List<String> separate_attributes(String attributes) {
 
         List<String> matches = new ArrayList<String>();
 
@@ -30,24 +30,25 @@ public class Attribute {
 
         for (int x = 0; x < attributes.length(); x++) {
 
-            if (attributes.charAt(x) == '[')
+            Character chr = attributes.charAt(x);
+
+            if (chr == '[')
                 braced++;
 
             else if (x == attributes.length() - 1) {
                 x2 = x + 1;
             }
 
-            else if (attributes.charAt(x) == ']') {
+            else if (chr == ']') {
                 if (braced > 0) braced--;
             }
 
-            else if (attributes.charAt(x) == '.'
+            else if (chr == '.'
                     && !StringUtils.isNumeric(Character.toString(attributes.charAt(x + 1)))
                     && braced == 0)
                 x2 = x;
 
             if (x2 > -1) {
-                // dB.log(attributes.substring(x1, x2));
                 matches.add(attributes.substring(x1, x2));
                 x2 = -1;
                 x1 = x + 1;
@@ -68,7 +69,6 @@ public class Attribute {
 
     String raw_tag;
     String origin;
-    public static Pattern attributer = ReplaceableTagEvent.componentRegex;
 
     public ScriptEntry getScriptEntry() {
         return scriptEntry;
@@ -88,13 +88,7 @@ public class Attribute {
             return;
         }
 
-        // dB.log("1) " + attributes);
-
-        List<String> matches = seperate_attributes(attributes);
-
-
-
-        this.attributes = matches;
+        this.attributes = separate_attributes(attributes);
     }
 
     public boolean startsWith(String string) {

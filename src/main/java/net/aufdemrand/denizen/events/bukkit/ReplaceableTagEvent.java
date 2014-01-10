@@ -1,107 +1,74 @@
 package net.aufdemrand.denizen.events.bukkit;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Bukkit event that fires on the finding of a dScript replaced tag called
- * from argument creation (if a QUICKTAG '^') and upon execution. Replaceable
- * tags are enclosed in '< >'s.
+ * Bukkit event that fires on the finding of a replaceable tag, as indicated by surrounding < >'s.
  *
- * Tag Structure:
- * <^NAME[CONTEXT].TYPE[CONTEXT].SUBTYPE[CONTEXT].SPECIFIER[CONTEXT]:VALUE || FALLBACK VALUE>
+ * @author Jeremy Schroeder
  *
- * ^ - Optional. Specifies a QUICKTAG which is wasReplaced upon creation of arguments.
- *   Used in buildArgs(). If not used, replacement is done in Executer's execute()
- * FALLBACK VALUE is used internally to specify the replace value if nothing else
- *   is substituted. Must be in '( )'s.
- *
- * Examples:
- * <PLAYER.NAME>
- * <PLAYER.ITEM_IN_HAND.LORE[1] || None.>
- * <NPC.NAME.NICKNAME>
- * <^FLAG.D:FRIENDS>
- *
- * @author Jeremy Schroeder, David Cernat
+ * @version 1.0
  *
  */
 
 public class ReplaceableTagEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
+
     private final dPlayer player;
     private final dNPC npc;
 
     private boolean instant = false;
     private boolean wasReplaced = false;
 
-    private String name = null;
-    private String nameContext = null;
-
-    private String type = null;
-    private String typeContext = null;
-
-    private String subType = null;
-    private String subTypeContext = null;
-
-    private String specifier = null;
-    private String specifierContext = null;
-
-    private String value = null;
-    private String valueContext = null;
-
     private String alternative = null;
     private String replaced = null;
+    private String value = null;
+    private Attribute core_attributes = null;
 
     private ScriptEntry scriptEntry = null;
-
-
-    private static Pattern bracketReplaceRegex = Pattern.compile("[\\[\\]]");
 
     // Alternative text pattern that matches everything after ||
     private static Pattern alternativeRegex = Pattern.compile("\\|\\|(.*)");
 
-    // Bracket pattern that matches brackets
-    private static Pattern bracketRegex = Pattern.compile("\\[[^\\]\\[]*?\\](?=\\.?$)");
-
-    // Value pattern that matches everything after the last : found
-    // that isn't followed by ] without being followed by [ first,
-    // and is therefore not between brackets
-    private static Pattern valueRegex = Pattern.compile(":([^\\]]+(\\[([^\\[])+)?)$");
-
-    // Component pattern that matches groups of characters that are not
-    // [] or . and that optionally contain [] and a . at the end
-    public static Pattern componentRegex = Pattern.compile("[^\\.]+(\\.)?(\\d+[^\\.]*\\.?)*");
-
     public String raw_tag;
 
-    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) {
-        this(player, npc, tag, null);
-    }
+    ////////////
+    // Constructors
 
+    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) { this(player, npc, tag, null); }
 
     public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry) {
-        // Add ScriptEntry if available
+
+        // Reference ScriptEntry if available
         this.scriptEntry = scriptEntry;
 
+        // Reference player/npc
         this.player = player;
-
-        this.replaced = tag;
         this.npc = npc;
 
-        // check if tag is 'instant'
+        // If tag is not replaced, return the tag
+        // TODO: Possibly make this return "null" ... might break some
+        // scripts using tags incorrectly, but makes more sense overall
+        this.replaced = tag;
+
+        // Check if tag is 'instant'
         if (tag.length() > 0) {
             char start = tag.charAt(0);
-            if (start == '!' || start == '^')
-            {
+            if (start == '!' || start == '^') {
                 instant = true;
                 tag = tag.substring(1);
             }
@@ -110,138 +77,133 @@ public class ReplaceableTagEvent extends Event {
         // Get alternative text
         Matcher alternativeMatcher = alternativeRegex.matcher(tag);
 
-        if (alternativeMatcher.find())
-        {
-            tag = tag.substring(0, alternativeMatcher.start()).trim(); // remove found alternative from tag
-            alternative = alternativeMatcher.group(1).trim();
+        if (alternativeMatcher.find()) {
+            // remove found alternative from tag
+            tag = tag.substring(0, alternativeMatcher.start()).trim();
             // get rid of the || at the alternative's start and any trailing spaces
+            alternative = alternativeMatcher.group(1).trim();
         }
 
-        // Alternatives are stripped, base context is stripped, let's remember the raw tag for
-        // the attributer.
+        // Get value (if present)
+
+        if (tag.indexOf(':') > 0) {
+            int x1 = -1;
+            int braced = 0;
+
+            for (int x = 0; x < tag.length(); x++) {
+                Character chr = tag.charAt(x);
+
+                if (chr == '[')
+                    braced++;
+
+                else if (chr == ']') {
+                    if (braced > 0) braced--;
+                }
+
+                else if (chr == ':' && braced == 0 && x != tag.length() - 1 && x > 0) {
+                    x1 = x;
+                    break;
+                }
+            }
+
+            if (x1 > -1) {
+                value = tag.substring(x1 + 1);
+                tag = tag.substring(0, x1);
+            }
+        }
+
+        // Alternatives are stripped, value is stripped, let's remember the raw tag for the attributer.
         raw_tag = tag;
 
-        // Get value
-        Matcher bracketMatcher = null;
-        Matcher valueMatcher = valueRegex.matcher(tag);
-
-        if (valueMatcher.find())
-        {
-            tag = tag.substring(0, valueMatcher.start()); // remove found value from tag
-
-            value = valueMatcher.group(1); // get rid of the : at the value's start
-            bracketMatcher = bracketRegex.matcher(value);
-
-            if (bracketMatcher.find())
-            {
-                valueContext = bracketReplaceRegex.matcher(bracketMatcher.group()).replaceAll("");
-                value = value.substring(0, bracketMatcher.start()) +
-                        value.substring(bracketMatcher.end());
-                // TODO: could use matcher.appendReplacement / matcher.appendTail
-            }
-        }
-
-        String tagPart = null;
-        int n = 0;
-
-        Matcher componentMatcher = componentRegex.matcher(tag);
-
-        while (componentMatcher.find() && n < 4)
-        {
-            tagPart = componentMatcher.group();
-            bracketMatcher = bracketRegex.matcher(tagPart);
-
-            String component = null, context = null;
-
-            if (bracketMatcher.find()) {
-                component = tagPart.substring(0, bracketMatcher.start());
-                context = bracketReplaceRegex.matcher(bracketMatcher.group()).replaceAll("");
-            } else {
-                component = tagPart.endsWith(".") ? tagPart.substring(0, tagPart.length() - 1): tagPart;
-            }
-
-            switch(n) {
-                case 0:
-                    name = component;
-                    nameContext = context;
-                    break;
-                case 1:
-                    type = component;
-                    typeContext = context;
-                    break;
-                case 2:
-                    subType = component;
-                    subTypeContext = context;
-                    break;
-                case 3:
-                    specifier = component;
-                    specifierContext = context;
-                    break;
-            }
-
-            n++;
-        }
+        // Use Attributes system to get type/subtype/etc. etc. for 'static/legacy' tags.
+        core_attributes = new Attribute(raw_tag, scriptEntry);
     }
 
+
+    // Matches method (checks first attribute (name) of the tag)
+
+    public boolean matches(String tagName) {
+        String[] tagNames = tagName.split(",");
+        for (String string: tagNames)
+            if (core_attributes.getAttribute(1).equalsIgnoreCase(string.trim())) return true;
+        return false;
+    }
+
+
+
+    ////////
+    // Replaceable Tag 'Parts'
+    // <name.type.subtype.specifier:value>
+
+    // Name
+
     public String getName() {
-        return name;
+        return core_attributes.getAttribute(1);
     }
 
     public String getNameContext() {
-        return nameContext;
+        return core_attributes.getContext(1);
     }
 
     public boolean hasNameContext() {
-        return nameContext != null;
+        return core_attributes.hasContext(1);
     }
 
+    // Type
+
     public String getType() {
-        return type;
+        return core_attributes.getAttribute(2);
     }
 
     public boolean hasType() {
-        return type != null;
+        return core_attributes.getAttribute(2).length() > 0;
     }
 
     public String getTypeContext() {
-        return typeContext;
+        return core_attributes.getContext(2);
     }
 
     public boolean hasTypeContext() {
-        return typeContext != null;
+        return core_attributes.hasContext(2);
     }
 
+    // Subtype
+
     public String getSubType() {
-        return subType;
+        return core_attributes.getAttribute(3);
     }
 
     public boolean hasSubType() {
-        return subType != null;
+        return core_attributes.getAttribute(3).length() > 0;
     }
 
     public String getSubTypeContext() {
-        return subTypeContext;
+        return core_attributes.getContext(3);
     }
 
     public boolean hasSubTypeContext() {
-        return subTypeContext != null;
+        return core_attributes.hasContext(3);
     }
 
+    // Specifier
+
     public String getSpecifier() {
-        return specifier;
+        return core_attributes.getAttribute(4);
     }
 
     public boolean hasSpecifier() {
-        return specifier != null;
+        return core_attributes.getAttribute(4).length() > 0;
     }
 
     public String getSpecifierContext() {
-        return specifierContext;
+        return core_attributes.getContext(4);
     }
 
     public boolean hasSpecifierContext() {
-        return specifierContext != null;
+        return core_attributes.hasContext(4);
     }
+
+    // Value
 
     public String getValue() {
         return value;
@@ -251,13 +213,7 @@ public class ReplaceableTagEvent extends Event {
         return value != null;
     }
 
-    public String getValueContext() {
-        return valueContext;
-    }
-
-    public boolean hasValueContext() {
-        return valueContext != null;
-    }
+    // Alternative
 
     public String getAlternative() {
         return alternative;
@@ -266,6 +222,8 @@ public class ReplaceableTagEvent extends Event {
     public boolean hasAlternative() {
         return alternative != null;
     }
+
+    // Other internal mechanics
 
     public HandlerList getHandlers() {
         return handlers;
@@ -291,13 +249,6 @@ public class ReplaceableTagEvent extends Event {
         return instant;
     }
 
-    public boolean matches(String tagName) {
-        String[] tagNames = tagName.split(",");
-        for (String string: tagNames)
-            if (this.name.equalsIgnoreCase(string.trim())) return true;
-        return false;
-    }
-
     public boolean replaced() {
         return wasReplaced;
     }
@@ -307,32 +258,12 @@ public class ReplaceableTagEvent extends Event {
         wasReplaced = true;
     }
 
-    // TODO: Remove in 1.0
-    @Deprecated
-    private void parseContext() {
-        dB.log("Using 'context' in this way has been deprecated, as it is now possible " +
-                "to specify specific objects.");
-    }
-
     public boolean hasScriptEntryAttached() {
         return scriptEntry != null;
     }
 
     public ScriptEntry getScriptEntry() {
         return scriptEntry;
-    }
-
-    @Override
-    public String toString() {
-        return  (instant ? "Instant=true," : "")
-                + "Player=" + (player != null ? player.identify() : "null") + ", "
-                + "NPC=" + (npc != null ? npc.getName() : "null") + ", "
-                + "NAME=" + (nameContext != null ? name + "(" + nameContext + "), " : name + ", ")
-                + (type != null ? (typeContext != null ? "TYPE=" + type + "(" + typeContext + "), " : "TYPE=" + type + ", ") : "" )
-                + (subType != null ? (subTypeContext != null ? "SUBTYPE=" + subType + "(" + subTypeContext + "), " : "SUBTYPE=" + subType + ", ") : "")
-                + (specifier != null ? (specifierContext != null ? "SPECIFIER=" + specifier + "(" + specifierContext + "), " : "SPECIFIER=" + specifier + ", ") : "")
-                + (value != null ? (valueContext != null ? "VALUE=" + value + "(" + valueContext + "), " : "VALUE=" + value + ", ") : "")
-                + (alternative != null ? "ALTERNATIVE=" + alternative + ", " : "");
     }
 
 }
