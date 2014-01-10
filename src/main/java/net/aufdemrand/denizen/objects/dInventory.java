@@ -184,7 +184,8 @@ public class dInventory implements dObject, Notable, Adjustable {
      */
     public static boolean matches(String arg) {
 
-        if (valueOf(arg) != null)
+        // Every single dInventory should have the in@ prefix. No exceptions.
+        if (arg.toLowerCase().startsWith("in@"))
             return true;
 
         return false;
@@ -882,7 +883,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                         .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <in@inventory.stacks>
+        // @attribute <in@inventory.stacks[<item>]>
         // @returns Element(Number)
         // @description
         // Returns the number of itemstacks that match an item if one is
@@ -947,7 +948,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @name contents
         // @input dList(dItem)
         // @description
-        // Sets the content of the inventory.
+        // Sets the contents of the inventory. (Only works for "generic" inventories.)
         // @tags
         // <in@inventory.list_contents>
         // <in@inventory.list_contents.simple>
@@ -958,12 +959,31 @@ public class dInventory implements dObject, Notable, Adjustable {
             InventoryContents.getFrom(this).setContents(value.asType(dList.class));
         }
 
+        // <--[mechanism]
+        // @object dInventory
+        // @name size
+        // @input Element(Number)
+        // @description
+        // Sets the size of the inventory. (Only works for "generic" inventories.)
+        // @tags
+        // <in@inventory.size>
+        // -->
         if (mechanism.matches("size") && idType.equals("generic")
                 && mechanism.requireInteger()) {
             InventorySize.getFrom(this).setSize(value.asInt());
         }
 
-        if (mechanism.matches("holder")) {
+        // <--[mechanism]
+        // @object dInventory
+        // @name holder
+        // @input dObject
+        // @description
+        // Changes the holder of the dInventory, therefore completely reconfiguring
+        // the inventory to that of the holder. The current object will be completely
+        // destroyed, and replaced with a copy of the new holder's dInventory.
+        // TODO: Possibly make this unusable by Adjust command?
+        // -->
+        if (mechanism.matches("holder") /*&& youKnowWhatYoureDoing()*/) {
             net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder holder =
                     net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder.getFrom(this);
             if (value.matchesType(dEntity.class))

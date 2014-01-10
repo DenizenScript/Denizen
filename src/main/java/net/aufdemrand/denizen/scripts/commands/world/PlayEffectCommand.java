@@ -67,8 +67,10 @@ public class PlayEffectCommand extends AbstractCommand {
                 else if (arg.startsWith("iconcrack_")) {
                     // Allow iconcrack_[id] for item break effects (ex: iconcrack_1)
                     Element typeId = new Element(arg.getValue().substring(10));
-                    if (typeId.isInt())
+                    if (typeId.isInt() && typeId.asInt() > 0)
                         scriptEntry.addObject("iconcrack", typeId);
+                    else
+                        dB.echoError("Invalid iconcrack_[id]. [id] should be a number greater than 0.");
                 }
                 else if (arg.matchesEnum(Effect.values())) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
