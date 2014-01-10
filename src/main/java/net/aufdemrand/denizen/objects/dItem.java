@@ -180,7 +180,7 @@ public class dItem implements dObject, Notable, Adjustable {
                 return stack;
             }
             catch (Exception e) {
-                if (!string.equalsIgnoreCase("none"))
+                if (!string.equalsIgnoreCase("none") && !nope)
                     dB.log("Does not match a valid item ID or material: " + string);
             }
         }
