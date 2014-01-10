@@ -200,20 +200,20 @@ public class dList extends ArrayList<String> implements dObject {
 
 
     // Return a list that includes only elements belonging to a certain class
-    public List<dObject> filter(Class<? extends  dObject> dClass) {
+    public <T extends dObject> List<T> filter(Class<T> dClass) {
         return filter(dClass, null);
     }
 
 
-    public List<dObject> filter(Class<? extends dObject> dClass, ScriptEntry entry) {
-        List<dObject> results = new ArrayList<dObject>();
+    public <T extends dObject> List<T> filter(Class<T> dClass, ScriptEntry entry) {
+        List<T> results = new ArrayList<T>();
 
         for (String element : this) {
 
             try {
                 if (ObjectFetcher.checkMatch(dClass, element)) {
 
-                    dObject object = ObjectFetcher.getObjectFrom(dClass, element,
+                    T object = ObjectFetcher.getObjectFrom(dClass, element,
                             (entry != null ? entry.getPlayer(): null),
                             (entry != null ? entry.getNPC(): null));
 

@@ -74,12 +74,20 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
             else if (!scriptEntry.hasObject("value") &&
                     arg.matchesPrefix("VALUE")) {
-                scriptEntry.addObject("value", arg.asElement());
+                if (arg.matchesArgumentType(dList.class))
+                    scriptEntry.addObject("value", arg.asType(dList.class));
+                else
+                    scriptEntry.addObject("value", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("id") &&
                     arg.matchesPrefix("ID")) {
                 scriptEntry.addObject("id", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("split") &&
+                    arg.matches("split_list")) {
+                scriptEntry.addObject("split", Element.TRUE);
             }
 
             else arg.reportUnhandled();
@@ -106,13 +114,23 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
         Element filename = scriptEntry.getElement("filename");
         Element key = scriptEntry.getElement("key");
-        Element value = scriptEntry.getElement("value");
+        dObject value = scriptEntry.getdObject("value");
+        Element split = scriptEntry.getElement("split");
         Action action = Action.valueOf(scriptEntry.getElement("action").asString().toUpperCase());
         String id = scriptEntry.getElement("id").asString();
 
         YamlConfiguration yamlConfiguration;
 
+        dB.report(scriptEntry, getName(),
+                aH.debugObj("action", action)
+                        + aH.debugObj("id", id)
+                        + (filename != null ? filename.debug() : "")
+                        + (key != null ? key.debug() : "")
+                        + (value != null ? value.debug() : "")
+                        + (split != null ? split.debug() : ""));
+
         // Do action
+        id = id.toUpperCase();
 
         switch (action) {
 
@@ -124,13 +142,13 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 }
                 yamlConfiguration = YamlConfiguration.loadConfiguration(file);
                 if (yamlConfiguration != null)
-                    yamls.put(id.toUpperCase(), yamlConfiguration);
+                    yamls.put(id, yamlConfiguration);
                 break;
 
             case SAVE:
-                if (yamls.containsKey(id.toUpperCase())) {
+                if (yamls.containsKey(id)) {
                     try {
-                        yamls.get(id.toUpperCase()).save(new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename.asString()));
+                        yamls.get(id).save(new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename.asString()));
                     } catch (IOException e) {
                         dB.echoError(e);
                     }
@@ -138,8 +156,14 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 break;
 
             case WRITE:
-                if (yamls.containsKey(id.toUpperCase()))
-                    yamls.get(id.toUpperCase()).set(key.asString(), value.asString());
+                if (yamls.containsKey(id)) {
+                    if (value instanceof Element)
+                        yamls.get(id).set(key.asString(), ((Element) value).asString());
+                    else if (split != null && split.asBoolean())
+                        yamls.get(id).set(key.asString(), (dList) value);
+                    else
+                        yamls.get(id).set(key.asString(), ((dList) value).identify());
+                }
                 break;
 
             case CREATE:
@@ -203,16 +227,35 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // Returns the value of the key at the path.
         // -->
         if (attribute.startsWith("read")) {
+            attribute.fulfill(1);
+
+            // <--[tag]
+            // @attribute <yaml[<id>].read[<path>].as_list>
+            // @returns dList
+            // @description
+            // Returns the values of the key at the path as a dList.
+            // -->
+            if (attribute.startsWith("as_list")) {
+                List<String> list = getYaml(id).getStringList(path);
+                if (list == null) {
+                    dB.echoDebug(event.getScriptEntry(), "YAML tag '" + event.raw_tag + "' has returned null.");
+                    event.setReplaced(new Element("null").getAttribute(attribute));
+                    return;
+                }
+                event.setReplaced(new dList(list).getAttribute(attribute.fulfill(1)));
+                return;
+            }
+
             String value = getYaml(id).getString(path);
             if (value == null) {
                 // If value is null, the key at the specified path didn't exist.
                 dB.echoDebug(event.getScriptEntry(), "YAML tag '" + event.raw_tag + "' has returned null.");
-                event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
+                event.setReplaced(new Element("null").getAttribute(attribute));
                 return;
 
             }
             else {
-                event.setReplaced(new Element(value).getAttribute(attribute.fulfill(1)));
+                event.setReplaced(new Element(value).getAttribute(attribute));
                 return;
             }
         }

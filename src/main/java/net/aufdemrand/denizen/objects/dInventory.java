@@ -1,16 +1,15 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizen.objects.properties.inventory.InventoryContents;
+import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
@@ -33,7 +32,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-public class dInventory implements dObject, Notable {
+public class dInventory implements dObject, Notable, Adjustable {
 
     // The maximum number of slots a Bukkit inventory can have
     final static public int maxSlots = 54;
@@ -103,16 +102,38 @@ public class dInventory implements dObject, Notable {
 
         if (string == null) return null;
 
-        Matcher m = inventory_by_type.matcher(string);
+        ///////
+        // Handle objects with properties through the object fetcher
+        Matcher m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
+        if (m.matches()) {
+            return ObjectFetcher.getObjectFrom(dInventory.class, string, player, npc);
+        }
+
+        // Match in@scriptName for Inventory Scripts, as well as in@notableName
+        m = inventory_by_script.matcher(string);
+
+        if (m.matches()) {
+            if (ScriptRegistry.containsScript(m.group(2), InventoryScriptContainer.class))
+                return ScriptRegistry.getScriptContainerAs(m.group(2), InventoryScriptContainer.class)
+                        .getInventoryFrom(player, npc);
+
+            if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dInventory.class))
+                return (dInventory) NotableManager.getSavedObject(m.group(2));
+
+            if (m.group(2).toLowerCase().matches("npc|player|entity|location|equipment|generic"))
+                return new dInventory(m.group(2));
+        }
+
+        m = inventory_by_type.matcher(string);
 
         if (m.matches()) {
 
             // Set the type of the inventory holder
-            String type = m.group(2);
+            String type = m.group(2).toLowerCase();
             // Set the name/id/location of the inventory holder
             String holder = m.group(3);
 
-            if (type.equalsIgnoreCase("generic")) {
+            if (type.equals("generic")) {
                 Argument arg = Argument.valueOf(holder);
                 if (arg.matchesEnum(InventoryType.values())) {
                     return new dInventory(InventoryType.valueOf(holder.toUpperCase()));
@@ -124,17 +145,23 @@ public class dInventory implements dObject, Notable {
                     dB.echoError("That type of inventory does not exist!");
                 }
             }
-            else if (type.equalsIgnoreCase("entity")
-                     || type.equalsIgnoreCase("player")
-                     || type.equalsIgnoreCase("npc")) {
+            else if (type.equals("npc")) {
+                if (dNPC.matches(holder))
+                    return dNPC.valueOf(holder).getDenizenEntity().getInventory();
+            }
+            else if (type.equals("player")) {
+                if (dPlayer.matches(holder))
+                    return dPlayer.valueOf(holder).getDenizenEntity().getInventory();
+            }
+            else if (type.equals("entity")) {
                 if (dEntity.matches(holder))
                     return dEntity.valueOf(holder).getInventory();
             }
-            else if (type.equalsIgnoreCase("location")) {
+            else if (type.equals("location")) {
                 if (dLocation.matches(holder))
                     return dLocation.valueOf(holder).getInventory();
             }
-            else if (type.equalsIgnoreCase("equipment")) {
+            else if (type.equals("equipment")) {
                 dEntity.valueOf(holder).getEquipment();
             }
 
@@ -142,18 +169,6 @@ public class dInventory implements dObject, Notable {
             dB.echoError("Value of dInventory returning null. Invalid " +
                     type + " specified: " + holder);
             return null;
-        }
-
-        // Match in@scriptName for Inventory Scripts
-        m = inventory_by_script.matcher(string);
-
-        if (m.matches()) {
-            if (ScriptRegistry.containsScript(m.group(2), InventoryScriptContainer.class))
-                return ScriptRegistry.getScriptContainerAs(m.group(2), InventoryScriptContainer.class)
-                        .getInventoryFrom(player, npc);
-
-            if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dInventory.class))
-                return (dInventory) NotableManager.getSavedObject(m.group(2));
         }
 
         dB.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
@@ -203,6 +218,27 @@ public class dInventory implements dObject, Notable {
         loadIdentifiers();
     }
 
+    public dInventory(String idType) {
+        this.idType = idType.toLowerCase();
+    }
+
+    public dInventory(dObject object) {
+        if (object instanceof dEntity)
+            inventory = ((dEntity) object).getInventory().getInventory();
+        else if (object instanceof dLocation)
+            inventory = ((dLocation) object).getInventory().getInventory();
+        else if (object instanceof Element) {
+            Element element = (Element) object;
+            if (element.matchesEnum(InventoryType.values()))
+                inventory = Bukkit.getServer().createInventory(null,
+                        InventoryType.valueOf(((Element) object).asString().toUpperCase()));
+            else if (element.isInt())
+                inventory = Bukkit.getServer().createInventory(null, element.asInt());
+        }
+        if (inventory != null)
+            loadIdentifiers();
+    }
+
 
 
     /////////////////////
@@ -215,6 +251,19 @@ public class dInventory implements dObject, Notable {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    /**
+     * Changes the inventory to a new inventory, possibly of a different
+     * type, size, and with different contents.
+     * NOTE: SHOULD ONLY BE USED IN CASES WHERE THERE
+     *       ARE NO OTHER OPTIONS.
+     *
+     * @param inventory  The new inventory
+     */
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+        loadIdentifiers();
     }
 
     private void loadIdentifiers() {
@@ -636,13 +685,16 @@ public class dInventory implements dObject, Notable {
         if (isUnique())
             return "in@" + NotableManager.getSavedId(this);
         else return "in@" + (idType.equals("script") || idType.equals("notable")
-                ? idHolder : (idType + '[' + idHolder + ']'));
+                ? idHolder : (idType + PropertyParser.getPropertiesString(this)));
     }
 
 
     @Override
     public String identifySimple() {
-        return identify();
+        if (isUnique())
+            return "in@" + NotableManager.getSavedId(this);
+        else return "in@" + (idType.equals("script") || idType.equals("notable")
+                ? idHolder : (idType + "[" + idHolder + ']'));
     }
 
 
@@ -791,16 +843,6 @@ public class dInventory implements dObject, Notable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.id_holder>
-        // @returns Element
-        // @description
-        // Returns Denizen's holder ID for this inventory. (p@aufdemrand, l@123,321,123, etc.)
-        // -->
-        if (attribute.startsWith("id_holder")) {
-            return new Element(idHolder).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <in@inventory.id_type>
         // @returns Element
         // @description
@@ -838,16 +880,6 @@ public class dInventory implements dObject, Notable {
             else
                 return new Element(count(null, false))
                         .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <in@inventory.size>
-        // @returns Element(Number)
-        // @description
-        // Return the number of slots in the inventory.
-        // -->
-        if (attribute.startsWith("size"))
-            return new Element(getSize())
-                    .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <in@inventory.stacks>
@@ -896,52 +928,6 @@ public class dInventory implements dObject, Notable {
             return inventory.getTitle();
         }
 
-        // <--[tag]
-        // @attribute <in@inventory.list_contents.with_lore[<element>]>
-        // @returns dList(dItem)
-        // @description
-        // Returns a list of all items in the inventory with the specified
-        // lore. Color codes are ignored.
-        // -->
-        if (attribute.startsWith("list_contents.with_lore")) {
-
-            // Must specify lore to check
-            if (!attribute.hasContext(2)) return Element.NULL.getAttribute(attribute.fulfill(2));
-
-            ArrayList<dItem> items = new ArrayList<dItem>();
-            for (ItemStack item : getContents()) {
-                if (item != null && item.getType() != Material.AIR) {
-                    if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                        for (String lore : item.getItemMeta().getLore()) {
-                            // Add the item to the list if it contains the lore specified in
-                            // the context
-                            if (ChatColor.stripColor(lore).equalsIgnoreCase(attribute.getContext(2))) {
-                                items.add(new dItem(item));
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return new dList(items).getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <in@inventory.list_contents>
-        // @returns dList(dItem)
-        // @description
-        // Returns a list of all items in the inventory.
-        // -->
-        if (attribute.startsWith("list_contents")) {
-            ArrayList<dItem> items = new ArrayList<dItem>();
-            for (ItemStack item : getContents()) {
-                if (item != null && item.getType() != Material.AIR)
-                    items.add(new dItem(item));
-            }
-            return new dList(items).getAttribute(attribute.fulfill(1));
-        }
-
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
@@ -949,6 +935,49 @@ public class dInventory implements dObject, Notable {
         }
 
         return new Element(identify()).getAttribute(attribute);
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        Element value = mechanism.getValue();
+
+        // <--[mechanism]
+        // @object dInventory
+        // @name contents
+        // @input dList(dItem)
+        // @description
+        // Sets the content of the inventory.
+        // @tags
+        // <in@inventory.list_contents>
+        // <in@inventory.list_contents.simple>
+        // <in@inventory.list_contents.with_lore[<lore>]>
+        // <in@inventory.list_contents.with_lore[<lore>].simple>
+        // -->
+        if (mechanism.matches("contents") && idType.equals("generic")) {
+            InventoryContents.getFrom(this).setContents(value.asType(dList.class));
+        }
+
+        if (mechanism.matches("size") && idType.equals("generic")
+                && mechanism.requireInteger()) {
+            InventorySize.getFrom(this).setSize(value.asInt());
+        }
+
+        if (mechanism.matches("holder")) {
+            net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder holder =
+                    net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder.getFrom(this);
+            if (value.matchesType(dEntity.class))
+                holder.setHolder(value.asType(dEntity.class));
+            else if (value.matchesType(dLocation.class))
+                holder.setHolder(value.asType(dLocation.class));
+            else if (value.matchesEnum(InventoryType.values()) || value.isInt())
+                holder.setHolder(value);
+        }
+
+
+        if (!mechanism.fulfilled())
+            mechanism.reportInvalid();
+
     }
 
 }

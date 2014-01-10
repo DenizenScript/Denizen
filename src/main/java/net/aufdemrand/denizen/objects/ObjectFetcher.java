@@ -87,10 +87,10 @@ public class ObjectFetcher {
             return null;
     }
 
-    final static Pattern PROPERTIES_PATTERN = Pattern.compile("(.+)\\[(.+=.+)\\]", Pattern.CASE_INSENSITIVE);
+    final static Pattern PROPERTIES_PATTERN = Pattern.compile("([^\\[]+)\\[(.+=.+)\\]", Pattern.CASE_INSENSITIVE);
 
     final static Pattern DESCRIBED_PATTERN =
-            Pattern.compile(".+\\[.+=.+\\]");
+            Pattern.compile("[^\\[]+\\[.+=.+\\]");
 
     public static boolean checkMatch(Class<? extends dObject> dClass, String value) {
         Matcher m = PROPERTIES_PATTERN.matcher(value);
