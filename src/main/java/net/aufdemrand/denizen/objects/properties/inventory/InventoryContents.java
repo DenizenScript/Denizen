@@ -41,9 +41,9 @@ public class InventoryContents implements Property {
         for (ItemStack item : inventory.getInventory().getContents()) {
             if (item != null && item.getType() != Material.AIR)
                 if (simple)
-                    contents.add(new dItem(item).identify());
-                else
                     contents.add(new dItem(item).identifySimple());
+                else
+                    contents.add(new dItem(item).identify());
         }
         return contents;
     }
@@ -58,9 +58,9 @@ public class InventoryContents implements Property {
                         // the context
                         if (ChatColor.stripColor(line).equalsIgnoreCase(lore)) {
                             if (simple)
-                                contents.add(new dItem(item).identify());
-                            else
                                 contents.add(new dItem(item).identifySimple());
+                            else
+                                contents.add(new dItem(item).identify());
                             break;
                         }
                     }

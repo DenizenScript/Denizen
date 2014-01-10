@@ -80,12 +80,8 @@ public class Conversion {
         String string = arg.getValue();
 
         if (arg.matchesArgumentList(dItem.class)) {
-            Object list1 = dList.valueOf(string).filter(dItem.class);
-
-            @SuppressWarnings("unchecked")
-            List<ItemStack> list2 = convertItems((List<dItem>) list1);
-            ItemStack[] items = list2.toArray(new ItemStack[list2.size()]);
-
+            List<dItem> list = dList.valueOf(string).filter(dItem.class);
+            ItemStack[] items = list.toArray(new ItemStack[list.size()]);
             return new dInventory(dInventory.maxSlots).add(items);
         }
         else if (dInventory.matches(string)) {

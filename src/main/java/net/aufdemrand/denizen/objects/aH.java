@@ -95,8 +95,8 @@ public class aH {
             else {
                 has_prefix = true;
                 String[] split = string.split(":", 2);
-                prefix = split[0].toLowerCase();
-                value = split[1].toLowerCase();
+                prefix = split[0];
+                value = split[1];
             }
 
         }
