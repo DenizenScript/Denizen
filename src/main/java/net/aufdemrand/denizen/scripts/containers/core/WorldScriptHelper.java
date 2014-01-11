@@ -3903,6 +3903,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "KICKED" to kick the player from the server.
+    // "KICKED Element(String)" to kick the player and specify a message to show.
     //
     // -->
     @EventHandler
@@ -3917,7 +3918,7 @@ public class WorldScriptHelper implements Listener {
                 null, event.getPlayer(), context);
 
         if (determination.toUpperCase().startsWith("KICKED"))
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination);
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination.length() > 7 ? determination.substring(7): determination);
     }
 
     // <--[event]

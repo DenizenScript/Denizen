@@ -49,7 +49,6 @@ public class BreakCommand extends AbstractCommand {
 
         // Use the NPC or the Player as the default entity
         scriptEntry.defaultObject("entity",
-                (scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null),
                 (scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() : null));
 
         if (!scriptEntry.hasObject("entity"))
@@ -83,8 +82,7 @@ public class BreakCommand extends AbstractCommand {
                 location.getBlock(), config);
         if (breaker.shouldExecute()) {
             TaskRunnable run = new TaskRunnable(breaker);
-            int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, run, 0, 1);
-            run.taskId = taskId;
+            run.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, run, 0, 1);
         }
     }
 

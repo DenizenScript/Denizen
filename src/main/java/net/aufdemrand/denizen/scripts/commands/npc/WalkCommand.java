@@ -2,12 +2,14 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.ai.flocking.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Handles NPC walking with the Citizens API.
@@ -40,6 +42,15 @@ public class WalkCommand extends AbstractCommand {
                     && arg.matches("auto_range"))
                 scriptEntry.addObject("auto_range", Element.TRUE);
 
+            else if (!scriptEntry.hasObject("radius")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("radius"))
+                scriptEntry.addObject("radius", arg.asElement());
+
+            else if (!scriptEntry.hasObject("npcs")
+                    && arg.matchesArgumentList(dNPC.class))
+                scriptEntry.addObject("npcs", arg.asType(dList.class).filter(dNPC.class));
+
             else
                 arg.reportUnhandled();
         }
@@ -50,10 +61,15 @@ public class WalkCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException("Must specify a location!");
 
-        if (scriptEntry.getNPC() == null
-                || !scriptEntry.getNPC().isValid()
-                || !scriptEntry.getNPC().isSpawned())
-            throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
+        if (!scriptEntry.hasObject("npcs")) {
+            if (scriptEntry.getNPC() == null
+                    || !scriptEntry.getNPC().isValid()
+                    || !scriptEntry.getNPC().isSpawned())
+                throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
+            else
+                scriptEntry.addObject("npcs", Arrays.asList(scriptEntry.getNPC()));
+        }
+
 
     }
 
@@ -64,29 +80,42 @@ public class WalkCommand extends AbstractCommand {
         // Fetch required objects
 
         dLocation loc = (dLocation) scriptEntry.getObject("location");
-        Element speed = (Element) scriptEntry.getObject("speed");
-        Element auto_range = (Element) scriptEntry.getObject("auto_range");
+        Element speed = scriptEntry.getElement("speed");
+        Element auto_range = scriptEntry.getElement("auto_range");
+        Element radius = scriptEntry.getElement("radius");
+        List<dNPC> npcs = (List<dNPC>) scriptEntry.getObject("npcs");
 
 
         // Debug the execution
 
         dB.report(scriptEntry, getName(), loc.debug()
                 + (speed != null ? speed.debug() : "")
-                + (auto_range != null ? auto_range.debug() : ""));
+                + (auto_range != null ? auto_range.debug() : "")
+                + (radius != null ? radius.debug(): "")
+                + (aH.debugObj("npcs", npcs)));
 
         // Do the execution
 
-        if (auto_range != null
-                && auto_range == Element.TRUE) {
-            double distance = scriptEntry.getNPC().getLocation().distance(loc);
-            if (scriptEntry.getNPC().getNavigator().getLocalParameters().range() < distance)
-                scriptEntry.getNPC().getNavigator().getDefaultParameters().range((float) distance + 10);
+        for (dNPC npc: npcs) {
+            if (auto_range != null
+                    && auto_range == Element.TRUE) {
+                double distance = npc.getLocation().distance(loc);
+                if (npc.getNavigator().getLocalParameters().range() < distance)
+                    npc.getNavigator().getDefaultParameters().range((float) distance + 10);
+            }
+
+            npc.getNavigator().setTarget(loc);
+
+            if (speed != null)
+                npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
+
+            if (radius != null) {
+                NPCFlock flock = new RadiusNPCFlock(radius.asDouble());
+                Flocker flocker = new Flocker(npc.getCitizen(), flock, new SeparationBehavior(Flocker.LOW_INFLUENCE),
+                        new CohesionBehavior(Flocker.LOW_INFLUENCE), new AlignmentBehavior(Flocker.HIGH_INFLUENCE));
+                npc.getNavigator().getLocalParameters().addRunCallback(flocker);
+            }
         }
-
-        scriptEntry.getNPC().getNavigator().setTarget(loc);
-
-        if (speed != null)
-            scriptEntry.getNPC().getNavigator().getLocalParameters().speedModifier(speed.asFloat());
 
     }
 
