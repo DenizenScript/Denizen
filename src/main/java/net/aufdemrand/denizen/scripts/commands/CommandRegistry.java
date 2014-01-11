@@ -2466,10 +2466,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Walk, WalkTo
-        // @Syntax walk [<location>] (speed:<#>) (auto_range)
+        // @Syntax walk (<npc>|...) [<location>] (speed:<#.#>) (auto_range) (radius:<#.#>)
         // @Required 1
         // @Stable stable
-        // @Short Causes the NPC to walk to another location.
+        // @Short Causes an NPC or list of NPCs to walk to another location.
         // @Author aufdemrand
         // @Description
         // Todo
@@ -2482,7 +2482,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(WalkCommand.class,
-                "WALK, WALKTO", "walk [<location>] (speed:<#>) (auto_range)", 1);
+                "WALK, WALKTO", "walk (<npc>|...) [<location>] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
 
         // <--[command]
         // @Name Weather
