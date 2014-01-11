@@ -985,7 +985,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         // equipment (Generally, if it's not alive), returns null.
         // -->
         if (attribute.startsWith("equipment")) {
-            return getEquipment().getAttribute(attribute.fulfill(1));
+            dInventory equipment = getEquipment();
+            if (equipment == null)
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return getEquipment().getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
@@ -1014,7 +1018,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // <in@inventory.list_contents.with_lore[<lore>]>
         // <in@inventory.list_contents.with_lore[<lore>].simple>
         // -->
-        if (mechanism.matches("contents") && idType.equals("generic")) {
+        if (mechanism.matches("contents")) {
             setContents(value.asType(dList.class));
         }
 
@@ -1023,15 +1027,22 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @name size
         // @input Element(Number)
         // @description
-        // Sets the size of the inventory. (Only works for "generic" inventories.)
+        // Sets the size of the inventory. (Only works for "generic" chest inventories.)
         // @tags
         // <in@inventory.size>
         // -->
-        if (mechanism.matches("size") && idType.equals("generic")
-                && mechanism.requireInteger()) {
+        if (mechanism.matches("size") && mechanism.requireInteger()) {
             setSize(value.asInt());
         }
 
+        // <--[mechanism]
+        // @object dInventory
+        // @name title
+        // @input Element
+        // @description
+        // Sets the title of the inventory. (Only works for "generic" chest inventories.)
+        // @tags
+        // <in@inventory.title>
         if (mechanism.matches("title") && idType.equals("generic")) {
             setTitle(value.asString());
         }

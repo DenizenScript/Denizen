@@ -39,13 +39,20 @@ public class InventoryContents implements Property {
         if (inventory.getInventory() == null)
             return null;
         dList contents = new dList();
+        boolean containsNonAir = false;
         for (ItemStack item : inventory.getInventory().getContents()) {
-            if (item != null && item.getType() != Material.AIR)
+            if (item != null && item.getType() != Material.AIR) {
+                containsNonAir = true;
                 if (simple)
                     contents.add(new dItem(item).identifySimple());
                 else
                     contents.add(new dItem(item).identify());
+            }
+            else
+                contents.add("0");
         }
+        if (!containsNonAir)
+            contents.clear();
         return contents;
     }
 
@@ -126,10 +133,9 @@ public class InventoryContents implements Property {
             // -->
             if (attribute.startsWith("with_lore")) {
                 // Must specify lore to check
-                if (!attribute.hasContext(2)) return Element.NULL.getAttribute(attribute.fulfill(2));
-
+                if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
+                String lore = attribute.getContext(1);
                 attribute.fulfill(1);
-
                 // <--[tag]
                 // @attribute <in@inventory.list_contents.with_lore[<element>].simple>
                 // @returns dList(dItem)
@@ -138,10 +144,10 @@ public class InventoryContents implements Property {
                 // lore, without item properties. Color codes are ignored.
                 // -->
                 if (attribute.startsWith("simple"))
-                    return getContentsWithLore(attribute.getContext(2), true)
+                    return getContentsWithLore(lore, true)
                                 .getAttribute(attribute.fulfill(1));
 
-                return getContentsWithLore(attribute.getContext(2), false)
+                return getContentsWithLore(lore, false)
                             .getAttribute(attribute);
             }
 
