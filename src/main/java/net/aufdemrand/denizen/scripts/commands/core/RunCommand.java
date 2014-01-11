@@ -149,7 +149,8 @@ public class RunCommand extends AbstractCommand {
                         + (scriptEntry.hasObject("instant") ? scriptEntry.getdObject("instant").debug() : "")
                         + (scriptEntry.hasObject("path") ? scriptEntry.getElement("path").debug() : "")
                         + (scriptEntry.hasObject("local") ? scriptEntry.getElement("local").debug() : "")
-                        + (scriptEntry.hasObject("delay") ? scriptEntry.getdObject("delay").debug() : ""));
+                        + (scriptEntry.hasObject("delay") ? scriptEntry.getdObject("delay").debug() : "")
+                        + (scriptEntry.hasObject("id") ? scriptEntry.getdObject("id").debug() : ""));
 
         // Get the script
         dScript script = (dScript) scriptEntry.getObject("script");
@@ -187,8 +188,9 @@ public class RunCommand extends AbstractCommand {
             queue = TimedQueue.getQueue(id).addEntries(entries);
 
             // Check speed of the script if a TimedQueue -- if identified, use the speed from the script.
-            if (script.getContainer() != null && script.getContainer().contains("speed"))
+            if (script != null && script.getContainer().contains("speed"))
                 ((TimedQueue) queue).setSpeed(Duration.valueOf(script.getContainer().getString("speed")).getTicks());
+
 
         }
         // Set any delay
