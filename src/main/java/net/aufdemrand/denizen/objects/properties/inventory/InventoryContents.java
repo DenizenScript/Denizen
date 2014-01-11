@@ -53,6 +53,8 @@ public class InventoryContents implements Property {
         }
         if (!containsNonAir)
             contents.clear();
+        else
+            contents = dList.valueOf(contents.identify().replaceAll("(\\|0)*$", ""));
         return contents;
     }
 

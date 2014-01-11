@@ -8,9 +8,8 @@ import net.aufdemrand.denizen.tags.Attribute;
 public class InventoryTitle implements Property {
 
     public static boolean describes(dObject inventory) {
-        // Only generic, script, and notable inventories can have titles
-        return (inventory instanceof dInventory
-                && ((dInventory) inventory).getIdType().matches("generic|script|notable"));
+        // All inventories could possibly have a title
+        return inventory instanceof dInventory;
     }
 
     public static InventoryTitle getFrom(dObject inventory) {

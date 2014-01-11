@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.utilities.Utilities;
 import org.bukkit.Effect;
+import org.bukkit.Material;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -67,10 +68,10 @@ public class PlayEffectCommand extends AbstractCommand {
                 else if (arg.startsWith("iconcrack_")) {
                     // Allow iconcrack_[id] for item break effects (ex: iconcrack_1)
                     Element typeId = new Element(arg.getValue().substring(10));
-                    if (typeId.isInt() && typeId.asInt() > 0)
+                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null)
                         scriptEntry.addObject("iconcrack", typeId);
                     else
-                        dB.echoError("Invalid iconcrack_[id]. [id] should be a number greater than 0.");
+                        dB.echoError("Invalid iconcrack_[id]. Must be a valid Material ID, besides 0.");
                 }
                 else if (arg.matchesEnum(Effect.values())) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));

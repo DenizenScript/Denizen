@@ -184,10 +184,8 @@ public class dInventory implements dObject, Notable, Adjustable {
     public static boolean matches(String arg) {
 
         // Every single dInventory should have the in@ prefix. No exceptions.
-        if (arg.toLowerCase().startsWith("in@"))
-            return true;
+        return arg.toLowerCase().startsWith("in@");
 
-        return false;
     }
 
 
@@ -1011,7 +1009,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @name contents
         // @input dList(dItem)
         // @description
-        // Sets the contents of the inventory. (Only works for "generic" inventories.)
+        // Sets the contents of the inventory.
         // @tags
         // <in@inventory.list_contents>
         // <in@inventory.list_contents.simple>
@@ -1043,6 +1041,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Sets the title of the inventory. (Only works for "generic" chest inventories.)
         // @tags
         // <in@inventory.title>
+        // -->
         if (mechanism.matches("title") && idType.equals("generic")) {
             setTitle(value.asString());
         }
@@ -1053,11 +1052,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @input dObject
         // @description
         // Changes the holder of the dInventory, therefore completely reconfiguring
-        // the inventory to that of the holder. The current object will be completely
-        // destroyed, and replaced with a copy of the new holder's dInventory.
-        // TODO: Possibly make this unusable by Adjust command?
+        // the inventory to that of the holder.
+        // @tags
+        // <in@inventory.id_holder>
         // -->
-        if (mechanism.matches("holder") /*&& youKnowWhatYoureDoing()*/) {
+        if (mechanism.matches("holder")) {
             net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder holder =
                     net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder.getFrom(this);
             if (value.matchesType(dEntity.class))
