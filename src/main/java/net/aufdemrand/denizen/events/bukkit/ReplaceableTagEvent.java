@@ -124,12 +124,19 @@ public class ReplaceableTagEvent extends Event {
 
     public boolean matches(String tagName) {
         String[] tagNames = tagName.split(",");
+        String name = getName();
         for (String string: tagNames)
-            if (core_attributes.getAttribute(1).equalsIgnoreCase(string.trim())) return true;
+            if (name.equalsIgnoreCase(string.trim())) return true;
         return false;
     }
 
 
+    private String StripContext(String input) {
+        if (input == null)
+            return null;
+        else
+            return input.replaceAll("\\[.+\\]", "");
+    }
 
     ////////
     // Replaceable Tag 'Parts'
@@ -138,7 +145,7 @@ public class ReplaceableTagEvent extends Event {
     // Name
 
     public String getName() {
-        return core_attributes.getAttribute(1);
+        return StripContext(core_attributes.getAttribute(1));
     }
 
     public String getNameContext() {
@@ -152,7 +159,7 @@ public class ReplaceableTagEvent extends Event {
     // Type
 
     public String getType() {
-        return core_attributes.getAttribute(2);
+        return StripContext(core_attributes.getAttribute(2));
     }
 
     public boolean hasType() {
@@ -170,7 +177,7 @@ public class ReplaceableTagEvent extends Event {
     // Subtype
 
     public String getSubType() {
-        return core_attributes.getAttribute(3);
+        return StripContext(core_attributes.getAttribute(3));
     }
 
     public boolean hasSubType() {
@@ -188,7 +195,7 @@ public class ReplaceableTagEvent extends Event {
     // Specifier
 
     public String getSpecifier() {
-        return core_attributes.getAttribute(4);
+        return StripContext(core_attributes.getAttribute(4));
     }
 
     public boolean hasSpecifier() {
