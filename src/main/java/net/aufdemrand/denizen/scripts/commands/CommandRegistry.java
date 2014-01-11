@@ -346,7 +346,7 @@ public class CommandRegistry implements dRegistry {
         // @Syntax break [<location>] (entity:<entity>) (radius:<#.#>)
         // @Required 1
         // @Stable unstable
-        // @Short Makes the NPC walk over and break a block. (Doesn't work!)
+        // @Short Makes the NPC walk over and break a block.
         // @Author aufdemrand
         // @Description
         // Todo
