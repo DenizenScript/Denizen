@@ -49,12 +49,12 @@ public class InventoryContents implements Property {
                     contents.add(new dItem(item).identify());
             }
             else
-                contents.add("0");
+                contents.add("i@air");
         }
         if (!containsNonAir)
             contents.clear();
         else
-            contents = dList.valueOf(contents.identify().replaceAll("(\\|0)*$", ""));
+            contents = dList.valueOf(contents.identify().replaceAll("(\\|i@air)*$", ""));
         return contents;
     }
 

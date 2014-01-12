@@ -421,7 +421,15 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public void setContents(dList list) {
-        int size = inventory.getSize();
+        int size = 0;
+        if (inventory == null) {
+            size = Math.round(list.size()/9)*9;
+            if (size == 0) size = 9;
+            inventory = Bukkit.createInventory(null, size);
+            loadIdentifiers();
+        }
+        else
+            size = inventory.getSize();
         ItemStack[] contents = new ItemStack[size];
         int filled = 0;
         for (dItem item : list.filter(dItem.class)) {
