@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.tags.core;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -206,6 +207,54 @@ public class UtilTags implements Listener {
                 if (npc.getName().equalsIgnoreCase(attribute.getContext(1)))
                     npcs.add(dNPC.mirrorCitizensNPC(npc));
             event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.has_file[<name>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the specified file exists. The starting path is /plugins/Denizen.
+        // -->
+        if (attribute.startsWith("has_file") && attribute.hasContext(1)) {
+            event.setReplaced(new Element(new File(DenizenAPI.getCurrentInstance().getDataFolder(),
+                    attribute.getContext(1)).exists()).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.denizen_version>
+        // @returns Element
+        // @description
+        // Returns the version of Denizen currently being used.
+        // -->
+        if (attribute.startsWith("denizen_version")) {
+            event.setReplaced(new Element(DenizenAPI.getCurrentInstance().getDescription().getVersion())
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.bukkit_version>
+        // @returns Element
+        // @description
+        // Returns the version of Bukkit currently being used.
+        // -->
+        if (attribute.startsWith("bukkit_version")) {
+            event.setReplaced(new Element(Bukkit.getBukkitVersion())
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.version>
+        // @returns Element
+        // @description
+        // Returns the version string of the server.
+        // -->
+        if (attribute.startsWith("version")) {
+            event.setReplaced(new Element(Bukkit.getServer().getVersion())
+                    .getAttribute(attribute.fulfill(1)));
             return;
         }
 
