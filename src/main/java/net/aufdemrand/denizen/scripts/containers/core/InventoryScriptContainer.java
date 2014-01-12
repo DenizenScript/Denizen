@@ -85,7 +85,8 @@ public class InventoryScriptContainer extends ScriptContainer {
                         size = size*-1;
                     }
 
-                    inventory = new dInventory(aH.getIntegerFrom(getString("SIZE")));
+                    inventory = new dInventory(size,
+                            contains("TITLE") ? getString("TITLE") : "Chest");
                     inventory.setIdentifiers("script", getName());
                 }
             }

@@ -58,9 +58,8 @@ public class InventoryHolder implements Property {
                 return new dLocation(((BlockState) holder).getLocation());
             }
         }
-        else {
-            return new Element(inventory.getInventory().getType().name());
-        }
+        else
+            return new Element(inventory.getIdHolder());
 
         return null;
     }
@@ -76,7 +75,11 @@ public class InventoryHolder implements Property {
 
     @Override
     public String getPropertyString() {
-        return holder.identify();
+        if (inventory.getIdType().equals("generic")
+                && inventory.getIdHolder().equals("CHEST"))
+            return null;
+        else
+            return holder.identify();
     }
 
     @Override
@@ -102,7 +105,7 @@ public class InventoryHolder implements Property {
         // -->
         if (attribute.startsWith("id_holder")) {
             if (holder == null)
-                return null;
+                return Element.NULL.getAttribute(attribute.fulfill(1));
             return holder.getAttribute(attribute.fulfill(1));
         }
 

@@ -39,6 +39,7 @@ public class PropertyParser {
         registerProperty(InventoryContents.class, dInventory.class);
         registerProperty(InventoryHolder.class, dInventory.class);
         registerProperty(InventorySize.class, dInventory.class);
+        registerProperty(InventoryTitle.class, dInventory.class);
 
         // register core dItem properties
         registerProperty(ItemEnchantments.class, dItem.class);
