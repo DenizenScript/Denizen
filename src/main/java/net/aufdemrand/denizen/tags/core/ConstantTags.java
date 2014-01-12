@@ -42,8 +42,6 @@ public class ConstantTags implements Listener {
             return;
         }
 
-        dB.echoDebug("brrrrr -> " + event.getAttributes().attributes.toString());
-
         Attribute attribute = event.getAttributes();
 
         if (npc.hasTrait(ConstantsTrait.class)

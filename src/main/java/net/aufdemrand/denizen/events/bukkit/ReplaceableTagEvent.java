@@ -273,4 +273,17 @@ public class ReplaceableTagEvent extends Event {
         return scriptEntry;
     }
 
+
+    /**
+     * Gets an Attribute object for easy parsing/reading
+     * of the different tag attributes.
+     *
+     * @return attributes
+     */
+
+    public Attribute getAttributes() {
+        return core_attributes;
+    }
+
+
 }
