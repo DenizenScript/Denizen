@@ -42,12 +42,14 @@ public class ConstantTags implements Listener {
             return;
         }
 
-        Attribute attribute = new Attribute(event.raw_tag.split(":", 2)[1], event.getScriptEntry());
+        dB.echoDebug("brrrrr -> " + event.getAttributes().attributes.toString());
+
+        Attribute attribute = event.getAttributes();
 
         if (npc.hasTrait(ConstantsTrait.class)
-                && npc.getTrait(ConstantsTrait.class).getConstant(attribute.getAttribute(1)) != null) {
+                && npc.getTrait(ConstantsTrait.class).getConstant(event.getValue()) != null) {
             event.setReplaced(new Element(npc.getTrait(ConstantsTrait.class)
-                    .getConstant(attribute.getAttribute(1))).getAttribute(attribute.fulfill(1)));
+                    .getConstant(event.getValue())).getAttribute(attribute.fulfill(1)));
         }
 
     }
