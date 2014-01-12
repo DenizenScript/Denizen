@@ -6,10 +6,9 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.objects.properties.inventory.InventoryContents;
-import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
@@ -184,10 +183,9 @@ public class dInventory implements dObject, Notable, Adjustable {
      */
     public static boolean matches(String arg) {
 
-        if (valueOf(arg) != null)
-            return true;
+        // Every single dInventory should have the in@ prefix. No exceptions.
+        return arg.toLowerCase().startsWith("in@");
 
-        return false;
     }
 
 
@@ -208,14 +206,22 @@ public class dInventory implements dObject, Notable, Adjustable {
         loadIdentifiers();
     }
 
+    public dInventory(int size, String title) {
+        if (size <= 0 || size%9 != 0) {
+            dB.echoError("InventorySize must be multiple of 9, and greater than 0.");
+            return;
+        }
+        inventory = Bukkit.getServer().createInventory(null, size, title);
+        loadIdentifiers();
+    }
+
     public dInventory(InventoryType type) {
         inventory = Bukkit.getServer().createInventory(null, type);
         loadIdentifiers();
     }
 
     public dInventory(int size) {
-        inventory = Bukkit.getServer().createInventory(null, size);
-        loadIdentifiers();
+        this(size, "Chest");
     }
 
     public dInventory(String idType) {
@@ -232,8 +238,13 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (element.matchesEnum(InventoryType.values()))
                 inventory = Bukkit.getServer().createInventory(null,
                         InventoryType.valueOf(((Element) object).asString().toUpperCase()));
-            else if (element.isInt())
-                inventory = Bukkit.getServer().createInventory(null, element.asInt());
+            else if (element.isInt()) {
+                String title = null;
+                if (inventory != null)
+                    title = inventory.getTitle();
+                inventory = Bukkit.getServer().createInventory(null, element.asInt(),
+                        title != null ? title : "Chest");
+            }
         }
         if (inventory != null)
             loadIdentifiers();
@@ -263,6 +274,47 @@ public class dInventory implements dObject, Notable, Adjustable {
      */
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+        loadIdentifiers();
+    }
+
+    public void setTitle(String title) {
+        if (!idType.equals("generic") || title == null)
+            return;
+        else if (inventory == null) {
+            inventory = Bukkit.getServer().createInventory(null, maxSlots, title);
+            loadIdentifiers();
+            return;
+        }
+        ItemStack[] contents = inventory.getContents();
+        inventory = Bukkit.createInventory(null, inventory.getSize(), title);
+        inventory.setContents(contents);
+        loadIdentifiers();
+    }
+
+    public void setSize(int size) {
+        if (!idType.equals("generic"))
+            return;
+        else if (size <= 0 || size%9 != 0) {
+            dB.echoError("InventorySize must be multiple of 9, and greater than 0.");
+            return;
+        }
+        else if (inventory == null) {
+            inventory = Bukkit.getServer().createInventory(null, size, "Chest");
+            loadIdentifiers();
+            return;
+        }
+        int oldSize = inventory.getSize();
+        ItemStack[] oldContents = inventory.getContents();
+        ItemStack[] newContents = new ItemStack[size];
+        if (oldSize > size)
+            for (int i = 0; i < size; i++)
+                newContents[i] = oldContents[i];
+        else
+            newContents = oldContents;
+        String title = inventory.getTitle();
+        inventory = Bukkit.getServer().createInventory(null, size,
+                (title != null ? title : inventory.getType().getDefaultTitle()));
+        inventory.setContents(newContents);
         loadIdentifiers();
     }
 
@@ -365,6 +417,22 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public void setContents(ItemStack[] contents) {
+        inventory.setContents(contents);
+    }
+
+    public void setContents(dList list) {
+        int size = inventory.getSize();
+        ItemStack[] contents = new ItemStack[size];
+        int filled = 0;
+        for (dItem item : list.filter(dItem.class)) {
+            contents[filled] = item.getItemStack();
+            filled++;
+        }
+        final ItemStack air = new ItemStack(Material.AIR);
+        while (filled < size) {
+            contents[filled] = air;
+            filled ++;
+        }
         inventory.setContents(contents);
     }
 
@@ -882,7 +950,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                         .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <in@inventory.stacks>
+        // @attribute <in@inventory.stacks[<item>]>
         // @returns Element(Number)
         // @description
         // Returns the number of itemstacks that match an item if one is
@@ -915,17 +983,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         // equipment (Generally, if it's not alive), returns null.
         // -->
         if (attribute.startsWith("equipment")) {
-            return getEquipment().getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <in@inventory.title>
-        // @returns Element
-        // @description
-        // Returns the title of the inventory.
-        // -->
-        if (attribute.startsWith("title")) {
-            return inventory.getTitle();
+            dInventory equipment = getEquipment();
+            if (equipment == null)
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return getEquipment().getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
@@ -947,22 +1009,53 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @name contents
         // @input dList(dItem)
         // @description
-        // Sets the content of the inventory.
+        // Sets the contents of the inventory.
         // @tags
         // <in@inventory.list_contents>
         // <in@inventory.list_contents.simple>
         // <in@inventory.list_contents.with_lore[<lore>]>
         // <in@inventory.list_contents.with_lore[<lore>].simple>
         // -->
-        if (mechanism.matches("contents") && idType.equals("generic")) {
-            InventoryContents.getFrom(this).setContents(value.asType(dList.class));
+        if (mechanism.matches("contents")) {
+            setContents(value.asType(dList.class));
         }
 
-        if (mechanism.matches("size") && idType.equals("generic")
-                && mechanism.requireInteger()) {
-            InventorySize.getFrom(this).setSize(value.asInt());
+        // <--[mechanism]
+        // @object dInventory
+        // @name size
+        // @input Element(Number)
+        // @description
+        // Sets the size of the inventory. (Only works for "generic" chest inventories.)
+        // @tags
+        // <in@inventory.size>
+        // -->
+        if (mechanism.matches("size") && mechanism.requireInteger()) {
+            setSize(value.asInt());
         }
 
+        // <--[mechanism]
+        // @object dInventory
+        // @name title
+        // @input Element
+        // @description
+        // Sets the title of the inventory. (Only works for "generic" chest inventories.)
+        // @tags
+        // <in@inventory.title>
+        // -->
+        if (mechanism.matches("title") && idType.equals("generic")) {
+            setTitle(value.asString());
+        }
+
+        // <--[mechanism]
+        // @object dInventory
+        // @name holder
+        // @input dObject
+        // @description
+        // Changes the holder of the dInventory, therefore completely reconfiguring
+        // the inventory to that of the holder.
+        // @tags
+        // <in@inventory.id_holder>
+        // -->
         if (mechanism.matches("holder")) {
             net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder holder =
                     net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder.getFrom(this);
