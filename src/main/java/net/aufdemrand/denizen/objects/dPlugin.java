@@ -143,7 +143,7 @@ public class dPlugin implements dObject {
         }
 
         // <--[tag]
-        // @attribute <server.plugin[<name>].version>
+        // @attribute <pl@plugin.version>
         // @returns Element
         // @description
         // Gets the version for the plugin specified.
@@ -154,7 +154,7 @@ public class dPlugin implements dObject {
         }
 
         // <--[tag]
-        // @attribute <server.plugin[<name>].description>
+        // @attribute <pl@plugin.description>
         // @returns Element
         // @description
         // Gets the description for the plugin specified.
@@ -165,7 +165,7 @@ public class dPlugin implements dObject {
         }
 
         // <--[tag]
-        // @attribute <server.plugin[<name>].authors>
+        // @attribute <pl@plugin.authors>
         // @returns dList
         // @description
         // Gets the list of authors for the plugin specified.
