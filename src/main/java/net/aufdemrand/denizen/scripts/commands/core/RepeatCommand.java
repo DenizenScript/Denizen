@@ -46,11 +46,14 @@ public class RepeatCommand extends BracedCommand {
 
         // Get objects
         Element qty = scriptEntry.getElement("qty");
-        ArrayList<ScriptEntry> bracedCommandsList = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("REPEAT");
+        ArrayList<ScriptEntry> bracedCommandsList =
+                ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("REPEAT");
+
         if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
             dB.echoError("Empty braces!");
             return;
         }
+
         ScriptEntry[] bracedCommands = bracedCommandsList.toArray(new ScriptEntry[bracedCommandsList.size()]);
 
         // Report to dB
@@ -71,16 +74,20 @@ public class RepeatCommand extends BracedCommand {
                     dB.echoError(e);
                 }
             }
-            ScriptQueue queue = new InstantQueue(queueId);
-            for (Map.Entry<String, dObject> entry : scriptEntry.getResidingQueue().getAllContext().entrySet()) {
-                queue.addContext(entry.getKey(), entry.getValue());
-            }
-            queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
+            // Set the %value% and inject entries
             scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(incr + 1));
-            queue.addDefinition("value", String.valueOf(incr + 1));
-            queue.getAllDefinitions().putAll(scriptEntry.getResidingQueue().getAllDefinitions());
-            queue.addEntries(newEntries);
-            queue.start();
+            scriptEntry.getResidingQueue().injectEntries(newEntries, 0);
+            int entries = newEntries.size();
+            int entrycount = scriptEntry.getResidingQueue().getQueueSize();
+            // Run the entries immediately
+            for (int i = 0; i < entries; i++) {
+                denizen.getScriptEngine().revolve(scriptEntry.getResidingQueue());
+                entrycount--;
+                if (scriptEntry.getResidingQueue().getQueueSize() > entrycount) {
+                    entries += scriptEntry.getResidingQueue().getQueueSize() - entrycount;
+                    entrycount += scriptEntry.getResidingQueue().getQueueSize() - entrycount;
+                }
+            }
         }
 
     }
