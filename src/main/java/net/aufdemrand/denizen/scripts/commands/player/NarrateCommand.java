@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 
 /**
  * Sends a message to Players.
@@ -82,8 +83,10 @@ public class NarrateCommand extends AbstractCommand {
                         + (format != null ? aH.debugObj("Format", format.getName()) : ""));
 
         if (targets == null) {
+            Bukkit.getServer().getConsoleSender().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
             return;
         }
+
         for (dPlayer player : targets) {
             if (player != null && player.isOnline())
                 player.getPlayerEntity().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);

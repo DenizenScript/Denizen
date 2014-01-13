@@ -36,6 +36,7 @@ public class ItemBook implements Property {
 
         if (attribute.startsWith("book")) {
             BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
+            attribute = attribute.fulfill(1);
 
             if (item.getItemStack().getType() == Material.WRITTEN_BOOK) {
 
@@ -47,7 +48,7 @@ public class ItemBook implements Property {
                 // -->
                 if (attribute.startsWith("author"))
                     return new Element(bookInfo.getAuthor())
-                            .getAttribute(attribute.fulfill(2));
+                            .getAttribute(attribute.fulfill(1));
 
                 // <--[tag]
                 // @attribute <i@item.book.title>
@@ -57,38 +58,38 @@ public class ItemBook implements Property {
                 // -->
                 if (attribute.startsWith("title"))
                     return new Element(bookInfo.getTitle())
-                            .getAttribute(attribute.fulfill(2));
+                            .getAttribute(attribute.fulfill(1));
             }
 
-                // <--[tag]
-                // @attribute <i@item.book.page_count>
-                // @returns Element(Number)
-                // @description
-                // Returns the number of pages in the book.
-                // -->
-                if (attribute.startsWith("page_count"))
-                    return new Element(bookInfo.getPageCount())
-                            .getAttribute(attribute.fulfill(2));
+            // <--[tag]
+            // @attribute <i@item.book.page_count>
+            // @returns Element(Number)
+            // @description
+            // Returns the number of pages in the book.
+            // -->
+            if (attribute.startsWith("page_count"))
+                return new Element(bookInfo.getPageCount())
+                        .getAttribute(attribute.fulfill(1));
 
-                // <--[tag]
-                // @attribute <i@item.book.get_page[<#>]>
-                // @returns Element
-                // @description
-                // Returns the page specified from the book as an element.
-                // -->
-                if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(2)))
-                    return new Element(bookInfo.getPage(attribute.getIntContext(2)))
-                            .getAttribute(attribute.fulfill(2));
+            // <--[tag]
+            // @attribute <i@item.book.get_page[<#>]>
+            // @returns Element
+            // @description
+            // Returns the page specified from the book as an element.
+            // -->
+            if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
+                return new Element(bookInfo.getPage(attribute.getIntContext(1)))
+                    .getAttribute(attribute.fulfill(1));
 
-                // <--[tag]
-                // @attribute <i@item.book.pages>
-                // @returns dList
-                // @description
-                // Returns the pages of the book as a dList.
-                // -->
-                if (attribute.startsWith("pages"))
-                    return new dList(bookInfo.getPages())
-                            .getAttribute(attribute.fulfill(2));
+            // <--[tag]
+            // @attribute <i@item.book.pages>
+            // @returns dList
+            // @description
+            // Returns the pages of the book as a dList.
+            // -->
+            if (attribute.startsWith("pages"))
+                return new dList(bookInfo.getPages())
+                        .getAttribute(attribute.fulfill(1));
 
             // <--[tag]
             // @attribute <i@item.book>
@@ -102,7 +103,7 @@ public class ItemBook implements Property {
             if (output == null)
                 output = "null";
             return new Element(output)
-                    .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute);
         }
 
         return null;
