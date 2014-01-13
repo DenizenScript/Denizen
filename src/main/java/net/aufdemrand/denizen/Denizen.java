@@ -170,6 +170,10 @@ public class Denizen extends JavaPlugin {
         // Create the dNPC Registry
         dNPCRegistry = new dNPCRegistry(this);
 
+        // Maintain a list of Offline Players
+        for (OfflinePlayer player: Bukkit.getOfflinePlayers())
+            dPlayer.offlinePlayers.add(player);
+
         // Register commandHandler with Citizens2
         commandHandler = new CommandHandler(Depends.citizens);
 
