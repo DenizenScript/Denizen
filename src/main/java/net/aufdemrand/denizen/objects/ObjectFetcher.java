@@ -63,6 +63,7 @@ public class ObjectFetcher {
         registerWithObjectFetcher(Element.class);    // el@
         registerWithObjectFetcher(Duration.class);   // d@
         registerWithObjectFetcher(dChunk.class);     // ch@
+        registerWithObjectFetcher(dPlugin.class);    // pl@
 
         _initialize();
 

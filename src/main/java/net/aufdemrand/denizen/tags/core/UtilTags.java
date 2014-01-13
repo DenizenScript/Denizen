@@ -27,6 +27,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
 public class UtilTags implements Listener {
 
@@ -259,6 +260,20 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.list_plugin_names>
+        // @returns dList
+        // @description
+        // Gets a list of currently enabled plugin names from the server.
+        // -->
+        if (attribute.startsWith("list_plugin_names")) {
+            dList plugins = new dList();
+            for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins())
+                plugins.add(plugin.getName());
+            event.setReplaced(plugins.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.match_player[<name>]>
         // @returns dPlayer
         // @description
@@ -353,6 +368,20 @@ public class UtilTags implements Listener {
             for (OfflinePlayer player : dPlayer.offlinePlayers)
                 players.add(dPlayer.mirrorBukkitPlayer(player));
             event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_plugins>
+        // @returns dList(dPlugin)
+        // @description
+        // Gets a list of currently enabled dPlugins from the server.
+        // -->
+        if (attribute.startsWith("list_plugins")) {
+            ArrayList<dPlugin> plugins = new ArrayList<dPlugin>();
+            for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins())
+                plugins.add(new dPlugin(plugin));
+            event.setReplaced(new dList(plugins).getAttribute(attribute.fulfill(1)));
             return;
         }
 
