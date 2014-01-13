@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ScriptEntryExecuteEvent;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -35,15 +34,19 @@ public class CommandExecuter {
      */
 
     public boolean execute(ScriptEntry scriptEntry) {
-        Matcher m = definition_pattern.matcher(scriptEntry.getCommandName());
-        StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
-            if (definition == null) definition = "null";
-            m.appendReplacement(sb, definition);
+        Matcher m;
+        StringBuffer sb;
+        if (scriptEntry.getCommandName().indexOf('%') != -1) {
+            m = definition_pattern.matcher(scriptEntry.getCommandName());
+            sb = new StringBuffer();
+            while (m.find()) {
+                String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
+                if (definition == null) definition = "null";
+                m.appendReplacement(sb, definition);
+            }
+            m.appendTail(sb);
+            scriptEntry.setCommandName(sb.toString());
         }
-        m.appendTail(sb);
-        scriptEntry.setCommandName(sb.toString());
 
         // Get the command instance ready for the execution of the scriptEntry
         AbstractCommand command = plugin.getCommandRegistry().get(scriptEntry.getCommandName());
@@ -98,15 +101,17 @@ public class CommandExecuter {
                     continue;
                 }
 
-                m = definition_pattern.matcher(arg.raw_value);
-                sb = new StringBuffer();
-                while (m.find()) {
-                    String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
-                    if (definition == null) definition = "null";
-                    m.appendReplacement(sb, definition);
+                if (arg.raw_value.indexOf('%') != -1) {
+                    m = definition_pattern.matcher(arg.raw_value);
+                    sb = new StringBuffer();
+                    while (m.find()) {
+                        String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
+                        if (definition == null) definition = "null";
+                        m.appendReplacement(sb, definition);
+                    }
+                    m.appendTail(sb);
+                    arg = aH.Argument.valueOf(sb.toString());
                 }
-                m.appendTail(sb);
-                arg = aH.Argument.valueOf(sb.toString());
 
                 // If using IF, check if we've reached the command + args
                 // so that we don't fill player: or npc: prematurely
@@ -178,16 +183,8 @@ public class CommandExecuter {
 
             if (keepGoing)
                 try {
-                    // Fire event for last minute cancellation/alterations
-                    ScriptEntryExecuteEvent event = new ScriptEntryExecuteEvent(scriptEntry);
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-
-                    // If event is altered, update the scriptEntry.
-                    if (event.isAltered()) scriptEntry = event.getScriptEntry();
-
                     // Run the execute method in the command
-                    if (!event.isCancelled()) command.execute(scriptEntry);
-                    else dB.echoDebug(scriptEntry, "ScriptEntry has been cancelled.");
+                    command.execute(scriptEntry);
                 } catch (Exception e) {
                     dB.echoError("Woah!! An exception has been called with this command!");
                     dB.echoError(e);
