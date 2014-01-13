@@ -836,6 +836,17 @@ public class dMaterial implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <m@material.name>
+        // @returns Element
+        // @description
+        // Returns the name of the material.
+        // -->
+        if (attribute.startsWith("name"))
+            return new Element(forcedIdentity != null ? forcedIdentity.toLowerCase():
+                                material.name().toLowerCase())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <m@material.data>
         // @returns Element(Number)
         // @description

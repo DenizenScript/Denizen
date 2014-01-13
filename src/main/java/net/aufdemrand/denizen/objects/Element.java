@@ -886,8 +886,6 @@ public class Element implements dObject {
             return "null";
 
         } else {
-            dB.echoDebug(attribute.getScriptEntry(), "Filled tag <" + attribute.getOrigin() + "> with '" +
-                    element + "'.");
             return element;
         }
     }
