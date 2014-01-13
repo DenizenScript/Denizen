@@ -2,18 +2,13 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
@@ -62,14 +57,12 @@ public class ForEachCommand extends BracedCommand {
         // Report to dB
         dB.report(scriptEntry, getName(), list.debug());
 
-        // Get new queue id (from UUID)
-        String queueId = UUID.randomUUID().toString();
-
         // Start iteration
         for (String value : list) {
             // Check if Queue was cleared (end the foreach if so!)
             if (scriptEntry.getResidingQueue().getWasCleared())
                 return;
+
             // Build cloned script entries for this iteration
             ArrayList<ScriptEntry> newEntries = new ArrayList<ScriptEntry>();
             for (ScriptEntry entry : bracedCommands) {
@@ -81,11 +74,13 @@ public class ForEachCommand extends BracedCommand {
                     dB.echoError(e);
                 }
             }
+
             // Set the %value% and inject entries
             scriptEntry.getResidingQueue().addDefinition("value", value);
             scriptEntry.getResidingQueue().injectEntries(newEntries, 0);
             int entries = newEntries.size();
             int entrycount = scriptEntry.getResidingQueue().getQueueSize();
+
             // Run the entries immediately
             for (int i = 0; i < entries; i++) {
                 denizen.getScriptEngine().revolve(scriptEntry.getResidingQueue());
