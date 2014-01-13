@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
+import net.aufdemrand.denizen.npc.examiners.PathBlockExaminer;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -15,6 +16,8 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
+import net.citizensnpcs.api.astar.pathfinder.FlyingBlockExaminer;
+import net.citizensnpcs.api.astar.pathfinder.MinecraftBlockExaminer;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
@@ -872,6 +875,45 @@ public class dNPC implements dObject, Adjustable {
             getLookCloseTrait().lookClose(value.asBoolean());
         }
 
+        // <--[mechanism]
+        // @object dNPC
+        // @name set_examiner
+        // @input Element
+        // @description
+        // Sets the NPC's block examiner
+        // @tags
+        // s
+        // @test
+        // -->
+        if (mechanism.matches("set_examiner")) {
+
+            if (mechanism.getValue().toString().equalsIgnoreCase("default")) {
+                getNavigator().getLocalParameters().clearExaminers();
+                getNavigator().getLocalParameters().examiner(new MinecraftBlockExaminer());
+
+            } else if (mechanism.getValue().toString().equalsIgnoreCase("fly")) {
+                getNavigator().getLocalParameters().clearExaminers();
+                getNavigator().getLocalParameters().examiner(new FlyingBlockExaminer());
+
+            } else if (mechanism.getValue().toString().equalsIgnoreCase("path")) {
+                getNavigator().getLocalParameters().clearExaminers();
+                getNavigator().getLocalParameters().examiner(new PathBlockExaminer(this, null));
+            }
+
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name set_distance
+        // @input Element
+        // @description
+        // Sets the NPC's distance margin
+        // @tags
+        // -->
+        if (mechanism.matches("set_distance") && mechanism.requireDouble()) {
+            getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
+        }
+
         // Pass along to dEntity mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
             Adjustable entity = new dEntity(getEntity());
@@ -879,4 +921,5 @@ public class dNPC implements dObject, Adjustable {
         }
 
     }
+
 }
