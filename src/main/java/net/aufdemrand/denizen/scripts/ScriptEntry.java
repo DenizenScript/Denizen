@@ -137,7 +137,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
         if (object == null) return this;
         if (object instanceof dObject)
             ((dObject) object).setPrefix(key);
-        objects.put(key.toUpperCase(), object);
+        objects.put(key.toLowerCase(), object);
         return this;
     }
 
@@ -150,7 +150,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
      * @return  The scriptEntry
      */
     public ScriptEntry defaultObject(String key, Object... objects) throws InvalidArgumentsException {
-        if (!this.objects.containsKey(key.toUpperCase()))
+        if (!this.objects.containsKey(key.toLowerCase()))
             for (Object obj : objects)
                 if (obj != null) {
                     this.addObject(key, obj);
@@ -214,7 +214,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
     public Object getObject(String key) {
         try {
-            return objects.get(key.toUpperCase());
+            return objects.get(key.toLowerCase());
         } catch (Exception e) { return null; }
     }
 
@@ -222,10 +222,11 @@ public class ScriptEntry implements Cloneable, Debuggable {
     public dObject getdObject(String key) {
         try {
             // If an ENUM, return as an Element
-            if (objects.get(key.toUpperCase()) instanceof Enum)
-                return new Element(((Enum) objects.get(key.toUpperCase())).name());
+            Object gotten = objects.get(key.toLowerCase());
+            if (gotten instanceof Enum)
+                return new Element(((Enum) gotten).name());
             // Otherwise, just return the stored dObject
-            return (dObject) objects.get(key.toUpperCase());
+            return (dObject) gotten;
             // If not a dObject, return null
         } catch (Exception e) { return null; }
     }
@@ -233,10 +234,11 @@ public class ScriptEntry implements Cloneable, Debuggable {
     public <T extends dObject> T getdObjectAs(String key, Class<T> type) {
         try {
             // If an ENUM, return as an Element
-            if (objects.get(key.toUpperCase()) instanceof Enum)
-                return (T) new Element(((Enum) objects.get(key.toUpperCase())).name());
+            Object gotten = objects.get(key.toLowerCase());
+            if (gotten instanceof Enum)
+                return (T) new Element(((Enum) gotten).name());
             // Otherwise, just return the stored dObject
-            return (T) objects.get(key.toUpperCase());
+            return (T) gotten;
             // If not a dObject, return null
         } catch (Exception e) { return null; }
     }
@@ -244,13 +246,13 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
     public Element getElement(String key) {
         try {
-            return (Element) objects.get(key.toUpperCase());
+            return (Element) objects.get(key.toLowerCase());
         } catch (Exception e) { return null; }
     }
 
 
     public boolean hasObject(String key) {
-        return objects.containsKey(key.toUpperCase());
+        return objects.containsKey(key.toLowerCase());
     }
 
 
@@ -354,7 +356,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     // previous versions of Denizen.
     public List<String> tracked_objects = new ArrayList<String>();
     public ScriptEntry trackObject(String key) {
-        tracked_objects.add(key.toUpperCase());
+        tracked_objects.add(key.toLowerCase());
         return this;
     }
 
