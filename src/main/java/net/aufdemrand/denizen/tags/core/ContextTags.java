@@ -20,47 +20,6 @@ public class ContextTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    // Script tags!
-    @EventHandler
-    public void scriptTags(ReplaceableTagEvent event) {
-        if (!event.matches("script, s") || event.getScriptEntry() == null) return;
-
-        // TODO: Reimpelment
-
-//        // Get script
-//        ScriptContainer script = event.getScriptEntry().getScript().getContainer();
-//        // Get type/subtype/specifier
-//        String type = event.getType();
-//
-//        String sub_type = "";
-//        if (event.hasSubType()) sub_type = event.getSubType();
-//        String specifier = "";
-//        if (event.hasSpecifier()) specifier = event.getSpecifier();
-//
-//        // User is attempting to specify a different scriptcontainer
-//        if (event.hasTypeContext())
-//            script = ScriptRegistry.getScriptContainer(event.getTypeContext());
-//
-//        // Requirements
-//        if (type.equalsIgnoreCase("REQUIREMENTS")) {
-//            if (sub_type.equalsIgnoreCase("CHECK"))
-//                event.setReplaced(String.valueOf(event.getScriptEntry().getScript().getContainer()
-//                        .checkBaseRequirements(event.getPlayer(), event.getNPC())));
-//        }
-//
-//        else if (type.equalsIgnoreCase("TYPE")) {
-//            event.setReplaced(script.getContainerType());
-//        }
-//
-//        else if (type.equalsIgnoreCase("SPEED")) {
-//            if (script.contains("SPEED"))
-//                event.setReplaced(script.getString("SPEED"));
-//        }
-//
-//        else if (type.equalsIgnoreCase("NAME")) {
-//            event.setReplaced(script.getName());
-//        }
-    }
 
     // Get scriptqueue context!
     @EventHandler
@@ -101,6 +60,7 @@ public class ContextTags implements Listener {
 
     }
 
+
     // Get a saved script entry!
     @EventHandler
     public void savedEntryTags(ReplaceableTagEvent event) {
@@ -118,13 +78,13 @@ public class ContextTags implements Listener {
             ScriptEntry held = event.getScriptEntry().getResidingQueue().getHeldScriptEntry(id);
             if (held == null) { // Check if the ID is bad
                 dB.echoError("Bad saved entry ID " + id);
-            }
-            else {
+
+            } else {
                 if (!held.hasObject(attribute.getAttribute(2)) // Check if there's no such object
                         || held.getdObject(attribute.getAttribute(2)) == null) { // ... Check if there is such an object
                     dB.echoError("Bad saved entry object " + attribute.getAttribute(2)); // but it's not a dObject...
-                }
-                else { // Okay, now it's safe!
+
+                } else { // Okay, now it's safe!
                     event.setReplaced(held.getdObject(attribute.getAttribute(2)).getAttribute(attribute.fulfill(2)));
                 }
             }
