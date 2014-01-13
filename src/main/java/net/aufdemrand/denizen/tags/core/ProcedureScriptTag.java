@@ -99,78 +99,91 @@ public class ProcedureScriptTag implements Listener {
     //
     // -->
 
-   @EventHandler
+    @EventHandler
     public void procedureTag(ReplaceableTagEvent event) {
-       // <--[tag]
-       // @attribute <proc[ProcedureScript].Context[<element>|...]>
-       // @returns Element
-       // @description
-       // Returns the 'determine' result of a procedure script with the given context.
-       // See <@link example Using Procedure Scripts>.
-       // -->
-       // <--[tag]
-       // @attribute <proc[ProcedureScript]>
-       // @returns Element
-       // @description
-       // Returns the 'determine' result of a procedure script.
-       // See <@link example Using Procedure Scripts>.
-       // -->
-       if (!event.matches("proc, pr")) return;
 
-       dScript script = null;
+        // <--[tag]
+        // @attribute <proc[ProcedureScript].Context[<element>|...]>
+        // @returns Element
+        // @description
+        // Returns the 'determine' result of a procedure script with the given context.
+        // See <@link example Using Procedure Scripts>.
+        // -->
 
-       if (event.hasNameContext()) {
-           script = dScript.valueOf(event.getNameContext());
-       }
-       else if (event.getValue() != null) {
-           script = dScript.valueOf(event.getValue());
-       }
-       else {
-           dB.echoError("Invalid procedure script tag '" + event.getValue() + "'!");
-           return;
-       }
+        // <--[tag]
+        // @attribute <proc[ProcedureScript]>
+        // @returns Element
+        // @description
+        // Returns the 'determine' result of a procedure script.
+        // See <@link example Using Procedure Scripts>.
+        // -->
+        if (!event.matches("proc, pr")) return;
 
-       if (script == null) {
-           dB.echoError("Missing script for procedure script tag '" + event.getValue() + "'!");
-           return;
-       }
+        dScript script = null;
+        String path = null;
 
-       // Build script entries
-       List<ScriptEntry> entries = script.getContainer().getBaseEntries(event.getPlayer(), event.getNPC());
+        if (event.hasNameContext()) {
+            if (event.getNameContext().indexOf('.') > 0) {
+                String[] split = event.getNameContext().split("\\.", 1);
+                path = split[1];
+                script = dScript.valueOf(split[0]);
 
-       // Return if no entries built
-       if (entries.isEmpty()) return;
+            } else script = dScript.valueOf(event.getNameContext());
 
-       // Create new ID -- this is what we will look for when determining an outcome
-       long id = DetermineCommand.getNewId();
+        } else if (event.getValue() != null) {
+            script = dScript.valueOf(event.getValue());
 
-       // Add the reqId to each of the entries for referencing
-       ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+        } else {
+            dB.echoError("Invalid procedure script tag '" + event.getValue() + "'!");
+            return;
+        }
 
-       InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
-       queue.addEntries(entries);
-       if (event.hasType() &&
-               event.getType().equalsIgnoreCase("context") &&
-               event.hasTypeContext()) {
-           int x = 1;
-           dList definitions = new dList(event.getTypeContext());
-           String[] definition_names = null;
-           try {
-               definition_names = script.getContainer().getString("definitions").split("\\|");
-           }
-           catch (Exception e) { }
-           for (String definition : definitions) {
-               String name = definition_names != null && definition_names.length >= x ?
-                       definition_names[x - 1].trim() : String.valueOf(x);
-               queue.addDefinition(name, definition);
-               dB.echoDebug(event.getScriptEntry(), "Adding definition %" + name + "% as " + definition);
-               x++;
-           }
-       }
-       queue.start();
+        if (script == null) {
+            dB.echoError("Missing script for procedure script tag '" + event.getValue() + "'!");
+            return;
+        }
 
-       if (DetermineCommand.hasOutcome(id)) {
-           event.setReplaced(DetermineCommand.getOutcome(id));
-       }
-   }
+        // Build script entries
+        List<ScriptEntry> entries;
+        if (path != null)
+            entries = script.getContainer().getEntries(event.getPlayer(), event.getNPC(), path);
+        else
+            entries = script.getContainer().getBaseEntries(event.getPlayer(), event.getNPC());
+
+        // Return if no entries built
+        if (entries.isEmpty()) return;
+
+        // Create new ID -- this is what we will look for when determining an outcome
+        long id = DetermineCommand.getNewId();
+
+        // Add the reqId to each of the entries for referencing
+        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+
+        InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
+        queue.addEntries(entries);
+        if (event.hasType() &&
+                event.getType().equalsIgnoreCase("context") &&
+                event.hasTypeContext()) {
+            int x = 1;
+            dList definitions = new dList(event.getTypeContext());
+            String[] definition_names = null;
+
+            try { definition_names = script.getContainer().getString("definitions").split("\\|");
+            } catch (Exception e) { }
+
+            for (String definition : definitions) {
+                String name = definition_names != null && definition_names.length >= x ?
+                        definition_names[x - 1].trim() : String.valueOf(x);
+                queue.addDefinition(name, definition);
+                // dB.echoDebug(event.getScriptEntry(), "Adding definition %" + name + "% as " + definition);
+                x++;
+            }
+        }
+
+        queue.start();
+
+        if (DetermineCommand.hasOutcome(id)) {
+            event.setReplaced(DetermineCommand.getOutcome(id));
+        }
+    }
 }
