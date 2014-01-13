@@ -40,6 +40,7 @@ public class dPlayer implements dObject, Adjustable {
     /////////////////
 
     static Map<String, dPlayer> players = new HashMap<String, dPlayer>();
+    public static ArrayList<OfflinePlayer> offlinePlayers = new ArrayList<OfflinePlayer>();
 
     public static dPlayer mirrorBukkitPlayer(OfflinePlayer player) {
         if (player == null) return null;
@@ -73,7 +74,7 @@ public class dPlayer implements dObject, Adjustable {
 
         OfflinePlayer returnable = null;
 
-        for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+        for (OfflinePlayer player : offlinePlayers)
             if (player.getName().equalsIgnoreCase(string)) {
                 returnable = player;
                 break;
@@ -102,7 +103,7 @@ public class dPlayer implements dObject, Adjustable {
         // No identifier supplied? Let's check offlinePlayers. Return true if
         // a match is found.
         OfflinePlayer returnable = null;
-        for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+        for (OfflinePlayer player : offlinePlayers)
             if (player.getName().equalsIgnoreCase(arg)) {
                 returnable = player;
                 break;
@@ -564,14 +565,14 @@ public class dPlayer implements dObject, Adjustable {
             // ** NOTE: This tag is old. Please instead use <server.list_offline_players> **
             // -->
             else if (attribute.startsWith("list.offline")) {
-                for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                for(OfflinePlayer player : offlinePlayers) {
                     if (!Bukkit.getOnlinePlayers().toString().contains(player.getName()))
                         players.add(player.getName());
                 }
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
             else {
-                for(OfflinePlayer player : Bukkit.getOfflinePlayers())
+                for(OfflinePlayer player : offlinePlayers)
                     players.add(player.getName());
                 return new dList(players).getAttribute(attribute.fulfill(1));
             }

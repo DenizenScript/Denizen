@@ -49,14 +49,15 @@ public class ForEachCommand extends BracedCommand {
 
         // Get objects
         dList list = (dList) scriptEntry.getObject("list");
-        ArrayList<ScriptEntry> bracedCommands =
-                ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces"))
-                        .get("FOREACH");
+        ArrayList<ScriptEntry> bracedCommandsList =
+                ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("FOREACH");
 
-        if (bracedCommands == null || bracedCommands.isEmpty()) {
+        if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
             dB.echoError("Empty braces!");
             return;
         }
+
+        ScriptEntry[] bracedCommands = bracedCommandsList.toArray(new ScriptEntry[bracedCommandsList.size()]);
 
         // Report to dB
         dB.report(scriptEntry, getName(), list.debug());
@@ -80,19 +81,20 @@ public class ForEachCommand extends BracedCommand {
                     dB.echoError(e);
                 }
             }
-            // Build new queue, get contexts from existing queue
-            ScriptQueue queue = new InstantQueue(queueId);
-            for (Map.Entry<String, dObject> entry : scriptEntry.getResidingQueue().getAllContext().entrySet())
-                queue.addContext(entry.getKey(), entry.getValue());
-            // Add definitions to the new queue
-            queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
+            // Set the %value% and inject entries
             scriptEntry.getResidingQueue().addDefinition("value", value);
-            queue.addDefinition("value", value);
-            queue.getAllDefinitions().putAll(scriptEntry.getResidingQueue().getAllDefinitions());
-            // Add entries
-            queue.addEntries(newEntries);
-            // Start the queue
-            queue.start();
+            scriptEntry.getResidingQueue().injectEntries(newEntries, 0);
+            int entries = newEntries.size();
+            int entrycount = scriptEntry.getResidingQueue().getQueueSize();
+            // Run the entries immediately
+            for (int i = 0; i < entries; i++) {
+                denizen.getScriptEngine().revolve(scriptEntry.getResidingQueue());
+                entrycount--;
+                if (scriptEntry.getResidingQueue().getQueueSize() > entrycount) {
+                    entries += scriptEntry.getResidingQueue().getQueueSize() - entrycount;
+                    entrycount += scriptEntry.getResidingQueue().getQueueSize() - entrycount;
+                }
+            }
         }
 
     }

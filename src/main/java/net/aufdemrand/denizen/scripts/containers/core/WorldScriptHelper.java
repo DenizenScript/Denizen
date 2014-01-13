@@ -3912,6 +3912,9 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("hostname", new Element(event.getHostname()));
 
+        if (!dPlayer.offlinePlayers.contains(event.getPlayer()))
+            dPlayer.offlinePlayers.add(event.getPlayer());
+
         String determination = EventManager.doEvents(Arrays.asList
                 ("player logs in",
                         "player login"),
