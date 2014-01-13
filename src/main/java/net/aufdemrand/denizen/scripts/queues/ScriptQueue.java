@@ -15,6 +15,8 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 
 /**
@@ -59,12 +61,13 @@ public abstract class ScriptQueue implements Debuggable {
 
 
     /**
-     * Gets a random UUID for use in creating a 'nameless' queue.
+     * Gets a random id for use in creating a 'nameless' queue.
      *
-     * @return String value of a random UUID
+     * @return String value of a random id
      */
     public static String _getNextId() {
-        return UUID.randomUUID().toString();
+        String id = RandomStringUtils.random(7, "denizen");
+        return _queues.containsKey(id.toUpperCase()) ? _getNextId() : id;
     }
 
 
