@@ -171,6 +171,8 @@ public class TagManager implements Listener {
                             || (event.getReplaced().equals("null") && event.getAlternative() != null))
                         event.setReplaced(event.getAlternative());
                     arg = arg.substring(0, positions[0]) + event.getReplaced().replace("|", dList.internal_escape) + arg.substring(positions[1] + 1, arg.length());
+                    dB.echoDebug(scriptEntry, "Filled tag <" + event.raw_tag + "> with '" +
+                            event.getReplaced() + "'.");
                 }
             }
             // Find new tag
