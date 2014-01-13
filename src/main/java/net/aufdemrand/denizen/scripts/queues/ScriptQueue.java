@@ -66,8 +66,8 @@ public abstract class ScriptQueue implements Debuggable {
      * @return String value of a random id
      */
     public static String _getNextId() {
-        String id = RandomStringUtils.random(7, "denizen");
-        return _queues.containsKey(id.toUpperCase()) ? _getNextId() : id;
+        String id = RandomStringUtils.random(10, "DENIZEN");
+        return _queues.containsKey(id) ? _getNextId() : id;
     }
 
 

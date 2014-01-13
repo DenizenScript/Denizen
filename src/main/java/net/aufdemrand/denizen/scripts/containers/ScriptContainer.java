@@ -238,9 +238,14 @@ public class ScriptContainer implements Debuggable {
     // DEBUGGABLE
     /////////
 
+    // Cached debug value to avoid repeated complex YAML calls
+    private Boolean shouldDebug = null;
+
     @Override
     public boolean shouldDebug() throws Exception {
-        return (!(contents.contains("DEBUG") && contents.getString("DEBUG").equalsIgnoreCase("false")));
+        if (shouldDebug == null)
+            shouldDebug = (!(contents.contains("DEBUG") && contents.getString("DEBUG").equalsIgnoreCase("false")));
+        return shouldDebug;
     }
 
     @Override
