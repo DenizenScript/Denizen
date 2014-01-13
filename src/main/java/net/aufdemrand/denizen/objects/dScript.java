@@ -312,7 +312,7 @@ public class dScript implements dObject {
             if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
 
             if (obj instanceof List) {
-                dList list = new dList("");
+                dList list = new dList();
                 for (Object each : (List<Object>) obj)
                     list.add(each.toString());
                 return list.getAttribute(attribute.fulfill(1));
