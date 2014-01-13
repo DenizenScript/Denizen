@@ -94,7 +94,7 @@ Load Tester:
     # repeat the run command
     # each run will create a new queue, and increase the counter
     - repeat %n% {
-      - flag server stress_test_counter:++
+      - run locally test
       }
 
     # ...and end time, to compare against the start time
@@ -106,3 +106,7 @@ Load Tester:
     # cleanup
     - flag server stress_test_counter:!
     - determine fulfilled
+
+
+  test:
+  - flag server stress_test_counter:++
