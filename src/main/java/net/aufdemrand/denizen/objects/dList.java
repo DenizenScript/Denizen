@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -269,6 +270,53 @@ public class dList extends ArrayList<String> implements dObject {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return null;
+
+        // <--[tag]
+        // @attribute <li@list.get_sub_items[#]>
+        // @returns dList
+        // @description
+        // returns a list of the specified sub items in the list, as split by the
+        // forward-slash character (/).
+        // -->
+
+        if (attribute.startsWith("get_sub_items")) {
+            int index = -1;
+            if (aH.matchesInteger(attribute.getContext(1)))
+                index = attribute.getIntContext(1) - 1;
+            attribute.fulfill(1);
+
+
+            // <--[tag]
+            // @attribute <li@list.get_sub_items[#].split_by[<element>]>
+            // @returns dList
+            // @description
+            // returns a list of the specified sub item in the list, allowing you to specify a
+            // character in which to split the sub items by. WARNING: When setting your own split
+            // character, make note that it is CASE SENSITIVE.
+            // -->
+
+            char split = '/';
+            if (attribute.startsWith("split_by")) {
+                if (attribute.hasContext(1) && attribute.getContext(1).length() > 0)
+                    split = attribute.getContext(1).charAt(0);
+                attribute.fulfill(1);
+            }
+
+            if (index < 0)
+                return Element.NULL.getAttribute(attribute);
+
+            dList sub_list = new dList();
+
+            for (String item : this) {
+                String[] strings = StringUtils.split(item, split);
+                if (strings.length >= index)
+                    sub_list.add(strings[index]);
+                else sub_list.add("null");
+            }
+
+            return sub_list.getAttribute(attribute);
+        }
+
 
         // <--[tag]
         // @attribute <li@list.as_cslist>
