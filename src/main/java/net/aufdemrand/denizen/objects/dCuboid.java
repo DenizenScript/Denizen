@@ -15,8 +15,10 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 public class dCuboid implements dObject, Notable, Adjustable {
 
@@ -685,6 +687,20 @@ public class dCuboid implements dObject, Notable, Adjustable {
                     return "null";
                 return pairs.get(member - 1).low.getAttribute(attribute.fulfill(1));
             }
+        }
+
+        // <--[tag]
+        // @attribute <cu@cuboid.list_players>
+        // @returns dList(dPlayer)
+        // @description
+        // Gets a list of all players currently within the dCuboid.
+        // -->
+        if (attribute.startsWith("list_players")) {
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (Player player : Bukkit.getOnlinePlayers())
+                if (isInsideCuboid(player.getLocation()))
+                    players.add(dPlayer.mirrorBukkitPlayer(player));
+            return new dList(players).getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
