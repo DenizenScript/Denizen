@@ -4,6 +4,7 @@ package net.aufdemrand.denizen.objects.properties.item;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.core.EscapeTags;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -109,69 +110,18 @@ public class ItemBook implements Property {
         return null;
     }
 
-    // <--[language]
-    // @name Property Escaping
-    // @group Useful Lists
-    // @description
-    // Some item properties (and corresponding mechanisms) need to escape their
-    // text output/input to prevent players using them to cheat the system
-    // (EG, if a player set the display name of an item to:
-    //      'name;enchantments=damage_all,3', he would get a free enchantment!)
-    // This are the escape codes used to prevent that:
-    //
-    // | = &pipe
-    // < = &lt
-    // > = &gt
-    // newline = &nl
-    // & = &amp
-    // ; = &sc
-    //
-    // These symbols are automatically used by the internal system, if you are
-    // writing your own property string and need to escape some symbols, you
-    // can just directly type them in, EG: i@stick[display_name=&ltStick&gt]
-    // -->
-    /**
-     * A quick function to escape book Strings.
-     * This is just to prevent tag reading errors.
-     *
-     * @param input the unescaped data.
-     * @return the escaped data.
-     */
-    public static String Escape(String input) {
-        return input.replace("&", "&amp").replace("|", "&pipe")
-                .replace(">", "&gt").replace("<", "&lt")
-                .replace("\n", "&nl").replace(";", "&sc")
-                .replace(String.valueOf((char)0x2011), "&sc");
-    }
-
-    /**
-     * A quick function to reverse a book string escaping.
-     * This is just to prevent tag reading errors.
-     *
-     * @param input the escaped data.
-     * @return the unescaped data.
-     */
-    public static String unEscape(String input) {
-        return input.replace("&pipe;", "|").replace("&nl;", "\n")
-                .replace("&gt;", ">").replace("&lt;", "<")
-                .replace("&amp;", "&").replace("&sc;", ";")
-                // TODO: Remove the above outdated escapes and keep only the below
-                .replace("&pipe", "|").replace("&nl", "\n")
-                .replace("&gt", ">").replace("&lt", "<")
-                .replace("&amp", "&").replace("&sc", ";");
-    }
 
     @Override
     public String getPropertyString() {
         StringBuilder output = new StringBuilder();
         BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
         if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
-            output.append("author|").append(Escape(bookInfo.getAuthor()))
-                    .append("|title|").append(Escape(bookInfo.getTitle())).append("|");
+            output.append("author|").append(EscapeTags.Escape(bookInfo.getAuthor()))
+                    .append("|title|").append(EscapeTags.Escape(bookInfo.getTitle())).append("|");
         }
         output.append("pages|");
         for (String page: bookInfo.getPages()) {
-            output.append(Escape(page)).append("|");
+            output.append(EscapeTags.Escape(page)).append("|");
         }
         if (output.length() == 6)
             return null;

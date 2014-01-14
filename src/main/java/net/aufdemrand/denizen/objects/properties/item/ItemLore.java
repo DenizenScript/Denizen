@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
 
-import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.core.EscapeTags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class ItemLore implements Property {
         StringBuilder output = new StringBuilder();
         for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
             if (!itemLore.startsWith(dItem.itemscriptIdentifier)) {
-                output.append(ItemBook.Escape(itemLore)).append("|");
+                output.append(EscapeTags.Escape(itemLore)).append("|");
             }
         }
         return (output.length() == 0) ? "": output.substring(0, output.length() - 1);

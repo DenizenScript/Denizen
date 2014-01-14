@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -753,7 +754,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         if (mechanism.matches("display_name")) {
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(ItemBook.unEscape(value.asString()));
+            meta.setDisplayName(EscapeTags.unEscape(value.asString()));
             item.setItemMeta(meta);
         }
 
@@ -771,7 +772,7 @@ public class dItem implements dObject, Notable, Adjustable {
             ItemMeta meta = item.getItemMeta();
             dList lore = value.asType(dList.class);
             for (int i = 0; i < lore.size(); i++) {
-                lore.set(i, ItemBook.unEscape(lore.get(i)));
+                lore.set(i, EscapeTags.unEscape(lore.get(i)));
             }
             meta.setLore(lore);
             item.setItemMeta(meta);
@@ -917,8 +918,8 @@ public class dItem implements dObject, Notable, Adjustable {
                             dB.echoError("That type of book cannot have title or author!");
                         }
                         else {
-                            meta.setAuthor(ItemBook.unEscape(data.get(1)));
-                            meta.setTitle(ItemBook.unEscape(data.get(3)));
+                            meta.setAuthor(EscapeTags.unEscape(data.get(1)));
+                            meta.setTitle(EscapeTags.unEscape(data.get(3)));
                             for (int i = 0; i < 4; i++)
                                 data.remove(0); // No .removeRange?
                         }
@@ -929,7 +930,7 @@ public class dItem implements dObject, Notable, Adjustable {
                     else {
                         ArrayList<String> newPages = new ArrayList<String>();
                         for (int i = 1; i < data.size(); i++) {
-                            newPages.add(ItemBook.unEscape(data.get(i)));
+                            newPages.add(EscapeTags.unEscape(data.get(i)));
                         }
                         meta.setPages(newPages);
                     }
