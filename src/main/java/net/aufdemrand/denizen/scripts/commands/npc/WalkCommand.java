@@ -5,9 +5,16 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.Holdable;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.ai.event.NavigationEvent;
 import net.citizensnpcs.api.ai.flocking.*;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +23,7 @@ import java.util.List;
  *
  * @author Jeremy Schroeder
  */
-public class WalkCommand extends AbstractCommand {
+public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
     //                        percentage
     // walk [location] (speed:#.#) (auto_range)
@@ -117,7 +124,44 @@ public class WalkCommand extends AbstractCommand {
             }
         }
 
+        if (scriptEntry.shouldWaitFor()) {
+            held.add(scriptEntry);
+            scriptEntry.addObject("tally", new ArrayList<dNPC>(npcs));
+        }
+
     }
+
+
+    // Held script entries
+    public List<ScriptEntry> held = new ArrayList<ScriptEntry>();
+
+    @EventHandler
+    public void release(NavigationEvent e) {
+
+        if (held.isEmpty()) return;
+
+        // Check each held entry -- the scriptExecuter is waiting on
+        // the entry to be marked 'waited for'.
+        for (ScriptEntry entry : held) {
+
+            // Get all NPCs associated with the entry. They must all
+            // finish navigation before the entry can be let go
+            List<dNPC> npcs = (List<dNPC>) entry.getObject("npcs");
+            for (dNPC npc : npcs) {
+                List<dNPC> tally = (List<dNPC>) entry.getObject("tally");
+                // If the NPC is the NPC from the event, take it from the list.
+                tally.remove(dNPC.mirrorCitizensNPC(e.getNPC()));
+
+                // Check if tally is empty.
+                if (tally.isEmpty()) {
+                    entry.setFinished(true);
+                    break;
+                }
+            }
+        }
+
+    }
+
 
 
 }

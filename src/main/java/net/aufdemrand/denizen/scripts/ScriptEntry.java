@@ -14,8 +14,11 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
+import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 
 
@@ -87,8 +90,11 @@ public class ScriptEntry implements Cloneable, Debuggable {
                 instant = true;
                 this.command = command.substring(1);
             } else if (command.charAt(0) == '~') {
-                waitfor = true;
                 this.command = command.substring(1);
+                // Make sure this command can be 'waited for'
+                if (DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command)
+                        instanceof Holdable)
+                    waitfor = true;
             }
         }
 
@@ -387,8 +393,8 @@ public class ScriptEntry implements Cloneable, Debuggable {
         if (getObject(id) instanceof dObject)
             return getdObject(id).debug();
 
-        // If all else fails, fall back on the toString() method with the id of the
-        // object being passed to aH.report(...)
+            // If all else fails, fall back on the toString() method with the id of the
+            // object being passed to aH.report(...)
         else return aH.debugObj(id, getObject(id));
     }
 }

@@ -19,6 +19,7 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.*;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
+import net.aufdemrand.denizen.scripts.commands.npc.WalkCommand;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
@@ -27,6 +28,7 @@ import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.objects.ObjectFetcher;
 import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -274,6 +276,12 @@ public class Denizen extends JavaPlugin {
         ScriptHelper.reloadScripts();
 
         dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+
+
+        // Initialize some Listeners for commands
+        getServer().getPluginManager()
+                .registerEvents(getCommandRegistry().get(WalkCommand.class),
+                        this);
 
         // Fire the 'on Server Start' world event
         ws_helper.serverStartEvent();
