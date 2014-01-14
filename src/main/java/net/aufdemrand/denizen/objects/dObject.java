@@ -131,6 +131,11 @@ import net.aufdemrand.denizen.tags.Attribute;
 // |   d@<duration> - fetches a duration object with the specified amount of time
 // |   d@<low>|<high> - fetches a duration that is randomly selected between the specified 'low' and 'high'
 //
+// + ----- dPlugin -------+
+// | object notation: pl@    can reference unique objects: yes     can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   pl@<plugin_name> - fetches the plugin with the specified name
+//
 // + ----- Element ------+
 // | object notation: el@   can reference unique objects: no      can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)

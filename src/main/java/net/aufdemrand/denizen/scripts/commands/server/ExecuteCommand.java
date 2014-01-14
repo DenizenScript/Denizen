@@ -77,13 +77,25 @@ public class ExecuteCommand extends AbstractCommand {
         switch (Type.valueOf(type.asString())) {
 
         case AS_PLAYER:
-            scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+            try {
+                scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+            }
+            catch (Throwable e) {
+                dB.echoError("Exception while executing command as player.");
+                dB.echoError(e);
+            }
             return;
 
         case AS_OP:
             boolean isOp = scriptEntry.getPlayer().getPlayerEntity().isOp();
             if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(true);
-            scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+            try {
+                scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+            }
+            catch (Throwable e) {
+                dB.echoError("Exception while executing command as OP.");
+                dB.echoError(e);
+            }
             if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(false);
             return;
 
@@ -97,7 +109,13 @@ public class ExecuteCommand extends AbstractCommand {
                 return;
             }
             ((Player) scriptEntry.getNPC().getEntity()).setOp(true);
-            ((Player) scriptEntry.getNPC().getEntity()).performCommand(command);
+            try {
+                ((Player) scriptEntry.getNPC().getEntity()).performCommand(command);
+            }
+            catch (Throwable e) {
+                dB.echoError("Exception while executing command as NPC-OP.");
+                dB.echoError(e);
+            }
             ((Player) scriptEntry.getNPC().getEntity()).setOp(false);
             return;
 

@@ -43,7 +43,7 @@ public class InventoryHolder implements Property {
         if (inventory.getInventory() == null)
             return null;
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
-        
+
         if (holder != null) {
             if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
                 return new dNPC(CitizensAPI.getNPCRegistry().getNPC((Entity) holder));

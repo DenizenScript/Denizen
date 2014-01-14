@@ -33,8 +33,8 @@ public class Duration implements dObject {
     // Many commands and features that require a duration can be satisfied by specifying a number
     // and unit of time, especially command arguments that are prefixed 'duration:', etc. The d@
     // object fetcher notation can also be used, and is encouraged. The unit of time can be specified
-    // by using one of the following: T=ticks, M=minutes, S=seconds, H=hours, D=days. Not using a unit
-    // will imply seconds. Examples: d@10s, d@50m, d@1d, d@20.
+    // by using one of the following: T=ticks, M=minutes, S=seconds, H=hours, D=days, W = Weeks.
+    // Not using a unit will imply seconds. Examples: d@10s, d@50m, d@1d, d@20.
     //
     // Specifying a range of duration will result in a randomly selected duration that is
     // in between the range specified. The smaller value should be first. Examples:
@@ -58,9 +58,9 @@ public class Duration implements dObject {
     // Use regex pattern matching to easily determine if a string
     // value is a valid Duration.
     final static Pattern match =
-            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)" +
+            Pattern.compile("(?:d@)?(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|w|)" +
                     // Optional 'high-range' for random durations.
-                    "(?:(?:-\\d+.\\d+|.\\d+|\\d+)(?:t|m|s|h|d|))?",
+                    "(?:(?:-\\d+.\\d+|.\\d+|\\d+)(?:t|m|s|h|d|w|))?",
                     Pattern.CASE_INSENSITIVE);
 
 
@@ -130,6 +130,10 @@ public class Duration implements dObject {
             else if (m.group().toLowerCase().endsWith("d"))
                 // Matches DAYS, so 1 day = 86400 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 86400);
+
+            else if (m.group().toLowerCase().endsWith("w"))
+                // Matches WEEKS, so 1 week = 604800 seconds
+                return new Duration(Double.valueOf(m.group(1)) * 604800);
 
             else if (m.group().toLowerCase().endsWith("m"))
                 // Matches MINUTES, so 1 minute = 60 seconds
