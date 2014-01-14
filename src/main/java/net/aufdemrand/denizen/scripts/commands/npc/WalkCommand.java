@@ -8,6 +8,9 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
+import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
+import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.ai.event.NavigationEvent;
 import net.citizensnpcs.api.ai.flocking.*;
 import org.bukkit.Bukkit;
@@ -136,10 +139,25 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
     public List<ScriptEntry> held = new ArrayList<ScriptEntry>();
 
     @EventHandler
-    public void release(NavigationEvent e) {
+    public void finish(NavigationCompleteEvent e) {
 
         if (held.isEmpty()) return;
 
+        checkHeld(e);
+
+    }
+
+    @EventHandler
+    public void cancel(NavigationCancelEvent e) {
+
+        if (held.isEmpty()) return;
+
+        checkHeld(e);
+
+    }
+
+
+    public void checkHeld(NavigationEvent e) {
         // Check each held entry -- the scriptExecuter is waiting on
         // the entry to be marked 'waited for'.
         for (ScriptEntry entry : held) {
@@ -159,9 +177,13 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                 }
             }
         }
-
     }
 
+    @Override
+    public void onEnable() {
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
+                .registerEvents(this, DenizenAPI.getCurrentInstance());
+    }
 
 
 }
