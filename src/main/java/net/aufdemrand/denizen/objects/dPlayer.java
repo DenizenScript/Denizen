@@ -927,7 +927,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.has_finished[<script>]>
-        // @returns dLocation
+        // @returns Element(Boolean)
         // @description
         // returns whether the player has finished the specified script.
         // -->
@@ -941,7 +941,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.has_failed[<script>]>
-        // @returns dLocation
+        // @returns Element(Boolean)
         // @description
         // returns whether the player has failed the specified script.
         // -->

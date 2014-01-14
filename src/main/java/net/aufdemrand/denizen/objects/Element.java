@@ -355,36 +355,6 @@ public class Element implements dObject {
             return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <el@element.round_up>
-        // @returns Element(Number)
-        // @description
-        // Rounds a decimal upward.
-        // -->
-        if (attribute.startsWith("round_up"))
-            try {
-                return new Element((int)Math.ceil(Double.valueOf(element)))
-                        .getAttribute(attribute.fulfill(1)); }
-            catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid Integer.");
-                return new Element("null").getAttribute(attribute.fulfill(1));
-            }
-
-        // <--[tag]
-        // @attribute <el@element.round_down>
-        // @returns Element(Number)
-        // @description
-        // Rounds a decimal downward.
-        // -->
-        if (attribute.startsWith("round_down"))
-            try {
-                return new Element((int)Math.floor(Double.valueOf(element)))
-                        .getAttribute(attribute.fulfill(1)); }
-            catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid Integer.");
-                return new Element("null").getAttribute(attribute.fulfill(1));
-            }
-
-        // <--[tag]
         // @attribute <el@element.as_int>
         // @returns Element(Number)
         // @description
@@ -795,6 +765,10 @@ public class Element implements dObject {
         // Returns the absolute value of the element.
         // -->
         if (attribute.startsWith("abs")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
             return new Element(Math.abs(asDouble()))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -807,6 +781,10 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("add")
                 && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
             return new Element(asDouble() + aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -819,6 +797,10 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("div")
                 && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
             return new Element(asDouble() / aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -831,6 +813,10 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("mod")
                 && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
             return new Element(asDouble() % aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -843,6 +829,10 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("mul")
                 && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
             return new Element(asDouble() * aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -854,6 +844,10 @@ public class Element implements dObject {
         // Returns the square root of the element.
         // -->
         if (attribute.startsWith("sqrt")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
             return new Element(Math.sqrt(asDouble()))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -866,6 +860,10 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("sub")
                 && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
             return new Element(asDouble() - aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -874,6 +872,51 @@ public class Element implements dObject {
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
             if (returned != null) return returned;
+        }
+
+        // <--[tag]
+        // @attribute <el@element.round_up>
+        // @returns Element(Number)
+        // @description
+        // Rounds a decimal upward.
+        // -->
+        if (attribute.startsWith("round_up")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element((int)Math.ceil(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.round_down>
+        // @returns Element(Number)
+        // @description
+        // Rounds a decimal downward.
+        // -->
+        if (attribute.startsWith("round_down")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element((int)Math.floor(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.round>
+        // @returns Element(Number)
+        // @description
+        // Rounds a decimal.
+        // -->
+        if (attribute.startsWith("round")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element((int)Math.round(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // Unfilled attributes past this point probably means the tag is spelled
