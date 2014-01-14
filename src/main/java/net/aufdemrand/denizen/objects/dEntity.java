@@ -1380,6 +1380,51 @@ public class dEntity implements dObject, Adjustable {
             else return new Element("null")
                     .getAttribute(attribute.fulfill(1));
         }
+ 
+        // <--[tag]
+        // @attribute <e@entity.get_horse_variant>
+        // @returns Element(String)
+        // @description
+        // Returns the variant of a horse.
+        // -->
+        if (attribute.startsWith("get_horse_variant")) {
+            if (isLivingEntity()) {
+                return new Element(getLivingEntity().getVariant())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else return new Element("null")
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.get_horse_color>
+        // @returns Element(String)
+        // @description
+        // Returns the variant of a horse.
+        // -->
+        if (attribute.startsWith("get_horse_color")) {
+            if (isLivingEntity()) {
+                return new Element(getLivingEntity().getColor())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else return new Element("null")
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.get_horse_color>
+        // @returns Element(String)
+        // @description
+        // Returns the variant of a horse.
+        // -->
+        if (attribute.startsWith("get_horse_color")) {
+            if (isLivingEntity()) {
+                return new Element(getLivingEntity().getColor())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else return new Element("null")
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.get_owner>
