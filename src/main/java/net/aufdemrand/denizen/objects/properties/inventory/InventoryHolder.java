@@ -75,8 +75,8 @@ public class InventoryHolder implements Property {
 
     @Override
     public String getPropertyString() {
-        if (inventory.getIdType().equals("generic")
-                && inventory.getIdHolder().equals("CHEST"))
+        if (holder == null || (inventory.getIdType().equals("generic")
+                && inventory.getIdHolder().equals("CHEST")))
             return null;
         else
             return holder.identify();

@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -378,8 +379,13 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (holder instanceof BlockState) {
                 return new dLocation(((BlockState) holder).getLocation());
             }
-            else if (holder instanceof Player) {
-                return new dLocation(((Player) holder).getLocation());
+            else if (holder instanceof Entity) {
+                Entity entity = (Entity) holder;
+                if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                    if (entity.getLocation() == null)
+                        return new dLocation(CitizensAPI.getNPCRegistry().getNPC(entity).getStoredLocation());
+                }
+                return new dLocation(((Entity) holder).getLocation());
             }
         }
 
