@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.tags;
 
 
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
@@ -121,17 +120,17 @@ public class Attribute {
             raw_tag = raw_tag.substring(0, raw_tag.length() - 1);
     }
 
+    Pattern CONTEXT_PATTERN = Pattern.compile("\\[.+\\]$");
     public boolean hasContext(int attribute) {
-        return getAttribute(attribute).contains("[");
+        String text = getAttribute(attribute);
+        return text.endsWith("]") && text.contains("[");
     }
 
     public String getContext(int attribute) {
         if (hasContext(attribute)) {
 
-            // dB.log(getAttribute(attribute));
-
             String text = getAttribute(attribute);
-            Matcher contextMatcher = Pattern.compile("\\[.+\\]").matcher(text);
+            Matcher contextMatcher = CONTEXT_PATTERN.matcher(text);
 
             if (contextMatcher.find()) {
                 return text.substring(contextMatcher.start() + 1, contextMatcher.end() - 1);
