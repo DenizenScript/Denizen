@@ -135,7 +135,7 @@ public class ReplaceableTagEvent extends Event {
         if (input == null)
             return null;
         else
-            return input.replaceAll("\\[.+\\]", "");
+            return input.replaceAll("\\[.+\\]$", "");
     }
 
     ////////

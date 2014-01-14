@@ -26,7 +26,6 @@ public class dList extends ArrayList<String> implements dObject {
 
     public final static char internal_escape_char = (char)0x05;
     public final static String internal_escape = String.valueOf(internal_escape_char);
-    final static Pattern split_char = Pattern.compile("(?!\\[[^\\[]*)\\b*[\\|" + internal_escape +  "]\\b*(?![^\\[]*\\])");
     final static Pattern identifier = Pattern.compile("li@", Pattern.CASE_INSENSITIVE);
 
     @Fetchable("li, fl")
@@ -93,8 +92,31 @@ public class dList extends ArrayList<String> implements dObject {
 
     // A string of items, split by '|'
     public dList(String items) {
-        if (items != null) {
-            addAll(Arrays.asList(split_char.split(items)));
+        if (items != null && items.length() > 0) {
+            // Count brackets
+            int brackets = 0;
+            // Record start position
+            int start = 0;
+            // Loop through characters
+            for (int i = 0; i < items.length(); i++) {
+                char chr = items.charAt(i);
+                // Count brackets
+                if (chr == '[') {
+                    brackets++;
+                }
+                else if (chr == ']') {
+                    if (brackets > 0) brackets--;
+                }
+                // Separate if an un-bracketed pipe is found
+                else if ((brackets == 0) && (chr == '|' || chr == internal_escape_char)) {
+                    add(items.substring(start, i));
+                    start = i + 1;
+                }
+            }
+            // If there is an item waiting, add it too
+            if (start < items.length()) {
+                add(items.substring(start, items.length()));
+            }
         }
     }
 
@@ -420,7 +442,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("exclude") &&
                 attribute.hasContext(1)) {
-            String[] exclusions = split_char.split(attribute.getContext(1));
+            dList exclusions = new dList(attribute.getContext(1));
             // Create a new dList that will contain the exclusions
             dList list = new dList(this);
             // Iterate through

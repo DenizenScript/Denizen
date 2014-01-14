@@ -37,7 +37,7 @@ public class Conversion {
     /**
      * Turn a list of dItems into a list of ItemStacks.
      *
-     * @param entities The list of dItems
+     * @param items The list of dItems
      * @return The list of ItemStacks
      */
 
@@ -79,13 +79,13 @@ public class Conversion {
     public static dInventory getInventory(Argument arg) {
         String string = arg.getValue();
 
-        if (arg.matchesArgumentList(dItem.class)) {
-            List<dItem> list = dList.valueOf(string).filter(dItem.class);
-            ItemStack[] items = list.toArray(new ItemStack[list.size()]);
-            return new dInventory(dInventory.maxSlots).add(items);
-        }
-        else if (dInventory.matches(string)) {
+        if (dInventory.matches(string)) {
             return dInventory.valueOf(string);
+        }
+        else if (arg.matchesArgumentList(dItem.class)) {
+            List<dItem> list = dList.valueOf(string).filter(dItem.class);
+            ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
+            return new dInventory(dInventory.maxSlots).add(items);
         }
         else if (dLocation.matches(string)) {
             return dLocation.valueOf(string).getInventory();
