@@ -531,6 +531,9 @@ public class Duration implements dObject {
             if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
                 timeString = timeString + String.valueOf(seconds) + "s";
 
+            if (timeString.isEmpty())
+                timeString = "forever";
+
             return new Element(timeString.trim())
                         .getAttribute(attribute.fulfill(1));
         }
