@@ -43,6 +43,7 @@ public class TagManager implements Listener {
         new ProcedureScriptTag(denizen);
         new ContextTags(denizen);
         new TextTags(denizen);
+        new EscapeTags(denizen);
 
         // For compatibility
         new AnchorTags(denizen);
@@ -170,9 +171,9 @@ public class TagManager implements Listener {
                     if ((!event.replaced() && event.getAlternative() != null)
                             || (event.getReplaced().equals("null") && event.getAlternative() != null))
                         event.setReplaced(event.getAlternative());
-                    arg = arg.substring(0, positions[0]) + event.getReplaced().replace("|", dList.internal_escape) + arg.substring(positions[1] + 1, arg.length());
-                    dB.echoDebug(scriptEntry, "Filled tag <" + event.raw_tag + "> with '" +
+                    dB.echoDebug(scriptEntry, "Filled tag <" + arg.substring(positions[0] + 1, positions[1]) + "> with '" +
                             event.getReplaced() + "'.");
+                    arg = arg.substring(0, positions[0]) + event.getReplaced().replace("|", dList.internal_escape) + arg.substring(positions[1] + 1, arg.length());
                 }
             }
             // Find new tag

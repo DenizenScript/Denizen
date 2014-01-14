@@ -37,7 +37,7 @@ public class UtilTags implements Listener {
 
     // <--[tag]
     // @attribute <math:<calculationhere>>
-    // @returns Element(Number)
+    // @returns Direct text output(Decimal)
     // @description
     // Returns a calculcated result of the math placed after the :
     // EG <math:1+1> or <math:sin(<npc.id>)>.

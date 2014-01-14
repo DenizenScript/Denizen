@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.core.EscapeTags;
 
 public class ItemDisplayname implements Property {
 
@@ -48,7 +49,7 @@ public class ItemDisplayname implements Property {
 
     @Override
     public String getPropertyString() {
-        return ItemBook.Escape(item.getItemStack().getItemMeta().getDisplayName());
+        return EscapeTags.Escape(item.getItemStack().getItemMeta().getDisplayName());
     }
 
     @Override
