@@ -1699,7 +1699,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(PlaySoundCommand.class,
-                "PLAYSOUND", "playsound [<location>/<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
+                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
 
 
         // <--[command]
