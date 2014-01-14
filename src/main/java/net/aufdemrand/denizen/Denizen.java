@@ -277,12 +277,6 @@ public class Denizen extends JavaPlugin {
 
         dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
-
-        // Initialize some Listeners for commands
-        getServer().getPluginManager()
-                .registerEvents(getCommandRegistry().get(WalkCommand.class),
-                        this);
-
         // Fire the 'on Server Start' world event
         ws_helper.serverStartEvent();
     }
