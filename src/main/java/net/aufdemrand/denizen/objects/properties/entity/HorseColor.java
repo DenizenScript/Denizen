@@ -33,14 +33,14 @@ public class EntityProfession implements Property {
         professional = entity;
     }
 
-    dEntity professional;
+    dEntity color;
 
     private Color getColor() {
         if (professional == null) return null;
         return ((Horse) professional.getBukkitEntity()).getProfession();
     }
 
-    public void setProfession(Villager.Profession profession) {
+    public void setColor(Horse.Color color) {
         if (professional != null)
             ((Villager) professional.getBukkitEntity()).setProfession(profession);
 
@@ -53,7 +53,7 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyString() {
-        return getProfession().name().toLowerCase();
+        return getColor().Horse.Color().toLowerCase();
     }
 
     @Override
