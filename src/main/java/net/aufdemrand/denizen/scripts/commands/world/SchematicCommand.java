@@ -1,5 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import com.sk89q.worldedit.LocalWorld;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -32,17 +36,19 @@ public class SchematicCommand extends AbstractCommand implements Listener {
     }
 
 
-    private enum Type { LOAD, UNLOAD, ROTATE, PASTE }
+    private enum Type { CREATE, LOAD, UNLOAD, ROTATE, PASTE, SAVE }
     public static Map<String, CuboidClipboard> schematics;
 
     // TODO: Create schematic from dCuboid
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        // - schematic create name:Potato cu@x,y,z,world|x,y,z,world origin:x,y,z,world
         // - schematic load name:Potato
         // - schematic unload name:Potato
         // - schematic rotate name:Potato angle:90
         // - schematic paste name:Potato location:x,y,z,world (noair)
+        // - schematic save name:Potato
         // - schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)
 
         if (Depends.worldEdit == null) {
@@ -72,6 +78,10 @@ public class SchematicCommand extends AbstractCommand implements Listener {
                     && arg.matches("noair"))
                 scriptEntry.addObject("noair", Element.TRUE);
 
+            else if (!scriptEntry.hasObject("cuboid")
+                && arg.matchesArgumentType(dCuboid.class))
+                scriptEntry.addObject("cuboid", arg.asType(dCuboid.class));
+
             else
                 arg.reportUnhandled();
         }
@@ -93,15 +103,47 @@ public class SchematicCommand extends AbstractCommand implements Listener {
         Element name = scriptEntry.getElement("name");
         Element noair = scriptEntry.getElement("noair");
         dLocation location = (dLocation) scriptEntry.getObject("location");
+        dCuboid cuboid = (dCuboid) scriptEntry.getObject("cuboid");
 
         dB.report(scriptEntry, getName(), type.debug()
                            + name.debug()
                            + (location != null ? location.debug(): "")
+                           + (cuboid != null ? cuboid.debug(): "")
                            + (angle != null ? angle.debug(): "")
                            + (noair != null ? noair.debug(): ""));
 
         CuboidClipboard cc;
         switch (Type.valueOf(type.asString())) {
+            case CREATE:
+                if (schematics.containsKey(name.asString().toUpperCase())) {
+                    dB.echoError("Schematic file " + name.asString() + " is already loaded.");
+                    return;
+                }
+                if (cuboid == null) {
+                    dB.echoError("Missing cuboid argument!");
+                    return;
+                }
+                if (location == null) {
+                    dB.echoError("Missing origin location argument!");
+                    return;
+                }
+                try {
+                    LocalWorld world = new BukkitWorld(cuboid.getWorld());
+                    EditSession es = new EditSession(world, 99999999);
+                    Vector origin = new com.sk89q.worldedit.Vector(location.getX(), location.getY(), location.getZ());
+                    Vector max = new Vector(cuboid.getHigh(0).getX(), cuboid.getHigh(0).getY(), cuboid.getHigh(0).getZ());
+                    Vector min = new Vector(cuboid.getLow(0).getX(), cuboid.getLow(0).getY(), cuboid.getLow(0).getZ());
+                    Vector size = max.subtract(min).add(Vector.ONE);
+                    cc = new CuboidClipboard(size, min, min.subtract(origin));
+                    cc.copy(es, new CuboidRegion(world, min, max));
+                    schematics.put(name.asString().toUpperCase(), cc);
+                }
+                catch (Exception ex) {
+                    dB.echoError("Error creating schematic file " + name.asString() + ".");
+                    dB.echoError(ex);
+                    return;
+                }
+                break;
             case LOAD:
                 if (schematics.containsKey(name.asString().toUpperCase())) {
                     dB.echoError("Schematic file " + name.asString() + " is already loaded.");
@@ -115,12 +157,13 @@ public class SchematicCommand extends AbstractCommand implements Listener {
                         return;
                     }
                     cc = SchematicFormat.MCEDIT.load(f);
+                    schematics.put(name.asString().toUpperCase(), cc);
                 }
                 catch (Exception ex) {
                     dB.echoError("Error loading schematic file " + name.asString() + ".");
+                    dB.echoError(ex);
                     return;
                 }
-                schematics.put(name.asString().toUpperCase(), cc);
                 break;
             case UNLOAD:
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
@@ -156,7 +199,26 @@ public class SchematicCommand extends AbstractCommand implements Listener {
                                 noair != null);
                 }
                 catch (Exception ex) {
-                    dB.echoError("Exception while pasting " + name.asString());
+                    dB.echoError("Exception pasting schematic file " + name.asString() + ".");
+                    dB.echoError(ex);
+                    return;
+                }
+                break;
+            case SAVE:
+                if (!schematics.containsKey(name.asString().toUpperCase())) {
+                    dB.echoError("Schematic file " + name.asString() + " is not loaded.");
+                    return;
+                }
+                try {
+                    cc = schematics.get(name.asString().toUpperCase());
+                    String directory = URLDecoder.decode(System.getProperty("user.dir"));
+                    File f = new File(directory + "/plugins/Denizen/schematics/" + name.asString() + ".schematic");
+                    SchematicFormat.MCEDIT.save(cc, f);
+                }
+                catch (Exception ex) {
+                    dB.echoError("Error saving schematic file " + name.asString() + ".");
+                    dB.echoError(ex);
+                    return;
                 }
                 break;
         }

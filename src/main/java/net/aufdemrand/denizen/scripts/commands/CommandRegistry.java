@@ -1993,10 +1993,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Schematic
-        // @Syntax schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)
+        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (noair)
         // @Required 2
         // @Stable unstable
-        // @Short Loads, edits, or pastes a WorldEdit schematic.
+        // @Short Creates, loads, pastes, and saves WorldEdit schematics.
         // @Author mcmonkey
         // @Description
         // Todo
@@ -2008,6 +2008,10 @@ public class CommandRegistry implements dRegistry {
         // <schematic[<name>].origin>
         // <schematic[<name>].offset>
         // <schematic[<name>].blocks>
+        // @Usage
+        // Use to create a new schematic from a cuboid and an origin location
+        // - schematic create name:MySchematic cu@<player.location.sub[5,5,5]>|<player.location.add[5,5,5]> <player.location>
+        //
         // @Usage
         // Use to load a schematic
         // - schematic load name:MySchematic
@@ -2023,10 +2027,14 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Use to paste a loaded schematic
         // - schematic paste name:MySchematic <player.location> noair
+        //
+        // @Usage
+        // Use to save a created schematic
+        // - schematic save name:MySchematic
         // -->
         if (Depends.worldEdit != null) // Temporary work-around...
         registerCoreMember(SchematicCommand.class,
-                "SCHEMATIC", "schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)", 2);
+                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (noair)", 2);
 
         // <--[command]
         // @Name Scoreboard
