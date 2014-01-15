@@ -191,8 +191,12 @@ public class UtilTags implements Listener {
         // Returns the server's currently selected NPC.
         // -->
         if (attribute.startsWith("selected_npc")) {
-            event.setReplaced(new dNPC(((Citizens) Bukkit.getPluginManager().getPlugin("Citizens"))
-                    .getNPCSelector().getSelected(Bukkit.getConsoleSender())).getAttribute(attribute.fulfill(1)));
+            NPC npc = ((Citizens) Bukkit.getPluginManager().getPlugin("Citizens"))
+                    .getNPCSelector().getSelected(Bukkit.getConsoleSender());
+            if (npc == null)
+                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
+            else
+                event.setReplaced(new dNPC(npc).getAttribute(attribute.fulfill(1)));
             return;
         }
 
