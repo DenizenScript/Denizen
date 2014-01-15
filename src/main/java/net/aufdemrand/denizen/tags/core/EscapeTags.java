@@ -32,6 +32,8 @@ public class EscapeTags implements Listener {
     // [ = &lb
     // ] = &rb
     //
+    // Also, you can input a non-breaking space via &sp
+    //
     // These symbols are automatically used by the internal system, if you are
     // writing your own property string and need to escape some symbols, you
     // can just directly type them in, EG: i@stick[display_name=&ltStick&gt]
@@ -68,7 +70,8 @@ public class EscapeTags implements Listener {
                 .replace("&pipe", "|").replace("&nl", "\n")
                 .replace("&gt", ">").replace("&lt", "<")
                 .replace("&amp", "&").replace("&sc", ";")
-                .replace("&lb", "[").replace("&rb", "]");
+                .replace("&lb", "[").replace("&rb", "]")
+                .replace("&sp", String.valueOf((char)0x00A0));
     }
 
     @EventHandler
