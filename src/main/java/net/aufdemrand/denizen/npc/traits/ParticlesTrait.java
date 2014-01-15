@@ -138,7 +138,7 @@ public class ParticlesTrait extends Trait {
 
     public void playHeartEffect() {
         Location location = npc.getBukkitEntity().getLocation();
-        Wolf tempWolf = (Wolf) world.spawn(location, Wolf.class);
+        Wolf tempWolf = world.spawn(location, Wolf.class);
         ((CraftWolf) tempWolf).getHandle().setInvisible(true);
         tempWolf.playEffect(EntityEffect.WOLF_HEARTS);
         if (dense) tempWolf.playEffect(EntityEffect.WOLF_HEARTS);

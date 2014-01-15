@@ -109,7 +109,7 @@ public class ScriptRegistry {
     public static <T extends ScriptContainer> T getScriptContainerAs(String name, Class<T> type) {
         try {
         if (scriptContainers.containsKey(name.toUpperCase()))
-            return (T) type.cast(scriptContainers.get(name.toUpperCase()));
+            return type.cast(scriptContainers.get(name.toUpperCase()));
         else return null;
         } catch (Exception e) { }
 

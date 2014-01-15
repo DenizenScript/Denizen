@@ -1,20 +1,13 @@
 package net.aufdemrand.denizen.npc.examiners;
 
-import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.astar.pathfinder.BlockExaminer;
 import net.citizensnpcs.api.astar.pathfinder.BlockSource;
 import net.citizensnpcs.api.astar.pathfinder.PathPoint;
-import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
 import java.util.*;

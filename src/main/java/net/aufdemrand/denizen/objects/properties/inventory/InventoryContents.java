@@ -18,7 +18,7 @@ public class InventoryContents implements Property {
         // All inventories should have contents
         return inventory instanceof dInventory;
     }
-    
+
     public static InventoryContents getFrom(dObject inventory) {
         if (!describes(inventory)) return null;
         return new InventoryContents((dInventory) inventory);
@@ -107,7 +107,7 @@ public class InventoryContents implements Property {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return "null";
- 
+
         // <--[tag]
         // @attribute <in@inventory.list_contents>
         // @returns dList(dItem)
