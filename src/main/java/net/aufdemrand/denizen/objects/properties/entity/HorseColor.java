@@ -35,7 +35,7 @@ public class HorseColor implements Property {
 
     dEntity color;
 
-    private Color getColor() {
+    private Horse.Color getColor() {
         if (color == null) return null;
         return ((Horse) color.getBukkitEntity()).getColor();
     }
