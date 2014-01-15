@@ -21,7 +21,7 @@ public class HorseColor implements Property {
     public static Horse.Color getFrom(dObject entity) {
         if (!describes(entity)) return null;
 
-        else return new Horse.Color((dEntity) entity);
+        else return new HorseColor((dEntity) entity);
     }
 
 
