@@ -1382,20 +1382,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
 
-        // <--[tag]
-        // @attribute <e@entity.get_horse_domestication>
-        // @returns Element(int)
-        // @description
-        // Returns the variant of a horse.
-        // -->
-        if (attribute.startsWith("get_horse_Domestication")) {
-            if (isLivingEntity()) {
-                return new Element(getLivingEntity().getDomestication())
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else return new Element("null")
-                    .getAttribute(attribute.fulfill(1));
-        }
 
         // <--[tag]
         // @attribute <e@entity.get_owner>
