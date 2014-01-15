@@ -30,19 +30,19 @@ public class EntityProfession implements Property {
     /////////////
 
     private HorseColor(dEntity entity) {
-        color = entity;
+        Horse.Color = entity;
     }
 
-    dEntity color;
+    dEntity Horse.Color;
 
     private Horse.Color getColor() {
-        if (color == null) return null;
-        return ((Horse) color.getBukkitEntity()).getColor();
+        if (Horse.Color == null) return null;
+        return ((Horse) Horse.Color.getBukkitEntity()).getColor();
     }
 
     public void setColor(Horse.Color color) {
-        if (professional != null)
-            ((Horse) color.getBukkitEntity()).setColor(color);
+        if (Horse.Color != null)
+            ((Horse) Horse.Color.getBukkitEntity()).setColor(color);
 
     }
 
@@ -58,7 +58,7 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyId() {
-        return "color";
+        return "Horse.Color";
     }
 
 
@@ -76,7 +76,7 @@ public class EntityProfession implements Property {
         // @returns Element
         // @description
         // If the entity can have a color, returns the entity's color.
-        // Currently, only Villager-type entities can have professions.
+        // Currently, only Horse entitys can have Horse.Color.
         // -->
         if (attribute.startsWith("horse_color"))
             return new Element(getColor().name().toLowerCase())
