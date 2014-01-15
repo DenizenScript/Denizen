@@ -33,7 +33,7 @@ public class EntityProfession implements Property {
         color = entity;
     }
 
-    dEntity professional;
+    dEntity color;
 
     private Horse.Color getColor() {
         if (color == null) return null;
