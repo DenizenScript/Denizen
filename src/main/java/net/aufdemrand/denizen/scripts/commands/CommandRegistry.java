@@ -1253,22 +1253,44 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Inventory
-        // @Syntax inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)
+        // @Syntax inventory [open/close/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)
         // @Required 1
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
         // @Author David Cernat, Morphan1
         // @Description
-        // Todo
+        // Use this command to edit the state of inventories. By default, the destination inventory
+        // is the current attached player's inventory. If you are copying, swapping, removing from
+        // (including via "keep" and "exclude"), adding to, moving, or filling inventories, you'll need
+        // both destination and origin inventories. Origin inventories may be specified as a list of
+        // dItems, but destinations must be actual dInventories.
+        // Using "open", "clear", or "update" only require a destination. "Update" also requires the
+        // destination to be a valid player inventory.
+        // Using "close" closes any inventory that the currently attached player has opened.
         // @Tags
         // <p@player.inventory>
         // <n@npc.inventory>
         // <l@location.inventory>
         // @Usage
-        // Todo
+        // Use to open a chest inventory, at a location.
+        // - inventory open d:l@123,123,123,world
+        // @Usage
+        // Use to open another player's inventory.
+        // - inventory open d:<p@calico-kid.inventory>
+        // @Usage
+        // Use to remove all items from a chest, except any items in
+        // the specified list.
+        // - inventory keep d:in@location[l@123,123,123,world] o:li@i@snow_ball|i@ItemScript
+        // @Usage
+        // Use to remove items specified in a chest from the current
+        // player's inventory, regardless of the item count.
+        // - inventory exclude origin:l@123,123,123,world
+        // @Usage
+        // Use to swap two players' inventories.
+        // - inventory swap d:in@player[p@mcmonkey4eva] o:<p@fullwall.inventory>
         // -->
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)", 1);
+                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)", 1);
 
 
         // <--[command]
@@ -1699,7 +1721,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(PlaySoundCommand.class,
-                "PLAYSOUND", "playsound [<location>/<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
+                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
 
 
         // <--[command]

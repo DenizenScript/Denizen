@@ -34,12 +34,12 @@ public class PlaySoundCommand extends AbstractCommand {
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("location")
+            if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(dLocation.class))
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("locations", arg.asType(dList.class).filter(dLocation.class));
 
-            else if (!scriptEntry.hasObject("location")
+            else if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dPlayer.class))
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dPlayer.class));
@@ -78,28 +78,37 @@ public class PlaySoundCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("location");
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("entities");
         Element sound = scriptEntry.getElement("sound");
         Element volume = scriptEntry.getElement("volume");
         Element pitch = scriptEntry.getElement("pitch");
 
         dB.report(scriptEntry, getName(),
-                (location != null ? location.debug(): "") +
+                (locations != null ? aH.debugObj("locations", players.toString()): "") +
                 (players != null ? aH.debugObj("entities", players.toString()): "") +
                 sound.debug() +
                 volume.debug() +
                 pitch.debug());
 
         try {
-            if (location != null) location.getWorld().playSound(location, Sound.valueOf(sound.asString().toUpperCase()), volume.asFloat(), pitch.asFloat());
-            else {
+            if (locations != null) {
+                for (dLocation location : locations) {
+                    location.getWorld().playSound(location,
+                            Sound.valueOf(sound.asString().toUpperCase()),
+                            volume.asFloat(),
+                            pitch.asFloat());
+                }
+            } else {
                 for (dPlayer player: players) {
-                    player.getPlayerEntity().playSound(player.getLocation(), Sound.valueOf(sound.asString().toUpperCase()), volume.asFloat(), pitch.asFloat());
+                    player.getPlayerEntity().playSound(player.getLocation(),
+                            Sound.valueOf(sound.asString().toUpperCase()),
+                            volume.asFloat(),
+                            pitch.asFloat());
                 }
             }
         } catch (Exception e) {
-            dB.echoError("Invalid sound!");
+            dB.echoDebug(scriptEntry, "Unable to play sound.");
         }
     }
 
