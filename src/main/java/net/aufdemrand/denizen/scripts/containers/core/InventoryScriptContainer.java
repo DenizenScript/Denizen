@@ -86,7 +86,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
 
                     inventory = new dInventory(size,
-                            contains("TITLE") ? getString("TITLE") : "Chest");
+                            contains("TITLE") ? TagManager.tag(player, npc, getString("TITLE")) : "Chest");
                     inventory.setIdentifiers("script", getName());
                 }
             }
@@ -102,17 +102,21 @@ public class InventoryScriptContainer extends ScriptContainer {
                             dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item.");
                             return null;
                         }
-                        if (contains("DEFINITIONS." + m.group(2)) && dItem.matches(getString("DEFINITIONS." + m.group(2)))) {
-                            finalItems[itemsAdded] = dItem.valueOf(getString("DEFINITIONS." + m.group(2))).getItemStack();
+                        if (contains("DEFINITIONS." + m.group(2)) &&
+                                dItem.matches(getString("DEFINITIONS." + m.group(2)))) {
+                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag
+                                    (player, npc, getString("DEFINITIONS." + m.group(2))))
+                                        .getItemStack();
                         }
                         else if (dItem.matches(m.group(2))) {
-                            finalItems[itemsAdded] = dItem.valueOf(m.group(2)).getItemStack();
+                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(player, npc, m.group(2)))
+                                    .getItemStack();
                         }
                         else {
                             finalItems[itemsAdded] = new ItemStack(Material.AIR);
                             if (!m.group(2).trim().isEmpty()) {
-                                dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: [" + m.group(2)
-                                        + "]... Ignoring it and assuming \"AIR\"");
+                                dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
+                                        + m.group(2) + "]... Ignoring it and assuming \"AIR\"");
                             }
                         }
                         itemsAdded++;
