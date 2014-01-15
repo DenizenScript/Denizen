@@ -9,12 +9,12 @@ import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 
-public class HorseColor implements Property {
+public class EntityProfession implements Property {
 
 
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
-        // Check if the entity is a Horse, the only EntityType that can be a Color
+        // Check if the entity is a Horse, The only entity that can have a color
         return ((dEntity) entity).getEntityType() == EntityType.HORSE;
     }
 
@@ -33,7 +33,7 @@ public class HorseColor implements Property {
         color = entity;
     }
 
-    dEntity color;
+    dEntity professional;
 
     private Horse.Color getColor() {
         if (color == null) return null;
@@ -41,7 +41,7 @@ public class HorseColor implements Property {
     }
 
     public void setColor(Horse.Color color) {
-        if (color != null)
+        if (professional != null)
             ((Horse) color.getBukkitEntity()).setColor(color);
 
     }
@@ -53,7 +53,7 @@ public class HorseColor implements Property {
 
     @Override
     public String getPropertyString() {
-        return getColor().Horse.Color().toLowerCase();
+        return getColor().name().toLowerCase();
     }
 
     @Override
@@ -75,11 +75,11 @@ public class HorseColor implements Property {
         // @attribute <e@entity.horse_color>
         // @returns Element
         // @description
-        // If the entity can have professions, returns the entity's profession.
-        // Specify horse_color cuz of sheep D: which Can have Colors.
+        // If the entity can have a color, returns the entity's color.
+        // Currently, only Villager-type entities can have professions.
         // -->
         if (attribute.startsWith("horse_color"))
-            return new Element(getColor().HorseColor().toLowerCase())
+            return new Element(getColor().name().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
