@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.Utilities;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -13,6 +14,9 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.ParticleEffect;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Lets you play a Bukkit effect or a ParticleEffect from the
@@ -43,9 +47,9 @@ public class PlayEffectCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
+                    && arg.matchesArgumentList(dLocation.class)) {
 
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("location", arg.asType(dList.class).filter(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("effect") &&
@@ -112,8 +116,8 @@ public class PlayEffectCommand extends AbstractCommand {
 
         // Use default values if necessary
         scriptEntry.defaultObject("location",
-                scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
-                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
+                scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getLocation()) : null,
+                scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getLocation()): null);
         scriptEntry.defaultObject("data", new Element(0));
         scriptEntry.defaultObject("radius", new Element(15));
         scriptEntry.defaultObject("qty", new Element(1));
@@ -134,7 +138,7 @@ public class PlayEffectCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Extract objects from ScriptEntry
-        dLocation location = (dLocation) scriptEntry.getObject("location");
+        List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("location");
         Effect effect = (Effect) scriptEntry.getObject("effect");
         ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("particleeffect");
         Element iconcrack = scriptEntry.getElement("iconcrack");
@@ -143,37 +147,39 @@ public class PlayEffectCommand extends AbstractCommand {
         Element qty = scriptEntry.getElement("qty");
         Element offset = scriptEntry.getElement("offset");
 
-        // Slightly increase the location's Y so effects don't seem
-        // to come out of the ground
-        location.add(0, 1, 0);
-
         // Report to dB
         dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
                 particleEffect != null ? aH.debugObj("special effect", particleEffect.name()) :
                 iconcrack.debug()) +
-                location.debug() +
+                aH.debugObj("locations", locations.toString()) +
                 radius.debug() +
                 data.debug() +
                 qty.debug() +
                 (effect != null ? "" : offset.debug()));
 
-        // Play the Bukkit effect the number of times specified
-        if (effect != null) {
+        for (dLocation location: locations) {
+            // Slightly increase the location's Y so effects don't seem to come out of the ground
+            location.add(0, 1, 0);
 
-            for (int n = 0; n < qty.asInt(); n++) {
-                location.getWorld().playEffect(location, effect, data.asInt(), radius.asInt());
+            // Play the Bukkit effect the number of times specified
+            if (effect != null) {
+                for (int n = 0; n < qty.asInt(); n++) {
+                    location.getWorld().playEffect(location, effect, data.asInt(), radius.asInt());
+                }
             }
-        }
-        // Play a ParticleEffect
-        else if (particleEffect != null) {
-            float os = offset.asFloat();
-            particleEffect.display(location, radius.asDouble(), os, os, os, data.asFloat(), qty.asInt());
-        }
-        // Play a iconcrack (item break) effect
-        else {
-            float os = offset.asFloat();
-            ParticleEffect.displayIconCrack(location, radius.asDouble(), iconcrack.asInt(),
-                    os, os, os, data.asFloat(), qty.asInt());
+
+            // Play a ParticleEffect
+            else if (particleEffect != null) {
+                float os = offset.asFloat();
+                particleEffect.display(location, radius.asDouble(), os, os, os, data.asFloat(), qty.asInt());
+            }
+
+            // Play an iconcrack (item break) effect
+            else {
+                float os = offset.asFloat();
+                ParticleEffect.displayIconCrack(location, radius.asDouble(), iconcrack.asInt(),
+                        os, os, os, data.asFloat(), qty.asInt());
+            }
         }
     }
 }
