@@ -37,12 +37,12 @@ public class HorseColor implements Property {
 
     private Color getColor() {
         if (professional == null) return null;
-        return ((Horse) professional.getBukkitEntity()).getProfession();
+        return ((Horse) color.getBukkitEntity()).getColor();
     }
 
     public void setColor(Horse.Color color) {
         if (professional != null)
-            ((Villager) professional.getBukkitEntity()).setProfession(profession);
+            ((Horse) color.getBukkitEntity()).setColor(color);
 
     }
 
