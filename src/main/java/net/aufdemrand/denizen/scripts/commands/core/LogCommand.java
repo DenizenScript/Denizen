@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.DebugLog;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -62,11 +63,13 @@ public class LogCommand extends AbstractCommand {
         String directory = URLDecoder.decode(System.getProperty("user.dir"));
         File file = new File(directory, fileName.asString());
 
+        String output = TagManager.CleanOutputFully(message.asString());
+
         if (type == Type.NONE) {
             try {
                 file.getParentFile().mkdirs();
                 FileWriter fw = new FileWriter(file, true);
-                fw.write(message + "\n");
+                fw.write(output + "\n");
                 fw.close();
             }
             catch (IOException e) {
@@ -80,27 +83,27 @@ public class LogCommand extends AbstractCommand {
 
         switch(type) {
             case SEVERE:
-                log.severe(message.asString());
+                log.severe(output);
                 break;
 
             case INFO:
-                log.info(message.asString());
+                log.info(output);
                 break;
 
             case WARNING:
-                log.warning(message.asString());
+                log.warning(output);
                 break;
 
             case FINE:
-                log.fine(message.asString());
+                log.fine(output);
                 break;
 
             case FINER:
-                log.finer(message.asString());
+                log.finer(output);
                 break;
 
             case FINEST:
-                log.finest(message.asString());
+                log.finest(output);
         }
 
         log.close();
