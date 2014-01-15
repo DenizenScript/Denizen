@@ -29,8 +29,8 @@ public class HorseColor implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityProfession(dEntity entity) {
-        professional = entity;
+    private HorseColor(dEntity entity) {
+        color = entity;
     }
 
     dEntity color;
