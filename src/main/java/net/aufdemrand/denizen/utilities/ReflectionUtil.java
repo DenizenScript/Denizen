@@ -41,7 +41,7 @@ public abstract class ReflectionUtil {
             public String toString() {
                 return Bukkit.getServer().getClass().getPackage().getName();
             }
-        };
+        }
     }
 
     public static class FieldEntry {

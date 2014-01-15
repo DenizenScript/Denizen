@@ -1,8 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands;
 
-import net.aufdemrand.denizen.events.bukkit.ListenerEvent;
-import org.bukkit.event.EventHandler;
-
 /**
  * Created by denizen_ on 1/14/14.
  */

@@ -28,7 +28,7 @@ public class InventoryCommand extends AbstractCommand {
 
             // Check for a dList of actions
             if (arg.matchesEnumList(Action.values())) {
-                scriptEntry.addObject("actions", ((dList) arg.asType(dList.class)).filter(Action.values()));
+                scriptEntry.addObject("actions", arg.asType(dList.class).filter(Action.values()));
             }
 
             // Check for an origin, which can be a dInventory, dEntity, dLocation

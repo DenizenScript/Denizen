@@ -26,44 +26,31 @@ public class ScriptEngine {
     public void revolve(ScriptQueue scriptQueue) {
         // Check last ScriptEntry to see if it should be waited for
         if (scriptQueue.getLastEntryExecuted() != null
-                && scriptQueue.getLastEntryExecuted().shouldWaitFor()) return;
+                && scriptQueue.getLastEntryExecuted().shouldWaitFor()) {
+            if (!(scriptQueue instanceof Delayable)) {
+                dB.echoError("Cannot wait for an instant command!");
+            }
+            else {
+                return;
+            }
+        }
 
         // Okay to run next scriptEntry
         ScriptEntry scriptEntry = scriptQueue.getNext();
 
-        while (scriptEntry != null) {
-            // Mark script entry with Queue that is sending it to the executer
-            scriptEntry.setSendingQueue(scriptQueue);
+        // Mark script entry with Queue that is sending it to the executer
+        scriptEntry.setSendingQueue(scriptQueue);
 
-            // Execute the scriptEntry
-            try { getScriptExecuter().execute(scriptEntry); }
-
-            catch (Throwable e) {
-                dB.echoError("Woah! An exception has been called with this command!");
-                dB.echoError(e);
-            }
-            // Set as last entry executed
-            scriptQueue.setLastEntryExecuted(scriptEntry);
-
-            //
-            // Determine what should happen after execution:
-            //
-
-            // Check if the scriptQueue is delayed
-            if (scriptQueue instanceof Delayable) {
-                // dB.log("Is delayed? " + ((Delayable) scriptQueue).isDelayed());
-                if (((Delayable) scriptQueue).isDelayed()) break;
-            }
-
-            // If the entry is instant, and not injected, get the next Entry
-            if (scriptEntry.isInstant()) { // ---> What does this do? && !scriptQueue.hasInjectedItems) {
-                // Remove from execution list
-                scriptEntry = scriptQueue.getNext();
-            }
-
-            // If entry isn't instant, end the revolution and wait for another
-            else /* just */ break;
+        // Execute the scriptEntry
+        try {
+            getScriptExecuter().execute(scriptEntry);
         }
+        catch (Throwable e) {
+            dB.echoError("Woah! An exception has been called with this command!");
+            dB.echoError(e);
+        }
+        // Set as last entry executed
+        scriptQueue.setLastEntryExecuted(scriptEntry);
     }
 
 

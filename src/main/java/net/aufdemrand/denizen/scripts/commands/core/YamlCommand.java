@@ -160,9 +160,9 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     if (value instanceof Element)
                         yamls.get(id).set(key.asString(), ((Element) value).asString());
                     else if (split != null && split.asBoolean())
-                        yamls.get(id).set(key.asString(), (dList) value);
+                        yamls.get(id).set(key.asString(), value);
                     else
-                        yamls.get(id).set(key.asString(), ((dList) value).identify());
+                        yamls.get(id).set(key.asString(), value.identify());
                 }
                 break;
 

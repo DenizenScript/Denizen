@@ -52,7 +52,7 @@ public class BossHealthBar {
         try {
             Field a = getField(mobPacket.getClass(), "a");
             a.setAccessible(true);
-            a.set(mobPacket, (int) ENTITY_ID);
+            a.set(mobPacket, ENTITY_ID);
             Field b = getField(mobPacket.getClass(), "b");
             b.setAccessible(true);
             b.set(mobPacket, (byte) EntityType.WITHER.getTypeId());
@@ -118,7 +118,7 @@ public class BossHealthBar {
         Field a = getField(metaPacket.getClass(), "a");
         a.setAccessible(true);
         try {
-            a.set(metaPacket, (int) ENTITY_ID);
+            a.set(metaPacket, ENTITY_ID);
         } catch (IllegalArgumentException e1) {
             e1.printStackTrace();
         } catch (IllegalAccessException e1) {
@@ -139,7 +139,7 @@ public class BossHealthBar {
         Field a = getField(packet.getClass(), "a");
         a.setAccessible(true);
         try {
-            a.set(packet, (int) 1);
+            a.set(packet, 1);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -151,8 +151,8 @@ public class BossHealthBar {
     public static DataWatcher getWatcher(String text, int health) {
         DataWatcher watcher = new DataWatcher(null);
         watcher.a(0, (Byte) (byte) 0x20); //Flags, 0x20 = invisible
-        watcher.a(6, (Float) (float) health);
-        watcher.a(10, (String) text); //Entity name
+        watcher.a(6, (float) health);
+        watcher.a(10, text); //Entity name
         watcher.a(11, (Byte) (byte) 1); //Show name, 1 = show, 0 = don't show
 //watcher.a(16, (Integer) (int) health); //Wither health, 300 = full health
         return watcher;
