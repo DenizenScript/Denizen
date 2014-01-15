@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.aufdemrand.denizen.objects.Duration;
@@ -16,7 +15,6 @@ import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 
 /**
@@ -417,6 +415,15 @@ public abstract class ScriptQueue implements Debuggable {
         } else
             // If it's not, start the engine now!
             onStart();
+    }
+
+    public void runNow(List<ScriptEntry> entries) {
+        injectEntries(entries, 0);
+        //Note which entry comes next and keep running until that's reached
+        ScriptEntry nextup = getQueueSize() > entries.size() ? getEntry(entries.size()): null;
+        while (getQueueSize() > 0 && getEntry(0) != nextup) {
+            DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
+        }
     }
 
 

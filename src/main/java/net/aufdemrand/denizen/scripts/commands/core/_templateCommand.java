@@ -14,13 +14,7 @@ import net.aufdemrand.denizen.objects.aH;
  *
  * @author Jeremy Schroeder
  */
-public class _templateCommand extends AbstractCommand /* implements dExternal */ {
-
-    // @Override
-    // public void load() {
-    // activate().as("MyCommand").withOptions("mycommand [#] [l@location]", 2);
-    // }
-
+public class _templateCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

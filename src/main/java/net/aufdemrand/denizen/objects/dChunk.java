@@ -65,7 +65,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
     /**
      * dChunk can be constructed with a CraftChunk
      *
-     * @param chunk
+     * @param chunk The chunk to use.
      */
     public dChunk(CraftChunk chunk) {
         super(chunk.getHandle());
@@ -74,7 +74,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
     /**
      * dChunk can be constructed with a Location (or dLocation)
      *
-     * @param location
+     * @param location The location of the chunk.
      */
     public dChunk(Location location) {
         super (((CraftChunk) location.getChunk()).getHandle());

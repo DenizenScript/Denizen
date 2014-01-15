@@ -69,6 +69,7 @@ public class ForEachCommand extends BracedCommand {
                 try {
                     ScriptEntry toAdd = entry.clone();
                     toAdd.getObjects().clear();
+                    toAdd.setFinished(true);
                     newEntries.add(toAdd);
                 } catch (Throwable e) {
                     dB.echoError(e);
@@ -77,19 +78,9 @@ public class ForEachCommand extends BracedCommand {
 
             // Set the %value% and inject entries
             scriptEntry.getResidingQueue().addDefinition("value", value);
-            scriptEntry.getResidingQueue().injectEntries(newEntries, 0);
-            int entries = newEntries.size();
-            int entrycount = scriptEntry.getResidingQueue().getQueueSize();
 
-            // Run the entries immediately
-            for (int i = 0; i < entries; i++) {
-                denizen.getScriptEngine().revolve(scriptEntry.getResidingQueue());
-                entrycount--;
-                if (scriptEntry.getResidingQueue().getQueueSize() > entrycount) {
-                    entries += scriptEntry.getResidingQueue().getQueueSize() - entrycount;
-                    entrycount += scriptEntry.getResidingQueue().getQueueSize() - entrycount;
-                }
-            }
+            // Run everything instantly
+            scriptEntry.getResidingQueue().runNow(newEntries);
         }
 
     }

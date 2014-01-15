@@ -211,7 +211,7 @@ public class ListenerRegistry implements dRegistry, Listener {
         if (types.containsValue(clazz)) {
             for (RegistrationableInstance ri : types.values())
                 if (ri.getClass() == clazz)
-                    return (T) clazz.cast(ri);
+                    return clazz.cast(ri);
         }
         return null;
     }

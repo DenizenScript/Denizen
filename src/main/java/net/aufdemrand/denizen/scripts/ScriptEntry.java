@@ -14,12 +14,12 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
-import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
 /**
@@ -88,13 +88,18 @@ public class ScriptEntry implements Cloneable, Debuggable {
         if (command.length() > 0) {
             if (command.charAt(0) == '^') {
                 instant = true;
-                this.command = command.substring(1);
-            } else if (command.charAt(0) == '~') {
-                this.command = command.substring(1);
+                this.command = command.substring(1).toUpperCase();
+            }
+            else if (command.charAt(0) == '~') {
+                this.command = command.substring(1).toUpperCase();
                 // Make sure this command can be 'waited for'
                 if (DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command)
-                        instanceof Holdable)
+                        instanceof Holdable) {
                     waitfor = true;
+                }
+                else {
+                    dB.echoError("The command '" + this.command + "' cannot be waited for!");
+                }
             }
         }
 
@@ -330,24 +335,15 @@ public class ScriptEntry implements Cloneable, Debuggable {
     // TimedQueue FEATURES
     /////////
 
-    public boolean isInstant() {
-        return instant;
-    }
-
-
-    public ScriptEntry setInstant(boolean instant) {
-        this.instant = instant;
-        return this;
-    }
-
 
     public boolean shouldWaitFor() {
         return waitfor;
     }
 
 
-    public void setFinished(boolean finished) {
+    public ScriptEntry setFinished(boolean finished) {
         waitfor = !finished;
+        return this;
     }
 
 

@@ -226,7 +226,7 @@ public class CommandRegistry implements dRegistry {
         // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false)
         // @Required 1
         // @Stable unstable
-        // @Short Makes a chest open or close.
+        // @Short Makes a chest appear to open or close.
         // @Author Todo
         // @Description
         // Todo
@@ -1253,22 +1253,44 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Inventory
-        // @Syntax inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)
+        // @Syntax inventory [open/close/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)
         // @Required 1
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
         // @Author David Cernat, Morphan1
         // @Description
-        // Todo
+        // Use this command to edit the state of inventories. By default, the destination inventory
+        // is the current attached player's inventory. If you are copying, swapping, removing from
+        // (including via "keep" and "exclude"), adding to, moving, or filling inventories, you'll need
+        // both destination and origin inventories. Origin inventories may be specified as a list of
+        // dItems, but destinations must be actual dInventories.
+        // Using "open", "clear", or "update" only require a destination. "Update" also requires the
+        // destination to be a valid player inventory.
+        // Using "close" closes any inventory that the currently attached player has opened.
         // @Tags
         // <p@player.inventory>
         // <n@npc.inventory>
         // <l@location.inventory>
         // @Usage
-        // Todo
+        // Use to open a chest inventory, at a location.
+        // - inventory open d:l@123,123,123,world
+        // @Usage
+        // Use to open another player's inventory.
+        // - inventory open d:<p@calico-kid.inventory>
+        // @Usage
+        // Use to remove all items from a chest, except any items in
+        // the specified list.
+        // - inventory keep d:in@location[l@123,123,123,world] o:li@i@snow_ball|i@ItemScript
+        // @Usage
+        // Use to remove items specified in a chest from the current
+        // player's inventory, regardless of the item count.
+        // - inventory exclude origin:l@123,123,123,world
+        // @Usage
+        // Use to swap two players' inventories.
+        // - inventory swap d:in@player[p@mcmonkey4eva] o:<p@fullwall.inventory>
         // -->
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)", 1);
+                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)", 1);
 
 
         // <--[command]
@@ -1971,10 +1993,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Schematic
-        // @Syntax schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)
+        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (noair)
         // @Required 2
         // @Stable unstable
-        // @Short Loads, edits, or pastes a WorldEdit schematic.
+        // @Short Creates, loads, pastes, and saves WorldEdit schematics.
         // @Author mcmonkey
         // @Description
         // Todo
@@ -1986,6 +2008,10 @@ public class CommandRegistry implements dRegistry {
         // <schematic[<name>].origin>
         // <schematic[<name>].offset>
         // <schematic[<name>].blocks>
+        // @Usage
+        // Use to create a new schematic from a cuboid and an origin location
+        // - schematic create name:MySchematic cu@<player.location.sub[5,5,5]>|<player.location.add[5,5,5]> <player.location>
+        //
         // @Usage
         // Use to load a schematic
         // - schematic load name:MySchematic
@@ -2001,10 +2027,14 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Use to paste a loaded schematic
         // - schematic paste name:MySchematic <player.location> noair
+        //
+        // @Usage
+        // Use to save a created schematic
+        // - schematic save name:MySchematic
         // -->
         if (Depends.worldEdit != null) // Temporary work-around...
         registerCoreMember(SchematicCommand.class,
-                "SCHEMATIC", "schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)", 2);
+                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (noair)", 2);
 
         // <--[command]
         // @Name Scoreboard

@@ -261,7 +261,7 @@ public abstract class AbstractEvaluator<T> {
                         // If the token at the top of the stack is a function token, pop it
                         // onto the output queue.
                         int argCount = values.size()-previousValuesSize.pop();
-                        doFunction(values, (Function)stack.pop().getFunction(), argCount, evaluationContext);
+                        doFunction(values, stack.pop().getFunction(), argCount, evaluationContext);
                     }
                 }
             } else if (token.isFunctionArgumentSeparator()) {
