@@ -14,11 +14,9 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
-import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.scripts.queues.core.Delayable;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -337,24 +335,15 @@ public class ScriptEntry implements Cloneable, Debuggable {
     // TimedQueue FEATURES
     /////////
 
-    public boolean isInstant() {
-        return instant;
-    }
-
-
-    public ScriptEntry setInstant(boolean instant) {
-        this.instant = instant;
-        return this;
-    }
-
 
     public boolean shouldWaitFor() {
         return waitfor;
     }
 
 
-    public void setFinished(boolean finished) {
+    public ScriptEntry setFinished(boolean finished) {
         waitfor = !finished;
+        return this;
     }
 
 
