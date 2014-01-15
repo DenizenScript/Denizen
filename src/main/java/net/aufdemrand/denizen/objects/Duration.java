@@ -139,6 +139,10 @@ public class Duration implements dObject {
                 // Matches HOURS, so 1 hour = 3600 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 3600);
 
+            else if (m.group().toLowerCase().endsWith("mo"))
+                // Matches MONTHS, so 1 month = 2678400 seconds or exactly 31 days
+                return new Duration(Double.valueOf(m.group(1)) * 2678400);
+
             else // seconds
                 return new Duration(Double.valueOf(m.group(1)));
         }
