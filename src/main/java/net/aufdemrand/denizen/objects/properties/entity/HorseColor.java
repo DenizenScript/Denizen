@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 
-public class HorseProperty implements Property {
+public class HorseColor implements Property {
 
 
     public static boolean describes(dObject entity) {
