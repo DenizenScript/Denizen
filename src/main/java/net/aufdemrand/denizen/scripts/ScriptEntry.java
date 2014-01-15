@@ -18,8 +18,10 @@ import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.core.Delayable;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
 /**
@@ -88,13 +90,18 @@ public class ScriptEntry implements Cloneable, Debuggable {
         if (command.length() > 0) {
             if (command.charAt(0) == '^') {
                 instant = true;
-                this.command = command.substring(1);
-            } else if (command.charAt(0) == '~') {
-                this.command = command.substring(1);
+                this.command = command.substring(1).toUpperCase();
+            }
+            else if (command.charAt(0) == '~') {
+                this.command = command.substring(1).toUpperCase();
                 // Make sure this command can be 'waited for'
                 if (DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command)
-                        instanceof Holdable)
+                        instanceof Holdable) {
                     waitfor = true;
+                }
+                else {
+                    dB.echoError("The command '" + this.command + "' cannot be waited for!");
+                }
             }
         }
 

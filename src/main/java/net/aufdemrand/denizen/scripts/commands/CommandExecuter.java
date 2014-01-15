@@ -171,6 +171,7 @@ public class CommandExecuter {
                 dB.log(ChatColor.YELLOW + "+> MESSAGE follows: " + ChatColor.WHITE + "'" + e.getMessage() + "'");
             dB.log("Usage: " + command.getUsageHint());
             dB.echoDebug(scriptEntry, DebugElement.Footer);
+            scriptEntry.setFinished(true);
 
         } catch (Exception e) {
 
@@ -178,6 +179,7 @@ public class CommandExecuter {
             dB.echoError("Woah! An exception has been called with this command!");
             dB.echoError(e);
             dB.echoDebug(scriptEntry, DebugElement.Footer);
+            scriptEntry.setFinished(true);
 
         } finally {
 
@@ -188,6 +190,7 @@ public class CommandExecuter {
                 } catch (Exception e) {
                     dB.echoError("Woah!! An exception has been called with this command!");
                     dB.echoError(e);
+                    scriptEntry.setFinished(true);
                 }
 
         }

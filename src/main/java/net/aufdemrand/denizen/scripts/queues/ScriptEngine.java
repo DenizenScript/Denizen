@@ -26,7 +26,14 @@ public class ScriptEngine {
     public void revolve(ScriptQueue scriptQueue) {
         // Check last ScriptEntry to see if it should be waited for
         if (scriptQueue.getLastEntryExecuted() != null
-                && scriptQueue.getLastEntryExecuted().shouldWaitFor()) return;
+                && scriptQueue.getLastEntryExecuted().shouldWaitFor()) {
+            if (!(scriptQueue instanceof Delayable) || scriptQueue.getLastEntryExecuted().isInstant()) {
+                dB.echoError("Cannot wait for an instant command!");
+            }
+            else {
+                return;
+            }
+        }
 
         // Okay to run next scriptEntry
         ScriptEntry scriptEntry = scriptQueue.getNext();

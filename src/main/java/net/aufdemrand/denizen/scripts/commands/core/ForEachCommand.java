@@ -69,6 +69,7 @@ public class ForEachCommand extends BracedCommand {
                 try {
                     ScriptEntry toAdd = entry.clone();
                     toAdd.getObjects().clear();
+                    toAdd.setInstant(true);
                     newEntries.add(toAdd);
                 } catch (Throwable e) {
                     dB.echoError(e);
