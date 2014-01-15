@@ -55,13 +55,13 @@ public class BossHealthBar {
             a.set(mobPacket, ENTITY_ID);
             Field b = getField(mobPacket.getClass(), "b");
             b.setAccessible(true);
-            b.set(mobPacket, (byte) EntityType.WITHER.getTypeId());
+            b.set(mobPacket, (byte) EntityType.ENDER_DRAGON.getTypeId());
             Field c = getField(mobPacket.getClass(), "c");
             c.setAccessible(true);
             c.set(mobPacket, (int) Math.floor(loc.getBlockX() * 32.0D));
             Field d = getField(mobPacket.getClass(), "d");
             d.setAccessible(true);
-            d.set(mobPacket, (int) Math.floor(loc.getBlockY() * 32.0D));
+            d.set(mobPacket, -256 * 32); // Y
             Field e = getField(mobPacket.getClass(), "e");
             e.setAccessible(true);
             e.set(mobPacket, (int) Math.floor(loc.getBlockZ() * 32.0D));
