@@ -14,7 +14,7 @@ public class EntityProfession implements Property {
 
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
-        // Check if the entity is a Horse, The only entity that can have a color
+        // Check if the entity is a Horse, The only entity that can have a Horse.Color
         return ((dEntity) entity).getEntityType() == EntityType.HORSE;
     }
 
@@ -30,19 +30,19 @@ public class EntityProfession implements Property {
     /////////////
 
     private HorseColor(dEntity entity) {
-        Horse.Color = entity;
+        colored = entity;
     }
 
-    dEntity Horse.Color;
+    dEntity colored;
 
     private Horse.Color getColor() {
-        if (Horse.Color == null) return null;
-        return ((Horse) Horse.Color.getBukkitEntity()).getColor();
+        if (colored == null) return null;
+        return ((Horse) colored.getBukkitEntity()).getColor();
     }
 
     public void setColor(Horse.Color color) {
-        if (Horse.Color != null)
-            ((Horse) Horse.Color.getBukkitEntity()).setColor(color);
+        if (color != null)
+            ((Horse) colored.getBukkitEntity()).setColor(color);
 
     }
 
@@ -58,7 +58,7 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyId() {
-        return "Horse.Color";
+        return "color";
     }
 
 
@@ -75,8 +75,8 @@ public class EntityProfession implements Property {
         // @attribute <e@entity.horse_color>
         // @returns Element
         // @description
-        // If the entity can have a color, returns the entity's color.
-        // Currently, only Horse entitys can have Horse.Color.
+        // If the entity can have a Horse.Color, returns the entity's color.
+        // Currently, only Horse-type entities can have Horse.Color.
         // -->
         if (attribute.startsWith("horse_color"))
             return new Element(getColor().name().toLowerCase())
