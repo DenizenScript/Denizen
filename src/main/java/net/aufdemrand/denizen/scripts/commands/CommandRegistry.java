@@ -226,7 +226,7 @@ public class CommandRegistry implements dRegistry {
         // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false)
         // @Required 1
         // @Stable unstable
-        // @Short Makes a chest open or close.
+        // @Short Makes a chest appear to open or close.
         // @Author Todo
         // @Description
         // Todo

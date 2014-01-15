@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.minecraft.server.v1_7_R1.PacketPlayOutBlockAction;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
@@ -8,65 +11,71 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 
 public class AnimateChestCommand extends AbstractCommand {
 
     enum ChestAction { OPEN, CLOSE }
 
     @Override
-    public void parseArgs(ScriptEntry scriptEntry)
-            throws InvalidArgumentsException {
-        String chestAction = "OPEN";
-        Location location = null;
-        Boolean sound = true;
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesArg("OPEN, CLOSE", arg)) {
-                chestAction = aH.getStringFrom(arg);
-                dB.echoDebug(scriptEntry, "...chest action set: " + chestAction);
-            } else if (aH.matchesLocation(arg)) {
-                location = aH.getLocationFrom(arg);
-                dB.echoDebug(scriptEntry, "...location set");
-            } else if (aH.matchesValueArg("SOUND", arg, ArgumentType.Custom)) {
-                sound = aH.getBooleanFrom(arg);
-                if (sound) dB.echoDebug(scriptEntry, "...sound enabled");
-                else dB.echoDebug(scriptEntry, "...sound disabled");
-            } else dB.echoError("Unknown argument '" + arg + "'");
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            if (!scriptEntry.hasObject("action")
+                    && arg.matchesEnum(ChestAction.values()))
+                scriptEntry.addObject("action", arg.asElement());
+
+            else if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class))
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
+
+            else if (!scriptEntry.hasObject("sound")
+                    && arg.matchesPrefix("sound")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Boolean))
+                scriptEntry.addObject("sound", arg.asElement());
+
+            else
+                arg.reportUnhandled();
 
         }
 
-        if (location == null) dB.echoError("...location is invalid");
+        if (!scriptEntry.hasObject("location"))
+            throw new InvalidArgumentsException("Must specify a location!");
 
-        scriptEntry.addObject("location", location)
-            .addObject("sound", sound)
-            .addObject("chestAction", chestAction);
+        if (!scriptEntry.hasObject("action"))
+            scriptEntry.addObject("action", new Element("OPEN"));
+
+        if (!scriptEntry.hasObject("sound"))
+            scriptEntry.addObject("sound", Element.TRUE);
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry)
-            throws CommandExecutionException {
-        Location location = (Location) scriptEntry.getObject("location");
-        ChestAction action = ChestAction.valueOf(((String) scriptEntry.getObject("chestAction")).toUpperCase());
-        Boolean sound = (Boolean) scriptEntry.getObject("sound");
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        switch (action) {
-        case OPEN:
-            if (sound) scriptEntry.getPlayer().getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
-            scriptEntry.getPlayer().getPlayerEntity().playNote(location, (byte)1, (byte)1);
-            dB.echoDebug(scriptEntry, "...opening chest");
-            break;
+        dLocation location = (dLocation) scriptEntry.getObject("location");
+        Element action = scriptEntry.getElement("action");
+        Element sound = scriptEntry.getElement("sound");
 
-        case CLOSE:
-            if (sound) scriptEntry.getPlayer().getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
-            scriptEntry.getPlayer().getPlayerEntity().playNote(location, (byte)1, (byte)0);
-            dB.echoDebug(scriptEntry, "...closing chest");
-            break;
+        dB.report(scriptEntry, getName(), location.debug()
+                                          + action.debug()
+                                          + sound.debug());
 
-        default:
-            dB.echoError("...error animating chest");
-            break;
+        switch (ChestAction.valueOf(action.asString().toUpperCase())) {
+            case OPEN:
+                if (sound.asBoolean()) scriptEntry.getPlayer().getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
+                ((CraftPlayer)scriptEntry.getPlayer().getPlayerEntity()).getHandle().playerConnection.sendPacket(
+                        new PacketPlayOutBlockAction((int) location.getX(), (int) location.getY(), (int) location.getZ(),
+                                ((CraftWorld) location.getWorld()).getHandle().getType((int) location.getX(), (int) location.getY(), (int) location.getZ()), 1, 1));
+                break;
+
+            case CLOSE:
+                if (sound.asBoolean()) scriptEntry.getPlayer().getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
+                ((CraftPlayer)scriptEntry.getPlayer().getPlayerEntity()).getHandle().playerConnection.sendPacket(
+                    new PacketPlayOutBlockAction((int)location.getX(), (int)location.getY(), (int)location.getZ(),
+                        ((CraftWorld)location.getWorld()).getHandle().getType((int)location.getX(), (int)location.getY(), (int)location.getZ()), 1, 0));
+                break;
         }
     }
 
