@@ -18,7 +18,7 @@ public class HorseColor implements Property {
         return ((dEntity) entity).getEntityType() == EntityType.HORSE;
     }
 
-    public static Horse.Color getFrom(dObject entity) {
+    public static HorseColor getFrom(dObject entity) {
         if (!describes(entity)) return null;
 
         else return new HorseColor((dEntity) entity);
@@ -79,7 +79,7 @@ public class HorseColor implements Property {
         // Specify horse_color cuz of sheep D: which Can have Colors.
         // -->
         if (attribute.startsWith("horse_color"))
-            return new Element(getColor().Horse.Color().toLowerCase())
+            return new Element(getColor().HorseColor().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
