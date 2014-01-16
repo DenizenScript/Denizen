@@ -13,7 +13,7 @@ public class HorseColor implements Property {
 
 
     public static boolean describes(dObject entity) {
-    	dB.log(entity.debug() + " is horse? " + ((dEntity) entity.getEntityType().name());
+    	dB.log(entity.debug() + " is horse? " + ((dEntity) entity).getEntityType().name());
         if (!(entity instanceof dEntity)) return false;
         // Check if the entity is a Horse, The only entity that can have a Horse.Color
         return ((dEntity) entity).getEntityType() == EntityType.HORSE;
