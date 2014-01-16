@@ -2,17 +2,18 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.npc.ai.BlockBreaker;
 
 import org.bukkit.Bukkit;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Breaks a block using Citizens' BlockBreaker
@@ -65,18 +66,26 @@ public class BreakCommand extends AbstractCommand {
         final dEntity entity = (dEntity) scriptEntry.getObject("entity");
         Element radius = scriptEntry.getElement("radius");
 
+        final HashMap<String, dObject> context = new HashMap<String, dObject>();
+        context.put("location", (dObject) scriptEntry.getdObject("Location"));
+
+
         dB.report(scriptEntry, getName(), location.debug() + entity.debug() + radius.debug());
 
         final ScriptEntry se = scriptEntry;
-        BlockBreaker.Configuration config = new BlockBreaker.Configuration()
-                .item(entity.getLivingEntity().getEquipment().getItemInHand())
-                .radius(radius.asDouble())
-                .callback(new Runnable() {
-                    @Override
-                    public void run() {
-                        dB.echoDebug(se, entity.debug() + " dug " + location.debug());
-                    }
-                });
+        BlockBreaker.Configuration config = new BlockBreaker.Configuration();
+        config.item(entity.getLivingEntity().getEquipment().getItemInHand());
+        config.radius(radius.asDouble());
+        config.callback(new Runnable() {
+            @Override
+            public void run() {
+                dB.echoDebug(se, entity.debug() + " dug " + location.debug());
+                if (entity.isNPC()) {
+                    DenizenAPI.getDenizenNPC(entity.getNPC()).action("dig", null, context);
+                }
+            }
+        });
+
 
         final BlockBreaker breaker = BlockBreaker.createWithConfiguration(entity.getLivingEntity(),
                 location.getBlock(), config);
