@@ -15,7 +15,7 @@ public class EntityColor implements Property {
 
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
-        // Check if the entity is a Horse.
+        // Check if the entity is a Horse Or Sheep.
         if (((dEntity) entity).getEntityType() == EntityType.SHEEP) return true;
         if (((dEntity) entity).getEntityType() == EntityType.HORSE) return true;
         return false;
