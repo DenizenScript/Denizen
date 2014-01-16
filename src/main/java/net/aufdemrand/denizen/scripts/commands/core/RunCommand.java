@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
@@ -26,7 +27,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
  *
  */
 
-public class RunCommand extends AbstractCommand {
+public class RunCommand extends AbstractCommand implements Holdable {
 
     // <--[example]
     // @Title Using Local Scripts tutorial
@@ -182,8 +183,10 @@ public class RunCommand extends AbstractCommand {
 
         // Build the queue
         ScriptQueue queue;
-        if (scriptEntry.hasObject("instant"))
+        if (scriptEntry.hasObject("instant")) {
             queue = InstantQueue.getQueue(id).addEntries(entries);
+            scriptEntry.setFinished(true);
+        }
         else {
             queue = TimedQueue.getQueue(id).addEntries(entries);
 
@@ -191,8 +194,8 @@ public class RunCommand extends AbstractCommand {
             if (script != null && script.getContainer().contains("speed"))
                 ((TimedQueue) queue).setSpeed(Duration.valueOf(script.getContainer().getString("speed")).getTicks());
 
-
         }
+
         // Set any delay
         if (scriptEntry.hasObject("delay"))
             queue.delayUntil(System.currentTimeMillis() + ((Duration) scriptEntry.getObject("delay")).getMillis());
@@ -211,6 +214,19 @@ public class RunCommand extends AbstractCommand {
                 dB.echoDebug(scriptEntry, "Adding definition %" + name + "% as " + definition);
                 x++;
             }
+        }
+
+
+        // Setup a callback if the queue is being waited on
+        if (scriptEntry.shouldWaitFor()) {
+            // Record the ScriptEntry
+            final ScriptEntry se = scriptEntry;
+            queue.callBack(new Runnable() {
+                @Override
+                public void run() {
+                    se.setFinished(true);
+                }
+            });
         }
 
         // OK, GO!

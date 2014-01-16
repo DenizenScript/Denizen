@@ -336,6 +336,16 @@ public class ScriptEntry implements Cloneable, Debuggable {
     /////////
 
 
+    public boolean isInstant() {
+        return instant;
+    }
+
+
+    public ScriptEntry setInstant(boolean instant) {
+        this.instant = instant;
+        return this;
+    }
+
     public boolean shouldWaitFor() {
         return waitfor;
     }
