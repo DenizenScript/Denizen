@@ -85,7 +85,14 @@ public class TagManager implements Listener {
      */
     public static String CleanOutputFully(String input) {
         return input.replace((char)0x01, '<').replace((char)0x02, '>')
-                .replace((char)0x2011, ';').replace(dList.internal_escape_char, '|');
+                .replace((char)0x2011, ';').replace(dList.internal_escape_char, '|')
+                .replace((char)0x00A0, ' ');
+    }
+
+    public static String EscapeOutput(String input) {
+        return input.replace('|', dList.internal_escape_char)
+                    .replace('<', (char) 0x01)
+                    .replace('>', (char) 0x02);
     }
 
     @EventHandler
@@ -164,7 +171,7 @@ public class TagManager implements Listener {
                 if (event.isInstant() != instant) {
                     // Not the right type of tag, escape the brackets so it doesn't get parsed again
                     arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
-                            + event.getReplaced().replace("|", dList.internal_escape) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
+                            + EscapeOutput(event.getReplaced()) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
                 } else {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
@@ -173,7 +180,7 @@ public class TagManager implements Listener {
                         event.setReplaced(event.getAlternative());
                     dB.echoDebug(scriptEntry, "Filled tag <" + arg.substring(positions[0] + 1, positions[1]) + "> with '" +
                             event.getReplaced() + "'.");
-                    arg = arg.substring(0, positions[0]) + event.getReplaced().replace("|", dList.internal_escape) + arg.substring(positions[1] + 1, arg.length());
+                    arg = arg.substring(0, positions[0]) + EscapeOutput(event.getReplaced()) + arg.substring(positions[1] + 1, arg.length());
                 }
             }
             // Find new tag

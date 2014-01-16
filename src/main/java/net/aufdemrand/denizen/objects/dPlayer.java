@@ -1,9 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.properties.Property;
@@ -151,8 +148,10 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public dNPC getSelectedNPC() {
-        if (getPlayerEntity().hasMetadata("selected"))
-            return dNPC.valueOf(getPlayerEntity().getMetadata("selected").get(0).asString());
+        if (getPlayerEntity().hasMetadata("selected")) {
+            return new dNPC(CitizensAPI.getNPCRegistry()
+                    .getByUniqueIdGlobal((UUID) getPlayerEntity().getMetadata("selected").get(0).value()));
+        }
         else return null;
     }
 
@@ -927,7 +926,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.has_finished[<script>]>
-        // @returns dLocation
+        // @returns Element(Boolean)
         // @description
         // returns whether the player has finished the specified script.
         // -->
@@ -941,7 +940,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.has_failed[<script>]>
-        // @returns dLocation
+        // @returns Element(Boolean)
         // @description
         // returns whether the player has failed the specified script.
         // -->

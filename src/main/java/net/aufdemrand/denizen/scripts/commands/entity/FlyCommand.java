@@ -49,7 +49,7 @@ public class FlyCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("destinations")
                      && arg.matchesPrefix("destination, destinations, d")) {
 
-                scriptEntry.addObject("destinations", ((dList) arg.asType(dList.class)).filter(dLocation.class));
+                scriptEntry.addObject("destinations", arg.asType(dList.class).filter(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("controller")
@@ -69,7 +69,7 @@ public class FlyCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                      && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
             else if (!scriptEntry.hasObject("rotationThreshold")

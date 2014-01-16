@@ -168,16 +168,17 @@ public class InjectCommand extends AbstractCommand {
                     scriptEntry.getPlayer(),
                     scriptEntry.getNPC());
 
-        // If 'instantly' was specified, make each entry 'instant'.
-        if (scriptEntry.hasObject("instant"))
-            for (ScriptEntry entry : entries)
-                    entry.setInstant(true);
-
         // For determine
         ScriptBuilder.addObjectToEntries(entries, "ReqId", scriptEntry.getObject("ReqId"));
 
-        // Inject the entries into the current scriptqueue
-        scriptEntry.getResidingQueue().injectEntries(entries, 0);
+        // If 'instantly' was specified, run the commands immediately.
+        if (scriptEntry.hasObject("instant")) {
+            scriptEntry.getResidingQueue().runNow(entries);
+        }
+        else {
+            // Inject the entries into the current scriptqueue
+            scriptEntry.getResidingQueue().injectEntries(entries, 0);
+        }
 
     }
 
