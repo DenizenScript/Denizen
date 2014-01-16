@@ -42,7 +42,7 @@ public class Rotation {
 
         else if (entity instanceof LivingEntity) {
             if (entity instanceof EnderDragon) yaw = normalizeYaw(yaw - 180);
-            NMS.look((LivingEntity) entity, yaw, pitch);
+            NMS.look(entity, yaw, pitch);
         }
 
         else {

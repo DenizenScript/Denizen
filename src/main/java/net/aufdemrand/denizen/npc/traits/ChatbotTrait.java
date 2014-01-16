@@ -2,8 +2,6 @@ package net.aufdemrand.denizen.npc.traits;
 
 import java.io.File;
 
-import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.persistence.Persist;

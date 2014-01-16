@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
-import org.bukkit.util.Vector;
 
 /**
  * Displays an item in the world. This item will not disappear (unless set to)

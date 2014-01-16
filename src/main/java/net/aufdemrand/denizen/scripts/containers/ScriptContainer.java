@@ -84,7 +84,7 @@ public class ScriptContainer implements Debuggable {
      * @return     a ScriptContainer of the type specified
      */
     public <T extends ScriptContainer> T getAsContainerType(Class<T> type) {
-        return (T) type.cast(this);
+        return type.cast(this);
     }
 
 

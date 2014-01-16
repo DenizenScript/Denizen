@@ -36,7 +36,7 @@ public class PlaySoundCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentList(dLocation.class))
                 scriptEntry.addObject("locations", arg.asType(dList.class).filter(dLocation.class));
 
             else if (!scriptEntry.hasObject("locations")
@@ -66,7 +66,7 @@ public class PlaySoundCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("sound"))
             throw new InvalidArgumentsException("Missing sound argument!");
-        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("locations") && !scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException("Missing location argument!");
 
         scriptEntry.defaultObject("volume", new Element(1));
@@ -78,14 +78,14 @@ public class PlaySoundCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("location");
+        List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("locations");
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("entities");
         Element sound = scriptEntry.getElement("sound");
         Element volume = scriptEntry.getElement("volume");
         Element pitch = scriptEntry.getElement("pitch");
 
         dB.report(scriptEntry, getName(),
-                (locations != null ? aH.debugObj("locations", players.toString()): "") +
+                (locations != null ? aH.debugObj("locations", locations.toString()): "") +
                 (players != null ? aH.debugObj("entities", players.toString()): "") +
                 sound.debug() +
                 volume.debug() +

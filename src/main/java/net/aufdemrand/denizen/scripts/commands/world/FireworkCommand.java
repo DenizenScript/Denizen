@@ -70,13 +70,13 @@ public class FireworkCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("primary")
                      && arg.matchesPrefix("primary")
                      && arg.matchesArgumentList(dColor.class)) {
-                scriptEntry.addObject("primary", ((dList) arg.asType(dList.class)).filter(dColor.class));
+                scriptEntry.addObject("primary", arg.asType(dList.class).filter(dColor.class));
             }
 
             else if (!scriptEntry.hasObject("fade")
                      && arg.matchesPrefix("fade")
                      && arg.matchesArgumentList(dColor.class)) {
-                scriptEntry.addObject("fade", ((dList) arg.asType(dList.class)).filter(dColor.class));
+                scriptEntry.addObject("fade", arg.asType(dList.class).filter(dColor.class));
             }
 
             else
@@ -100,7 +100,7 @@ public class FireworkCommand extends AbstractCommand {
 
         final dLocation location = scriptEntry.hasObject("location") ?
                                    (dLocation) scriptEntry.getObject("location") :
-                                   (dLocation) scriptEntry.getNPC().getLocation();
+                scriptEntry.getNPC().getLocation();
 
         Element type = (Element) scriptEntry.getObject("type");
         Element power = (Element) scriptEntry.getObject("power");

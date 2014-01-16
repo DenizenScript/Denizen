@@ -446,6 +446,24 @@ public class dCuboid implements dObject, Notable, Adjustable {
         return list;
     }
 
+    public World getWorld() {
+        if (pairs.size() == 0)
+            return null;
+        return pairs.get(0).high.getWorld();
+    }
+
+    public dLocation getHigh(int index) {
+        if (index >= pairs.size())
+            return null;
+        return pairs.get(index).high;
+    }
+
+    public dLocation getLow(int index) {
+        if (index >= pairs.size())
+            return null;
+        return pairs.get(index).low;
+    }
+
 
 
     ///////////////////

@@ -18,7 +18,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class InventoryCommand extends AbstractCommand {
 
-    private enum Action { OPEN, COPY, MOVE, SWAP, ADD, REMOVE, KEEP, EXCLUDE, FILL, CLEAR, UPDATE }
+    private enum Action { OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, KEEP, EXCLUDE, FILL, CLEAR, UPDATE }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -28,7 +28,7 @@ public class InventoryCommand extends AbstractCommand {
 
             // Check for a dList of actions
             if (arg.matchesEnumList(Action.values())) {
-                scriptEntry.addObject("actions", ((dList) arg.asType(dList.class)).filter(Action.values()));
+                scriptEntry.addObject("actions", arg.asType(dList.class).filter(Action.values()));
             }
 
             // Check for an origin, which can be a dInventory, dEntity, dLocation
@@ -85,6 +85,11 @@ public class InventoryCommand extends AbstractCommand {
                     }
                     // Otherwise, open inventory as usual
                     else scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+                    break;
+
+                // Make the attached player close any open inventory
+                case CLOSE:
+                    scriptEntry.getPlayer().getPlayerEntity().closeInventory();
                     break;
 
                 // Turn destination's contents into a copy of origin's

@@ -51,7 +51,7 @@ public class MidiCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities") &&
                      arg.matchesArgumentList(dEntity.class))
 
-                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
 
             else if (!scriptEntry.hasObject("tempo") &&
                      arg.matchesPrimitive(aH.PrimitiveType.Double))

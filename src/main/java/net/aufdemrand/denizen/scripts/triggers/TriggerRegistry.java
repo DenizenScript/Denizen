@@ -36,7 +36,7 @@ public class TriggerRegistry implements dRegistry {
 
     @Override
     public <T extends RegistrationableInstance> T get(Class<T> clazz) {
-        if (classes.containsKey(clazz)) return (T) clazz.cast(instances.get(classes.get(clazz)));
+        if (classes.containsKey(clazz)) return clazz.cast(instances.get(classes.get(clazz)));
         else return null;
     }
 
