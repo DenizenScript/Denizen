@@ -30,6 +30,7 @@ public class PropertyParser {
         getFrom.clear();
 
         // register core dEntity properties
+        registerProperty(EntityColor.class, dEntity.class);
         registerProperty(EntityProfession.class, dEntity.class);
         registerProperty(EntityAge.class, dEntity.class);
         registerProperty(EntityFramed.class, dEntity.class);

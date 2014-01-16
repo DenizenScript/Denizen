@@ -8,20 +8,23 @@ import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Sheep;
 
-public class HorseColor implements Property {
+public class EntityColor implements Property {
 
 
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
         // Check if the entity is a Horse.
-        return ((dEntity) entity).getEntityType() == EntityType.HORSE;
+        if (((dEntity) entity).getEntityType() == EntityType.SHEEP) return true;
+        if (((dEntity) entity).getEntityType() == EntityType.HORSE) return true;
+        return false;
     }
 
-    public static HorseColor getFrom(dObject entity) {
+    public static EntityColor getFrom(dObject entity) {
         if (!describes(entity)) return null;
 
-        else return new HorseColor((dEntity) entity);
+        else return new EntityColor((dEntity) entity);
     }
 
 
@@ -29,15 +32,22 @@ public class HorseColor implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private HorseColor(dEntity entity) {
+    private EntityColor(dEntity entity) {
         colored = entity;
     }
 
     dEntity colored;
 
-    private Horse.Color getColor() {
+    private String getColor() {
         if (colored == null) return null;
-        return ((Horse) colored.getBukkitEntity()).getColor();
+
+        if (colored.getEntityType() == EntityType.HORSE)
+          return ((Horse) colored.getBukkitEntity()).getColor().name();
+
+        if (colored.getEntityType() == EntityType.SHEEP)
+          return ((Sheep) colored.getBukkitEntity()).getColor().name();
+
+        return null;
     }
 
     public void setColor(Horse.Color color) {
@@ -53,12 +63,12 @@ public class HorseColor implements Property {
 
     @Override
     public String getPropertyString() {
-        return getColor().name().toLowerCase();
+        return getColor().toLowerCase();
     }
 
     @Override
     public String getPropertyId() {
-        return "horse_color";
+        return "color";
     }
 
 
@@ -75,11 +85,11 @@ public class HorseColor implements Property {
         // @attribute <e@entity.horse_color>
         // @returns Element
         // @description
-        // If the entity can have a Horse.Color, returns the entity's color.
-        // Currently, only Horse-type entities can have Horse.Color.
+        // If the entity can have a Color, returns the entity's color.
+        // Currently, only Horse and Sheep type entities can have a color.
         // -->
-        if (attribute.startsWith("horse_color"))
-            return new Element(getColor().name().toLowerCase())
+        if (attribute.startsWith("color"))
+            return new Element(getColor().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
