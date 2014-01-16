@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import org.bukkit.DyeColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Sheep;
@@ -16,9 +17,8 @@ public class EntityColor implements Property {
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
         // Check if the entity is a Horse Or Sheep.
-        if (((dEntity) entity).getEntityType() == EntityType.SHEEP) return true;
-        if (((dEntity) entity).getEntityType() == EntityType.HORSE) return true;
-        return false;
+        return (((dEntity) entity).getEntityType() == EntityType.SHEEP
+        || ((dEntity) entity).getEntityType() == EntityType.HORSE);
     }
 
     public static EntityColor getFrom(dObject entity) {
@@ -56,6 +56,11 @@ public class EntityColor implements Property {
 
     }
 
+    public void setColor(DyeColor color) {
+        if (color != null)
+            ((Sheep) colored.getBukkitEntity()).setColor(color);
+
+    }
 
     /////////
     // Property Methods
@@ -82,7 +87,7 @@ public class EntityColor implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <e@entity.horse_color>
+        // @attribute <e@entity.color>
         // @returns Element
         // @description
         // If the entity can have a Color, returns the entity's color.
