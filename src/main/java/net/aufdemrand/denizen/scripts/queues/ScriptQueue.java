@@ -440,6 +440,16 @@ public abstract class ScriptQueue implements Debuggable {
             DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
         }
     }
+    private Runnable callback = null;
+
+    /**
+     * Adds a runnable to call back when the queue is completed.
+     *
+     * @param r the Runnable to call back
+     */
+    public void callBack(Runnable r) {
+        callback = r;
+    }
 
 
     /**
@@ -473,6 +483,8 @@ public abstract class ScriptQueue implements Debuggable {
             } else /* if empty, just stop the queue like normal */ {
                 _queues.remove(id);
                 dB.echoDebug(this, "Completing queue '" + id + "'.");
+                if (callback != null)
+                    callback.run();
                 is_started = false;
                 onStop();
             }
@@ -483,7 +495,9 @@ public abstract class ScriptQueue implements Debuggable {
         // 2) Cancel the corresponding task_id
         else {
             _queues.remove(id);
-            dB.echoDebug(this, "Completing queue " + id + "...");
+            dB.echoDebug(this, "Completing queue '" + id + "'.");
+            if (callback != null)
+                callback.run();
             is_started = false;
             onStop();
         }
