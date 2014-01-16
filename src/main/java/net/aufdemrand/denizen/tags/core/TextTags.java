@@ -424,6 +424,15 @@ public class TextTags implements Listener {
             event.setReplaced(new Element("\n").getAttribute(attribute.fulfill(1)));
 
             // <--[tag]
+            // @attribute <&amp>
+            // @returns Element
+            // @description
+            // Returns an ampersand symbol: &
+            // -->
+        else if (event.getName().equalsIgnoreCase("&amp"))
+            event.setReplaced(new Element("&").getAttribute(attribute.fulfill(1)));
+
+            // <--[tag]
             // @attribute <&cm>
             // @returns Element
             // @description
@@ -449,6 +458,15 @@ public class TextTags implements Listener {
             // -->
         else if (event.getName().equalsIgnoreCase("&sq"))
             event.setReplaced(new Element("'").getAttribute(attribute.fulfill(1)));
+
+            // <--[tag]
+            // @attribute <&sp>
+            // @returns Element
+            // @description
+            // Returns a non-breaking space symbol.
+            // -->
+        else if (event.getName().equalsIgnoreCase("&sp"))
+            event.setReplaced(new Element(String.valueOf((char)0x00A0)).getAttribute(attribute.fulfill(1)));
 
             // <--[tag]
             // @attribute <&dq>
@@ -530,6 +548,15 @@ public class TextTags implements Listener {
             // -->
         else if (event.getName().equalsIgnoreCase("&pc"))
             event.setReplaced(new Element("%").getAttribute(attribute.fulfill(1)));
+
+            // <--[tag]
+            // @attribute <&pipe>
+            // @returns Element
+            // @description
+            // Returns a pipe symbol: |
+            // -->
+        else if (event.getName().equalsIgnoreCase("&pipe"))
+            event.setReplaced(new Element("|").getAttribute(attribute.fulfill(1)));
 
             // <--[tag]
             // @attribute <&lt>
