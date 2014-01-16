@@ -98,6 +98,8 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
     // <entity> spawns because <cause>
     // <entity> spawns in <notable cuboid> because <cause>
     //
+    // @Regex on (.+|entity|npc) spawns(?: because (\w+))?
+    //
     // @Triggers when an entity spawns.
     // @Context
     // <context.entity> returns the dEntity that spawned.
