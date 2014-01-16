@@ -291,10 +291,11 @@ public class EventManager implements Listener {
 
     public void registerCoreMembers() {
         // Register all the 'Core' SmartEvents. This is called by Denizen's onEnable().
-        registerSmartEvent(new EntitySpawnSmartEvent());
+        registerSmartEvent(new BlockFallsSmartEvent());
         registerSmartEvent(new CuboidEnterExitSmartEvent());
-        registerSmartEvent(new PlayerJumpSmartEvent());
+        registerSmartEvent(new EntitySpawnSmartEvent());
         registerSmartEvent(new PlayerEquipsArmorSmartEvent());
+        registerSmartEvent(new PlayerJumpSmartEvent());
     }
 
 

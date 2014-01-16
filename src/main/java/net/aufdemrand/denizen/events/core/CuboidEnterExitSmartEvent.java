@@ -94,7 +94,9 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     // player exits <notable cuboid>
     // player enters notable cuboid
     // player exits notable cuboid
-
+    //
+    // @Regex on player (?:enters|exits) (notable cuboid|(cu@)?\w+)
+    //
     // @Triggers when a player enters or exits a notable cuboid.
     // @Context
     // <context.from> returns the block location moved from.

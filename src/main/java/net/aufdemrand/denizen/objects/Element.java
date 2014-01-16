@@ -450,6 +450,36 @@ public class Element implements dObject {
                 || attribute.startsWith("as_script"))
             return dScript.valueOf(element).getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <el@element.as_cuboid>
+        // @returns dScript
+        // @description
+        // Returns the element as a cuboid. Note: the value must be a valid cuboid.
+        // -->
+        if (attribute.startsWith("ascuboid")
+                || attribute.startsWith("as_cuboid"))
+            return dCuboid.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.as_plugin>
+        // @returns dScript
+        // @description
+        // Returns the element as a plugin. Note: the value must be a valid plugin.
+        // -->
+        if (attribute.startsWith("asplugin")
+                || attribute.startsWith("as_plugin"))
+            return dPlugin.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.as_inventory>
+        // @returns dScript
+        // @description
+        // Returns the element as an inventory. Note: the value must be a valid inventory.
+        // -->
+        if (attribute.startsWith("asinventory")
+                || attribute.startsWith("as_inventory"))
+            return dInventory.valueOf(element).getAttribute(attribute.fulfill(1));
+
 
         /////////////////////
         //   DEBUG ATTRIBUTES
