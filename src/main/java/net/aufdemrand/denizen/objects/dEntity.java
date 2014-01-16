@@ -1381,6 +1381,8 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+
+
         // <--[tag]
         // @attribute <e@entity.get_owner>
         // @returns dPlayer
