@@ -14,7 +14,7 @@ public class HorseColor implements Property {
 
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
-        // Check if the entity is a Horse. Returns the Color of the Horse
+        // Check if the entity is a Horse.
         return ((dEntity) entity).getEntityType() == EntityType.HORSE;
     }
 
@@ -58,7 +58,7 @@ public class HorseColor implements Property {
 
     @Override
     public String getPropertyId() {
-        return "color";
+        return "horse_color";
     }
 
 
