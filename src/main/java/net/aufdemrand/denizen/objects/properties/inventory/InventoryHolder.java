@@ -36,6 +36,10 @@ public class InventoryHolder implements Property {
     public dObject getHolder() {
         if (inventory.getInventory() == null)
             return null;
+        if (inventory.getIdType() != null
+                && inventory.getIdType().equals("player")
+                && inventory.getIdHolder() != null)
+            return dPlayer.valueOf(inventory.getIdHolder());
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
         if (holder != null) {

@@ -45,7 +45,8 @@ public class InventoryTitle implements Property {
     @Override
     public String getPropertyString() {
         if (inventory.getIdType().equals("generic")
-                && inventory.getIdHolder().equals("CHEST"))
+                && inventory.getIdHolder().equals("CHEST")
+                && !getTitle().equals("Chest"))
             return getTitle();
         else
             return null;

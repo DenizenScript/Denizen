@@ -73,6 +73,7 @@ public class InventoryScriptContainer extends ScriptContainer {
 
     public InventoryScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        InventoryScriptHelper.inventory_scripts.put(getName(), this);
     }
 
     public Map<String, dItem> definitions = new HashMap<String, dItem>();
