@@ -171,6 +171,8 @@ public class ItemScriptContainer extends ScriptContainer {
             // Check validity of material
             if (contains("MATERIAL")){
                 String material = TagManager.tag(player, npc, getString("MATERIAL"));
+                if (material.startsWith("m@"))
+                    material = material.substring(2);
                 stack = dItem.valueOf(material);
             }
 
