@@ -157,10 +157,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                     return dNPC.valueOf(holder).getDenizenEntity().getInventory();
             }
             else if (type.equals("player")) {
-                if (dPlayer.matches(holder)) {
-                    dPlayer pl = dPlayer.valueOf(holder);
-                    return pl.getInventory();
-                }
+                if (dPlayer.matches(holder))
+                    return dPlayer.valueOf(holder).getInventory();
             }
             else if (type.equals("entity")) {
                 if (dEntity.matches(holder))

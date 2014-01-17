@@ -740,13 +740,6 @@ public class dPlayer implements dObject, Adjustable {
         //   LOCATION ATTRIBUTES
         /////////////////
 
-        // <--[tag]
-        // @attribute <p@player.location>
-        // @returns dLocation
-        // @description
-        // Returns the location of the player. If the player is offline,
-        // returns the last location of the player.
-        // -->
         if (attribute.startsWith("location")) {
             return getLocation().getAttribute(attribute.fulfill(1));
         }
