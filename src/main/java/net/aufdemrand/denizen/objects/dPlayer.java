@@ -1473,19 +1473,29 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name show_boss_bar
-        // @input Element
+        // @input (Element(Number)|)Element
         // @description
         // Shows the player a boss health bar with the specified text as a name.
         // Use with no input value to remove the bar.
+        // Optionally, precede the text with a number indicating the health value. EG:
+        // - adjust <player> show_boss_bar:Hello
+        // - adjust <player> show_boss_bar:100|Hello
         // @tags
         // None
         // -->
-        // TODO: Possibly rework into a full command?
         if (mechanism.matches("show_boss_bar")) {
-            if (value.asString().length() > 0)
-                BossHealthBar.displayTextBar(value.asString(), getPlayerEntity());
-            else
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+                if (split.length == 2 && new Element(split[0]).isInt()) {
+                    BossHealthBar.displayTextBar(split[1], getPlayerEntity(), new Element(split[0]).asInt());
+                }
+                else {
+                    BossHealthBar.displayTextBar(value.asString(), getPlayerEntity(), 200);
+                }
+            }
+            else {
                 BossHealthBar.removeTextBar(getPlayerEntity());
+            }
         }
 
         // Iterate through this object's properties' mechanisms
