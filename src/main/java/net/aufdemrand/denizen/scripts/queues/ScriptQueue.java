@@ -375,7 +375,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
 
 
     /**
-     * Starts the script queue.
+     * Called when the script queue is started.
      *
      */
     protected abstract void onStart();
@@ -386,6 +386,10 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     private Class<? extends ScriptQueue> cachedClass;
 
 
+    /**
+     * Starts the script queue.
+     *
+     */
     public void start() {
         if (is_started) return;
 
@@ -400,9 +404,9 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             classNameCache.put(clazz, name = clazz.getSimpleName());
         if (is_delayed) {
             dB.echoDebug(this, "Delaying " + name + " '" + id + "'" + " for '"
-                    + new Duration((delay_time - System.currentTimeMillis()) / 1000 * 20).identify() + "'.");
+                    + new Duration((delay_time - System.currentTimeMillis()) / 1000 * 20).identify() + "'...");
         } else
-            dB.echoDebug(this, "Starting " + name + " '" + id + "'");
+            dB.echoDebug(this, "Starting " + name + " '" + id + "'...");
 
         // If it's delayed, schedule it for later
         if (is_delayed) {
@@ -421,13 +425,34 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             onStart();
     }
 
+    /**
+     * Immediately runs a list of entries within the script queue.
+     * Primarily used as a simple method of instant command injection.
+     *
+     * @param entries the entries to be run.
+     */
     public void runNow(List<ScriptEntry> entries) {
+        // Inject the entries at the start
         injectEntries(entries, 0);
-        //Note which entry comes next and keep running until that's reached
+        //Note which entry comes next in the existing queue
         ScriptEntry nextup = getQueueSize() > entries.size() ? getEntry(entries.size()): null;
+        // Loop through until the queue is emptied or the entry noted above is reached
         while (getQueueSize() > 0 && getEntry(0) != nextup) {
+            // Ensure the engine won't try to run its own instant code on the entry
+            getEntry(0).setInstant(false);
+            // Execute the ScriptEntry properly through the Script Engine.
             DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
         }
+    }
+    private Runnable callback = null;
+
+    /**
+     * Adds a runnable to call back when the queue is completed.
+     *
+     * @param r the Runnable to call back
+     */
+    public void callBack(Runnable r) {
+        callback = r;
     }
 
 
@@ -458,10 +483,12 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             // Add the 'finishing' entries back into the queue (if not empty)
             if (!entries.isEmpty()) {
                 script_entries.addAll(entries);
-                dB.echoDebug(this, "Finishing up queue " + id + "...");
+                dB.echoDebug(this, "Finishing up queue '" + id + "'...");
             } else /* if empty, just stop the queue like normal */ {
                 _queues.remove(id);
-                dB.echoDebug(this, "Completing queue " + id + "...");
+                dB.echoDebug(this, "Completing queue '" + id + "'.");
+                if (callback != null)
+                    callback.run();
                 is_started = false;
                 onStop();
             }
@@ -472,7 +499,9 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // 2) Cancel the corresponding task_id
         else {
             _queues.remove(id);
-            dB.echoDebug(this, "Completing queue " + id + "...");
+            dB.echoDebug(this, "Completing queue '" + id + "'.");
+            if (callback != null)
+                callback.run();
             is_started = false;
             onStop();
         }
