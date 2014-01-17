@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects.properties.entity;
 
 
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
@@ -15,10 +16,9 @@ public class EntityColor implements Property {
 
 
     public static boolean describes(dObject entity) {
-        if (!(entity instanceof dEntity)) return false;
-        // Check if the entity is a Horse Or Sheep.
-        return (((dEntity) entity).getEntityType() == EntityType.SHEEP
-        || ((dEntity) entity).getEntityType() == EntityType.HORSE);
+        return entity instanceof dEntity &&
+                (((dEntity) entity).getEntityType() == EntityType.SHEEP
+                || ((dEntity) entity).getEntityType() == EntityType.HORSE);
     }
 
     public static EntityColor getFrom(dObject entity) {
@@ -90,7 +90,7 @@ public class EntityColor implements Property {
         // @attribute <e@entity.color>
         // @returns Element
         // @description
-        // If the entity can have a Color, returns the entity's color.
+        // If the entity can have a color, returns the entity's color.
         // Currently, only Horse and Sheep type entities can have a color.
         // -->
         if (attribute.startsWith("color"))
@@ -98,6 +98,11 @@ public class EntityColor implements Property {
                     .getAttribute(attribute.fulfill(1));
 
         return null;
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+        // TODO
     }
 
 }

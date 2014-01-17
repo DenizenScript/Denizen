@@ -2,10 +2,12 @@ package net.aufdemrand.denizen.objects.properties.item;
 
 
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ItemDurability implements Property {
 
@@ -66,5 +68,25 @@ public class ItemDurability implements Property {
     @Override
     public String getPropertyId() {
         return "durability";
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dItem
+        // @name durability
+        // @input Element(Number)
+        // @description
+        // Changes the durability of damageable items.
+        // @tags
+        // <i@item.durability>
+        // <i@item.max_durability>
+        // <i@item.repairable>
+        // -->
+
+        if (mechanism.matches("durability") && mechanism.requireInteger()) {
+            item.setDurability((short) mechanism.getValue().asInt());
+        }
     }
 }

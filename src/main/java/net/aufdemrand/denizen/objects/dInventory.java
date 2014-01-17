@@ -1081,6 +1081,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 holder.setHolder(value);
         }
 
+        // Iterate through this object's properties' mechanisms
+        for (Property property : PropertyParser.getProperties(this)) {
+            property.adjust(mechanism);
+            if (mechanism.fulfilled())
+                break;
+        }
 
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();

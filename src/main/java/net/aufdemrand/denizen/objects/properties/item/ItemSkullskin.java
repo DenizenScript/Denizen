@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects.properties.item;
 
 
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
@@ -83,5 +84,27 @@ public class ItemSkullskin implements Property {
     @Override
     public String getPropertyId() {
         return "skull_skin";
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dItem
+        // @name skull_skin
+        // @input Element
+        // @description
+        // Changes the durability of damageable items.
+        // @tags
+        // <i@item.skin>
+        // <i@item.has_skin>
+        // -->
+
+        if (mechanism.matches("skull_skin")) {
+            SkullMeta meta = (SkullMeta) item.getItemStack().getItemMeta();
+            meta.setOwner(mechanism.getValue().asString());
+            item.getItemStack().setItemMeta(meta);
+        }
+
     }
 }

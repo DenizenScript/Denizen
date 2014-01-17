@@ -30,11 +30,11 @@ public class PropertyParser {
         getFrom.clear();
 
         // register core dEntity properties
-        registerProperty(EntityColor.class, dEntity.class);
-        registerProperty(EntityProfession.class, dEntity.class);
         registerProperty(EntityAge.class, dEntity.class);
+        registerProperty(EntityColor.class, dEntity.class);
         registerProperty(EntityFramed.class, dEntity.class);
         registerProperty(EntityInfected.class, dEntity.class);
+        registerProperty(EntityProfession.class, dEntity.class);
 
         // register core dInventory properties
         registerProperty(InventoryContents.class, dInventory.class);
@@ -43,14 +43,14 @@ public class PropertyParser {
         registerProperty(InventoryTitle.class, dInventory.class);
 
         // register core dItem properties
-        registerProperty(ItemEnchantments.class, dItem.class);
-        registerProperty(ItemDisplayname.class, dItem.class);
-        registerProperty(ItemLore.class, dItem.class);
-        registerProperty(ItemQuantity.class, dItem.class);
-        registerProperty(ItemDurability.class, dItem.class);
-        registerProperty(ItemSkullskin.class, dItem.class);
-        registerProperty(ItemPlantgrowth.class, dItem.class);
         registerProperty(ItemBook.class, dItem.class);
+        registerProperty(ItemDisplayname.class, dItem.class);
+        registerProperty(ItemDurability.class, dItem.class);
+        registerProperty(ItemEnchantments.class, dItem.class);
+        registerProperty(ItemLore.class, dItem.class);
+        registerProperty(ItemPlantgrowth.class, dItem.class);
+        registerProperty(ItemQuantity.class, dItem.class);
+        registerProperty(ItemSkullskin.class, dItem.class);
 
     }
 

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects.properties.item;
 
 
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
@@ -66,5 +67,25 @@ public class ItemQuantity implements Property {
     @Override
     public String getPropertyId() {
         return "quantity";
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dItem
+        // @name quantity
+        // @input Element(Number)
+        // @description
+        // Changes the number of items in this stack.
+        // @tags
+        // <i@item.qty>
+        // <i@item.max_stack>
+        // -->
+
+        if (mechanism.matches("quantity") && mechanism.requireInteger()) {
+            item.setAmount(mechanism.getValue().asInt());
+        }
+
     }
 }

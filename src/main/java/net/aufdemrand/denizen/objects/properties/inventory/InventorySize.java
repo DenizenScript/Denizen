@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
@@ -80,6 +81,11 @@ public class InventorySize implements Property {
 
         return null;
 
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+        // TODO
     }
 
 }
