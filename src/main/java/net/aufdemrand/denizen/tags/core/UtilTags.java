@@ -61,10 +61,23 @@ public class UtilTags implements Listener {
 
         if (!event.matches("queue, q")) return;
 
-        // TODO: <queue[<id>]. * > tags?
-
         Attribute attribute =
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+
+
+        // Handle <queue[id]. ...> tags
+
+        if (event.hasNameContext()) {
+            if (ScriptQueue._queueExists(event.getNameContext()))
+                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
+            else
+                event.setReplaced(ScriptQueue._getExistingQueue(event.getNameContext())
+                        .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+
+        // Otherwise, try to use queue in a static manner.
 
         // <--[tag]
         // @attribute <queue.exists[<queue_id>]>
@@ -77,41 +90,23 @@ public class UtilTags implements Listener {
             event.setReplaced(new Element(ScriptQueue._queueExists(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1)));
 
-        // <--[tag]
-        // @attribute <queue.id>
-        // @returns Element
-        // @description
-        // Returns the current queue ID.
-        // -->
-        if (attribute.startsWith("id"))
-            event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().id)
-                    .getAttribute(attribute.fulfill(1)));
 
         // <--[tag]
         // @attribute <queue.stats>
         // @returns Element
         // @description
-        // Returns stats for all queues during this server session.
+        // Returns stats for all queues during this server session
         // -->
         if (attribute.startsWith("stats"))
             event.setReplaced(new Element(ScriptQueue._getStats())
                     .getAttribute(attribute.fulfill(1)));
 
-        // <--[tag]
-        // @attribute <queue.size>
-        // @returns Element(Number)
-        // @description
-        // Returns the size of the current queue.
-        // -->
-        if (attribute.startsWith("size"))
-            event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().getQueueSize())
-                    .getAttribute(attribute.fulfill(1)));
 
+        // Else,
+        // Use current queue
 
-        if (attribute.startsWith("definitions"))
-            event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().getAllDefinitions().toString())
-                    .getAttribute(attribute.fulfill(1)));
-
+        event.setReplaced(event.getScriptEntry().getResidingQueue()
+                .getAttribute(attribute.fulfill(1)));
     }
 
     @EventHandler
@@ -319,7 +314,7 @@ public class UtilTags implements Listener {
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()
                             && npc.getTrait(AssignmentTrait.class).getAssignment().getName().equalsIgnoreCase(script.getName()))
-                    npcs.add(dNPC.mirrorCitizensNPC(npc));
+                        npcs.add(dNPC.mirrorCitizensNPC(npc));
                 }
                 event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
                 return;
@@ -505,7 +500,7 @@ public class UtilTags implements Listener {
 
                         event.setReplaced(new Element(
                                 String.valueOf(Utilities.getRandom().nextInt(max - min + 1) + min))
-                        .getAttribute(attribute.fulfill(3)));
+                                .getAttribute(attribute.fulfill(3)));
                     }
                 }
             }
@@ -526,12 +521,24 @@ public class UtilTags implements Listener {
             // @attribute <util.random.uuid>
             // @returns Element
             // @description
-            // Returns a random unique ID. (Useful for making new queues)
+            // Returns a random unique ID.
             // -->
             else if (subType.equalsIgnoreCase("UUID"))
                 event.setReplaced(new Element(UUID.randomUUID().toString())
                         .getAttribute(attribute.fulfill(2)));
+
+            // <--[tag]
+            // @attribute <util.random_duuid>
+            // @returns Element
+            // @description
+            // Returns a random 'denizen' unique ID, which resolves to a 10-character long
+            // randomly generated string using the letters 'D E N I Z E N'.
+            // -->
+            if (attribute.startsWith("DUUID"))
+                event.setReplaced(new Element(ScriptQueue._getNextId())
+                        .getAttribute(attribute.fulfill(2)));
         }
+
 
         else if (type.equalsIgnoreCase("SUBSTR")
                 || type.equalsIgnoreCase("TRIM")

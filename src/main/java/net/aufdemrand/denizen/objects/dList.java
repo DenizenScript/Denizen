@@ -145,48 +145,28 @@ public class dList extends ArrayList<String> implements dObject {
     private FlagManager.Flag flag = null;
 
 
-    //////////////////////////////
-    //    DSCRIPT ARGUMENT METHODS
-    /////////////////////////
+    /**
+     * Adds a list of dObjects to a dList by forcing each to 'identify()'.
+     *
+     * @param dObjects the List of dObjects
+     * @return a dList
+     */
+    public dList addObjects(List<dObject> dObjects) {
+        for (dObject obj : dObjects) {
+            add(obj.identify());
+        }
 
-
-    private String prefix = "List";
-
-    @Override
-    public String getPrefix() {
-        return prefix;
-    }
-
-    @Override
-    public dList setPrefix(String prefix) {
-        this.prefix = prefix;
         return this;
     }
 
-    @Override
-    public String debug() {
-        return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
-    }
 
-    @Override
-    public boolean isUnique() {
-        return flag != null;
-    }
-
-    @Override
-    public String getObjectType() {
-        return "List";
-    }
-
-
+    /**
+     * Fetches a String Array copy of the dList.
+     *
+     * @return the array copy
+     */
     public String[] toArray() {
-        List<String> list = new ArrayList<String>();
-
-        for (String string : this) {
-            list.add(string);
-        }
-
-        return list.toArray(new String[list.size()]);
+        return new ArrayList<String>(this).toArray(new String[this.size()]);
     }
 
 
@@ -204,8 +184,12 @@ public class dList extends ArrayList<String> implements dObject {
     }
 
 
-    // Return a list that includes only strings that match the values
-    // of an Enum array
+    /**
+     *  Return a new list that includes only strings that match the values of an Enum array
+     *
+     * @param values  the Enum's value
+     * @return  a filtered list
+     */
     public List<String> filter(Enum[] values) {
         List<String> list = new ArrayList<String>();
 
@@ -261,6 +245,41 @@ public class dList extends ArrayList<String> implements dObject {
         return identify();
     }
 
+
+
+
+    //////////////////////////////
+    //    DSCRIPT ARGUMENT METHODS
+    /////////////////////////
+
+
+    private String prefix = "List";
+
+    @Override
+    public String getPrefix() {
+        return prefix;
+    }
+
+    @Override
+    public dList setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
+    }
+
+    @Override
+    public String debug() {
+        return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
+    }
+
+    @Override
+    public boolean isUnique() {
+        return flag != null;
+    }
+
+    @Override
+    public String getObjectType() {
+        return "List";
+    }
 
     @Override
     public String identify() {
@@ -651,6 +670,7 @@ public class dList extends ArrayList<String> implements dObject {
                 ? new Element(flag.getLast().asString()).getAttribute(attribute)
                 : new Element(identify()).getAttribute(attribute));
     }
+
 
 
 }

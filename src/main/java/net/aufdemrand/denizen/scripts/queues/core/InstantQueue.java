@@ -1,7 +1,10 @@
 package net.aufdemrand.denizen.scripts.queues.core;
 
 
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.tags.Attribute;
 
 public class InstantQueue extends ScriptQueue {
 
@@ -59,6 +62,30 @@ public class InstantQueue extends ScriptQueue {
     protected boolean shouldRevolve() {
         // Instant queues aren't picky!
         return true;
+    }
+
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+
+        // Meta defined in TimedQueue
+        if (attribute.startsWith("speed")) {
+            return new Duration(0).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <q@queue.type>
+        // @returns Element
+        // @description
+        // Returns the type of queue.
+        // -->
+        if (attribute.startsWith("type")) {
+
+           return new Element("Instant").getAttribute(attribute.fulfill(1));
+        }
+
+        return super.getAttribute(attribute);
+
     }
 
 }

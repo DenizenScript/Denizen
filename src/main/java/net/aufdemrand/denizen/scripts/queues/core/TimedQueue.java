@@ -2,7 +2,9 @@ package net.aufdemrand.denizen.scripts.queues.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import org.bukkit.Bukkit;
 
@@ -169,5 +171,32 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         return !isDelayed();
     }
 
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+
+        // <--[tag]
+        // @attribute <q@queue.speed>
+        // @returns Duration
+        // @description
+        // Returns the speed of the queue as a Duration. A return of '0t' implies it is 'instant'.
+        // -->
+        if (attribute.startsWith("speed")) {
+            return getSpeed().getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <q@queue.type>
+        // @returns Element
+        // @description
+        // Returns the type of queue.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Timed").getAttribute(attribute.fulfill(1));
+        }
+
+        return super.getAttribute(attribute);
+
+    }
 
 }

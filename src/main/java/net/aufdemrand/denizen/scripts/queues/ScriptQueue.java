@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.queues.core.Delayable;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -708,16 +709,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         }
 
         // <--[tag]
-        // @attribute <q@queue.size>
-        // @returns Element
-        // @description
-        // Returns the number of script entries in the queue.
-        // -->
-        if (attribute.startsWith("size")) {
-            return new Element(script_entries.size()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <q@queue.state>
         // @returns Element
         // @description
@@ -732,30 +723,17 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         }
 
         // <--[tag]
-        // @attribute <q@queue.state>
-        // @returns Element
-        // @description
-        // Returns 'stopping', 'running', or 'unknown'.
-        // -->
-        if (attribute.startsWith("speed")) {
-            if (this instanceof TimedQueue) {
-                return ((TimedQueue) this).getSpeed().getAttribute(attribute.fulfill(1));
-            }
-        }
-
-        // <--[tag]
-        // @attribute <queue.definitions>
+        // @attribute <q@queue.definitions>
         // @returns Element
         // @description
         // Returns all definitions that were passed to the current queue.
         // -->
-        if (attribute.startsWith("speed")) {
-            return
+        if (attribute.startsWith("definitions")) {
+            return new Element(getAllDefinitions().toString()).getAttribute(attribute.fulfill(1));
         }
 
 
         return new Element(identify()).getAttribute(attribute);
-
     }
 
 
