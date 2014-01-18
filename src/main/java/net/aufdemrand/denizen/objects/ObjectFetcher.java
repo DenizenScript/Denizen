@@ -9,6 +9,7 @@ import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
@@ -64,6 +65,7 @@ public class ObjectFetcher {
         registerWithObjectFetcher(Duration.class);   // d@
         registerWithObjectFetcher(dChunk.class);     // ch@
         registerWithObjectFetcher(dPlugin.class);    // pl@
+        registerWithObjectFetcher(ScriptQueue.class);// q@
 
         _initialize();
 

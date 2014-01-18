@@ -107,12 +107,7 @@ public class UtilTags implements Listener {
             event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().getQueueSize())
                     .getAttribute(attribute.fulfill(1)));
 
-        // <--[tag]
-        // @attribute <queue.definitions>
-        // @returns Element
-        // @description
-        // Returns all definitions that were passed to the current queue.
-        // -->
+
         if (attribute.startsWith("definitions"))
             event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().getAllDefinitions().toString())
                     .getAttribute(attribute.fulfill(1)));

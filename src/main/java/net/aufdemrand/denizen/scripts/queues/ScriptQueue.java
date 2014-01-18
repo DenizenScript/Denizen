@@ -6,10 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -25,7 +29,7 @@ import org.bukkit.Bukkit;
  * @author Jeremy Schroeder
  */
 
-public abstract class ScriptQueue implements Debuggable {
+public abstract class ScriptQueue implements Debuggable, dObject {
     private static final Map<Class<? extends ScriptQueue>, String> classNameCache = new HashMap<Class<? extends ScriptQueue>, String>();
 
     protected static long total_queues = 0;
@@ -595,6 +599,9 @@ public abstract class ScriptQueue implements Debuggable {
     }
 
 
+    // DEBUGGABLE
+    //
+
     @Override
     public boolean shouldDebug() throws Exception {
         return (lastEntryExecuted != null ? lastEntryExecuted.shouldDebug()
@@ -606,6 +613,153 @@ public abstract class ScriptQueue implements Debuggable {
         return (lastEntryExecuted != null ? lastEntryExecuted.getScript().getName().equalsIgnoreCase(criteria.replace("s@", ""))
                 : script_entries.get(0).getScript().getName().equalsIgnoreCase(criteria.replace("s@", "")));
     }
+
+
+    // dOBJECT
+    //
+
+    /**
+     * Gets a Queue Object from a string form of q@queue_name.
+     *
+     * @param string  the string or dScript argument String
+     * @return  a ScriptQueue, or null if incorrectly formatted
+     *
+     */
+    @Fetchable("q")
+    public static ScriptQueue valueOf(String string) {
+        if (string == null) return null;
+
+        if (_queueExists(string))
+            return _getExistingQueue(string);
+
+        return null;
+    }
+
+
+    public static boolean matches(String string) {
+        // Starts with q@? Assume match.
+        if (string.toLowerCase().startsWith("q@")) return true;
+        else return false;
+    }
+
+    String prefix = "Queue";
+
+
+    @Override
+    public String getPrefix() {
+        return prefix;
+    }
+
+
+    @Override
+    public ScriptQueue setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
+    }
+
+
+    @Override
+    public String debug() {
+        return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
+    }
+
+    @Override
+    public boolean isUnique() {
+        return true;
+    }
+
+    @Override
+    public String getObjectType() {
+        return "queue";
+    }
+
+    @Override
+    public String identify() {
+        return "q@" + id;
+    }
+
+    @Override
+    public String identifySimple() {
+        return identify();
+    }
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+        if (attribute == null) return null;
+
+        // <--[tag]
+        // @attribute <q@queue.id>
+        // @returns Element
+        // @description
+        // Returns the id of the queue.
+        // -->
+        if (attribute.startsWith("id")) {
+            return new Element(id).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <q@queue.size>
+        // @returns Element
+        // @description
+        // Returns the number of script entries in the queue.
+        // -->
+        if (attribute.startsWith("size")) {
+            return new Element(script_entries.size()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <q@queue.size>
+        // @returns Element
+        // @description
+        // Returns the number of script entries in the queue.
+        // -->
+        if (attribute.startsWith("size")) {
+            return new Element(script_entries.size()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <q@queue.state>
+        // @returns Element
+        // @description
+        // Returns 'stopping', 'running', or 'unknown'.
+        // -->
+        if (attribute.startsWith("state")) {
+            String state;
+            if (is_started) state = "running";
+            else if (is_stopping) state = "stopping";
+            else state = "unknown";
+            return new Element(state).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <q@queue.state>
+        // @returns Element
+        // @description
+        // Returns 'stopping', 'running', or 'unknown'.
+        // -->
+        if (attribute.startsWith("speed")) {
+            if (this instanceof TimedQueue) {
+                return ((TimedQueue) this).getSpeed().getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <queue.definitions>
+        // @returns Element
+        // @description
+        // Returns all definitions that were passed to the current queue.
+        // -->
+        if (attribute.startsWith("speed")) {
+            return
+        }
+
+
+        return new Element(identify()).getAttribute(attribute);
+
+    }
+
+
+
 
 
 }
