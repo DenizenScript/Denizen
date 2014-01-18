@@ -286,7 +286,7 @@ public class IfCommand extends AbstractCommand {
                 ScriptEntry entry = new ScriptEntry(command, arguments,
                         (scriptEntry.getScript() == null ? null : scriptEntry.getScript().getContainer()))
                         .setPlayer(scriptEntry.getPlayer())
-                        .setNPC(scriptEntry.getNPC()).setFinished(true)
+                        .setNPC(scriptEntry.getNPC()).setFinished(true).setInstant(true)
                         .addObject("reqId", scriptEntry.getObject("reqId"));
 
                 entries.add(entry);
@@ -302,8 +302,8 @@ public class IfCommand extends AbstractCommand {
             ScriptBuilder.addObjectToEntries(entries, tracked_object, scriptEntry.getObject(tracked_object));
         }
 
-        // Run everything instantly
-        scriptEntry.getResidingQueue().runNow(entries);
+        // Inject the entries to the queue to be run
+        scriptEntry.getResidingQueue().injectEntries(entries, 0);
     }
 
 }
