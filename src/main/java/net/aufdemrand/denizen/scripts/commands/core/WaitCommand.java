@@ -52,21 +52,8 @@ public class WaitCommand extends AbstractCommand {
                 aH.debugObj("queue", queue.id) + delay.debug());
 
         // Tell the queue to delay
-        if (queue instanceof Delayable) {
-
-            dB.echoDebug("queue " + (queue instanceof TimedQueue) + " ticks " + delay.debug()
-                    + " " + ((TimedQueue) queue).getSpeed().debug());
-
-            if ((queue instanceof TimedQueue) && ((TimedQueue) queue).getSpeed()
-                    .getTicksAsInt() > delay.getTicksAsInt()) {
-                dB.echoDebug(scriptEntry, "Cannot wait less than the established speed. Delaying " +
-                        ((TimedQueue) queue).getSpeed().identify());
-
-            } else {
-                ((Delayable) queue).delayFor(delay);
-                dB.echoDebug(scriptEntry, "Delaying " + delay.identify());
-            }
-        }
+        if (queue instanceof Delayable)
+               ((Delayable) queue).delayFor(delay);
 
         else dB.echoError("This type of queue is not able to be delayed!");
     }
