@@ -7,9 +7,9 @@
     <groupId>net.aufdemrand</groupId>
     <artifactId>denizen</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.4-SNAPSHOT</version>
     <name>Denizen</name>
-    <description>Scriptable NPCs for Citizens2</description>
+    <description>Scriptable Minecraft and Citizens2</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

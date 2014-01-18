@@ -166,7 +166,13 @@ public class dList extends ArrayList<String> implements dObject {
      * @return the array copy
      */
     public String[] toArray() {
-        return new ArrayList<String>(this).toArray(new String[this.size()]);
+        List<String> list = new ArrayList<String>();
+
+        for (String string : this) {
+            list.add(string);
+        }
+
+        return list.toArray(new String[list.size()]);
     }
 
 
