@@ -106,7 +106,7 @@ public class UtilTags implements Listener {
         // Use current queue
 
         event.setReplaced(event.getScriptEntry().getResidingQueue()
-                .getAttribute(attribute.fulfill(1)));
+                .getAttribute(attribute));
     }
 
     @EventHandler
@@ -528,13 +528,13 @@ public class UtilTags implements Listener {
                         .getAttribute(attribute.fulfill(2)));
 
             // <--[tag]
-            // @attribute <util.random_duuid>
+            // @attribute <util.random.duuid>
             // @returns Element
             // @description
             // Returns a random 'denizen' unique ID, which resolves to a 10-character long
             // randomly generated string using the letters 'D E N I Z E N'.
             // -->
-            if (attribute.startsWith("DUUID"))
+            else if (subType.equalsIgnoreCase("DUUID"))
                 event.setReplaced(new Element(ScriptQueue._getNextId())
                         .getAttribute(attribute.fulfill(2)));
         }
