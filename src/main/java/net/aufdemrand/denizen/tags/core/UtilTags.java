@@ -86,10 +86,11 @@ public class UtilTags implements Listener {
         // Returns whether the specified queue exists.
         // -->
         if (attribute.startsWith("exists")
-                && attribute.hasContext(1))
+                && attribute.hasContext(1)) {
             event.setReplaced(new Element(ScriptQueue._queueExists(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1)));
-
+            return;
+        }
 
         // <--[tag]
         // @attribute <queue.stats>
@@ -97,9 +98,11 @@ public class UtilTags implements Listener {
         // @description
         // Returns stats for all queues during this server session
         // -->
-        if (attribute.startsWith("stats"))
+        if (attribute.startsWith("stats")) {
             event.setReplaced(new Element(ScriptQueue._getStats())
                     .getAttribute(attribute.fulfill(1)));
+            return;
+        }
 
 
         // Else,
