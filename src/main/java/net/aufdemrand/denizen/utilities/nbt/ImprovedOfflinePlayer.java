@@ -212,6 +212,9 @@ public class ImprovedOfflinePlayer {
                 this.compound.getInt("SpawnZ")
         );
     }
+    public boolean isSpawnForced() {
+        return this.compound.getBoolean("SpawnForced");
+    }
     public void setBedSpawnLocation(Location location, Boolean override) {
         this.compound.setInt("SpawnX", (int)location.getX());
         this.compound.setInt("SpawnY", (int)location.getY());

@@ -63,7 +63,6 @@ public class RuntimeCompiler {
         dB.log("Attempting to add CraftBukkit as dependency for run-time compiler.");
         try {
             File file = new File(".");
-            dB.log("abs: " + file.getAbsolutePath());
             for (File f : file.listFiles(jarFilter)) {
                 dependencies.add(f.getPath());
                 dB.log("Loaded  " + f.getName());
