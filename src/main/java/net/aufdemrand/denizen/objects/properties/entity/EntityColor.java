@@ -10,15 +10,17 @@ import org.bukkit.DyeColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Wolf;
 
 public class EntityColor implements Property {
 
 
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
-        // Check if the entity is a Horse Or Sheep.
+        // Check if the entity is a Horse, Wolf Or Sheep.
         return (((dEntity) entity).getEntityType() == EntityType.SHEEP
-        || ((dEntity) entity).getEntityType() == EntityType.HORSE);
+        || ((dEntity) entity).getEntityType() == EntityType.HORSE
+        || ((dEntity) entity).getEntityType() == EntityType.WOLF);
     }
 
     public static EntityColor getFrom(dObject entity) {
@@ -47,6 +49,9 @@ public class EntityColor implements Property {
         if (colored.getEntityType() == EntityType.SHEEP)
           return ((Sheep) colored.getBukkitEntity()).getColor().name();
 
+        if (colored.getEntityType() == EntityType.WOLF)
+            return ((Wolf) colored.getBukkitEntity()).getCollarColor().name();
+
         return null;
     }
 
@@ -59,6 +64,12 @@ public class EntityColor implements Property {
     public void setColor(DyeColor color) {
         if (color != null)
             ((Sheep) colored.getBukkitEntity()).setColor(color);
+
+    }
+
+    public void setCollarColor(DyeColor color) {
+        if (color != null)
+            ((Wolf) colored.getBukkitEntity()).setCollarColor(color);
 
     }
 
@@ -91,7 +102,7 @@ public class EntityColor implements Property {
         // @returns Element
         // @description
         // If the entity can have a Color, returns the entity's color.
-        // Currently, only Horse and Sheep type entities can have a color.
+        // Currently, only Horse, Wolf and Sheep type entities can have a color.
         // -->
         if (attribute.startsWith("color"))
             return new Element(getColor().toLowerCase())
