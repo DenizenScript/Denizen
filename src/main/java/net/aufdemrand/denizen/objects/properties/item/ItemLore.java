@@ -1,12 +1,11 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
 
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +13,18 @@ import java.util.List;
 public class ItemLore implements Property {
 
     public static boolean describes(dObject item) {
-        return item instanceof dItem
-                && ((dItem) item).getItemStack().hasItemMeta()
-                && ((dItem) item).getItemStack().getItemMeta().hasLore();
+        // Technically, all items can hold lore
+        return item instanceof dItem;
     }
 
     public static ItemLore getFrom(dObject _item) {
         if (!describes(_item)) return null;
         else return new ItemLore((dItem)_item);
+    }
+
+    public boolean hasLore() {
+        return item.getItemStack().hasItemMeta()
+                && (item.getItemStack().getItemMeta().hasLore());
     }
 
 
@@ -44,14 +47,26 @@ public class ItemLore implements Property {
         // To get that information, use <i@item.scriptname>.
         // -->
         if (attribute.startsWith("lore")) {
-            List<String> loreList = new ArrayList<String>();
-            for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
-                if (!itemLore.startsWith(dItem.itemscriptIdentifier)) {
-                    loreList.add(itemLore);
+            if (hasLore()) {
+                List<String> loreList = new ArrayList<String>();
+                for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
+                    if (!itemLore.startsWith(dItem.itemscriptIdentifier)) {
+                        loreList.add(itemLore);
+                    }
                 }
+                return new dList(loreList).getAttribute(attribute.fulfill(1));
             }
-            return new dList(loreList).getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <i@item.has_lore>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the item has lore set on it.
+        // -->
+        if (attribute.startsWith("has_lore"))
+            return new Element(hasLore())
+                    .getAttribute(attribute.fulfill(1));
 
         return null;
     }
@@ -59,17 +74,48 @@ public class ItemLore implements Property {
 
     @Override
     public String getPropertyString() {
-        StringBuilder output = new StringBuilder();
-        for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
-            if (!itemLore.startsWith(dItem.itemscriptIdentifier)) {
-                output.append(EscapeTags.Escape(itemLore)).append("|");
+        if (hasLore()) {
+            StringBuilder output = new StringBuilder();
+            for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
+                if (!itemLore.startsWith(dItem.itemscriptIdentifier)) {
+                    output.append(EscapeTags.Escape(itemLore)).append("|");
+                }
             }
+            return (output.length() == 0) ? "": output.substring(0, output.length() - 1);
         }
-        return (output.length() == 0) ? "": output.substring(0, output.length() - 1);
+        else {
+            return null;
+        }
     }
 
     @Override
     public String getPropertyId() {
         return "lore";
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dItem
+        // @name lore
+        // @input dList
+        // @description
+        // Sets the item's lore.
+        // See <@link language Property Escaping>
+        // @tags
+        // <i@item.lore>
+        // -->
+
+        if (mechanism.matches("lore")) {
+            ItemMeta meta = item.getItemStack().getItemMeta();
+            dList lore = mechanism.getValue().asType(dList.class);
+            for (int i = 0; i < lore.size(); i++) {
+                lore.set(i, EscapeTags.unEscape(lore.get(i)));
+            }
+            meta.setLore(lore);
+            item.getItemStack().setItemMeta(meta);
+        }
+
     }
 }

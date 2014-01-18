@@ -914,6 +914,13 @@ public class dNPC implements dObject, Adjustable {
             getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
         }
 
+        // Iterate through this object's properties' mechanisms
+        for (Property property : PropertyParser.getProperties(this)) {
+            property.adjust(mechanism);
+            if (mechanism.fulfilled())
+                break;
+        }
+
         // Pass along to dEntity mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
             Adjustable entity = new dEntity(getEntity());

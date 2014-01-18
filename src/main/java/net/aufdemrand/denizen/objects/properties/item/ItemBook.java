@@ -5,8 +5,11 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
+
+import java.util.ArrayList;
 
 public class ItemBook implements Property {
 
@@ -132,5 +135,59 @@ public class ItemBook implements Property {
     @Override
     public String getPropertyId() {
         return "book";
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dItem
+        // @name book
+        // @input Element
+        // @description
+        // Changes the information on a book item.
+        // See <@link language Property Escaping>
+        // @tags
+        // <i@item.is_book>
+        // <i@item.book.author>
+        // <i@item.book.title>
+        // <i@item.book.page_count>
+        // <i@item.book.get_page[<#>]>
+        // <i@item.book.pages>
+        // <i@item.book>
+        // -->
+
+        if (mechanism.matches("book")) {
+            BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+            dList data = mechanism.getValue().asType(dList.class);
+            if (data.size() < 2) {
+                dB.echoError("Invalid book input!");
+            }
+            else {
+                if (data.size() > 4 && data.get(0).equalsIgnoreCase("author")
+                        && data.get(2).equalsIgnoreCase("title")) {
+                    if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+                        dB.echoError("That type of book cannot have title or author!");
+                    }
+                    else {
+                        meta.setAuthor(EscapeTags.unEscape(data.get(1)));
+                        meta.setTitle(EscapeTags.unEscape(data.get(3)));
+                        for (int i = 0; i < 4; i++)
+                            data.remove(0); // No .removeRange?
+                    }
+                }
+                if (!data.get(0).equalsIgnoreCase("pages")) {
+                    dB.echoError("Invalid book input!");
+                }
+                else {
+                    ArrayList<String> newPages = new ArrayList<String>();
+                    for (int i = 1; i < data.size(); i++) {
+                        newPages.add(EscapeTags.unEscape(data.get(i)));
+                    }
+                    meta.setPages(newPages);
+                }
+                item.getItemStack().setItemMeta(meta);
+            }
+        }
     }
 }

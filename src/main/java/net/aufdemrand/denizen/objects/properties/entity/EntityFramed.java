@@ -1,10 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
 
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.Rotation;
@@ -110,6 +107,11 @@ public class EntityFramed implements Property {
                     .getAttribute(attribute.fulfill(1));
 
         return null;
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+        // TODO
     }
 
 }

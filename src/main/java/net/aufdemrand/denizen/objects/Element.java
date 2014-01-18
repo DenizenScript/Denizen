@@ -70,7 +70,7 @@ public class Element implements dObject {
             return new Element(value);
         }
 
-        return new Element(string);
+        return new Element(string.toLowerCase().startsWith("el@") ? string.substring(3): string);
     }
 
     public static boolean matches(String string) {

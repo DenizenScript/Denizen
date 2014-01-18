@@ -348,6 +348,12 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
 
+        // Iterate through this object's properties' mechanisms
+        for (Property property : PropertyParser.getProperties(this)) {
+            property.adjust(mechanism);
+            if (mechanism.fulfilled())
+                break;
+        }
     }
 
 }

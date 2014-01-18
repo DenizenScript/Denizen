@@ -1,11 +1,13 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
 
+import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.enchantments.Enchantment;
 
 import java.util.ArrayList;
@@ -105,5 +107,41 @@ public class ItemEnchantments implements Property {
     @Override
     public String getPropertyId() {
         return "enchantments";
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dItem
+        // @name enchantments
+        // @input dList
+        // @description
+        // Sets the item's enchantments.
+        // @tags
+        // <i@item.enchantments>
+        // <i@item.enchantments.levels>
+        // <i@item.enchantments.with_levels>
+        // -->
+
+        if (mechanism.matches("enchantments")) {
+            for (String enchant: mechanism.getValue().asType(dList.class)) {
+                if (!enchant.contains(","))
+                    dB.echoError("Invalid enchantment format, use name,level|...");
+                else {
+                    String[] data = enchant.split(",", 2);
+                    if (Integer.valueOf(data[1]) == null)
+                        dB.echoError("Cannot apply enchantment '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
+                    else {
+                        try {
+                            item.getItemStack().addUnsafeEnchantment(Enchantment.getByName(data[0].toUpperCase()), Integer.valueOf(data[1]));
+                        }
+                        catch (NullPointerException e) {
+                            dB.echoError("Unknown enchantment '" + data[0] + "'");
+                        }
+                    }
+                }
+            }
+        }
     }
 }

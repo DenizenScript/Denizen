@@ -1,15 +1,9 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
+import net.aufdemrand.denizen.objects.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.citizensnpcs.api.CitizensAPI;
@@ -42,6 +36,10 @@ public class InventoryHolder implements Property {
     public dObject getHolder() {
         if (inventory.getInventory() == null)
             return null;
+        if (inventory.getIdType() != null
+                && inventory.getIdType().equals("player")
+                && inventory.getIdHolder() != null)
+            return dPlayer.valueOf(inventory.getIdHolder());
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
         if (holder != null) {
@@ -111,6 +109,11 @@ public class InventoryHolder implements Property {
 
         return null;
 
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+        // TODO
     }
 
 }

@@ -47,7 +47,7 @@ public class BossHealthBar {
 
     //Accessing packets
     @SuppressWarnings("deprecation")
-    public static PacketPlayOutSpawnEntityLiving getMobPacket(String text, Location loc) {
+    public static PacketPlayOutSpawnEntityLiving getMobPacket(String text, Location loc, int health) {
         PacketPlayOutSpawnEntityLiving mobPacket = new PacketPlayOutSpawnEntityLiving();
         try {
             Field a = getField(mobPacket.getClass(), "a");
@@ -88,7 +88,7 @@ public class BossHealthBar {
         } catch (IllegalAccessException e1) {
             e1.printStackTrace();
         }
-        DataWatcher watcher = getWatcher(text, 300);
+        DataWatcher watcher = getWatcher(text, health);
         try {
             Field t = PacketPlayOutSpawnEntityLiving.class.getDeclaredField("l");
             t.setAccessible(true);
@@ -159,8 +159,8 @@ public class BossHealthBar {
     }
 
     //Other methods
-    public static void displayTextBar(String text, final Player player) {
-        PacketPlayOutSpawnEntityLiving mobPacket = getMobPacket(text, player.getLocation());
+    public static void displayTextBar(String text, final Player player, int health) {
+        PacketPlayOutSpawnEntityLiving mobPacket = getMobPacket(text, player.getLocation(), health);
         sendPacket(player, mobPacket);
         hasHealthBar.put(player.getName(), true);
     }
@@ -174,7 +174,7 @@ public class BossHealthBar {
     }
 
     public static void displayLoadingBar(final String text, final String completeText, final Player player, final int healthAdd, final long delay, final boolean loadUp) {
-        PacketPlayOutSpawnEntityLiving mobPacket = getMobPacket(text, player.getLocation());
+        PacketPlayOutSpawnEntityLiving mobPacket = getMobPacket(text, player.getLocation(), 200);
         sendPacket(player, mobPacket);
         hasHealthBar.put(player.getName(), true);
         new BukkitRunnable() {
@@ -199,7 +199,7 @@ public class BossHealthBar {
                     sendPacket(player, destroyEntityPacket);
                     hasHealthBar.put(player.getName(), false);
 //Complete text
-                    PacketPlayOutSpawnEntityLiving mobPacket = getMobPacket(completeText, player.getLocation());
+                    PacketPlayOutSpawnEntityLiving mobPacket = getMobPacket(completeText, player.getLocation(), 200);
                     sendPacket(player, mobPacket);
                     hasHealthBar.put(player.getName(), true);
                     DataWatcher watcher2 = getWatcher(completeText, 300);

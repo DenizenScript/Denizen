@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
@@ -44,7 +45,8 @@ public class InventoryTitle implements Property {
     @Override
     public String getPropertyString() {
         if (inventory.getIdType().equals("generic")
-                && inventory.getIdHolder().equals("CHEST"))
+                && inventory.getIdHolder().equals("CHEST")
+                && !getTitle().equals("Chest"))
             return getTitle();
         else
             return null;
@@ -73,4 +75,8 @@ public class InventoryTitle implements Property {
         return null;
     }
 
+    @Override
+    public void adjust(Mechanism mechanism) {
+        // TODO
+    }
 }

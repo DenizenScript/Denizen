@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
 import net.citizensnpcs.api.CitizensAPI;
 
@@ -143,6 +144,11 @@ public class dPlayer implements dObject, Adjustable {
         return Bukkit.getOfflinePlayer(player_name);
     }
 
+    public ImprovedOfflinePlayer getNBTEditor() {
+        if (player_name == null) return null;
+        return new ImprovedOfflinePlayer(player_name);
+    }
+
     public dEntity getDenizenEntity() {
         return new dEntity(getPlayerEntity());
     }
@@ -161,12 +167,17 @@ public class dPlayer implements dObject, Adjustable {
 
     public dLocation getLocation() {
         if (isOnline()) return new dLocation(getPlayerEntity().getLocation());
-        else return null;
+        else return new dLocation(getNBTEditor().getLocation());
     }
 
     public dLocation getEyeLocation() {
         if (isOnline()) return new dLocation(getPlayerEntity().getEyeLocation());
         else return null;
+    }
+
+    public dInventory getInventory() {
+        if (isOnline()) return new dInventory(getPlayerEntity().getInventory());
+        else return new dInventory(getNBTEditor());
     }
 
     public World getWorld() {
@@ -319,7 +330,7 @@ public class dPlayer implements dObject, Adjustable {
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             else
                 return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -448,8 +459,8 @@ public class dPlayer implements dObject, Adjustable {
             if (attribute.getAttribute(2).startsWith("within") &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {
-             attribs = 2;
-             range = attribute.getIntContext(2);
+                attribs = 2;
+                range = attribute.getIntContext(2);
             }
 
             List<Entity> entities = getPlayerEntity().getNearbyEntities(range, range, range);
@@ -521,8 +532,8 @@ public class dPlayer implements dObject, Adjustable {
                         ez = l.getZ();
 
                         if ((bx - .50 <= ex && ex <= bx + 1.50) &&
-                            (bz - .50 <= ez && ez <= bz + 1.50) &&
-                            (by - 1 <= ey && ey <= by + 2.5)) {
+                                (bz - .50 <= ez && ez <= bz + 1.50) &&
+                                (by - 1 <= ey && ey <= by + 2.5)) {
                             // Entity is close enough, so return it
                             return new dEntity(possibleTarget).getAttribute(attribute.fulfill(attribs));
                         }
@@ -617,10 +628,10 @@ public class dPlayer implements dObject, Adjustable {
             attribute = attribute.fulfill(1);
             if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds"))
                 return new Element(getOfflinePlayer().getFirstPlayed())
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
             else
                 return new Duration(getOfflinePlayer().getFirstPlayed() / 50)
-                    .getAttribute(attribute);
+                        .getAttribute(attribute);
         }
 
         // <--[tag]
@@ -706,7 +717,31 @@ public class dPlayer implements dObject, Adjustable {
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Duration(getOfflinePlayer().getLastPlayed() / 50)
-                    .getAttribute(attribute);
+                        .getAttribute(attribute);
+        }
+
+
+        /////////////////////
+        //   INVENTORY ATTRIBUTES
+        /////////////////
+
+        // <--[tag]
+        // @attribute <p@player.inventory>
+        // @returns dInventory
+        // @description
+        // returns a dInventory of the player's current inventory.
+        // -->
+        if (attribute.startsWith("inventory")) {
+            return getInventory().getAttribute(attribute.fulfill(1));
+        }
+
+
+        /////////////////////
+        //   LOCATION ATTRIBUTES
+        /////////////////
+
+        if (attribute.startsWith("location")) {
+            return getLocation().getAttribute(attribute.fulfill(1));
         }
 
 
@@ -716,6 +751,17 @@ public class dPlayer implements dObject, Adjustable {
 
         // Player is required to be online after this point...
         if (!isOnline()) return new Element(identify()).getAttribute(attribute);
+
+        // <--[tag]
+        // @attribute <p@player.item_on_cursor>
+        // @returns dItem
+        // @description
+        // returns a dItem that the player's cursor is on, if any. This includes
+        // chest interfaces, inventories, and hotbars, etc.
+        // -->
+        if (attribute.startsWith("item_on_cursor"))
+            return new dItem(getPlayerEntity().getItemOnCursor())
+                    .getAttribute(attribute.fulfill(1));
 
 
         /////////////////////
@@ -797,32 +843,6 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("name"))
             return new Element(player_name).getAttribute(attribute.fulfill(1));
-
-
-        /////////////////////
-        //   INVENTORY ATTRIBUTES
-        /////////////////
-
-        // <--[tag]
-        // @attribute <p@player.inventory>
-        // @returns dInventory
-        // @description
-        // returns a dInventory of the player's current inventory.
-        // -->
-        if (attribute.startsWith("inventory"))
-            return new dInventory(getPlayerEntity().getInventory())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.item_on_cursor>
-        // @returns dItem
-        // @description
-        // returns a dItem that the player's cursor is on, if any. This includes
-        // chest interfaces, inventories, and hotbars, etc.
-        // -->
-        if (attribute.startsWith("item_on_cursor"))
-            return new dItem(getPlayerEntity().getItemOnCursor())
-                    .getAttribute(attribute.fulfill(1));
 
 
         /////////////////////
@@ -1473,19 +1493,36 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name show_boss_bar
-        // @input Element
+        // @input (Element(Number)|)Element
         // @description
         // Shows the player a boss health bar with the specified text as a name.
         // Use with no input value to remove the bar.
+        // Optionally, precede the text with a number indicating the health value. EG:
+        // - adjust <player> show_boss_bar:Hello
+        // - adjust <player> show_boss_bar:100|Hello
         // @tags
         // None
         // -->
-        // TODO: Possibly rework into a full command?
         if (mechanism.matches("show_boss_bar")) {
-            if (value.asString().length() > 0)
-                BossHealthBar.displayTextBar(value.asString(), getPlayerEntity());
-            else
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+                if (split.length == 2 && new Element(split[0]).isInt()) {
+                    BossHealthBar.displayTextBar(split[1], getPlayerEntity(), new Element(split[0]).asInt());
+                }
+                else {
+                    BossHealthBar.displayTextBar(value.asString(), getPlayerEntity(), 200);
+                }
+            }
+            else {
                 BossHealthBar.removeTextBar(getPlayerEntity());
+            }
+        }
+
+        // Iterate through this object's properties' mechanisms
+        for (Property property : PropertyParser.getProperties(this)) {
+            property.adjust(mechanism);
+            if (mechanism.fulfilled())
+                break;
         }
 
         // Pass along to dEntity mechanism handler if not already handled.

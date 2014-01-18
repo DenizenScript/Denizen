@@ -9,21 +9,13 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.CocoaPlant;
-import org.bukkit.material.Crops;
-import org.bukkit.material.NetherWarts;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -599,16 +591,6 @@ public class dItem implements dObject, Notable, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <i@item.has_lore>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the item has lore set on it.
-        // -->
-        if (attribute.startsWith("has_lore"))
-            return new Element(ItemLore.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <i@item.is_crop>
         // @returns Element(Boolean)
         // @description
@@ -617,17 +599,6 @@ public class dItem implements dObject, Notable, Adjustable {
         if (attribute.startsWith("is_crop"))
             return new Element(ItemPlantgrowth.describes(this))
                     .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.has_display>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the item has a custom set display name.
-        // -->
-        if (attribute.startsWith("has_display")) {
-            return new Element(ItemDisplayname.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
 
         // <--[tag]
         // @attribute <i@item.is_book>
@@ -740,208 +711,12 @@ public class dItem implements dObject, Notable, Adjustable {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        Element value = mechanism.getValue();
-
-        // <--[mechanism]
-        // @object dItem
-        // @name display_name
-        // @input Element
-        // @description
-        // Changes the items display name.
-        // See <@link language Property Escaping>
-        // @tags
-        // <i@item.display>
-        // -->
-        if (mechanism.matches("display_name")) {
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(EscapeTags.unEscape(value.asString()));
-            item.setItemMeta(meta);
+        // Iterate through this object's properties' mechanisms
+        for (Property property : PropertyParser.getProperties(this)) {
+            property.adjust(mechanism);
+            if (mechanism.fulfilled())
+                break;
         }
-
-        // <--[mechanism]
-        // @object dItem
-        // @name lore
-        // @input dList
-        // @description
-        // Sets the item's lore.
-        // See <@link language Property Escaping>
-        // @tags
-        // <i@item.lore>
-        // -->
-        if (mechanism.matches("lore")) {
-            ItemMeta meta = item.getItemMeta();
-            dList lore = value.asType(dList.class);
-            for (int i = 0; i < lore.size(); i++) {
-                lore.set(i, EscapeTags.unEscape(lore.get(i)));
-            }
-            meta.setLore(lore);
-            item.setItemMeta(meta);
-        }
-
-        // <--[mechanism]
-        // @object dItem
-        // @name enchantments
-        // @input dList
-        // @description
-        // Sets the item's enchantments.
-        // @tags
-        // <i@item.enchantments>
-        // <i@item.enchantments.levels>
-        // <i@item.enchantments.with_levels>
-        // -->
-        if (mechanism.matches("enchantments")) {
-            for (String enchant: value.asType(dList.class)) {
-                if (!enchant.contains(","))
-                    dB.echoError("Invalid enchantment format, use name,level|...");
-                else {
-                    String[] data = enchant.split(",", 2);
-                    if (Integer.valueOf(data[1]) == null)
-                        dB.echoError("Cannot apply enchantment '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
-                    else {
-                        try {
-                            item.addUnsafeEnchantment(Enchantment.getByName(data[0].toUpperCase()), Integer.valueOf(data[1]));
-                        }
-                        catch (NullPointerException e) {
-                            dB.echoError("Unknown enchantment '" + data[0] + "'");
-                        }
-                    }
-                }
-            }
-        }
-
-        // <--[mechanism]
-        // @object dItem
-        // @name quantity
-        // @input Element(Number)
-        // @description
-        // Changes the number of items in this stack.
-        // @tags
-        // <i@item.qty>
-        // <i@item.max_stack>
-        // -->
-        if (mechanism.matches("quantity") && mechanism.requireInteger()) {
-            item.setAmount(value.asInt());
-        }
-
-        // <--[mechanism]
-        // @object dItem
-        // @name durability
-        // @input Element(Number)
-        // @description
-        // Changes the durability of damageable items.
-        // @tags
-        // <i@item.durability>
-        // <i@item.max_durability>
-        // <i@item.repairable>
-        // -->
-        if (mechanism.matches("durability") && mechanism.requireInteger()) {
-            if (ItemDurability.describes(this))
-                item.setDurability((short)value.asInt());
-            else
-                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' is not repairable.");
-        }
-
-        // <--[mechanism]
-        // @object dItem
-        // @name skull_skin
-        // @input Element
-        // @description
-        // Changes the durability of damageable items.
-        // @tags
-        // <i@item.skin>
-        // <i@item.has_skin>
-        // -->
-        if (mechanism.matches("skull_skin")) {
-            if (ItemSkullskin.describes(this)) {
-                SkullMeta meta = (SkullMeta) item.getItemMeta();
-                meta.setOwner(value.asString());
-                item.setItemMeta(meta);
-            }
-            else
-                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' cannot hold a skin.");
-        }
-
-        // <--[mechanism]
-        // @object dItem
-        // @name plant_growth
-        // @input Element
-        // @description
-        // Changes the growth level of plant items.
-        // See <@link tag i@item.plant_growth> for valid inputs.
-        // @tags
-        // <i@item.is_crop>
-        // <i@item.plant_growth>
-        // -->
-        if (mechanism.matches("plant_growth")) {
-            if (ItemPlantgrowth.describes(this)) {
-                Element inputValue = new Element(value.asString().toUpperCase());
-                if (item.getData() instanceof Crops && inputValue.matchesEnum(CropState.values()))
-                    ((Crops)item.getData()).setState(CropState.valueOf(value.asString().toUpperCase()));
-                else if (item.getData() instanceof NetherWarts && inputValue.matchesEnum(NetherWartsState.values()))
-                    ((NetherWarts)item.getData()).setState(NetherWartsState.valueOf(value.asString().toUpperCase()));
-                else if (item.getData() instanceof CocoaPlant && inputValue.matchesEnum(CocoaPlant.CocoaPlantSize.values()))
-                    ((CocoaPlant)item.getData()).setSize(CocoaPlant.CocoaPlantSize.valueOf(value.asString().toUpperCase()));
-                else if (mechanism.requireInteger())
-                    item.getData().setData((byte) value.asInt());
-            }
-            else
-                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' is not a plant.");
-        }
-
-        // <--[mechanism]
-        // @object dItem
-        // @name book
-        // @input Element
-        // @description
-        // Changes the information on a book item.
-        // See <@link language Property Escaping>
-        // @tags
-        // <i@item.is_book>
-        // <i@item.book.author>
-        // <i@item.book.title>
-        // <i@item.book.page_count>
-        // <i@item.book.get_page[<#>]>
-        // <i@item.book.pages>
-        // <i@item.book>
-        // -->
-        if (mechanism.matches("book")) {
-            if (ItemBook.describes(this)) {
-                BookMeta meta = (BookMeta) item.getItemMeta();
-                dList data = value.asType(dList.class);
-                if (data.size() < 2) {
-                    dB.echoError("Invalid book input!");
-                }
-                else {
-                    if (data.size() > 4 && data.get(0).equalsIgnoreCase("author")
-                            && data.get(2).equalsIgnoreCase("title")) {
-                        if (!item.getType().equals(Material.WRITTEN_BOOK)) {
-                            dB.echoError("That type of book cannot have title or author!");
-                        }
-                        else {
-                            meta.setAuthor(EscapeTags.unEscape(data.get(1)));
-                            meta.setTitle(EscapeTags.unEscape(data.get(3)));
-                            for (int i = 0; i < 4; i++)
-                                data.remove(0); // No .removeRange?
-                        }
-                    }
-                    if (!data.get(0).equalsIgnoreCase("pages")) {
-                        dB.echoError("Invalid book input!");
-                    }
-                    else {
-                        ArrayList<String> newPages = new ArrayList<String>();
-                        for (int i = 1; i < data.size(); i++) {
-                            newPages.add(EscapeTags.unEscape(data.get(i)));
-                        }
-                        meta.setPages(newPages);
-                    }
-                    item.setItemMeta(meta);
-                }
-            }
-            else
-                dB.echoError("Material '" + getMaterial().identify().replace("m@", "") + "' is not a book.");
-        }
-
-
 
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();

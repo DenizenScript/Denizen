@@ -19,6 +19,7 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.*;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
@@ -211,6 +212,7 @@ public class Denizen extends JavaPlugin {
         // Create the command script handler for listener
         WorldScriptHelper ws_helper = new WorldScriptHelper();
         ItemScriptHelper is_helper = new ItemScriptHelper();
+        InventoryScriptHelper in_helper = new InventoryScriptHelper();
 
         // Register traits
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
@@ -291,6 +293,9 @@ public class Denizen extends JavaPlugin {
 
         // Save scoreboards
         ScoreboardHelper._saveScoreboards();
+
+        // Save offline player inventories
+        InventoryScriptHelper._savePlayerInventories();
 
         // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
         for (Player player : this.getServer().getOnlinePlayers())

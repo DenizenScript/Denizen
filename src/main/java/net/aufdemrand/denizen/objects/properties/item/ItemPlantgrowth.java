@@ -2,11 +2,14 @@ package net.aufdemrand.denizen.objects.properties.item;
 
 
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import org.bukkit.CropState;
 import org.bukkit.Material;
+import org.bukkit.NetherWartsState;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.Crops;
 import org.bukkit.material.NetherWarts;
@@ -17,13 +20,13 @@ public class ItemPlantgrowth implements Property {
         return item instanceof dItem
                 && (
                 ((dItem) item).getItemStack().getData() instanceof Crops
-                || ((dItem) item).getItemStack().getData() instanceof NetherWarts
-                || ((dItem) item).getItemStack().getData() instanceof CocoaPlant
-                || ((dItem) item).getItemStack().getType().equals(Material.PUMPKIN_STEM)
-                || ((dItem) item).getItemStack().getType().equals(Material.MELON_STEM)
-                || ((dItem) item).getItemStack().getType().equals(Material.CARROT)
-                || ((dItem) item).getItemStack().getType().equals(Material.POTATO)
-                );
+                        || ((dItem) item).getItemStack().getData() instanceof NetherWarts
+                        || ((dItem) item).getItemStack().getData() instanceof CocoaPlant
+                        || ((dItem) item).getItemStack().getType().equals(Material.PUMPKIN_STEM)
+                        || ((dItem) item).getItemStack().getType().equals(Material.MELON_STEM)
+                        || ((dItem) item).getItemStack().getType().equals(Material.CARROT)
+                        || ((dItem) item).getItemStack().getType().equals(Material.POTATO)
+        );
     }
 
     public static ItemPlantgrowth getFrom(dObject _item) {
@@ -56,7 +59,7 @@ public class ItemPlantgrowth implements Property {
         if (attribute.startsWith("plant_growth")) {
             if (item.getItemStack().getData() instanceof Crops)
                 return new Element(((Crops)item.getItemStack().getData()).getState().name())
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
             else if (item.getItemStack().getData() instanceof NetherWarts)
                 return new Element(((NetherWarts)item.getItemStack().getData()).getState().name())
                         .getAttribute(attribute.fulfill(1));
@@ -90,5 +93,33 @@ public class ItemPlantgrowth implements Property {
     @Override
     public String getPropertyId() {
         return "plant_growth";
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dItem
+        // @name plant_growth
+        // @input Element
+        // @description
+        // Changes the growth level of plant items.
+        // See <@link tag i@item.plant_growth> for valid inputs.
+        // @tags
+        // <i@item.is_crop>
+        // <i@item.plant_growth>
+        // -->
+
+        if (mechanism.matches("plant_growth")) {
+            Element inputValue = new Element(mechanism.getValue().asString().toUpperCase());
+            if (item.getItemStack().getData() instanceof Crops && inputValue.matchesEnum(CropState.values()))
+                ((Crops)item.getItemStack().getData()).setState(CropState.valueOf(mechanism.getValue().asString().toUpperCase()));
+            else if (item.getItemStack().getData() instanceof NetherWarts && inputValue.matchesEnum(NetherWartsState.values()))
+                ((NetherWarts)item.getItemStack().getData()).setState(NetherWartsState.valueOf(mechanism.getValue().asString().toUpperCase()));
+            else if (item.getItemStack().getData() instanceof CocoaPlant && inputValue.matchesEnum(CocoaPlant.CocoaPlantSize.values()))
+                ((CocoaPlant)item.getItemStack().getData()).setSize(CocoaPlant.CocoaPlantSize.valueOf(mechanism.getValue().asString().toUpperCase()));
+            else if (mechanism.requireInteger())
+                item.getItemStack().getData().setData((byte) mechanism.getValue().asInt());
+        }
     }
 }
