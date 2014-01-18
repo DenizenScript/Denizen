@@ -55,6 +55,21 @@ public class RuntimeCompiler {
         } catch (Exception error) {
             dB.log("No dependencies to load.");
         }
+        dB.log("Loading plugins as dependencies for run-time compiler.");
+        for (File f : pluginsFolder.listFiles(jarFilter)) {
+            dependencies.add(f.getPath());
+            dB.log("Loaded  " + f.getName());
+        }
+        dB.log("Attempting to add CraftBukkit as dependency for run-time compiler.");
+        try {
+            File file = new File(".");
+            for (File f : file.listFiles(jarFilter)) {
+                dependencies.add(f.getPath());
+                dB.log("Loaded  " + f.getName());
+            }
+        } catch (Exception error) {
+            dB.log("Could not find CraftBukkit jar.");
+        }
 
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals");
@@ -68,8 +83,6 @@ public class RuntimeCompiler {
                     JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
                     JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
                     if (!dependencies.isEmpty()) compilationUnit.addClassPathEntries(dependencies);
-                    compilationUnit.addClassPathEntries(Arrays.asList(denizen.getDataFolder().list(jarFilter)));
-                    compilationUnit.addClassPathEntries(Arrays.asList(pluginsFolder.list(jarFilter)));
 
                     try {
                         compilationUnit.addJavaSource(fileName.replace(".java", ""), readFile(f.getAbsolutePath()));

@@ -118,6 +118,7 @@ public class dPlayer implements dObject, Adjustable {
         if (player == null) return;
 
         this.player_name = player.getName();
+        this.nbtEditor = new ImprovedOfflinePlayer(player);
 
         // Keep in a map to avoid multiple instances of a dPlayer per player.
         players.put(this.player_name, this);
@@ -129,6 +130,7 @@ public class dPlayer implements dObject, Adjustable {
     /////////////////
 
     String player_name = null;
+    ImprovedOfflinePlayer nbtEditor = null;
 
     public boolean isValid() {
         return getPlayerEntity() != null || getOfflinePlayer() != null;
@@ -145,8 +147,7 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        if (player_name == null) return null;
-        return new ImprovedOfflinePlayer(player_name);
+        return nbtEditor;
     }
 
     public dEntity getDenizenEntity() {
@@ -187,6 +188,27 @@ public class dPlayer implements dObject, Adjustable {
 
     public boolean isOnline() {
         return getPlayerEntity() != null;
+    }
+
+    public void setBedSpawnLocation(Location location) {
+        if (isOnline())
+            getPlayerEntity().setBedSpawnLocation(location);
+        else
+            getNBTEditor().setBedSpawnLocation(location, getNBTEditor().isSpawnForced());
+    }
+
+    public void setLevel(int level) {
+        if (isOnline())
+            getPlayerEntity().setLevel(level);
+        else
+            getNBTEditor().setLevel(level);
+    }
+
+    public void setFlySpeed(float speed) {
+        if (isOnline())
+            getPlayerEntity().setFlySpeed(speed);
+        else
+            getNBTEditor().setFlySpeed(speed);
     }
 
 
@@ -1256,7 +1278,7 @@ public class dPlayer implements dObject, Adjustable {
         // <player.xp.level>
         // -->
         if (mechanism.matches("level") && mechanism.requireInteger()) {
-            getPlayerEntity().setLevel(value.asInt());
+            setLevel(value.asInt());
         }
 
         // <--[mechanism]
@@ -1355,7 +1377,7 @@ public class dPlayer implements dObject, Adjustable {
         // <player.bed_spawn>
         // -->
         if (mechanism.matches("bed_spawn_location") && mechanism.requireObject(dLocation.class)) {
-            getPlayerEntity().setBedSpawnLocation(dLocation.valueOf(value.asString()));
+            setBedSpawnLocation(value.asType(dLocation.class));
         }
 
         // <--[mechanism]
@@ -1368,7 +1390,7 @@ public class dPlayer implements dObject, Adjustable {
         // <player.fly_speed>
         // -->
         if (mechanism.matches("fly_speed") && mechanism.requireFloat()) {
-            getPlayerEntity().setFlySpeed(value.asFloat());
+            setFlySpeed(value.asFloat());
         }
 
         // <--[mechanism]
