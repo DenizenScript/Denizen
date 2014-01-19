@@ -37,18 +37,18 @@ public class UtilTags implements Listener {
 
     // <--[tag]
     // @attribute <math:<calculationhere>>
-    // @returns Direct text output(Decimal)
+    // @returns Element(Decimal)
     // @description
     // Returns a calculcated result of the math placed after the :
-    // EG <math:1+1> or <math:sin(<npc.id>)>.
-    // To get an int value, you will need to do <el@val[<math:calc>].asint>
+    // Example: '<math:1 + 1>' or <math:sin(<npc.id>)>.
+    // Since this is a 'value' tag, to get an int value, you will need to do <math.as_int:calc>.
     // -->
     @EventHandler
-    public void mathTags(ReplaceableTagEvent event) {
+    public void mathTag(ReplaceableTagEvent event) {
         if (!event.matches("math, m")) return;
         try {
             Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
-            event.setReplaced(String.valueOf(evaluation));
+            event.setReplaced(new Element(String.valueOf(evaluation)).getAttribute(event.getAttributes().fulfill(1)));
         }
         catch (Exception e) {
             dB.echoError("Invalid math tag!");
@@ -56,64 +56,35 @@ public class UtilTags implements Listener {
         }
     }
 
+
+    // <--[tag]
+    // @attribute <tern[<condition>]:<element>||<element>>
+    // @returns Element
+    // @description
+    // Returns either the first element, or 'fallback' element depending on
+    // the outcome of the condition. First element will show in a result of 'true',
+    // otherwise the fallback element will show.
+    // Example: '<t[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
+    // or '<t[<player.health.is[less].than[<player.health.max>]:You look healthy! || Got some bruises, eh?>'.
+    // -->
     @EventHandler
-    public void queueTags(ReplaceableTagEvent event) {
+    public void ternaryTag(ReplaceableTagEvent event) {
+        if (!event.matches("ternary, tern, t")) return;
 
-        if (!event.matches("queue, q")) return;
+        // Fallback if nothing to evaluate
+        if (!event.hasNameContext()) return;
 
-        Attribute attribute =
-                new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
-
-
-        // Handle <queue[id]. ...> tags
-
-        if (event.hasNameContext()) {
-            if (ScriptQueue._queueExists(event.getNameContext()))
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
-            else
-                event.setReplaced(ScriptQueue._getExistingQueue(event.getNameContext())
-                        .getAttribute(attribute.fulfill(1)));
-            return;
+        // Check evaluation. A result of 'true' will return the value. Anything else
+        // will result in the fallback.
+        if (event.getNameContext().equalsIgnoreCase("true")) {
+            event.setReplaced(new Element(event.getValue().trim())
+                    .getAttribute(event.getAttributes().fulfill(1)));
         }
-
-
-        // Otherwise, try to use queue in a static manner.
-
-        // <--[tag]
-        // @attribute <queue.exists[<queue_id>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the specified queue exists.
-        // -->
-        if (attribute.startsWith("exists")
-                && attribute.hasContext(1)) {
-            event.setReplaced(new Element(ScriptQueue._queueExists(attribute.getContext(1)))
-                    .getAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        // <--[tag]
-        // @attribute <queue.stats>
-        // @returns Element
-        // @description
-        // Returns stats for all queues during this server session
-        // -->
-        if (attribute.startsWith("stats")) {
-            event.setReplaced(new Element(ScriptQueue._getStats())
-                    .getAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-
-        // Else,
-        // Use current queue
-
-        event.setReplaced(event.getScriptEntry().getResidingQueue()
-                .getAttribute(attribute));
     }
 
+
     @EventHandler
-    public void serverTags(ReplaceableTagEvent event) {
+    public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server, svr, global") || event.replaced()) return;
         Attribute attribute =
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
@@ -468,8 +439,9 @@ public class UtilTags implements Listener {
 
     }
 
+
     @EventHandler
-    public void miscTags(ReplaceableTagEvent event) {
+    public void utilTag(ReplaceableTagEvent event) {
         if (!event.matches("util, u")) return;
 
         String type = event.getType() != null ? event.getType() : "";
