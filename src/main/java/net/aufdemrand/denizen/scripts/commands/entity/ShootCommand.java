@@ -74,6 +74,11 @@ public class ShootCommand extends AbstractCommand {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
 
+            else if (!scriptEntry.hasObject("shooter")
+                    && arg.matchesArgumentType(dEntity.class)) {
+                scriptEntry.addObject("shooter", arg.asType(dEntity.class));
+            }
+
             else if (!scriptEntry.hasObject("entities")
                      && arg.matchesArgumentList(dEntity.class)) {
 
@@ -139,6 +144,7 @@ public class ShootCommand extends AbstractCommand {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dScript script = (dScript) scriptEntry.getObject("script");
+        dEntity shooter = (dEntity) scriptEntry.getObject("shooter");
 
         Element height = scriptEntry.getElement("height");
         Element gravity = scriptEntry.getElement("gravity");
@@ -151,7 +157,8 @@ public class ShootCommand extends AbstractCommand {
                              height.debug() +
                              (gravity != null ? gravity.debug(): "") +
                              (speed != null ? speed.debug(): "") +
-                             (script != null ? script.debug() : ""));
+                             (script != null ? script.debug() : "") +
+                             (shooter != null ? shooter.debug() : ""));
 
         // Keep a dList of entities that can be called using <entry[name].shot_entities>
         // later in the script queue
@@ -171,8 +178,8 @@ public class ShootCommand extends AbstractCommand {
 
             // If the current entity is a projectile, set its shooter
             // when applicable
-            if (entity.isProjectile() && originEntity != null) {
-                entity.setShooter(originEntity);
+            if (entity.isProjectile() && (shooter != null || originEntity != null)) {
+                entity.setShooter(shooter != null ? shooter : originEntity);
             }
         }
 
