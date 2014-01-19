@@ -2202,13 +2202,14 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>)
+        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>)
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air up to a certain height.
         // @Author David Cernat
         // @Description
-        // Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a surface.
+        // Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a target.
+        // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
         // @Tags
         // Todo
         // @Usage
@@ -2219,7 +2220,7 @@ public class CommandRegistry implements dRegistry {
         // - shoot arrow origin:<player> speed:2
         // -->
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>)", 1);
 
 
         // <--[command]
