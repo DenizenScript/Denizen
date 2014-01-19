@@ -762,9 +762,13 @@ public class dPlayer implements dObject, Adjustable {
         //   LOCATION ATTRIBUTES
         /////////////////
 
-        if (attribute.startsWith("location")) {
+        // If online, let dEntity handle location tags since there are more options
+        // for online Players
+
+        if (attribute.startsWith("location") && !isOnline()) {
             return getLocation().getAttribute(attribute.fulfill(1));
         }
+
 
 
         /////////////////////
