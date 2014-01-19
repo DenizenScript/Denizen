@@ -37,6 +37,7 @@ public class TagManager implements Listener {
         new NPCTags(denizen);
         new LocationTags(denizen);
         new ScriptTags(denizen);
+        new QueueTags(denizen);
 
         // Utilities
         new UtilTags(denizen);
