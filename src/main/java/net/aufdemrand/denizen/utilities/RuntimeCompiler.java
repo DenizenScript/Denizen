@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
@@ -23,8 +22,10 @@ public class RuntimeCompiler {
 
     public RuntimeCompiler(Denizen denizen) {
         this.denizen = denizen;
+        this.externalsFolder = new File(denizen.getDataFolder() + File.separator + "externals");
     }
 
+    private final File externalsFolder;
     private final static File pluginsFolder = new File("plugins");
 
     private final static FilenameFilter jarFilter = new FilenameFilter() {
@@ -41,8 +42,13 @@ public class RuntimeCompiler {
         }
     };
 
+    public static ArrayList<dExternal> loadedExternals = new ArrayList<dExternal>();
+
     @SuppressWarnings("unchecked")
     public void loader() {
+
+        if (!externalsFolder.exists() || externalsFolder.list().length == 0)
+            return;
 
         List<String> dependencies = new ArrayList<String>();
         dB.log("Loading external dependencies for run-time compiler.");
@@ -90,6 +96,7 @@ public class RuntimeCompiler {
                         Class<dExternal> load = (Class<dExternal>) classLoader.loadClass(fileName.replace(".java", ""));
                         dExternal loadedClass = load.newInstance();
                         loadedClass.load();
+                        loadedExternals.add(loadedClass);
                     } catch (Exception e) {
                         if (e instanceof IllegalStateException) {
                             dB.echoError("No JDK found! External .java files will not be loaded.");
@@ -106,6 +113,13 @@ public class RuntimeCompiler {
         } catch (Exception error) {
             dB.echoError(error);
         }
+    }
+
+    public void reload() {
+        for (dExternal external : loadedExternals)
+            external.unload();
+        loadedExternals.clear();
+        loader();
     }
 
     private String readFile(String file) throws IOException {

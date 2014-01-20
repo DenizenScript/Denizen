@@ -8,4 +8,10 @@ public interface dExternal {
      */
     public void load();
 
+    /**
+     * Called by Denizen when the server stops or '/denizen reload externals' is executed.
+     *
+     */
+    public void unload();
+
 }

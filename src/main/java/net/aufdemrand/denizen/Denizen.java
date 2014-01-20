@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.interfaces.dExternal;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
@@ -141,6 +142,8 @@ public class Denizen extends JavaPlugin {
 
     public Depends depends = new Depends();
 
+    public RuntimeCompiler runtimeCompiler;
+
 
     /*
      * Sets up Denizen on start of the CraftBukkit server.
@@ -244,8 +247,8 @@ public class Denizen extends JavaPlugin {
         }
 
         // Compile and load Denizen externals
-        RuntimeCompiler compiler = new RuntimeCompiler(this);
-        compiler.loader();
+        runtimeCompiler = new RuntimeCompiler(this);
+        runtimeCompiler.loader();
 
         // Register Core Members in the Denizen Registries
         getCommandRegistry().registerCoreMembers();
@@ -309,6 +312,11 @@ public class Denizen extends JavaPlugin {
                         "You might have a corrupt player file!");
             }
         }
+
+        // Unload loaded dExternals
+        for (dExternal external : RuntimeCompiler.loadedExternals)
+            external.unload();
+        RuntimeCompiler.loadedExternals.clear();
 
         //Disable core members
         getCommandRegistry().disableCoreMembers();
