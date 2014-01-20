@@ -159,11 +159,13 @@ public class RunCommand extends AbstractCommand implements Holdable {
         // Get the entries
         List<ScriptEntry> entries;
         // If it's local
-        if (scriptEntry.hasObject("local"))
+        if (scriptEntry.hasObject("local")) {
             entries = scriptEntry.getScript().getContainer().getEntries(
                     scriptEntry.getPlayer(),
                     scriptEntry.getNPC(),
                     scriptEntry.getElement("path").asString());
+            script = scriptEntry.getScript();
+        }
 
             // If it has a path
         else if (scriptEntry.hasObject("path") && scriptEntry.getObject("path") != null)
@@ -191,8 +193,8 @@ public class RunCommand extends AbstractCommand implements Holdable {
             queue = TimedQueue.getQueue(id).addEntries(entries);
 
             // Check speed of the script if a TimedQueue -- if identified, use the speed from the script.
-            if (script != null && script.getContainer().contains("speed"))
-                ((TimedQueue) queue).setSpeed(Duration.valueOf(script.getContainer().getString("speed")).getTicks());
+            if (script != null && script.getContainer().contains("SPEED"))
+                ((TimedQueue) queue).setSpeed(Duration.valueOf(script.getContainer().getString("SPEED", "0")).getTicks());
 
         }
 
