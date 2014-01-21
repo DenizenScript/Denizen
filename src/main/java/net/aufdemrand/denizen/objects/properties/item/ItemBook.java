@@ -86,6 +86,23 @@ public class ItemBook implements Property {
                     .getAttribute(attribute.fulfill(1));
 
             // <--[tag]
+            // @attribute <i@item.book.pages.escaped>
+            // @returns dList
+            // @description
+            // Returns the pages of the book as a dList, pre-escaped to prevent issues.
+            // See <@link language Property Escaping>
+            // -->
+            if (attribute.startsWith("pages.escaped")) {
+                StringBuilder output = new StringBuilder();
+                for (String page: bookInfo.getPages()) {
+                    output.append(EscapeTags.Escape(page)).append("|");
+                }
+                return new dList(output.length() > 0 ?
+                        output.substring(0, output.length() - 1): output.toString())
+                        .getAttribute(attribute.fulfill(2));
+            }
+
+            // <--[tag]
             // @attribute <i@item.book.pages>
             // @returns dList
             // @description
@@ -102,6 +119,8 @@ public class ItemBook implements Property {
             // Returns full information on the book item, in the format
             // author|AUTHOR|title|TITLE|pages|PAGE_ONE|PAGE_TWO|...
             // or as pages|PAGE_ONE|PAGE_TWO|...
+            // Pre-escaped to prevent issues.
+            // See <@link language Property Escaping>
             // -->
             String output = getPropertyString();
             if (output == null)
