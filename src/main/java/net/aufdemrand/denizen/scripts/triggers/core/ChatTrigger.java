@@ -47,7 +47,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     // @Triggers when a player chats to the NPC.
     //
     // @Context
-    // None
+    // <context.message> returns the triggering message
     //
     // -->
     public Boolean process(Player player, String message) {
@@ -85,9 +85,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Denizen should be good to interact with. Let's get the script.
         InteractScriptContainer script = npc.getInteractScript(denizenPlayer, ChatTrigger.class);
 
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("message", new Element(message));
+
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
-        if (!npc.getTriggerTrait().trigger(ChatTrigger.this, denizenPlayer)) {
+        if (!npc.getTriggerTrait().trigger(ChatTrigger.this, denizenPlayer, context)) {
             // If the NPC is not interactable, Settings may allow the chat to filter
             // through. Check the Settings if this is enabled.
             if (Settings.ChatGloballyIfUninteractable()) {
@@ -199,10 +202,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
             Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
-            Map<String, dObject> context = new HashMap<String, dObject>();
-            context.put("message", new Element(message.replace('<', (char)0x01)
-                    .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>")
-                    .replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>")));
             parse(npc, denizenPlayer, script, id, context);
             return true;
         }

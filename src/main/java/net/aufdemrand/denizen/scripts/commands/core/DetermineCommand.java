@@ -68,7 +68,10 @@ public class DetermineCommand extends AbstractCommand {
         Boolean passively = scriptEntry.getElement("passively").asBoolean();
 
         Long uniqueId = (Long) scriptEntry.getObject("reqId");
-        if (uniqueId == null) return;
+        if (uniqueId == null) {
+            dB.echoError("Cannot use determine in this queue!");
+            return;
+        }
 
         outcomes.put(uniqueId, outcome);
 

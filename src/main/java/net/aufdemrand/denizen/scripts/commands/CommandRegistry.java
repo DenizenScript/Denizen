@@ -870,7 +870,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <entry[saveName].output> returns the output to an as_server sender.
         // @Usage
         // Todo
         // -->

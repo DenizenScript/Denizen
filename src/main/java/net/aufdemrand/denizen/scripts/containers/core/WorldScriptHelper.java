@@ -2938,8 +2938,7 @@ public class WorldScriptHelper implements Listener {
         if (!Settings.WorldScriptChatEventAsynchronous()) return;
 
         final Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getMessage().replace('<', (char)0x01)
-                .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>").replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>")));
+        context.put("message", new Element(event.getMessage()));
 
         Callable<String> call = new Callable<String>() {
             @Override
@@ -3251,8 +3250,7 @@ public class WorldScriptHelper implements Listener {
         if (Settings.WorldScriptChatEventAsynchronous()) return;
 
         final Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getMessage().replace('<', (char)0x01)
-                .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>").replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>")));
+        context.put("message", new Element(event.getMessage()));
 
         String determination = EventManager.doEvents(Arrays.asList("player chats"),
                 null, event.getPlayer(), context);
@@ -3331,8 +3329,6 @@ public class WorldScriptHelper implements Listener {
     // <context.command> returns the command name as an Element.
     // <context.raw_args> returns any args used as an Element.
     // <context.args> returns a dList of the arguments.
-    // <context.parsed_args> returns a dList of the arguments, parsed with Denizen's
-    //   argument parser. Just like any Denizen Command, quotes and tags can be used.
     // <context.server> returns true if the command was run from the console.
     // <context.cuboids> returns a list of cuboids the player is in when using the command.
     //
@@ -3346,8 +3342,7 @@ public class WorldScriptHelper implements Listener {
 
         dPlayer player = dPlayer.valueOf(event.getPlayer().getName());
 
-        String message = event.getMessage().replace('<', (char)0x01)
-                .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>").replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>");
+        String message = event.getMessage();
         String command = message.split(" ")[0].replace("/", "").toUpperCase();
 
         List<String> events = new ArrayList<String>();
@@ -4198,8 +4193,7 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
 
-        String message = event.getCommand().replace('<', (char)0x01)
-                .replace('>', (char)0x02).replace(String.valueOf((char)0x01), "<&lt>").replace(String.valueOf((char)0x02), "<&gt>").replace("%", "<&pc>");
+        String message = event.getCommand();
         String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
 
         List<String> events = EventManager.trimEvents(Arrays.asList
