@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.utilities.DenizenCommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -11,9 +13,13 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import java.util.ArrayList;
+
 public class ExecuteCommand extends AbstractCommand {
 
     enum Type { AS_SERVER, AS_NPC, AS_PLAYER, AS_OP }
+
+    public DenizenCommandSender dcs = new DenizenCommandSender();
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -120,7 +126,9 @@ public class ExecuteCommand extends AbstractCommand {
             return;
 
         case AS_SERVER:
-            denizen.getServer().dispatchCommand(denizen.getServer().getConsoleSender(), command);
+            dcs.clearOutput();
+            denizen.getServer().dispatchCommand(dcs, command);
+            scriptEntry.addObject("output", new dList(dcs.getOutput()));
         }
     }
 
