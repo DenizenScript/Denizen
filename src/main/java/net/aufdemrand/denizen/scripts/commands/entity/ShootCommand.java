@@ -75,7 +75,8 @@ public class ShootCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("shooter")
-                    && arg.matchesArgumentType(dEntity.class)) {
+                    && arg.matchesArgumentType(dEntity.class)
+                    && arg.matchesPrefix("shooter")) {
                 scriptEntry.addObject("shooter", arg.asType(dEntity.class));
             }
 
