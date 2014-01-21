@@ -69,6 +69,7 @@ public class ForEachCommand extends BracedCommand {
                 try {
                     ScriptEntry toAdd = entry.clone();
                     toAdd.getObjects().clear();
+                    toAdd.addObject("reqId", scriptEntry.getObject("reqId"));
                     toAdd.setFinished(true);
                     newEntries.add(toAdd);
                 } catch (Throwable e) {

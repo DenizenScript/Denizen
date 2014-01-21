@@ -438,7 +438,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         //Note which entry comes next in the existing queue
         ScriptEntry nextup = getQueueSize() > entries.size() ? getEntry(entries.size()): null;
         // Loop through until the queue is emptied or the entry noted above is reached
-        while (getQueueSize() > 0 && getEntry(0) != nextup) {
+        while (getQueueSize() > 0 && getEntry(0) != nextup && !was_cleared) {
             // Ensure the engine won't try to run its own instant code on the entry
             getEntry(0).setInstant(false);
             // Execute the ScriptEntry properly through the Script Engine.
