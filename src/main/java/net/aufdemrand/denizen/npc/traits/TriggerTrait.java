@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
@@ -156,6 +157,9 @@ public class TriggerTrait extends Trait implements Listener {
     //
     // -->
     public boolean trigger(AbstractTrigger triggerClass, dPlayer player) {
+        return trigger(triggerClass, player, null);
+    }
+    public boolean trigger(AbstractTrigger triggerClass, dPlayer player, Map<String, dObject> context) {
         // Check cool down, return false if not yet met
         if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
                 return false;
@@ -168,7 +172,7 @@ public class TriggerTrait extends Trait implements Listener {
         }
         // Set cool down, On [TriggerName] Action
         DenizenAPI.getCurrentInstance().getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
-        dNPCRegistry.getDenizen(npc).action(triggerClass.getName(), player);
+        dNPCRegistry.getDenizen(npc).action(triggerClass.getName(), player, context);
         return true;
     }
 
