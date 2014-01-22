@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -416,6 +417,23 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("material"))
             return dMaterial.getMaterialFrom(getBlock().getType(), getBlock().getData()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <l@location.sign_contents.escaped>
+        // @returns dList
+        // @description
+        // Returns a list of lines on a sign, pre-escaped to prevent issues.
+        // See <@link language Property Escaping>
+        // -->
+        if (attribute.startsWith("sign_contents.escaped")) {
+            if (getBlock().getState() instanceof Sign) {
+                dList toReturn = new dList();
+                for (String line: ((Sign) getBlock().getState()).getLines())
+                    toReturn.add(EscapeTags.Escape(line));
+                return toReturn.getAttribute(attribute.fulfill(2));
+            }
+            else return "null";
+        }
 
         // <--[tag]
         // @attribute <l@location.sign_contents>
