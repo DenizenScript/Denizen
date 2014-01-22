@@ -113,7 +113,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (arg.raw_value.split(":", 3).length == 3) {
                 String[] flagArgs = arg.raw_value.split(":", 3);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
-                scriptEntry.addObject("value", new Element(flagArgs[2]));
 
                 if (flagArgs[1].startsWith("->"))
                     scriptEntry.addObject("action", FlagManager.Action.INSERT);
@@ -135,6 +134,14 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
                 else if (flagArgs[1].startsWith("/"))
                     scriptEntry.addObject("action", FlagManager.Action.DIVIDE);
+
+                else {
+                    scriptEntry.addObject("action", FlagManager.Action.SET_VALUE);
+                    scriptEntry.addObject("value", arg.raw_value.split(":", 2)[1]);
+                    continue;
+                }
+
+                scriptEntry.addObject("value", new Element(flagArgs[2]));
             }
 
             else arg.reportUnhandled();
