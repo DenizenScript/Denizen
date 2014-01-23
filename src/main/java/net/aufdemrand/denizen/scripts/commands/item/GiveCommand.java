@@ -72,6 +72,11 @@ public class GiveCommand  extends AbstractCommand {
                         && arg.matchesArgumentType(dInventory.class))
                 scriptEntry.addObject("inventory", arg.asType(dInventory.class));
 
+            else if (!scriptEntry.hasObject("slot")
+                    && arg.matchesPrefix("slot")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                scriptEntry.addObject("slot", arg.asElement());
+
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
@@ -91,18 +96,15 @@ public class GiveCommand  extends AbstractCommand {
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
         Element qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
-
-        Object items_object = scriptEntry.getObject("items");
-        List<dItem> items = null;
-
-        if (items_object != null)
-            items = (List<dItem>) items_object;
+        Element slot = scriptEntry.getElement("slot");
+        List<dItem> items = scriptEntry.getdObjectAs("items", dList.class).filter(dItem.class);
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
                         + aH.debugObj("Quantity", qty.asDouble())
                         + engrave.debug()
-                        + (items != null ? aH.debugObj("Items", items) : ""));
+                        + (items != null ? aH.debugObj("Items", items) : "")
+                        + (slot != null ? slot.debug() : ""));
 
         switch (type) {
 
@@ -124,7 +126,11 @@ public class GiveCommand  extends AbstractCommand {
                         is.setAmount(qty.asInt());
                     if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
 
-                    HashMap<Integer, ItemStack> leftovers = inventory.addWithLeftovers(is);
+                    HashMap<Integer, ItemStack> leftovers;
+                    if (slot != null)
+                        leftovers = inventory.setWithLeftovers(slot.asInt(), is);
+                    else
+                        leftovers = inventory.addWithLeftovers(is);
 
                     if (!leftovers.isEmpty()) {
                         dB.echoDebug (scriptEntry, "The inventory didn't have enough space, the rest of the items have been placed on the floor.");

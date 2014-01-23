@@ -779,6 +779,17 @@ public class dPlayer implements dObject, Adjustable {
         if (!isOnline()) return new Element(identify()).getAttribute(attribute);
 
         // <--[tag]
+        // @attribute <p@player.open_inventory>
+        // @returns dInventory
+        // @description
+        // Gets the inventory the player currently has open. If the player has no open
+        // inventory, this returns the player's inventory.
+        // -->
+        if (attribute.startsWith("open_inventory"))
+            return new dInventory(getPlayerEntity().getOpenInventory().getTopInventory())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <p@player.item_on_cursor>
         // @returns dItem
         // @description

@@ -530,6 +530,22 @@ public class dInventory implements dObject, Notable, Adjustable {
         return inventory.addItem(items);
     }
 
+    public HashMap<Integer, ItemStack> setWithLeftovers(int slot, ItemStack... items) {
+        if (inventory == null || items == null) return null;
+
+        HashMap<Integer, ItemStack> leftovers = new HashMap<Integer, ItemStack>();
+        for (int i = 0; i < items.length; i++) {
+            ItemStack item = items[i];
+            try {
+                inventory.setItem(i+slot, item);
+            } catch (Exception e) {
+                leftovers.put(i+slot, item);
+            }
+        }
+
+        return leftovers;
+    }
+
     /**
      * Count the number or quantities of stacks that
      * match an item in an inventory.
@@ -765,6 +781,27 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             destination.setContents(this.getContents());
         }
+    }
+
+    /**
+     * Set items in an inventory, starting with a specified slot
+     *
+     * @param slot  The slot to start from
+     * @param items  The items to add
+     * @return  The resulting dInventory
+     */
+    public dInventory setSlots(int slot, ItemStack... items) {
+
+        if (inventory == null || items == null) return this;
+
+        for (int i = 0; i < items.length; i++) {
+            ItemStack item = items[i];
+            if (item == null) continue;
+            inventory.setItem(slot+i, item);
+        }
+
+        return this;
+
     }
 
     public void clear() {

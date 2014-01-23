@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.item;
 
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -35,7 +36,7 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 
 public class TakeCommand extends AbstractCommand{
 
-    private enum Type { MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY }
+    private enum Type { MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -67,6 +68,14 @@ public class TakeCommand extends AbstractCommand{
                         && arg.matchesArgumentList(dItem.class))
                 scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class));
 
+            else if (!scriptEntry.hasObject("slot")
+                    && !scriptEntry.hasObject("type")
+                    && arg.matchesPrefix("slot")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("type", Type.SLOT);
+                scriptEntry.addObject("slot", arg.asElement());
+            }
+
             else if (!scriptEntry.hasObject("inventory")
                         && arg.matchesPrefix("f, from")
                         && arg.matchesArgumentType(dInventory.class))
@@ -97,20 +106,17 @@ public class TakeCommand extends AbstractCommand{
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
         Element qty = scriptEntry.getElement("qty");
         Element displayname = scriptEntry.getElement("displayname");
+        Element slot = scriptEntry.getElement("slot");
         Type type = (Type) scriptEntry.getObject("type");
-
-        Object items_object = scriptEntry.getObject("items");
-        List<dItem> items = null;
-
-        if (items_object != null)
-            items = (List<dItem>) items_object;
+        List<dItem> items = scriptEntry.getdObjectAs("items", dList.class).filter(dItem.class);
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
                         + qty.debug()
                         + inventory.debug()
                         + (displayname != null ? displayname.debug(): "")
-                        + aH.debugObj("Items", items));
+                        + aH.debugObj("Items", items)
+                        + (slot != null ? slot.debug() : ""));
 
         switch (type) {
 
@@ -190,6 +196,11 @@ public class TakeCommand extends AbstractCommand{
                     }
                 }
                 break;
+
+            case SLOT:
+                inventory.setSlots(slot.asInt(), new ItemStack(Material.AIR));
+                break;
+
         }
     }
 }

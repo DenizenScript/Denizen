@@ -18,7 +18,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class InventoryCommand extends AbstractCommand {
 
-    private enum Action { OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, KEEP, EXCLUDE, FILL, CLEAR, UPDATE }
+    private enum Action { OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -34,7 +34,7 @@ public class InventoryCommand extends AbstractCommand {
             // Check for an origin, which can be a dInventory, dEntity, dLocation
             // or a dList of dItems
             else if (!scriptEntry.hasObject("origin")
-                     && arg.matchesPrefix("origin, o, source, s, items, item, i, from, f")
+                     && arg.matchesPrefix("origin, o, source, items, item, i, from, f")
                      && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
                          || arg.matchesArgumentList(dItem.class))) {
                 scriptEntry.addObject("origin", Conversion.getInventory(arg));
@@ -46,6 +46,13 @@ public class InventoryCommand extends AbstractCommand {
                      && arg.matchesPrefix("destination, dest, d, target, to, t")
                      && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
                 scriptEntry.addObject("destination", Conversion.getInventory(arg));
+            }
+
+            // Check for specified slot number
+            else if (!scriptEntry.hasObject("slot")
+                    && arg.matchesPrefix("slot, s")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("slot", arg.asElement());
             }
 
             else arg.reportUnhandled();
@@ -67,11 +74,13 @@ public class InventoryCommand extends AbstractCommand {
         List<String> actions = (List<String>) scriptEntry.getObject("actions");
         dInventory origin = (dInventory) scriptEntry.getObject("origin");
         dInventory destination = (dInventory) scriptEntry.getObject("destination");
+        Element slot = scriptEntry.getElement("slot");
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("actions", actions.toString()) +
                 destination.debug()
-                + (origin != null ? origin.debug() : ""));
+                + (origin != null ? origin.debug() : "")
+                + (slot != null ? slot.debug() : ""));
 
         for (String action : actions) {
             switch (Action.valueOf(action.toUpperCase())) {
@@ -119,6 +128,11 @@ public class InventoryCommand extends AbstractCommand {
                 // Remove origin's contents from destination
                 case REMOVE:
                     destination.remove(origin.getContents());
+                    break;
+
+                // Set items by slot
+                case SET:
+                    destination.setSlots(slot.asInt(), origin.getContents());
                     break;
 
                 // Keep only items from the origin's contents in the
