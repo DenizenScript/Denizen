@@ -333,26 +333,6 @@ public class Element implements dObject {
             }
 
         // <--[tag]
-        // @attribute <el@element.as_duration>
-        // @returns Duration
-        // @description
-        // Returns the element as a duration.
-        // -->
-        if (attribute.startsWith("asduration")
-                || attribute.startsWith("as_duration"))
-            return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <el@element.as_entity>
-        // @returns dEntity
-        // @description
-        // Returns the element as an entity. Note: the value must be a valid entity.
-        // -->
-        if (attribute.startsWith("asentity")
-                || attribute.startsWith("as_entity"))
-            return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <el@element.as_int>
         // @returns Element(Number)
         // @description
@@ -370,6 +350,54 @@ public class Element implements dObject {
                 dB.echoError("'" + element + "' is not a valid Integer.");
                 return new Element("null").getAttribute(attribute.fulfill(1));
             }
+
+        // <--[tag]
+        // @attribute <el@element.as_money>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the element as a number with two decimal places.
+        // -->
+        if (attribute.startsWith("asmoney")
+                || attribute.startsWith("as_money")) {
+            try {
+                DecimalFormat d = new DecimalFormat("0.00");
+                return new Element(d.format(Double.valueOf(element)))
+                        .getAttribute(attribute.fulfill(1)); }
+            catch (NumberFormatException e) {
+                dB.echoError("'" + element + "' is not a valid Money format.");
+                return new Element("null").getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <el@element.as_cuboid>
+        // @returns dCuboid
+        // @description
+        // Returns the element as a cuboid. Note: the value must be a valid cuboid.
+        // -->
+        if (attribute.startsWith("ascuboid")
+                || attribute.startsWith("as_cuboid"))
+            return dCuboid.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.as_entity>
+        // @returns dEntity
+        // @description
+        // Returns the element as an entity. Note: the value must be a valid entity.
+        // -->
+        if (attribute.startsWith("asentity")
+                || attribute.startsWith("as_entity"))
+            return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.as_inventory>
+        // @returns dInventory
+        // @description
+        // Returns the element as an inventory. Note: the value must be a valid inventory.
+        // -->
+        if (attribute.startsWith("asinventory")
+                || attribute.startsWith("as_inventory"))
+            return dInventory.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_item>
@@ -403,22 +431,14 @@ public class Element implements dObject {
             return dLocation.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <el@element.as_money>
-        // @returns Element(Decimal)
+        // @attribute <el@element.as_material>
+        // @returns dMaterial
         // @description
-        // Returns the element as a number with two decimal places.
+        // Returns the element as a material. Note: the value must be a valid material.
         // -->
-        if (attribute.startsWith("asmoney")
-                || attribute.startsWith("as_money")) {
-            try {
-                DecimalFormat d = new DecimalFormat("0.00");
-                return new Element(d.format(Double.valueOf(element)))
-                        .getAttribute(attribute.fulfill(1)); }
-            catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid Money format.");
-                return new Element("null").getAttribute(attribute.fulfill(1));
-            }
-        }
+        if (attribute.startsWith("asmaterial")
+                || attribute.startsWith("as_material"))
+            return dMaterial.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_npc>
@@ -441,6 +461,16 @@ public class Element implements dObject {
             return dPlayer.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <el@element.as_plugin>
+        // @returns dPlugin
+        // @description
+        // Returns the element as a plugin. Note: the value must be a valid plugin.
+        // -->
+        if (attribute.startsWith("asplugin")
+                || attribute.startsWith("as_plugin"))
+            return dPlugin.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <el@element.as_script>
         // @returns dScript
         // @description
@@ -451,34 +481,24 @@ public class Element implements dObject {
             return dScript.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <el@element.as_cuboid>
-        // @returns dScript
+        // @attribute <el@element.as_duration>
+        // @returns Duration
         // @description
-        // Returns the element as a cuboid. Note: the value must be a valid cuboid.
+        // Returns the element as a duration.
         // -->
-        if (attribute.startsWith("ascuboid")
-                || attribute.startsWith("as_cuboid"))
-            return dCuboid.valueOf(element).getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("asduration")
+                || attribute.startsWith("as_duration"))
+            return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <el@element.as_plugin>
-        // @returns dScript
+        // @attribute <el@element.as_world>
+        // @returns dWorld
         // @description
-        // Returns the element as a plugin. Note: the value must be a valid plugin.
+        // Returns the element as a world.
         // -->
-        if (attribute.startsWith("asplugin")
-                || attribute.startsWith("as_plugin"))
-            return dPlugin.valueOf(element).getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <el@element.as_inventory>
-        // @returns dScript
-        // @description
-        // Returns the element as an inventory. Note: the value must be a valid inventory.
-        // -->
-        if (attribute.startsWith("asinventory")
-                || attribute.startsWith("as_inventory"))
-            return dInventory.valueOf(element).getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("asworld")
+                || attribute.startsWith("as_world"))
+            return dWorld.valueOf(element).getAttribute(attribute.fulfill(1));
 
 
         /////////////////////
