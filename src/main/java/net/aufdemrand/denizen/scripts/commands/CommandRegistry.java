@@ -1099,7 +1099,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Give
-        // @Syntax give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>)
+        // @Syntax give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)
         // @Required 1
         // @Stable stable
         // @Short Gives the player an item, xp, or money.
@@ -1119,7 +1119,7 @@ public class CommandRegistry implements dRegistry {
         // - give i@iron_sword qty:1
         // -->
         registerCoreMember(GiveCommand.class,
-                "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>)", 1);
+                "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)", 1);
 
 
         // <--[command]
@@ -1253,7 +1253,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Inventory
-        // @Syntax inventory [open/close/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)
+        // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<#>)
         // @Required 1
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
@@ -1290,7 +1290,7 @@ public class CommandRegistry implements dRegistry {
         // - inventory swap d:in@player[p@mcmonkey4eva] o:<p@fullwall.inventory>
         // -->
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...)", 1);
+                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<#>)", 1);
 
 
         // <--[command]
@@ -2351,7 +2351,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Take
-        // @Syntax take [money/iteminhand/bydisplay:<name>/<item>|...] (qty:<#>) (from:<inventory>)
+        // @Syntax take [money/iteminhand/bydisplay:<name>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.
@@ -2365,7 +2365,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(TakeCommand.class,
-                "TAKE", "take [money/iteminhand/bydisplay:<name>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
+                "TAKE", "take [money/iteminhand/bydisplay:<name>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
 
         // <--[command]
         // @Name Teleport
