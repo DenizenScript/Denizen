@@ -1,10 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
 
-import net.aufdemrand.denizen.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -69,6 +66,26 @@ public class ItemEnchantments implements Property {
                 return new dList(enchants)
                         .getAttribute(attribute.fulfill(2));
             }
+        }
+
+        // <--[tag]
+        // @attribute <i@item.enchantments.level[<name>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the level of a specified enchantment.
+        // -->
+        if (attribute.startsWith("enchantments.level")
+                && attribute.hasContext(2)) {
+            if (item.getItemStack().getEnchantments().size() > 0) {
+                List<String> enchants = new ArrayList<String>();
+                for (Map.Entry<Enchantment, Integer> enchantment : item.getItemStack().getEnchantments().entrySet()) {
+                    if (enchantment.getKey().getName().equalsIgnoreCase(attribute.getContext(2)))
+                        return new Element(enchantment.getValue())
+                                .getAttribute(attribute.fulfill(2));
+                }
+            }
+            return new Element(0)
+                    .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
