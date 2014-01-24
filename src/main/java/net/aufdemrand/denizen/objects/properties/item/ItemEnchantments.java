@@ -36,6 +36,17 @@ public class ItemEnchantments implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
+        // @attribute <i@item.is_enchanted>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the item has any enchantments.
+        // -->
+        if (attribute.startsWith("is_enchanted")) {
+            return new Element(item.getItemStack().getEnchantments().size() > 0)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <i@item.enchantments.with_levels>
         // @returns dList
         // @description
