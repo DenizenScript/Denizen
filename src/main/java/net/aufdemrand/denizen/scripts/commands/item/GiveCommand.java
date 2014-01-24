@@ -97,7 +97,12 @@ public class GiveCommand  extends AbstractCommand {
         Element qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
         Element slot = scriptEntry.getElement("slot");
-        List<dItem> items = scriptEntry.getdObjectAs("items", dList.class).filter(dItem.class);
+
+        Object items_object = scriptEntry.getObject("items");
+        List<dItem> items = null;
+
+        if (items_object != null)
+            items = (List<dItem>) items_object;
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
