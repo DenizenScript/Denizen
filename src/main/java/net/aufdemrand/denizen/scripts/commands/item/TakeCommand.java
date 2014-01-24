@@ -108,7 +108,12 @@ public class TakeCommand extends AbstractCommand{
         Element displayname = scriptEntry.getElement("displayname");
         Element slot = scriptEntry.getElement("slot");
         Type type = (Type) scriptEntry.getObject("type");
-        List<dItem> items = scriptEntry.getdObjectAs("items", dList.class).filter(dItem.class);
+
+        Object items_object = scriptEntry.getObject("items");
+        List<dItem> items = null;
+
+        if (items_object != null)
+            items = (List<dItem>) items_object;
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
