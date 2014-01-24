@@ -32,6 +32,7 @@ public class EscapeTags implements Listener {
     // [ = &lb
     // ] = &rb
     // : = &co
+    // @ = &at
     //
     // Also, you can input a non-breaking space via &sp
     //
@@ -53,7 +54,7 @@ public class EscapeTags implements Listener {
                 .replace(">", "&gt").replace("<", "&lt")
                 .replace("\n", "&nl").replace(";", "&sc")
                 .replace("[", "&lb").replace("]", "&rb")
-                .replace(":", "&co");
+                .replace(":", "&co").replace("@", "&at");
     }
 
     /**
@@ -74,7 +75,7 @@ public class EscapeTags implements Listener {
                 .replace("&amp", "&").replace("&sc", ";")
                 .replace("&lb", "[").replace("&rb", "]")
                 .replace("&sp", String.valueOf((char)0x00A0))
-                .replace("&co", ":");
+                .replace("&co", ":").replace("&at", "@");
     }
 
     @EventHandler
