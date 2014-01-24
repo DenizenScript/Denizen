@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -82,7 +83,7 @@ public class EscapeTags implements Listener {
     public void escapeTags(ReplaceableTagEvent event) {
         // <--[tag]
         // @attribute <escape:<text to escape>>
-        // @returns Direct text output
+        // @returns Element
         // @description
         // Returns the text simply escaped to prevent tagging conflicts.
         // See <@link language Property Escaping>
@@ -92,11 +93,11 @@ public class EscapeTags implements Listener {
                 dB.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");
                 return;
             }
-            event.setReplaced(Escape(event.getValue()));
+            event.setReplaced(new Element(Escape(event.getValue())).getAttribute(event.getAttributes().fulfill(1)));
         }
         // <--[tag]
         // @attribute <unescape:<escaped text>>
-        // @returns Direct text output
+        // @returns Element
         // @description
         // Returns the text with escaping removed.
         // See <@link language Property Escaping>
@@ -106,7 +107,7 @@ public class EscapeTags implements Listener {
                 dB.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");
                 return;
             }
-            event.setReplaced(unEscape(event.getValue()));
+            event.setReplaced(new Element(unEscape(event.getValue())).getAttribute(event.getAttributes().fulfill(1)));
         }
     }
 }

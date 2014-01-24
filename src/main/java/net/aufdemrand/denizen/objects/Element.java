@@ -336,7 +336,7 @@ public class Element implements dObject {
         // @attribute <el@element.as_int>
         // @returns Element(Number)
         // @description
-        // Returns the element as a number without a decimal. Rounds double values.
+        // Returns the element as a number without a decimal. Rounds decimal values.
         // -->
         if (attribute.startsWith("asint")
                 || attribute.startsWith("as_int"))
