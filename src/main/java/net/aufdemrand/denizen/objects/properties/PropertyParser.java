@@ -34,7 +34,9 @@ public class PropertyParser {
         registerProperty(EntityColor.class, dEntity.class);
         registerProperty(EntityFramed.class, dEntity.class);
         registerProperty(EntityInfected.class, dEntity.class);
+        registerProperty(EntityPowered.class, dEntity.class);
         registerProperty(EntityProfession.class, dEntity.class);
+
 
         // register core dInventory properties
         registerProperty(InventoryContents.class, dInventory.class);

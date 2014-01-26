@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EntityType;
 
-public class EntityPowered  implements Property {
+public class EntityPowered implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.CREEPER;
@@ -31,10 +31,10 @@ public class EntityPowered  implements Property {
 
     dEntity powered;
 
-    private String getPowered() {
+    private Boolean getPowered() {
         if (powered == null) return null;
 
-        return String.valueOf(((Creeper)(powered.getBukkitEntity())).isPowered());
+        return ((Creeper)(powered.getBukkitEntity())).isPowered();
     }
 
     private void setPowered(boolean power) {
@@ -49,7 +49,8 @@ public class EntityPowered  implements Property {
 
     @Override
     public String getPropertyString() {
-        return getPowered();
+        if (!getPowered()) return null;
+        else return "true";
     }
 
     @Override
@@ -70,7 +71,7 @@ public class EntityPowered  implements Property {
         // @attribute <e@entity.powered>
         // @returns Element
         // @description
-        // If a creeper is powered.
+        // Returns the powered state of a creeper.
         // -->
         if (attribute.startsWith("powered"))
             return new Element(getPowered())
@@ -88,13 +89,12 @@ public class EntityPowered  implements Property {
         // @input Element
         // @description
         // Changes the powered state of a Creeper.
-        // See <@link language Property Escaping>
         // @tags
         // <e@entity.powered>
         // -->
 
         if (mechanism.matches("powered")) {
-            ((Creeper)(powered.getBukkitEntity())).setPowered(mechanism.getValue().asBoolean());
+            setPowered(mechanism.getValue().asBoolean());
         }
     }
 }
