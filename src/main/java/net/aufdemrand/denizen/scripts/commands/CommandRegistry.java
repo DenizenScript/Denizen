@@ -721,10 +721,12 @@ public class CommandRegistry implements dRegistry {
         //
         // NPCs that are interacted with while engaged will fire an 'on unavailable' assignment
         // script-container action.
-
+        //
+        // See <@link command Engage>
+        //
         // @Tags
-        // <n@npc.engaged>
-
+        // <n@npc.is_engaged>
+        //
         // @Usage
         // Use to reenable a NPC's triggers, disabled via 'engage'.
         // - engage
@@ -732,7 +734,7 @@ public class CommandRegistry implements dRegistry {
         // - walkto <player.location>
         // - wait 5s
         // - disengage
-
+        //
         // -->
         registerCoreMember(DisengageCommand.class,
                 "DISENGAGE", "disengage (npc:<npc>)", 0);
@@ -815,10 +817,10 @@ public class CommandRegistry implements dRegistry {
         // Engage can be useful when NPCs are carrying out a task that shouldn't be interrupted, or
         // to provide a good way to avoid accidental 'retrigger'.
         //
-        // @See Disengage Command
+        // See <@link command Disengage>
         //
         // @Tags
-        // <n@npc.engaged>
+        // <n@npc.is_engaged>
         //
         // @Usage
         // Use to make a NPC appear 'busy'.
