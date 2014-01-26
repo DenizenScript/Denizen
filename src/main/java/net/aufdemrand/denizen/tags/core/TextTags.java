@@ -585,6 +585,15 @@ public class TextTags implements Listener {
         else if (event.getName().equalsIgnoreCase("&bs"))
             event.setReplaced(new Element("\\").getAttribute(attribute.fulfill(1)));
 
+            // <--[tag]
+            // @attribute <&at>
+            // @returns Element
+            // @description
+            // Returns an at symbol: @
+            // -->
+        else if (event.getName().equalsIgnoreCase("&at"))
+            event.setReplaced(new Element("@").getAttribute(attribute.fulfill(1)));
+
     }
 
 }

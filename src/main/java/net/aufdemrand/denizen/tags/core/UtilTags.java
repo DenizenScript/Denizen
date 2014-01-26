@@ -706,6 +706,23 @@ public class UtilTags implements Listener {
                 }
 
             }
+            // <--[tag]
+            // @attribute <util.date.format[<format>]>
+            // @returns Element
+            // @description
+            // Returns the current system time, formatted as specified
+            // Example format: [EEE, MMM d, yyyy K:mm a] will become "Mon, Jan 1, 2112 0:01 AM"
+            // -->
+            else if (subType.equalsIgnoreCase("FORMAT") && !subTypeContext.equalsIgnoreCase("")) {
+                try {
+                    format.applyPattern(event.getSubTypeContext());
+                    event.setReplaced(format.format(currentDate));
+                }
+                catch (Exception ex) {
+                    dB.echoError("Error: invalid pattern '" + event.getSubTypeContext() + "'");
+                    dB.echoError(ex);
+                }
+            }
             else {
                 format.applyPattern("EEE, MMM d, yyyy");
                 event.setReplaced(format.format(currentDate));

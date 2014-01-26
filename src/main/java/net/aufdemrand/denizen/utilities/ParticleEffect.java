@@ -32,14 +32,21 @@ public enum ParticleEffect {
     // @name Particle Effects
     // @group Useful Lists
     // @description
-    // The following is a list of particle effects that can be used with the 'playeffect' command:
-    // - All Effects listed here http://bit.ly/1aqu6PK
+    // All of the effects listed here can be used by <@link command PlayEffect> to display visual effects or play sounds
+    //
+    // Sounds:
+    // - BLAZE_SHOOT, BOW_FIRE, CLICK1, CLICK2, DOOR_TOGGLE, EXTINGUISH, GHAST_SHOOT, GHAST_SHRIEK,
+    //   RECORD_PLAY, STEP_SOUND, ZOMBIE_CHEW_IRON_DOOR, ZOMBIE_CHEW_WOODEN_DOOR, ZOMBIE_DESTROY_DOOR
+    //
+    // Visual effects:
     // - iconcrack_[id] (item break effect - examples: iconcrack_7, iconcrack_268)
+    // - ENDER_SIGNAL, MOBSPAWNER_FLAMES, POTION_BREAK, SMOKE
     // - HUGE_EXPLOSION, LARGE_EXPLODE, FIREWORKS_SPARK, BUBBLE, SUSPEND, DEPTH_SUSPEND, TOWN_AURA,
     //   CRIT, MAGIC_CRIT, MOB_SPELL, MOB_SPELL_AMBIENT, SPELL, INSTANT_SPELL, WITCH_MAGIC, NOTE, STEP_SOUND,
     //   PORTAL, ENCHANTMENT_TABLE, EXPLODE, FLAME, LAVA, FOOTSTEP, SPLASH, LARGE_SMOKE, CLOUD, RED_DUST,
-    //   SNOWBALL_POOF, DRIP_WATER, DRIP_LAVA, SNOW_SHOVEL, SLIME, HEART, ANGRY_VILLAGER, HAPPY_VILLAGER,
-    //   RANDOM
+    //   SNOWBALL_POOF, DRIP_WATER, DRIP_LAVA, SNOW_SHOVEL, SLIME, HEART, ANGRY_VILLAGER, HAPPY_VILLAGER
+    //
+    // - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
     // -->
 
     HUGE_EXPLOSION("hugeexplosion", 0),

@@ -1697,6 +1697,7 @@ public class CommandRegistry implements dRegistry {
         // @Author David Cernat
         // @Description
         // Todo
+        // See <@link language Particle Effects> for a list of valid effect names.
         // @Tags
         // Todo
         // @Usage
