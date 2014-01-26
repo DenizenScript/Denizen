@@ -79,12 +79,14 @@ public class CooldownCommand extends AbstractCommand {
                         duration,
                         script.getName(),
                         false);
+                break;
 
             case GLOBAL:
                 setCooldown(null,
                         duration,
                         script.getName(),
                         true);
+                break;
         }
     }
 
