@@ -63,12 +63,12 @@ public class ContextTags implements Listener {
     // Get a saved script entry!
     @EventHandler
     public void savedEntryTags(ReplaceableTagEvent event) {
-        if (!event.matches("entry, e") || event.getScriptEntry() == null) return;
+        if (!event.matches("entry, e")
+                || event.getScriptEntry() == null
+                || !event.hasNameContext()) return;
 
         // <e[entry_id].entity.blah.blah>
-
-        if (event.getScriptEntry().getResidingQueue() != null &&
-                event.getScriptEntry().getResidingQueue().getHeldScriptEntry(event.getNameContext()) != null) {
+        if (event.getScriptEntry().getResidingQueue() != null) {
 
             // Get the entry_id from name context
             String id = event.getNameContext();
@@ -80,8 +80,8 @@ public class ContextTags implements Listener {
 
             } else {
                 if (!held.hasObject(attribute.getAttribute(2)) // Check if there's no such object
-                        || held.getdObject(attribute.getAttribute(2)) == null) { // ... Check if there is such an object
-                    dB.echoError("Bad saved entry object " + attribute.getAttribute(2)); // but it's not a dObject...
+                        || held.getdObject(attribute.getAttribute(2)) == null) { // ... or if there is such an object
+                    dB.echoError("Missing saved entry object " + attribute.getAttribute(2)); // but it's not a dObject...
 
                 } else { // Okay, now it's safe!
                     event.setReplaced(held.getdObject(attribute.getAttribute(2)).getAttribute(attribute.fulfill(2)));
