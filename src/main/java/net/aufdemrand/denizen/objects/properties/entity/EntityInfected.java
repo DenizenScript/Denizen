@@ -40,10 +40,8 @@ public class EntityInfected implements Property {
     dEntity infected;
 
     public boolean isInfected() {
-        if (infected.getBukkitEntity() instanceof Zombie
-                && ((Zombie) infected.getBukkitEntity()).isVillager())
-            return true;
-        else return false;
+        return (infected.getBukkitEntity() instanceof Zombie
+                && ((Zombie) infected.getBukkitEntity()).isVillager());
     }
 
     public void setInfected(boolean bool) {
@@ -89,9 +87,11 @@ public class EntityInfected implements Property {
 
     @Override
     public String getPropertyString() {
-        if (isInfected())
-            return "true";
-        else return null;
+        //if (isInfected())
+        //    return "true";
+        //else return null;
+        // TODO: Finish up trait. Needs mechanisms and a way to un-infect.
+        return null;
     }
 
     @Override
