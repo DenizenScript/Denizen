@@ -27,6 +27,8 @@ public class ForEachCommand extends BracedCommand {
                     && arg.matchesArgumentType(dList.class))
                 scriptEntry.addObject("list", arg.asType(dList.class));
 
+            break;
+
             // Don't report unhandled since getBracedCommands will handle the remainder
 
         }
