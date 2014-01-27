@@ -37,14 +37,11 @@ public class EntityProfession implements Property {
     dEntity professional;
 
     private Villager.Profession getProfession() {
-        if (professional == null) return null;
         return ((Villager) professional.getBukkitEntity()).getProfession();
     }
 
     public void setProfession(Villager.Profession profession) {
-        if (professional != null)
-            ((Villager) professional.getBukkitEntity()).setProfession(profession);
-
+        ((Villager) professional.getBukkitEntity()).setProfession(profession);
     }
 
 
@@ -78,6 +75,8 @@ public class EntityProfession implements Property {
         // @description
         // If the entity can have professions, returns the entity's profession.
         // Currently, only Villager-type entities can have professions.
+        // Possible professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST.
+        // To edit this, use <@link mechanism dEntity.profession>
         // -->
         if (attribute.startsWith("profession"))
             return new Element(getProfession().name().toLowerCase())
@@ -88,7 +87,22 @@ public class EntityProfession implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        // TODO
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name profession
+        // @input Element
+        // @description
+        // Changes the entity's profession.
+        // Currently, only Villager-type entities can have professions.
+        // Acceptable professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST.
+        // @tags
+        // <e@entity.profession>
+        // -->
+
+        if (mechanism.matches("profession") && mechanism.requireEnum(false, Villager.Profession.values())) {
+            setProfession(Villager.Profession.valueOf(mechanism.getValue().asString().toUpperCase()));
+        }
     }
 
 }
