@@ -599,6 +599,7 @@ public class TextTags implements Listener {
         // @returns Element
         // @description
         // Returns a heart symbol: ♥
+        // -->
         else if (event.getName().equalsIgnoreCase("&hrt"))
             event.setReplaced(new Element("\u2665").getAttribute(attribute.fulfill(1)));
 
