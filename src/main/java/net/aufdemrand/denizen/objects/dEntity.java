@@ -5,8 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.*;
-import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
-import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
+import net.aufdemrand.denizen.objects.properties.entity.*;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -1716,6 +1715,9 @@ public class dEntity implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether the entity is tameable.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.tame>, <@link mechanism dEntity.owner>,
+        // <@link tag e@entity.is_tamed>, and <@link tag e@entity.get_owner>
         // -->
         if (attribute.startsWith("is_tameable"))
             return new Element(EntityTame.describes(this))
@@ -1726,10 +1728,52 @@ public class dEntity implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether the entity is ageable.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.age>, <@link mechanism dEntity.age_lock>,
+        // <@link tag e@entity.is_baby>, <@link tag e@entity.age>,
+        // and <@link tag e@entity.is_age_locked>
         // -->
         if (attribute.startsWith("is_ageable"))
             return new Element(EntityAge.describes(this))
                     .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.is_frame>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the entity can hold a framed item.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.framed>, <@link tag e@entity.framed_item>,
+        // <@link tag e@entity.has_framed_item>, and <@link tag e@entity.framed_item_rotation>
+        // -->
+        if (attribute.startsWith("is_frame"))
+            return new Element(EntityFramed.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.is_colorable>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the entity can be colored.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.color> and <@link tag e@entity.color>
+        // -->
+        if (attribute.startsWith("is_colorable"))
+            return new Element(EntityColor.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.is_powerable>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the entity can be powered.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.powered> and <@link tag e@entity.powered>
+        // -->
+        if (attribute.startsWith("is_powerable"))
+            return new Element(EntityPowered.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
 
 
         /////////////////////

@@ -171,6 +171,7 @@ public class EntityAge implements Property {
         // <e@entity.age>
         // <e@entity.is_baby>
         // <e@entity.is_age_locked>
+        // <e@entity.is_ageable>
         // -->
 
         if (mechanism.matches("age_lock")
@@ -191,6 +192,7 @@ public class EntityAge implements Property {
         // <e@entity.age>
         // <e@entity.is_baby>
         // <e@entity.is_age_locked>
+        // <e@entity.is_ageable>
         // -->
 
         if (mechanism.matches("age")) {
