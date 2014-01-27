@@ -39,25 +39,20 @@ public class EntityTags implements Listener {
     ////////
 
     @EventHandler
-    public void playerTags(ReplaceableTagEvent event) {
+    public void entityTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("entity, e") || event.replaced()) return;
+        if (!event.matches("entity") || event.replaced()) return;
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
 
         dEntity e = null;
 
         // Entity tag may specify a new entity in the <entity[context]...> portion of the tag.
         if (attribute.hasContext(1))
-            // Check if this is a valid player and update the dPlayer object reference.
+            // Check if this is a valid entity and update the dEntity object reference.
             if (attribute.getIntContext(1) >= 1)
-               e = dEntity.valueOf(attribute.getContext(1));
-            else {
-                dB.echoDebug(event.getScriptEntry(), "Could not match '"
-                        + attribute.getContext(1) + "' to a valid entity!");
-                return;
-            }
+               e = dEntity.valueOf("e@" + attribute.getContext(1));
 
         if (e == null || !e.isValid()) {
             dB.echoDebug(event.getScriptEntry(), "Invalid or missing entity for tag <" + event.raw_tag + ">!");
