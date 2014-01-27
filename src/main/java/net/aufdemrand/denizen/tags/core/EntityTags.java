@@ -49,16 +49,15 @@ public class EntityTags implements Listener {
         dEntity e = null;
 
         // Entity tag may specify a new entity in the <entity[context]...> portion of the tag.
-        if (attribute.hasContext(1)) {
+        if (attribute.hasContext(1))
             // Check if this is a valid player and update the dPlayer object reference.
-            if (attribute.getIntContext(1) >= 0)
+            if (attribute.getIntContext(1) >= 1)
                e = dEntity.valueOf(attribute.getContext(1));
             else {
                 dB.echoDebug(event.getScriptEntry(), "Could not match '"
                         + attribute.getContext(1) + "' to a valid entity!");
                 return;
             }
-        }
 
         if (e == null || !e.isValid()) {
             dB.echoDebug(event.getScriptEntry(), "Invalid or missing entity for tag <" + event.raw_tag + ">!");
