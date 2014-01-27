@@ -585,6 +585,9 @@ public class dItem implements dObject, Notable, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether the item can be repaired.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dItem.durability>, <@link tag i@item.max_durability>,
+        // and <@link tag i@item.durability>
         // -->
         if (attribute.startsWith("repairable"))
             return new Element(ItemDurability.describes(this))
@@ -595,6 +598,8 @@ public class dItem implements dObject, Notable, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether the item is a growable crop.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dItem.plant_growth> and <@link tag i@item.plant_growth>
         // -->
         if (attribute.startsWith("is_crop"))
             return new Element(ItemPlantgrowth.describes(this))
@@ -605,6 +610,11 @@ public class dItem implements dObject, Notable, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether the item is considered an editable book.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dItem.book>, <@link tag i@item.book>,
+        // <@link tag i@item.book.author>, <@link tag i@item.book.title>,
+        // <@link tag i@item.book.page_count>, <@link tag i@item.book.get_page[<#>]>,
+        // and <@link tag i@item.book.pages>
         // -->
         if (attribute.startsWith("is_book")) {
             return new Element(ItemBook.describes(this))
