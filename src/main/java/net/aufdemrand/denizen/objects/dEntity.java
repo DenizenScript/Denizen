@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.*;
+import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -337,7 +338,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Get the Bukkit entity corresponding to this dEntity
      *
-     * @return  The NPC
+     * @return the underlying Bukkit entity
      */
 
     public Entity getBukkitEntity() {
@@ -1382,21 +1383,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.get_owner>
-        // @returns dPlayer
-        // @description
-        // Returns the owner of a tamed entity.
-        // -->
-        if (attribute.startsWith("get_owner")) {
-            if (entity instanceof Tameable && ((Tameable) entity).isTamed())
-                return new dPlayer((Player) ((Tameable) entity).getOwner())
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <e@entity.get_passenger>
         // @returns dEntity
         // @description
@@ -1588,21 +1574,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_tamed>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the entity has been tamed.
-        // -->
-        if (attribute.startsWith("is_tamed")) {
-            if (entity instanceof Tameable)
-                return new Element(((Tameable) entity).isTamed())
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return Element.FALSE
-                        .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <e@entity.killer>
         // @returns dPlayer
         // @description
@@ -1760,7 +1731,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the entity is tameable.
         // -->
         if (attribute.startsWith("is_tameable"))
-            return new Element(entity instanceof Tameable)
+            return new Element(EntityTame.describes(this))
                     .getAttribute(attribute.fulfill(1));
 
 
@@ -1935,24 +1906,6 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean())
             getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name tame
-        // @input Element(Boolean)
-        // @description
-        // Sets whether the entity has been tamed.
-        // @tags
-        // <e@entity.is_tamed>
-        // <e@entity.is_tameable>
-        // -->
-        if (mechanism.matches("tame") && mechanism.requireBoolean()) {
-            if (!(entity instanceof Tameable)) {
-                dB.echoError("That dEntity is not tameable.");
-                return;
-            }
-            ((Tameable)getLivingEntity()).setTamed(value.asBoolean());
-        }
 
         // <--[mechanism]
         // @object dEntity
