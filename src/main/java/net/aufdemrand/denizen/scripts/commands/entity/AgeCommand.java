@@ -141,14 +141,16 @@ public class AgeCommand extends AbstractCommand {
                         if (ageType.equals(AgeType.BABY))
                             property.setBaby(true);
                         else property.setBaby(false);
-
-                    } else property.setAge(age);
+                    }
+                    else
+                        property.setAge(age);
 
                     // Adjust 'locked'
-                    if (lock) property.setLock(true);
+                    property.setLock(lock);
                 }
 
-                else dB.echoError(entity.identify() + " is not ageable!");
+                else
+                    dB.echoError(entity.identify() + " is not ageable!");
 
             }
         }
