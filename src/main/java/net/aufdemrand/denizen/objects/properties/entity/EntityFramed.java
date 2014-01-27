@@ -4,6 +4,8 @@ package net.aufdemrand.denizen.objects.properties.entity;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Material;
 import org.bukkit.Rotation;
 import org.bukkit.entity.*;
 
@@ -31,7 +33,8 @@ public class EntityFramed implements Property {
     dEntity item_frame;
 
     public boolean hasItem() {
-        return getItemFrameEntity().getItem() != null;
+        return getItemFrameEntity().getItem() != null
+            && getItemFrameEntity().getItem().getType() != Material.AIR;
     }
 
     public ItemFrame getItemFrameEntity() {
@@ -77,10 +80,22 @@ public class EntityFramed implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
+        // @attribute <e@entity.framed_item_rotation>
+        // @returns Element
+        // @description
+        // If the entity is an item frame, returns the rotation of the material currently framed.
+        // To edit this, use <@link mechanism dEntity.framed>
+        // -->
+        if (attribute.startsWith("framed_item_rotation"))
+            return new Element(getItemFrameEntity().getRotation().name().toLowerCase())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <e@entity.framed_item>
         // @returns dItem
         // @description
         // If the entity is an item frame, returns the material currently framed.
+        // To edit this, use <@link mechanism dEntity.framed>
         // -->
         if (attribute.startsWith("framed_item"))
             return getItem()
@@ -91,19 +106,10 @@ public class EntityFramed implements Property {
         // @returns Element(Boolean)
         // @description
         // If the entity is an item frame, returns whether the frame has an item in it.
+        // To edit this, use <@link mechanism dEntity.framed>
         // -->
         if (attribute.startsWith("has_framed_item"))
             return new Element(hasItem())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <e@entity.framed_item_rotation>
-        // @returns Element
-        // @description
-        // If the entity is an item frame, returns the rotation of the material currently framed.
-        // -->
-        if (attribute.startsWith("framed_item_rotation"))
-            return new Element(getItemFrameEntity().getRotation().name().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
@@ -111,7 +117,37 @@ public class EntityFramed implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        // TODO
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name framed
+        // @input dItem(|Element)
+        // @description
+        // Sets the entity's framed item and optionally the rotation as well.
+        // Valid rotations: NONE, CLOCKWISE, FLIPPED, COUNTER_CLOCKWISE
+        // EG: framed:i@diamond_sword|clockwise
+        // @tags
+        // <e@entity.is_frame>
+        // <e@entity.has_framed_item>
+        // <e@entity.framed_item>
+        // <e@entity.framed_item_rotation>
+        // -->
+
+        if (mechanism.matches("framed")) {
+            dList list = mechanism.getValue().asType(dList.class);
+            if (list.size() == 0) {
+                dB.echoError("Missing value for 'framed' mechanism!");
+                return;
+            }
+            if (new Element(list.get(0)).matchesType(dItem.class))
+                setItem(new Element(list.get(0)).asType(dItem.class));
+            else {
+                dB.echoError("Invalid item '" + list.get(0) + "'");
+            }
+            if (list.size() > 1 && new Element(list.get(1)).matchesEnum(Rotation.values()))
+                getItemFrameEntity().setRotation(Rotation.valueOf(list.get(1).toUpperCase()));
+        }
+
     }
 
 }
