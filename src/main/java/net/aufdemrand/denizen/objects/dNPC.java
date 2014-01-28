@@ -506,6 +506,16 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <n@npc.is_engaged>
+        // @returns Element(Boolean)
+        // @description
+        // returns whether the NPC is currently engaged.
+        // See <@link command Engage>
+        // -->
+        if (attribute.startsWith("engaged") || attribute.startsWith("is_engaged"))
+            return new Element(isEngaged()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <n@npc.id>
         // @returns Element(Number)
         // @description
