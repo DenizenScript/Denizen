@@ -504,10 +504,24 @@ public class dLocation extends org.bukkit.Location implements dObject {
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
                 // Subtract this location's vector from the other location's vector,
                 // not the other way around
-                return new Element(Rotation.getCardinal(Rotation.getYaw
-                        (dLocation.valueOf(attribute.getContext(1)).toVector().subtract(this.toVector())
-                                .normalize())))
-                        .getAttribute(attribute.fulfill(1));
+                dLocation target = dLocation.valueOf(attribute.getContext(1));
+                attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <l@location.direction[<location>].yaw>
+                // @returns Element(Decimal)
+                // @description
+                // Returns the yaw direction between two locations.
+                // -->
+                if (attribute.startsWith("yaw"))
+                    return new Element(Rotation.normalizeYaw(Rotation.getYaw
+                            (target.toVector().subtract(this.toVector())
+                                    .normalize())))
+                            .getAttribute(attribute.fulfill(1));
+                else
+                    return new Element(Rotation.getCardinal(Rotation.getYaw
+                            (target.toVector().subtract(this.toVector())
+                                    .normalize())))
+                            .getAttribute(attribute);
             }
             // Get a cardinal direction from this location's yaw
             else {
