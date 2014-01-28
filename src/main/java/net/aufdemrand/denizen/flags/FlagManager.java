@@ -237,6 +237,24 @@ public class FlagManager {
             return value.get(index);
         }
 
+        // <--[event]
+        // @Events
+        // flag cleared
+        // player flag cleared
+        // player flag <flagname> cleared
+        // npc flag cleared
+        // npc flag <flagname> cleared
+        // server flag cleared
+        // server flag <flagname> cleared
+        //
+        // @Triggers when a flag is cleared
+        // @Context
+        // <context.owner> returns an Element of the flag owner's object.
+        // <context.name> returns an Element of the flag name.
+        // <context.type> returns an Element of the flag type.
+        // <context.old_value> returns an Element of the flag's previous value.
+        //
+        // -->
         /**
          * Clears all values from a flag, essentially making it null.
          *
@@ -451,6 +469,24 @@ public class FlagManager {
             return value.size();
         }
 
+        // <--[event]
+        // @Events
+        // flag changed
+        // player flag changed
+        // player flag <flagname> changed
+        // npc flag changed
+        // npc flag <flagname> changed
+        // server flag changed
+        // server flag <flagname> changed
+        //
+        // @Triggers when a flag is changed
+        // @Context
+        // <context.owner> returns an Element of the flag owner's object.
+        // <context.name> returns an Element of the flag name.
+        // <context.type> returns an Element of the flag type.
+        // <context.old_value> returns an Element of the flag's previous value.
+        //
+        // -->
         /**
          * Saves the current values in this object to the Denizen saves.yml.
          * This is called internally when needed, but might be useful to call
