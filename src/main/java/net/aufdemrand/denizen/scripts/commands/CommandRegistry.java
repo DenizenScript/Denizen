@@ -1878,21 +1878,25 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Rename
-        // @Syntax rename [<npc>] [<name>]
+        // @Syntax rename [<name>]
         // @Required 1
-        // @Stable Todo
-        // @Short Renames an NPC.
-        // @Author Todo
+        // @Stable unstable
+        // @Short Renames the linked NPC.
+        // @Author aufdemrand
         // @Description
         // Todo
         // @Tags
         // <n@npc.name>
         // <n@npc.name.nickname>
         // @Usage
-        // Todo
+        // Use to rename the linked NPC.
+        // - rename Bob
+        // @Usage
+        // Use to rename a different NPC.
+        // - rename Bob npc:n@32
         // -->
         registerCoreMember(RenameCommand.class,
-                "RENAME", "rename [<npc>] [<name>]", 1);
+                "RENAME", "rename [<name>]", 1);
 
 
         // <--[command]
