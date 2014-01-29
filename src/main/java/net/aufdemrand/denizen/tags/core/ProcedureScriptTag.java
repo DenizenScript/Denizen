@@ -161,6 +161,7 @@ public class ProcedureScriptTag implements Listener {
 
         InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
         queue.addEntries(entries);
+        queue.setReqId(id);
         if (event.hasType() &&
                 event.getType().equalsIgnoreCase("context") &&
                 event.hasTypeContext()) {

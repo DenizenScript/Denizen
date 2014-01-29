@@ -79,7 +79,7 @@ public class ItemScriptHelper implements Listener {
 
             // Add the reqId to each of the entries
             ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
-            InstantQueue.getQueue(null).addEntries(entries).start();
+            InstantQueue.getQueue(null).addEntries(entries).setReqId(id).start();
 
             if (DetermineCommand.hasOutcome(id))
                 determination =  DetermineCommand.getOutcome(id);
