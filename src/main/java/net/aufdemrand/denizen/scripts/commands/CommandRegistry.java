@@ -223,11 +223,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name AnimateChest
-        // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false)
+        // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)
         // @Required 1
         // @Stable unstable
         // @Short Makes a chest appear to open or close.
-        // @Author Todo
+        // @Author Jeebiss, mcmonkey
         // @Description
         // Todo
         // @Tags
@@ -236,7 +236,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(AnimateChestCommand.class,
-                "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false)", 1);
+                "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
 
 
         // <--[command]
