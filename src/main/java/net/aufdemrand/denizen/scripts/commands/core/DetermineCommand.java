@@ -37,6 +37,10 @@ public class DetermineCommand extends AbstractCommand {
         return outcome;
     }
 
+    public static String readOutcome(long id) {
+        return outcomes.get(id);
+    }
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -70,6 +74,11 @@ public class DetermineCommand extends AbstractCommand {
         Long uniqueId = (Long) scriptEntry.getObject("reqId");
         if (uniqueId == null) {
             dB.echoError("Cannot use determine in this queue!");
+            return;
+        }
+
+        if (outcomes.containsKey(uniqueId)) {
+            dB.echoError("This queue already has a determination!");
             return;
         }
 

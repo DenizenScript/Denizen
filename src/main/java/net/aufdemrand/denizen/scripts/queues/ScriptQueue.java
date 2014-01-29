@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.Delayable;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -282,6 +283,18 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     }
 
 
+    private long reqId = -1L;
+
+    /**
+     * Sets the instant-queue ID for usage by the determine command.
+     *
+     * @param ID the ID to use.
+     * @return the queue for re-use.
+     */
+    public ScriptQueue setReqId(long ID) {
+        reqId = ID;
+        return this;
+    }
 
     /**
      * Gets a definition from the queue. Denizen's
@@ -731,6 +744,22 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         if (attribute.startsWith("definitions")) {
             return new Element(getAllDefinitions().toString()).getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <q@queue.determination>
+        // @returns dObject
+        // @description
+        // Returns the value that has been determined via <@link command Determine>
+        // for this queue, or null if there is none.
+        // The object will be returned as the most-valid type based on the input.
+        // -->
+        if (attribute.startsWith("determination")) {
+            if (reqId < 0 || !DetermineCommand.hasOutcome(reqId))
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return ObjectFetcher.pickObjectFor(DetermineCommand.readOutcome(reqId)).getAttribute(attribute.fulfill(1));
+        }
+
 
 
         return new Element(identify()).getAttribute(attribute);

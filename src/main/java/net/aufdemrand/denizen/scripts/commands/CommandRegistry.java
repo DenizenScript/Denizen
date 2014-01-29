@@ -686,7 +686,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Determine
-        // @Syntax determine [<value>]
+        // @Syntax determine (passively) [<value>]
         // @Required 1
         // @Stable stable
         // @Short Sets the outcome of an event.
@@ -699,7 +699,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(DetermineCommand.class,
-                "DETERMINE", "determine [<value>]", 1);
+                "DETERMINE", "determine (passively) [<value>]", 1);
 
 
         // <--[command]
