@@ -593,7 +593,7 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.random[#]>
+        // @attribute <li@list.random[<#>]>
         // @returns Element
         // @description
         // Gets a random item in the list and returns it as an Element.
