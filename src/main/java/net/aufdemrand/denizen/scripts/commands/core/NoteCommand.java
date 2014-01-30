@@ -63,7 +63,7 @@ public class NoteCommand extends AbstractCommand {
                 ((Notable) arg).makeUnique(id.asString());
 
         } catch (Exception e) {
-            dB.echoError("Uh oh! Report this to aufdemrand! Err: TagManagerObjectReflection");
+            dB.echoError("Uh oh! Report this to the Denizen developers! Err: NoteCommandObjectReflection");
             dB.echoError(e);
         }
 
