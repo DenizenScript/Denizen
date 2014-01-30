@@ -1661,6 +1661,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the entity from exploding.
+    // dList(dLocation) to set a new lists of blocks that are to be affected by the explosion.
     //
     // -->
     @EventHandler
@@ -1688,6 +1689,18 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+
+        else if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
+            dList list = dList.valueOf(determination);
+            event.blockList().clear();
+            for (String loc: list) {
+                dLocation location = dLocation.valueOf(loc);
+                if (location == null)
+                    dB.echoError("Invalid location '" + loc + "'");
+                else
+                    event.blockList().add(location.getWorld().getBlockAt(location));
+            }
+        }
     }
 
     // <--[event]
