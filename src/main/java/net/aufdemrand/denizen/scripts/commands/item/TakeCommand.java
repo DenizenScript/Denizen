@@ -92,7 +92,7 @@ public class TakeCommand extends AbstractCommand{
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
-                .defaultObject("inventory", (scriptEntry.hasPlayer() ? new dInventory(scriptEntry.getPlayer().getPlayerEntity()) : null))
+                .defaultObject("inventory", (scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory() : null))
                 .defaultObject("qty", new Element(1));
 
         if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
