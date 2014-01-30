@@ -180,9 +180,9 @@ public class InteractScriptContainer extends ScriptContainer {
      * <p>Note: This is handled internally with the parse() method in AbstractTrigger, so for
      * basic triggers, you probably don't need to even call this.</p>
      *
-     * @param trigger
-     * @param player
-     * @return
+     * @param trigger The trigger involved
+     * @param player The Denizen Player object for the player who triggered it
+     * @return A map of options in the trigger's script, excluding a plain 'script'
      */
 
     public Map<String, String> getIdMapFor(Class<? extends AbstractTrigger> trigger,
@@ -197,11 +197,16 @@ public class InteractScriptContainer extends ScriptContainer {
             // Trigger exists in Player's current step, get ids.
             Map<String, String> idMap = new HashMap<String, String>();
             // Iterate through IDs to build the idMap
-            for (String id : getConfigurationSection("STEPS." + step + "."
-                    + triggerName + " TRIGGER").getKeys(false))
-                if (!id.equalsIgnoreCase("SCRIPT"))
-                    idMap.put(id, getString("STEPS." + step + "."
-                            + triggerName + " TRIGGER." + id + ".TRIGGER", ""));
+            try {
+                for (String id : getConfigurationSection("STEPS." + step + "."
+                        + triggerName + " TRIGGER").getKeys(false))
+                    if (!id.equalsIgnoreCase("SCRIPT"))
+                        idMap.put(id, getString("STEPS." + step + "."
+                                + triggerName + " TRIGGER." + id + ".TRIGGER", ""));
+            }
+            catch (Exception ex) {
+                dB.echoError("Warning: improperly defined " + trigger.getName() + " trigger for script '" + getName() + "'!");
+            }
             return idMap;
         }
         // No entries, so just return an empty list to avoid NPEs
