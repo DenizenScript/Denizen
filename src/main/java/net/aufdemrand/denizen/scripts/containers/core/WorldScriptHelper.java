@@ -1556,7 +1556,7 @@ public class WorldScriptHelper implements Listener {
     // <context.entity> returns the dEntity that died.
     // <context.damager> returns the dEntity damaging the other entity, if any.
     // <context.message> returns an Element of a player's death message.
-    // <context.inventory> returns the dInventory of a player
+    // <context.inventory> returns the dInventory of the entity if it was a player.
     //
     // @Determine
     // Element(String) to change the death message.
