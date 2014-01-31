@@ -454,7 +454,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dEntity getShooter() {
         if (hasShooter())
-            return new dEntity(getProjectile().getShooter());
+            return new dEntity((LivingEntity) getProjectile().getShooter());
         else
             return null;
     }
@@ -476,7 +476,8 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public boolean hasShooter() {
-        return isProjectile() && getProjectile().getShooter() != null;
+        return isProjectile() && getProjectile().getShooter() != null && getProjectile().getShooter() instanceof LivingEntity;
+        // TODO: Handle other shooter source thingy types
     }
 
     /**

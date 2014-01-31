@@ -21,6 +21,7 @@ import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -247,16 +248,17 @@ public class HealthTrait extends Trait implements Listener {
                 // account as well
             else if (killerEntity instanceof Projectile)
             {
-                LivingEntity shooter = ((Projectile) killerEntity).getShooter();
-                if (shooter != null) {
+                ProjectileSource shooter = ((Projectile) killerEntity).getShooter();
+                if (shooter != null && shooter instanceof LivingEntity) {
 
-                    context.put("shooter", new dEntity(shooter));
+                    context.put("shooter", new dEntity((LivingEntity) shooter));
                     if (shooter instanceof Player)
                         player = dPlayer.mirrorBukkitPlayer((Player) shooter);
 
                     DenizenAPI.getDenizenNPC(npc).action("death by " +
-                            shooter.getType().toString(), player, context);
+                            ((LivingEntity) shooter).getType().toString(), player, context);
                 }
+                // TODO: Handle other shooter source thingy types
             }
 
             DenizenAPI.getDenizenNPC(npc).action("death by entity", player, context);
