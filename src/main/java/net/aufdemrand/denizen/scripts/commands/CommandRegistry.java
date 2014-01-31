@@ -1711,20 +1711,21 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name PlaySound
-        // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
+        // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)
         // @Required 2
         // @Stable stable
         // @Short Plays a sound at the location or to a list of players.
         // @Author Todo
         // @Description
-        // Todo
+        // TODO
+        // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound string to something like 'random.click'
         // @Tags
         // Todo
         // @Usage
         // Todo
         // -->
         registerCoreMember(PlaySoundCommand.class,
-                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
+                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)", 2);
 
 
         // <--[command]
