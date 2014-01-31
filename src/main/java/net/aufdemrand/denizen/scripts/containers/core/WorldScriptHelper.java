@@ -966,7 +966,7 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
 
-        else if (determination.length() > 0) {
+        else if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
             dList lines = new dList(determination);
             for (int i = 0; i < 4 && i < lines.size(); i++) {
                 event.setLine(i, EscapeTags.unEscape(lines.get(i)));
