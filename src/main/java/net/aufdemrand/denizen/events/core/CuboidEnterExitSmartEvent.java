@@ -27,11 +27,13 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     @Override
     public boolean shouldInitialize(Set<String> events) {
         boolean should_register = false;
+        cuboids_to_watch.clear();
 
         // Loop through event names from loaded world script events
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
+            // TODO: Require cu@ to prevent conflict with similar events? Or restore cuboid-name-confirmation after notable cuboids save properly.
             Matcher m = Pattern.compile("on player (?:enters|exits) (notable cuboid|(cu@)?\\w+)", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
@@ -45,18 +47,14 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
                 if (m.group(1).equalsIgnoreCase("notable cuboid")) {
                     broad_detection = true;
                 }
-                // Check first group which contains entity name against dCuboid's matches() method
-                else if (!dCuboid.matches(m.group(1))) {
-                    dB.echoError("Possible issue with '" + event + "' world event in script(s) " + EventManager.events.get(event)
-                            + ". Specified cuboid is not valid.");
-                    registerable = false;
-                } else {
+                else {
+                    // Add this to the watch list, regardless of whether it's valid, in case it becomes valid later
                     cuboids_to_watch.add(m.group(1).toLowerCase());
                 }
 
-                // If registerable, we'll set should_register to true, but keep iterating through the matches
-                // to check them for errors, as caught above.
-                if (registerable) should_register = true;
+                // We'll set should_register to true, but keep iterating through the matches
+                // to check them for errors and add to the watchlist.
+                should_register = true;
             }
         }
 
@@ -97,10 +95,17 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     //
     // @Regex on player (?:enters|exits) (notable cuboid|(cu@)?\w+)
     //
+    // @Warning This event is not fully functional yet.
+    // Additionally, cancelling this event will fire a similar event immediately after.
+    //
     // @Triggers when a player enters or exits a notable cuboid.
     // @Context
     // <context.from> returns the block location moved from.
     // <context.to> returns the block location moved to.
+    //
+    // @Determine
+    // "CANCELLED" to stop the player from moving.
+    //
     //
     // -->
     @EventHandler
@@ -109,7 +114,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
         // Initialize events and context
-        List<String> events = new ArrayList<String>();
+        List<String> events = new ArrayList<String>(); // TODO: Add contexts!
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         // Look for cuboids that contain the block's location

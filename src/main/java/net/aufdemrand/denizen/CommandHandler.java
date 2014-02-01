@@ -962,6 +962,18 @@ public class CommandHandler {
     }
 
 
+    // <--[event]
+    // @Events
+    // reload scripts
+    //
+    // @Triggers when Denizen scripts are reloaded.
+    // @Context
+    // <context.sender> returns the name of the sender who triggered the reload.
+    // <context.all> returns whether 'reload -a' was used.
+    // <contex.haderror> returns whether there was an error.
+    //
+    // -->
+
     /*
      * DENIZEN RELOAD
      */

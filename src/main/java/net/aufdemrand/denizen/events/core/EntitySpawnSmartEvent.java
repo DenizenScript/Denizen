@@ -100,6 +100,8 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
     //
     // @Regex on (.+|entity|npc) spawns(?: because (\w+))?
     //
+    // @Warning This event may fire very rapidly.
+    //
     // @Triggers when an entity spawns.
     // @Context
     // <context.entity> returns the dEntity that spawned.

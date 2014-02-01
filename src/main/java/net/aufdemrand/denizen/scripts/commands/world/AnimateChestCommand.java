@@ -76,22 +76,24 @@ public class AnimateChestCommand extends AbstractCommand {
                                           + sound.debug()
                                           + aH.debugObj("players", players.toString()));
 
-        for (dPlayer player: players) {
-            switch (ChestAction.valueOf(action.asString().toUpperCase())) {
-                case OPEN:
+        switch (ChestAction.valueOf(action.asString().toUpperCase())) {
+            case OPEN:
+                for (dPlayer player: players) {
                     if (sound.asBoolean()) player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
                     ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction((int) location.getX(), (int) location.getY(), (int) location.getZ(),
                             ((CraftWorld) location.getWorld()).getHandle().getType((int) location.getX(), (int) location.getY(), (int) location.getZ()), 1, 1));
-                    break;
+                }
+                break;
 
-                case CLOSE:
+            case CLOSE:
+                for (dPlayer player: players) {
                     if (sound.asBoolean()) player.getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
                     ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction((int)location.getX(), (int)location.getY(), (int)location.getZ(),
                             ((CraftWorld)location.getWorld()).getHandle().getType((int)location.getX(), (int)location.getY(), (int)location.getZ()), 1, 0));
-                    break;
-            }
+                }
+                break;
         }
     }
 
