@@ -598,7 +598,7 @@ public class dPlayer implements dObject, Adjustable {
             // -->
             else if (attribute.startsWith("list.offline")) {
                 for(OfflinePlayer player : offlinePlayers) {
-                    if (!Bukkit.getOnlinePlayers().toString().contains(player.getName()))
+                    if (!player.isOnline())
                         players.add(player.getName());
                 }
                 return new dList(players).getAttribute(attribute.fulfill(2));
