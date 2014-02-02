@@ -174,6 +174,7 @@ public class Denizen extends JavaPlugin {
         dNPCRegistry = new dNPCRegistry(this);
 
         // Maintain a list of Offline Players
+        dPlayer.offlinePlayers.clear();
         for (OfflinePlayer player: Bukkit.getOfflinePlayers())
             dPlayer.offlinePlayers.add(player);
 
