@@ -1132,6 +1132,18 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.spawn_reason>
+        // @returns String
+        // @description
+        // Returns the reason an entity was spawned.
+        // -->
+        if (attribute.startsWith("spawn_reason")) {
+            if (entity.getMetadata("spawnreason").size() == 0) return "null";
+            return new Element(entity.getMetadata("spawnreason").get(0).asString())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.uuid>
         // @returns Element
         // @description

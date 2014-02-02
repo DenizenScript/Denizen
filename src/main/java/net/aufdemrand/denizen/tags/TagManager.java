@@ -33,6 +33,7 @@ public class TagManager implements Listener {
 
     public void registerCoreTags() {
         // Objects
+        new EntityTags(denizen);
         new PlayerTags(denizen);
         new NPCTags(denizen);
         new LocationTags(denizen);
