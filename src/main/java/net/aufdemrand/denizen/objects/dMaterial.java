@@ -69,7 +69,8 @@ public class dMaterial implements dObject {
         JUNGLE_WOOD_SLAB_UP, ACACIA_WOOD_SLAB_UP, DARKOAK_WOOD_SLAB_UP, STONE_DOUBLESLAB, SANDSTONE_DOUBLESLAB,
         WOODEN_DOUBLESLAB, COBBLESTONE_DOUBLESLAB, BRICKS_DOUBLESLAB, STONEBRICKS_DOUBLESLAB, NETHERBRICK_DOUBLESLAB,
         QUARTZ_DOUBLESLAB, OAK_WOOD_DOUBLESLAB, SPRUCE_WOOD_DOUBLESLAB, BIRCH_WOOD_DOUBLESLAB, JUNGLE_WOOD_DOUBLESLAB,
-        ACACIA_WOOD_DOUBLESLAB, DARKOAK_WOOD_DOUBLESLAB, SKELETON_EGG }
+        ACACIA_WOOD_DOUBLESLAB, DARKOAK_WOOD_DOUBLESLAB, SKELETON_EGG, RAW_FISH, RAW_SALMON, RAW_CLOWNFISH,
+        RAW_PUFFERFISH, COOKED_FISH, COOKED_SALMON, COOKED_CLOWNFISH, COOKED_PUFFERFISH }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
@@ -351,6 +352,16 @@ public class dMaterial implements dObject {
     // Monster Eggs
     // TODO: I will add rest of eggs (I needed this one quick for a project)
     public final static dMaterial SKELETON_EGG = new dMaterial(Material.MONSTER_EGG, 51).forceIdentifyAs("SKELETON_EGG");
+
+    // Fish
+    public final static dMaterial COOKED_FISH = new dMaterial(Material.COOKED_FISH, 0).forceIdentifyAs("COOKED_FISH");
+    public final static dMaterial COOKED_SALMON = new dMaterial(Material.COOKED_FISH, 1).forceIdentifyAs("COOKED_SALMON");
+    public final static dMaterial COOKED_CLOWNFISH = new dMaterial(Material.COOKED_FISH, 2).forceIdentifyAs("COOKED_CLOWNFISH");
+    public final static dMaterial COOKED_PUFFERFISH = new dMaterial(Material.COOKED_FISH, 3).forceIdentifyAs("COOKED_PUFFERFISH");
+    public final static dMaterial RAW_FISH = new dMaterial(Material.RAW_FISH, 0).forceIdentifyAs("RAW_FISH");
+    public final static dMaterial RAW_SALMON = new dMaterial(Material.RAW_FISH, 1).forceIdentifyAs("RAW_SALMON");
+    public final static dMaterial RAW_CLOWNFISH = new dMaterial(Material.RAW_FISH, 2).forceIdentifyAs("RAW_CLOWNFISH");
+    public final static dMaterial RAW_PUFFERFISH = new dMaterial(Material.RAW_FISH, 3).forceIdentifyAs("RAW_PUFFERFISH");
 
     // One-Offs (Don't have their own group)
     public final static dMaterial CHARCOAL = new dMaterial(Material.COAL, 1).forceIdentifyAs("CHARCOAL");
