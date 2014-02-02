@@ -2258,6 +2258,7 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.item> returns the dItem of the entity.
     // <context.entity> returns the dEntity.
+    // <context.location> returns the location of the entity to be spawned.
     //
     // @Determine
     // "CANCELLED" to stop the item entity from spawning.
@@ -2271,6 +2272,7 @@ public class WorldScriptHelper implements Listener {
 
         context.put("item", item);
         context.put("entity", new dEntity(event.getEntity()));
+        context.put("location", new dLocation(event.getLocation()));
 
         List<String> events = new ArrayList<String>();
         events.add("item spawns");
