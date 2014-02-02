@@ -229,6 +229,7 @@ public class ShootCommand extends AbstractCommand {
         BukkitRunnable task = new BukkitRunnable() {
 
             boolean flying = true;
+            dLocation lastLocation = null;
             Vector lastVelocity = null;
 
             public void run() {
@@ -257,12 +258,13 @@ public class ShootCommand extends AbstractCommand {
                             (scriptEntry.getPlayer(),
                              scriptEntry.getNPC());
                     ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
-                    queue.addDefinition("location", lastEntity.getLocation().identify());
+                    queue.addDefinition("location", lastLocation.identify());
                     queue.addDefinition("shot_entities", entityList.toString());
                     queue.addDefinition("last_entity", lastEntity.identify());
                     queue.start();
                 }
                 else {
+                    lastLocation = lastEntity.getLocation();
                     lastVelocity = lastEntity.getVelocity();
                 }
             }
