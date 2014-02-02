@@ -598,7 +598,7 @@ public class dPlayer implements dObject, Adjustable {
             // -->
             else if (attribute.startsWith("list.offline")) {
                 for(OfflinePlayer player : offlinePlayers) {
-                    if (!Bukkit.getOnlinePlayers().toString().contains(player.getName()))
+                    if (!player.isOnline())
                         players.add(player.getName());
                 }
                 return new dList(players).getAttribute(attribute.fulfill(2));
@@ -1302,13 +1302,16 @@ public class dPlayer implements dObject, Adjustable {
         // @input Element
         // @description
         // Awards an achievement to the player. Valid achievements:
-        // OPEN_INVENTORY, MINE_WOOD, BUILD_WORKBENCH, BUILD_PICKAXE, BUILD_FURNACE, ACQUIRE_IRON,
-        // BUILD_HOE, MAKE_BREAD, BAKE_CAKE, BUILD_BETTER_PICKAXE, COOK_FISH, ON_A_RAIL, BUILD_SWORD,
-        // KILL_ENEMY, KILL_COW, FLY_PIG, SNIPE_SKELETON, GET_DIAMONDS, NETHER_PORTAL, GHAST_RETURN,
-        // GET_BLAZE_ROD, BREW_POTION, END_PORTAL, THE_END, ENCHANTMENTS, OVERKILL, BOOKCASE
+        // ACQUIRE_IRON, BAKE_CAKE, BOOKCASE, BREED_COW, BREW_POTION, BUILD_BETTER_PICKAXE,
+        // BUILD_FURNACE, BUILD_HOE, BUILD_PICKAXE, BUILD_SWORD, BUILD_WORKBENCH, COOK_FISH,
+        // DIAMONDS_TO_YOU, ENCHANTMENTS, END_PORTAL, EXPLORE_ALL_BIOMES, FLY_PIG, FULL_BEACON,
+        // GET_BLAZE_ROD, GET_DIAMONDS, GHAST_RETURN, KILL_COW, KILL_ENEMY, KILL_WITHER,
+        // MAKE_BREAD, MINE_WOOD, NETHER_PORTAL, ON_A_RAIL, OPEN_INVENTORY, OVERKILL,
+        // SNIPE_SKELETON, SPAWN_WITHER, THE_END
         // @tags
         // None
         // -->
+        // TODO: Player achievement/statistics tags.
         if (mechanism.matches("award_achievement")&& mechanism.requireEnum(false, Achievement.values())) {
             getPlayerEntity().awardAchievement(Achievement.valueOf(value.asString().toUpperCase()));
         }

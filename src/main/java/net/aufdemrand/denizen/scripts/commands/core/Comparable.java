@@ -359,7 +359,7 @@ public class Comparable {
                     outcome = aH.matchesInteger(comparable);
 
                 else if (comparedto.equalsIgnoreCase("even integer")
-                        || comparedto.equalsIgnoreCase("event number"))
+                        || comparedto.equalsIgnoreCase("even number"))
                     outcome = aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 0;
 
                 else if (comparedto.equalsIgnoreCase("odd integer")

@@ -324,22 +324,6 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
-        // @attribute <server.list_players>
-        // @returns dList(dPlayer)
-        // @description
-        // Returns a list of all players that have ever played on the server, online or not.
-        // -->
-        if (attribute.startsWith("list_players")) {
-            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
-            for (Player player : Bukkit.getOnlinePlayers())
-                players.add(dPlayer.mirrorBukkitPlayer(player));
-            for (OfflinePlayer player : dPlayer.offlinePlayers)
-                players.add(dPlayer.mirrorBukkitPlayer(player));
-            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        // <--[tag]
         // @attribute <server.list_plugins>
         // @returns dList(dPlugin)
         // @description
@@ -350,6 +334,20 @@ public class UtilTags implements Listener {
             for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins())
                 plugins.add(new dPlugin(plugin));
             event.setReplaced(new dList(plugins).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_players>
+        // @returns dList(dPlayer)
+        // @description
+        // Returns a list of all players that have ever played on the server, online or not.
+        // -->
+        if (attribute.startsWith("list_players")) {
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (OfflinePlayer player : dPlayer.offlinePlayers)
+                    players.add(dPlayer.mirrorBukkitPlayer(player));
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -376,7 +374,7 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("list_offline_players")) {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
             for (OfflinePlayer player : dPlayer.offlinePlayers)
-                players.add(dPlayer.mirrorBukkitPlayer(player));
+                if (!player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player));
             event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -389,8 +387,6 @@ public class UtilTags implements Listener {
         // -->
         if (attribute.startsWith("list_ops")) {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
-            for (Player player : Bukkit.getOnlinePlayers())
-                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
             for (OfflinePlayer player : dPlayer.offlinePlayers)
                 if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
             event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
@@ -420,7 +416,7 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("list_offline_ops")) {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
             for (OfflinePlayer player : dPlayer.offlinePlayers)
-                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
+                if (player.isOp() && !player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player));
             event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
             return;
         }

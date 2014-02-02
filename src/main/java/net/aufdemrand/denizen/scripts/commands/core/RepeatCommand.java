@@ -23,6 +23,8 @@ public class RepeatCommand extends BracedCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("qty", arg.asElement());
 
+            break;
+
             // Don't report unhandled argument since getBracedCommands will handle
             // the remainder of the commands.
 

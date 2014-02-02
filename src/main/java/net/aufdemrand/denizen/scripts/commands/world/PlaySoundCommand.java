@@ -56,7 +56,12 @@ public class PlaySoundCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("sound")
                     && arg.matchesPrimitive(aH.PrimitiveType.String)) {
-                    scriptEntry.addObject("sound", arg.asElement());
+                scriptEntry.addObject("sound", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("custom")
+                    && arg.matches("custom")) {
+                scriptEntry.addObject("custom", Element.TRUE);
             }
 
             else
@@ -71,6 +76,7 @@ public class PlaySoundCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("volume", new Element(1));
         scriptEntry.defaultObject("pitch", new Element(1));
+        scriptEntry.defaultObject("custom", Element.FALSE);
 
     }
 
@@ -83,13 +89,15 @@ public class PlaySoundCommand extends AbstractCommand {
         Element sound = scriptEntry.getElement("sound");
         Element volume = scriptEntry.getElement("volume");
         Element pitch = scriptEntry.getElement("pitch");
+        Element custom = scriptEntry.getElement("custom");
 
         dB.report(scriptEntry, getName(),
                 (locations != null ? aH.debugObj("locations", locations.toString()): "") +
                 (players != null ? aH.debugObj("entities", players.toString()): "") +
                 sound.debug() +
                 volume.debug() +
-                pitch.debug());
+                pitch.debug() +
+                custom.debug());
 
         try {
             if (locations != null) {
@@ -101,10 +109,16 @@ public class PlaySoundCommand extends AbstractCommand {
                 }
             } else {
                 for (dPlayer player: players) {
-                    player.getPlayerEntity().playSound(player.getLocation(),
-                            Sound.valueOf(sound.asString().toUpperCase()),
-                            volume.asFloat(),
-                            pitch.asFloat());
+                    if (custom.asBoolean())
+                        player.getPlayerEntity().playSound(player.getLocation(),
+                                sound.asString(),
+                                volume.asFloat(),
+                                pitch.asFloat());
+                    else
+                        player.getPlayerEntity().playSound(player.getLocation(),
+                                Sound.valueOf(sound.asString().toUpperCase()),
+                                volume.asFloat(),
+                                pitch.asFloat());
                 }
             }
         } catch (Exception e) {

@@ -262,7 +262,7 @@ public class EventManager implements Listener {
                     ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
                     // Add entries and context to the queue
-                    ScriptQueue queue = InstantQueue.getQueue(null).addEntries(entries);
+                    ScriptQueue queue = InstantQueue.getQueue(null).addEntries(entries).setReqId(id);
 
                     if (context != null) {
                         for (Map.Entry<String, dObject> entry : context.entrySet()) {
@@ -291,6 +291,7 @@ public class EventManager implements Listener {
 
     public void registerCoreMembers() {
         // Register all the 'Core' SmartEvents. This is called by Denizen's onEnable().
+        registerSmartEvent(new BiomeEnterExitSmartEvent());
         registerSmartEvent(new BlockFallsSmartEvent());
         registerSmartEvent(new CuboidEnterExitSmartEvent());
         registerSmartEvent(new EntitySpawnSmartEvent());

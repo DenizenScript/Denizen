@@ -32,6 +32,10 @@ public class Mechanism {
         return value;
     }
 
+    public boolean hasValue() {
+        return value != null && value.asString().length() > 0;
+    }
+
     public boolean matches(String string) {
         if (string.equalsIgnoreCase(raw_mechanism)) {
             fulfill("");

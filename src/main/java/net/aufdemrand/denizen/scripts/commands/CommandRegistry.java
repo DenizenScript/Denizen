@@ -223,11 +223,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name AnimateChest
-        // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false)
+        // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)
         // @Required 1
         // @Stable unstable
         // @Short Makes a chest appear to open or close.
-        // @Author Todo
+        // @Author Jeebiss, mcmonkey
         // @Description
         // Todo
         // @Tags
@@ -236,7 +236,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(AnimateChestCommand.class,
-                "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false)", 1);
+                "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
 
 
         // <--[command]
@@ -686,7 +686,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Determine
-        // @Syntax determine [<value>]
+        // @Syntax determine (passively) [<value>]
         // @Required 1
         // @Stable stable
         // @Short Sets the outcome of an event.
@@ -699,7 +699,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(DetermineCommand.class,
-                "DETERMINE", "determine [<value>]", 1);
+                "DETERMINE", "determine (passively) [<value>]", 1);
 
 
         // <--[command]
@@ -1711,20 +1711,21 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name PlaySound
-        // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
+        // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)
         // @Required 2
         // @Stable stable
         // @Short Plays a sound at the location or to a list of players.
         // @Author Todo
         // @Description
-        // Todo
+        // TODO
+        // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound string to something like 'random.click'
         // @Tags
         // Todo
         // @Usage
         // Todo
         // -->
         registerCoreMember(PlaySoundCommand.class,
-                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
+                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)", 2);
 
 
         // <--[command]
@@ -1878,21 +1879,25 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Rename
-        // @Syntax rename [<npc>] [<name>]
+        // @Syntax rename [<name>]
         // @Required 1
-        // @Stable Todo
-        // @Short Renames an NPC.
-        // @Author Todo
+        // @Stable unstable
+        // @Short Renames the linked NPC.
+        // @Author aufdemrand
         // @Description
         // Todo
         // @Tags
         // <n@npc.name>
         // <n@npc.name.nickname>
         // @Usage
-        // Todo
+        // Use to rename the linked NPC.
+        // - rename Bob
+        // @Usage
+        // Use to rename a different NPC.
+        // - rename Bob npc:n@32
         // -->
         registerCoreMember(RenameCommand.class,
-                "RENAME", "rename [<npc>] [<name>]", 1);
+                "RENAME", "rename [<name>]", 1);
 
 
         // <--[command]

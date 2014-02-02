@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.*;
+import net.aufdemrand.denizen.objects.properties.entity.*;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -23,21 +24,7 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R1.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.Tameable;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryHolder;
@@ -337,7 +324,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Get the Bukkit entity corresponding to this dEntity
      *
-     * @return  The NPC
+     * @return the underlying Bukkit entity
      */
 
     public Entity getBukkitEntity() {
@@ -467,7 +454,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dEntity getShooter() {
         if (hasShooter())
-            return new dEntity(getProjectile().getShooter());
+            return new dEntity((LivingEntity) getProjectile().getShooter());
         else
             return null;
     }
@@ -489,7 +476,8 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public boolean hasShooter() {
-        return isProjectile() && getProjectile().getShooter() != null;
+        return isProjectile() && getProjectile().getShooter() != null && getProjectile().getShooter() instanceof LivingEntity;
+        // TODO: Handle other shooter source thingy types
     }
 
     /**
@@ -1394,21 +1382,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.get_owner>
-        // @returns dPlayer
-        // @description
-        // Returns the owner of a tamed entity.
-        // -->
-        if (attribute.startsWith("get_owner")) {
-            if (entity instanceof Tameable && ((Tameable) entity).isTamed())
-                return new dPlayer((Player) ((Tameable) entity).getOwner())
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <e@entity.get_passenger>
         // @returns dEntity
         // @description
@@ -1600,21 +1573,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_tamed>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the entity has been tamed.
-        // -->
-        if (attribute.startsWith("is_tamed")) {
-            if (entity instanceof Tameable)
-                return new Element(((Tameable) entity).isTamed())
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return Element.FALSE
-                        .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <e@entity.killer>
         // @returns dPlayer
         // @description
@@ -1770,10 +1728,65 @@ public class dEntity implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether the entity is tameable.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.tame>, <@link mechanism dEntity.owner>,
+        // <@link tag e@entity.is_tamed>, and <@link tag e@entity.get_owner>
         // -->
         if (attribute.startsWith("is_tameable"))
-            return new Element(entity instanceof Tameable)
+            return new Element(EntityTame.describes(this))
                     .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.is_ageable>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the entity is ageable.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.age>, <@link mechanism dEntity.age_lock>,
+        // <@link tag e@entity.is_baby>, <@link tag e@entity.age>,
+        // and <@link tag e@entity.is_age_locked>
+        // -->
+        if (attribute.startsWith("is_ageable"))
+            return new Element(EntityAge.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.is_frame>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the entity can hold a framed item.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.framed>, <@link tag e@entity.framed_item>,
+        // <@link tag e@entity.has_framed_item>, and <@link tag e@entity.framed_item_rotation>
+        // -->
+        if (attribute.startsWith("is_frame"))
+            return new Element(EntityFramed.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.is_colorable>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the entity can be colored.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.color> and <@link tag e@entity.color>
+        // -->
+        if (attribute.startsWith("is_colorable"))
+            return new Element(EntityColor.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.is_powerable>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the entity can be powered.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.powered> and <@link tag e@entity.powered>
+        // -->
+        if (attribute.startsWith("is_powerable"))
+            return new Element(EntityPowered.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
 
 
         /////////////////////
@@ -1947,24 +1960,6 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean())
             getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name tame
-        // @input Element(Boolean)
-        // @description
-        // Sets whether the entity has been tamed.
-        // @tags
-        // <e@entity.is_tamed>
-        // <e@entity.is_tameable>
-        // -->
-        if (mechanism.matches("tame") && mechanism.requireBoolean()) {
-            if (!(entity instanceof Tameable)) {
-                dB.echoError("That dEntity is not tameable.");
-                return;
-            }
-            ((Tameable)getLivingEntity()).setTamed(value.asBoolean());
-        }
 
         // <--[mechanism]
         // @object dEntity

@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.server;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.DenizenCommandSender;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -12,6 +13,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.ArrayList;
 
@@ -84,7 +86,10 @@ public class ExecuteCommand extends AbstractCommand {
 
         case AS_PLAYER:
             try {
-                scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+                PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(scriptEntry.getPlayer().getPlayerEntity(), "/" + command);
+                Bukkit.getPluginManager().callEvent(pcpe);
+                if (!pcpe.isCancelled())
+                    scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
             }
             catch (Throwable e) {
                 dB.echoError("Exception while executing command as player.");
@@ -96,7 +101,10 @@ public class ExecuteCommand extends AbstractCommand {
             boolean isOp = scriptEntry.getPlayer().getPlayerEntity().isOp();
             if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(true);
             try {
-                scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+                PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(scriptEntry.getPlayer().getPlayerEntity(), "/" + command);
+                Bukkit.getPluginManager().callEvent(pcpe);
+                if (!pcpe.isCancelled())
+                    scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
             }
             catch (Throwable e) {
                 dB.echoError("Exception while executing command as OP.");

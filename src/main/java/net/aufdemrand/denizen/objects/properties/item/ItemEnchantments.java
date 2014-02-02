@@ -162,7 +162,11 @@ public class ItemEnchantments implements Property {
                         dB.echoError("Cannot apply enchantment '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
                     else {
                         try {
-                            item.getItemStack().addUnsafeEnchantment(Enchantment.getByName(data[0].toUpperCase()), Integer.valueOf(data[1]));
+                            Enchantment ench = Enchantment.getByName(data[0].toUpperCase());
+                            if (ench != null)
+                                item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
+                            else
+                                dB.echoError("Unknown enchantment '" + data[0] + "'");
                         }
                         catch (NullPointerException e) {
                             dB.echoError("Unknown enchantment '" + data[0] + "'");

@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.objects.aH.PrimitiveType;
+import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
@@ -910,18 +911,20 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player changes sign
-    // player changes wall_sign
-    // player changes sign_post
+    // player changes (<material>)
     //
     // @Triggers when a player changes a sign.
     // @Context
     // <context.location> returns the dLocation of the sign.
     // <context.new> returns the new sign text as a dList.
     // <context.old> returns the old sign text as a dList.
+    // <context.new_escaped> returns the new sign text as a dList, pre-escaped to prevent issues.
+    // <context.old_escaped> returns the old sign text as a dList, pre-escaped to prevent issues.
     // <context.material> returns the dMaterial of the sign.
     //
     // @Determine
     // "CANCELLED" to stop the sign from being changed.
+    // dList to change the lines (Uses escaping, see <@link language Property Escaping>)
     //
     // -->
     @EventHandler
@@ -939,6 +942,19 @@ public class WorldScriptHelper implements Listener {
 
         context.put("old", new dList(Arrays.asList(sign.getLines())));
         context.put("new", new dList(Arrays.asList(event.getLines())));
+
+        dList old_escaped = new dList();
+        for (String str: sign.getLines()) {
+            old_escaped.add(EscapeTags.Escape(str));
+        }
+        context.put("old_escaped", old_escaped);
+
+        dList new_escaped = new dList();
+        for (String str: event.getLines()) {
+            new_escaped.add(EscapeTags.Escape(str));
+        }
+        context.put("new_escaped", new_escaped);
+
         context.put("location", new dLocation(block.getLocation()));
         context.put("material", material);
 
@@ -949,6 +965,13 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+
+        else if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
+            dList lines = new dList(determination);
+            for (int i = 0; i < 4 && i < lines.size(); i++) {
+                event.setLine(i, EscapeTags.unEscape(lines.get(i)));
+            }
+        }
     }
 
 
@@ -1533,7 +1556,7 @@ public class WorldScriptHelper implements Listener {
     // <context.entity> returns the dEntity that died.
     // <context.damager> returns the dEntity damaging the other entity, if any.
     // <context.message> returns an Element of a player's death message.
-    // <context.inventory> returns the dInventory of a player
+    // <context.inventory> returns the dInventory of the entity if it was a player.
     //
     // @Determine
     // Element(String) to change the death message.
@@ -1638,6 +1661,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the entity from exploding.
+    // dList(dLocation) to set a new lists of blocks that are to be affected by the explosion.
     //
     // -->
     @EventHandler
@@ -1665,6 +1689,18 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+
+        else if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
+            dList list = dList.valueOf(determination);
+            event.blockList().clear();
+            for (String loc: list) {
+                dLocation location = dLocation.valueOf(loc);
+                if (location == null)
+                    dB.echoError("Invalid location '" + loc + "'");
+                else
+                    event.blockList().add(location.getWorld().getBlockAt(location));
+            }
+        }
     }
 
     // <--[event]

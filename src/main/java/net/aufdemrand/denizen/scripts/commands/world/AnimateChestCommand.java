@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.*;
 import net.minecraft.server.v1_7_R1.PacketPlayOutBlockAction;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -10,10 +9,12 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class AnimateChestCommand extends AbstractCommand {
 
@@ -36,6 +37,10 @@ public class AnimateChestCommand extends AbstractCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Boolean))
                 scriptEntry.addObject("sound", arg.asElement());
 
+            else if (!scriptEntry.hasObject("players")
+                    && arg.matchesArgumentList(dPlayer.class))
+                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
+
             else
                 arg.reportUnhandled();
 
@@ -49,6 +54,13 @@ public class AnimateChestCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("sound"))
             scriptEntry.addObject("sound", Element.TRUE);
+
+        if (!scriptEntry.hasObject("players")) {
+            if (scriptEntry.hasPlayer())
+                scriptEntry.addObject("players", Arrays.asList(scriptEntry.getPlayer()));
+            else // TODO: Perhaps instead add all players in sight range?
+                throw new InvalidArgumentsException("Missing 'players' argument!");
+        }
     }
 
     @Override
@@ -57,24 +69,30 @@ public class AnimateChestCommand extends AbstractCommand {
         dLocation location = (dLocation) scriptEntry.getObject("location");
         Element action = scriptEntry.getElement("action");
         Element sound = scriptEntry.getElement("sound");
+        List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
 
         dB.report(scriptEntry, getName(), location.debug()
                                           + action.debug()
-                                          + sound.debug());
+                                          + sound.debug()
+                                          + aH.debugObj("players", players.toString()));
 
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
             case OPEN:
-                if (sound.asBoolean()) scriptEntry.getPlayer().getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
-                ((CraftPlayer)scriptEntry.getPlayer().getPlayerEntity()).getHandle().playerConnection.sendPacket(
-                        new PacketPlayOutBlockAction((int) location.getX(), (int) location.getY(), (int) location.getZ(),
-                                ((CraftWorld) location.getWorld()).getHandle().getType((int) location.getX(), (int) location.getY(), (int) location.getZ()), 1, 1));
+                for (dPlayer player: players) {
+                    if (sound.asBoolean()) player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
+                    ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
+                            new PacketPlayOutBlockAction((int) location.getX(), (int) location.getY(), (int) location.getZ(),
+                            ((CraftWorld) location.getWorld()).getHandle().getType((int) location.getX(), (int) location.getY(), (int) location.getZ()), 1, 1));
+                }
                 break;
 
             case CLOSE:
-                if (sound.asBoolean()) scriptEntry.getPlayer().getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
-                ((CraftPlayer)scriptEntry.getPlayer().getPlayerEntity()).getHandle().playerConnection.sendPacket(
-                    new PacketPlayOutBlockAction((int)location.getX(), (int)location.getY(), (int)location.getZ(),
-                        ((CraftWorld)location.getWorld()).getHandle().getType((int)location.getX(), (int)location.getY(), (int)location.getZ()), 1, 0));
+                for (dPlayer player: players) {
+                    if (sound.asBoolean()) player.getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
+                    ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
+                            new PacketPlayOutBlockAction((int)location.getX(), (int)location.getY(), (int)location.getZ(),
+                            ((CraftWorld)location.getWorld()).getHandle().getType((int)location.getX(), (int)location.getY(), (int)location.getZ()), 1, 0));
+                }
                 break;
         }
     }
