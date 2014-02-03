@@ -1078,7 +1078,8 @@ public class dEntity implements dObject, Adjustable {
         // Otherwise, returns null.
         // -->
         if (attribute.startsWith("custom_name")) {
-            if (getLivingEntity().getCustomName() == null) return "null";
+            if (!isLivingEntity() || getLivingEntity().getCustomName() == null)
+                return Element.NULL.getAttribute(attribute.fulfill(1));
             return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(1));
         }
 
@@ -1088,9 +1089,12 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns true if the entity's custom name is visible.
         // -->
-        if (attribute.startsWith("custom_name.visible"))
+        if (attribute.startsWith("custom_name.visible")) {
+            if (!isLivingEntity())
+                return Element.NULL.getAttribute(attribute.fulfill(2));
             return new Element(getLivingEntity().isCustomNameVisible())
                     .getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
         // @attribute <e@entity.eid>
