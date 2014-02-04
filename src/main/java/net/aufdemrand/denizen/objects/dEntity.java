@@ -1436,11 +1436,12 @@ public class dEntity implements dObject, Adjustable {
         // TODO: add list_effects ?
         if (attribute.startsWith("has_effect")) {
             Boolean returnElement = false;
-            if (attribute.hasContext(1))
+            if (attribute.hasContext(1)) {
                 for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
                     if (effect.getType().equals(PotionEffectType.getByName(attribute.getContext(1))))
                         returnElement = true;
-                    else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
+            }
+            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }
 
