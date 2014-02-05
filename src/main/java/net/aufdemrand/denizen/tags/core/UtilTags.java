@@ -36,12 +36,13 @@ public class UtilTags implements Listener {
     }
 
     // <--[tag]
-    // @attribute <math:<calculationhere>>
+    // @attribute <math:<calculation>>
     // @returns Element(Decimal)
     // @description
-    // Returns a calculcated result of the math placed after the :
-    // Example: '<math:1 + 1>' or <math:sin(<npc.id>)>.
-    // Since this is a 'value' tag, to get an int value, you will need to do <math.as_int:calc>.
+    // Returns a calculated result of the math placed after the :
+    // Examples: '<math:1 + 1>' or '<math:sin(<npc.id>)>'.
+    // Since this is a 'value' tag, to get an int value, you will need to do '<math.as_int:calc>',
+    // and similar for all other element tags.
     // -->
     @EventHandler
     public void mathTag(ReplaceableTagEvent event) {
