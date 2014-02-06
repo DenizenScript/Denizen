@@ -4136,7 +4136,8 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player toggles flight
-    // player starts/stops flying
+    // player starts flying
+    // player stops flying
     //
     // @Triggers when a player starts or stops flying.
     // @Context
@@ -4164,7 +4165,8 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player toggles sneak
-    // player starts/stops sneaking
+    // player starts sneaking
+    // player stops sneaking
     //
     // @Triggers when a player starts or stops sneaking.
     // @Context
@@ -4192,7 +4194,8 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player toggles sprint
-    // player starts/stops sprinting
+    // player starts sprinting
+    // player stops sprinting
     //
     // @Triggers when a player starts or stops sprinting.
     // @Context

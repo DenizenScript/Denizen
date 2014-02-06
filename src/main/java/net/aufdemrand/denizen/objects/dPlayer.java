@@ -272,6 +272,11 @@ public class dPlayer implements dObject, Adjustable {
         //   OFFLINE ATTRIBUTES
         /////////////////
 
+        // Defined in dEntity
+        if (attribute.startsWith("is_player")) {
+            return Element.TRUE.getAttribute(attribute.fulfill(1));
+        }
+
         /////////////////////
         //   DEBUG ATTRIBUTES
         /////////////////

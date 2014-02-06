@@ -750,6 +750,7 @@ public class dEntity implements dObject, Adjustable {
                                 }
 
                             } catch (Exception e) {
+                                dB.echoError("Error setting custom entity data.");
                                 dB.echoError(e);
                             }
                         }
@@ -758,6 +759,11 @@ public class dEntity implements dObject, Adjustable {
             }
 
             else dB.echoError("Cannot spawn a null dEntity!");
+
+            if (!isUnique()) {
+                dB.echoError("Error spawning entity - bad entity type, blocked by another plugin, or tried to spawn in an unloaded chunk?");
+                return;
+            }
 
             for (Mechanism mechanism: mechanisms) {
                 adjust(mechanism);
