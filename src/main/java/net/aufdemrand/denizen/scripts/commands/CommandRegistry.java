@@ -2219,7 +2219,7 @@ public class CommandRegistry implements dRegistry {
         // Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a target.
         // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
         // @Tags
-        // Todo
+        // <entry[saveName].shot_entities> returns a dList of entities that were shot.
         // @Usage
         // Use to shoot an arrow from the NPC to perfectly hit the player.
         // - shoot arrow origin:<npc> destination:<player.location>
