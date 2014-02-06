@@ -1219,10 +1219,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Hurt
-        // @Syntax hurt (<#.#>) (<entity>|...)
+        // @Syntax hurt (<#.#>) ({player}/<entity>|...)
         // @Required 0
         // @Stable stable
-        // @Short Hurts the player.
+        // @Short Hurts the player or a list of entities.
         // @Author aufdemrand, Jeebiss, morphan1, mcmonkey
         // @Description
         // Todo

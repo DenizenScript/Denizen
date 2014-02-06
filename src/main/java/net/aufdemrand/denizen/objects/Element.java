@@ -77,6 +77,23 @@ public class Element implements dObject {
         return string != null;
     }
 
+    /**
+     * Handle null dObjects appropriately for potentionally null tags.
+     * Will show a dB error message and return Element.NULL for null objects.
+     *
+     * @param tag The input string that produced a potentially null object, for debugging.
+     * @param object The potentially null object.
+     * @param type The type of object expected, for debugging. (EG: 'dNPC')
+     * @return The object or Element.NULL if the object is null.
+     */
+    public static dObject HandleNull(String tag, dObject object, String type) {
+        if (object == null) {
+            dB.echoError("'" + tag + "' is an invalid " + type + "!");
+            return Element.NULL;
+        }
+        return object;
+    }
+
     private final String element;
 
     public Element(String string) {
@@ -377,7 +394,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("ascuboid")
                 || attribute.startsWith("as_cuboid"))
-            return dCuboid.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dCuboid.valueOf(element), "dCuboid").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_entity>
@@ -387,7 +404,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asentity")
                 || attribute.startsWith("as_entity"))
-            return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dEntity.valueOf(element), "dEntity").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_inventory>
@@ -397,7 +414,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asinventory")
                 || attribute.startsWith("as_inventory"))
-            return dInventory.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dInventory.valueOf(element), "dInventory").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_item>
@@ -408,7 +425,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asitem")
                 || attribute.startsWith("as_item"))
-            return dItem.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dItem.valueOf(element), "dItem").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_list>
@@ -418,7 +435,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("aslist")
                 || attribute.startsWith("as_list"))
-            return dList.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dList.valueOf(element), "dList").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_location>
@@ -428,7 +445,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("aslocation")
                 || attribute.startsWith("as_location"))
-            return dLocation.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dLocation.valueOf(element), "dLocation").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_material>
@@ -438,7 +455,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asmaterial")
                 || attribute.startsWith("as_material"))
-            return dMaterial.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dMaterial.valueOf(element), "dMaterial").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_npc>
@@ -448,7 +465,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asnpc")
                 || attribute.startsWith("as_npc"))
-            return dNPC.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dNPC.valueOf(element), "dNPC").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_player>
@@ -458,7 +475,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asplayer")
                 || attribute.startsWith("as_player"))
-            return dPlayer.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dPlayer.valueOf(element), "dPlayer").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_plugin>
@@ -468,7 +485,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asplugin")
                 || attribute.startsWith("as_plugin"))
-            return dPlugin.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dPlugin.valueOf(element), "dPlugin").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_script>
@@ -478,7 +495,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asscript")
                 || attribute.startsWith("as_script"))
-            return dScript.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dScript.valueOf(element), "dScript").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_duration>
@@ -488,7 +505,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asduration")
                 || attribute.startsWith("as_duration"))
-            return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, Duration.valueOf(element), "Duration").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_world>
@@ -498,7 +515,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asworld")
                 || attribute.startsWith("as_world"))
-            return dWorld.valueOf(element).getAttribute(attribute.fulfill(1));
+            return HandleNull(element, dWorld.valueOf(element), "dWorld").getAttribute(attribute.fulfill(1));
 
 
         /////////////////////

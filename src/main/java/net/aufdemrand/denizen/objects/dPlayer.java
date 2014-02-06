@@ -65,7 +65,7 @@ public class dPlayer implements dObject, Adjustable {
     public static dPlayer valueOf(String string) {
         if (string == null) return null;
 
-        string = string.replace("p@", "");
+        string = string.replace("p@", "").replace("P@", "");
 
         ////////
         // Match player name
@@ -83,8 +83,7 @@ public class dPlayer implements dObject, Adjustable {
             else return new dPlayer(returnable);
         }
 
-        else dB.echoError("Invalid Player! '" + string
-                + "' could not be found. Has the player logged off?");
+        else dB.echoError("Invalid Player! '" + string + "' could not be found.");
 
         return null;
     }

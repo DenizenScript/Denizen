@@ -115,7 +115,7 @@ public class dEntity implements dObject, Adjustable {
                 LivingEntity returnable = aH.getPlayerFrom(m.group(2)).getPlayerEntity();
 
                 if (returnable != null) return new dEntity(returnable);
-                else dB.echoError("Invalid Player! '" + entityGroup
+                else dB.echoError("Invalid Player! '" + m.group(2)
                         + "' could not be found. Has the player logged off?");
             }
 
