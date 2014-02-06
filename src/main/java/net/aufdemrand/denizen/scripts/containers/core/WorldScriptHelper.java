@@ -2749,7 +2749,7 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("click", new Element(click));
         context.put("slot_type", new Element(slotType));
-        context.put("slot", new Element(event.getSlot()));
+        context.put("slot", new Element(event.getSlot()+1));
         context.put("is_shift_click", new Element(event.isShiftClick()));
         context.put("action", new Element(event.getAction().name()));
 
@@ -3632,8 +3632,8 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player <click type> clicks (<material>) (with <item>) (in <notable cuboid>)
-    // player <click type> clicks block (with <item>)
+    // player (<click type>) clicks (<material>) (with <item>) (in <notable cuboid>)
+    // player (<click type>) clicks block (with <item>)
     // player stands on <pressure plate>
     //
     // @Triggers when a player clicks on a block or stands on a pressure plate.
@@ -3657,25 +3657,30 @@ public class WorldScriptHelper implements Listener {
 
         List<String> events = new ArrayList<String>();
 
-        String interaction;
+        String[] interactions;
 
-        if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK)
-            interaction = "player left clicks";
-        else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
-            interaction = "player right clicks";
-            // The only other action is PHYSICAL, which is triggered when a player
-            // stands on a pressure plate
-        else interaction = "player stands on";
+        if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
+            interactions = new String[]{"player left clicks", "player clicks"};
+        }
+        else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+            interactions = new String[]{"player right clicks", "player clicks"};
+        }
+        // The only other action is PHYSICAL, which is triggered when a player
+        // stands on a pressure plate
+        else interactions = new String[]{"player stands on"};
 
-        events.add(interaction);
+        for (String interaction : interactions)
+            events.add(interaction);
 
         if (event.hasItem()) {
             item = new dItem(event.getItem());
             context.put("item", item);
 
-            events.add(interaction + " with item");
-            events.add(interaction + " with " + item.identifySimple());
-            events.add(interaction + " with " + item.identifyMaterial());
+            for (String interaction : interactions) {
+                events.add(interaction + " with item");
+                events.add(interaction + " with " + item.identifySimple());
+                events.add(interaction + " with " + item.identifyMaterial());
+            }
         }
 
         if (event.hasBlock()) {
@@ -3683,19 +3688,23 @@ public class WorldScriptHelper implements Listener {
             dMaterial blockMaterial = dMaterial.getMaterialFrom(block.getType(), block.getData());
             context.put("location", new dLocation(block.getLocation()));
 
-            events.add(interaction + " block");
-            events.add(interaction + " " + blockMaterial.identifySimple());
+            for (String interaction : interactions) {
+                events.add(interaction + " block");
+                events.add(interaction + " " + blockMaterial.identifySimple());
+            }
 
             if (event.hasItem()) {
-                events.add(interaction + " block with item");
-                events.add(interaction + " block with " + item.identifySimple());
-                events.add(interaction + " block with " + item.identifyMaterial());
-                events.add(interaction + " " + blockMaterial.identifySimple() +
-                        " with item");
-                events.add(interaction + " " + blockMaterial.identifySimple() +
-                        " with " + item.identifySimple());
-                events.add(interaction + " " + blockMaterial.identifySimple() +
-                        " with " + item.identifyMaterial());
+                for (String interaction : interactions) {
+                    events.add(interaction + " block with item");
+                    events.add(interaction + " block with " + item.identifySimple());
+                    events.add(interaction + " block with " + item.identifyMaterial());
+                    events.add(interaction + " " + blockMaterial.identifySimple() +
+                            " with item");
+                    events.add(interaction + " " + blockMaterial.identifySimple() +
+                            " with " + item.identifySimple());
+                    events.add(interaction + " " + blockMaterial.identifySimple() +
+                            " with " + item.identifyMaterial());
+                }
             }
 
             // Look for cuboids that contain the block's location
@@ -3704,10 +3713,12 @@ public class WorldScriptHelper implements Listener {
             if (cuboids.size() > 0) {
                 dList cuboid_context = new dList();
                 for (dCuboid cuboid : cuboids) {
-                    events.add(interaction + " block in " + cuboid.identifySimple());
-                    events.add(interaction + " block in cuboid");
-                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());
-                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in cuboid");
+                    for (String interaction : interactions) {
+                        events.add(interaction + " block in " + cuboid.identifySimple());
+                        events.add(interaction + " block in cuboid");
+                        events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());
+                        events.add(interaction + ' ' + blockMaterial.identifySimple() + " in cuboid");
+                    }
                     cuboid_context.add(cuboid.identifySimple());
                 }
                 // Add in cuboids context, if inside a cuboid
