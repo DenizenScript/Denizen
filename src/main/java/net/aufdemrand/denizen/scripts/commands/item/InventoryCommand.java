@@ -132,7 +132,7 @@ public class InventoryCommand extends AbstractCommand {
 
                 // Set items by slot
                 case SET:
-                    destination.setSlots(slot.asInt(), origin.getContents());
+                    destination.setSlots(slot.asInt()-1, origin.getContents());
                     break;
 
                 // Keep only items from the origin's contents in the

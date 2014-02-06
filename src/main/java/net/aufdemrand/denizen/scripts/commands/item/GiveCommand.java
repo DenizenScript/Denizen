@@ -133,7 +133,7 @@ public class GiveCommand  extends AbstractCommand {
 
                     HashMap<Integer, ItemStack> leftovers;
                     if (slot != null)
-                        leftovers = inventory.setWithLeftovers(slot.asInt(), is);
+                        leftovers = inventory.setWithLeftovers(slot.asInt()-1, is);
                     else
                         leftovers = inventory.addWithLeftovers(is);
 
