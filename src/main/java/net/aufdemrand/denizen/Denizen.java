@@ -110,7 +110,7 @@ public class Denizen extends JavaPlugin {
      */
     private PropertyParser propertyParser;
 
-    private PropertyParser getPropertyParser() {
+    public PropertyParser getPropertyParser() {
         return propertyParser;
     }
 
