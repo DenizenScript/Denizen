@@ -318,6 +318,11 @@ public class dNPC implements dObject, Adjustable {
 
         if (attribute == null) return "null";
 
+        // Defined in dEntity
+        if (attribute.startsWith("is_npc")) {
+            return Element.TRUE.getAttribute(attribute.fulfill(1));
+        }
+
         // <--[tag]
         // @attribute <n@npc.has_nickname>
         // @returns Element(Boolean)

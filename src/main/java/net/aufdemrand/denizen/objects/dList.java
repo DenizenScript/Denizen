@@ -355,7 +355,7 @@ public class dList extends ArrayList<String> implements dObject {
 
             for (String item : this) {
                 String[] strings = StringUtils.split(item, split);
-                if (strings.length >= index)
+                if (strings.length > index)
                     sub_list.add(strings[index]);
                 else sub_list.add("null");
             }

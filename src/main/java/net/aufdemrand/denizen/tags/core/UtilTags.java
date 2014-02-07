@@ -589,9 +589,23 @@ public class UtilTags implements Listener {
         // @description
         // Returns whether an entity is spawned and valid.
         // -->
-        else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")) {
+        else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")
+                && event.hasTypeContext()) {
             dEntity ent = dEntity.valueOf(event.getTypeContext());
             event.setReplaced(new Element((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <util.npc_is_valid[<npc>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether an NPC exists and is usable.
+        // -->
+        else if (type.equalsIgnoreCase("NPC_IS_VALID")
+                && event.hasTypeContext()) {
+            dNPC npc = dNPC.valueOf(event.getTypeContext());
+            event.setReplaced(new Element((npc != null && npc.isValid()))
                     .getAttribute(attribute.fulfill(1)));
         }
 
