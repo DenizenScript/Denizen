@@ -60,19 +60,23 @@ public class CreateCommand extends AbstractCommand {
                 + (traits != null ? traits.debug() : ""));
 
         // Add the created NPC into the script entry so it can be utilized if need be.
-        scriptEntry.addObject("created_npc", dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry()
-                .createNPC(type.getEntityType(), name.asString())));
+        dNPC created = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry()
+                .createNPC(type.getEntityType(), name.asString()));
+        scriptEntry.addObject("created_npc", created);
 
         if (loc != null)
-            ((dNPC) scriptEntry.getObject("created_npc")).getCitizen().spawn(loc);
+            created.getCitizen().spawn(loc);
         if (traits != null) {
             for (String trait_name : traits) {
                 Trait trait = CitizensAPI.getTraitFactory().getTrait(trait_name);
                 if (trait != null)
-                    ((dNPC) scriptEntry.getObject("created_npc")).getCitizen().addTrait(trait);
+                    created.getCitizen().addTrait(trait);
                 else
                     dB.echoError("Could not add trait to NPC: " + trait_name);
             }
+        }
+        for (Mechanism mechanism: type.getWaitingMechanisms()) {
+            created.adjust(mechanism);
         }
     }
 
