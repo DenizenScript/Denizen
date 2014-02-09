@@ -2214,10 +2214,14 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air up to a certain height.
-        // @Author David Cernat
+        // @Author David Cernat, mcmonkey
         // @Description
         // Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a target.
         // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
+        // In the script ran when the arrow lands, the following definitions will be available:
+        // %shot_entities% for all shot entities, %last_entity% for the last one (The controlling entity),
+        // %location% for the last known location of the last shot entity, and
+        // %hit_entities% for a list of any entities that were hit by fired projectiles.
         // @Tags
         // <entry[saveName].shot_entities> returns a dList of entities that were shot.
         // @Usage
