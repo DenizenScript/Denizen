@@ -2051,6 +2051,32 @@ public class WorldScriptHelper implements Listener {
         context.put("entity", entity.getDenizenObject());
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
+        else if (entity.isPlayer()) player = entity.getPlayer(); // Should never happen, but just in case
+
+        String determination = EventManager.doEvents(Arrays.asList
+                ("entity teleports",
+                        entity.identifyType() + " teleports"),
+                npc, player, context, true);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+
+    // Shares meta with EntityTeleportEvent
+    @EventHandler
+    public void playerTeleport(PlayerTeleportEvent event) {
+
+        Player player = null;
+        dNPC npc = null;
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity entity = new dEntity(event.getPlayer());
+
+        context.put("origin", new dLocation(event.getFrom()));
+        context.put("destination", new dLocation(event.getTo()));
+        context.put("entity", entity.getDenizenObject());
+
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
 
         String determination = EventManager.doEvents(Arrays.asList

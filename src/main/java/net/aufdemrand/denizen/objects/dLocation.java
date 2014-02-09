@@ -399,6 +399,16 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         // <--[tag]
+        // @attribute <l@location.has_inventory>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the block at the location has an inventory.
+        // -->
+        if (attribute.startsWith("has_inventory")) {
+            return new Element(getBlock().getState() instanceof InventoryHolder).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.inventory>
         // @returns dInventory
         // @description
@@ -406,7 +416,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // block is not a container, returns null.
         // -->
         if (attribute.startsWith("inventory")) {
-            return getInventory().getAttribute(attribute.fulfill(1));
+            return Element.HandleNull(identify() + ".inventory", getInventory(), "dInventory").getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

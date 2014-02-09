@@ -1798,6 +1798,18 @@ public class dEntity implements dObject, Adjustable {
             return new Element(EntityPowered.describes(this))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <e@entity.is_sizeable>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the entity is sizeable.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.size> and <@link tag e@entity.size>
+        // -->
+        if (attribute.startsWith("is_sizeable"))
+            return new Element(EntitySize.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
 
 
         /////////////////////
@@ -1825,6 +1837,10 @@ public class dEntity implements dObject, Adjustable {
     }
 
     private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
+
+    public ArrayList<Mechanism> getWaitingMechanisms() {
+        return mechanisms;
+    }
 
     @Override
     public void adjust(Mechanism mechanism) {

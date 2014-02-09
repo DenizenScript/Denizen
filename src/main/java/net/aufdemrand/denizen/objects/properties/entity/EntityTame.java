@@ -73,12 +73,8 @@ public class EntityTame implements Property {
         // To edit this, use <@link mechanism dEntity.tame>
         // -->
         if (attribute.startsWith("is_tamed")) {
-            if (entity instanceof Tameable)
-                return new Element(((Tameable) entity.getBukkitEntity()).isTamed())
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return Element.FALSE
-                        .getAttribute(attribute.fulfill(1));
+            return new Element(((Tameable) entity.getBukkitEntity()).isTamed())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

@@ -1,6 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -13,6 +17,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.Velocity;
@@ -20,6 +25,12 @@ import net.aufdemrand.denizen.utilities.entity.Gravity;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -29,7 +40,14 @@ import org.bukkit.util.Vector;
  * @author David Cernat
  */
 
-public class ShootCommand extends AbstractCommand {
+public class ShootCommand extends AbstractCommand implements Listener {
+
+    Map<UUID, dEntity> arrows = new HashMap<UUID, dEntity>();
+
+    @Override
+    public void onEnable() {
+        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -143,7 +161,7 @@ public class ShootCommand extends AbstractCommand {
             return;
         }
 
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dScript script = (dScript) scriptEntry.getObject("script");
         dEntity shooter = (dEntity) scriptEntry.getObject("shooter");
 
@@ -181,6 +199,8 @@ public class ShootCommand extends AbstractCommand {
             // when applicable
             if (entity.isProjectile() && (shooter != null || originEntity != null)) {
                 entity.setShooter(shooter != null ? shooter : originEntity);
+                // Also, watch for it hitting a target
+                arrows.put(entity.getUUID(), null);
             }
         }
 
@@ -239,7 +259,7 @@ public class ShootCommand extends AbstractCommand {
                     flying = false;
                 }
 
-                // Else, if the entity is no longer traveling through
+                // Otherwise, if the entity is no longer traveling through
                 // the air, stop the task
                 else if (lastVelocity != null) {
                     if (lastVelocity.distance
@@ -254,16 +274,35 @@ public class ShootCommand extends AbstractCommand {
 
                     this.cancel();
 
+                    // Build a queue out of the targeted script
                     List<ScriptEntry> entries = script.getContainer().getBaseEntries
                             (scriptEntry.getPlayer(),
                              scriptEntry.getNPC());
                     ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
+
+                    // Add relevant definitions
                     queue.addDefinition("location", lastLocation.identify());
                     queue.addDefinition("shot_entities", entityList.toString());
                     queue.addDefinition("last_entity", lastEntity.identify());
+
+                    // Handle hit_entities definition
+                    dList hitEntities = new dList();
+                    for (dEntity entity: entities) {
+                        if (arrows.containsKey(entity.getUUID())) {
+                            dEntity hit = arrows.get(entity.getUUID());
+                            arrows.remove(entity.getUUID());
+                            if (hit != null) {
+                                hitEntities.add(hit.identify());
+                            }
+                        }
+                    }
+                    queue.addDefinition("hit_entities", hitEntities.identify());
+
+                    // Start it!
                     queue.start();
                 }
                 else {
+                    // Record it's position in case the entity dies
                     lastLocation = lastEntity.getLocation();
                     lastVelocity = lastEntity.getVelocity();
                 }
@@ -274,5 +313,23 @@ public class ShootCommand extends AbstractCommand {
         if (script != null) {
             task.runTaskTimer(denizen, 0, 2);
         }
+    }
+
+    @EventHandler
+    public void arrowDamage(EntityDamageByEntityEvent event) {
+        // Get the damager
+        Entity arrow = event.getDamager();
+
+        // First, quickly confirm it's a projectile (relevant at all)
+        if (!(arrow instanceof Projectile))
+            return;
+
+        // Second, more slowly check if we shot it
+        if (!arrows.containsKey(arrow.getUniqueId()))
+            return;
+
+        // Replace its entry with the hit entity.
+        arrows.remove(arrow.getUniqueId());
+        arrows.put(arrow.getUniqueId(), new dEntity(event.getEntity()));
     }
 }
