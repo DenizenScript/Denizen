@@ -87,7 +87,7 @@ public class RandomCommand extends BracedCommand {
 
         int selected = Utilities.getRandom().nextInt(possibilities);
 
-        dB.echoDebug(scriptEntry, "...random number generator selected '" + String.valueOf(selected + 1) + "'.");
+        dB.report(scriptEntry, getName(), aH.debugObj("possibilities", possibilities) + aH.debugObj("choice", selected + 1));
 
         if (bracedCommands == null) {
 
@@ -111,7 +111,7 @@ public class RandomCommand extends BracedCommand {
 
         }
         else {
-            queue.injectEntry(bracedCommands.get(selected), 0);
+            queue.injectEntry(bracedCommands.get(selected).addObject("reqID", scriptEntry.getObject("reqID")), 0);
         }
     }
 }
