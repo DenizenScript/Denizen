@@ -1394,7 +1394,7 @@ public class CommandRegistry implements dRegistry {
 
         // @Usage
         // Use to listen for when a player mines 1 iron ore.
-        // - listen block type:break block:iron_or qty:1 script:IronMined
+        // - listen block type:break block:iron_ore qty:1 script:IronMined
 
         // @Usage
         // Use to listen for when a player crafts 1 wooden sword.

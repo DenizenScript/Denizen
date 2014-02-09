@@ -187,7 +187,6 @@ public class RunCommand extends AbstractCommand implements Holdable {
         ScriptQueue queue;
         if (scriptEntry.hasObject("instant")) {
             queue = InstantQueue.getQueue(id).addEntries(entries);
-            scriptEntry.setFinished(true);
         }
         else {
             queue = TimedQueue.getQueue(id).addEntries(entries);
