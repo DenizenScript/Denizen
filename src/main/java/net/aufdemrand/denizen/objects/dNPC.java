@@ -622,7 +622,7 @@ public class dNPC implements dObject, Adjustable {
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             }
             else {
-                return new Element(citizen.getTrait(AssignmentTrait.class).getAssignment().getName())
+                return new dScript(citizen.getTrait(AssignmentTrait.class).getAssignment().getName())
                     .getAttribute(attribute.fulfill(1));
             }
         }
