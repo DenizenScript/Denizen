@@ -429,6 +429,17 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return dMaterial.getMaterialFrom(getBlock().getType(), getBlock().getData()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <l@location.switched>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the block at the location is considered to be switched on.
+        // (For buttons, levers, etc.)
+        // To change this, see <@link command Switch>
+        // -->
+        if (attribute.startsWith("switched"))
+            return new Element((getBlock().getData() & 0x8) > 0).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <l@location.sign_contents.escaped>
         // @returns dList
         // @description
