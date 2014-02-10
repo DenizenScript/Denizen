@@ -137,15 +137,18 @@ public class ItemBook implements Property {
     public String getPropertyString() {
         StringBuilder output = new StringBuilder();
         BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
-        if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+        if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK)
+                && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
             output.append("author|").append(EscapeTags.Escape(bookInfo.getAuthor()))
                     .append("|title|").append(EscapeTags.Escape(bookInfo.getTitle())).append("|");
         }
         output.append("pages|");
-        for (String page: bookInfo.getPages()) {
-            output.append(EscapeTags.Escape(page)).append("|");
+        if (bookInfo.hasPages()) {
+            for (String page: bookInfo.getPages()) {
+                output.append(EscapeTags.Escape(page)).append("|");
+            }
         }
-        if (output.length() == 6)
+        if (output.length() <= 6)
             return null;
         else
             return output.substring(0, output.length() - 1);
