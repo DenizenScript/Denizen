@@ -631,6 +631,49 @@ public class Element implements dObject {
         if (attribute.startsWith("starts_with") || attribute.startsWith("startswith"))
             return new Element(element.startsWith(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <el@element.index_of[<string>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the index of the first occurrence of a specified string.
+        // Returns -1 if the string never occurs within the element.
+        // -->
+        if (attribute.startsWith("index_of")
+                && attribute.hasContext(1)) {
+            return new Element(element.indexOf(attribute.getContext(1)) + 1)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.last_index_of[<string>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the index of the last occurrence of a specified string.
+        // Returns -1 if the string never occurs within the element.
+        // -->
+        if (attribute.startsWith("last_index_of")
+                && attribute.hasContext(1)) {
+            return new Element(element.lastIndexOf(attribute.getContext(1)) + 1)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.char_at[<#>]>
+        // @returns Element
+        // @description
+        // Returns the character at a specified index.
+        // Returns null if the index is outside the range of the element.
+        // -->
+        if (attribute.startsWith("char_at")
+                && attribute.hasContext(1)) {
+            int index = attribute.getIntContext(1) - 1;
+            if (index < 0 || index >= element.length())
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return new Element(String.valueOf(element.charAt(index)))
+                        .getAttribute(attribute.fulfill(1));
+        }
+
 
         /////////////////////
         //   STRING MANIPULATION ATTRIBUTES
