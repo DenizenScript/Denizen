@@ -144,12 +144,15 @@ public class Denizen extends JavaPlugin {
 
     public RuntimeCompiler runtimeCompiler;
 
+    private WorldScriptHelper ws_helper;
+
 
     /*
      * Sets up Denizen on start of the CraftBukkit server.
      */
     @Override
     public void onEnable() {
+        try {
         // Activate dependencies
         depends.initialize();
 
@@ -169,7 +172,12 @@ public class Denizen extends JavaPlugin {
         dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
         dB.log(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
         dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
 
+        try {
         // Create the dNPC Registry
         dNPCRegistry = new dNPCRegistry(this);
 
@@ -181,13 +189,26 @@ public class Denizen extends JavaPlugin {
         // Register commandHandler with Citizens2
         commandHandler = new CommandHandler(Depends.citizens);
 
+        // Register CommandHandler with Citizens
+        Depends.citizens.registerCommandClass(CommandHandler.class);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+
+        try {
         // Register script-container types
         ScriptRegistry._registerCoreTypes();
 
         // Populate config.yml if it doesn't yet exist.
         saveDefaultConfig();
         reloadConfig();
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
 
+        try {
         // Ensure the Scripts and Midi folder exist
         new File(getDataFolder() + "/scripts").mkdirs();
         new File(getDataFolder() + "/midi").mkdirs();
@@ -199,7 +220,12 @@ public class Denizen extends JavaPlugin {
             dB.log("Denizen.mid not found, extracting from " + sourceFile);
             Utilities.extractFile(new File(sourceFile), "Denizen.mid", getDataFolder() + "/midi/");
         }
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
 
+        try {
         // Warn if configuration is outdated / too new
         if (!getConfig().isSet("Config.Version") ||
                 getConfig().getInt("Config.Version", 0) != configVersion) {
@@ -214,10 +240,15 @@ public class Denizen extends JavaPlugin {
         reloadSaves();
 
         // Create the command script handler for listener
-        WorldScriptHelper ws_helper = new WorldScriptHelper();
+        ws_helper = new WorldScriptHelper();
         ItemScriptHelper is_helper = new ItemScriptHelper();
         InventoryScriptHelper in_helper = new InventoryScriptHelper();
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
 
+        try {
         // Register traits
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PushableTrait.class).withName("pushable"));
@@ -250,8 +281,13 @@ public class Denizen extends JavaPlugin {
         // Compile and load Denizen externals
         runtimeCompiler = new RuntimeCompiler(this);
         runtimeCompiler.loader();
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
 
         // Register Core Members in the Denizen Registries
+        try {
         getCommandRegistry().registerCoreMembers();
         getTriggerRegistry().registerCoreMembers();
         getRequirementRegistry().registerCoreMembers();
@@ -260,16 +296,14 @@ public class Denizen extends JavaPlugin {
         eventManager = new EventManager();
         eventManager().registerCoreMembers();
 
-        // Register CommandHandler with Citizens
-        Depends.citizens.registerCommandClass(CommandHandler.class);
-
         // Register Core dObjects with the ObjectFetcher
-        try {
             ObjectFetcher._registerCoreObjects();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
+        try {
         // Initialize non-standard dMaterials
         dMaterial._initialize();
 
@@ -282,6 +316,10 @@ public class Denizen extends JavaPlugin {
 
         // Fire the 'on Server Start' world event
         ws_helper.serverStartEvent();
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
     }
 
 
