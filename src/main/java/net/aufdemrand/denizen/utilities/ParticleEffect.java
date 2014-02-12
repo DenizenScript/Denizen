@@ -128,7 +128,8 @@ public enum ParticleEffect {
         return ID_MAP.get(id);
     }
 
-    private static List<Player> getPlayersInRange(Location loc, double range) {
+    // Denizen: made public
+    public static List<Player> getPlayersInRange(Location loc, double range) {
         List<Player> players = new ArrayList<Player>();
         double sqr = range * range;
         for (Player p : loc.getWorld().getPlayers())
@@ -191,8 +192,16 @@ public enum ParticleEffect {
         sendPacket(Arrays.asList(players), createPacket(loc, offsetX, offsetY, offsetZ, speed, amount));
     }
 
+    // Denizen: Entire duplicate function
     /**
-     * Displays a particle effect which is visible for all players whitin the maximum range of 20 blocks in the world of @param loc
+     * Displays a particle effect which is only visible for specific players
+     */
+    public void display(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount, List<Player> players) {
+        sendPacket(players, createPacket(loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+    /**
+     * Displays a particle effect which is visible for all players within the maximum range of 100 blocks in the world of @param loc
      */
     public void display(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         display(loc, MAX_RANGE, offsetX, offsetY, offsetZ, speed, amount);
@@ -213,6 +222,14 @@ public enum ParticleEffect {
      */
     public static void displayIconCrack(Location loc, int id, float offsetX, float offsetY, float offsetZ, float speed, int amount, Player... players) {
         sendPacket(Arrays.asList(players), createIconCrackPacket(id, loc, offsetX, offsetY, offsetZ, speed, amount));
+    }
+
+    // Denizen: Entire duplicate function
+    /**
+     * Displays an icon crack (item break) effect which is only visible for specific players
+     */
+    public static void displayIconCrack(Location loc, int id, float offsetX, float offsetY, float offsetZ, float speed, int amount, List<Player> players) {
+        sendPacket(players, createIconCrackPacket(id, loc, offsetX, offsetY, offsetZ, speed, amount));
     }
 
     /**

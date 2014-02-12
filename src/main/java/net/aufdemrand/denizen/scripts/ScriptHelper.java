@@ -118,7 +118,7 @@ public class ScriptHelper {
                         if (yaml != null && saved.length() > 0)
                             sb.append(saved + "\r\n");
                         else {
-                            dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. See console for YAML errors.");
+                            dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. No internal error - is the file empty?");
                             hadError = true;
                         }
 

@@ -1692,7 +1692,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name PlayEffect
-        // @Syntax playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)
+        // @Syntax playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>) (targets:<player>|...)
         // @Required 2
         // @Stable stable
         // @Short Plays a visible or audible effect at the location.
@@ -1706,7 +1706,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(PlayEffectCommand.class,
-                "PLAYEFFECT", "playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)", 2);
+                "PLAYEFFECT", "playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>) (targets:<player>|...)", 2);
 
 
         // <--[command]

@@ -58,7 +58,7 @@ public class ScriptRegistry {
         EventManager.events.clear();
         ItemScriptHelper.item_scripts.clear();
         InventoryScriptHelper.inventory_scripts.clear();
-        // Get a set of key names in concantenated Denizen Scripts
+        // Get a set of key names in concatenated Denizen Scripts
         Set<String> scripts = yamlScripts.getKeys(false);
         // Iterate through set
         for (String scriptName : scripts)
@@ -70,7 +70,7 @@ public class ScriptRegistry {
                     dB.log("<G>Trying to load an invalid script. '<A>" + scriptName + "<Y>(" + type + ")'<G> is an unknown type.");
                     continue;
                 }
-                // Instantize a new scriptContainer of specified type.
+                // Instantiate a new scriptContainer of specified type.
                 Class typeClass = scriptContainerTypes.get(type.toUpperCase());
                 try {
                     scriptContainers.put(scriptName, typeClass.getConstructor(ConfigurationSection.class, String.class)
