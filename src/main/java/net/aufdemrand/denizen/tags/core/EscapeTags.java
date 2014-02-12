@@ -34,6 +34,7 @@ public class EscapeTags implements Listener {
     // ] = &rb
     // : = &co
     // @ = &at
+    // . = &dot
     //
     // Also, you can input a non-breaking space via &sp
     //
@@ -50,12 +51,15 @@ public class EscapeTags implements Listener {
      * @return the escaped data.
      */
     public static String Escape(String input) {
+        if (input == null)
+            return null;
         return TagManager.CleanOutputFully(input)
                 .replace("&", "&amp").replace("|", "&pipe")
                 .replace(">", "&gt").replace("<", "&lt")
                 .replace("\n", "&nl").replace(";", "&sc")
                 .replace("[", "&lb").replace("]", "&rb")
-                .replace(":", "&co").replace("@", "&at");
+                .replace(":", "&co").replace("@", "&at")
+                .replace(".", "&dot");
     }
 
     /**
@@ -66,6 +70,8 @@ public class EscapeTags implements Listener {
      * @return the unescaped data.
      */
     public static String unEscape(String input) {
+        if (input == null)
+            return null;
         return TagManager.CleanOutputFully(input)
                 .replace("&pipe;", "|").replace("&nl;", "\n")
                 .replace("&gt;", ">").replace("&lt;", "<")
@@ -76,7 +82,8 @@ public class EscapeTags implements Listener {
                 .replace("&amp", "&").replace("&sc", ";")
                 .replace("&lb", "[").replace("&rb", "]")
                 .replace("&sp", String.valueOf((char)0x00A0))
-                .replace("&co", ":").replace("&at", "@");
+                .replace("&co", ":").replace("&at", "@")
+                .replace("&dot", ".");
     }
 
     @EventHandler

@@ -200,6 +200,9 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
 
     public static boolean matches(String string) {
+        if (string == null || string.length() == 0)
+            return false;
+
         final Pattern location_by_saved = Pattern.compile("(l@)(.+)");
         Matcher m = location_by_saved.matcher(string);
         if (m.matches())
@@ -427,6 +430,17 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("material"))
             return dMaterial.getMaterialFrom(getBlock().getType(), getBlock().getData()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <l@location.switched>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the block at the location is considered to be switched on.
+        // (For buttons, levers, etc.)
+        // To change this, see <@link command Switch>
+        // -->
+        if (attribute.startsWith("switched"))
+            return new Element((getBlock().getData() & 0x8) > 0).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <l@location.sign_contents.escaped>
@@ -998,8 +1012,9 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // @description
         // Returns the location with the specified coordinates added to it.
         // -->
-        if (attribute.startsWith("add")) {
-            if (attribute.hasContext(1) && attribute.getContext(1).split(",").length == 3) {
+        if (attribute.startsWith("add")
+                && attribute.hasContext(1)) {
+            if (attribute.getContext(1).split(",").length == 3) {
                 String[] ints = attribute.getContext(1).split(",", 3);
                 if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
                         && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
@@ -1021,8 +1036,9 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // @description
         // Returns the location with the specified coordinates subtracted from it.
         // -->
-        if (attribute.startsWith("sub")) {
-            if (attribute.hasContext(1) && attribute.getContext(1).split(",").length == 3) {
+        if (attribute.startsWith("sub")
+                && attribute.hasContext(1)) {
+            if (attribute.getContext(1).split(",").length == 3) {
                 String[] ints = attribute.getContext(1).split(",", 3);
                 if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
                         && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
@@ -1079,8 +1095,9 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // @description
         // Returns the distance between 2 locations.
         // -->
-        if (attribute.startsWith("distance")) {
-            if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
+        if (attribute.startsWith("distance")
+                && attribute.hasContext(1)) {
+            if (dLocation.matches(attribute.getContext(1))) {
                 dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
 
                 // <--[tag]

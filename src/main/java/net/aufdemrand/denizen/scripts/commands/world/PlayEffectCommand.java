@@ -1,20 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.Utilities;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.ParticleEffect;
+import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -110,6 +109,13 @@ public class PlayEffectCommand extends AbstractCommand {
                 scriptEntry.addObject("offset", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("targets")
+                && arg.matchesArgumentList(dPlayer.class)
+                && arg.matchesPrefix("targets, target, t")) {
+
+                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
+            }
+
             else
                 arg.reportUnhandled();
         }
@@ -139,6 +145,7 @@ public class PlayEffectCommand extends AbstractCommand {
 
         // Extract objects from ScriptEntry
         List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("location");
+        List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
         Effect effect = (Effect) scriptEntry.getObject("effect");
         ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("particleeffect");
         Element iconcrack = scriptEntry.getElement("iconcrack");
@@ -152,6 +159,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 particleEffect != null ? aH.debugObj("special effect", particleEffect.name()) :
                 iconcrack.debug()) +
                 aH.debugObj("locations", locations.toString()) +
+                (targets != null ? aH.debugObj("targets", targets.toString()): "") +
                 radius.debug() +
                 data.debug() +
                 qty.debug() +
@@ -164,21 +172,41 @@ public class PlayEffectCommand extends AbstractCommand {
             // Play the Bukkit effect the number of times specified
             if (effect != null) {
                 for (int n = 0; n < qty.asInt(); n++) {
-                    location.getWorld().playEffect(location, effect, data.asInt(), radius.asInt());
+                    if (targets != null) {
+                        for (dPlayer player: targets)
+                            if (player.isValid() && player.isOnline()) player.getPlayerEntity().playEffect(location, effect, data.asInt());
+                    }
+                    else {
+                        location.getWorld().playEffect(location, effect, data.asInt(), radius.asInt());
+                    }
                 }
             }
 
             // Play a ParticleEffect
             else if (particleEffect != null) {
                 float os = offset.asFloat();
-                particleEffect.display(location, radius.asDouble(), os, os, os, data.asFloat(), qty.asInt());
+                List<Player> players = new ArrayList<Player>();
+                if (targets == null)
+                    players = ParticleEffect.getPlayersInRange(location, radius.asDouble());
+                else {
+                    for (dPlayer player: targets)
+                        if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
+                }
+                particleEffect.display(location, os, os, os, data.asFloat(), qty.asInt(), players);
             }
 
             // Play an iconcrack (item break) effect
             else {
                 float os = offset.asFloat();
-                ParticleEffect.displayIconCrack(location, radius.asDouble(), iconcrack.asInt(),
-                        os, os, os, data.asFloat(), qty.asInt());
+                List<Player> players = new ArrayList<Player>();
+                if (targets == null)
+                    players = ParticleEffect.getPlayersInRange(location, radius.asDouble());
+                else {
+                    for (dPlayer player: targets)
+                        if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
+                }
+                ParticleEffect.displayIconCrack(location, iconcrack.asInt(),
+                        os, os, os, data.asFloat(), qty.asInt(), players);
             }
         }
     }

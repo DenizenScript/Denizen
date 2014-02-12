@@ -114,30 +114,30 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 String[] flagArgs = arg.raw_value.split(":", 3);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
 
-                if (flagArgs[1].startsWith("->"))
+                if (flagArgs[1].equals("->"))
                     scriptEntry.addObject("action", FlagManager.Action.INSERT);
 
-                else if (flagArgs[1].startsWith("<-"))
+                else if (flagArgs[1].equals("<-"))
                     scriptEntry.addObject("action", FlagManager.Action.REMOVE);
 
-                else if (flagArgs[1].startsWith("|"))
+                else if (flagArgs[1].equals("||") || flagArgs[1].equals("|"))
                     scriptEntry.addObject("action", FlagManager.Action.SPLIT);
 
-                else if (flagArgs[1].startsWith("+"))
+                else if (flagArgs[1].equals("++") || flagArgs[1].equals("+"))
                     scriptEntry.addObject("action", FlagManager.Action.INCREASE);
 
-                else if (flagArgs[1].startsWith("-"))
+                else if (flagArgs[1].equals("--") || flagArgs[1].equals("-"))
                     scriptEntry.addObject("action", FlagManager.Action.DECREASE);
 
-                else if (flagArgs[1].startsWith("*"))
+                else if (flagArgs[1].equals("**") || flagArgs[1].equals("*"))
                     scriptEntry.addObject("action", FlagManager.Action.MULTIPLY);
 
-                else if (flagArgs[1].startsWith("/"))
+                else if (flagArgs[1].equals("//") || flagArgs[1].equals("/"))
                     scriptEntry.addObject("action", FlagManager.Action.DIVIDE);
 
                 else {
                     scriptEntry.addObject("action", FlagManager.Action.SET_VALUE);
-                    scriptEntry.addObject("value", arg.raw_value.split(":", 2)[1]);
+                    scriptEntry.addObject("value", new Element(arg.raw_value.split(":", 2)[1]));
                     continue;
                 }
 
