@@ -107,6 +107,7 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
     // <context.entity> returns the dEntity that spawned.
     // <npc> if the entity spawned is a NPC.
     // <context.reason> returns the reason the entity spawned.
+    // <context.location> returns the location the entity will spawn at.
     // <context.cuboids> returns a list of cuboids that the entity spawned inside.
     //
     // @Determine
@@ -145,6 +146,7 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
         // Add in other contexts associated with this event
         context.put("entity", entity);
         context.put("reason", new Element(reason));
+        context.put("location", new dLocation(event.getLocation()));
 
         String determination = EventManager.doEvents(events,
                 (entity.isNPC() ? entity.getDenizenNPC() : null), null, context, true);
