@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
@@ -13,7 +14,6 @@ import net.citizensnpcs.npc.ai.BlockBreaker;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Breaks a block using Citizens' BlockBreaker
@@ -21,7 +21,7 @@ import java.util.Map;
  * @author Jeremy Schroeder
  */
 
-public class BreakCommand extends AbstractCommand {
+public class BreakCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -76,7 +76,7 @@ public class BreakCommand extends AbstractCommand {
         Element radius = scriptEntry.getElement("radius");
 
         final HashMap<String, dObject> context = new HashMap<String, dObject>();
-        context.put("location", (dObject) scriptEntry.getdObject("Location"));
+        context.put("location", location);
 
 
         dB.report(scriptEntry, getName(), location.debug() + entity.debug() + radius.debug());
@@ -88,9 +88,9 @@ public class BreakCommand extends AbstractCommand {
         config.callback(new Runnable() {
             @Override
             public void run() {
-                dB.echoDebug(se, entity.debug() + " dug " + location.debug());
                 if (entity.isNPC()) {
                     DenizenAPI.getDenizenNPC(entity.getNPC()).action("dig", null, context);
+                    se.setFinished(true);
                 }
             }
         });
