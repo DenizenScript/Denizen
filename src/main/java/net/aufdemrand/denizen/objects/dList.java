@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -341,10 +340,10 @@ public class dList extends ArrayList<String> implements dObject {
             // character, make note that it is CASE SENSITIVE.
             // -->
 
-            char split = '/';
+            String split = "/";
             if (attribute.startsWith("split_by")) {
                 if (attribute.hasContext(1) && attribute.getContext(1).length() > 0)
-                    split = attribute.getContext(1).charAt(0);
+                    split = attribute.getContext(1);
                 attribute.fulfill(1);
             }
 
@@ -354,7 +353,7 @@ public class dList extends ArrayList<String> implements dObject {
             dList sub_list = new dList();
 
             for (String item : this) {
-                String[] strings = StringUtils.split(item, split);
+                String[] strings = item.split(Pattern.quote(split));
                 if (strings.length > index)
                     sub_list.add(strings[index]);
                 else sub_list.add("null");
