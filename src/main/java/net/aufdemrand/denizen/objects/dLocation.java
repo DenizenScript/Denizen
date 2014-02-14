@@ -753,28 +753,36 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
-                        for (double z = -(radius); z <= radius; z++)
+                        for (double z = -(radius); z <= radius; z++) {
+                            Location l = getBlock().getLocation().clone().add(x,y,z);
                             if (!materials.isEmpty()) {
-                                for (dMaterial material : materials)
+                                for (dMaterial material : materials) {
                                     if (material.matchesMaterialData(getBlock()
-                                            .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
-                                                    .getLocation().add(x,y,z).getBlock().getData()))) {
-                                        Location l = getBlock().getLocation().add(x,y,z);
-                                        if (l.add(0,1,0).getBlock().getType() == Material.AIR
-                                                && l.add(0,1,0).getBlock().getType() == Material.AIR)
-                                            found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5 )));
+                                            .getLocation().clone().add(x,y,z).getBlock().getType().getNewData(getBlock()
+                                                    .getLocation().clone().add(x,y,z).getBlock().getData()))) {
+                                        if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
+                                                && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
+                                                && l.getBlock().getType() != Material.AIR)
+                                            found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
                                     }
-                            } else {
-                                Location l = getBlock().getLocation().add(x,y,z);
-                                if (l.add(0,1,0).getBlock().getType() == Material.AIR
-                                        && l.add(0,1,0).getBlock().getType() == Material.AIR)
-                                    found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5 )));
+                                }
                             }
+                            else {
+                                if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
+                                        && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
+                                        && l.getBlock().getType() != Material.AIR) {
+                                    found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
+                                }
+                            }
+                        }
 
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
                     public int compare(dLocation loc1, dLocation loc2) {
-                        return (int) (distanceSquared(loc1) - distanceSquared(loc2));
+                        if (loc1.equals(loc2))
+                            return 0;
+                        else
+                            return (distanceSquared(loc1) - distanceSquared(loc2)) > 0 ? 1: -1;
                     }
                 });
 
