@@ -19,6 +19,7 @@ import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -43,8 +44,8 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   type: item
     //
-    //   # Must be a valid dMaterial (ie. m@red_wool or m@potion,8226) See 'dMaterial' for more information.
-    //   material: material
+    //   # Must be a valid dItem (ie. i@red_wool or i@potion,8226) See 'dItem' for more information.
+    //   material: i@base_material
     //
     //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
     //   display name: custom name
@@ -60,12 +61,17 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - enchantment_name:level
     //   - ...
     //
-    //   # You can Specify the items required to craft your item. For an empty slot, use i@air. Currently, Denizen only
+    //   # You can specify the items required to craft your item. For an empty slot, use i@air. Currently, Denizen only
     //   # supports shaped recipes.
     //   recipe:
     //   - i@item|i@item|i@item
     //   - i@item|i@item|i@item
     //   - i@item|i@item|i@item
+    //
+    //   # You can specify a material that can be smelted into your item.
+    //   # Note: This can overwrite existing furnace recipes.
+    //   # Additional note: This does not support datavalues currently, only specific material types can be used as a recipe.
+    //   furnace_recipe: i@item
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
     //   no_id: true/false
@@ -157,6 +163,16 @@ public class ItemScriptContainer extends ScriptContainer {
 
                 Bukkit.getServer().addRecipe(shapedRecipe);
             }
+        }
+
+        if (contains("FURNACE_RECIPE")) {
+            dItem furnace_item = dItem.valueOf(getString("FURNACE_RECIPE"));
+            if (furnace_item == null) {
+                dB.echoError("Invalid item '" + getString("FURNACE_RECIPE") + "'");
+                return;
+            }
+            FurnaceRecipe recipe = new FurnaceRecipe(getItemFrom().getItemStack(), furnace_item.getMaterial().getMaterial());
+            Bukkit.getServer().addRecipe(recipe);
         }
     }
 
