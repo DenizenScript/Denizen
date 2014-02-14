@@ -53,9 +53,7 @@ public class Mechanism {
     }
 
     public boolean requireEnum(boolean allowInt, Enum<?>... values) {
-        // TODO: Remove getSimpleName(), or simplify somehow.
-        return requireEnum("Invalid " + values[0].getDeclaringClass().getSimpleName() + "."
-                + " Must specify a valid name" + (allowInt ? " or number" : "") + ".", allowInt, values);
+        return requireEnum(null, allowInt, values);
     }
 
     public boolean requireFloat() {
@@ -67,8 +65,7 @@ public class Mechanism {
     }
 
     public <T extends dObject> boolean requireObject(Class<T> type) {
-        // TODO: Remove getSimpleName(), or simplify somehow.
-        return requireObject("Invalid " + type.getSimpleName() + " specified.", type);
+        return requireObject(null, type);
     }
 
     public boolean requireBoolean(String error) {
@@ -95,7 +92,14 @@ public class Mechanism {
                     return true;
             }
         }
-        dB.echoError(error);
+        if (error == null) {
+            // TODO: Remove getSimpleName(), or simplify somehow.
+            dB.echoError("Invalid " + values[0].getDeclaringClass().getSimpleName() + "."
+                    + " Must specify a valid name" + (allowInt ? " or number" : "") + ".");
+        }
+        else {
+            dB.echoError(error);
+        }
         return false;
     }
 
@@ -116,7 +120,13 @@ public class Mechanism {
     public <T extends dObject> boolean requireObject(String error, Class<T> type) {
         if (value.matchesType(type))
             return true;
-        dB.echoError(error);
+        if (error == null) {
+            // TODO: Remove getSimpleName(), or simplify somehow.
+            dB.echoError("Invalid " + type.getSimpleName() + " specified.");
+        }
+        else {
+            dB.echoError(error);
+        }
         return false;
     }
 

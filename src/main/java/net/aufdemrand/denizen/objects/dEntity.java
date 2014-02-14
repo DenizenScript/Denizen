@@ -813,6 +813,11 @@ public class dEntity implements dObject, Adjustable {
 
     public void target(LivingEntity target) {
 
+        if (!isSpawned() || !(entity instanceof Creature)) {
+            dB.echoError(identify() + " is not a valid creature entity!");
+            return;
+        }
+
         // If the target is not null, cast it to an NMS EntityLiving
         // as well for one of the two methods below
         EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
@@ -947,6 +952,44 @@ public class dEntity implements dObject, Adjustable {
             else if (isPlayer())
                 return "p@" + getPlayer().getName();
 
+                    // TODO:
+//        // Check if entity is a 'notable entity'
+//        if (isSaved(this))
+//            return "e@" + getSaved(this);
+
+            else if (isSpawned())
+                return "e@" + entity.getEntityId();
+        }
+
+        // Check if an entity_type is available
+        if (entity_type != null) {
+            // Build the pseudo-property-string, if any
+            StringBuilder properties = new StringBuilder();
+            for (Mechanism mechanism: mechanisms) {
+                properties.append(mechanism.getName()).append("=").append(mechanism.getValue().asString().replace(';', (char)0x2011)).append(";");
+            }
+            String propertyOutput = "";
+            if (properties.length() > 0) {
+                propertyOutput = "[" + properties.substring(0, properties.length() - 1) + "]";
+            }
+            return "e@" + entity_type.name() + propertyOutput;
+        }
+
+        return "null";
+    }
+
+
+    @Override
+    public String identifySimple() {
+        // Check if entity is a Player or NPC
+        if (entity != null) {
+            if (isNPC())
+                return "n@" + getNPC().getId();
+
+            else if (isPlayer())
+                return "p@" + getPlayer().getName();
+
+                // TODO:
 //        // Check if entity is a 'notable entity'
 //        if (isSaved(this))
 //            return "e@" + getSaved(this);
@@ -960,13 +1003,6 @@ public class dEntity implements dObject, Adjustable {
             return "e@" + entity_type.name();
 
         return "null";
-    }
-
-
-    @Override
-    public String identifySimple() {
-        // TODO: Change up when entities identify with properties
-        return identify();
     }
 
 
@@ -991,7 +1027,7 @@ public class dEntity implements dObject, Adjustable {
 
         if (attribute == null) return null;
 
-        if (entity == null) {
+        if (entity == null && entity_type == null) {
             dB.echoError("dEntity has returned null.");
             return Element.NULL.getAttribute(attribute);
         }
@@ -1054,6 +1090,25 @@ public class dEntity implements dObject, Adjustable {
             return new Element(getObjectType())
                     .getAttribute(attribute.fulfill(1));
         }
+
+        /////////////////////
+        //   UNSPAWNED ATTRIBUTES
+        /////////////////
+
+        // <--[tag]
+        // @attribute <e@entity.entity_type>
+        // @returns Element
+        // @description
+        // Returns the type of the entity.
+        // -->
+        if (attribute.startsWith("entity_type")) {
+            return new Element(entity_type.name()).getAttribute(attribute.fulfill(1));
+        }
+
+        if (entity == null) {
+            return new Element(identify()).getAttribute(attribute);
+        }
+        // Only spawned entities past this point!
 
 
         /////////////////////
@@ -1667,16 +1722,6 @@ public class dEntity implements dObject, Adjustable {
         /////////////////////
         //   TYPE ATTRIBUTES
         /////////////////
-
-        // <--[tag]
-        // @attribute <e@entity.entity_type>
-        // @returns Element
-        // @description
-        // Returns the type of the entity.
-        // -->
-        if (attribute.startsWith("entity_type")) {
-            return new Element(entity_type.name()).getAttribute(attribute.fulfill(1));
-        }
 
         // <--[tag]
         // @attribute <e@entity.is_living>
