@@ -1588,6 +1588,9 @@ public class dPlayer implements dObject, Adjustable {
                         PlayerBars.showExperience(getPlayerEntity(),
                                 new Element(split[0]).asFloat(), getPlayerEntity().getLevel());
                 }
+                else {
+                    dB.echoError("'" + split[0] + "' is not a valid decimal number!");
+                }
             }
             else {
                 PlayerBars.resetExperience(getPlayerEntity());
@@ -1626,6 +1629,9 @@ public class dPlayer implements dObject, Adjustable {
                         PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
                                 getPlayerEntity().getFoodLevel(), getPlayerEntity().getSaturation());
                     }
+                }
+                else {
+                    dB.echoError("'" + split[0] + "' is not a valid decimal number!");
                 }
             }
             else {
