@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InventoryScriptHelper implements Listener {
 
     public static Map<String, InventoryScriptContainer> inventory_scripts = new ConcurrentHashMap<String, InventoryScriptContainer>(8, 0.9f, 1);
-    public static HashMap<String, Inventory> offlineInventories = new HashMap<String, Inventory>();
+    public static HashMap<String, PlayerInventory> offlineInventories = new HashMap<String, PlayerInventory>();
 
     public InventoryScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
@@ -22,7 +22,7 @@ public class InventoryScriptHelper implements Listener {
     }
 
     public static void _savePlayerInventories() {
-        for (Map.Entry<String, Inventory> offlineInv : offlineInventories.entrySet())
+        for (Map.Entry<String, PlayerInventory> offlineInv : offlineInventories.entrySet())
             new ImprovedOfflinePlayer(offlineInv.getKey()).setInventory(offlineInv.getValue());
     }
 

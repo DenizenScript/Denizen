@@ -62,8 +62,8 @@ public class InventoryCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("actions"))
             throw new InvalidArgumentsException("Must specify an Inventory action!");
 
-        scriptEntry.defaultObject("destination",
-                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity().getInventory() : null);
+        scriptEntry.defaultObject("slot", new Element(1)).defaultObject("destination",
+                        scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity().getInventory() : null);
     }
 
     @SuppressWarnings("unchecked")
@@ -77,10 +77,10 @@ public class InventoryCommand extends AbstractCommand {
         Element slot = scriptEntry.getElement("slot");
 
         dB.report(scriptEntry, getName(),
-                aH.debugObj("actions", actions.toString()) +
-                destination.debug()
+                aH.debugObj("actions", actions.toString())
+                + destination.debug()
                 + (origin != null ? origin.debug() : "")
-                + (slot != null ? slot.debug() : ""));
+                + slot.debug());
 
         for (String action : actions) {
             switch (Action.valueOf(action.toUpperCase())) {
@@ -114,15 +114,14 @@ public class InventoryCommand extends AbstractCommand {
 
                 // Swap the contents of the two inventories
                 case SWAP:
-                    dInventory temp = new dInventory(destination.getInventoryType())
-                                              .add(destination.getContents());
+                    dInventory temp = new dInventory(destination.getInventory());
                     origin.replace(destination);
                     temp.replace(origin);
                     break;
 
                 // Add origin's contents to destination
                 case ADD:
-                    destination.add(origin.getContents());
+                    destination.add(slot.asInt()-1, origin.getContents());
                     break;
 
                 // Remove origin's contents from destination

@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 public class dItem implements dObject, Notable, Adjustable {
 
-    // TODO: Check out this pattern, is this going to/does it conflict with our new properties system?
     // An item pattern with the following groups:
     //
     // 1) An optional item: prefix.
@@ -418,6 +417,17 @@ public class dItem implements dObject, Notable, Adjustable {
     public void setAmount(int value) {
         if (item != null)
             item.setAmount(value);
+    }
+
+    public int getMaxStackSize() {
+        return item.getMaxStackSize();
+    }
+
+    public int getAmount() {
+        if (item != null)
+            return item.getAmount();
+        else
+            return 0;
     }
 
     public void setDurability(short value) {

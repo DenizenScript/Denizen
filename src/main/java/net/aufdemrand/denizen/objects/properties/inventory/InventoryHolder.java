@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.citizensnpcs.api.CitizensAPI;
+import org.bukkit.event.inventory.InventoryType;
 
 public class InventoryHolder implements Property {
 
@@ -113,7 +114,25 @@ public class InventoryHolder implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        // TODO
+
+        // <--[mechanism]
+        // @object dInventory
+        // @name holder
+        // @input dObject
+        // @description
+        // Changes the holder of the dInventory, therefore completely reconfiguring
+        // the inventory to that of the holder.
+        // @tags
+        // <in@inventory.id_holder>
+        // -->
+        if (mechanism.matches("holder")) {
+            Element value = mechanism.getValue();
+            if (value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
+            else if (value.matchesType(dEntity.class)) setHolder(value.asType(dEntity.class));
+            else if (value.matchesType(dLocation.class)) setHolder(value.asType(dLocation.class));
+            else if (value.matchesEnum(InventoryType.values()) || value.isInt()) setHolder(value);
+        }
+
     }
 
 }

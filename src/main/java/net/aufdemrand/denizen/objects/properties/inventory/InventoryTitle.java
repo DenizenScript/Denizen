@@ -77,6 +77,19 @@ public class InventoryTitle implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        // TODO
+
+        // <--[mechanism]
+        // @object dInventory
+        // @name title
+        // @input Element
+        // @description
+        // Sets the title of the inventory. (Only works for "generic" chest inventories.)
+        // @tags
+        // <in@inventory.title>
+        // -->
+        if (mechanism.matches("title") && inventory.getIdType().equals("generic")) {
+            inventory.setTitle(mechanism.getValue().asString());
+        }
+
     }
 }

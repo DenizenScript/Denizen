@@ -123,18 +123,16 @@ public class InventoryScriptContainer extends ScriptContainer {
                     int size = aH.getIntegerFrom(getString("SIZE"));
 
                     if (size == 0) {
-                        dB.echoError("Inventory size can't be 0. Assuming default...");
                         size = 27;
+                        dB.echoError("Inventory size can't be 0. Assuming default of 27...");
                     }
                     if (size % 9 != 0) {
-                        dB.echoError("Inventory size must be a multiple of 9! Rounding...");
-                        size = Math.round(size/9)*9;
-                        if (size == 0)
-                            size = 9;
+                        size = (int) Math.ceil(size/9)*9;
+                        dB.echoError("Inventory size must be a multiple of 9! Rounding up to " + size + "...");
                     }
                     if (size < 0) {
-                        dB.echoError("Inventory size must be a positive number! Inverting...");
                         size = size*-1;
+                        dB.echoError("Inventory size must be a positive number! Inverting to " + size + "...");
                     }
 
                     inventory = new dInventory(size,

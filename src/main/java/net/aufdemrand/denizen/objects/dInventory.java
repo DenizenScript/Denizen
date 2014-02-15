@@ -1,38 +1,37 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
-import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
-import net.citizensnpcs.api.CitizensAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.BlockState;
-import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventory;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.HorseInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.BookMeta;
-
 import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.objects.aH.PrimitiveType;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.notable.Note;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
+import net.citizensnpcs.Citizens;
+import net.citizensnpcs.api.CitizensAPI;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
+import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventory;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.BookMeta;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class dInventory implements dObject, Notable, Adjustable {
 
@@ -41,7 +40,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public static dInventory mirrorBukkitInventory(Inventory inventory) {
         // Iterate through offline player inventories
-        for (Map.Entry<String, Inventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
+        for (Map.Entry<String, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
             if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory()))
                 return new dInventory(new ImprovedOfflinePlayer(inv.getKey()));
         }
@@ -169,7 +168,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                     return dLocation.valueOf(holder).getInventory();
             }
             else if (type.equals("equipment")) {
-                dEntity.valueOf(holder).getEquipment();
+                return dEntity.valueOf(holder).getEquipment();
             }
 
             // If the dInventory is invalid, alert the user and return null
@@ -214,6 +213,17 @@ public class dInventory implements dObject, Notable, Adjustable {
         loadIdentifiers();
     }
 
+    public dInventory(ItemStack[] items) {
+        inventory = Bukkit.createInventory(null, (int) Math.ceil(items.length/9)*9);
+        loadIdentifiers();
+    }
+
+    public dInventory(EntityEquipment entityEquipment) {
+        inventory = Bukkit.createInventory((InventoryHolder) entityEquipment.getHolder(), 9);
+        idType = "equipment";
+        loadIdentifiers();
+    }
+
     public dInventory(ImprovedOfflinePlayer offlinePlayer) {
         inventory = offlinePlayer.getInventory();
         setIdentifiers("player", "p@" + offlinePlayer.getName());
@@ -242,12 +252,8 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public dInventory(dObject object) {
-        if (object instanceof dPlayer) {
-            dPlayer pl = (dPlayer) object;
-            inventory = pl.getInventory().getInventory();
-            setIdentifiers("player", "p@" + pl.getName());
-            return;
-        }
+        if (object instanceof dPlayer)
+            inventory = ((dPlayer) object).getInventory().getInventory();
         else if (object instanceof dEntity)
             inventory = ((dEntity) object).getInventory().getInventory();
         else if (object instanceof dLocation)
@@ -339,20 +345,24 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     private void loadIdentifiers() {
         InventoryHolder holder = inventory.getHolder();
+        boolean isEquipment = idType != null && idType.equals("equipment");
 
         if (holder != null) {
             if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
-                idType = "npc";
+                if (!isEquipment)
+                    idType = "npc";
                 idHolder = "n@" + CitizensAPI.getNPCRegistry().getNPC((Entity) holder).getId();
                 return;
             }
             else if (holder instanceof Player) {
-                idType = "player";
+                if (!isEquipment)
+                    idType = "player";
                 idHolder = "p@" + ((Player) holder).getName();
                 return;
             }
             else if (holder instanceof Entity) {
-                idType = "entity";
+                if (!isEquipment)
+                    idType = "entity";
                 idHolder = "e@" + ((Entity) holder).getEntityId();
                 return;
             }
@@ -368,7 +378,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         else if (idType != null) {
             if (idType.equals("player")) {
                 // Iterate through offline player inventories
-                for (Map.Entry<String, Inventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
+                for (Map.Entry<String, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
                     if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
                         idHolder = "p@" + inv.getKey();
                         return;
@@ -391,9 +401,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         idHolder = getInventory().getType().name();
     }
 
-    public void setIdentifiers(String type, String holder) {
+    public dInventory setIdentifiers(String type, String holder) {
         idType = type;
         idHolder = holder;
+        return this;
     }
 
     public String getIdType() {
@@ -418,8 +429,11 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             InventoryHolder holder = inventory.getHolder();
 
-            if (holder instanceof BlockState) {
-                return new dLocation(((BlockState) holder).getLocation());
+            if (holder instanceof Chest) {
+                return new dLocation(((Chest) holder).getLocation());
+            }
+            else if (holder instanceof DoubleChest) {
+                return new dLocation(((DoubleChest) holder).getLocation());
             }
             else if (holder instanceof Entity) {
                 Entity entity = (Entity) holder;
@@ -441,13 +455,10 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dInventory getEquipment() {
         if (inventory instanceof PlayerInventory) {
-            return new dInventory(InventoryType.CRAFTING)
-                    .add(((PlayerInventory) inventory).getArmorContents());
+            return new dInventory(((Player) inventory.getHolder()).getEquipment());
         }
         else if (inventory instanceof HorseInventory) {
-            return new dInventory(InventoryType.CRAFTING)
-                    .add(((HorseInventory) inventory).getArmor())
-                    .add(((HorseInventory) inventory).getSaddle());
+            return new dInventory(((Horse) inventory.getHolder()).getEquipment());
         }
         return null;
     }
@@ -471,7 +482,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public void setContents(dList list) {
         int size = 0;
         if (inventory == null) {
-            size = Math.round(list.size()/9)*9;
+            size = (int) Math.ceil(list.size() / 9)*9;
             if (size == 0) size = 9;
             inventory = Bukkit.createInventory(null, size);
             loadIdentifiers();
@@ -500,46 +511,161 @@ public class dInventory implements dObject, Notable, Adjustable {
         return false;
     }
 
+    public int firstPartial(int startSlot, ItemStack item) {
+        ItemStack[] inventory = getContents();
+        if (item == null) {
+            return -1;
+        }
+        for (int i = startSlot; i < inventory.length; i++) {
+            ItemStack item1 = inventory[i];
+            if (item1 != null && item1.getAmount() < item.getMaxStackSize() && item1.isSimilar(item)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int firstEmpty(int startSlot) {
+        ItemStack[] inventory = getContents();
+        for (int i = startSlot; i < inventory.length; i++) {
+            if (inventory[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     /////////////////////
     //   INVENTORY MANIPULATION
     /////////////////
 
-    /**
-     * Add an array of items to this inventory
-     * and return the result
-     *
-     * @param items  The array of items
-     * @return  The resulting dInventory
-     *
-     */
-
-    public dInventory add(ItemStack... items) {
+    // Somewhat simplified version of CraftBukkit's current code
+    public dInventory add(int slot, ItemStack... items) {
         if (inventory == null || items == null) return this;
 
-        for (ItemStack item : items) {
-            if (item != null) inventory.addItem(item);
+        for (int i = 0; i < items.length; i++) {
+            ItemStack item = items[i];
+            if (item == null) continue;
+            int amount = item.getAmount();
+            int max = item.getMaxStackSize();
+            while (true) {
+                // Do we already have a stack of it?
+                int firstPartial = firstPartial(slot, item);
+
+                // Drat! no partial stack
+                if (firstPartial == -1) {
+                    // Find a free spot!
+                    int firstFree = firstEmpty(slot);
+
+                    if (firstFree == -1) {
+                        // No space at all!
+                        break;
+                    } else {
+                        // More than a single stack!
+                        if (amount > max) {
+                            ItemStack clone = item.clone();
+                            clone.setAmount(max);
+                            inventory.setItem(firstFree, clone);
+                            item.setAmount(amount -= max);
+                        } else {
+                            // Just store it
+                            inventory.setItem(firstFree, item);
+                            break;
+                        }
+                    }
+                } else {
+                    // So, apparently it might only partially fit, well lets do just that
+                    ItemStack partialItem = inventory.getItem(firstPartial);
+
+                    int partialAmount = partialItem.getAmount();
+                    int total = amount + partialAmount;
+
+                    // Check if it fully fits
+                    if (total <= max) {
+                        partialItem.setAmount(total);
+                        break;
+                    }
+
+                    // It fits partially
+                    partialItem.setAmount(max);
+                    item.setAmount(amount = total - max);
+                }
+            }
         }
 
         return this;
     }
 
-    // TODO: Fix this
-    public HashMap<Integer, ItemStack> addWithLeftovers(ItemStack... items) {
+    public List<ItemStack> addWithLeftovers(int slot, boolean keepMaxStackSize, ItemStack... items) {
         if (inventory == null || items == null) return null;
 
-        return inventory.addItem(items);
+        List<ItemStack> leftovers = new ArrayList<ItemStack>();
+
+        for (int i = 0; i < items.length; i++) {
+            ItemStack item = items[i];
+            if (item == null) continue;
+            int amount = item.getAmount();
+            int max = item.getMaxStackSize();
+            while (true) {
+                // Do we already have a stack of it?
+                int firstPartial = firstPartial(slot, item);
+
+                // Drat! no partial stack
+                if (firstPartial == -1) {
+                    // Find a free spot!
+                    int firstFree = firstEmpty(slot);
+
+                    if (firstFree == -1) {
+                        // No space at all!
+                        leftovers.add(item);
+                        break;
+                    } else {
+                        // More than a single stack!
+                        if (amount > max) {
+                            ItemStack clone = item.clone();
+                            clone.setAmount(max);
+                            inventory.setItem(firstFree, clone);
+                            item.setAmount(amount -= max);
+                        } else {
+                            // Just store it
+                            inventory.setItem(firstFree, item);
+                            break;
+                        }
+                    }
+                } else {
+                    // So, apparently it might only partially fit, well lets do just that
+                    ItemStack partialItem = inventory.getItem(firstPartial);
+
+                    int partialAmount = partialItem.getAmount();
+                    int total = amount + partialAmount;
+
+                    // Check if it fully fits
+                    if (total <= max) {
+                        partialItem.setAmount(total);
+                        break;
+                    }
+
+                    // It fits partially
+                    partialItem.setAmount(max);
+                    item.setAmount(amount = total - max);
+                }
+            }
+        }
+
+        return leftovers;
     }
 
-    public HashMap<Integer, ItemStack> setWithLeftovers(int slot, ItemStack... items) {
+    public List<ItemStack> setWithLeftovers(int slot, ItemStack... items) {
         if (inventory == null || items == null) return null;
 
-        HashMap<Integer, ItemStack> leftovers = new HashMap<Integer, ItemStack>();
+        List<ItemStack> leftovers = new ArrayList<ItemStack>();
+
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
             try {
                 inventory.setItem(i+slot, item);
             } catch (Exception e) {
-                leftovers.put(i+slot, item);
+                leftovers.add(i+slot, item);
             }
         }
 
@@ -676,7 +802,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         while (oldCount != newCount) {
 
             oldCount = newCount;
-            newCount = this.add(items).count(null, false);
+            newCount = this.add(0, items).count(null, false);
         }
 
         return this;
@@ -775,7 +901,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (destination.getSize() < this.getSize()) {
 
             destination.clear();
-            destination.add(this.getContents());
+            destination.add(0, this.getContents());
         }
         else {
 
@@ -1094,73 +1220,6 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     @Override
     public void adjust(Mechanism mechanism) {
-
-        Element value = mechanism.getValue();
-
-        // <--[mechanism]
-        // @object dInventory
-        // @name contents
-        // @input dList(dItem)
-        // @description
-        // Sets the contents of the inventory.
-        // @tags
-        // <in@inventory.list_contents>
-        // <in@inventory.list_contents.simple>
-        // <in@inventory.list_contents.with_lore[<lore>]>
-        // <in@inventory.list_contents.with_lore[<lore>].simple>
-        // -->
-        if (mechanism.matches("contents")) {
-            setContents(value.asType(dList.class));
-        }
-
-        // <--[mechanism]
-        // @object dInventory
-        // @name size
-        // @input Element(Number)
-        // @description
-        // Sets the size of the inventory. (Only works for "generic" chest inventories.)
-        // @tags
-        // <in@inventory.size>
-        // -->
-        if (mechanism.matches("size") && mechanism.requireInteger()) {
-            setSize(value.asInt());
-        }
-
-        // <--[mechanism]
-        // @object dInventory
-        // @name title
-        // @input Element
-        // @description
-        // Sets the title of the inventory. (Only works for "generic" chest inventories.)
-        // @tags
-        // <in@inventory.title>
-        // -->
-        if (mechanism.matches("title") && idType.equals("generic")) {
-            setTitle(value.asString());
-        }
-
-        // <--[mechanism]
-        // @object dInventory
-        // @name holder
-        // @input dObject
-        // @description
-        // Changes the holder of the dInventory, therefore completely reconfiguring
-        // the inventory to that of the holder.
-        // @tags
-        // <in@inventory.id_holder>
-        // -->
-        if (mechanism.matches("holder")) {
-            net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder holder =
-                    net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder.getFrom(this);
-            if (value.matchesType(dPlayer.class))
-                holder.setHolder(value.asType(dPlayer.class));
-            else if (value.matchesType(dEntity.class))
-                holder.setHolder(value.asType(dEntity.class));
-            else if (value.matchesType(dLocation.class))
-                holder.setHolder(value.asType(dLocation.class));
-            else if (value.matchesEnum(InventoryType.values()) || value.isInt())
-                holder.setHolder(value);
-        }
 
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {

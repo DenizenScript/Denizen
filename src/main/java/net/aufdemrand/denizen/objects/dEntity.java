@@ -501,8 +501,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dInventory getEquipment() {
         if (isLivingEntity())
-            return new dInventory(InventoryType.CRAFTING)
-                    .add(getLivingEntity().getEquipment().getArmorContents());
+            return new dInventory(getLivingEntity().getEquipment());
         else return null;
     }
 
