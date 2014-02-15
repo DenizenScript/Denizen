@@ -48,6 +48,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     //
     // @Context
     // <context.message> returns the triggering message
+    // <context.keyword> returns the keyword matched by a RegEx trigger
     //
     // -->
     public Boolean process(Player player, String message) {
@@ -171,6 +172,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             regexId = entry.getKey();
                             regexMessage = triggerText.replace(matcher.group(), m.group());
                             dB.log("entry value: " + triggerText + "  keyword: " + keyword + "  m.group: " + m.group() + "  matcher.group: " + matcher.group());
+                            context.put("keyword", new Element(m.group()));
                         }
                     }
                     else if (isKeywordStrict(keyword)) {

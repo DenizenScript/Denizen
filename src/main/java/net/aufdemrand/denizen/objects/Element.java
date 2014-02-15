@@ -863,6 +863,68 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <el@element.pad_left[<#>]>
+        // @returns Element
+        // @description
+        // Returns the value of an element extended to reach a minimum specified length
+        // by adding spaces to the left side.
+        // -->
+        if (attribute.startsWith("pad_left")
+                && attribute.hasContext(1)) {
+            String with = String.valueOf((char)0x00A0);
+            int length = attribute.getIntContext(1);
+            attribute = attribute.fulfill(1);
+            // <--[tag]
+            // @attribute <el@element.pad_left[<#>].with[<element>]>
+            // @returns Element
+            // @description
+            // Returns the value of an element extended to reach a minimum specified length
+            // by adding a specific symbol to the left side.
+            // -->
+            if (attribute.startsWith("with")
+                    && attribute.hasContext(1)) {
+                with = String.valueOf(attribute.getContext(1).charAt(0));
+                attribute = attribute.fulfill(1);
+            }
+            String padded = element;
+            while (padded.length() < length) {
+                padded = with + padded;
+            }
+            return new Element(padded).getAttribute(attribute);
+        }
+
+        // <--[tag]
+        // @attribute <el@element.pad_right[<#>]>
+        // @returns Element
+        // @description
+        // Returns the value of an element extended to reach a minimum specified length
+        // by adding spaces to the right side.
+        // -->
+        if (attribute.startsWith("pad_right")
+                && attribute.hasContext(1)) {
+            String with = String.valueOf((char)0x00A0);
+            int length = attribute.getIntContext(1);
+            attribute = attribute.fulfill(1);
+            // <--[tag]
+            // @attribute <el@element.pad_right[<#>].with[<element>]>
+            // @returns Element
+            // @description
+            // Returns the value of an element extended to reach a minimum specified length
+            // by adding a specific symbol to the right side.
+            // -->
+            if (attribute.startsWith("with")
+                    && attribute.hasContext(1)) {
+                with = String.valueOf(attribute.getContext(1).charAt(0));
+                attribute = attribute.fulfill(1);
+            }
+            StringBuilder padded = new StringBuilder(element);
+            while (padded.length() < length) {
+                padded.append(with);
+            }
+            return new Element(padded.toString()).getAttribute(attribute);
+        }
+
 
         /////////////////////
         //   MATH ATTRIBUTES
