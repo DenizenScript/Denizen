@@ -632,6 +632,19 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <i@item.is_potion>
+        // @returns Element(Boolean)
+        // Returns whether the item is a potion.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dItem.potion_effects>, <@link tag i@item.potion_effects>,
+        // <@link mechanism dItem.splash>, and <@link tag i@item.is_splash>
+        // -->
+        if (attribute.startsWith("is_potion")) {
+            return new Element(ItemPotionEffects.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <i@item.material.formatted>
         // @returns Element
         // @description

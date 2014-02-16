@@ -159,6 +159,7 @@ public class ItemPotionEffects implements Property {
         // @returns dList
         // @description
         // Returns a list of potion effects on this potion.
+        // To edit this, use <@link mechanism dItem.potion_effects>
         // -->
         if (attribute.startsWith("potion_effects")) {
             List<PotionEffect> potionEffects = getPotionEffects();
@@ -192,18 +193,24 @@ public class ItemPotionEffects implements Property {
         if (mechanism.matches("potion_effects")) {
             PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
             for (String effect : mechanism.getValue().asType(dList.class)) {
-                if (!effect.contains(","))
+                String[] data = effect.split(",", 3);
+                if (data.length < 3)
                     dB.echoError("Invalid effect format, use name,amplifier,duration|...");
                 else {
-                    String[] data = effect.split(",", 3);
+                    Element data1 = new Element(data[1]);
+                    Element data2 = new Element(data[2]);
                     PotionEffectType type = PotionEffectType.getByName(data[0]);
-                    if (Integer.valueOf(data[1]) == null)
+                    if (type == null) {
+                        dB.echoError("Invalid potion effect type '" + data[0] + "'");
+                        return;
+                    }
+                    else if (!data1.isInt())
                         dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
-                    else if (!Duration.matches(data[2]))
+                    else if (!data2.matchesType(Duration.class))
                         dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[2] + "' is not a valid duration!");
                     PotionEffect potionEffect = new PotionEffect(type,
-                            Duration.valueOf(data[2]).getTicksAsInt(),
-                            Integer.valueOf(data[1]));
+                            data2.asType(Duration.class).getTicksAsInt(),
+                            data1.asInt());
                     meta.addCustomEffect(potionEffect, false);
                 }
             }
