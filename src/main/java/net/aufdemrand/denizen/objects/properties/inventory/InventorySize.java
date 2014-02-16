@@ -85,7 +85,20 @@ public class InventorySize implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        // TODO
+
+        // <--[mechanism]
+        // @object dInventory
+        // @name size
+        // @input Element(Number)
+        // @description
+        // Sets the size of the inventory. (Only works for "generic" chest inventories.)
+        // @tags
+        // <in@inventory.size>
+        // -->
+        if (mechanism.matches("size") && mechanism.requireInteger()) {
+            setSize(mechanism.getValue().asInt());
+        }
+
     }
 
 }

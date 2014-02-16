@@ -82,7 +82,8 @@ public class GiveCommand  extends AbstractCommand {
         scriptEntry.defaultObject("type", Type.ITEM)
                 .defaultObject("engrave", Element.FALSE)
                 .defaultObject("inventory", (scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory() : null))
-                .defaultObject("qty", new Element(1));
+                .defaultObject("qty", new Element(1))
+                .defaultObject("slot", new Element(1));
 
         if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
             throw new InvalidArgumentsException("Must specify item/items!");
@@ -109,7 +110,7 @@ public class GiveCommand  extends AbstractCommand {
                         + aH.debugObj("Quantity", qty.asDouble())
                         + engrave.debug()
                         + (items != null ? aH.debugObj("Items", items) : "")
-                        + (slot != null ? slot.debug() : ""));
+                        + slot.debug());
 
         switch (type) {
 
@@ -131,16 +132,12 @@ public class GiveCommand  extends AbstractCommand {
                         is.setAmount(qty.asInt());
                     if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
 
-                    HashMap<Integer, ItemStack> leftovers;
-                    if (slot != null)
-                        leftovers = inventory.setWithLeftovers(slot.asInt(), is);
-                    else
-                        leftovers = inventory.addWithLeftovers(is);
+                    List<ItemStack> leftovers = inventory.addWithLeftovers(slot.asInt()-1, true, is);
 
                     if (!leftovers.isEmpty()) {
                         dB.echoDebug (scriptEntry, "The inventory didn't have enough space, the rest of the items have been placed on the floor.");
-                        for (ItemStack leftoverItem : leftovers.values())
-                               inventory.getLocation().getWorld().dropItem(inventory.getLocation(), leftoverItem);
+                        for (ItemStack leftoverItem : leftovers)
+                            inventory.getLocation().getWorld().dropItem(inventory.getLocation(), leftoverItem);
                     }
                 }
                 break;

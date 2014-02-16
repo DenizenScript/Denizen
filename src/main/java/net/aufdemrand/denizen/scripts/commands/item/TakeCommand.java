@@ -63,11 +63,6 @@ public class TakeCommand extends AbstractCommand{
                 scriptEntry.addObject("displayname", arg.asElement());
             }
 
-            else if (!scriptEntry.hasObject("items")
-                        && !scriptEntry.hasObject("type")
-                        && arg.matchesArgumentList(dItem.class))
-                scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class));
-
             else if (!scriptEntry.hasObject("slot")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesPrefix("slot")
@@ -75,6 +70,11 @@ public class TakeCommand extends AbstractCommand{
                 scriptEntry.addObject("type", Type.SLOT);
                 scriptEntry.addObject("slot", arg.asElement());
             }
+
+            else if (!scriptEntry.hasObject("items")
+                        && !scriptEntry.hasObject("type")
+                        && arg.matchesArgumentList(dItem.class))
+                scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class));
 
             else if (!scriptEntry.hasObject("inventory")
                         && arg.matchesPrefix("f, from")
@@ -203,7 +203,7 @@ public class TakeCommand extends AbstractCommand{
                 break;
 
             case SLOT:
-                inventory.setSlots(slot.asInt(), new ItemStack(Material.AIR));
+                inventory.setSlots(slot.asInt()-1, new ItemStack(Material.AIR));
                 break;
 
         }

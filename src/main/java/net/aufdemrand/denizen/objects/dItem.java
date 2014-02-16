@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 public class dItem implements dObject, Notable, Adjustable {
 
-    // TODO: Check out this pattern, is this going to/does it conflict with our new properties system?
     // An item pattern with the following groups:
     //
     // 1) An optional item: prefix.
@@ -420,6 +419,17 @@ public class dItem implements dObject, Notable, Adjustable {
             item.setAmount(value);
     }
 
+    public int getMaxStackSize() {
+        return item.getMaxStackSize();
+    }
+
+    public int getAmount() {
+        if (item != null)
+            return item.getAmount();
+        else
+            return 0;
+    }
+
     public void setDurability(short value) {
         if (item != null)
             item.setDurability(value);
@@ -618,6 +628,19 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("is_book")) {
             return new Element(ItemBook.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <i@item.is_potion>
+        // @returns Element(Boolean)
+        // Returns whether the item is a potion.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dItem.potion_effects>, <@link tag i@item.potion_effects>,
+        // <@link mechanism dItem.splash>, and <@link tag i@item.is_splash>
+        // -->
+        if (attribute.startsWith("is_potion")) {
+            return new Element(ItemPotionEffects.describes(this))
                     .getAttribute(attribute.fulfill(1));
         }
 

@@ -67,12 +67,13 @@ public class ImprovedOfflinePlayer {
         this.exists = loadPlayerData(offlineplayer.getName());
     }
 
-    public org.bukkit.inventory.Inventory getInventory() {
+    public org.bukkit.inventory.PlayerInventory getInventory() {
         if (InventoryScriptHelper.offlineInventories.containsKey(getName()))
             return InventoryScriptHelper.offlineInventories.get(getName());
         PlayerInventory inventory = new PlayerInventory(null);
         inventory.b(this.compound.getList("Inventory", 10));
-        Inventory inv = Bukkit.createInventory(null, InventoryType.PLAYER);
+        org.bukkit.inventory.PlayerInventory inv =
+                (org.bukkit.inventory.PlayerInventory) Bukkit.createInventory(null, InventoryType.PLAYER);
         inv.setContents(new CraftInventoryPlayer(inventory).getContents());
         InventoryScriptHelper.offlineInventories.put(getName(), inv);
         return inv;

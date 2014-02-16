@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
+import net.aufdemrand.denizen.utilities.packets.PlayerBars;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Achievement;
@@ -1559,6 +1560,82 @@ public class dPlayer implements dObject, Adjustable {
             }
             else {
                 BossHealthBar.removeTextBar(getPlayerEntity());
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name fake_experience
+        // @input Element(Decimal)(|Element(Number))
+        // @description
+        // Shows the player a fake experience bar, with a number between 0.0 and 1.0
+        // to specify how far along the bar is.
+        // Use with no input value to reset to the player's normal experience.
+        // Optionally, you can specify a fake experience level.
+        // - adjust <player> fake_experience:0.5|5
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("fake_experience")) {
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+                if (split.length > 0 && new Element(split[0]).isFloat()) {
+                    if (split.length > 1 && new Element(split[1]).isInt()) {
+                        PlayerBars.showExperience(getPlayerEntity(),
+                                new Element(split[0]).asFloat(), new Element(split[1]).asInt());
+                    }
+                    else
+                        PlayerBars.showExperience(getPlayerEntity(),
+                                new Element(split[0]).asFloat(), getPlayerEntity().getLevel());
+                }
+                else {
+                    dB.echoError("'" + split[0] + "' is not a valid decimal number!");
+                }
+            }
+            else {
+                PlayerBars.resetExperience(getPlayerEntity());
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name fake_health
+        // @input Element(Decimal)(|Element(Number)(|Element(Decimal)))
+        // @description
+        // Shows the player a fake health bar, with a number between 0 and 20,
+        // where 1 is half of a heart.
+        // Use with no input value to reset to the player's normal health.
+        // Optionally, you can specify a fake food level, between 0 and 20.
+        // You can also optionally specify a food saturation level between 0 and 10.
+        // - adjust <player> fake_health:1
+        // - adjust <player> fake_health:10|15
+        // - adjust <player> fake_health:<player.health>|3|0
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("fake_health")) {
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
+                if (split.length > 0 && new Element(split[0]).isFloat()) {
+                    if (split.length > 1 && new Element(split[1]).isInt()) {
+                        if (split.length > 2 && new Element(split[2]).isFloat())
+                            PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                                    new Element(split[1]).asInt(), new Element(split[2]).asFloat());
+                        else
+                            PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                                    new Element(split[1]).asInt(), getPlayerEntity().getSaturation());
+                    }
+                    else {
+                        PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                                getPlayerEntity().getFoodLevel(), getPlayerEntity().getSaturation());
+                    }
+                }
+                else {
+                    dB.echoError("'" + split[0] + "' is not a valid decimal number!");
+                }
+            }
+            else {
+                PlayerBars.resetHealth(getPlayerEntity());
             }
         }
 

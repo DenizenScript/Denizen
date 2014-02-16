@@ -158,7 +158,23 @@ public class InventoryContents implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        // TODO
+
+        // <--[mechanism]
+        // @object dInventory
+        // @name contents
+        // @input dList(dItem)
+        // @description
+        // Sets the contents of the inventory.
+        // @tags
+        // <in@inventory.list_contents>
+        // <in@inventory.list_contents.simple>
+        // <in@inventory.list_contents.with_lore[<lore>]>
+        // <in@inventory.list_contents.with_lore[<lore>].simple>
+        // -->
+        if (mechanism.matches("contents")) {
+            inventory.setContents(mechanism.getValue().asType(dList.class));
+        }
+
     }
 
 }

@@ -85,7 +85,7 @@ public class Conversion {
         else if (arg.matchesArgumentList(dItem.class)) {
             List<dItem> list = dList.valueOf(string).filter(dItem.class);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
-            return new dInventory(dInventory.maxSlots).add(items);
+            return new dInventory(dInventory.maxSlots).add(0, items);
         }
         else if (dLocation.matches(string)) {
             return dLocation.valueOf(string).getInventory();
