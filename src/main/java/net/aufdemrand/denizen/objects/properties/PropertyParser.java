@@ -53,10 +53,9 @@ public class PropertyParser {
         registerProperty(ItemEnchantments.class, dItem.class);
         registerProperty(ItemLore.class, dItem.class);
         registerProperty(ItemPlantgrowth.class, dItem.class);
-        registerProperty(ItemPotionEffects.class, dItem.class);
+        registerProperty(ItemPotion.class, dItem.class);
         registerProperty(ItemQuantity.class, dItem.class);
         registerProperty(ItemSkullskin.class, dItem.class);
-        registerProperty(ItemSplash.class, dItem.class);
 
     }
 

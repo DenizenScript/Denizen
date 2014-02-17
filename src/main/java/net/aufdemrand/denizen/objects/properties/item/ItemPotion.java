@@ -26,21 +26,6 @@ public class ItemPotion implements Property {
         else return new ItemPotion((dItem)_item);
     }
 
-
-    public List<PotionEffect> getPotionEffects() {
-        List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
-        try {
-            if (item.getMaterial().getData() > 0)
-                potionEffects.addAll(Potion.fromItemStack(item.getItemStack()).getEffects());
-            potionEffects.addAll(((PotionMeta) item.getItemStack().getItemMeta()).getCustomEffects());
-        }
-        catch (Exception ex) {
-            // TODO: Make this never throw exceptions!
-        }
-        return potionEffects;
-    }
-
-
     private ItemPotion(dItem item) {
         this.item = item;
     }
@@ -50,14 +35,10 @@ public class ItemPotion implements Property {
 
     @Override
     public String getPropertyString() {
-        List<PotionEffect> potionEffects = getPotionEffects();
-        if (potionEffects.isEmpty()) return null;
-        StringBuilder returnable = new StringBuilder();
-        for (PotionEffect effect : potionEffects) {
-            returnable.append(effect.getType().getName()).append(",").append(effect.getAmplifier())
-                    .append(",").append(new Duration(effect.getDuration()).identify());
-        }
-        return returnable.substring(0, returnable.length() - 1);
+        if (item.getMaterial().getData() == 0)
+            return null;
+        Potion pot = Potion.fromItemStack(item.getItemStack());
+        return pot.getType().name() + "," + pot.getLevel() + "," + pot.hasExtendedDuration() + "," + pot.isSplash();
     }
 
     @Override
@@ -70,110 +51,78 @@ public class ItemPotion implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <i@item.has_potion_effects>
+        // @attribute <i@item.has_potion_effect>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the potion has any potion effects.
+        // Returns whether the potion has a potion effect.
         // -->
-        if (attribute.startsWith("has_potion_effects")) {
-            return new Element(!getPotionEffects().isEmpty())
+        if (attribute.startsWith("has_potion_effect")) {
+            return new Element(item.getMaterial().getData() > 0)
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <i@item.potion_effects.with_details>
-        // @returns Element
-        // @description
-        // Returns the potion effect on the potion, with their level, duration, and splashiness.
-        // In the format of EFFECT,AMPLIFIER,EXTENDED,SPLASH - EG: POISON,1,true,true
-        // -->
-        if (attribute.startsWith("potion_effects.with_details")) {
-            List<PotionEffect> potionEffects = getPotionEffects();
-            if (potionEffects.size() > 0) {
-                dList effects = new dList();
-                for (PotionEffect potionEffect : potionEffects)
-                    effects.add(potionEffect.getType().getName() + ","
-                            + potionEffect.getAmplifier() + ","
-                            + potionEffect.getDuration());
-                return effects.getAttribute(attribute.fulfill(2));
-            }
-        }
+        if (item.getMaterial().getData() > 0) {
+            if (attribute.startsWith("potion_effect")) {
+                attribute = attribute.fulfill(1);
 
-        // <--[tag]
-        // @attribute <e@entity.potion_effects.amplifiers>
-        // @returns dList
-        // @description
-        // Returns a list of effects on the potion, showing only the amplifiers.
-        // -->
-        if (attribute.startsWith("potion_effects.amplifiers")) {
-            dList amplifiers = new dList();
-            for (PotionEffect effect : getPotionEffects())
-                amplifiers.add(String.valueOf(effect.getAmplifier()));
-            return amplifiers.getAttribute(attribute.fulfill(2));
-        }
+                // <--[tag]
+                // @attribute <i@item.potion_effect.is_splash>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the potion is a splash potion.
+                // To edit this, use <@link mechanism dItem.potion>
+                // -->
+                if (attribute.startsWith("is_splash")) {
+                    return new Element(Potion.fromItemStack(item.getItemStack()).isSplash())
+                            .getAttribute(attribute.fulfill(1));
+                }
 
-        // <--[tag]
-        // @attribute <i@item.potion_effects.amplifier[<name>]>
-        // @returns Element(Number)
-        // @description
-        // Returns the amplifier of a specified potion effect.
-        // -->
-        if (attribute.startsWith("potion_effects.amplifier")
-                && attribute.hasContext(2)) {
-            for (PotionEffect potionEffect : getPotionEffects()) {
-                if (potionEffect.getType().getName().equalsIgnoreCase(attribute.getContext(2)))
-                    return new Element(potionEffect.getAmplifier())
-                            .getAttribute(attribute.fulfill(2));
-            }
-            return new Element(0)
-                    .getAttribute(attribute.fulfill(2));
-        }
+                // <--[tag]
+                // @attribute <i@item.potion_effect.is_extended>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the potion has an extended duration.
+                // To edit this, use <@link mechanism dItem.potion>
+                // -->
+                if (attribute.startsWith("is_extended")) {
+                    return new Element(Potion.fromItemStack(item.getItemStack()).hasExtendedDuration())
+                            .getAttribute(attribute.fulfill(1));
+                }
 
-        // <--[tag]
-        // @attribute <e@entity.potion_effects.durations>
-        // @returns dList
-        // @description
-        // Returns a list of effects on the potion, showing only the durations, in ticks.
-        // -->
-        if (attribute.startsWith("potion_effects.durations")) {
-            dList durations = new dList();
-            for (PotionEffect effect : getPotionEffects())
-                durations.add(String.valueOf(effect.getDuration()));
-            return durations.getAttribute(attribute.fulfill(2));
-        }
+                // <--[tag]
+                // @attribute <i@item.potion_effect.level>
+                // @returns Element(Number)
+                // @description
+                // Returns the level of this potion.
+                // To edit this, use <@link mechanism dItem.potion>
+                // -->
+                if (attribute.startsWith("level")) {
+                    return new Element(Potion.fromItemStack(item.getItemStack()).getLevel())
+                            .getAttribute(attribute.fulfill(1));
+                }
 
-        // <--[tag]
-        // @attribute <i@item.potion_effects.duration[<name>]>
-        // @returns Duration
-        // @description
-        // Returns the duration, in ticks, of a specified potion effect.
-        // -->
-        if (attribute.startsWith("potion_effects.duration")
-                && attribute.hasContext(2)) {
-            for (PotionEffect potionEffect : getPotionEffects()) {
-                if (potionEffect.getType().getName().equalsIgnoreCase(attribute.getContext(2)))
-                    return new Duration((long) potionEffect.getDuration())
-                            .getAttribute(attribute.fulfill(2));
-            }
-            return new Element(0)
-                    .getAttribute(attribute.fulfill(2));
-        }
+                // <--[tag]
+                // @attribute <i@item.potion_effect.type>
+                // @returns Element
+                // @description
+                // Returns the type name of this potion.
+                // To edit this, use <@link mechanism dItem.potion>
+                // -->
+                if (attribute.startsWith("type")) {
+                    return new Element(Potion.fromItemStack(item.getItemStack()).getType().name())
+                            .getAttribute(attribute.fulfill(1));
+                }
 
-        // <--[tag]
-        // @attribute <i@item.potion_effects>
-        // @returns dList
-        // @description
-        // Returns a list of potion effects on this potion.
-        // To edit this, use <@link mechanism dItem.potion_effects>
-        // -->
-        if (attribute.startsWith("potion_effects")) {
-            List<PotionEffect> potionEffects = getPotionEffects();
-            if (potionEffects.size() > 0) {
-                List<String> effects = new ArrayList<String>();
-                for (PotionEffect potionEffect : potionEffects)
-                    effects.add(potionEffect.getType().getName());
-                return new dList(effects)
-                        .getAttribute(attribute.fulfill(1));
+                // <--[tag]
+                // @attribute <i@item.potion_effect>
+                // @returns Element
+                // @description
+                // Returns the potion effect on this item.
+                // In the format Effect,Level,Extended,Splash
+                // To edit this, use <@link mechanism dItem.potion>
+                // -->
+                return new Element(getPropertyString())
+                        .getAttribute(attribute);
             }
         }
 
@@ -192,10 +141,10 @@ public class ItemPotion implements Property {
         // Input is a formed like: Effect,Level,Extended,Splash
         // EG: speed,1,true,false
         // @tags
-        // <i@item.potion_effects>
-        // <i@item.potion_effects.amplifiers>
-        // <i@item.potion_effects.durations>
-        // <i@item.potion_effects.with_details>
+        // <i@item.potion_effect>
+        // <i@item.potion_effect.level>
+        // <i@item.potion_effect.is_extended>
+        // <i@item.potion_effects.is_splash>
         // -->
         if (mechanism.matches("potion")) {
             String[] data = mechanism.getValue().asString().split(",", 4);
