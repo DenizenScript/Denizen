@@ -473,6 +473,11 @@ public class Denizen extends JavaPlugin {
                 return true;
             }
 
+            if (dB.showDebug)
+                sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for debug output!");
+            else
+                sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... to see debug, use /denizen debug");
+
             entries.add(entry);
             InstantQueue queue = InstantQueue.getQueue(null);
             NPC npc = citizens.getNPCSelector().getSelected(sender);
