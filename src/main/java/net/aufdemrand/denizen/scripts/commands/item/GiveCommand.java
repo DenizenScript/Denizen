@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -128,6 +129,10 @@ public class GiveCommand  extends AbstractCommand {
             case ITEM:
                 for (dItem item : items) {
                     ItemStack is = item.getItemStack();
+                    if (is.getType() == Material.AIR) {
+                        dB.echoError("Cannot give air!");
+                        continue;
+                    }
                     if (scriptEntry.hasObject("set_quantity"))
                         is.setAmount(qty.asInt());
                     if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());

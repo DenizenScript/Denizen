@@ -985,7 +985,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when the server starts
     //
-    // @Determine "CANCELLED" to save all plugins and cancel server startup.
+    // @Determine
+    // "CANCELLED" to save all plugins and cancel server startup.
     //
     // -->
     public void serverStartEvent() {
