@@ -28,9 +28,14 @@ public class ItemPotionEffects implements Property {
 
     public List<PotionEffect> getPotionEffects() {
         List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
-        if (item.getMaterial().getData() > 0)
-            potionEffects.addAll(Potion.fromItemStack(item.getItemStack()).getEffects());
-        potionEffects.addAll(((PotionMeta) item.getItemStack().getItemMeta()).getCustomEffects());
+        try {
+            if (item.getMaterial().getData() > 0)
+                potionEffects.addAll(Potion.fromItemStack(item.getItemStack()).getEffects());
+            potionEffects.addAll(((PotionMeta) item.getItemStack().getItemMeta()).getCustomEffects());
+        }
+        catch (Exception ex) {
+            // TODO: Make this never throw exceptions!
+        }
         return potionEffects;
     }
 

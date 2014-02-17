@@ -23,7 +23,13 @@ public class ItemSplash implements Property {
 
 
     public boolean isSplash() {
-        return Potion.fromItemStack(item.getItemStack()).isSplash();
+        // TODO: Make this never throw exceptions!
+        try {
+            return Potion.fromItemStack(item.getItemStack()).isSplash();
+        }
+        catch (Exception ex) {
+            return false;
+        }
     }
 
     public void setSplash(boolean isSplash) {
