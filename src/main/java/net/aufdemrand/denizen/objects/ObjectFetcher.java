@@ -2,10 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,16 +108,42 @@ public class ObjectFetcher {
         return getObjectFrom(dClass, value, null, null);
     }
 
+    public static List<String> SeparateProperties(String input) {
+        if (input.indexOf('[') == -1 || input.lastIndexOf(']') != input.length() - 1)
+            return null;
+        ArrayList<String> output = new ArrayList<String>();
+        int start = 0;
+        boolean needObject = true;
+        int brackets = 0;
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) == '[' && needObject) {
+                needObject = false;
+                output.add(input.substring(start, i));
+                start = i + 1;
+            }
+            else if (input.charAt(i) == '[') {
+                brackets++;
+            }
+            else if (input.charAt(i) == ']' && brackets > 0) {
+                brackets--;
+            }
+            else if ((input.charAt(i) == ';' || input.charAt(i) == ']') && brackets == 0) {
+                output.add((input.substring(start, i)));
+                start = i + 1;
+            }
+        }
+        return output;
+    }
+
     public static <T extends dObject> T getObjectFrom(Class<T> dClass, String value, dPlayer player, dNPC npc) {
         try {
-            Matcher m = PROPERTIES_PATTERN.matcher(value);
-            boolean matched = m.matches() && Adjustable.class.isAssignableFrom(dClass);
-            T gotten = (T) ((dClass.equals(dItem.class)) ? dItem.valueOf(matched ? m.group(1): value, player, npc):
-                    valueof.get(dClass).invoke(null, matched ? m.group(1): value));
+            List<String> matches = SeparateProperties(value);
+            boolean matched = matches != null && Adjustable.class.isAssignableFrom(dClass);
+            T gotten = (T) ((dClass.equals(dItem.class)) ? dItem.valueOf(matched ? matches.get(0): value, player, npc):
+                    valueof.get(dClass).invoke(null, matched ? matches.get(0): value));
             if (gotten != null && matched) {
-                String[] properties = m.group(2).split(";");
-                for (String property: properties) {
-                    String[] data = property.split("=", 2);
+                for (int i = 1; i < matches.size(); i++) {
+                    String[] data = matches.get(i).split("=", 2);
                     ((Adjustable) gotten).adjust(new Mechanism(new Element(data[0]),
                             new Element(data[1].replace((char)0x2011, ';'))));
                 }

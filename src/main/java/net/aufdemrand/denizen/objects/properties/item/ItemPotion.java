@@ -9,20 +9,21 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemPotionEffects implements Property {
+public class ItemPotion implements Property {
 
     public static boolean describes(dObject item) {
         return item instanceof dItem
                 && ((dItem) item).getItemStack().getType() == Material.POTION;
     }
 
-    public static ItemPotionEffects getFrom(dObject _item) {
+    public static ItemPotion getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemPotionEffects((dItem)_item);
+        else return new ItemPotion((dItem)_item);
     }
 
 
@@ -40,7 +41,7 @@ public class ItemPotionEffects implements Property {
     }
 
 
-    private ItemPotionEffects(dItem item) {
+    private ItemPotion(dItem item) {
         this.item = item;
     }
 
@@ -61,7 +62,7 @@ public class ItemPotionEffects implements Property {
 
     @Override
     public String getPropertyId() {
-        return "potion_effects";
+        return "potion";
     }
 
     @Override
@@ -81,11 +82,10 @@ public class ItemPotionEffects implements Property {
 
         // <--[tag]
         // @attribute <i@item.potion_effects.with_details>
-        // @returns dList
+        // @returns Element
         // @description
-        // Returns a list of potion effects on the potion, with their durations, in ticks, and their
-        // amplifiers listed too.
-        // In the format of EFFECT,AMPLIFIER,DURATION - EG: POISON,1,800
+        // Returns the potion effect on the potion, with their level, duration, and splashiness.
+        // In the format of EFFECT,AMPLIFIER,EXTENDED,SPLASH - EG: POISON,1,true,true
         // -->
         if (attribute.startsWith("potion_effects.with_details")) {
             List<PotionEffect> potionEffects = getPotionEffects();
@@ -185,41 +185,49 @@ public class ItemPotionEffects implements Property {
 
         // <--[mechanism]
         // @object dItem
-        // @name potion_effects
-        // @input dList
+        // @name potion
+        // @input Element
         // @description
         // Sets the potion's custom potion effects.
+        // Input is a formed like: Effect,Level,Extended,Splash
+        // EG: speed,1,true,false
         // @tags
         // <i@item.potion_effects>
         // <i@item.potion_effects.amplifiers>
         // <i@item.potion_effects.durations>
         // <i@item.potion_effects.with_details>
         // -->
-        if (mechanism.matches("potion_effects")) {
-            PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
-            for (String effect : mechanism.getValue().asType(dList.class)) {
-                String[] data = effect.split(",", 3);
-                if (data.length < 3)
-                    dB.echoError("Invalid effect format, use name,amplifier,duration|...");
-                else {
-                    Element data1 = new Element(data[1]);
-                    Element data2 = new Element(data[2]);
-                    PotionEffectType type = PotionEffectType.getByName(data[0]);
-                    if (type == null) {
-                        dB.echoError("Invalid potion effect type '" + data[0] + "'");
-                        return;
-                    }
-                    else if (!data1.isInt())
-                        dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
-                    else if (!data2.matchesType(Duration.class))
-                        dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[2] + "' is not a valid duration!");
-                    PotionEffect potionEffect = new PotionEffect(type,
-                            data2.asType(Duration.class).getTicksAsInt(),
-                            data1.asInt());
-                    meta.addCustomEffect(potionEffect, false);
+        if (mechanism.matches("potion")) {
+            String[] data = mechanism.getValue().asString().split(",", 4);
+            if (data.length < 4)
+                dB.echoError("Invalid effect format, use name,amplifier,extended,splash.");
+            else {
+                Element data1 = new Element(data[1]);
+                Element data2 = new Element(data[2]);
+                Element data3 = new Element(data[3]);
+                PotionEffectType type = PotionEffectType.getByName(data[0]);
+                if (type == null) {
+                    dB.echoError("Invalid potion effect type '" + data[0] + "'");
+                    return;
                 }
+                if (!data1.isInt()) {
+                    dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
+                    return;
+                }
+                if (!data2.isBoolean()) {
+                    dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[2] + "' is not a valid boolean!");
+                    return;
+                }
+                if (!data3.isBoolean()) {
+                    dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[3] + "' is not a valid boolean!");
+                    return;
+                }
+                Potion pot = new Potion(PotionType.getByEffect(type));
+                pot.setLevel(data1.asInt());
+                pot.setHasExtendedDuration(data2.asBoolean());
+                pot.setSplash(data3.asBoolean());
+                pot.apply(item.getItemStack());
             }
-            item.getItemStack().setItemMeta(meta);
         }
 
     }

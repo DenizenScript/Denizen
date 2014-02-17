@@ -65,7 +65,7 @@ public class Attribute {
 
     ScriptEntry scriptEntry;
 
-    String raw_tag;
+    public String raw_tag;
     String origin;
 
     public ScriptEntry getScriptEntry() {
