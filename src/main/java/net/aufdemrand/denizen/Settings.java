@@ -38,6 +38,11 @@ public class Settings {
                 .getInt("Debug.Console width", 60);
     }
 
+    public static boolean ShowExHelp() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Debug.ex command help", true);
+    }
+
     /*
 
     # Sets the default speed between execution of commands in queues
