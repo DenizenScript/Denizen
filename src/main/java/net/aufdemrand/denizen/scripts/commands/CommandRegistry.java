@@ -2210,7 +2210,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>)
+        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air up to a certain height.
@@ -2218,6 +2218,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a target.
         // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
+        // Normally, a list of entities will spawn mounted on top of each other. To have them instead fire separately and spread out,
+        // specify the 'spread' argument with a decimal number indicating how wide to spread the entities.
         // In the script ran when the arrow lands, the following definitions will be available:
         // %shot_entities% for all shot entities, %last_entity% for the last one (The controlling entity),
         // %location% for the last known location of the last shot entity, and
@@ -2232,7 +2234,7 @@ public class CommandRegistry implements dRegistry {
         // - shoot arrow origin:<player> speed:2
         // -->
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>)", 1);
 
 
         // <--[command]

@@ -61,4 +61,13 @@ public class Velocity {
         return dx * dx + dz * dz;
     }
 
+    public static Vector spread(Vector from, double yaw, double pitch) {
+        // Note; This is a half-implementation that does not rotate the pitch yet...
+        Vector vec = from.clone();
+
+        float cos = (float)Math.cos(yaw);
+        float sin = (float)Math.sin(yaw);
+        return new Vector((vec.getX() * cos) - (vec.getZ() * sin), vec.getY(), (vec.getX() * sin) + (vec.getZ() * cos));
+    }
+
 }
