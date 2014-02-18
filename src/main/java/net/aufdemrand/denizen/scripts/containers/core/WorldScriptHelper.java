@@ -3872,6 +3872,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the item from being consumed.
+    // dItem to change the item being consumed.
     //
     // -->
     @EventHandler
@@ -3883,6 +3884,7 @@ public class WorldScriptHelper implements Listener {
         context.put("item", item);
 
         List<String> events = new ArrayList<String>();
+        events.add("player consumes item");
         events.add("player consumes " + item.identifySimple());
         events.add("player consumes " + item.identifyMaterial());
 
@@ -3890,6 +3892,12 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+
+        else if (dItem.matches(determination)) {
+            dItem newitem = dItem.valueOf(determination, new dPlayer(event.getPlayer()), null);
+            if (newitem != null)
+                event.setItem(newitem.getItemStack());
+        }
     }
 
     // <--[event]

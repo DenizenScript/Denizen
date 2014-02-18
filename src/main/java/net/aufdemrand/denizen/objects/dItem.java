@@ -640,7 +640,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <@link mechanism dItem.splash>, and <@link tag i@item.is_splash>
         // -->
         if (attribute.startsWith("is_potion")) {
-            return new Element(ItemPotionEffects.describes(this))
+            return new Element(ItemPotion.describes(this))
                     .getAttribute(attribute.fulfill(1));
         }
 
