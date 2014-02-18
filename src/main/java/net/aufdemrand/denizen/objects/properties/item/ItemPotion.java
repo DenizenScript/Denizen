@@ -35,7 +35,7 @@ public class ItemPotion implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.getMaterial().getData() == 0)
+        if (item.getItemStack().getDurability() == 0)
             return null;
         Potion pot = Potion.fromItemStack(item.getItemStack());
         return pot.getType().name() + "," + pot.getLevel() + "," + pot.hasExtendedDuration() + "," + pot.isSplash();
@@ -57,11 +57,11 @@ public class ItemPotion implements Property {
         // Returns whether the potion has a potion effect.
         // -->
         if (attribute.startsWith("has_potion_effect")) {
-            return new Element(item.getMaterial().getData() > 0)
+            return new Element(item.getItemStack().getDurability() > 0)
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (item.getMaterial().getData() > 0) {
+        if (item.getItemStack().getDurability() > 0) {
             if (attribute.startsWith("potion_effect")) {
                 attribute = attribute.fulfill(1);
 
