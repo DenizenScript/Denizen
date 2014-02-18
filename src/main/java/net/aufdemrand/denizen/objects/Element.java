@@ -98,7 +98,10 @@ public class Element implements dObject {
 
     public Element(String string) {
         this.prefix = "element";
-        this.element = string;
+        if (string == null)
+            this.element = "null";
+        else
+            this.element = string;
     }
 
     public Element(Boolean bool) {

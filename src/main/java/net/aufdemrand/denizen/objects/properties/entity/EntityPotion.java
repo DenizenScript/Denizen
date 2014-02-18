@@ -75,7 +75,7 @@ public class EntityPotion implements Property {
         // Returns the dItem of the splash potion.
         // -->
         if (attribute.startsWith("potion")) {
-            return new dItem(getPotion().getItem()).getAttribute(attribute.fulfill(2));
+            return new dItem(getPotion().getItem()).getAttribute(attribute.fulfill(1));
         }
 
         return null;
