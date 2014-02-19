@@ -49,6 +49,7 @@ public class ItemBook implements Property {
                 // @returns Element
                 // @description
                 // Returns the author of the book.
+                // To edit this, use <@link mechanism dItem.book>
                 // -->
                 if (attribute.startsWith("author"))
                     return new Element(bookInfo.getAuthor())
@@ -59,6 +60,7 @@ public class ItemBook implements Property {
                 // @returns Element
                 // @description
                 // Returns the title of the book.
+                // To edit this, use <@link mechanism dItem.book>
                 // -->
                 if (attribute.startsWith("title"))
                     return new Element(bookInfo.getTitle())
@@ -70,6 +72,7 @@ public class ItemBook implements Property {
             // @returns Element(Number)
             // @description
             // Returns the number of pages in the book.
+            // To edit this, use <@link mechanism dItem.book>
             // -->
             if (attribute.startsWith("page_count"))
                 return new Element(bookInfo.getPageCount())
@@ -80,6 +83,7 @@ public class ItemBook implements Property {
             // @returns Element
             // @description
             // Returns the page specified from the book as an element.
+            // To edit this, use <@link mechanism dItem.book>
             // -->
             if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
                 return new Element(bookInfo.getPage(attribute.getIntContext(1)))
@@ -91,6 +95,7 @@ public class ItemBook implements Property {
             // @description
             // Returns the pages of the book as a dList, pre-escaped to prevent issues.
             // See <@link language Property Escaping>
+            // To edit this, use <@link mechanism dItem.book>
             // -->
             if (attribute.startsWith("pages.escaped")) {
                 StringBuilder output = new StringBuilder();
@@ -107,6 +112,7 @@ public class ItemBook implements Property {
             // @returns dList
             // @description
             // Returns the pages of the book as a dList.
+            // To edit this, use <@link mechanism dItem.book>
             // -->
             if (attribute.startsWith("pages"))
                 return new dList(bookInfo.getPages())
@@ -121,6 +127,7 @@ public class ItemBook implements Property {
             // or as pages|PAGE_ONE|PAGE_TWO|...
             // Pre-escaped to prevent issues.
             // See <@link language Property Escaping>
+            // To edit this, use <@link mechanism dItem.book>
             // -->
             String output = getPropertyString();
             if (output == null)

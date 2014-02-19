@@ -43,6 +43,7 @@ public class ItemDisplayname implements Property {
         // @returns Element
         // @description
         // Returns the display name of the item, as set by plugin or an anvil.
+        // To edit this, use <@link mechanism dItem.display_name>
         // -->
         if (attribute.startsWith("display")) {
             if (hasDisplayName()) {
@@ -56,6 +57,7 @@ public class ItemDisplayname implements Property {
         // @returns Element(Boolean)
         // @description
         // Returns whether the item has a custom set display name.
+        // To edit this, use <@link mechanism dItem.display_name>
         // -->
         if (attribute.startsWith("has_display")) {
             return new Element(hasDisplayName())

@@ -55,6 +55,7 @@ public class ItemPlantgrowth implements Property {
         // Nether Warts: SEEDED, STAGE_ONE, STAGE_TWO, RIPE
         // Cocoa Plants: SMALL, MEDIUM, LARGE
         // Pumpkin stem, melon stem, carrot, potato: 0-7
+        // To edit this, use <@link mechanism dItem.plant_growth>
         // -->
         if (attribute.startsWith("plant_growth")) {
             if (item.getItemStack().getData() instanceof Crops)

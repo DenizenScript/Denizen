@@ -38,6 +38,7 @@ public class ItemDurability implements Property {
         // @returns Element(Number)
         // @description
         // Returns the current durability (number of uses) on the item.
+        // To edit this, use <@link mechanism dItem.durability>
         // -->
         if (attribute.startsWith("durability"))
             return new Element(item.getItemStack().getDurability())

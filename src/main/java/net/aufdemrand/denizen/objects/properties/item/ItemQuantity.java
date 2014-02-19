@@ -37,6 +37,7 @@ public class ItemQuantity implements Property {
         // @returns Element(Number)
         // @description
         // Returns the number of items in the dItem's itemstack.
+        // To edit this, use <@link mechanism dItem.quantity>
         // -->
         if (attribute.startsWith("qty"))
             return new Element(item.getItemStack().getAmount())
