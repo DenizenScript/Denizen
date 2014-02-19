@@ -69,7 +69,7 @@ public class EntityPowered implements Property {
 
         // <--[tag]
         // @attribute <e@entity.powered>
-        // @returns Element
+        // @returns Element(Boolean)
         // @description
         // If the entity is a creeper, returns whether the creeper is powered.
         // To edit this, use <@link mechanism dEntity.powered>
@@ -87,7 +87,7 @@ public class EntityPowered implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name powered
-        // @input Element
+        // @input Element(Boolean)
         // @description
         // Changes the powered state of a Creeper.
         // @tags
