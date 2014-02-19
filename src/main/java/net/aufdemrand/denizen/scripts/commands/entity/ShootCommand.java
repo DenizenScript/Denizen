@@ -258,7 +258,8 @@ public class ShootCommand extends AbstractCommand implements Listener {
             Vector base = lastEntity.getVelocity().clone();
             float sf = spread.asFloat();
             for (dEntity entity: entities) {
-                Vector newvel = Velocity.spread(base, (Utilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(Utilities.getRandom().nextDouble() * sf), 0);
+                Vector newvel = Velocity.spread(base, (Utilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(Utilities.getRandom().nextDouble() * sf),
+                        (Utilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(Utilities.getRandom().nextDouble() * sf));
                 entity.setVelocity(newvel);
             }
         }
