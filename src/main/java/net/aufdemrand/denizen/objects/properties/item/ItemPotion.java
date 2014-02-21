@@ -154,7 +154,14 @@ public class ItemPotion implements Property {
                 Element data1 = new Element(data[1]);
                 Element data2 = new Element(data[2]);
                 Element data3 = new Element(data[3]);
-                PotionEffectType type = PotionEffectType.getByName(data[0]);
+                PotionType type;
+                try {
+                    type = PotionType.valueOf(data[0].toUpperCase());
+                }
+                catch (Exception ex) {
+                    dB.echoError("Invalid potion effect type '" + data[0] + "'");
+                    return;
+                }
                 if (type == null) {
                     dB.echoError("Invalid potion effect type '" + data[0] + "'");
                     return;
@@ -171,7 +178,7 @@ public class ItemPotion implements Property {
                     dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[3] + "' is not a valid boolean!");
                     return;
                 }
-                Potion pot = new Potion(PotionType.getByEffect(type));
+                Potion pot = new Potion(type);
                 pot.setLevel(data1.asInt());
                 pot.setHasExtendedDuration(data2.asBoolean());
                 pot.setSplash(data3.asBoolean());
