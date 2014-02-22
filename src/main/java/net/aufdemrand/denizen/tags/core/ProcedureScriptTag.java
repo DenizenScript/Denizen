@@ -124,7 +124,7 @@ public class ProcedureScriptTag implements Listener {
 
         if (event.hasNameContext()) {
             if (event.getNameContext().indexOf('.') > 0) {
-                String[] split = event.getNameContext().split("\\.", 1);
+                String[] split = event.getNameContext().split("\\.", 2);
                 path = split[1];
                 script = dScript.valueOf(split[0]);
 
