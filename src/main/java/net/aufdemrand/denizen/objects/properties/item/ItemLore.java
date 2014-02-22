@@ -42,10 +42,10 @@ public class ItemLore implements Property {
         // <--[tag]
         // @attribute <i@item.lore.escaped>
         // @returns dList
+        // @mechanism dItem.lore
         // @description
         // Returns lore as a dList, pre-escaped to prevent issues.
         // See <@link language Property Escaping>
-        // To edit this, use <@link mechanism dItem.lore>
         // -->
         if (attribute.startsWith("lore.escaped")) {
             if (hasLore())
@@ -55,10 +55,10 @@ public class ItemLore implements Property {
         // <--[tag]
         // @attribute <i@item.lore>
         // @returns dList
+        // @mechanism dItem.lore
         // @description
         // Returns lore as a dList. Excludes the custom-script-id lore.
         // To get that information, use <i@item.scriptname>.
-        // To edit this, use <@link mechanism dItem.lore>
         // -->
         if (attribute.startsWith("lore")) {
             if (hasLore()) {
@@ -75,9 +75,9 @@ public class ItemLore implements Property {
         // <--[tag]
         // @attribute <i@item.has_lore>
         // @returns Element(Boolean)
+        // @mechanism dItem.lore
         // @description
         // Returns whether the item has lore set on it.
-        // To edit this, use <@link mechanism dItem.lore>
         // -->
         if (attribute.startsWith("has_lore"))
             return new Element(hasLore())

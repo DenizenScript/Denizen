@@ -38,9 +38,9 @@ public class ItemEnchantments implements Property {
         // <--[tag]
         // @attribute <i@item.is_enchanted>
         // @returns Element(Boolean)
+        // @mechanism dItem.enchantments
         // @description
         // Returns whether the item has any enchantments.
-        // To edit this, use <@link mechanism dItem.enchantments>
         // -->
         if (attribute.startsWith("is_enchanted")) {
             return new Element(item.getItemStack().getEnchantments().size() > 0)
@@ -50,10 +50,10 @@ public class ItemEnchantments implements Property {
         // <--[tag]
         // @attribute <i@item.enchantments.with_levels>
         // @returns dList
+        // @mechanism dItem.enchantments
         // @description
         // Returns a list of enchantments on the item, with their levels listed too.
         // In the format of ENCHANTMENT,LEVEL - EG: DAMAGE_ALL,3
-        // To edit this, use <@link mechanism dItem.enchantments>
         // -->
         if (attribute.startsWith("enchantments.with_levels")) {
             if (item.getItemStack().getEnchantments().size() > 0) {
@@ -68,9 +68,9 @@ public class ItemEnchantments implements Property {
         // <--[tag]
         // @attribute <i@item.enchantments.levels>
         // @returns dList
+        // @mechanism dItem.enchantments
         // @description
         // Returns a list of enchantments on the item, showing only the level.
-        // To edit this, use <@link mechanism dItem.enchantments>
         // -->
         if (attribute.startsWith("enchantments.levels")) {
             if (item.getItemStack().getEnchantments().size() > 0) {
@@ -85,9 +85,9 @@ public class ItemEnchantments implements Property {
         // <--[tag]
         // @attribute <i@item.enchantments.level[<name>]>
         // @returns Element(Number)
+        // @mechanism dItem.enchantments
         // @description
         // Returns the level of a specified enchantment.
-        // To edit this, use <@link mechanism dItem.enchantments>
         // -->
         if (attribute.startsWith("enchantments.level")
                 && attribute.hasContext(2)) {
@@ -106,9 +106,9 @@ public class ItemEnchantments implements Property {
         // <--[tag]
         // @attribute <i@item.enchantments>
         // @returns dList
+        // @mechanism dItem.enchantments
         // @description
         // Returns a list of enchantments on the item.
-        // To edit this, use <@link mechanism dItem.enchantments>
         // -->
         if (attribute.startsWith("enchantments")) {
             if (item.getItemStack().getEnchantments().size() > 0) {

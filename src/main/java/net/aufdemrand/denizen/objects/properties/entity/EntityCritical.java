@@ -60,9 +60,9 @@ public class EntityCritical implements Property {
         // <--[tag]
         // @attribute <e@entity.critical>
         // @returns Element(Boolean)
+        // @mechanism dEntity.critical
         // @description
         // If the entity is an arrow, returns whether the arrow is critical.
-        // To edit this, use <@link mechanism dEntity.critical>
         // -->
         if (attribute.startsWith("critical"))
             return new Element(((Arrow)critical.getBukkitEntity()).isCritical())

@@ -71,9 +71,9 @@ public class EntityPotion implements Property {
         // <--[tag]
         // @attribute <e@entity.potion>
         // @returns dItem
+        // @mechanism dEntity.potion
         // @description
         // Returns the dItem of the splash potion.
-        // To edit this, use <@link mechanism dEntity.potion>
         // -->
         if (attribute.startsWith("potion")) {
             return new dItem(getPotion().getItem()).getAttribute(attribute.fulfill(1));

@@ -38,10 +38,10 @@ public class ItemSkullskin implements Property {
         // <--[tag]
         // @attribute <i@item.skin>
         // @returns Element
+        // @mechanism dItem.skull_skin
         // @description
         // Returns the name of the player whose skin a skull item uses.
         // Note: Item must be a 'skull_item' with a skin.
-        // To edit this, use <@link mechanism dItem.skull_skin>
         // -->
         if (attribute.startsWith("skin")) {
             if (item.getItemStack().getDurability() == 3
@@ -57,10 +57,10 @@ public class ItemSkullskin implements Property {
         // <--[tag]
         // @attribute <i@item.has_skin>
         // @returns Element(Boolean)
+        // @mechanism dItem.skull_skin
         // @description
         // Returns whether the item has a custom skin set.
         // (Only for human 'skull_item's)
-        // To edit this, use <@link mechanism dItem.skull_skin>
         // -->
         if (attribute.startsWith("has_skin"))
             return new Element(item.getItemStack().getDurability() == 3

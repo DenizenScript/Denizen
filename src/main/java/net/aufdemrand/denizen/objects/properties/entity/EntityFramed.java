@@ -82,9 +82,9 @@ public class EntityFramed implements Property {
         // <--[tag]
         // @attribute <e@entity.framed_item_rotation>
         // @returns Element
+        // @mechanism dEntity.framed
         // @description
         // If the entity is an item frame, returns the rotation of the material currently framed.
-        // To edit this, use <@link mechanism dEntity.framed>
         // -->
         if (attribute.startsWith("framed_item_rotation"))
             return new Element(getItemFrameEntity().getRotation().name().toLowerCase())
@@ -93,9 +93,9 @@ public class EntityFramed implements Property {
         // <--[tag]
         // @attribute <e@entity.framed_item>
         // @returns dItem
+        // @mechanism dEntity.framed
         // @description
         // If the entity is an item frame, returns the material currently framed.
-        // To edit this, use <@link mechanism dEntity.framed>
         // -->
         if (attribute.startsWith("framed_item"))
             return getItem()
@@ -104,9 +104,9 @@ public class EntityFramed implements Property {
         // <--[tag]
         // @attribute <e@entity.has_framed_item>
         // @returns Element(Boolean)
+        // @mechanism dEntity.framed
         // @description
         // If the entity is an item frame, returns whether the frame has an item in it.
-        // To edit this, use <@link mechanism dEntity.framed>
         // -->
         if (attribute.startsWith("has_framed_item"))
             return new Element(hasItem())

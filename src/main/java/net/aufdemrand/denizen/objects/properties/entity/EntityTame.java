@@ -68,9 +68,9 @@ public class EntityTame implements Property {
         // <--[tag]
         // @attribute <e@entity.is_tamed>
         // @returns Element(Boolean)
+        // @mechanism dEntity.tame
         // @description
         // Returns whether the entity has been tamed.
-        // To edit this, use <@link mechanism dEntity.tame>
         // -->
         if (attribute.startsWith("is_tamed")) {
             return new Element(((Tameable) entity.getBukkitEntity()).isTamed())
@@ -80,9 +80,9 @@ public class EntityTame implements Property {
         // <--[tag]
         // @attribute <e@entity.get_owner>
         // @returns dPlayer
+        // @mechanism dEntity.owner
         // @description
         // Returns the owner of a tamed entity.
-        // To edit this, use <@link mechanism dEntity.owner>
         // -->
         if (attribute.startsWith("get_owner")) {
             if (((Tameable) entity.getBukkitEntity()).isTamed())
@@ -105,6 +105,7 @@ public class EntityTame implements Property {
         // @input Element(Boolean)(|dPlayer)
         // @description
         // Sets whether the entity has been tamed.
+        // Also available: <@link mechanism dEntity.owner>
         // @tags
         // <e@entity.is_tamed>
         // <e@entity.is_tameable>
@@ -130,6 +131,7 @@ public class EntityTame implements Property {
         // @input dPlayer
         // @description
         // Sets the entity's owner. Use with no input to make it not have an owner.
+        // Also available: <@link mechanism dEntity.tame>
         // @tags
         // <e@entity.is_tamed>
         // <e@entity.is_tameable>

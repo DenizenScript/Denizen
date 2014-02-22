@@ -126,6 +126,7 @@ public class EntityAge implements Property {
         // <--[tag]
         // @attribute <e@entity.age>
         // @returns Element(Number)
+        // @mechanism dEntity.age
         // @description
         // If the entity is ageable, returns the entity's age number (-24000 to 0)
         // -->
@@ -136,6 +137,7 @@ public class EntityAge implements Property {
         // <--[tag]
         // @attribute <e@entity.is_age_locked>
         // @returns Element(Boolean)
+        // @mechanism dEntity.age_lock
         // @description
         // If the entity is ageable, returns whether the entity is age locked.
         // -->
@@ -146,6 +148,7 @@ public class EntityAge implements Property {
         // <--[tag]
         // @attribute <e@entity.is_baby>
         // @returns Element(Boolean)
+        // @mechanism dEntity.age
         // @description
         // If the entity is ageable, returns whether the entity is a baby.
         // -->
@@ -167,6 +170,7 @@ public class EntityAge implements Property {
         // @input Element(Boolean)
         // @description
         // Sets whether the entity is locked into its current age.
+        // Also available: <@link mechanism dEntity.age>
         // @tags
         // <e@entity.age>
         // <e@entity.is_baby>
@@ -188,6 +192,7 @@ public class EntityAge implements Property {
         // Inputs can be 'baby', 'adult', or a valid age number (-24000 to 0)
         // Optionally, add '|locked' or 'unlocked' to lock/unlock the entity into/from the current age.
         // (EG, age:baby|locked or age:-24000|unlocked)
+        // Also available: <@link mechanism dEntity.age_lock>
         // @tags
         // <e@entity.age>
         // <e@entity.is_baby>

@@ -48,6 +48,7 @@ public class PropertyParser {
         registerProperty(InventoryTitle.class, dInventory.class);
 
         // register core dItem properties
+        registerProperty(ItemApple.class, dItem.class);
         registerProperty(ItemBook.class, dItem.class);
         registerProperty(ItemDisplayname.class, dItem.class);
         registerProperty(ItemDurability.class, dItem.class);

@@ -53,6 +53,7 @@ public class ItemPotion implements Property {
         // <--[tag]
         // @attribute <i@item.has_potion_effect>
         // @returns Element(Boolean)
+        // @mechanism dItem.potion
         // @description
         // Returns whether the potion has a potion effect.
         // -->
@@ -68,9 +69,9 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect.is_splash>
                 // @returns Element(Boolean)
+                // @mechanism dItem.potion
                 // @description
                 // Returns whether the potion is a splash potion.
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 if (attribute.startsWith("is_splash")) {
                     return new Element(Potion.fromItemStack(item.getItemStack()).isSplash())
@@ -80,9 +81,9 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect.is_extended>
                 // @returns Element(Boolean)
+                // @mechanism dItem.potion
                 // @description
                 // Returns whether the potion has an extended duration.
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 if (attribute.startsWith("is_extended")) {
                     return new Element(Potion.fromItemStack(item.getItemStack()).hasExtendedDuration())
@@ -92,9 +93,9 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect.level>
                 // @returns Element(Number)
+                // @mechanism dItem.potion
                 // @description
                 // Returns the level of this potion.
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 if (attribute.startsWith("level")) {
                     return new Element(Potion.fromItemStack(item.getItemStack()).getLevel())
@@ -104,9 +105,9 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect.type>
                 // @returns Element
+                // @mechanism dItem.potion
                 // @description
                 // Returns the type name of this potion.
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 if (attribute.startsWith("type")) {
                     return new Element(Potion.fromItemStack(item.getItemStack()).getType().name())
@@ -116,10 +117,10 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect>
                 // @returns Element
+                // @mechanism dItem.potion
                 // @description
                 // Returns the potion effect on this item.
                 // In the format Effect,Level,Extended,Splash
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 return new Element(getPropertyString())
                         .getAttribute(attribute);

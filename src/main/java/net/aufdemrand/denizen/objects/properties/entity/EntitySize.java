@@ -58,9 +58,9 @@ public class EntitySize implements Property {
         // <--[tag]
         // @attribute <e@entity.size>
         // @returns Element(Number)
+        // @mechanism dEntity.size
         // @description
         // Returns the size of a slime-type entity (1-120).
-        // To edit this, use <@link mechanism dEntity.size>
         // -->
         if (attribute.startsWith("size")) {
             return new Element(((Slime) entity.getBukkitEntity()).getSize())

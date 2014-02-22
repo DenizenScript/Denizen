@@ -49,13 +49,13 @@ public class ItemPlantgrowth implements Property {
         // <--[tag]
         // @attribute <i@item.plant_growth>
         // @returns Element
+        // @mechanism dItem.plant_growth
         // @description
         // Returns the growth level of a plant item as one of the following:
         // Wheat: SEEDED, GERMINATED, VERY_SMALL, SMALL, MEDIUM, TALL, VERY_TALL, RIPE
         // Nether Warts: SEEDED, STAGE_ONE, STAGE_TWO, RIPE
         // Cocoa Plants: SMALL, MEDIUM, LARGE
         // Pumpkin stem, melon stem, carrot, potato: 0-7
-        // To edit this, use <@link mechanism dItem.plant_growth>
         // -->
         if (attribute.startsWith("plant_growth")) {
             if (item.getItemStack().getData() instanceof Crops)
