@@ -740,13 +740,13 @@ public class CommandHandler {
                         Messaging.send(sender, ChatColor.RED + "Error while submitting.");
                     }
                     else {
-                        Messaging.send(sender, ChatColor.GREEN + "Successfully submitted to http://mcmonkey4eva.dyndns.org" + submit.Result);
+                        Messaging.send(sender, ChatColor.GREEN + "Successfully submitted to http://mcmonkey.org" + submit.Result);
                     }
                     this.cancel();
                 }
             }
         };
-        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 20);
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 10);
     }
 
     // <--[language]
