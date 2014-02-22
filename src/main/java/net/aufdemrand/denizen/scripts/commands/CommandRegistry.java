@@ -62,7 +62,9 @@ public class CommandRegistry implements dRegistry {
     //
     // You merely need to look at the command's usage/syntax info.
     // Let's take for example:
+    // <code>
     // - animatechest [<location>] ({open}/close) (sound:{true}/false)
+    // </code>
     // Obviously, the command is 'animatechest'... but what does the rest of it mean?
     //
     // Anything in [brackets] is required... you MUST put it there.
@@ -71,6 +73,7 @@ public class CommandRegistry implements dRegistry {
     // Anything in <> is non-literal... you must change what is inside of it.
     // Anything outside of <> is literal... you must put it exactly as-is.
     // <#> represents a number without a decimal, and <#.#> represents a number with a decimal
+    // Lastly, input that ends with "|..." (EG, [<entity>|...] ) can take a list of the input indicated before it (In that example, a list of entities)
     //
     // A few examples:
     // [<location>] is required and non-literal... you might fill it with '1,2,3,world' which is a valid location object.
@@ -93,6 +96,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Adjusts a dObjects mechanism.
         // @Author aufdemrand
+        // @Group core
 
         // @Description
         // Many dObjects contains options and properties that need to be adjusted. Denizen employs a mechanism
@@ -118,6 +122,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Sets the ages of a list of entities, optionally locking them in those ages.
         // @Author David Cernat
+        // @Group entity
 
         // @Description
         // Some living entity types are 'ageable' which can affect an entities ability to breed, or whether they appear
@@ -156,6 +161,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Controls a NPC's Anchor Trait.
         // @Author aufdemrand
+        // @Group npc
 
         // @Description
         // The anchor system inside Citizens2 allows locations to be 'bound' to a NPC, saved by an 'id'. The anchor
@@ -193,6 +199,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Makes a list of entities perform a certain animation.
         // @Author David Cernat
+        // @Group entity
 
         // @Description
         // Minecraft implements several player and entity animations which the animate command can use, just
@@ -228,6 +235,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Makes a chest appear to open or close.
         // @Author Jeebiss, mcmonkey
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -246,6 +254,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Announces a message for everyone online to read.
         // @Author aufdemrand
+        // @Group server
 
         // @Description
         // Announce sends a raw message to players. Simply using announce with text will send
@@ -287,6 +296,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Changes an NPC's assignment.
         // @Author aufdemrand
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -305,6 +315,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Makes an entity, or list of entities, attack a target.
         // @Author David Cernat
+        // @Group entity
 
         // @Description
         // By itself, the 'attack' command will act as a NPC command in the sense that an attached
@@ -348,6 +359,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Makes the NPC walk over and break a block.
         // @Author aufdemrand
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -366,6 +378,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Sets a list of entities on fire.
         // @Author David Cernat
+        // @Group entity
         // @Description
         // Burn will set a list of entities on fire. Just specify a list of entities (or a single entity) and
         // optionally, a duration. Normal mobs and players will see damage afflicted, but NPCs will block damage
@@ -398,6 +411,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable Stable
         // @Short Casts a potion effect to a list of entities.
         // @Author aufdemrand, Jeebiss, Morphan1
+        // @Group entity
 
         // @Description
         // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
@@ -421,6 +435,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(CastCommand.class,
                 "CAST, POTION", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)", 1);
 
+        // TODO: Should the chat command be in the NPC group instead?
         // <--[command]
         // @Name Chat
         // @Syntax chat ["<text>"] (no_target/targets:<entity>|...) (talkers:<npc>|...)
@@ -428,6 +443,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Causes a NPC/NPCs to send a chat message to nearby players.
         // @Author aufdemrand
+        // @Group player
 
         // @Description
         // Chat uses a NPCs SpeechController provided by Citizens2, typically inside 'interact' or 'task'
@@ -478,6 +494,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Keeps a chunk actively loaded and allowing NPC activity.
         // @Author spaceemotion, mcmonkey
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -496,6 +513,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Redirects the player's compass to target the given location.
         // @Author mcmonkey
+        // @Group player
         // @Description
         // Todo
         // @Tags
@@ -514,6 +532,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Temporarily disables a script-container from meeting requirements.
         // @Author aufdemrand
+        // @Group core
 
         // @Description
         // Cools down a script-container. If an interact-container, when on cooldown, scripts will not pass a
@@ -554,6 +573,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Copies a block to another location, keeping all metadata.
         // @Author aufdemrand, David Cernat
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -572,6 +592,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable experimental
         // @Short Creates a new NPC, and optionally spawns it at a location.
         // @Author aufdemrand
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -594,7 +615,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable unstable
         // @Short Creates a new world
-        // @Author Todo
+        // @Author aufdemrand
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -613,6 +635,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Creates a temporary variable inside a script queue.
         // @Author aufdemrand
+        // @Group core
 
         // @Description
         // Definitions are queue-level (or script-level) 'variables' that can be used throughout a script, once
@@ -663,6 +686,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Temporarily despawns the linked NPC or a list of NPCs.
         // @Author mcmonkey
+        // @Group npc
 
         // @Description
         // This command will temporarily despawn either the linked NPC or
@@ -691,6 +715,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Sets the outcome of an event.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -709,6 +734,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command.
         // @Author aufdemrand
+        // @Group npc
 
         // @Description
         // Re-enables any toggled triggers that have been disabled by disengage. Using
@@ -747,6 +773,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Makes a non-touchable item spawn for players to view.
         // @Author aufdemrand, mcmonkey
+        // @Group item
         // @Description
         // Todo
         // @Tags
@@ -765,6 +792,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
         // @Author aufdemrand
+        // @Group world
 
         // @Description
         // To drop an item, just specify a valid item object. To drop
@@ -802,6 +830,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Temporarily disables a NPCs toggled interact script-container triggers.
         // @Author aufdemrand
+        // @Group npc
         //
         // @Description
         // Engaging a NPC will temporarily disable any interact script-container triggers. To reverse
@@ -850,7 +879,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Equips items and armor on a list of entities.
-        // @Author Todo
+        // @Author David Cernat
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -868,7 +898,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 2
         // @Stable stable
         // @Short Executes an arbitrary server command as if the player, NPC, or server typed it in.
-        // @Author Todo
+        // @Author aufdemrand
+        // @Group server
         // @Description
         // Todo
         // @Tags
@@ -886,7 +917,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 2
         // @Stable Todo
         // @Short Gives or takes experience points to the player.
-        // @Author Todo
+        // @Author aufdemrand
+        // @Group player
         // @Description
         // Todo
         // @Tags
@@ -908,6 +940,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Causes an explosion at the location.
         // @Author Alain Blanquet
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -926,6 +959,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Marks a script as having failed.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -944,6 +978,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Refills the player's food bar.
         // @Author aufdemrand, Jeebiss
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -963,6 +998,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Marks a script as having been completed successfully.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -981,6 +1017,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Launches a firework with specific coloring
         // @Author David Cernat
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -998,7 +1035,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Todo
         // @Short Causes an NPC to begin fishing
-        // @Author Todo
+        // @Author Jeebiss
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -1017,6 +1055,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Sets or modifies a flag on the player, NPC, or server.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -1037,6 +1076,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Make an entity fly where its controller is looking or fly to waypoints.
         // @Author David Cernat
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1055,6 +1095,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Causes the NPC to follow a target (Currently experiencing bugs with lead: )
         // @Author aufdemrand
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -1073,6 +1114,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Loops through a dList, running a set of commands for each item.
         // @Author Morphan1, mcmonkey
+        // @Group core
 
         // @Description
         // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
@@ -1105,7 +1147,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Gives the player an item, xp, or money.
-        // @Author Todo
+        // @Author Jeebiss
+        // @Group item
         // @Description
         // Todo
         // @Tags
@@ -1130,7 +1173,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 2
         // @Stable Todo
         // @Short Adds a player to or removes a player from a permissions group.
-        // @Author Todo
+        // @Author GnomeffinWay
+        // @Group player
         // @Description
         // Todo
         // @Tags
@@ -1151,6 +1195,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Makes players or NPCs wear a specific player's head.
         // @Author David Cernat
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1169,6 +1214,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Heals the player or list of entities.
         // @Author aufdemrand, Jeebiss, Morphan1, mcmonkey
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1187,6 +1233,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Changes the target's maximum health.
         // @Author mcmonkey
+        // @Group entity
         // @Description
         // Use this command to modify an entity's maximum health. If the target is an NPC,
         // you can use the 'state' argument to enable, disable, or toggle the Health trait
@@ -1224,6 +1271,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Hurts the player or a list of entities.
         // @Author aufdemrand, Jeebiss, morphan1, mcmonkey
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1242,6 +1290,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Compares values, and runs one script if they match, or a different script if they don't match.
         // @Author aufdemrand, David Cernat
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -1260,6 +1309,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
         // @Author David Cernat, Morphan1
+        // @Group item
         // @Description
         // Use this command to edit the state of inventories. By default, the destination inventory
         // is the current attached player's inventory. If you are copying, swapping, removing from
@@ -1302,6 +1352,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Runs a script in the current ScriptQueue.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -1320,6 +1371,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Makes the player or NPC turn invisible. (Does not fully work currently)
         // @Author aufdemrand
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1338,6 +1390,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Sticks a leash on target entity, held by a fence post or another entity.
         // @Author Alain Blanquet, mcmonkey
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1364,6 +1417,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Listens for the player achieving various actions and runs a script when they are completed.
         // @Author aufdemrand, Jeebiss
+        // @Group player
 
         // @Description
         // This will create a listener object that listens for when the player does specific actions,
@@ -1418,6 +1472,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Logs some debugging info to a file.
         // @Author SpaceEmotion, mcmonkey
+        // @Group core
         // @Description
         // This is a quick and simple way to store debugging information for admins to read.
         // You just input a file name and some text, and it will store that information in the file
@@ -1454,6 +1509,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Causes the NPC or other entity to look at a target location.
         // @Author aufdemrand, mcmonkey
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1472,12 +1528,12 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name LookClose
-        // @Group NPC Commands
         // @Syntax lookclose lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)
         // @Required 0
         // @Stable stable
         // @Short Interacts with a NPCs 'lookclose' trait as provided by Citizens2.
         // @Author aufdemrand
+        // @Group npc
 
         // @Description
         // Use this command with any NPC to alter the state and options of its 'lookclose'
@@ -1510,6 +1566,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Plays a midi file at a given location or to a list of players using note block sounds.
         // @Author David Cernat
+        // @Group world
 
         // @Description
         // This will fully load a midi song file stored in the '../plugins/Denizen/midi/' folder. The file
@@ -1548,6 +1605,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Mounts one entity onto another.
         // @Author David Cernat
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1577,6 +1635,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Modifies blocks.
         // @Author Jeebiss, aufdemrand
+        // @Group world
         // @Description
         // Changes blocks in the world based on the criteria given. Specifying no radius/height/depth will result
         // in only the specified blocks being changed. Use 'no_physics' to place the blocks without
@@ -1598,6 +1657,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Changes something's nameplate, requires ProtocolLib (Unstable and broken!)
         // @Author spaceemotion
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1616,6 +1676,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Shows some text to the player.
         // @Author aufdemrand
+        // @Group player
         // @Description
         // Todo
         // @Tags
@@ -1634,6 +1695,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Adds a new notable object.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -1651,7 +1713,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable unstable
         // @Short Gives or takes breath from the player.
-        // @Author Todo
+        // @Author David Cernat
+        // @Group player
         // @Description
         // Todo
         // @Tags
@@ -1671,6 +1734,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Pauses/resumes an NPC's waypoint navigation or goal activity temporarily or permanently.
         // @Author aufdemrand
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -1697,6 +1761,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Plays a visible or audible effect at the location.
         // @Author David Cernat
+        // @Group world
         // @Description
         // Todo
         // See <@link language Particle Effects> for a list of valid effect names.
@@ -1715,7 +1780,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 2
         // @Stable stable
         // @Short Plays a sound at the location or to a list of players.
-        // @Author Todo
+        // @Author Jeebiss
+        // @Group world
         // @Description
         // TODO
         // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound string to something like 'random.click'
@@ -1734,7 +1800,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 2
         // @Stable unstable
         // @Short Gives or takes a permission node to/from the player or group.
-        // @Author Todo
+        // @Author GnomeffinWay
+        // @Group player
         // @Description
         // Todo
         // @Tags
@@ -1755,6 +1822,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Rotates the player or NPC to match a pose, or adds/removes an NPC's poses.
         // @Author aufdemrand
+        // @Group npc
         //
         // @Description
         // Makes a player or NPC assume the position of a pose saved on an NPC, removes a
@@ -1789,6 +1857,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Pushes entities through the air in a straight line.
         // @Author David Cernat, mcmonkey
+        // @Group entity
         // @Description
         // Pushes entities through the air in a straight line at a certain speed and for a certain duration, triggering a script when they hit an obstacle or stop flying.
         // @Tags
@@ -1812,7 +1881,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Modifies the current state of a script queue.
-        // @Author Todo
+        // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -1833,6 +1903,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Selects a random choice from the following script commands.
         // @Author aufdemrand, morphan1
+        // @Group core
         // @Description
         // Todo
 
@@ -1866,6 +1937,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable Todo
         // @Short Despawns a list of entities, fully removing any NPCs.
         // @Author David Cernat
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1884,6 +1956,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Renames the linked NPC.
         // @Author aufdemrand
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -1907,6 +1980,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Runs a series of braced commands several times.
         // @Author morphan1, mcmonkey
+        // @Group core
 
         // @Description
         // Loops through a series of braced commands a specified number of times.
@@ -1931,7 +2005,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Resets various parts of Denizen's saves.yml, including script finishes/fails, a script's fails, finishes, or cooldowns.
-        // @Author Todo
+        // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -1950,6 +2025,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Rotates a list of entities.
         // @Author David Cernat
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -1969,6 +2045,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Runs a script in a new ScriptQueue.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -1988,6 +2065,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Runs a task script.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -2006,6 +2084,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Creates, loads, pastes, and saves WorldEdit schematics.
         // @Author mcmonkey
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -2051,6 +2130,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Add or removes viewers, objectives and scores from scoreboards.
         // @Author David Cernat
+        // @Group server
         // @Description
         // Lets you make players see a certain scoreboard and then a certain objective in that scoreboard.
         //
@@ -2193,6 +2273,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable Todo
         // @Short Writes information to a book from a book-type script or a book item.
         // @Author Jeebiss, aufdemrand
+        // @Group item
         // @Description
         // Todo
         // @Tags
@@ -2215,6 +2296,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Shoots an entity through the air up to a certain height.
         // @Author David Cernat, mcmonkey
+        // @Group entity
         // @Description
         // Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a target.
         // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
@@ -2244,6 +2326,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Makes the player see a block change that didn't actually happen.
         // @Author aufdemrand
+        // @Group player
         // @Description
         // Todo
         // @Tags
@@ -2262,6 +2345,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Modifies a sign.
         // @Author David Cernat
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -2279,7 +2363,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 0
         // @Stable unstable
         // @Short Causes the NPC to sit. (Does not currently work!)
-        // @Author Todo
+        // @Author Jeebiss
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -2298,6 +2383,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Spawns a list of entities at a certain location.
         // @Author David Cernat
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -2317,7 +2403,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 0
         // @Stable unstable
         // @Short Causes the NPC to stand. (Does not currently work!)
-        // @Author Todo
+        // @Author Jeebiss
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -2335,7 +2422,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Strikes lightning down upon the location.
-        // @Author Todo
+        // @Author aufdemrand
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -2353,6 +2441,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Switches a lever.
         // @Author aufdemrand, Jeebiss, David Cernat
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -2369,7 +2458,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.
-        // @Author Todo
+        // @Author Jeebiss
+        // @Group item
         // @Description
         // Todo
         // @Tags
@@ -2388,6 +2478,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Teleports the player or NPC to a new location.
         // @Author David Cernat, aufdemrand
+        // @Group entity
         // @Description
         // Todo
         // @Tags
@@ -2405,6 +2496,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable Todo
         // @Short Changes the current time in the minecraft world.
         // @Author David Cernat
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -2423,6 +2515,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable Stable
         // @Short Adds or removes a trait from an NPC.
         // @Author Morphan1
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -2442,6 +2535,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Enables or disables a trigger.
         // @Author aufdemrand
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -2459,18 +2553,19 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Creates a sign that auto-updates with information.
         // @Author Morphan1
-        //
+        // @Group entity
+
         // @Description
         // Creates a sign that auto-updates with information about a player, including their location, score, and
         // whether they're logged in or not.
-        //
+
         // @Tags
         // None
-        //
+
         // @Usage
         // Create a sign that shows the location of a player on a wall
         // - viewer player:ThatGuy create 113,76,-302,world id:PlayerLoc1 type:wall_sign display:location
-        //
+
         // -->
         registerCoreMember(ViewerCommand.class,
                 "VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)", 2);
@@ -2482,6 +2577,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Sets whether an NPC is vulnerable.
         // @Author aufdemrand
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -2499,6 +2595,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Delays a script for a specified amount of time.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -2516,6 +2613,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Causes an NPC or list of NPCs to walk to another location.
         // @Author aufdemrand
+        // @Group npc
         // @Description
         // Todo
         // @Tags
@@ -2536,6 +2634,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable Todo
         // @Short Changes the current weather in the minecraft world.
         // @Author David Cernat
+        // @Group world
         // @Description
         // Todo
         // @Tags
@@ -2552,7 +2651,8 @@ public class CommandRegistry implements dRegistry {
         // @Required 2
         // @Stable Todo
         // @Short Edits a YAML configuration file.
-        // @Author Todo
+        // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
@@ -2583,6 +2683,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable stable
         // @Short Changes the current script step.
         // @Author aufdemrand
+        // @Group core
         // @Description
         // Todo
         // @Tags
