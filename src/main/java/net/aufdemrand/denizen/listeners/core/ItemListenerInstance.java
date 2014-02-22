@@ -216,6 +216,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     @Override
     public void deconstructed() {
         InventoryClickEvent.getHandlerList().unregister(this);
+        PlayerFishEvent.getHandlerList().unregister(this);
     }
 
 }

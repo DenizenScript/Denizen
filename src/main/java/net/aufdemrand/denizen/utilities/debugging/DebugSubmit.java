@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -21,7 +20,7 @@ public class DebugSubmit extends Thread {
         BufferedReader in = null;
         try {
             // Open a connection to the paste server
-            URL url = new URL("http://mcmonkey4eva.dyndns.org/paste");
+            URL url = new URL("http://mcmonkey.org/paste");
             HttpURLConnection uc = (HttpURLConnection) url.openConnection();
             uc.setDoInput(true);
             uc.setDoOutput(true);
