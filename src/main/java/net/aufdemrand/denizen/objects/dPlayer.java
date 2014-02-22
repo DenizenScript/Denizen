@@ -805,6 +805,17 @@ public class dPlayer implements dObject, Adjustable {
             return new dItem(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <p@player.item_in_hand.slot>
+        // @returns Element(Number)
+        // @description
+        // returns the slot location of the player's selected item.
+        // -->
+        if (attribute.startsWith("item_in_hand.slot")) {
+            return new Element(getPlayerEntity().getInventory().getHeldItemSlot() + 1)
+                    .getAttribute(attribute.fulfill(2));
+        }
+
 
         /////////////////////
         //   CITIZENS ATTRIBUTES
