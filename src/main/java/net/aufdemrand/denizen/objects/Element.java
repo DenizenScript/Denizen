@@ -269,19 +269,23 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.is[<operator>].to[<element>]>
         // @returns Element(Boolean)
+        // @group comparison
         // @description
         // Takes an operator, and compares the value of the element to the supplied
         // element. Returns the outcome of the comparable, either true or false. For
         // information on operators, see <@link language operator>.
+        // Equivalent to <@link tag el@element.is[<operator>].than[<element>]>
         // -->
 
         // <--[tag]
         // @attribute <el@element.is[<operator>].than[<element>]>
         // @returns Element(Boolean)
+        // @group comparison
         // @description
         // Takes an operator, and compares the value of the element to the supplied
         // element. Returns the outcome of the comparable, either true or false. For
         // information on operators, see <@link language operator>.
+        // Equivalent to <@link tag el@element.is[<operator>].to[<element>]>
         // -->
         if (attribute.startsWith("is") && attribute.hasContext(1)
                 && (attribute.startsWith("to", 2) || attribute.startsWith("than", 2)) && attribute.hasContext(2)) {
@@ -329,6 +333,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_boolean>
         // @returns Element(Boolean)
+        // @group conversion
         // @description
         // Returns the element as true/false.
         // -->
@@ -340,9 +345,11 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_double>
         // @returns Element(Decimal)
+        // @group conversion
         // @description
         // Returns the element as a number with a decimal.
         // -->
+        // TODO: Why does this exist? It just throws an error or makes no changes.
         if (attribute.startsWith("asdouble")
                 || attribute.startsWith("as_double"))
             try { return new Element(Double.valueOf(element))
@@ -355,6 +362,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_int>
         // @returns Element(Number)
+        // @group conversion
         // @description
         // Returns the element as a number without a decimal. Rounds decimal values.
         // -->
@@ -374,6 +382,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_money>
         // @returns Element(Decimal)
+        // @group conversion
         // @description
         // Returns the element as a number with two decimal places.
         // -->
@@ -392,6 +401,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_cuboid>
         // @returns dCuboid
+        // @group conversion
         // @description
         // Returns the element as a cuboid. Note: the value must be a valid cuboid.
         // -->
@@ -402,6 +412,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_entity>
         // @returns dEntity
+        // @group conversion
         // @description
         // Returns the element as an entity. Note: the value must be a valid entity.
         // -->
@@ -412,6 +423,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_inventory>
         // @returns dInventory
+        // @group conversion
         // @description
         // Returns the element as an inventory. Note: the value must be a valid inventory.
         // -->
@@ -422,6 +434,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_item>
         // @returns dItem
+        // @group conversion
         // @description
         // Returns the element as an item. Additional attributes can be accessed by dItem.
         // Note: the value must be a valid item.
@@ -433,6 +446,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_list>
         // @returns dList
+        // @group conversion
         // @description
         // Returns the element as a list.
         // -->
@@ -443,6 +457,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_location>
         // @returns dLocation
+        // @group conversion
         // @description
         // Returns the element as a location. Note: the value must be a valid location.
         // -->
@@ -453,6 +468,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_material>
         // @returns dMaterial
+        // @group conversion
         // @description
         // Returns the element as a material. Note: the value must be a valid material.
         // -->
@@ -463,6 +479,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_npc>
         // @returns dNPC
+        // @group conversion
         // @description
         // Returns the element as an NPC. Note: the value must be a valid NPC.
         // -->
@@ -473,6 +490,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_player>
         // @returns dPlayer
+        // @group conversion
         // @description
         // Returns the element as a player. Note: the value must be a valid player. Can be online or offline.
         // -->
@@ -483,6 +501,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_plugin>
         // @returns dPlugin
+        // @group conversion
         // @description
         // Returns the element as a plugin. Note: the value must be a valid plugin.
         // -->
@@ -493,6 +512,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_script>
         // @returns dScript
+        // @group conversion
         // @description
         // Returns the element as a script. Note: the value must be a valid script.
         // -->
@@ -503,6 +523,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_duration>
         // @returns Duration
+        // @group conversion
         // @description
         // Returns the element as a duration.
         // -->
@@ -513,6 +534,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.as_world>
         // @returns dWorld
+        // @group conversion
         // @description
         // Returns the element as a world.
         // -->
@@ -528,6 +550,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.debug.log>
         // @returns Element
+        // @group debug
         // @description
         // Prints the Element's debug representation in the console and returns true.
         // -->
@@ -540,6 +563,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.debug.no_color>
         // @returns Element
+        // @group debug
         // @description
         // Returns a standard debug representation of the Element with colors stripped.
         // -->
@@ -551,6 +575,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.debug>
         // @returns Element
+        // @group debug
         // @description
         // Returns a standard debug representation of the Element.
         // -->
@@ -562,6 +587,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.prefix>
         // @returns Element
+        // @group debug
         // @description
         // Returns the prefix of the element.
         // -->
@@ -577,6 +603,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.contains[<string>]>
         // @returns Element(Boolean)
+        // @group string checking
         // @description
         // Returns whether the element contains a specified string, case insensitive. Can use
         // regular expression by prefixing the string with regex:
@@ -599,6 +626,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.ends_with[<string>]>
         // @returns Element(Boolean)
+        // @group string checking
         // @description
         // Returns whether the element ends with a specified string.
         // -->
@@ -608,6 +636,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.last_color>
         // @returns Element
+        // @group string checking
         // @description
         // Returns the ChatColors used at the end of a string.
         // -->
@@ -617,6 +646,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.length>
         // @returns Element(Number)
+        // @group string checking
         // @description
         // Returns the length of the element.
         // -->
@@ -628,6 +658,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.starts_with[<string>]>
         // @returns Element(Boolean)
+        // @group string checking
         // @description
         // Returns whether the element starts with a specified string.
         // -->
@@ -637,6 +668,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.index_of[<string>]>
         // @returns Element(Number)
+        // @group string checking
         // @description
         // Returns the index of the first occurrence of a specified string.
         // Returns -1 if the string never occurs within the element.
@@ -650,6 +682,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.last_index_of[<string>]>
         // @returns Element(Number)
+        // @group string checking
         // @description
         // Returns the index of the last occurrence of a specified string.
         // Returns -1 if the string never occurs within the element.
@@ -663,6 +696,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.char_at[<#>]>
         // @returns Element
+        // @group string checking
         // @description
         // Returns the character at a specified index.
         // Returns null if the index is outside the range of the element.
@@ -685,6 +719,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.after[<string>]>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the portion of an element after a specified string. ie. <el@helloWorld.after[hello]> returns 'World'.
         // -->
@@ -703,6 +738,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.before[<string>]>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the portion of an element before a specified string.
         // -->
@@ -721,6 +757,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.replace[<string>]>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the element with all instances of a string removed.
         // -->
@@ -728,6 +765,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.replace[<string>].with[<string>]>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the element with all instances of a string replaced with another.
         // -->
@@ -753,6 +791,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.split[<string>].limit[<#>]>
         // @returns dList
+        // @group string manipulation
         // @description
         // Returns a list of portions of this element, split by the specified string,
         // and capped at the specified number of max list items.
@@ -771,6 +810,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.split[<string>]>
         // @returns dList
+        // @group string manipulation
         // @description
         // Returns a list of portions of this element, split by the specified string.
         // -->
@@ -787,6 +827,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.strip_color>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the element with all color encoding stripped.
         // -->
@@ -796,6 +837,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.trim>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the value of an element minus any leading or trailing whitespace.
         // -->
@@ -805,6 +847,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.to_uppercase>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the value of an element in all uppercase letters.
         // -->
@@ -814,6 +857,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.to_lowercase>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the value of an element in all lowercase letters.
         // -->
@@ -823,6 +867,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.to_titlecase>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns The Value Of An Element In Title Case.
         // -->
@@ -846,6 +891,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.substring[<#>(,<#>)]>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the portion of an element between two string indices.
         // If no second index is specified, it will return the portion of an
@@ -869,6 +915,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.pad_left[<#>]>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the value of an element extended to reach a minimum specified length
         // by adding spaces to the left side.
@@ -881,6 +928,7 @@ public class Element implements dObject {
             // <--[tag]
             // @attribute <el@element.pad_left[<#>].with[<element>]>
             // @returns Element
+            // @group string manipulation
             // @description
             // Returns the value of an element extended to reach a minimum specified length
             // by adding a specific symbol to the left side.
@@ -900,6 +948,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.pad_right[<#>]>
         // @returns Element
+        // @group string manipulation
         // @description
         // Returns the value of an element extended to reach a minimum specified length
         // by adding spaces to the right side.
@@ -912,6 +961,7 @@ public class Element implements dObject {
             // <--[tag]
             // @attribute <el@element.pad_right[<#>].with[<element>]>
             // @returns Element
+            // @group string manipulation
             // @description
             // Returns the value of an element extended to reach a minimum specified length
             // by adding a specific symbol to the right side.
@@ -936,6 +986,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.abs>
         // @returns Element(Decimal)
+        // @group math
         // @description
         // Returns the absolute value of the element.
         // -->
@@ -951,6 +1002,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.add[<#>]>
         // @returns Element(Decimal)
+        // @group math
         // @description
         // Returns the element plus a number.
         // -->
@@ -967,6 +1019,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.div[<#>]>
         // @returns Element(Decimal)
+        // @group math
         // @description
         // Returns the element divided by a number.
         // -->
@@ -983,6 +1036,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.mod[<#>]>
         // @returns Element(Decimal)
+        // @group math
         // @description
         // Returns the remainder of the element divided by a number.
         // -->
@@ -999,6 +1053,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.mul[<#>]>
         // @returns Element(Decimal)
+        // @group math
         // @description
         // Returns the element multiplied by a number.
         // -->
@@ -1015,6 +1070,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.sqrt>
         // @returns Element(Decimal)
+        // @group math
         // @description
         // Returns the square root of the element.
         // -->
@@ -1030,6 +1086,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.sub[<#>]>
         // @returns Element(Decimal)
+        // @group math
         // @description
         // Returns the element minus a number.
         // -->
@@ -1050,8 +1107,160 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.power[<#>]>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the element to the power of a number.
+        // -->
+        if (attribute.startsWith("power")
+                && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.pow(asDouble(), aH.getDoubleFrom(attribute.getContext(1))))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
+
+        // <--[tag]
+        // @attribute <el@element.asin>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the arc-sine of the element.
+        // -->
+        if (attribute.startsWith("asin")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.asin(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.acos>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the arc-cosine of the element.
+        // -->
+        if (attribute.startsWith("acos")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.acos(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.atan>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the arc-tangent of the element.
+        // -->
+        if (attribute.startsWith("atan")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.atan(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.cos>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the cosine of the element.
+        // -->
+        if (attribute.startsWith("cos")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.cos(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.sin>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the sine of the element.
+        // -->
+        if (attribute.startsWith("sin")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.sin(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.tan>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the tangent of the element.
+        // -->
+        if (attribute.startsWith("tan")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.tan(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.to_degrees>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Converts the element from radians to degrees.
+        // -->
+        if (attribute.startsWith("to_degrees")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.toDegrees(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.to_radians>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Converts the element from degrees to radians.
+        // -->
+        if (attribute.startsWith("to_radians")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.toRadians(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <el@element.round_up>
         // @returns Element(Number)
+        // @group math
         // @description
         // Rounds a decimal upward.
         // -->
@@ -1067,6 +1276,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.round_down>
         // @returns Element(Number)
+        // @group math
         // @description
         // Rounds a decimal downward.
         // -->
@@ -1082,6 +1292,7 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <el@element.round>
         // @returns Element(Number)
+        // @group math
         // @description
         // Rounds a decimal.
         // -->

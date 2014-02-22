@@ -96,7 +96,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     // @Regex on player (?:enters|exits) (notable cuboid|(cu@)?\w+)
     //
     // @Warning This event is not fully functional yet.
-    // Additionally, cancelling this event will fire a similar event immediately after.
+    // @Warning Additionally, cancelling this event will fire a similar event immediately after.
     //
     // @Triggers when a player enters or exits a notable cuboid.
     // @Context
