@@ -1558,6 +1558,7 @@ public class WorldScriptHelper implements Listener {
     // <context.damager> returns the dEntity damaging the other entity, if any.
     // <context.message> returns an Element of a player's death message.
     // <context.inventory> returns the dInventory of the entity if it was a player.
+    // <context.cause> returns the cause of the death.
     //
     // @Determine
     // Element(String) to change the death message.
@@ -1577,6 +1578,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         context.put("entity", entity.getDenizenObject());
+        context.put("cause", new Element(event.getEntity().getLastDamageCause().getCause().toString()));
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
