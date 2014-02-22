@@ -6,40 +6,30 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
-import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 
-public class EntityPowered implements Property {
+public class EntityCritical implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.CREEPER;
+        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.ARROW;
     }
 
-    public static EntityPowered getFrom(dObject entity) {
+    public static EntityCritical getFrom(dObject entity) {
         if (!describes(entity)) return null;
 
-        else return new EntityPowered((dEntity) entity);
+        else return new EntityCritical((dEntity) entity);
     }
 
     ///////////////////
     // Instance Fields and Methods
     /////////////
 
-    private EntityPowered(dEntity entity) {
-        powered = entity;
+    private EntityCritical(dEntity entity) {
+        critical = entity;
     }
 
-    dEntity powered;
-
-    private boolean getPowered() {
-        return ((Creeper)(powered.getBukkitEntity())).isPowered();
-    }
-
-    private void setPowered(boolean power) {
-        if (powered == null) return;
-
-        ((Creeper)(powered.getBukkitEntity())).setPowered(power);
-    }
+    dEntity critical;
 
     /////////
     // Property Methods
@@ -47,7 +37,7 @@ public class EntityPowered implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!getPowered())
+        if (!((Arrow)critical.getBukkitEntity()).isCritical())
             return null;
         else
             return "true";
@@ -55,7 +45,7 @@ public class EntityPowered implements Property {
 
     @Override
     public String getPropertyId() {
-        return "powered";
+        return "critical";
     }
 
     ///////////
@@ -68,14 +58,14 @@ public class EntityPowered implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <e@entity.powered>
+        // @attribute <e@entity.critical>
         // @returns Element(Boolean)
-        // @mechanism dEntity.powered
+        // @mechanism dEntity.critical
         // @description
-        // If the entity is a creeper, returns whether the creeper is powered.
+        // If the entity is an arrow, returns whether the arrow is critical.
         // -->
-        if (attribute.startsWith("powered"))
-            return new Element(getPowered())
+        if (attribute.startsWith("critical"))
+            return new Element(((Arrow)critical.getBukkitEntity()).isCritical())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
@@ -86,16 +76,16 @@ public class EntityPowered implements Property {
 
         // <--[mechanism]
         // @object dEntity
-        // @name powered
+        // @name critical
         // @input Element(Boolean)
         // @description
-        // Changes the powered state of a Creeper.
+        // Changes whether an arrow is critical.
         // @tags
-        // <e@entity.powered>
+        // <e@entity.critical>
         // -->
 
-        if (mechanism.matches("powered") && mechanism.requireBoolean()) {
-            setPowered(mechanism.getValue().asBoolean());
+        if (mechanism.matches("critical") && mechanism.requireBoolean()) {
+            ((Arrow)critical.getBukkitEntity()).setCritical(mechanism.getValue().asBoolean());
         }
     }
 }

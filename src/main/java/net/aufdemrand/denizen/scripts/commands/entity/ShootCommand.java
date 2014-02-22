@@ -18,6 +18,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.Velocity;
@@ -112,6 +113,12 @@ public class ShootCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("gravity", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("spread")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("spread")) {
+                scriptEntry.addObject("spread", arg.asElement());
+            }
+
             else arg.reportUnhandled();
         }
 
@@ -168,6 +175,7 @@ public class ShootCommand extends AbstractCommand implements Listener {
         Element height = scriptEntry.getElement("height");
         Element gravity = scriptEntry.getElement("gravity");
         Element speed = scriptEntry.getElement("speed");
+        Element spread = scriptEntry.getElement("spread");
 
         // Report to dB
         dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
@@ -177,7 +185,8 @@ public class ShootCommand extends AbstractCommand implements Listener {
                              (gravity != null ? gravity.debug(): "") +
                              (speed != null ? speed.debug(): "") +
                              (script != null ? script.debug() : "") +
-                             (shooter != null ? shooter.debug() : ""));
+                             (shooter != null ? shooter.debug() : "") +
+                             (spread != null ? spread.debug() : ""));
 
         // Keep a dList of entities that can be called using <entry[name].shot_entities>
         // later in the script queue
@@ -208,7 +217,8 @@ public class ShootCommand extends AbstractCommand implements Listener {
         // can be fetched.
         scriptEntry.addObject("shot_entities", entityList);
 
-        Position.mount(Conversion.convertEntities(entities));
+        if (spread == null)
+            Position.mount(Conversion.convertEntities(entities));
 
         // Get the entity at the bottom of the entity list, because
         // only its gravity should be affected and tracked considering
@@ -242,6 +252,16 @@ public class ShootCommand extends AbstractCommand implements Listener {
         else {
             lastEntity.setVelocity(destination.subtract(originLocation).toVector()
                     .normalize().multiply(speed.asDouble()));
+        }
+
+        if (spread != null) {
+            Vector base = lastEntity.getVelocity().clone();
+            float sf = spread.asFloat();
+            for (dEntity entity: entities) {
+                Vector newvel = Velocity.spread(base, (Utilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(Utilities.getRandom().nextDouble() * sf),
+                        (Utilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(Utilities.getRandom().nextDouble() * sf));
+                entity.setVelocity(newvel);
+            }
         }
 
         // A task used to trigger a script if the entity is no longer

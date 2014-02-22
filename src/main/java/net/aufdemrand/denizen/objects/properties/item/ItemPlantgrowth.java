@@ -49,6 +49,7 @@ public class ItemPlantgrowth implements Property {
         // <--[tag]
         // @attribute <i@item.plant_growth>
         // @returns Element
+        // @mechanism dItem.plant_growth
         // @description
         // Returns the growth level of a plant item as one of the following:
         // Wheat: SEEDED, GERMINATED, VERY_SMALL, SMALL, MEDIUM, TALL, VERY_TALL, RIPE

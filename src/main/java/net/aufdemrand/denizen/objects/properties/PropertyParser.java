@@ -35,6 +35,7 @@ public class PropertyParser {
         registerProperty(EntityFramed.class, dEntity.class);
         registerProperty(EntityInfected.class, dEntity.class);
         registerProperty(EntityPotion.class, dEntity.class);
+        registerProperty(EntityCritical.class, dEntity.class);
         registerProperty(EntityPowered.class, dEntity.class);
         registerProperty(EntityProfession.class, dEntity.class);
         registerProperty(EntitySize.class, dEntity.class);
@@ -47,6 +48,7 @@ public class PropertyParser {
         registerProperty(InventoryTitle.class, dInventory.class);
 
         // register core dItem properties
+        registerProperty(ItemApple.class, dItem.class);
         registerProperty(ItemBook.class, dItem.class);
         registerProperty(ItemDisplayname.class, dItem.class);
         registerProperty(ItemDurability.class, dItem.class);

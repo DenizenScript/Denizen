@@ -711,6 +711,15 @@ public class UtilTags implements Listener {
                     // -->
                 else if (specifier.equalsIgnoreCase("second"))
                     event.setReplaced(new Element(calendar.get(Calendar.SECOND)).getAttribute(attribute.fulfill(3)));
+                    // <--[tag]
+                    // @attribute <util.date.time.duration>
+                    // @returns Duration
+                    // @description
+                    // Returns the current system time as a duration.
+                    // To get the exact millisecond count, use <@link tag server.current_time_millis>.
+                    // -->
+                else if (specifier.equalsIgnoreCase("duration"))
+                    event.setReplaced(new Duration(System.currentTimeMillis() / 50).getAttribute(attribute.fulfill(3)));
                 else {
                     format.applyPattern("K:mm a");
                     event.setReplaced(format.format(currentDate));

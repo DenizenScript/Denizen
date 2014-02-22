@@ -72,11 +72,11 @@ public class EntityProfession implements Property {
         // <--[tag]
         // @attribute <e@entity.profession>
         // @returns Element
+        // @mechanism dEntity.profession
         // @description
         // If the entity can have professions, returns the entity's profession.
         // Currently, only Villager-type entities can have professions.
         // Possible professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST.
-        // To edit this, use <@link mechanism dEntity.profession>
         // -->
         if (attribute.startsWith("profession"))
             return new Element(getProfession().name().toLowerCase())

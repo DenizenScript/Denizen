@@ -36,6 +36,7 @@ public class ItemDurability implements Property {
         // <--[tag]
         // @attribute <i@item.durability>
         // @returns Element(Number)
+        // @mechanism dItem.durability
         // @description
         // Returns the current durability (number of uses) on the item.
         // -->
@@ -48,6 +49,7 @@ public class ItemDurability implements Property {
         // @returns Element(Number)
         // @description
         // Returns the maximum durability (number of uses) of this item.
+        // For use with <@link tag i@item.durability> and <@link mechanism dItem.durability>.
         // -->
         if (attribute.startsWith("max_durability"))
             return new Element(item.getMaterial().getMaterial().getMaxDurability())

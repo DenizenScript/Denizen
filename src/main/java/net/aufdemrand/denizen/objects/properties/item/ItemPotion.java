@@ -53,6 +53,7 @@ public class ItemPotion implements Property {
         // <--[tag]
         // @attribute <i@item.has_potion_effect>
         // @returns Element(Boolean)
+        // @mechanism dItem.potion
         // @description
         // Returns whether the potion has a potion effect.
         // -->
@@ -68,9 +69,9 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect.is_splash>
                 // @returns Element(Boolean)
+                // @mechanism dItem.potion
                 // @description
                 // Returns whether the potion is a splash potion.
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 if (attribute.startsWith("is_splash")) {
                     return new Element(Potion.fromItemStack(item.getItemStack()).isSplash())
@@ -80,9 +81,9 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect.is_extended>
                 // @returns Element(Boolean)
+                // @mechanism dItem.potion
                 // @description
                 // Returns whether the potion has an extended duration.
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 if (attribute.startsWith("is_extended")) {
                     return new Element(Potion.fromItemStack(item.getItemStack()).hasExtendedDuration())
@@ -92,9 +93,9 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect.level>
                 // @returns Element(Number)
+                // @mechanism dItem.potion
                 // @description
                 // Returns the level of this potion.
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 if (attribute.startsWith("level")) {
                     return new Element(Potion.fromItemStack(item.getItemStack()).getLevel())
@@ -104,9 +105,9 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect.type>
                 // @returns Element
+                // @mechanism dItem.potion
                 // @description
                 // Returns the type name of this potion.
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 if (attribute.startsWith("type")) {
                     return new Element(Potion.fromItemStack(item.getItemStack()).getType().name())
@@ -116,10 +117,10 @@ public class ItemPotion implements Property {
                 // <--[tag]
                 // @attribute <i@item.potion_effect>
                 // @returns Element
+                // @mechanism dItem.potion
                 // @description
                 // Returns the potion effect on this item.
                 // In the format Effect,Level,Extended,Splash
-                // To edit this, use <@link mechanism dItem.potion>
                 // -->
                 return new Element(getPropertyString())
                         .getAttribute(attribute);
@@ -154,7 +155,14 @@ public class ItemPotion implements Property {
                 Element data1 = new Element(data[1]);
                 Element data2 = new Element(data[2]);
                 Element data3 = new Element(data[3]);
-                PotionEffectType type = PotionEffectType.getByName(data[0]);
+                PotionType type;
+                try {
+                    type = PotionType.valueOf(data[0].toUpperCase());
+                }
+                catch (Exception ex) {
+                    dB.echoError("Invalid potion effect type '" + data[0] + "'");
+                    return;
+                }
                 if (type == null) {
                     dB.echoError("Invalid potion effect type '" + data[0] + "'");
                     return;
@@ -171,7 +179,7 @@ public class ItemPotion implements Property {
                     dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[3] + "' is not a valid boolean!");
                     return;
                 }
-                Potion pot = new Potion(PotionType.getByEffect(type));
+                Potion pot = new Potion(type);
                 pot.setLevel(data1.asInt());
                 pot.setHasExtendedDuration(data2.asBoolean());
                 pot.setSplash(data3.asBoolean());

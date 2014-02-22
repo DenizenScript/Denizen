@@ -52,7 +52,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Denizen extends JavaPlugin {
-    public final static int configVersion = 4;
+    public final static int configVersion = 5;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
@@ -473,10 +473,12 @@ public class Denizen extends JavaPlugin {
                 return true;
             }
 
-            if (dB.showDebug)
-                sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for debug output!");
-            else
-                sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... to see debug, use /denizen debug");
+            if (Settings.ShowExHelp()) {
+                if (dB.showDebug)
+                    sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for debug output!");
+                else
+                    sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... to see debug, use /denizen debug");
+            }
 
             entries.add(entry);
             InstantQueue queue = InstantQueue.getQueue(null);

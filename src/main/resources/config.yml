@@ -3,6 +3,7 @@
 
 Debug:
   Show: true
+  ex command help: true
   Console width: 60
 
 Scripts:
@@ -66,4 +67,4 @@ Commands:
 # configuration file is outdated or too new
 
 Config:
-  Version: 4
+  Version: 5

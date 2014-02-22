@@ -71,6 +71,7 @@ public class EntityPotion implements Property {
         // <--[tag]
         // @attribute <e@entity.potion>
         // @returns dItem
+        // @mechanism dEntity.potion
         // @description
         // Returns the dItem of the splash potion.
         // -->

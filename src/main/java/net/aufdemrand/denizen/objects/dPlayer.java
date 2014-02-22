@@ -805,6 +805,17 @@ public class dPlayer implements dObject, Adjustable {
             return new dItem(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <p@player.item_in_hand.slot>
+        // @returns Element(Number)
+        // @description
+        // returns the slot location of the player's selected item.
+        // -->
+        if (attribute.startsWith("item_in_hand.slot")) {
+            return new Element(getPlayerEntity().getInventory().getHeldItemSlot() + 1)
+                    .getAttribute(attribute.fulfill(2));
+        }
+
 
         /////////////////////
         //   CITIZENS ATTRIBUTES
@@ -849,12 +860,24 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.ip>
         // @returns Element
         // @description
-        // returns the player's IP address.
+        // returns the player's IP address host name.
         // -->
         if (attribute.startsWith("ip") ||
-                attribute.startsWith("host_name"))
+                attribute.startsWith("host_name")) {
+            attribute = attribute.fulfill(1);
+            // <--[tag]
+            // @attribute <p@player.ip.address>
+            // @returns Element
+            // @description
+            // returns the player's IP address.
+            // -->
+            if (attribute.startsWith("address"))
+                return new Element(getPlayerEntity().getAddress().toString())
+                        .getAttribute(attribute.fulfill(1));
+
             return new Element(getPlayerEntity().getAddress().getHostName())
-                    .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute);
+        }
 
         // <--[tag]
         // @attribute <p@player.name.display>

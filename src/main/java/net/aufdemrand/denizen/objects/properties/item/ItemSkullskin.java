@@ -15,8 +15,7 @@ public class ItemSkullskin implements Property {
 
     public static boolean describes(dObject item) {
         return item instanceof dItem
-                && ((dItem) item).getItemStack().getType() == Material.SKULL_ITEM
-                && ((dItem) item).getItemStack().getData().getData() == 3;
+                && ((dItem) item).getItemStack().getType() == Material.SKULL_ITEM;
     }
 
     public static ItemSkullskin getFrom(dObject _item) {
@@ -39,12 +38,14 @@ public class ItemSkullskin implements Property {
         // <--[tag]
         // @attribute <i@item.skin>
         // @returns Element
+        // @mechanism dItem.skull_skin
         // @description
         // Returns the name of the player whose skin a skull item uses.
         // Note: Item must be a 'skull_item' with a skin.
         // -->
         if (attribute.startsWith("skin")) {
-            if (item.getItemStack().hasItemMeta()
+            if (item.getItemStack().getDurability() == 3
+                    && item.getItemStack().hasItemMeta()
                     && item.getItemStack().getItemMeta() instanceof SkullMeta
                     && ((SkullMeta)item.getItemStack().getItemMeta()).hasOwner())
                 return new Element(((SkullMeta)item.getItemStack().getItemMeta()).getOwner())
@@ -56,12 +57,14 @@ public class ItemSkullskin implements Property {
         // <--[tag]
         // @attribute <i@item.has_skin>
         // @returns Element(Boolean)
+        // @mechanism dItem.skull_skin
         // @description
         // Returns whether the item has a custom skin set.
         // (Only for human 'skull_item's)
         // -->
         if (attribute.startsWith("has_skin"))
-            return new Element(item.getItemStack().hasItemMeta()
+            return new Element(item.getItemStack().getDurability() == 3
+                                && item.getItemStack().hasItemMeta()
                                 && item.getItemStack().getItemMeta() instanceof SkullMeta
                                 && ((SkullMeta)item.getItemStack().getItemMeta()).hasOwner())
                     .getAttribute(attribute.fulfill(1));
@@ -73,7 +76,8 @@ public class ItemSkullskin implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().hasItemMeta()
+        if (item.getItemStack().getDurability() == 3
+                && item.getItemStack().hasItemMeta()
                 && item.getItemStack().getItemMeta() instanceof SkullMeta
                 && ((SkullMeta)item.getItemStack().getItemMeta()).hasOwner())
             return ((SkullMeta)item.getItemStack().getItemMeta()).getOwner();
@@ -94,13 +98,15 @@ public class ItemSkullskin implements Property {
         // @name skull_skin
         // @input Element
         // @description
-        // Changes the durability of damageable items.
+        // Sets the player skin on a skull_item.
         // @tags
         // <i@item.skin>
         // <i@item.has_skin>
         // -->
 
         if (mechanism.matches("skull_skin")) {
+            if (item.getItemStack().getDurability() != 3)
+                item.getItemStack().setDurability((short)3);
             SkullMeta meta = (SkullMeta) item.getItemStack().getItemMeta();
             meta.setOwner(mechanism.getValue().asString());
             item.getItemStack().setItemMeta(meta);
