@@ -61,6 +61,7 @@ public class EntityCritical implements Property {
         // @attribute <e@entity.critical>
         // @returns Element(Boolean)
         // @mechanism dEntity.critical
+        // @group properties
         // @description
         // If the entity is an arrow, returns whether the arrow is critical.
         // -->

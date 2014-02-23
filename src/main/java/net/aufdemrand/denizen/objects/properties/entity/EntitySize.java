@@ -59,6 +59,7 @@ public class EntitySize implements Property {
         // @attribute <e@entity.size>
         // @returns Element(Number)
         // @mechanism dEntity.size
+        // @group properties
         // @description
         // Returns the size of a slime-type entity (1-120).
         // -->

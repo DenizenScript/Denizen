@@ -69,6 +69,7 @@ public class EntityTame implements Property {
         // @attribute <e@entity.is_tamed>
         // @returns Element(Boolean)
         // @mechanism dEntity.tame
+        // @group properties
         // @description
         // Returns whether the entity has been tamed.
         // -->
@@ -81,6 +82,7 @@ public class EntityTame implements Property {
         // @attribute <e@entity.get_owner>
         // @returns dPlayer
         // @mechanism dEntity.owner
+        // @group properties
         // @description
         // Returns the owner of a tamed entity.
         // -->

@@ -634,6 +634,17 @@ public class Element implements dObject {
             return new Element(element.endsWith(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <el@element.matches[<regex>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element matches a regex input.
+        // -->
+        if (attribute.startsWith("matches")
+                && attribute.hasContext(1))
+            return new Element(element.matches(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <el@element.last_color>
         // @returns Element
         // @group string checking
