@@ -1068,14 +1068,14 @@ public class CommandHandler {
                 if (scriptContainer.getContainerType().equalsIgnoreCase(type))
                     if (filter != null) {
                         if (script.contains(filter.toUpperCase()))
-                            paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 4) + "  <b>" + script);
+                            paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
                     }
-                    else paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 4) + "  <b>" + script);
+                    else paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
                 // If a --filter has been specified...
             } else if (filter != null) {
                 if (script.contains(filter.toUpperCase()))
-                    paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 4) + "  <b>" + script);
-            } else paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 4) + "  <b>" + script);
+                    paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
+            } else paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
         }
         // Send the contents of the Paginator to the Player (or Console)
         if (!paginator.sendPage(sender, args.getInteger(1, 1)))
