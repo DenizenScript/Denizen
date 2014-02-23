@@ -128,7 +128,7 @@ public class CooldownCommand extends AbstractCommand {
 
         // If there is an entry, check against the time
         if (System.currentTimeMillis()
-                >= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time")) {
+                <= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time")) {
             Duration player_dur = new Duration((double) (DenizenAPI._saves().getLong("Players." + playerName + ".Scripts."
                     + scriptName + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
             if (player_dur.getSeconds() > duration.getSeconds())
