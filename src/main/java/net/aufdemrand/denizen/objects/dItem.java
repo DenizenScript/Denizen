@@ -572,6 +572,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <--[tag]
         // @attribute <i@item.id>
         // @returns Element(Number)
+        // @group deprecated info
         // @description
         // Returns the item ID number of the item.
         // -->
@@ -582,6 +583,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <--[tag]
         // @attribute <i@item.data>
         // @returns Element(Number)
+        // @group deprecated info
         // @description
         // Returns the data value of the material of the item.
         // -->
@@ -593,6 +595,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <--[tag]
         // @attribute <i@item.repairable>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns whether the item can be repaired.
         // If this returns true, it will enable access to:
@@ -606,6 +609,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <--[tag]
         // @attribute <i@item.is_crop>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns whether the item is a growable crop.
         // If this returns true, it will enable access to:
@@ -618,6 +622,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <--[tag]
         // @attribute <i@item.is_book>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns whether the item is considered an editable book.
         // If this returns true, it will enable access to:
@@ -634,6 +639,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <--[tag]
         // @attribute <i@item.is_potion>
         // @returns Element(Boolean)
+        // @group properties
         // Returns whether the item is a potion.
         // If this returns true, it will enable access to:
         // <@link mechanism dItem.potion_effects>, <@link tag i@item.potion_effects>,
@@ -647,6 +653,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <--[tag]
         // @attribute <i@item.material.formatted>
         // @returns Element
+        // @group formatting
         // @description
         // Returns the formatted material name of the item to be used in a sentence.
         // Correctly uses singular and plural forms of item names, among other things.
@@ -693,6 +700,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <--[tag]
         // @attribute <i@item.material>
         // @returns dMaterial
+        // @group conversion
         // @description
         // Returns the material corresponding to the item.
         // -->
@@ -702,6 +710,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // <--[tag]
         // @attribute <i@item.scriptname>
         // @returns Element
+        // @group scripts
         // @description
         // Returns the script name of the item if it was created by an item script.
         // -->

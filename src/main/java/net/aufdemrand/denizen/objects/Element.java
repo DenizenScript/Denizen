@@ -7,7 +7,9 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.Comparable;
+import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -50,7 +52,7 @@ public class Element implements dObject {
 
     final static Pattern VALUE_PATTERN =
             Pattern.compile("el@val(?:ue)?\\[([^\\[\\]]+)\\].*",
-                    Pattern.CASE_INSENSITIVE);
+                    Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
     /**
      *
@@ -833,6 +835,29 @@ public class Element implements dObject {
             else
                 return new dList(Arrays.asList(StringUtils.split(element, split_string)))
                         .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.format[<script>]>
+        // @returns Element
+        // @group string manipulation
+        // @description
+        // Returns the text re-formatted according to a format script.
+        // See <@link tutorial using format scripts>.
+        // -->
+        if (attribute.startsWith("format")
+                && attribute.hasContext(1)) {
+            FormatScriptContainer format = ScriptRegistry.getScriptContainerAs(attribute.getContext(1), FormatScriptContainer.class);
+            if (format == null) {
+                dB.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            else {
+                return new Element(format.getFormattedText(element,
+                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getNPC(): null,
+                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getPlayer(): null))
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]

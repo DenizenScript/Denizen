@@ -119,7 +119,7 @@ public class Attribute {
             raw_tag = raw_tag.substring(0, raw_tag.length() - 1);
     }
 
-    Pattern CONTEXT_PATTERN = Pattern.compile("\\[.+\\]$");
+    public static Pattern CONTEXT_PATTERN = Pattern.compile("\\[.+\\]$", Pattern.DOTALL | Pattern.MULTILINE);
     public boolean hasContext(int attribute) {
         String text = getAttribute(attribute);
         return text.endsWith("]") && text.contains("[");
