@@ -1,10 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import com.sk89q.worldedit.util.YAMLConfiguration;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -46,7 +44,10 @@ public class YamlCommand extends AbstractCommand implements Listener {
         return yamls.get(id.toUpperCase());
     }
 
-    enum Action{ LOAD, UNLOAD, CREATE, WRITE, SAVE, SET }
+    public static enum Action { LOAD, UNLOAD, CREATE, WRITE, SAVE, SET }
+
+    public static enum YAML_Action { SET_VALUE, INCREASE, DECREASE, MULTIPLY,
+        DIVIDE, INSERT, REMOVE, SPLIT, DELETE }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -115,24 +116,24 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("key", new Element(flagArgs[0]));
 
                 if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
-                    scriptEntry.addObject("flag_action", FlagManager.Action.INCREASE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.INCREASE);
                     scriptEntry.addObject("value", new Element(1));
                 }
                 else if (flagArgs[1].equals("--") || flagArgs[1].equals("-")) {
-                    scriptEntry.addObject("flag_action", FlagManager.Action.DECREASE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.DECREASE);
                     scriptEntry.addObject("value", new Element(1));
                 }
                 else if (flagArgs[1].equals("!")) {
-                    scriptEntry.addObject("flag_action", FlagManager.Action.DELETE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.DELETE);
                     scriptEntry.addObject("value", Element.FALSE);
                 }
                 else if (flagArgs[1].equals("<-")) {
-                    scriptEntry.addObject("flag_action", FlagManager.Action.REMOVE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.REMOVE);
                     scriptEntry.addObject("value", Element.FALSE);
                 }
                 else {
                     // No ACTION, we're just setting a value...
-                    scriptEntry.addObject("flag_action", FlagManager.Action.SET_VALUE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.SET_VALUE);
                     scriptEntry.addObject("value", new Element(flagArgs[1]));
                 }
             }
@@ -145,28 +146,28 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("key", new Element(flagArgs[0]));
 
                 if (flagArgs[1].equals("->"))
-                    scriptEntry.addObject("flag_action", FlagManager.Action.INSERT);
+                    scriptEntry.addObject("yaml_action", YAML_Action.INSERT);
 
                 else if (flagArgs[1].equals("<-"))
-                    scriptEntry.addObject("flag_action", FlagManager.Action.REMOVE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.REMOVE);
 
                 else if (flagArgs[1].equals("||") || flagArgs[1].equals("|"))
-                    scriptEntry.addObject("flag_action", FlagManager.Action.SPLIT);
+                    scriptEntry.addObject("yaml_action", YAML_Action.SPLIT);
 
                 else if (flagArgs[1].equals("++") || flagArgs[1].equals("+"))
-                    scriptEntry.addObject("flag_action", FlagManager.Action.INCREASE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.INCREASE);
 
                 else if (flagArgs[1].equals("--") || flagArgs[1].equals("-"))
-                    scriptEntry.addObject("flag_action", FlagManager.Action.DECREASE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.DECREASE);
 
                 else if (flagArgs[1].equals("**") || flagArgs[1].equals("*"))
-                    scriptEntry.addObject("flag_action", FlagManager.Action.MULTIPLY);
+                    scriptEntry.addObject("yaml_action", YAML_Action.MULTIPLY);
 
                 else if (flagArgs[1].equals("//") || flagArgs[1].equals("/"))
-                    scriptEntry.addObject("flag_action", FlagManager.Action.DIVIDE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.DIVIDE);
 
                 else {
-                    scriptEntry.addObject("flag_action", FlagManager.Action.SET_VALUE);
+                    scriptEntry.addObject("yaml_action", YAML_Action.SET_VALUE);
                     scriptEntry.addObject("value", new Element(arg.raw_value.split(":", 2)[1]));
                     continue;
                 }
@@ -199,24 +200,24 @@ public class YamlCommand extends AbstractCommand implements Listener {
         Element key = scriptEntry.getElement("key");
         dObject value = scriptEntry.getdObject("value");
         Element split = scriptEntry.getElement("split");
-        FlagManager.Action flag_action = (FlagManager.Action) scriptEntry.getObject("flag_action");
-        Element actionelement = scriptEntry.getElement("action");
-        Element idelement = scriptEntry.getElement("id");
+        YAML_Action yaml_action = (YAML_Action) scriptEntry.getObject("yaml_action");
+        Element actionElement = scriptEntry.getElement("action");
+        Element idElement = scriptEntry.getElement("id");
 
         YamlConfiguration yamlConfiguration;
 
         dB.report(scriptEntry, getName(),
-                        idelement.debug()
-                        + actionelement.debug()
+                        idElement.debug()
+                        + actionElement.debug()
                         + (filename != null ? filename.debug() : "")
-                        + (flag_action != null ? aH.debugObj("flag_action", flag_action.name()): "")
+                        + (yaml_action != null ? aH.debugObj("yaml_action", yaml_action.name()): "")
                         + (key != null ? key.debug() : "")
                         + (value != null ? value.debug() : "")
                         + (split != null ? split.debug() : ""));
 
         // Do action
-        Action action = Action.valueOf(actionelement.asString().toUpperCase());
-        String id = idelement.asString().toUpperCase();
+        Action action = Action.valueOf(actionElement.asString().toUpperCase());
+        String id = idElement.asString().toUpperCase();
 
         switch (action) {
 
@@ -267,7 +268,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
             case SET:
                 if (yamls.containsKey(id)) {
-                    if (flag_action == null || key == null || value == null) {
+                    if (yaml_action == null || key == null || value == null) {
                         dB.echoError("Must specify a flag action and value!");
                         return;
                     }
@@ -281,55 +282,52 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         key = Element.valueOf(key.asString().split("\\[")[0]);
                     }
 
-                    String keystr = key.asString();
-                    String valuestr = value.identify();
+                    String keyStr = key.asString();
+                    String valueStr = value.identify();
 
-                    switch (flag_action) {
+                    switch (yaml_action) {
                         case INCREASE:
-                            Set(yaml, index, keystr, String.valueOf(aH.getIntegerFrom(yaml.getString(keystr, "0")) + aH.getIntegerFrom(valuestr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(yaml.getString(keyStr, "0")) + aH.getIntegerFrom(valueStr)));
                             break;
                         case DECREASE:
-                            Set(yaml, index, keystr, String.valueOf(aH.getIntegerFrom(yaml.getString(keystr, "0")) - aH.getIntegerFrom(valuestr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(yaml.getString(keyStr, "0")) - aH.getIntegerFrom(valueStr)));
                             break;
                         case MULTIPLY:
-                            Set(yaml, index, keystr, String.valueOf(aH.getIntegerFrom(yaml.getString(keystr, "1")) * aH.getIntegerFrom(valuestr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(yaml.getString(keyStr, "1")) * aH.getIntegerFrom(valueStr)));
                             break;
                         case DIVIDE:
-                            Set(yaml, index, keystr, String.valueOf(aH.getIntegerFrom(yaml.getString(keystr, "1")) / aH.getIntegerFrom(valuestr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(yaml.getString(keyStr, "1")) / aH.getIntegerFrom(valueStr)));
                             break;
                         case DELETE:
-                            yaml.set(keystr, null);
-                            break;
-                        case SET_BOOLEAN:
-                            Set(yaml, index, keystr, valuestr);
+                            yaml.set(keyStr, null);
                             break;
                         case SET_VALUE:
-                            Set(yaml, index, keystr, valuestr);
+                            Set(yaml, index, keyStr, valueStr);
                             break;
                         case INSERT:
                         {
-                            List<String> list = yaml.getStringList(keystr);
-                            list.add(valuestr);
-                            yaml.set(keystr, list);
+                            List<String> list = yaml.getStringList(keyStr);
+                            list.add(valueStr);
+                            yaml.set(keyStr, list);
                             break;
                         }
                         case REMOVE:
                         {
-                            List<String> list = yaml.getStringList(keystr);
+                            List<String> list = yaml.getStringList(keyStr);
                             for (int i = 0; i < list.size(); i++) {
-                                if (list.get(i).equalsIgnoreCase(valuestr)) {
+                                if (list.get(i).equalsIgnoreCase(valueStr)) {
                                     list.remove(i);
                                     break;
                                 }
                             }
-                            yaml.set(keystr, list);
+                            yaml.set(keyStr, list);
                             break;
                         }
                         case SPLIT:
                         {
-                            List<String> list = yaml.getStringList(keystr);
-                            list.addAll(dList.valueOf(valuestr));
-                            yaml.set(keystr, list);
+                            List<String> list = yaml.getStringList(keyStr);
+                            list.addAll(dList.valueOf(valueStr));
+                            yaml.set(keyStr, list);
                             break;
                         }
                     }
@@ -356,7 +354,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 index = 0;
             if (index > list.size())
                 index = list.size() -1;
-            list.set(index,value);
+            list.set(index, value);
             yaml.set(key, list);
         }
     }

@@ -36,6 +36,7 @@ public class ItemQuantity implements Property {
         // @attribute <i@item.qty>
         // @returns Element(Number)
         // @mechanism dItem.quantity
+        // @group properties
         // @description
         // Returns the number of items in the dItem's itemstack.
         // -->
@@ -46,6 +47,7 @@ public class ItemQuantity implements Property {
         // <--[tag]
         // @attribute <i@item.max_stack>
         // @returns Element(Number)
+        // @group properties
         // @description
         // Returns the max number of this item possible in a single stack of this type.
         // For use with <@link tag i@item.quantity> and <@link mechanism dItem.quantity>.

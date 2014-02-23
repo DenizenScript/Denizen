@@ -41,6 +41,7 @@ public class ItemApple implements Property {
         // <--[tag]
         // @attribute <i@item.apple_enchanted>
         // @returns Element
+        // @group properties
         // @mechanism dItem.apple_enchanted
         // @description
         // Returns whether a golden apple item is enchanted.
