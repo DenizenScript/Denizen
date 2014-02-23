@@ -379,7 +379,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // @description
         // Returns a list of all currently loaded YAML ID's.
         // -->
-        if (attribute.getAttribute(2).startsWith("list")) {
+        if (attribute.getAttribute(2).equalsIgnoreCase("list")) {
             dList list = new dList();
             list.addAll(yamls.keySet());
             event.setReplaced(list.getAttribute(attribute.fulfill(2)));

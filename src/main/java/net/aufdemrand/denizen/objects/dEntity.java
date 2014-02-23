@@ -1038,6 +1038,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.debug.log>
         // @returns Element(Boolean)
+        // @group debug
         // @description
         // Debugs the entity in the log and returns true.
         // -->
@@ -1050,6 +1051,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.debug.no_color>
         // @returns Element
+        // @group debug
         // @description
         // Returns the entity's debug with no color.
         // -->
@@ -1061,6 +1063,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.debug>
         // @returns Element
+        // @group debug
         // @description
         // Returns the entity's debug.
         // -->
@@ -1072,6 +1075,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.prefix>
         // @returns Element
+        // @group debug
         // @description
         // Returns the prefix of the entity.
         // -->
@@ -1082,6 +1086,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.type>
         // @returns Element
+        // @group debug
         // @description
         // Returns 'Entity', the type of this dObject.
         // -->
@@ -1097,11 +1102,24 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.entity_type>
         // @returns Element
+        // @group data
         // @description
         // Returns the type of the entity.
         // -->
         if (attribute.startsWith("entity_type")) {
             return new Element(entity_type.name()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.is_spawned>
+        // @returns Element(Boolean)
+        // @group data
+        // @description
+        // Returns whether the entity is spawned.
+        // -->
+        if (attribute.startsWith("is_spawned")) {
+            return new Element(isSpawned())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         if (entity == null) {
@@ -1117,6 +1135,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.custom_id>
         // @returns dScript/Element
+        // @group data
         // @description
         // If the entity has a script ID, returns the dScript of that ID.
         // Otherwise, returns the name of the entity type.
@@ -1133,6 +1152,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.custom_name>
         // @returns Element
+        // @group attributes
         // @description
         // If the entity has a custom name, returns the name as an Element.
         // Otherwise, returns null.
@@ -1146,6 +1166,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.custom_name.visible>
         // @returns Element(Boolean)
+        // @group attributes
         // @description
         // Returns true if the entity's custom name is visible.
         // -->
@@ -1159,6 +1180,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.eid>
         // @returns Element(Number)
+        // @group data
         // @description
         // Returns the entity's temporary server entity ID.
         // -->
@@ -1169,6 +1191,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.name>
         // @returns Element
+        // @group data
         // @description
         // Returns the name of the entity.
         // -->
@@ -1186,6 +1209,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.spawn_reason>
         // @returns String
+        // @group attributes
         // @description
         // Returns the reason an entity was spawned.
         // -->
@@ -1198,6 +1222,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.uuid>
         // @returns Element
+        // @group data
         // @description
         // Returns the permanent unique ID of the entity.
         // -->
@@ -1213,6 +1238,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.equipment.boots>
         // @returns dItem
+        // @group inventory
         // @description
         // returns the item the entity is wearing as boots, or null
         // if none.
@@ -1227,6 +1253,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.equipment.chestplate>
         // @returns dItem
+        // @group inventory
         // @description
         // returns the item the entity is wearing as a chestplate, or null
         // if none.
@@ -1242,6 +1269,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.equipment.helmet>
         // @returns dItem
+        // @group inventory
         // @description
         // returns the item the entity is wearing as a helmet, or null
         // if none.
@@ -1257,6 +1285,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.equipment.leggings>
         // @returns dItem
+        // @group inventory
         // @description
         // returns the item the entity is wearing as leggings, or null
         // if none.
@@ -1272,6 +1301,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.equipment>
         // @returns dInventory
+        // @group inventory
         // @description
         // returns a dInventory containing the entity's equipment.
         // -->
@@ -1285,6 +1315,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.item_in_hand>
         // @returns dItem
+        // @group inventory
         // @description
         // returns the item the entity is holding, or i@air
         // if none.
@@ -1302,6 +1333,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.can_see[<entity>]>
         // @returns Element(Boolean)
+        // @group location
         // @description
         // Returns whether the entity can see the specified other entity.
         // -->
@@ -1315,6 +1347,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.eye_location>
         // @returns dLocation
+        // @group location
         // @description
         // returns the location of the entity's eyes.
         // -->
@@ -1325,6 +1358,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.get_eye_height>
         // @returns Element(Boolean)
+        // @group location
         // @description
         // Returns the height of the entity's eyes above its location.
         // -->
@@ -1340,6 +1374,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.location.cursor_on[<range>]>
         // @returns dLocation
+        // @group location
         // @description
         // Returns the location of the block the entity is looking at.
         // Optionally, specify a maximum range to find the location from.
@@ -1354,6 +1389,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.location.standing_on>
         // @returns dLocation
+        // @group location
         // @description
         // Returns the location of what the entity is standing on.
         // -->
@@ -1364,6 +1400,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.location>
         // @returns dLocation
+        // @group location
         // @description
         // Returns the location of the entity.
         // -->
@@ -1375,6 +1412,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.velocity>
         // @returns dLocation
+        // @group location
         // @description
         // Returns the movement velocity of the entity.
         // Note: Does not accurately calculate player clientside movement velocity.
@@ -1387,6 +1425,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.world>
         // @returns dWorld
+        // @group location
         // @description
         // Returns the world the entity is in.
         // -->
@@ -1403,6 +1442,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.can_pickup_items>
         // @returns Element(Boolean)
+        // @group attributes
         // @description
         // Returns whether the entity can pick up items.
         // -->
@@ -1413,6 +1453,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.fall_distance>
         // @returns Element(Decimal)
+        // @group attributes
         // @description
         // Returns how far the entity has fallen.
         // -->
@@ -1423,6 +1464,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.fire_time>
         // @returns Duration
+        // @group attributes
         // @description
         // Returns the duration for which the entity will remain on fire
         // -->
@@ -1433,6 +1475,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.get_leash_holder>
         // @returns dPlayer
+        // @group attributes
         // @description
         // Returns the leash holder of entity.
         // -->
@@ -1448,6 +1491,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.get_passenger>
         // @returns dEntity
+        // @group attributes
         // @description
         // If the entity has a passenger, returns the passenger as a dEntity.
         // Otherwise, returns null.
@@ -1463,6 +1507,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.get_shooter>
         // @returns dEntity
+        // @group attributes
         // @description
         // If the entity is a projectile with a shooter, gets its shooter
         // Otherwise, returns null.
@@ -1478,6 +1523,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.get_vehicle>
         // @returns dEntity
+        // @group attributes
         // @description
         // If the entity is in a vehicle, returns the vehicle as a dEntity.
         // Otherwise, returns null.
@@ -1493,6 +1539,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.has_effect[<effect>]>
         // @returns Element(Boolean)
+        // @group attributes
         // @description
         // Returns whether the entity has a specified effect.
         // If no effect is specified, returns whether the entity has any effect.
@@ -1512,6 +1559,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.health.formatted>
         // @returns Element
+        // @group attributes
         // @description
         // Returns a formatted value of the player's current health level.
         // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
@@ -1535,6 +1583,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.health.max>
         // @returns Element(Decimal)
+        // @group attributes
         // @description
         // Returns the maximum health of the entity.
         // -->
@@ -1545,6 +1594,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.health.percentage>
         // @returns Element(Decimal)
+        // @group attributes
         // @description
         // Returns the entity's current health as a percentage.
         // -->
@@ -1559,6 +1609,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.health>
         // @returns Element(Decimal)
+        // @group attributes
         // @description
         // Returns the current health of the entity.
         // -->
@@ -1569,6 +1620,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_empty>
         // @returns Element(Boolean)
+        // @group attributes
         // @description
         // Returns whether the entity does not have a passenger.
         // -->
@@ -1579,6 +1631,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_inside_vehicle>
         // @returns Element(Boolean)
+        // @group attributes
         // @description
         // Returns whether the entity is inside a vehicle.
         // -->
@@ -1589,6 +1642,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_leashed>
         // @returns Element(Boolean)
+        // @group attributes
         // @description
         // Returns whether the entity is leashed.
         // -->
@@ -1604,6 +1658,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_on_ground>
         // @returns Element(Boolean)
+        // @group attributes
         // @description
         // Returns whether the entity is supported by a block.
         // -->
@@ -1614,6 +1669,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_persistent>
         // @returns Element(Boolean)
+        // @group attributes
         // @description
         // Returns whether the entity will not be removed completely when far away from players.
         // -->
@@ -1627,19 +1683,9 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_spawned>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the entity is spawned.
-        // -->
-        if (attribute.startsWith("is_spawned")) {
-            return new Element(isSpawned())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <e@entity.killer>
         // @returns dPlayer
+        // @group attributes
         // @description
         // Returns the player that last killed the entity.
         // -->
@@ -1650,6 +1696,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.last_damage.amount>
         // @returns Element(Decimal)
+        // @group attributes
         // @description
         // Returns the amount of the last damage taken by the entity.
         // -->
@@ -1660,6 +1707,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.last_damage.cause>
         // @returns Element
+        // @group attributes
         // @description
         // Returns the cause of the last damage taken by the entity.
         // -->
@@ -1670,6 +1718,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.last_damage.duration>
         // @returns Duration
+        // @group attributes
         // @description
         // Returns the duration of the last damage taken by the entity.
         // -->
@@ -1680,6 +1729,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.oxygen.max>
         // @returns Duration
+        // @group attributes
         // @description
         // Returns the maximum duration of oxygen the entity can have.
         // -->
@@ -1690,6 +1740,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.oxygen>
         // @returns Duration
+        // @group attributes
         // @description
         // Returns the duration of oxygen the entity has left.
         // -->
@@ -1700,6 +1751,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.remove_when_far>
         // @returns Element(Boolean)
+        // @group attributes
         // @description
         // Returns if the entity despawns when away from players.
         // -->
@@ -1710,6 +1762,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.time_lived>
         // @returns Duration
+        // @group attributes
         // @description
         // Returns how long the entity has lived.
         // -->
@@ -1725,6 +1778,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_living>
         // @returns Element(Boolean)
+        // @group data
         // @description
         // Returns whether the entity is a living entity.
         // -->
@@ -1736,6 +1790,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_mob>
         // @returns Element(Boolean)
+        // @group data
         // @description
         // Returns whether the entity is a mob (Not a player or NPC).
         // -->
@@ -1748,6 +1803,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_npc>
         // @returns Element(Boolean)
+        // @group data
         // @description
         // Returns whether the entity is an NPC.
         // -->
@@ -1759,6 +1815,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_player>
         // @returns Element(Boolean)
+        // @group data
         // @description
         // Returns whether the entity is a player.
         // -->
@@ -1770,6 +1827,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_projectile>
         // @returns Element(Boolean)
+        // @group data
         // @description
         // Returns whether the entity is a projectile.
         // -->
@@ -1778,9 +1836,16 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+
+
+        /////////////////////
+        //   PROPERTY ATTRIBUTES
+        /////////////////
+
         // <--[tag]
         // @attribute <e@entity.is_tameable>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns whether the entity is tameable.
         // If this returns true, it will enable access to:
@@ -1794,6 +1859,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_ageable>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns whether the entity is ageable.
         // If this returns true, it will enable access to:
@@ -1808,6 +1874,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_frame>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns whether the entity can hold a framed item.
         // If this returns true, it will enable access to:
@@ -1821,6 +1888,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_colorable>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns whether the entity can be colored.
         // If this returns true, it will enable access to:
@@ -1833,6 +1901,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_powerable>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns whether the entity can be powered.
         // If this returns true, it will enable access to:
@@ -1845,6 +1914,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.is_sizeable>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns whether the entity is sizeable.
         // If this returns true, it will enable access to:
@@ -1854,15 +1924,10 @@ public class dEntity implements dObject, Adjustable {
             return new Element(EntitySize.describes(this))
                     .getAttribute(attribute.fulfill(1));
 
-
-
-        /////////////////////
-        //   PROPERTY ATTRIBUTES
-        /////////////////
-
         // <--[tag]
         // @attribute <e@entity.describe>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // Returns the entity's full description, including all properties.
         // -->
