@@ -82,6 +82,7 @@ public class EntityColor implements Property {
         // @attribute <e@entity.color>
         // @returns Element
         // @mechanism dEntity.color
+        // @group properties
         // @description
         // If the entity can have a color, returns the entity's color.
         // Currently, only Horse, Wolf, and Sheep type entities can have a color.

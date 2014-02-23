@@ -127,6 +127,7 @@ public class EntityAge implements Property {
         // @attribute <e@entity.age>
         // @returns Element(Number)
         // @mechanism dEntity.age
+        // @group properties
         // @description
         // If the entity is ageable, returns the entity's age number (-24000 to 0)
         // -->
@@ -138,6 +139,7 @@ public class EntityAge implements Property {
         // @attribute <e@entity.is_age_locked>
         // @returns Element(Boolean)
         // @mechanism dEntity.age_lock
+        // @group properties
         // @description
         // If the entity is ageable, returns whether the entity is age locked.
         // -->
@@ -149,6 +151,7 @@ public class EntityAge implements Property {
         // @attribute <e@entity.is_baby>
         // @returns Element(Boolean)
         // @mechanism dEntity.age
+        // @group properties
         // @description
         // If the entity is ageable, returns whether the entity is a baby.
         // -->

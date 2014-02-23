@@ -107,6 +107,8 @@ public class InventoryContents implements Property {
         // <--[tag]
         // @attribute <in@inventory.list_contents>
         // @returns dList(dItem)
+        // @group properties
+        // @mechanism dInventory.contents
         // @description
         // Returns a list of all items in the inventory.
         // -->
@@ -116,6 +118,8 @@ public class InventoryContents implements Property {
             // <--[tag]
             // @attribute <in@inventory.list_contents.simple>
             // @returns dList(dItem)
+            // @group properties
+            // @mechanism dInventory.contents
             // @description
             // Returns a list of all items in the inventory, without item properties.
             // -->
@@ -125,6 +129,8 @@ public class InventoryContents implements Property {
             // <--[tag]
             // @attribute <in@inventory.list_contents.with_lore[<element>]>
             // @returns dList(dItem)
+            // @group properties
+            // @mechanism dInventory.contents
             // @description
             // Returns a list of all items in the inventory with the specified
             // lore. Color codes are ignored.
@@ -137,6 +143,8 @@ public class InventoryContents implements Property {
                 // <--[tag]
                 // @attribute <in@inventory.list_contents.with_lore[<element>].simple>
                 // @returns dList(dItem)
+                // @group properties
+                // @mechanism dInventory.contents
                 // @description
                 // Returns a list of all items in the inventory with the specified
                 // lore, without item properties. Color codes are ignored.

@@ -72,6 +72,8 @@ public class InventorySize implements Property {
         // <--[tag]
         // @attribute <in@inventory.size>
         // @returns Element(Number)
+        // @group properties
+        // @mechanism dInventory.size
         // @description
         // Return the number of slots in the inventory.
         // -->

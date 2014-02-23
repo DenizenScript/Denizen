@@ -112,6 +112,7 @@ public class EntityInfected implements Property {
         // <--[tag]
         // @attribute <e@entity.is_infected>
         // @returns Element(Boolean)
+        // @group properties
         // @description
         // If the entity is infectable, returns whether the entity is infected.
         // Currently only Zombie or Villager entities can be infected.

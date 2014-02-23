@@ -83,6 +83,7 @@ public class EntityFramed implements Property {
         // @attribute <e@entity.framed_item_rotation>
         // @returns Element
         // @mechanism dEntity.framed
+        // @group properties
         // @description
         // If the entity is an item frame, returns the rotation of the material currently framed.
         // -->
@@ -94,6 +95,7 @@ public class EntityFramed implements Property {
         // @attribute <e@entity.framed_item>
         // @returns dItem
         // @mechanism dEntity.framed
+        // @group properties
         // @description
         // If the entity is an item frame, returns the material currently framed.
         // -->
@@ -105,6 +107,7 @@ public class EntityFramed implements Property {
         // @attribute <e@entity.has_framed_item>
         // @returns Element(Boolean)
         // @mechanism dEntity.framed
+        // @group properties
         // @description
         // If the entity is an item frame, returns whether the frame has an item in it.
         // -->

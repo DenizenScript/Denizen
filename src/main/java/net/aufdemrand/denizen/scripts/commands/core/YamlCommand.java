@@ -337,6 +337,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 break;
 
             case CREATE:
+                if (yamls.containsKey(id))
+                    yamls.remove(id);
                 yamlConfiguration = new YamlConfiguration();
                 yamls.put(id.toUpperCase(), yamlConfiguration);
                 break;
@@ -423,8 +425,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 attribute.fulfill(1);
                 List<String> list = getYaml(id).getStringList(path);
                 if (list == null) {
-                    dB.echoDebug(event.getScriptEntry(), "YAML tag '" + event.raw_tag + "' has returned null.");
-                    event.setReplaced(new Element("null").getAttribute(attribute));
+                    event.setReplaced(Element.NULL.getAttribute(attribute));
                     return;
                 }
                 // <--[tag]
@@ -448,8 +449,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             String value = getYaml(id).getString(path);
             if (value == null) {
                 // If value is null, the key at the specified path didn't exist.
-                dB.echoDebug(event.getScriptEntry(), "YAML tag '" + event.raw_tag + "' has returned null.");
-                event.setReplaced(new Element("null").getAttribute(attribute));
+                event.setReplaced(Element.NULL.getAttribute(attribute));
                 return;
 
             }
@@ -468,14 +468,12 @@ public class YamlCommand extends AbstractCommand implements Listener {
         if (attribute.startsWith("list_keys")) {
             ConfigurationSection section = getYaml(id).getConfigurationSection(path);
             if (section == null) {
-                dB.echoDebug(event.getScriptEntry(), "YAML tag '" + event.raw_tag + "' has returned null.");
-                event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
+                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                 return;
             }
             Set<String> keys = section.getKeys(false);
             if (keys == null) {
-                dB.echoDebug(event.getScriptEntry(), "YAML tag '" + event.raw_tag + "' has returned null.");
-                event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
+                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                 return;
 
             } else {

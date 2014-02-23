@@ -71,6 +71,7 @@ public class EntityPowered implements Property {
         // @attribute <e@entity.powered>
         // @returns Element(Boolean)
         // @mechanism dEntity.powered
+        // @group properties
         // @description
         // If the entity is a creeper, returns whether the creeper is powered.
         // -->

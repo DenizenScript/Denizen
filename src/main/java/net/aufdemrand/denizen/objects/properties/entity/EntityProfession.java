@@ -73,6 +73,7 @@ public class EntityProfession implements Property {
         // @attribute <e@entity.profession>
         // @returns Element
         // @mechanism dEntity.profession
+        // @group properties
         // @description
         // If the entity can have professions, returns the entity's profession.
         // Currently, only Villager-type entities can have professions.
