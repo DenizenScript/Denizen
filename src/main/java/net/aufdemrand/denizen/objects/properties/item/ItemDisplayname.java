@@ -42,6 +42,7 @@ public class ItemDisplayname implements Property {
         // @attribute <i@item.display>
         // @returns Element
         // @mechanism dItem.display_name
+        // @group properties
         // @description
         // Returns the display name of the item, as set by plugin or an anvil.
         // -->
@@ -56,6 +57,7 @@ public class ItemDisplayname implements Property {
         // @attribute <i@item.has_display>
         // @returns Element(Boolean)
         // @mechanism dItem.display_name
+        // @group properties
         // @description
         // Returns whether the item has a custom set display name.
         // -->

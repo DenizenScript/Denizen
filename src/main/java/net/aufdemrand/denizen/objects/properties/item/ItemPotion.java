@@ -70,6 +70,7 @@ public class ItemPotion implements Property {
                 // @attribute <i@item.potion_effect.is_splash>
                 // @returns Element(Boolean)
                 // @mechanism dItem.potion
+                // @group properties
                 // @description
                 // Returns whether the potion is a splash potion.
                 // -->
@@ -82,6 +83,7 @@ public class ItemPotion implements Property {
                 // @attribute <i@item.potion_effect.is_extended>
                 // @returns Element(Boolean)
                 // @mechanism dItem.potion
+                // @group properties
                 // @description
                 // Returns whether the potion has an extended duration.
                 // -->
@@ -94,6 +96,7 @@ public class ItemPotion implements Property {
                 // @attribute <i@item.potion_effect.level>
                 // @returns Element(Number)
                 // @mechanism dItem.potion
+                // @group properties
                 // @description
                 // Returns the level of this potion.
                 // -->
@@ -106,6 +109,7 @@ public class ItemPotion implements Property {
                 // @attribute <i@item.potion_effect.type>
                 // @returns Element
                 // @mechanism dItem.potion
+                // @group properties
                 // @description
                 // Returns the type name of this potion.
                 // -->
@@ -118,6 +122,7 @@ public class ItemPotion implements Property {
                 // @attribute <i@item.potion_effect>
                 // @returns Element
                 // @mechanism dItem.potion
+                // @group properties
                 // @description
                 // Returns the potion effect on this item.
                 // In the format Effect,Level,Extended,Splash

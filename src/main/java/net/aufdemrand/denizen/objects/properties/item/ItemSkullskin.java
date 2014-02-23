@@ -39,6 +39,7 @@ public class ItemSkullskin implements Property {
         // @attribute <i@item.skin>
         // @returns Element
         // @mechanism dItem.skull_skin
+        // @group properties
         // @description
         // Returns the name of the player whose skin a skull item uses.
         // Note: Item must be a 'skull_item' with a skin.
@@ -58,6 +59,7 @@ public class ItemSkullskin implements Property {
         // @attribute <i@item.has_skin>
         // @returns Element(Boolean)
         // @mechanism dItem.skull_skin
+        // @group properties
         // @description
         // Returns whether the item has a custom skin set.
         // (Only for human 'skull_item's)

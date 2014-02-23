@@ -2647,7 +2647,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Syntax yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)] [id:<name>]
+        // @Syntax yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
         // @Required 2
         // @Stable Todo
         // @Short Edits a YAML configuration file.
@@ -2664,14 +2664,23 @@ public class CommandRegistry implements dRegistry {
         // Use to create a new YAML file
         // - yaml create id:myfile
         // @Usage
+        // Use to load a YAML file from disk
+        // - yaml load:myfile.yml id:myfile
+        // @Usage
         // Use to write to a YAML file
         // - yaml write:my.key value:myvalue id:myfile
         // @Usage
         // Use to save a YAML file to disk
         // - yaml savefile:myfile.yml id:myfile
         // @Usage
-        // Use to load a YAML file from disk
-        // - yaml load:myfile.yml id:myfile
+        // Use to unload a YAML file from memory
+        // - yaml unload id:myfile
+        // @Usage
+        // Use to modify a YAML file similarly to a flag
+        // - yaml id:myfile set my.key:+:2
+        // @Usage
+        // Use to modify a YAML file similarly to a flag
+        // - yaml id:myfile set my.key[2]:hello
         // -->
         registerCoreMember(YamlCommand.class,
                 "YAML", "yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)] [id:<name>]", 2);

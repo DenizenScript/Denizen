@@ -48,6 +48,7 @@ public class ItemBook implements Property {
                 // @attribute <i@item.book.author>
                 // @returns Element
                 // @mechanism dItem.book
+                // @group properties
                 // @description
                 // Returns the author of the book.
                 // -->
@@ -59,6 +60,7 @@ public class ItemBook implements Property {
                 // @attribute <i@item.book.title>
                 // @returns Element
                 // @mechanism dItem.book
+                // @group properties
                 // @description
                 // Returns the title of the book.
                 // -->
@@ -71,6 +73,7 @@ public class ItemBook implements Property {
             // @attribute <i@item.book.page_count>
             // @returns Element(Number)
             // @mechanism dItem.book
+            // @group properties
             // @description
             // Returns the number of pages in the book.
             // -->
@@ -82,6 +85,7 @@ public class ItemBook implements Property {
             // @attribute <i@item.book.get_page[<#>]>
             // @returns Element
             // @mechanism dItem.book
+            // @group properties
             // @description
             // Returns the page specified from the book as an element.
             // -->
@@ -93,6 +97,7 @@ public class ItemBook implements Property {
             // @attribute <i@item.book.pages.escaped>
             // @returns dList
             // @mechanism dItem.book
+            // @group properties
             // @description
             // Returns the pages of the book as a dList, pre-escaped to prevent issues.
             // See <@link language Property Escaping>
@@ -111,6 +116,7 @@ public class ItemBook implements Property {
             // @attribute <i@item.book.pages>
             // @returns dList
             // @mechanism dItem.book
+            // @group properties
             // @description
             // Returns the pages of the book as a dList.
             // -->
@@ -122,6 +128,7 @@ public class ItemBook implements Property {
             // @attribute <i@item.book>
             // @returns Element
             // @mechanism dItem.book
+            // @group properties
             // @description
             // Returns full information on the book item, in the format
             // author|AUTHOR|title|TITLE|pages|PAGE_ONE|PAGE_TWO|...

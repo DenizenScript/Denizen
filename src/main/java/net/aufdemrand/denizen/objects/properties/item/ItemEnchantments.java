@@ -39,6 +39,7 @@ public class ItemEnchantments implements Property {
         // @attribute <i@item.is_enchanted>
         // @returns Element(Boolean)
         // @mechanism dItem.enchantments
+        // @group properties
         // @description
         // Returns whether the item has any enchantments.
         // -->
@@ -51,6 +52,7 @@ public class ItemEnchantments implements Property {
         // @attribute <i@item.enchantments.with_levels>
         // @returns dList
         // @mechanism dItem.enchantments
+        // @group properties
         // @description
         // Returns a list of enchantments on the item, with their levels listed too.
         // In the format of ENCHANTMENT,LEVEL - EG: DAMAGE_ALL,3
@@ -69,6 +71,7 @@ public class ItemEnchantments implements Property {
         // @attribute <i@item.enchantments.levels>
         // @returns dList
         // @mechanism dItem.enchantments
+        // @group properties
         // @description
         // Returns a list of enchantments on the item, showing only the level.
         // -->
@@ -86,6 +89,7 @@ public class ItemEnchantments implements Property {
         // @attribute <i@item.enchantments.level[<name>]>
         // @returns Element(Number)
         // @mechanism dItem.enchantments
+        // @group properties
         // @description
         // Returns the level of a specified enchantment.
         // -->
@@ -107,6 +111,7 @@ public class ItemEnchantments implements Property {
         // @attribute <i@item.enchantments>
         // @returns dList
         // @mechanism dItem.enchantments
+        // @group properties
         // @description
         // Returns a list of enchantments on the item.
         // -->

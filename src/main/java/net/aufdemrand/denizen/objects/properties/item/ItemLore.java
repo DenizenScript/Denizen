@@ -43,6 +43,7 @@ public class ItemLore implements Property {
         // @attribute <i@item.lore.escaped>
         // @returns dList
         // @mechanism dItem.lore
+        // @group properties
         // @description
         // Returns lore as a dList, pre-escaped to prevent issues.
         // See <@link language Property Escaping>
@@ -56,6 +57,7 @@ public class ItemLore implements Property {
         // @attribute <i@item.lore>
         // @returns dList
         // @mechanism dItem.lore
+        // @group properties
         // @description
         // Returns lore as a dList. Excludes the custom-script-id lore.
         // To get that information, use <i@item.scriptname>.
@@ -76,6 +78,7 @@ public class ItemLore implements Property {
         // @attribute <i@item.has_lore>
         // @returns Element(Boolean)
         // @mechanism dItem.lore
+        // @group properties
         // @description
         // Returns whether the item has lore set on it.
         // -->
