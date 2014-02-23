@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -56,6 +58,9 @@ public class FormatScriptContainer extends ScriptContainer {
     // # And put all your favorite format scripts in there
     // # any NPC script will be able to use them as well
     //
+    // # ALSO, you can at any time reformat a tag using the tag '<el@element.format[<script>]>'
+    // # EG, <npc.name.format[FormatExample]>
+    //
     // -->
 
     public FormatScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
@@ -71,8 +76,12 @@ public class FormatScriptContainer extends ScriptContainer {
     }
 
     public String getFormattedText(ScriptEntry entry) {
-        String text = getFormat().replace("<text>", entry.getElement("text").asString());
-        return TagManager.tag(entry.getPlayer(), entry.getNPC(), text);
+        return getFormattedText(entry.getElement("text").asString(), entry.getNPC(), entry.getPlayer());
+    }
+
+    public String getFormattedText(String textToReplace, dNPC npc, dPlayer player) {
+        String text = getFormat().replace("<text>", textToReplace);
+        return TagManager.tag(player, npc, text);
     }
 
 }

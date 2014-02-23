@@ -229,6 +229,18 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.max_players>
+        // @returns Element(Number)
+        // @description
+        // Returns the maximum number of players allowed on the server.
+        // -->
+        if (attribute.startsWith("max_players")) {
+            event.setReplaced(new Element(Bukkit.getServer().getMaxPlayers())
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.list_plugin_names>
         // @returns dList
         // @description

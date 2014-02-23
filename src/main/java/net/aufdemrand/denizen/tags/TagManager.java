@@ -197,7 +197,7 @@ public class TagManager implements Listener {
     }
 
     // Match all < > brackets that don't contain < > inside them
-    private static Pattern tagRegex = Pattern.compile("<([^<>]+)>");
+    private static Pattern tagRegex = Pattern.compile("<([^<>]+)>", Pattern.DOTALL | Pattern.MULTILINE);
 
     private static int[] locateTag(String arg) {
         // find escaped brackets

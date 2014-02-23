@@ -314,14 +314,19 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         case REMOVE:
                         {
                             List<String> list = yaml.getStringList(keyStr);
-                            for (int i = 0; i < list.size(); i++) {
-                                if (list.get(i).equalsIgnoreCase(valueStr)) {
-                                    list.remove(i);
-                                    break;
-                                }
+                            if (index > -1 && index < list.size()) {
+                                list.remove(index);
                             }
-                            yaml.set(keyStr, list);
-                            break;
+                            else {
+                                for (int i = 0; i < list.size(); i++) {
+                                    if (list.get(i).equalsIgnoreCase(valueStr)) {
+                                        list.remove(i);
+                                        break;
+                                    }
+                                }
+                                yaml.set(keyStr, list);
+                                break;
+                            }
                         }
                         case SPLIT:
                         {
@@ -366,6 +371,21 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
         if (!event.matches("yaml")) return;
 
+        Attribute attribute = event.getAttributes();
+
+        // <--[tag]
+        // @attribute <yaml.list>
+        // @returns dList
+        // @description
+        // Returns a list of all currently loaded YAML ID's.
+        // -->
+        if (attribute.getAttribute(2).equalsIgnoreCase("list")) {
+            dList list = new dList();
+            list.addAll(yamls.keySet());
+            event.setReplaced(list.getAttribute(attribute.fulfill(2)));
+            return;
+        }
+
         // YAML tag requires name context and type context.
         if (!event.hasNameContext() || !event.hasTypeContext()) {
             dB.echoError("YAML tag '" + event.raw_tag + "' is missing required context. Tag replacement aborted.");
@@ -382,9 +402,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     "been closed. Tag replacement aborted.");
             return;
         }
-
-        // Build the attribute to be filled.
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
 
         // Catch up with what has already been processed.
         attribute.fulfill(1);

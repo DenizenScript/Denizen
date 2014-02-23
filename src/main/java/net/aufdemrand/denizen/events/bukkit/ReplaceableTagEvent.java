@@ -38,7 +38,7 @@ public class ReplaceableTagEvent extends Event {
     private ScriptEntry scriptEntry = null;
 
     // Alternative text pattern that matches everything after ||
-    private static Pattern alternativeRegex = Pattern.compile("\\|\\|(.*)");
+    private static Pattern alternativeRegex = Pattern.compile("\\|\\|(.*)", Pattern.DOTALL | Pattern.MULTILINE);
 
     public String raw_tag;
 
@@ -131,7 +131,7 @@ public class ReplaceableTagEvent extends Event {
         if (input == null)
             return null;
         else
-            return input.replaceAll("\\[.+\\]$", "");
+            return Attribute.CONTEXT_PATTERN.matcher(input).replaceAll("");
     }
 
     ////////
