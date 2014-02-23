@@ -1578,7 +1578,8 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         context.put("entity", entity.getDenizenObject());
-        context.put("cause", new Element(event.getEntity().getLastDamageCause().getCause().toString()));
+        if (event.getEntity().getLastDamageCause() != null)
+            context.put("cause", new Element(event.getEntity().getLastDamageCause().getCause().toString()));
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getPlayer();
