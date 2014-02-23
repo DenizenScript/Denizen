@@ -38,6 +38,8 @@ public class ItemPotion implements Property {
         if (item.getItemStack().getDurability() == 0)
             return null;
         Potion pot = Potion.fromItemStack(item.getItemStack());
+        if (pot == null || pot.getType() == null)
+            return String.valueOf(item.getItemStack().getDurability());
         return pot.getType().name() + "," + pot.getLevel() + "," + pot.hasExtendedDuration() + "," + pot.isSplash();
     }
 
@@ -119,6 +121,19 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
+                // @attribute <i@item.potion_effect.data>
+                // @returns Element(Number)
+                // @mechanism dItem.potion
+                // @group properties
+                // @description
+                // Returns the 'damage value' of the potion, if normal potion tags don't work.
+                // -->
+                if (attribute.startsWith("data")) {
+                    return new Element(item.getItemStack().getDurability())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
                 // @attribute <i@item.potion_effect>
                 // @returns Element
                 // @mechanism dItem.potion
@@ -146,6 +161,7 @@ public class ItemPotion implements Property {
         // Sets the potion's custom potion effects.
         // Input is a formed like: Effect,Level,Extended,Splash
         // EG: speed,1,true,false
+        // Can also input a damage-value, EG '255'
         // @tags
         // <i@item.potion_effect>
         // <i@item.potion_effect.level>
@@ -154,8 +170,12 @@ public class ItemPotion implements Property {
         // -->
         if (mechanism.matches("potion")) {
             String[] data = mechanism.getValue().asString().split(",", 4);
-            if (data.length < 4)
-                dB.echoError("Invalid effect format, use name,amplifier,extended,splash.");
+            if (data.length < 4) {
+                if (mechanism.getValue().isInt())
+                    item.getItemStack().setDurability((short)mechanism.getValue().asInt());
+                else
+                    dB.echoError("Invalid effect format, use name,amplifier,extended,splash.");
+            }
             else {
                 Element data1 = new Element(data[1]);
                 Element data2 = new Element(data[2]);
