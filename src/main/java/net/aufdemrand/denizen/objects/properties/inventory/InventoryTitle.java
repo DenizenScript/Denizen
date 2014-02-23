@@ -65,6 +65,8 @@ public class InventoryTitle implements Property {
         // <--[tag]
         // @attribute <in@inventory.title>
         // @returns Element
+        // @group properties
+        // @mechanism dInventory.title
         // @description
         // Returns the title of the inventory.
         // -->

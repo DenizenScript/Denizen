@@ -99,6 +99,8 @@ public class InventoryHolder implements Property {
         // <--[tag]
         // @attribute <in@inventory.id_holder>
         // @returns dObject
+        // @group properties
+        // @mechanism dInventory.holder
         // @description
         // Returns Denizen's holder ID for this inventory. (p@aufdemrand, l@123,321,123, etc.)
         // -->
