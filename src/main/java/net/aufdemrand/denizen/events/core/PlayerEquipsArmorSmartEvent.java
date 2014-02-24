@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -140,7 +141,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
                         ("player equips armor",
                                 "player equips " + armor.identifySimple(),
                                 "player equips " + armor.identifyMaterial()),
-                        null, player, context).toUpperCase();
+                        null, new dPlayer(player), context, 1).toUpperCase();
 
                 if (determination.startsWith("CANCELLED")) {
                     armor_contents[type] = new ItemStack(Material.AIR);

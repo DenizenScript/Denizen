@@ -183,6 +183,12 @@ public class EventManager implements Listener {
     //////////////
 
 
+    // TODO: Switch this to directly take a dPlayer and make the version with a placeholder int deprecated instead.
+    /**
+     *
+     * @deprecated this will soon be replaced with a match event that takes a dPlayer
+     */
+    @Deprecated
     public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, dObject> context,
                                   boolean usesIdentifiers) {
 
@@ -190,7 +196,17 @@ public class EventManager implements Listener {
         // with their identifiers stripped
         return doEvents(usesIdentifiers ? addAlternates(eventNames)
                 : eventNames,
-                npc, player, context);
+                npc, new dPlayer(player), context, 1);
+    }
+
+    public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context,
+                                  boolean usesIdentifiers, int Use_dPlayer) {
+
+        // If a list of events uses identifiers, also add those events to the list
+        // with their identifiers stripped
+        return doEvents(usesIdentifiers ? addAlternates(eventNames)
+                : eventNames,
+                npc, player, context, 1);
     }
 
 
@@ -220,7 +236,17 @@ public class EventManager implements Listener {
     ///////////////
 
 
+    // TODO: Switch this to directly take a dPlayer and make the version with a placeholder int deprecated instead.
+    /**
+     *
+     * @deprecated this will soon be replaced with a match event that takes a dPlayer
+     */
+    @Deprecated
     public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, dObject> context) {
+        return doEvents(eventNames, npc, new dPlayer(player), context, 1);
+    }
+
+    public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context, int Use_dPlayer) {
 
         String determination = "none";
 
@@ -239,9 +265,7 @@ public class EventManager implements Listener {
                     //
                     // Note: a "new dPlayer(null)" will not be null itself,
                     //       so keep a ternary operator here
-                    List<ScriptEntry> entries = script.getEntries
-                            (player != null ? new dPlayer(player) : null,
-                                    npc, "events.on " + eventName);
+                    List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
 
                     if (entries.isEmpty()) continue;
 

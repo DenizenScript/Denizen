@@ -2828,7 +2828,7 @@ public class WorldScriptHelper implements Listener {
         EventManager.doEvents(Arrays.asList
                 ("player closes inventory",
                         "player closes " + type),
-                null, player, context);
+                null, new dPlayer(player), context, 1);
     }
 
     // <--[event]
@@ -2969,7 +2969,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("player opens inventory",
                         "player opens " + type),
-                null, player, context);
+                null, new dPlayer(player), context, 1);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -3113,7 +3113,7 @@ public class WorldScriptHelper implements Listener {
         }
 
         String determination = EventManager.doEvents(events,
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -3275,7 +3275,7 @@ public class WorldScriptHelper implements Listener {
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("player empties bucket"),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -3310,7 +3310,7 @@ public class WorldScriptHelper implements Listener {
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("player fills bucket"),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -3363,7 +3363,7 @@ public class WorldScriptHelper implements Listener {
         context.put("message", new Element(event.getMessage()));
 
         String determination = EventManager.doEvents(Arrays.asList("player chats"),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -3492,7 +3492,7 @@ public class WorldScriptHelper implements Listener {
 
         // Run any event scripts and get the determination.
         determination = EventManager.doEvents(events,
-                null, event.getPlayer(), context).toUpperCase();
+                null, new dPlayer(event.getPlayer()), context, 1).toUpperCase();
 
         // If a script has determined fulfilled, cancel this event so the player doesn't
         // receive the default 'Invalid command' gibberish from bukkit.
@@ -3562,7 +3562,7 @@ public class WorldScriptHelper implements Listener {
         if (event.isHatching()) events.add("player throws hatching egg");
         else                    events.add("player throws non-hatching egg");
 
-        String determination = EventManager.doEvents(events, null, event.getPlayer(), context);
+        String determination = EventManager.doEvents(events, null, new dPlayer(event.getPlayer()), context, 1);
 
         if (dEntity.matches(determination)) {
             event.setHatching(true);
@@ -3591,7 +3591,7 @@ public class WorldScriptHelper implements Listener {
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("player changes xp"),
-                null, event.getPlayer(), context).toUpperCase();
+                null, new dPlayer(event.getPlayer()), context, 1).toUpperCase();
 
         if (determination.equals("CANCELLED")) {
             event.setAmount(0);
@@ -3669,7 +3669,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("player changes gamemode",
                         "player changes gamemode to " + event.getNewGameMode().name()),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -3926,7 +3926,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("player joins",
                         "player join"),
-                null, player, context);
+                null, new dPlayer(player), context, 1);
 
         // Handle message
         if (!determination.equals("none")) {
@@ -3961,7 +3961,7 @@ public class WorldScriptHelper implements Listener {
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("player kicked"),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         if (!determination.equals("none")) {
             event.setLeaveMessage(determination);
@@ -4013,7 +4013,7 @@ public class WorldScriptHelper implements Listener {
                 ("player levels up",
                         "player levels up to " + event.getNewLevel(),
                         "player levels up from " + event.getOldLevel()),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
     }
 
     // <--[event]
@@ -4042,7 +4042,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("player logs in",
                         "player login"),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         if (determination.toUpperCase().startsWith("KICKED"))
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination.length() > 7 ? determination.substring(7): determination);
@@ -4147,7 +4147,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("player quits",
                         "player quit"),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         if (!determination.equals("none")) {
             event.setQuitMessage(determination);
@@ -4178,7 +4178,7 @@ public class WorldScriptHelper implements Listener {
         if (event.isBedSpawn()) events.add("player respawns at bed");
         else                    events.add("player respawns elsewhere");
 
-        String determination = EventManager.doEvents(events, null, event.getPlayer(), context);
+        String determination = EventManager.doEvents(events, null, new dPlayer(event.getPlayer()), context, 1);
 
         if (dLocation.matches(determination)) {
             dLocation location = dLocation.valueOf(determination);
@@ -4247,7 +4247,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("player toggles flight",
                         "player " + (event.isFlying() ? "starts" : "stops") + " flying"),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -4276,7 +4276,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("player toggles sneak",
                         "player " + (event.isSneaking() ? "starts" : "stops") + " sneaking"),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -4305,7 +4305,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("player toggles sprint",
                         "player " + (event.isSprinting() ? "starts" : "stops") + " sprinting"),
-                null, event.getPlayer(), context);
+                null, new dPlayer(event.getPlayer()), context, 1);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);

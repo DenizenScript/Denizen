@@ -80,7 +80,7 @@ public class PlayerJumpSmartEvent implements SmartEvent, Listener {
             // Not perfect checking, but close enough until Bukkit adds a proper event
             Map<String, dObject> context = new HashMap<String, dObject>();
             context.put("location", new dLocation(event.getTo()));
-            EventManager.doEvents(Arrays.asList("player jumps"), null, event.getPlayer(), context);
+            EventManager.doEvents(Arrays.asList("player jumps"), null, new dPlayer(event.getPlayer()), context, 1);
         }
     }
 
