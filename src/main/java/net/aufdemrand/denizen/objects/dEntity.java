@@ -569,7 +569,12 @@ public class dEntity implements dObject, Adjustable {
     public void setVelocity(Vector vector) {
 
         if (!isGeneric()) {
-            entity.setVelocity(vector);
+            if (entity instanceof WitherSkull) {
+                ((WitherSkull) entity).setDirection(vector);
+            }
+            else {
+                entity.setVelocity(vector);
+            }
         }
     }
 
@@ -2107,7 +2112,7 @@ public class dEntity implements dObject, Adjustable {
         // <e@entity.velocity>
         // -->
         if (mechanism.matches("velocity") && mechanism.requireObject(dLocation.class)) {
-            entity.setVelocity(value.asType(dLocation.class).toVector());
+            setVelocity(value.asType(dLocation.class).toVector());
         }
 
         // Iterate through this object's properties' mechanisms
