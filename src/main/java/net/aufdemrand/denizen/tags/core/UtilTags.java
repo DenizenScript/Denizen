@@ -665,12 +665,12 @@ public class UtilTags implements Listener {
             if (subType.equalsIgnoreCase("TIME")) {
 
                 // <--[tag]
-                // @attribute <util.date.time.24hour>
+                // @attribute <util.date.time.twentyfour_hour>
                 // @returns Element
                 // @description
                 // Returns the current system time in 24-hour format.
                 // -->
-                if (specifier.equalsIgnoreCase("24HOUR")) {
+                if (specifier.equalsIgnoreCase("TWENTYFOUR_HOUR")) {
                     format.applyPattern("k:mm");
                     event.setReplaced(new Element(format.format(currentDate))
                             .getAttribute(attribute.fulfill(3)));
