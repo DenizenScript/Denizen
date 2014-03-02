@@ -851,6 +851,17 @@ public class CommandHandler {
     }
 
     /*
+     * DENIZEN DO_NOTHING
+     */
+    @Command(
+            aliases = { "denizen" }, usage = "do_nothing",
+            desc = "Does nothing, for better server command handling", modifiers = { "do_nothing" },
+            min = 1, max = 3, permission = "denizen.basic")
+    public void do_nothing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        // Do nothing
+    }
+
+    /*
      * DENIZEN HELP
      */
     @Command(

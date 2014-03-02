@@ -4345,7 +4345,10 @@ public class WorldScriptHelper implements Listener {
         context.put("raw_args", new Element((message.split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
         context.put("server", Element.TRUE);
 
-        EventManager.doEvents(events, null, null, context);
+        String determination = EventManager.doEvents(events, null, null, context);
+
+        if (determination.equalsIgnoreCase("FULFILLED") || determination.equalsIgnoreCase("CANCELLED"))
+            event.setCommand("denizen do_nothing");
     }
 
 

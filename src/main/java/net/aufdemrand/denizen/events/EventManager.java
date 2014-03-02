@@ -196,7 +196,7 @@ public class EventManager implements Listener {
         // with their identifiers stripped
         return doEvents(usesIdentifiers ? addAlternates(eventNames)
                 : eventNames,
-                npc, new dPlayer(player), context, 1);
+                npc, player == null ? null : new dPlayer(player), context, 1);
     }
 
     public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context,
@@ -243,7 +243,7 @@ public class EventManager implements Listener {
      */
     @Deprecated
     public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, dObject> context) {
-        return doEvents(eventNames, npc, new dPlayer(player), context, 1);
+        return doEvents(eventNames, npc, player == null ? null : new dPlayer(player), context, 1);
     }
 
     public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context, int Use_dPlayer) {
