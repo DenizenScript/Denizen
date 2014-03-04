@@ -117,22 +117,20 @@ public class WorldScriptHelper implements Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
 
-        if (cuboids.size() > 0) {
-            dList cuboid_context = new dList();
-            for (dCuboid cuboid : cuboids) {
-                events.add("player breaks block in " + cuboid.identifySimple());
-                events.add("player breaks " + material.identifySimple() + " in " + cuboid.identifySimple());
-                events.add("player breaks " + material.identifySimple() + " with " + item.identifySimple() + " in " + cuboid.identifySimple());
-                events.add("player breaks " + material.identifySimple() + " with " + item.identifyMaterial() + " in " + cuboid.identifySimple());
-                events.add("player breaks block in cuboid");
-                events.add("player breaks " + material.identifySimple() + " in cuboid");
-                events.add("player breaks " + material.identifySimple() + " with " + item.identifySimple() + " in cuboid");
-                events.add("player breaks " + material.identifySimple() + " with " + item.identifyMaterial() + " in cuboid");
-                cuboid_context.add(cuboid.identifySimple());
-            }
-            // Add in cuboids context, if inside a cuboid
-            context.put("cuboids", cuboid_context);
+        dList cuboid_context = new dList();
+        for (dCuboid cuboid : cuboids) {
+            events.add("player breaks block in " + cuboid.identifySimple());
+            events.add("player breaks " + material.identifySimple() + " in " + cuboid.identifySimple());
+            events.add("player breaks " + material.identifySimple() + " with " + item.identifySimple() + " in " + cuboid.identifySimple());
+            events.add("player breaks " + material.identifySimple() + " with " + item.identifyMaterial() + " in " + cuboid.identifySimple());
+            events.add("player breaks block in cuboid");
+            events.add("player breaks " + material.identifySimple() + " in cuboid");
+            events.add("player breaks " + material.identifySimple() + " with " + item.identifySimple() + " in cuboid");
+            events.add("player breaks " + material.identifySimple() + " with " + item.identifyMaterial() + " in cuboid");
+            cuboid_context.add(cuboid.identifySimple());
         }
+        // Add in cuboids context, with either the cuboids or an empty list
+        context.put("cuboids", cuboid_context);
 
         // Trim events not used
         events = EventManager.trimEvents(events);
@@ -282,16 +280,14 @@ public class WorldScriptHelper implements Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
 
-        if (cuboids.size() > 0) {
-            dList cuboid_context = new dList();
-            for (dCuboid cuboid : cuboids) {
-                events.add("player damages block in " + cuboid.identifySimple());
-                events.add("player damages " + material.identifySimple() + " in " + cuboid.identifySimple());
-                cuboid_context.add(cuboid.identifySimple());
-            }
-            // Add in cuboids context, if inside a cuboid
-            context.put("cuboids", cuboid_context);
+        dList cuboid_context = new dList();
+        for (dCuboid cuboid : cuboids) {
+            events.add("player damages block in " + cuboid.identifySimple());
+            events.add("player damages " + material.identifySimple() + " in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identifySimple());
         }
+        // Add in cuboids context, with either the cuboids or an empty list
+        context.put("cuboids", cuboid_context);
 
         events.add("player damages block");
         events.add("player damages " + material.identifySimple());
@@ -626,17 +622,15 @@ public class WorldScriptHelper implements Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
 
-        if (cuboids.size() > 0) {
-            dList cuboid_context = new dList();
-            for (dCuboid cuboid : cuboids) {
-                events.add("player places block in " + cuboid.identifySimple());
-                events.add("player places " + material.identifySimple() + " in " + cuboid.identifySimple());
-                events.add("player places " + item.identifySimple() + " in " + cuboid.identifySimple());
-                cuboid_context.add(cuboid.identifySimple());
-            }
-            // Add in cuboids context, if inside a cuboid
-            context.put("cuboids", cuboid_context);
+        dList cuboid_context = new dList();
+        for (dCuboid cuboid : cuboids) {
+            events.add("player places block in " + cuboid.identifySimple());
+            events.add("player places " + material.identifySimple() + " in " + cuboid.identifySimple());
+            events.add("player places " + item.identifySimple() + " in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identifySimple());
         }
+        // Add in cuboids context, with either the cuboids or an empty list
+        context.put("cuboids", cuboid_context);
 
         events.add("player places block");
         events.add("player places " + material.identifySimple());
@@ -1120,16 +1114,14 @@ public class WorldScriptHelper implements Listener {
             // Look for cuboids that contain the block's location
             List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getEntity().getLocation());
 
-            if (cuboids.size() > 0) {
-                dList cuboid_context = new dList();
-                for (dCuboid cuboid : cuboids) {
-                    events.add(entity.identifyType() + " breaks " + hanging.identifyType() + " in " + cuboid.identifySimple());
+            dList cuboid_context = new dList();
+            for (dCuboid cuboid : cuboids) {
+                events.add(entity.identifyType() + " breaks " + hanging.identifyType() + " in " + cuboid.identifySimple());
 
-                    cuboid_context.add(cuboid.identifySimple());
-                }
-                // Add in cuboids context, if inside a cuboid
-                context.put("cuboids", cuboid_context);
+                cuboid_context.add(cuboid.identifySimple());
             }
+            // Add in cuboids context, with either the cuboids or an empty list
+            context.put("cuboids", cuboid_context);
 
             events.add("entity breaks hanging");
             events.add("entity breaks hanging because " + cause);
@@ -3463,15 +3455,13 @@ public class WorldScriptHelper implements Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getPlayer().getLocation());
 
-        if (cuboids.size() > 0) {
-            dList cuboid_context = new dList();
-            for (dCuboid cuboid : cuboids) {
-                events.add(command + " command in " + cuboid.identifySimple());
-                cuboid_context.add(cuboid.identifySimple());
-            }
-            // Add in cuboids context, if inside a cuboid
-            context.put("cuboids", cuboid_context);
+        dList cuboid_context = new dList();
+        for (dCuboid cuboid : cuboids) {
+            events.add(command + " command in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identifySimple());
         }
+        // Add in cuboids context, with either the cuboids or an empty list
+        context.put("cuboids", cuboid_context);
 
         events = EventManager.trimEvents(events);
 
@@ -3756,20 +3746,18 @@ public class WorldScriptHelper implements Listener {
             // Look for cuboids that contain the block's location
             List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getClickedBlock().getLocation());
 
-            if (cuboids.size() > 0) {
-                dList cuboid_context = new dList();
-                for (dCuboid cuboid : cuboids) {
-                    for (String interaction : interactions) {
-                        events.add(interaction + " block in " + cuboid.identifySimple());
-                        events.add(interaction + " block in cuboid");
-                        events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());
-                        events.add(interaction + ' ' + blockMaterial.identifySimple() + " in cuboid");
-                    }
-                    cuboid_context.add(cuboid.identifySimple());
+            dList cuboid_context = new dList();
+            for (dCuboid cuboid : cuboids) {
+                for (String interaction : interactions) {
+                    events.add(interaction + " block in " + cuboid.identifySimple());
+                    events.add(interaction + " block in cuboid");
+                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());
+                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in cuboid");
                 }
-                // Add in cuboids context, if inside a cuboid
-                context.put("cuboids", cuboid_context);
+                cuboid_context.add(cuboid.identifySimple());
             }
+            // Add in cuboids context, with either the cuboids or an empty list
+            context.put("cuboids", cuboid_context);
 
         }
 
@@ -3841,18 +3829,16 @@ public class WorldScriptHelper implements Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getRightClicked().getLocation());
 
-        if (cuboids.size() > 0) {
-            dList cuboid_context = new dList();
-            for (dCuboid cuboid : cuboids) {
-                events.add("player right clicks entity in " + cuboid.identifySimple());
-                events.add("player right clicks entity in cuboid");
-                events.add("player right clicks " + entity.identifyType() + " in cuboid");
-                events.add("player right clicks " + entity.identifyType() + " in " + cuboid.identifySimple());
-                cuboid_context.add(cuboid.identifySimple());
-            }
-            // Add in cuboids context, if inside a cuboid
-            context.put("cuboids", cuboid_context);
+        dList cuboid_context = new dList();
+        for (dCuboid cuboid : cuboids) {
+            events.add("player right clicks entity in " + cuboid.identifySimple());
+            events.add("player right clicks entity in cuboid");
+            events.add("player right clicks " + entity.identifyType() + " in cuboid");
+            events.add("player right clicks " + entity.identifyType() + " in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identifySimple());
         }
+        // Add in cuboids context, with either the cuboids or an empty list
+        context.put("cuboids", cuboid_context);
 
         events = EventManager.trimEvents(events);
 

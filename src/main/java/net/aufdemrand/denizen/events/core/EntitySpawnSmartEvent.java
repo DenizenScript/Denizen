@@ -125,17 +125,15 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getLocation());
 
-        if (cuboids.size() > 0) {
-            dList cuboid_context = new dList();
-            for (dCuboid cuboid : cuboids) {
-                events.add("entity spawns in " + cuboid.identifySimple());
-                events.add("entity spawns in " + cuboid.identifySimple() + " because " + reason);
-                events.add(entity.identifyType() + " spawns in " + cuboid.identifySimple());
-                events.add(entity.identifyType() + " spawns in " + cuboid.identifySimple() + " because " + reason);
-            }
-            // Add in cuboids context, if inside a cuboid
-            context.put("cuboids", cuboid_context);
+        dList cuboid_context = new dList();
+        for (dCuboid cuboid : cuboids) {
+            events.add("entity spawns in " + cuboid.identifySimple());
+            events.add("entity spawns in " + cuboid.identifySimple() + " because " + reason);
+            events.add(entity.identifyType() + " spawns in " + cuboid.identifySimple());
+            events.add(entity.identifyType() + " spawns in " + cuboid.identifySimple() + " because " + reason);
         }
+        // Add in cuboids context, with either the cuboids or an empty list
+        context.put("cuboids", cuboid_context);
 
         // Add events to fire
         events.add("entity spawns");

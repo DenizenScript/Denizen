@@ -302,7 +302,7 @@ public class FlagManager {
             rebuild();
 
             EventManager.doEvents(world_script_events,
-                    npc, player != null ? player : null, context, 1);
+                    npc, player, context, 1);
         }
 
         /**
@@ -535,7 +535,7 @@ public class FlagManager {
             rebuild();
 
             EventManager.doEvents(world_script_events,
-                    npc, player != null ? player : null, context, 1);
+                    npc, player, context, 1);
 
 
         }
