@@ -418,7 +418,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             classNameCache.put(clazz, name = clazz.getSimpleName());
         if (is_delayed) {
             dB.echoDebug(this, "Delaying " + name + " '" + id + "'" + " for '"
-                    + new Duration((delay_time - System.currentTimeMillis()) / 1000 * 20).identify() + "'...");
+                    + new Duration(((double)(delay_time - System.currentTimeMillis())) / 1000f).identify() + "'...");
         } else
             dB.echoDebug(this, "Starting " + name + " '" + id + "'...");
 
@@ -432,7 +432,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                         // Take the delay time, find out how many milliseconds away
                         // it is, turn it into seconds, then divide by 20 for ticks.
                     },
-                    (delay_time - System.currentTimeMillis()) / 1000 * 20);
+                    (long)(((double)(delay_time - System.currentTimeMillis())) / 1000 * 20));
 
         } else
             // If it's not, start the engine now!

@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -85,7 +86,7 @@ public class _TemplateSmartEvent implements SmartEvent, Listener {
         // Add some things to it
         context.put("location", new dLocation(event.getTo()));
         // Fire the event!
-        String determination = EventManager.doEvents(Arrays.asList("x or y or z"), null /* NPC */, event.getPlayer(), context);
+        String determination = EventManager.doEvents(Arrays.asList("x or y or z"), null /* NPC */, new dPlayer(event.getPlayer()), context, 1);
         // Parse the determination and edit the event accordingly here
     }
 

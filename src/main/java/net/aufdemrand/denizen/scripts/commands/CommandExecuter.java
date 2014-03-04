@@ -144,8 +144,10 @@ public class CommandExecuter {
 
                 // Save the scriptentry if needed later for fetching scriptentry context
                 else if (arg.matchesPrefix("save") && !if_ignore) {
-                    dB.echoDebug(scriptEntry, "...remembering this script entry!");
-                    scriptEntry.getResidingQueue().holdScriptEntry(arg.getValue(), scriptEntry);
+                    String saveName = TagManager.tag(scriptEntry.getPlayer(),
+                            scriptEntry.getNPC(), arg.getValue(), false, scriptEntry);
+                    dB.echoDebug(scriptEntry, "...remembering this script entry as '" + saveName + "'!");
+                    scriptEntry.getResidingQueue().holdScriptEntry(saveName, scriptEntry);
                 }
 
                 else newArgs.add(arg.raw_value);

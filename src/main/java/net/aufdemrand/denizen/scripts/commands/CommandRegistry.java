@@ -1574,9 +1574,8 @@ public class CommandRegistry implements dRegistry {
         // noteblock songs at the given location or group of players until the song ends. If no location or
         // entitiy is specified, by default this will play for the attached player.
         //
-        // Also, an example Midi song file has been included: "Denizen" by Black Coyote
-        // He made it just for us! Check out more of his amazing work at:
-        // http://www.youtube.com/user/BlaCoyProductions
+        // Also, an example Midi song file has been included: "Denizen" by Black Coyote. He made it just for us!
+        // Check out more of his amazing work at: http://www.youtube.com/user/BlaCoyProductions
 
         // @Tags
         // None

@@ -851,6 +851,17 @@ public class CommandHandler {
     }
 
     /*
+     * DENIZEN DO_NOTHING
+     */
+    @Command(
+            aliases = { "denizen" }, usage = "do_nothing",
+            desc = "Does nothing, for better server command handling", modifiers = { "do_nothing" },
+            min = 1, max = 3, permission = "denizen.basic")
+    public void do_nothing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        // Do nothing
+    }
+
+    /*
      * DENIZEN HELP
      */
     @Command(
@@ -1000,7 +1011,7 @@ public class CommandHandler {
             context.put("all", Element.TRUE);
             context.put("sender", new Element(sender.getName()));
             context.put("haderror", new Element(ScriptHelper.hadError()));
-            EventManager.doEvents(events, null, (sender instanceof Player) ? ((Player) sender) : null, context);
+            EventManager.doEvents(events, null, (sender instanceof Player) ? new dPlayer((Player) sender) : null, context, 1);
             return;
         }
         // Reload a specific item
@@ -1026,7 +1037,7 @@ public class CommandHandler {
                 context.put("all", Element.FALSE);
                 context.put("haderror", new Element(ScriptHelper.hadError()));
                 context.put("sender", new Element(sender.getName()));
-                EventManager.doEvents(events, null, (sender instanceof Player) ? ((Player) sender) : null, context);
+                EventManager.doEvents(events, null, (sender instanceof Player) ? new dPlayer((Player) sender) : null, context, 1);
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("externals")) {
