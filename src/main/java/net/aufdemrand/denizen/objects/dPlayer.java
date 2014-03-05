@@ -1247,13 +1247,18 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.weather>
         // @returns Element
         // @description
-        // returns the type of weather the player is experiencing. This can be different
+        // returns the type of weather the player is experiencing. This will be different
         // from the weather currently in the world that the player is residing in if
         // the weather is currently being forced onto the player.
+        // Returns null if the player does not currently have any forced weather.
         // -->
-        if (attribute.startsWith("weather"))
-            return new Element(getPlayerEntity().getPlayerWeather().name())
-                    .getAttribute(attribute.fulfill(2));
+        if (attribute.startsWith("weather")) {
+            if (getPlayerEntity().getPlayerWeather() != null)
+                return new Element(getPlayerEntity().getPlayerWeather().name())
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <p@player.xp.level>
