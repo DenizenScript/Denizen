@@ -3964,6 +3964,9 @@ public class WorldScriptHelper implements Listener {
     // <context.entity> returns the dEntity of the leashed entity.
     // <context.holder> returns the dEntity that is holding the leash.
     //
+    // @Determine
+    // "CANCELLED" to cancel the leashing.
+    //
     // -->
     @EventHandler
     public void playerLeashEntity(PlayerLeashEntityEvent event) {
@@ -3974,10 +3977,13 @@ public class WorldScriptHelper implements Listener {
         context.put("entity", entity);
         context.put("holder", new dEntity(event.getLeashHolder()));
 
-        EventManager.doEvents(Arrays.asList
+        String determination = EventManager.doEvents(Arrays.asList
                 ("player leashes entity",
-                        "entity leashes " + entity.identifyType()),
+                        "player leashes " + entity.identifyType()),
                 null, event.getPlayer(), context, true);
+
+        if (determination.equalsIgnoreCase("CANCELLED"))
+            event.setCancelled(true);
     }
 
     // <--[event]
