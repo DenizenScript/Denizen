@@ -541,9 +541,13 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns Element
         // @description
         // returns the last element in the list.
+        // If the list is empty, returns null instead.
         // -->
         if (attribute.startsWith("last")) {
-            return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
+            if (size() == 0)
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("contains")) {
