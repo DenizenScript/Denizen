@@ -9,7 +9,9 @@ import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class dScript implements dObject {
 
@@ -320,6 +322,24 @@ public class dScript implements dObject {
             }
             else return new Element(obj.toString())
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.step[<player>]>
+        // @returns Element
+        // @description
+        // Returns the name of a script step that the player is currently on.
+        // -->
+        if (attribute.startsWith("step")) {
+            if (!attribute.hasContext(1))
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+
+            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+                    : attribute.getScriptEntry().getPlayer());
+
+            if (attribute.hasContext(1))
+                return new Element(InteractScriptHelper.getCurrentStep(player, container.getName()))
+                        .getAttribute(attribute.fulfill(1));
         }
 
 
