@@ -72,8 +72,11 @@ public class ImprovedOfflinePlayer {
             return InventoryScriptHelper.offlineInventories.get(getName());
         PlayerInventory inventory = new PlayerInventory(null);
         inventory.b(this.compound.getList("Inventory", 10));
+        org.bukkit.inventory.Inventory base_inv = Bukkit.createInventory(null, InventoryType.PLAYER);
+        if (!(base_inv instanceof org.bukkit.inventory.PlayerInventory))
+            return null; // TODO: I don't understand this code... but I don't think this should ever happen. Needs fixing!
         org.bukkit.inventory.PlayerInventory inv =
-                (org.bukkit.inventory.PlayerInventory) Bukkit.createInventory(null, InventoryType.PLAYER);
+                (org.bukkit.inventory.PlayerInventory) base_inv;
         inv.setContents(new CraftInventoryPlayer(inventory).getContents());
         InventoryScriptHelper.offlineInventories.put(getName(), inv);
         return inv;
