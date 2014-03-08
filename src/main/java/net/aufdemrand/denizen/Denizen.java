@@ -153,134 +153,135 @@ public class Denizen extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
-        // Activate dependencies
-        depends.initialize();
+            // Activate dependencies
+            depends.initialize();
 
-        if(Depends.citizens == null || !Depends.citizens.isEnabled()) {
-            dB.echoError("Citizens does not seem to be activated! Deactivating Denizen!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        } else startedSuccessful = true;
+            if(Depends.citizens == null || !Depends.citizens.isEnabled()) {
+                getLogger().warning("Citizens does not seem to be activated! Deactivating Denizen!");
+                getServer().getPluginManager().disablePlugin(this);
+                return;
+            } else startedSuccessful = true;
 
-        versionTag = this.getDescription().getVersion();
+            versionTag = this.getDescription().getVersion();
 
-        // Startup procedure
-        dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
-        dB.log(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
-        dB.log(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable minecraft");
-        dB.log("");
-        dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
-        dB.log(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
-        dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+            // Startup procedure
+            dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+            dB.log(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
+            dB.log(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable minecraft");
+            dB.log("");
+            dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
+            dB.log(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
+            dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
         }
         catch (Exception e) {
             dB.echoError(e);
         }
 
         try {
-        // Create the dNPC Registry
-        dNPCRegistry = new dNPCRegistry(this);
+            // Create the dNPC Registry
+            dNPCRegistry = new dNPCRegistry(this);
 
-        // Maintain a list of Offline Players
-        dPlayer.offlinePlayers.clear();
-        for (OfflinePlayer player: Bukkit.getOfflinePlayers())
-            dPlayer.offlinePlayers.add(player);
+            // Maintain a list of Offline Players
+            dPlayer.offlinePlayers.clear();
+            for (OfflinePlayer player: Bukkit.getOfflinePlayers())
+                dPlayer.offlinePlayers.add(player);
 
-        // Register commandHandler with Citizens2
-        commandHandler = new CommandHandler(Depends.citizens);
+            // Register commandHandler with Citizens2
+            commandHandler = new CommandHandler(Depends.citizens);
 
-        // Register CommandHandler with Citizens
-        Depends.citizens.registerCommandClass(CommandHandler.class);
+            // Register CommandHandler with Citizens
+            Depends.citizens.registerCommandClass(CommandHandler.class);
         }
         catch (Exception e) {
             dB.echoError(e);
         }
 
         try {
-        // Register script-container types
-        ScriptRegistry._registerCoreTypes();
+            // Register script-container types
+            ScriptRegistry._registerCoreTypes();
 
-        // Populate config.yml if it doesn't yet exist.
-        saveDefaultConfig();
-        reloadConfig();
+            // Populate config.yml if it doesn't yet exist.
+            saveDefaultConfig();
+            reloadConfig();
         }
         catch (Exception e) {
             dB.echoError(e);
         }
 
         try {
-        // Ensure the Scripts and Midi folder exist
-        new File(getDataFolder() + "/scripts").mkdirs();
-        new File(getDataFolder() + "/midi").mkdirs();
-        new File(getDataFolder() + "/schematics").mkdirs();
+            // Ensure the Scripts and Midi folder exist
+            new File(getDataFolder() + "/scripts").mkdirs();
+            new File(getDataFolder() + "/midi").mkdirs();
+            new File(getDataFolder() + "/schematics").mkdirs();
 
-        // Ensure the example Denizen.mid sound file is available
-        if (!new File(getDataFolder() + "/midi/Denizen.mid").exists()) {
-            String sourceFile = URLDecoder.decode(Denizen.class.getProtectionDomain().getCodeSource().getLocation().getFile());
-            dB.log("Denizen.mid not found, extracting from " + sourceFile);
-            Utilities.extractFile(new File(sourceFile), "Denizen.mid", getDataFolder() + "/midi/");
-        }
-        }
-        catch (Exception e) {
-            dB.echoError(e);
-        }
-
-        try {
-        // Warn if configuration is outdated / too new
-        if (!getConfig().isSet("Config.Version") ||
-                getConfig().getInt("Config.Version", 0) != configVersion) {
-
-            dB.echoError("Your Denizen config file is from a different version. " +
-                    "Some settings will not be available unless you generate a new one. " +
-                    "This is easily done by stopping the server, deleting the current config.yml file in the Denizen folder " +
-                    "and restarting the server.");
-        }
-
-        // Load the saves.yml into memory
-        reloadSaves();
-
-        // Create the command script handler for listener
-        ws_helper = new WorldScriptHelper();
-        ItemScriptHelper is_helper = new ItemScriptHelper();
-        InventoryScriptHelper in_helper = new InventoryScriptHelper();
+            // Ensure the example Denizen.mid sound file is available
+            if (!new File(getDataFolder() + "/midi/Denizen.mid").exists()) {
+                String sourceFile = URLDecoder.decode(Denizen.class.getProtectionDomain().getCodeSource().getLocation().getFile());
+                dB.log("Denizen.mid not found, extracting from " + sourceFile);
+                Utilities.extractFile(new File(sourceFile), "Denizen.mid", getDataFolder() + "/midi/");
+            }
         }
         catch (Exception e) {
             dB.echoError(e);
         }
 
         try {
-        // Register traits
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PushableTrait.class).withName("pushable"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(AssignmentTrait.class).withName("assignment"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NicknameTrait.class).withName("nickname"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HealthTrait.class).withName("health"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NameplateTrait.class).withName("nameplate"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HungerTrait.class).withName("hunger"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SittingTrait.class).withName("sitting"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(FishingTrait.class).withName("fishing"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleeping"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ParticlesTrait.class).withName("particles"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SneakingTrait.class).withName("sneaking"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MobproxTrait.class).withName("mobprox"));
+            // Warn if configuration is outdated / too new
+            if (!getConfig().isSet("Config.Version") ||
+                    getConfig().getInt("Config.Version", 0) != configVersion) {
 
-        // If Program AB, used for reading Artificial Intelligence Markup Language
-        // 2.0, is included as a dependency at Denizen/lib/Ab.jar, register the
-        // ChatbotTrait
-        if (Depends.hasProgramAB)
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ChatbotTrait.class).withName("chatbot"));
+                dB.echoError("Your Denizen config file is from a different version. " +
+                        "Some settings will not be available unless you generate a new one. " +
+                        "This is easily done by stopping the server, deleting the current config.yml file in the Denizen folder " +
+                        "and restarting the server.");
+            }
 
-        // Create instance of PacketHelper if ProtocolLib has been hooked
-        if(Depends.protocolManager != null) {
-            new PacketHelper(this);
-            dB.echoApproval("ProtocolLib hooked, traits and commands with custom packages can be used!");
+            // Load the saves.yml into memory
+            reloadSaves();
+
+            // Create the command script handler for listener
+            ws_helper = new WorldScriptHelper();
+            ItemScriptHelper is_helper = new ItemScriptHelper();
+            InventoryScriptHelper in_helper = new InventoryScriptHelper();
+        }
+        catch (Exception e) {
+            dB.echoError(e);
         }
 
-        // Compile and load Denizen externals
-        runtimeCompiler = new RuntimeCompiler(this);
-        runtimeCompiler.loader();
+        try {
+            // Register traits
+            // TODO: should this be a separate function?
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PushableTrait.class).withName("pushable"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(AssignmentTrait.class).withName("assignment"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NicknameTrait.class).withName("nickname"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HealthTrait.class).withName("health"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NameplateTrait.class).withName("nameplate"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HungerTrait.class).withName("hunger"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SittingTrait.class).withName("sitting"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(FishingTrait.class).withName("fishing"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleeping"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ParticlesTrait.class).withName("particles"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SneakingTrait.class).withName("sneaking"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MobproxTrait.class).withName("mobprox"));
+
+            // If Program AB, used for reading Artificial Intelligence Markup Language
+            // 2.0, is included as a dependency at Denizen/lib/Ab.jar, register the
+            // ChatbotTrait
+            if (Depends.hasProgramAB)
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ChatbotTrait.class).withName("chatbot"));
+
+            // Create instance of PacketHelper if ProtocolLib has been hooked
+            if(Depends.protocolManager != null) {
+                new PacketHelper(this);
+                dB.echoApproval("ProtocolLib hooked, traits and commands with custom packages can be used!");
+            }
+
+            // Compile and load Denizen externals
+            runtimeCompiler = new RuntimeCompiler(this);
+            runtimeCompiler.loader();
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -288,15 +289,21 @@ public class Denizen extends JavaPlugin {
 
         // Register Core Members in the Denizen Registries
         try {
-        getCommandRegistry().registerCoreMembers();
-        getTriggerRegistry().registerCoreMembers();
-        getRequirementRegistry().registerCoreMembers();
-        getListenerRegistry().registerCoreMembers();
-        tagManager().registerCoreTags();
-        eventManager = new EventManager();
-        eventManager().registerCoreMembers();
+            getCommandRegistry().registerCoreMembers();
+            getTriggerRegistry().registerCoreMembers();
+            getRequirementRegistry().registerCoreMembers();
+            getListenerRegistry().registerCoreMembers();
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
 
-        // Register Core dObjects with the ObjectFetcher
+        try {
+            tagManager().registerCoreTags();
+            eventManager = new EventManager();
+            eventManager().registerCoreMembers();
+
+            // Register Core dObjects with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();
         }
         catch (Exception e) {
@@ -304,18 +311,18 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
-        // Initialize non-standard dMaterials
-        dMaterial._initialize();
+            // Initialize non-standard dMaterials
+            dMaterial._initialize();
 
-        // Initialize Property Parser
-        propertyParser = new PropertyParser();
+            // Initialize Property Parser
+            propertyParser = new PropertyParser();
 
-        ScriptHelper.reloadScripts();
+            ScriptHelper.reloadScripts();
 
-        dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+            dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
-        // Fire the 'on Server Start' world event
-        ws_helper.serverStartEvent();
+            // Fire the 'on Server Start' world event
+            ws_helper.serverStartEvent();
         }
         catch (Exception e) {
             dB.echoError(e);

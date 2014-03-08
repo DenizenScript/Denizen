@@ -331,13 +331,10 @@ public class dScript implements dObject {
         // Returns the name of a script step that the player is currently on.
         // -->
         if (attribute.startsWith("step")) {
-            if (!attribute.hasContext(1))
-                return Element.NULL.getAttribute(attribute.fulfill(1));
-
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : attribute.getScriptEntry().getPlayer());
 
-            if (attribute.hasContext(1))
+            if (player != null && player.isValid())
                 return new Element(InteractScriptHelper.getCurrentStep(player, container.getName()))
                         .getAttribute(attribute.fulfill(1));
         }
