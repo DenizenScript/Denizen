@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.item;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.objects.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -10,11 +11,6 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 
@@ -92,10 +88,17 @@ public class TakeCommand extends AbstractCommand{
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
-                .defaultObject("inventory", (scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory() : null))
                 .defaultObject("qty", new Element(1));
 
-        if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
+        Type type = (Type) scriptEntry.getObject("type");
+
+        if (type != Type.MONEY && scriptEntry.getObject("inventory") == null)
+            scriptEntry.addObject("inventory", scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory(): null);
+
+        if (!scriptEntry.hasObject("inventory") && type != Type.MONEY)
+            throw new InvalidArgumentsException("Must specify an inventory to take from!");
+
+        if (type == Type.ITEM && scriptEntry.getObject("items") == null)
             throw new InvalidArgumentsException("Must specify item/items!");
 
     }
@@ -118,7 +121,7 @@ public class TakeCommand extends AbstractCommand{
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
                         + qty.debug()
-                        + inventory.debug()
+                        + (inventory != null ? inventory.debug(): "")
                         + (displayname != null ? displayname.debug(): "")
                         + aH.debugObj("Items", items)
                         + (slot != null ? slot.debug() : ""));
@@ -155,7 +158,6 @@ public class TakeCommand extends AbstractCommand{
 
             case MONEY:
                 if(Depends.economy != null) {
-                    dB.echoDebug (scriptEntry, "...taking " + qty.asDouble() + " money.");
                     Depends.economy.withdrawPlayer(scriptEntry.getPlayer().getName(), qty.asDouble());
                 } else {
                     dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");

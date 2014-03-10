@@ -287,16 +287,16 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
                     switch (yaml_action) {
                         case INCREASE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(yaml.getString(keyStr, "0")) + aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "0")) + aH.getIntegerFrom(valueStr)));
                             break;
                         case DECREASE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(yaml.getString(keyStr, "0")) - aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "0")) - aH.getIntegerFrom(valueStr)));
                             break;
                         case MULTIPLY:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(yaml.getString(keyStr, "1")) * aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "1")) * aH.getIntegerFrom(valueStr)));
                             break;
                         case DIVIDE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(yaml.getString(keyStr, "1")) / aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "1")) / aH.getIntegerFrom(valueStr)));
                             break;
                         case DELETE:
                             yaml.set(keyStr, null);
@@ -349,6 +349,20 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 break;
         }
 
+    }
+
+    public String Get(YamlConfiguration yaml, int index, String key, String def) {
+        if (index == -1) {
+            return yaml.getString(key, def);
+        }
+        else {
+            List<String> list = yaml.getStringList(key);
+            if (index < 0)
+                index = 0;
+            if (index > list.size())
+                index = list.size() -1;
+            return list.get(index);
+        }
     }
 
     public void Set(YamlConfiguration yaml, int index, String key, String value) {

@@ -82,11 +82,18 @@ public class GiveCommand  extends AbstractCommand {
 
         scriptEntry.defaultObject("type", Type.ITEM)
                 .defaultObject("engrave", Element.FALSE)
-                .defaultObject("inventory", (scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory() : null))
                 .defaultObject("qty", new Element(1))
                 .defaultObject("slot", new Element(1));
 
-        if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
+        Type type = (Type) scriptEntry.getObject("type");
+
+        if (type != Type.MONEY && scriptEntry.getObject("inventory") == null)
+            scriptEntry.addObject("inventory", scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory(): null);
+
+        if (!scriptEntry.hasObject("inventory") && type != Type.MONEY)
+            throw new InvalidArgumentsException("Must specify an inventory to give to!");
+
+        if (type == Type.ITEM && scriptEntry.getObject("items") == null)
             throw new InvalidArgumentsException("Must specify item/items!");
 
     }
@@ -108,6 +115,7 @@ public class GiveCommand  extends AbstractCommand {
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
+                        + (inventory != null ? inventory.debug(): "")
                         + aH.debugObj("Quantity", qty.asDouble())
                         + engrave.debug()
                         + (items != null ? aH.debugObj("Items", items) : "")

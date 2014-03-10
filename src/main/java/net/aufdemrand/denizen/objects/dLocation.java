@@ -1207,6 +1207,21 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <l@location.cuboids>
+        // @returns dList(dCuboid)
+        // @description
+        // Returns a dList of all notable dCuboids that include this location.
+        // -->
+        if (attribute.startsWith("cuboids")) {
+            List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(this);
+            dList cuboid_list = new dList();
+            for (dCuboid cuboid : cuboids) {
+                cuboid_list.add(cuboid.identify());
+            }
+            return cuboid_list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.is_liquid>
         // @returns Element(Boolean)
         // @description
