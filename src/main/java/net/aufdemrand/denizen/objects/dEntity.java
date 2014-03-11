@@ -956,10 +956,10 @@ public class dEntity implements dObject, Adjustable {
             else if (isPlayer())
                 return "p@" + getPlayer().getName();
 
-                    // TODO:
-//        // Check if entity is a 'notable entity'
-//        if (isSaved(this))
-//            return "e@" + getSaved(this);
+                // TODO:
+                // Check if entity is a 'notable entity'
+                // if (isSaved(this))
+                //    return "e@" + getSaved(this);
 
             else if (isSpawned())
                 return "e@" + entity.getEntityId();
@@ -994,9 +994,9 @@ public class dEntity implements dObject, Adjustable {
                 return "p@" + getPlayer().getName();
 
                 // TODO:
-//        // Check if entity is a 'notable entity'
-//        if (isSaved(this))
-//            return "e@" + getSaved(this);
+                // Check if entity is a 'notable entity'
+                // if (isSaved(this))
+                //    return "e@" + getSaved(this);
 
             else if (isSpawned())
                 return "e@" + entity.getEntityId();
