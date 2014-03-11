@@ -31,6 +31,9 @@ public class _templateCommand extends AbstractCommand {
             //  && arg.matchesArgumentType(dLocation.class))
             //  scriptEntry.addObject("required_location", arg.asType(dLocation.class));
 
+            //else
+                //arg.reportUnhandled();
+
         }
 
 
