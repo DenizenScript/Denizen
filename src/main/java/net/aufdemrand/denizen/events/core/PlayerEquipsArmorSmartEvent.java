@@ -141,7 +141,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
                         ("player equips armor",
                                 "player equips " + armor.identifySimple(),
                                 "player equips " + armor.identifyMaterial()),
-                        null, new dPlayer(player), context, 1).toUpperCase();
+                        null, new dPlayer(player), context).toUpperCase();
 
                 if (determination.startsWith("CANCELLED")) {
                     armor_contents[type] = new ItemStack(Material.AIR);

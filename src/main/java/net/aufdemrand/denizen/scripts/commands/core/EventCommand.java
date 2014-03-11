@@ -3,10 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.ObjectFetcher;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -60,7 +57,8 @@ public class EventCommand extends AbstractCommand {
             context_map.put(context.get(i), ObjectFetcher.pickObjectFor(context.get(i + 1)));
         }
 
-        EventManager.doEvents(events, scriptEntry.getNPC(), scriptEntry.getPlayer(), context_map, true, 1);
+        String Determination = EventManager.doEvents(events, scriptEntry.getNPC(), scriptEntry.getPlayer(), context_map, true);
+        scriptEntry.addObject("determination", new Element(Determination));
     }
 
 }

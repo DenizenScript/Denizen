@@ -140,7 +140,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
                 events.add("player enters " + cuboid.identifySimple());
 
         String determination = EventManager.doEvents(events,
-                null, event.getPlayer(), context, true);
+                null, new dPlayer(event.getPlayer()), context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);

@@ -5,11 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -147,6 +149,53 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("current_time_millis")) {
             event.setReplaced(new Element(System.currentTimeMillis())
                     .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.has_event[<event_name>]>
+        // @returns Element(Number)
+        // @description
+        // Returns whether a world event exists on the server.
+        // This tag will ignore dObject identifiers (see <@link language dobject>).
+        // -->
+        if (attribute.startsWith("has_event")
+                && attribute.hasContext(1)) {
+            event.setReplaced(new Element(EventManager.EventExists(attribute.getContext(1))
+                    || EventManager.EventExists(EventManager.StripIdentifiers(attribute.getContext(1))))
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.get_event_handlers[<event_name>]>
+        // @returns dList<dScript>
+        // @description
+        // Returns a list of all world scripts that will handle a given event name.
+        // This tag will ignore dObject identifiers (see <@link language dobject>).
+        // For use with <@link tag server.has_event[<event_name>]>
+        // -->
+        if (attribute.startsWith("get_event_handlers")
+                && attribute.hasContext(1)) {
+            String eventName = attribute.getContext(1).toUpperCase();
+            List<WorldScriptContainer> EventsOne = EventManager.events.get("ON " + eventName);
+            List<WorldScriptContainer> EventsTwo = EventManager.events.get("ON " + EventManager.StripIdentifiers(eventName));
+            if (EventsOne == null && EventsTwo == null) {
+                dB.echoError("No world scripts will handle the event '" + eventName + "'");
+            }
+            else {
+                dList list = new dList();
+                if (EventsOne != null) {
+                    for (WorldScriptContainer script: EventsOne) {
+                        list.add("s@" + script.getName());
+                    }
+                }
+                if (EventsTwo != null) {
+                    for (WorldScriptContainer script: EventsTwo) {
+                        if (!list.contains("s@" + script.getName()))
+                            list.add("s@" + script.getName());
+                    }
+                }
+                event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            }
         }
 
         // <--[tag]
