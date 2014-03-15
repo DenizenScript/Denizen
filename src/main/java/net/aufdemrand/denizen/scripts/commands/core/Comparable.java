@@ -241,7 +241,8 @@ public class Comparable {
                     }
                     else if (comparedto instanceof String) {
                         if (compared_mat != null && dLocation.matches(string)) {
-                            dMaterial current_mat = dMaterial.getMaterialFrom(dLocation.valueOf(string).getBlock().getType());
+                            dLocation compareMe = dLocation.valueOf(string);
+                            dMaterial current_mat = dMaterial.getMaterialFrom(compareMe.getBlock().getType(), compareMe.getBlock().getData());
                             if (compared_mat.equals(current_mat)) {
                                 outcome = true;
                                 break;
