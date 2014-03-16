@@ -406,6 +406,10 @@ public class dItem implements dObject, Notable, Adjustable {
         return containsLore(itemscriptIdentifier);
     }
 
+    public String getScriptName() {
+        return getLore(itemscriptIdentifier);
+    }
+
     public dMaterial getMaterial() {
         return dMaterial.getMaterialFrom(getItemStack().getType(), getItemStack().getData().getData());
     }
@@ -714,9 +718,9 @@ public class dItem implements dObject, Notable, Adjustable {
         // @description
         // Returns the script name of the item if it was created by an item script.
         // -->
-        if (attribute.startsWith("scriptname")) // Note: Update this when the id: is stored differently
+        if (attribute.startsWith("scriptname")) // TODO: Update this when the id: is stored differently
             if (isItemscript()) {
-                return new Element(getLore(itemscriptIdentifier))
+                return new Element(getScriptName())
                         .getAttribute(attribute.fulfill(1));
             }
 
