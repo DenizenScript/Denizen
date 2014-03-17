@@ -1206,11 +1206,12 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
-        dEntity lightning = new dEntity(event.getLightning());
+        dEntity lightning = event.getLightning() == null ? null: new dEntity(event.getLightning());
         String cause = event.getCause().name();
 
         context.put("entity", entity);
-        context.put("lightning", lightning);
+        if (lightning != null)
+            context.put("lightning", lightning);
         context.put("cause", new Element(cause));
 
         String determination = EventManager.doEvents(Arrays.asList
