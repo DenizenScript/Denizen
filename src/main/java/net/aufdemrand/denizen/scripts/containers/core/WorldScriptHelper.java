@@ -4011,8 +4011,8 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player logs in
-    // player login
+    // player logs in (for the first time)
+    // player (first) login
     //
     // @Triggers when a player logs in to the server.
     // @Context
@@ -4027,14 +4027,24 @@ public class WorldScriptHelper implements Listener {
     public void playerLogin(PlayerLoginEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
+        List<String> events = new ArrayList<String>();
         context.put("hostname", new Element(event.getHostname()));
 
-        if (!dPlayer.offlinePlayers.contains(event.getPlayer()))
+        boolean NewPlayer = true;
+        for (OfflinePlayer player: dPlayer.offlinePlayers) {
+            if (player.getName().equalsIgnoreCase(event.getPlayer().getName())) {
+                NewPlayer = false;
+            }
+        }
+        if (NewPlayer) {
             dPlayer.offlinePlayers.add(event.getPlayer());
+            events.add("player logs in for the first time");
+            events.add("player first login");
+        }
 
-        String determination = EventManager.doEvents(Arrays.asList
-                ("player logs in",
-                        "player login"),
+        events.add("player logs in");
+        events.add("player login");
+        String determination = EventManager.doEvents(events,
                 null, new dPlayer(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("KICKED"))
