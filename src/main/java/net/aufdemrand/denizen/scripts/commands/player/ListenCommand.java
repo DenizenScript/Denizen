@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -134,14 +135,19 @@ public class ListenCommand extends AbstractCommand {
 
             case CANCEL:
                 if (scriptEntry.getPlayer() != null) {
-                    if (denizen.getListenerRegistry()
-                            .getListenerFor(scriptEntry.getPlayer(), id.asString()) != null)
-                        denizen.getListenerRegistry()
-                                .getListenerFor(scriptEntry.getPlayer(), id.asString()).cancel();
-                    break;
+                    if (id != null)
+                        if (denizen.getListenerRegistry()
+                                .getListenerFor(scriptEntry.getPlayer(), id.asString()) != null)
+                            denizen.getListenerRegistry()
+                                    .getListenerFor(scriptEntry.getPlayer(), id.asString()).cancel();
+                    else
+                        for (AbstractListener listener :
+                                denizen.getListenerRegistry().getListenersFor(scriptEntry.getPlayer()).values())
+                            listener.cancel();
                 }
                 else
                     denizen.getSaves().set("Listeners." + scriptEntry.getPlayer().getName() + "." + id, null);
+                break;
         }
     }
 
