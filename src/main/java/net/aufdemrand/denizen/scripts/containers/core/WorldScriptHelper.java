@@ -1004,7 +1004,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // time changes in <world>
+    // time changes (in <world>)
     // <0-23>:00 in <world>
     // time <0-23> in <world>
     //
@@ -1031,7 +1031,8 @@ public class WorldScriptHelper implements Listener {
                 context.put("world", currentWorld);
 
                 EventManager.doEvents(Arrays.asList
-                        ("time changes in " + currentWorld.identifySimple(),
+                        ("time changes",
+                                "time changes in " + currentWorld.identifySimple(),
                                 String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(),
                                 "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
                         null, null, context, true);
