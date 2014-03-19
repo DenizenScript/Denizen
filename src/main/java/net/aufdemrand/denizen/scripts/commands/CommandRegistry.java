@@ -1398,11 +1398,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Invisible
-        // @Syntax invisible [player/npc] [state:true/false/toggle]
-        // @Required 2
+        // @Syntax invisible [<entity>] (state:true/false/toggle)
+        // @Required 1
         // @Stable unstable
-        // @Short Makes the player or NPC turn invisible. (Does not fully work currently)
-        // @Author aufdemrand
+        // @Short Makes an NPC or entity go invisible (Note: use '/npc playerlist' to make it work on NPCs!)
+        // @Author aufdemrand, mcmonkey
         // @Group entity
         // @Description
         // Todo
@@ -1412,7 +1412,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(InvisibleCommand.class,
-                "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
+                "INVISIBLE", "invisible [<entity>] (state:true/false/toggle)", 1);
 
 
         // <--[command]

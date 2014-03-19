@@ -2242,11 +2242,11 @@ public class WorldScriptHelper implements Listener {
     // <context.entity> returns the dEntity of the horse.
     // <context.color> returns an Element of the horse's color.
     // <context.variant> returns an Element of the horse's variant.
-    // <context.food> returns an Element(Float) of the jump's power.
+    // <context.power> returns an Element(Decimal) of the jump's power.
     //
     // @Determine
     // "CANCELLED" to stop the horse from jumping.
-    // Element(Double) to set the power of the jump.
+    // Element(Decimal) to set the power of the jump.
     //
     // -->
     @EventHandler
