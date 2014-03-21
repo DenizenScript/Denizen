@@ -611,11 +611,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name CreateWorld
-        // @Syntax createworld [<name>] (g:<generator>)
+        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>)
         // @Required 1
         // @Stable unstable
         // @Short Creates a new world
-        // @Author aufdemrand
+        // @Author aufdemrand, mcmonkey
         // @Group world
         // @Description
         // Todo
@@ -625,7 +625,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(CreateWorldCommand.class,
-                "CREATEWORLD", "createworld [<name>] (g:<generator>)", 1);
+                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>)", 1);
 
 
         // <--[command]

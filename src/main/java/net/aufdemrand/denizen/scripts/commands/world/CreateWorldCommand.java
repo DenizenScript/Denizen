@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -10,6 +11,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 
 public class CreateWorldCommand extends AbstractCommand {
 
@@ -26,6 +28,11 @@ public class CreateWorldCommand extends AbstractCommand {
                     && arg.matchesPrefix("generator, g"))
                 scriptEntry.addObject("generator", arg.asElement());
 
+            else if (!scriptEntry.hasObject("worldtype")
+                    && arg.matchesPrefix("worldtype")
+                    && arg.matchesEnum(WorldType.values()))
+                scriptEntry.addObject("worldtype", arg.asElement());
+
             else if (!scriptEntry.hasObject("world_name"))
                 scriptEntry.addObject("world_name", arg.asElement());
 
@@ -35,29 +42,33 @@ public class CreateWorldCommand extends AbstractCommand {
         // Check for required information
         if (!scriptEntry.hasObject("world_name"))
             throw new InvalidArgumentsException("Must specify a world name.");
+
+        if (!scriptEntry.hasObject("worldtype"))
+            scriptEntry.addObject("worldtype", new Element("NORMAL"));
     }
 
-
-    // TODO: Rewrite this entire everything, make it make sense.
-    // TODO: At time of writing this todo, commandfile was full of Template stuff 0.o
-
-    // TODO: also, save worlds through restart!
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+        Element World_Name = scriptEntry.getElement("world_name");
+        Element Generator = scriptEntry.getElement("generator");
+        Element worldType = scriptEntry.getElement("worldtype");
 
-        // Debug the execution
-        // dB.report(scriptEntry, getName(), required_integer.debug() + required_location.debug());
+        dB.report(scriptEntry, getName(), World_Name.debug() +
+                                          (Generator != null ? Generator.debug(): "") +
+                                          worldType.debug());
 
         World world;
 
-        if (scriptEntry.hasObject("generator"))
+        if (Generator != null)
             world = Bukkit.getServer().createWorld(WorldCreator
-                    .name(scriptEntry.getElement("world_name").asString())
-                    .generator(scriptEntry.getElement("generator").asString()));
+                    .name(World_Name.asString())
+                    .generator(Generator.asString())
+                    .type(WorldType.valueOf(worldType.asString().toUpperCase())));
 
         else
             world = Bukkit.getServer().createWorld(WorldCreator
-                    .name(scriptEntry.getElement("world_name").asString()));
+                    .name(World_Name.asString())
+                    .type(WorldType.valueOf(worldType.asString().toUpperCase())));
 
         if (world == null)
             dB.echoDebug(scriptEntry, "World is null! :(");
