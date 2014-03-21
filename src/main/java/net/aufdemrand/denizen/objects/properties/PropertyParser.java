@@ -52,6 +52,7 @@ public class PropertyParser {
         registerProperty(ItemBook.class, dItem.class);
         registerProperty(ItemDisplayname.class, dItem.class);
         registerProperty(ItemDurability.class, dItem.class);
+        registerProperty(ItemDye.class, dItem.class);
         registerProperty(ItemEnchantments.class, dItem.class);
         registerProperty(ItemLore.class, dItem.class);
         registerProperty(ItemPlantgrowth.class, dItem.class);

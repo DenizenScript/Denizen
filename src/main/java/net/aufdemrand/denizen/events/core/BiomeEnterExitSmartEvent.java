@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.block.Biome;
@@ -109,7 +110,7 @@ public class BiomeEnterExitSmartEvent implements SmartEvent, Listener {
             String determination = EventManager.doEvents(Arrays.asList(
                     "player enters biome", "player exits biome",
                     "player enters " + to.name(), "player exits " + from.name()
-                ), null, event.getPlayer(), context, true);
+                ), null, new dPlayer(event.getPlayer()), context, true);
 
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);

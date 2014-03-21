@@ -177,28 +177,22 @@ public class EventManager implements Listener {
     }
 
 
+    public static boolean EventExists(String original) {
+        return events.containsKey("ON " + original.toUpperCase());
+    }
+
+
 
     ///////////////////
     //  COMPATIBILITY
     //////////////
 
 
-    // TODO: Switch this to directly take a dPlayer and make the version with a placeholder int deprecated instead.
     /**
      *
-     * @deprecated this will soon be replaced with a match event that takes a dPlayer
+     * @deprecated this was just a temporary place holder and will be removed soon.
      */
     @Deprecated
-    public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, dObject> context,
-                                  boolean usesIdentifiers) {
-
-        // If a list of events uses identifiers, also add those events to the list
-        // with their identifiers stripped
-        return doEvents(usesIdentifiers ? addAlternates(eventNames)
-                : eventNames,
-                npc, player == null ? null : new dPlayer(player), context, 1);
-    }
-
     public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context,
                                   boolean usesIdentifiers, int Use_dPlayer) {
 
@@ -206,7 +200,17 @@ public class EventManager implements Listener {
         // with their identifiers stripped
         return doEvents(usesIdentifiers ? addAlternates(eventNames)
                 : eventNames,
-                npc, player, context, 1);
+                npc, player, context);
+    }
+
+    public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context,
+                                  boolean usesIdentifiers) {
+
+        // If a list of events uses identifiers, also add those events to the list
+        // with their identifiers stripped
+        return doEvents(usesIdentifiers ? addAlternates(eventNames)
+                : eventNames,
+                npc, player, context);
     }
 
 
@@ -230,23 +234,30 @@ public class EventManager implements Listener {
     }
 
 
+    public static String StripIdentifiers(String original) {
+        if (original.matches(".*?[a-z]{1,2}@[\\w ]+"))
+            return original.replaceAll("[a-z]{1,2}@", "");
+        else
+            return original;
+    }
+
+
 
     ///////////////////
     //  MECHANICS
     ///////////////
 
 
-    // TODO: Switch this to directly take a dPlayer and make the version with a placeholder int deprecated instead.
     /**
      *
-     * @deprecated this will soon be replaced with a match event that takes a dPlayer
+     * @deprecated this was just a temporary place holder and will be removed soon.
      */
     @Deprecated
-    public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, dObject> context) {
-        return doEvents(eventNames, npc, player == null ? null : new dPlayer(player), context, 1);
+    public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context, int Use_dPlayer) {
+        return doEvents(eventNames, npc, player, context);
     }
 
-    public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context, int Use_dPlayer) {
+    public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context) {
 
         String determination = "none";
 
@@ -262,9 +273,6 @@ public class EventManager implements Listener {
                     if (script == null) continue;
 
                     // Fetch script from Event
-                    //
-                    // Note: a "new dPlayer(null)" will not be null itself,
-                    //       so keep a ternary operator here
                     List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
 
                     if (entries.isEmpty()) continue;

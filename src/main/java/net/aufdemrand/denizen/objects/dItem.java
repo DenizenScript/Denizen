@@ -651,6 +651,19 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <i@item.is_dyeable>
+        // @returns Element(Boolean)
+        // @group properties
+        // Returns whether the item can have a dye.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dItem.dye>, and <@link tag i@item.dye_color>
+        // -->
+        if (attribute.startsWith("is_dyeable")) {
+            return new Element(ItemDye.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <i@item.material.formatted>
         // @returns Element
         // @group formatting

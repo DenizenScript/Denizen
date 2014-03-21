@@ -611,11 +611,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name CreateWorld
-        // @Syntax createworld [<name>] (g:<generator>)
+        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>)
         // @Required 1
         // @Stable unstable
         // @Short Creates a new world
-        // @Author aufdemrand
+        // @Author aufdemrand, mcmonkey
         // @Group world
         // @Description
         // Todo
@@ -625,7 +625,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(CreateWorldCommand.class,
-                "CREATEWORLD", "createworld [<name>] (g:<generator>)", 1);
+                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>)", 1);
 
 
         // <--[command]
@@ -890,6 +890,38 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(EquipCommand.class,
                 "EQUIP", "equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
+
+
+        // <--[command]
+        // @Name Event
+        // @Syntax event [<event name>|...] (context:<name>|<object>|...)
+        // @Required 1
+        // @Stable unstable
+        // @Short Manually fires a world event.
+        // @Author mcmonkey
+        // @Group core
+        // @Description
+        // This command will trigger a world event (an event within a 'world' type script) exactly the same
+        // as if an actual serverside event had caused it.
+        // You can specify as many event names as you want in the list, they will all be fired. It will also automatically
+        // fire a duplicate of each event name with object identifiers (eg 'i@', see <@link language dobject>) removed.
+        // The script's linked player and NPC will automatically be sent through to the event.
+        // To add context information (tags like <context.location>) to the event, simplify specify all context values in a list.
+        // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
+        // To do this, the best way is to just escape the list value (see <@link language property escaping>).
+        // @Tags
+        // <server.has_event[<event_name>]>
+        // <server.get_event_handlers[<event_name>]>
+        // <entry[saveName].determination> returns the determined value (if any) from the event.
+        // @Usage
+        // Use to trigger a custom event
+        // - event "player triggers custom event"
+        // @Usage
+        // Use to trigger multiple custom events with context
+        // - event "player triggers custom event|player causes event" context:event|custom|npc|<player.selected_npc>
+        // -->
+        registerCoreMember(EventCommand.class,
+                "EVENT", "event [<event name>|...] (context:<name>|<object>|...)", 1);
 
 
         // <--[command]
@@ -1366,11 +1398,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Invisible
-        // @Syntax invisible [player/npc] [state:true/false/toggle]
-        // @Required 2
+        // @Syntax invisible [<entity>] (state:true/false/toggle)
+        // @Required 1
         // @Stable unstable
-        // @Short Makes the player or NPC turn invisible. (Does not fully work currently)
-        // @Author aufdemrand
+        // @Short Makes an NPC or entity go invisible (Note: use '/npc playerlist' to make it work on NPCs!)
+        // @Author aufdemrand, mcmonkey
         // @Group entity
         // @Description
         // Todo
@@ -1380,7 +1412,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(InvisibleCommand.class,
-                "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
+                "INVISIBLE", "invisible [<entity>] (state:true/false/toggle)", 1);
 
 
         // <--[command]

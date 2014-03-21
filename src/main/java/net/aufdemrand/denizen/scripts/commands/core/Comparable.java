@@ -219,18 +219,39 @@ public class Comparable {
         switch(operator) {
 
             case CONTAINS:
+                dMaterial compared_mat = null;
+                if (comparable.containsObjectsFrom(dLocation.class) &&
+                        comparedto instanceof String && dMaterial.matches((String)comparedto)) {
+                    compared_mat = dMaterial.valueOf((String)comparedto);
+                }
                 for (String string : comparable) {
                     if (comparedto instanceof Integer) {
                         if (aH.matchesInteger(string)
-                                && aH.getIntegerFrom(string) == (Integer) comparedto)
+                                && aH.getIntegerFrom(string) == (Integer) comparedto) {
                             outcome = true;
-                    }   else if (comparedto instanceof Double) {
+                            break;
+                        }
+                    }
+                    else if (comparedto instanceof Double) {
                         if (aH.matchesDouble(string) &&
-                                aH.getDoubleFrom(string) == (Double) comparedto)
+                                aH.getDoubleFrom(string) == (Double) comparedto) {
                             outcome = true;
-                    }   else if (comparedto instanceof String) {
-                        if (string.equalsIgnoreCase((String) comparedto))
+                            break;
+                        }
+                    }
+                    else if (comparedto instanceof String) {
+                        if (compared_mat != null && dLocation.matches(string)) {
+                            dLocation compareMe = dLocation.valueOf(string);
+                            dMaterial current_mat = dMaterial.getMaterialFrom(compareMe.getBlock().getType(), compareMe.getBlock().getData());
+                            if (compared_mat.equals(current_mat)) {
+                                outcome = true;
+                                break;
+                            }
+                        }
+                        else if (string.equalsIgnoreCase((String) comparedto)) {
                             outcome = true;
+                            break;
+                        }
                     }
                 }
                 break;

@@ -640,6 +640,13 @@ public class dPlayer implements dObject, Adjustable {
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
                     .getAttribute(attribute.fulfill(2));
 
+        // If online, let dEntity handle location tags since there are more options
+        // for online Players
+
+        if (attribute.startsWith("location") && !isOnline()) {
+            return getLocation().getAttribute(attribute.fulfill(1));
+        }
+
 
         /////////////////////
         //   STATE ATTRIBUTES
@@ -747,6 +754,107 @@ public class dPlayer implements dObject, Adjustable {
                         .getAttribute(attribute);
         }
 
+        // <--[tag]
+        // @attribute <p@player.in_group[<group_name>]>
+        // @returns Element(Boolean)
+        // @description
+        // returns whether the player is in the specified group (requires the player to be online)
+        // -->
+        if (attribute.startsWith("group")
+                || attribute.startsWith("in_group")) {
+            if (Depends.permissions == null) {
+                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+
+            String group = attribute.getContext(1);
+
+            // <--[tag]
+            // @attribute <p@player.in_group[<group_name>].global>
+            // @returns Element(Boolean)
+            // @description
+            // returns whether the player has the group with no regard to the
+            // player's current world.
+            // (Works with offline players)
+            // (Note: This may or may not be functional with your permissions system.)
+            // -->
+
+            // Non-world specific permission
+            if (attribute.getAttribute(2).startsWith("global"))
+                return new Element(Depends.permissions.playerInGroup((World) null, player_name, group))
+                        .getAttribute(attribute.fulfill(2));
+
+                // <--[tag]
+                // @attribute <p@player.in_group[<group_name>].world>
+                // @returns Element(Boolean)
+                // @description
+                // returns whether the player has the group in regards to the
+                // player's current world.
+                // (Works with offline players)
+                // (Note: This may or may not be functional with your permissions system.)
+                // -->
+
+                // Permission in certain world
+            else if (attribute.getAttribute(2).startsWith("world"))
+                return new Element(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group))
+                        .getAttribute(attribute.fulfill(2));
+
+            // Permission in current world
+            else if (isOnline())
+                return new Element(Depends.permissions.playerInGroup(getPlayerEntity(), group))
+                        .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.has_permission[permission.node]>
+        // @returns Element(Boolean)
+        // @description
+        // returns whether the player has the specified node.
+        // (Requires the player to be online)
+        // -->
+        if (attribute.startsWith("permission")
+                || attribute.startsWith("has_permission")) {
+            if (Depends.permissions == null) {
+                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                return null;
+            }
+
+            String permission = attribute.getContext(1);
+
+            // <--[tag]
+            // @attribute <p@player.has_permission[permission.node].global>
+            // @returns Element(Boolean)
+            // @description
+            // returns whether the player has the specified node, regardless of world.
+            // (Works with offline players)
+            // (Note: this may or may not be functional with your permissions system.)
+            // -->
+
+            // Non-world specific permission
+            if (attribute.getAttribute(2).startsWith("global"))
+                return new Element(Depends.permissions.has((World) null, player_name, permission))
+                        .getAttribute(attribute.fulfill(2));
+
+                // <--[tag]
+                // @attribute <p@player.has_permission[permission.node].world>
+                // @returns Element(Boolean)
+                // @description
+                // returns whether the player has the specified node in regards to the
+                // player's current world.
+                // (Works with offline players)
+                // (Note: This may or may not be functional with your permissions system.)
+                // -->
+
+                // Permission in certain world
+            else if (attribute.getAttribute(2).startsWith("world"))
+                return new Element(Depends.permissions.has(attribute.getContext(2), player_name, permission))
+                        .getAttribute(attribute.fulfill(2));
+
+            // Permission in current world
+            else if (isOnline())
+                return new Element(Depends.permissions.has(getPlayerEntity(), permission))
+                        .getAttribute(attribute.fulfill(1));
+        }
 
         /////////////////////
         //   INVENTORY ATTRIBUTES
@@ -761,19 +869,6 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("inventory")) {
             return getInventory().getAttribute(attribute.fulfill(1));
         }
-
-
-        /////////////////////
-        //   LOCATION ATTRIBUTES
-        /////////////////
-
-        // If online, let dEntity handle location tags since there are more options
-        // for online Players
-
-        if (attribute.startsWith("location") && !isOnline()) {
-            return getLocation().getAttribute(attribute.fulfill(1));
-        }
-
 
 
         /////////////////////
@@ -908,106 +1003,6 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("name"))
             return new Element(player_name).getAttribute(attribute.fulfill(1));
-
-
-        /////////////////////
-        //   PERMISSION ATTRIBUTES
-        /////////////////
-
-        // <--[tag]
-        // @attribute <p@player.has_permission[permission.node]>
-        // @returns Element(Boolean)
-        // @description
-        // returns whether the player has the specified node.
-        // -->
-        if (attribute.startsWith("permission")
-                || attribute.startsWith("has_permission")) {
-            if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                return null;
-            }
-
-            String permission = attribute.getContext(1);
-
-            // <--[tag]
-            // @attribute <p@player.has_permission[permission.node].global>
-            // @returns Element(Boolean)
-            // @description
-            // returns whether the player has the specified node, regardless of world.
-            // (Note: this may or may not be functional with your permissions system.)
-            // -->
-
-            // Non-world specific permission
-            if (attribute.getAttribute(2).startsWith("global"))
-                return new Element(Depends.permissions.has((World) null, player_name, permission))
-                        .getAttribute(attribute.fulfill(2));
-
-                // Permission in certain world
-            else if (attribute.getAttribute(2).startsWith("world"))
-                return new Element(Depends.permissions.has(attribute.getContext(2), player_name, permission))
-                        .getAttribute(attribute.fulfill(2));
-
-            // <--[tag]
-            // @attribute <p@player.has_permission[permission.node].world>
-            // @returns Element(Boolean)
-            // @description
-            // returns whether the player has the specified node in regards to the
-            // player's current world.
-            // (Note: This may or may not be functional with your permissions system.)
-            // -->
-
-            // Permission in current world
-            return new Element(Depends.permissions.has(getPlayerEntity(), permission))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <p@player.in_group[<group_name>]>
-        // @returns Element(Boolean)
-        // @description
-        // returns whether the player is in the specified group.
-        // -->
-        if (attribute.startsWith("group")
-                || attribute.startsWith("in_group")) {
-            if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
-            }
-
-            String group = attribute.getContext(1);
-
-            // <--[tag]
-            // @attribute <p@player.in_group[<group_name>].global>
-            // @returns Element(Boolean)
-            // @description
-            // returns whether the player has the group with no regard to the
-            // player's current world.
-            // (Note: This may or may not be functional with your permissions system.)
-            // -->
-
-            // Non-world specific permission
-            if (attribute.getAttribute(2).startsWith("global"))
-                return new Element(Depends.permissions.playerInGroup((World) null, player_name, group))
-                        .getAttribute(attribute.fulfill(2));
-
-                // Permission in certain world
-            else if (attribute.getAttribute(2).startsWith("world"))
-                return new Element(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group))
-                        .getAttribute(attribute.fulfill(2));
-
-            // <--[tag]
-            // @attribute <p@player.in_group[<group_name>].world>
-            // @returns Element(Boolean)
-            // @description
-            // returns whether the player has the group in regards to the
-            // player's current world.
-            // (Note: This may or may not be functional with your permissions system.)
-            // -->
-
-            // Permission in current world
-            return new Element(Depends.permissions.playerInGroup(getPlayerEntity(), group))
-                    .getAttribute(attribute.fulfill(1));
-        }
 
         // <--[tag]
         // @attribute <p@player.has_finished[<script>]>
