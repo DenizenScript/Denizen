@@ -12,9 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -42,7 +40,7 @@ public class ItemScriptHelper implements Listener {
     /////////////////
 
     public static String doEvents(String scriptName,
-            List<String> eventNames, dNPC npc, Player player, Map<String, Object> context) {
+            List<String> eventNames, dNPC npc, Player player, Map<String, dObject> context) {
 
         String determination = "none";
 
@@ -69,7 +67,7 @@ public class ItemScriptHelper implements Listener {
             dB.echoDebug(script, dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
 
             if (context != null) {
-                for (Map.Entry<String, Object> entry : context.entrySet()) {
+                for (Map.Entry<String, dObject> entry : context.entrySet()) {
                     ScriptBuilder.addObjectToEntries(entries, entry.getKey(), entry.getValue());
                 }
             }
@@ -89,26 +87,9 @@ public class ItemScriptHelper implements Listener {
         return determination;
     }
 
-    // Remove all recipes added by Denizen
+    // Remove all recipes stored by Denizen
     public static void removeDenizenRecipes() {
-
-        try {
-        // Remove regular Bukkit recipes added by Denizen
-        Iterator<Recipe> recipes = Bukkit.getServer().recipeIterator();
-        while (recipes.hasNext()) {
-            Recipe current = recipes.next();
-
-            if (isItemscript(current.getResult())) {
-                recipes.remove();
-            }
-        }
-
-        // Remove special recipes stored by Denizen
         ItemScriptContainer.specialrecipesMap.clear();
-        }
-        catch (Throwable e) {
-            dB.echoError(e);
-        }
     }
 
     public static boolean isBound(ItemStack item) {
@@ -220,6 +201,14 @@ public class ItemScriptHelper implements Listener {
 
                 // Proceed only if the result was not null
                 if (result != null) {
+                    Map<String, dObject> context = new HashMap<String, dObject>();
+                    context.put("inventory", new dInventory(inventory));
+
+                    String determination = doEvents(result.getScriptName(), Arrays.asList
+                            ("craft"), null, player, context);
+
+                    if (determination.toUpperCase().startsWith("CANCELLED"))
+                        return;
 
                     // If this was a valid match, set the crafting's result
                     inventory.setResult(result.getItemStack());
@@ -231,7 +220,7 @@ public class ItemScriptHelper implements Listener {
                     player.updateInventory();
                 }
             }
-        }, 1);
+        }, 0);
     }
 
     // Check if a CraftingInventory's crafting matrix matches a special
@@ -239,10 +228,8 @@ public class ItemScriptHelper implements Listener {
     public dItem getSpecialRecipeResult(ItemStack[] matrix) {
 
         // Iterate through all the special recipes
-        for (Map.Entry<dItem, dList> entry :
+        master: for (Map.Entry<dItem, dList> entry :
                 ItemScriptContainer.specialrecipesMap.entrySet()) {
-
-            boolean matchesSpecialRecipe = true;
 
             // Check if the two sets of items match each other
             for (int n = 0; n < 9; n++) {
@@ -252,15 +239,13 @@ public class ItemScriptHelper implements Listener {
                 if (!dItem.valueOf(entry.getValue().get(n)).identify()
                         .equals(new dItem(matrix[n]).identify())) {
 
-                    // If the current item does not match, set the
-                    // boolean to false
-                    matchesSpecialRecipe = false;
-                    break;
+                    // If the current item does not match, continue the loop
+                    continue master;
                 }
             }
 
             // If all the items match, return the special recipe's dItem key
-            if (matchesSpecialRecipe) return entry.getKey();
+            return entry.getKey();
         }
 
         return null;
@@ -412,14 +397,15 @@ public class ItemScriptHelper implements Listener {
     @EventHandler
     public void dropItem(PlayerDropItemEvent event) {
         // Run a script on drop of an item script
-        ItemStack item = event.getItemDrop().getItemStack();
-        if (isItemscript(item)) {
-            Map<String, Object> context = new HashMap<String, Object>();
+        ItemScriptContainer container = getItemScriptContainer(event.getItemDrop().getItemStack());
+        if (container != null) {
+            Map<String, dObject> context = new HashMap<String, dObject>();
             context.put("location", new dLocation(event.getItemDrop().getLocation()));
-            String determination = doEvents(getItemScriptContainer(item).getName(),
+            String determination = doEvents(container.getName(),
                     Arrays.asList("drop"), null, event.getPlayer(), context);
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
         }
     }
+
 }
