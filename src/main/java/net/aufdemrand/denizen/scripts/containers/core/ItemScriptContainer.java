@@ -135,34 +135,10 @@ public class ItemScriptContainer extends ScriptContainer {
                 }
             }
 
-            // If the recipe uses itemscripts as ingredients, add it to a
-            // map for special recipes that will be checked in a click event
-            // inside ItemScriptHelper
-            if (usesItemscripts) {
-                specialrecipesMap.put(getItemFrom(), ingredients);
-            }
-            // If the recipe does not use itemscripts as ingredients, add it
-            // to Bukkit's regular recipes
-            else {
-                List<dMaterial> recipe = new ArrayList<dMaterial>();
+            // Add the recipe to Denizen's item script recipe list so it
+            // will be checked manually inside ItemScriptHelper
+            specialrecipesMap.put(getItemFrom(), ingredients);
 
-                for (String ingredient : ingredients) {
-                    recipe.add(dMaterial.valueOf(ingredient));
-                }
-
-                ShapedRecipe shapedRecipe = new ShapedRecipe(getItemFrom().getItemStack());
-                shapedRecipe.shape("abc", "def", "ghi");
-                char x = 'a';
-
-                for (dMaterial material : recipe) {
-                    if (!material.name().equals("AIR")) {
-                        shapedRecipe.setIngredient(x, material.getMaterialData());
-                    }
-                    x++;
-                }
-
-                Bukkit.getServer().addRecipe(shapedRecipe);
-            }
         }
 
         if (contains("FURNACE_RECIPE")) {
