@@ -361,6 +361,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 index = 0;
             if (index > list.size())
                 index = list.size() -1;
+            if (list.size() == 0)
+                return "";
             return list.get(index);
         }
     }
@@ -375,6 +377,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 index = 0;
             if (index > list.size())
                 index = list.size() -1;
+            if (list.size() == 0)
+                list.add("");
             list.set(index, value);
             yaml.set(key, list);
         }
