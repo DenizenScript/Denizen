@@ -125,8 +125,8 @@ public class AssignmentTrait extends Trait {
      *
      */
     public void removeAssignment (dPlayer player) {
-        assignment = "";
         dNPCRegistry.getDenizen(npc).action("remove assignment", player);
+        assignment = "";
     }
 
     public void describe(CommandSender sender, int page) throws CommandException {
