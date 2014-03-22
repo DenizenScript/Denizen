@@ -131,6 +131,8 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
 
         if (exits.isEmpty() && enters.isEmpty()) return;
 
+        // TODO: events.add("player enters notable cuboid"), etc?
+
         if (!exits.isEmpty())
             for (dCuboid cuboid : exits)
                 events.add("player exits " + cuboid.identifySimple());
@@ -144,7 +146,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-
+        // TODO: Should there be an 'else' here, to prevent the event from multi-firing?
         player_cuboids.put(event.getPlayer().getName().toLowerCase(), cuboids);
     }
 
