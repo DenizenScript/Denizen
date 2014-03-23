@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -298,7 +299,7 @@ public class HealthTrait extends Trait implements Listener {
             // while the death animation is being carried out.
             npc.getNavigator().cancelNavigation();
             // Reset health now to avoid the death from happening instantly
-            setHealth();
+            //setHealth();
             // Play animation (TODO)
             // playDeathAnimation(npc.getBukkitEntity());
 
@@ -310,7 +311,7 @@ public class HealthTrait extends Trait implements Listener {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         public void run() {
-                            if (npc.isSpawned()) return;
+                            if (CitizensAPI.getNPCRegistry().getById(npc.getId()) == null || npc.isSpawned()) return;
                             else npc.spawn(loc);
                         }
                     } , (Duration.valueOf(respawnDelay).getTicks()));
