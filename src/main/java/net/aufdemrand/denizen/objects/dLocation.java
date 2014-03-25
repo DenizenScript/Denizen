@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -26,7 +27,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dLocation extends org.bukkit.Location implements dObject {
+public class dLocation extends org.bukkit.Location implements dObject, Notable {
 
     // This pattern correctly reads both 0.9 and 0.8 notables
     final static Pattern notablePattern =
@@ -88,6 +89,19 @@ public class dLocation extends org.bukkit.Location implements dObject {
         uniqueObjects.put(id.toUpperCase(), location);
     }
 
+    public void makeUnique(String id) {
+        saveAs(this, id);
+    }
+
+    // TODO
+    public Object getSaveObject() {
+        return null;
+    }
+
+    public void forget() {
+        remove(getSaved(this));
+    }
+
     public static void remove(String id) {
         uniqueObjects.remove(id.toUpperCase());
     }
@@ -116,8 +130,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
      */
     public static void _saveLocations() {
         List<String> loclist = new ArrayList<String>();
-        for (Map.Entry<String, dLocation> entry : uniqueObjects.entrySet())
+        for (Map.Entry<String, dLocation> entry : uniqueObjects.entrySet()) {
             // Save locations in the horizontal centers of blocks
+        if (entry == null || entry.getValue() == null || entry.getValue().getWorld() == null)
+            continue;
             loclist.add(entry.getKey() + ";"
                     + (entry.getValue().getBlockX() + 0.5)
                     + "," + entry.getValue().getBlockY()
@@ -125,6 +141,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     + "," + entry.getValue().getYaw()
                     + "," + entry.getValue().getPitch()
                     + "," + entry.getValue().getWorld().getName());
+        }
 
         DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
     }
