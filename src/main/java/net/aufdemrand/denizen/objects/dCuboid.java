@@ -768,7 +768,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
             }
             return new dList(entities).getAttribute(attribute.fulfill(1));
         }
-        
+
         // TODO: list_chunks, list_chunks.partial
 
         // Iterate through this object's properties' attributes
