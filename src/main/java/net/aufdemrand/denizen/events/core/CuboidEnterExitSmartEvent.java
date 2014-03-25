@@ -102,6 +102,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     // @Context
     // <context.from> returns the block location moved from.
     // <context.to> returns the block location moved to.
+    // <context.cuboids> returns a list of cuboids entered/exited (when specific cuboid nto specified in event)
     //
     // @Determine
     // "CANCELLED" to stop the player from moving.
@@ -131,15 +132,31 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
 
         if (exits.isEmpty() && enters.isEmpty()) return;
 
-        // TODO: events.add("player enters notable cuboid"), etc?
-
-        if (!exits.isEmpty())
+        if (!exits.isEmpty()) {
+            if (broad_detection) {
+                dList cuboid_context = new dList();
+                for (dCuboid cuboid : exits) {
+                    cuboid_context.add(cuboid.identify());
+                }
+                context.put("cuboids", cuboid_context);
+                events.add("player exits notable cuboid");
+            }
             for (dCuboid cuboid : exits)
                 events.add("player exits " + cuboid.identifySimple());
+        }
 
-        if (!enters.isEmpty())
+        if (!enters.isEmpty()) {
+            if (broad_detection) {
+                dList cuboid_context = new dList();
+                for (dCuboid cuboid : enters) {
+                    cuboid_context.add(cuboid.identify());
+                }
+                context.put("cuboids", cuboid_context);
+                events.add("player enters notable cuboid");
+            }
             for (dCuboid cuboid : enters)
                 events.add("player enters " + cuboid.identifySimple());
+        }
 
         String determination = EventManager.doEvents(events,
                 null, new dPlayer(event.getPlayer()), context, true);
