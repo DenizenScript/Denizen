@@ -751,6 +751,10 @@ public class dNPC implements dObject, Adjustable {
 
     }
 
+    public void applyProperty(Mechanism mechanism) {
+        dB.echoError("Cannot apply properties to an NPC!");
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 

@@ -144,7 +144,7 @@ public class ObjectFetcher {
             if (gotten != null && matched) {
                 for (int i = 1; i < matches.size(); i++) {
                     String[] data = matches.get(i).split("=", 2);
-                    ((Adjustable) gotten).adjust(new Mechanism(new Element(data[0]),
+                    ((Adjustable) gotten).applyProperty(new Mechanism(new Element(data[0]),
                             new Element(data[1].replace((char)0x2011, ';'))));
                 }
             }

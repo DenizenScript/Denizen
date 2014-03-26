@@ -780,6 +780,9 @@ public class dCuboid implements dObject, Notable, Adjustable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+    public void applyProperty(Mechanism mechanism) {
+        adjust(mechanism);
+    }
 
     @Override
     public void adjust(Mechanism mechanism) {

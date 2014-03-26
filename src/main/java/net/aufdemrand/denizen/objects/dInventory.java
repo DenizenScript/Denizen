@@ -1218,6 +1218,13 @@ public class dInventory implements dObject, Notable, Adjustable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+    public void applyProperty(Mechanism mechanism) {
+        // TODO: Restrict what properties can be sent through, either here or within the property definitions
+        // TODO: Specifically, ensure that you can't type things like
+        // TODO: <in@inventory[holder=mcmonkey4eva;contents=stick]> to give yourself a stick
+        adjust(mechanism);
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 
