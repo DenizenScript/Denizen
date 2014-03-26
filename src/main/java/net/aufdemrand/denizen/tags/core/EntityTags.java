@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;

@@ -96,7 +96,6 @@ public class ItemEnchantments implements Property {
         if (attribute.startsWith("enchantments.level")
                 && attribute.hasContext(2)) {
             if (item.getItemStack().getEnchantments().size() > 0) {
-                List<String> enchants = new ArrayList<String>();
                 for (Map.Entry<Enchantment, Integer> enchantment : item.getItemStack().getEnchantments().entrySet()) {
                     if (enchantment.getKey().getName().equalsIgnoreCase(attribute.getContext(2)))
                         return new Element(enchantment.getValue())

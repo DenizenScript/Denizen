@@ -2,9 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dNPC;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 

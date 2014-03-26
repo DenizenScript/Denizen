@@ -25,7 +25,6 @@ import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R2.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_7_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;

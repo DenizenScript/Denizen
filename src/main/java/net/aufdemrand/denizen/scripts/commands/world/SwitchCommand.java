@@ -30,11 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SwitchCommand extends AbstractCommand {
 
-    @Override
-    public void onEnable() {
-        // Nothing to do here
-    }
-
     /* SWITCH [LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#) */
 
     /*

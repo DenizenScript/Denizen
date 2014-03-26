@@ -10,12 +10,12 @@ import org.bukkit.Bukkit;
 
 public abstract class AbstractCommand implements RegistrationableInstance {
 
+    // TODO: Sanity-check this javadoc: "optional options", etc.
     /**
      * Contains required options for a Command in a single class for the
      * ability to add optional options in the future.
      *
-     * {@see withOptions} for information on using CommandOptions with this command.
-     *
+     * See {@link #withOptions} for information on using CommandOptions with this command.
      */
     public class CommandOptions {
         public String USAGE_HINT;

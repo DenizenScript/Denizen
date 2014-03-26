@@ -72,6 +72,7 @@ public class FinishCommand extends AbstractCommand {
         DenizenAPI._saves().set("Players." + playerName + "." + scriptName + "." + "Completed", null);
     }
 
+    // TODO: Why is this a boolean?
     public static boolean finishScript(String playerName, String scriptName) {
         scriptName = scriptName.toUpperCase();
         int finishes = DenizenAPI._saves().getInt("Players." + playerName + "." + scriptName + "." + "Completed", 0);

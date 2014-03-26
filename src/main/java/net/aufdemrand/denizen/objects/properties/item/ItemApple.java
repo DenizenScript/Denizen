@@ -7,12 +7,7 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
-import org.bukkit.CropState;
 import org.bukkit.Material;
-import org.bukkit.NetherWartsState;
-import org.bukkit.material.CocoaPlant;
-import org.bukkit.material.Crops;
-import org.bukkit.material.NetherWarts;
 
 public class ItemApple implements Property {
 

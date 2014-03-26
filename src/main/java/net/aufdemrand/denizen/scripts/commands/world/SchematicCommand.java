@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.scripts.commands.world;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;

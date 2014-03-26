@@ -803,7 +803,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // -->
         if (mechanism.matches("outset")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."));
+            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
                 mod = value.asInt();
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);

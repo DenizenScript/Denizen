@@ -275,7 +275,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     /**
      * Gets a dNPC reference to any linked NPC set by the CommandExecuter.
      *
-     * @return
+     * @return the NPC linked to this script entry
      */
     public dNPC getNPC() {
         return npc;

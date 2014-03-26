@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class dScript implements dObject {
 
@@ -109,9 +108,9 @@ public class dScript implements dObject {
 
 
     /**
-     * Creates a script object from a script name. If the script is valid, {@link #isValid()} will retrun true.
+     * Creates a script object from a script name. If the script is valid, {@link #isValid()} will return true.
      *
-     * @param scriptName
+     * @param scriptName the name of the script
      */
     public dScript(String scriptName) {
         if (ScriptRegistry.getScriptContainer(scriptName) != null) {

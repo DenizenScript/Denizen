@@ -87,7 +87,7 @@ public class FishingTrait extends Trait {
      *
      * TODO Reimplement variance, so each cast doesn't land in the exact same spot.
      *
-     * @param location
+     * @param location the location to fish at
      */
     public void startFishing(Location location) {
         DenizenAPI.getDenizenNPC(npc).action("start fishing", null);

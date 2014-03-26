@@ -112,7 +112,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
      * to be re-resumed every 'rotation', defined
      * by the speed of the queue.
      *
-     * @param paused
+     * @param paused whether the queue should be paused
      */
     @Override
     public TimedQueue setPaused(boolean paused) {

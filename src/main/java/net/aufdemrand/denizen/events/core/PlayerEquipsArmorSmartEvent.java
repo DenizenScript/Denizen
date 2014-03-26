@@ -91,9 +91,6 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
     @EventHandler
     public void inventoryCloseEvent(InventoryCloseEvent event) {
 
-        Player player = (Player) event.getPlayer();
-        String type = event.getInventory().getType().name();
-
         if (event.getInventory().getHolder() instanceof Player) {
             PlayerInventory inv = (PlayerInventory) event.getInventory().getHolder().getInventory();
             ItemStack[] armor_contents = inv.getArmorContents();

@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands;
 
 /**
- * Created by denizen_ on 1/14/14.
+ * Simply used to indicate that a command can be 'held', so we don't wait for
+ * commands that will never mark themselves 'finished'.
+ *
  */
 public interface Holdable {
 

@@ -3159,7 +3159,6 @@ public class WorldScriptHelper implements Listener {
             itemstack.setAmount(itemstack.getAmount()+1);
             // The event automatically resets durability to 0... instead,
             // let's delay a tick and set it back to what it was before.
-            final short durability = itemstack.getDurability();
             final Player player = event.getPlayer();
             new BukkitRunnable() {
                 @Override
@@ -3443,8 +3442,6 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dPlayer player = dPlayer.valueOf(event.getPlayer().getName());
 
         String message = event.getMessage();
         String command = message.split(" ")[0].replace("/", "").toUpperCase();

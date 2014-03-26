@@ -13,7 +13,6 @@ import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
-import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

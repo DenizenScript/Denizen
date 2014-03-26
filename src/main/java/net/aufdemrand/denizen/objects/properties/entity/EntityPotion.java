@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 
 public class EntityPotion implements Property {
 

@@ -16,7 +16,6 @@ import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.List;
 
 /* GIVE [MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */

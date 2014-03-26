@@ -12,9 +12,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-/**
- * Created by denizen_ on 1/11/14.
- */
+
 public class PathBlockExaminer implements BlockExaminer {
 
     // Default pathing materials

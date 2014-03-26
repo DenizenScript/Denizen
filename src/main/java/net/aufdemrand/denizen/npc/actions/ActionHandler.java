@@ -27,6 +27,7 @@ public class ActionHandler {
         return doAction(actionName, npc, player, assignment, null);
     }
 
+    // TODO: Why is this a boolean?
     public boolean doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment, Map<String, dObject> context) {
         if (assignment == null) {
             // dB.echoDebug("Tried to do 'on " + actionName + ":' but couldn't find a matching script.");

@@ -68,7 +68,7 @@ public class ConstantsTrait extends Trait {
      * Gets a map of the NPCs constants, including those inherited by the Assignment.
      * Any constants that are overridden by this NPC are taken into account, so this
      * map may differ from the constants found in the Assignment. To get a map of
-     * constants from an Assignment, use {@link #getAssignmentConstants()).
+     * constants from an Assignment, use {@link #getAssignmentConstants()}.
      *
      * @return a map of constants, keyed by constant name.
      */
@@ -160,7 +160,6 @@ public class ConstantsTrait extends Trait {
     /**
      * Rebuilds assignment constants on a script reload
      *
-     * @param event
      */
     @EventHandler
     public void onScriptsReload(ScriptReloadEvent event) {

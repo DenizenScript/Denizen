@@ -44,7 +44,7 @@ public class SleepingTrait extends Trait {
     /**
      * Makes the NPC sleep a the specified location
      *
-     * @param location
+     * @param location where to sleep at
      */
     public void toSleep(Location location) {
         if (sleeping) {
