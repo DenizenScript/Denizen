@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_7_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_7_R2.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -275,6 +275,10 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
 
 
         return new Element(identify()).getAttribute(attribute);
+    }
+
+    public void applyProperty(Mechanism mechanism) {
+        dB.echoError("Cannot apply properties to a chunk!");
     }
 
     @Override

@@ -19,7 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_7_R2.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
@@ -1216,6 +1216,13 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         return new Element(identify()).getAttribute(attribute);
+    }
+
+    public void applyProperty(Mechanism mechanism) {
+        // TODO: Restrict what properties can be sent through, either here or within the property definitions
+        // TODO: Specifically, ensure that you can't type things like
+        // TODO: <in@inventory[holder=mcmonkey4eva;contents=stick]> to give yourself a stick
+        adjust(mechanism);
     }
 
     @Override

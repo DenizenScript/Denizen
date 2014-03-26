@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.objects.*;
-import net.minecraft.server.v1_7_R1.PacketPlayOutBlockAction;
+import net.minecraft.server.v1_7_R2.PacketPlayOutBlockAction;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 
@@ -10,8 +10,8 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R2.entity.CraftPlayer;
 
 import java.util.Arrays;
 import java.util.List;

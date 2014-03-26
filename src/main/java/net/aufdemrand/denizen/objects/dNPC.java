@@ -27,11 +27,11 @@ import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
-import net.minecraft.server.v1_7_R1.EntityLiving;
+import net.minecraft.server.v1_7_R2.EntityLiving;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_7_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -749,6 +749,10 @@ public class dNPC implements dObject, Adjustable {
                 ? new dEntity(getCitizen()).getAttribute(attribute)
                 : new Element(identify()).getAttribute(attribute));
 
+    }
+
+    public void applyProperty(Mechanism mechanism) {
+        dB.echoError("Cannot apply properties to an NPC!");
     }
 
     @Override

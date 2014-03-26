@@ -14,16 +14,16 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_7_R1.EntityLiving;
+import net.minecraft.server.v1_7_R2.EntityLiving;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R2.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_7_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -126,7 +126,7 @@ public class dEntity implements dObject, Adjustable {
                     Entity entity = null;
 
                     for (World world : Bukkit.getWorlds()) {
-                        net.minecraft.server.v1_7_R1.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
+                        net.minecraft.server.v1_7_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
 
                         // Make sure the nmsEntity is valid, to prevent
                         // unpleasant errors
@@ -1954,6 +1954,15 @@ public class dEntity implements dObject, Adjustable {
 
     public ArrayList<Mechanism> getWaitingMechanisms() {
         return mechanisms;
+    }
+
+    public void applyProperty(Mechanism mechanism) {
+        if (isGeneric()) {
+            mechanisms.add(mechanism);
+        }
+        else {
+            dB.echoError("Cannot apply properties to an already-spawned entity!");
+        }
     }
 
     @Override

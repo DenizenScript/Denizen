@@ -205,11 +205,11 @@ public class FlagCommand extends AbstractCommand implements Listener {
         flag.doAction(action, value, index);
 
         // Set flag duration
-        if (duration != null && duration.getSeconds() > 0)
+        if (flag.StillValid() && duration != null && duration.getSeconds() > 0)
             flag.setExpiration(System.currentTimeMillis()
                     + Double.valueOf(duration.getSeconds() * 1000).longValue());
 
-        else flag.setExpiration(0L);
+        else if (flag.StillValid()) flag.setExpiration(0L);
     }
 
 

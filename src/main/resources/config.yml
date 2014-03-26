@@ -28,7 +28,7 @@ Traits:
       Enabled: true
       Delay: 10s
     Animated death:
-      Enabled: true
+      Enabled: false
 
 Triggers:
   Chat:

@@ -1,12 +1,22 @@
 package net.aufdemrand.denizen.objects;
 
+import java.util.ArrayList;
+
 public interface Adjustable {
 
     /**
-     * Gets a specific attribute using this object to fetch the necessary data.
+     * Sets a specific attribute using this object to modify the necessary data.
      *
-     * @param mechanism  the name of mechanism to change
+     * @param mechanism the mechanism to gather change information from
      */
     public void adjust(Mechanism mechanism);
+
+    /**
+     * Applies a property, passing it to 'adjust' or throwing an error, depending on whether
+     * the mechanism may be used as a property.
+     *
+     * @param mechanism the mechanism to gather change information from
+     */
+    public void applyProperty(Mechanism mechanism);
 
 }
