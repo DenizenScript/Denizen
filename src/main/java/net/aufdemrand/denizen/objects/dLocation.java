@@ -58,13 +58,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     public static boolean isSaved(Location location) {
         for (Map.Entry<String, dLocation> i : uniqueObjects.entrySet())
             if (i.getValue() == location) return true;
+        // TODO: This appears to do the same thing twice.
+        // TODO: Possibly compare X/Y/Z/world, rather than instance reference?
 
         return uniqueObjects.containsValue(location);
     }
 
     public static dLocation getSaved(String id) {
         if (uniqueObjects.containsKey(id.toUpperCase()))
-            return uniqueObjects.get(id.toUpperCase());
+            return new dLocation(uniqueObjects.get(id.toUpperCase()));
         else return null;
     }
 
