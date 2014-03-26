@@ -1956,6 +1956,15 @@ public class dEntity implements dObject, Adjustable {
         return mechanisms;
     }
 
+    public void applyProperty(Mechanism mechanism) {
+        if (isGeneric()) {
+            mechanisms.add(mechanism);
+        }
+        else {
+            dB.echoError("Cannot apply properties to an already-spawned entity!");
+        }
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 

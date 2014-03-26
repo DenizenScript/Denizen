@@ -277,6 +277,10 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+    public void applyProperty(Mechanism mechanism) {
+        dB.echoError("Cannot apply properties to a chunk!");
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 

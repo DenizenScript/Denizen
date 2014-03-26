@@ -767,6 +767,10 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
 
+    public void applyProperty(Mechanism mechanism) {
+        adjust(mechanism);
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 
