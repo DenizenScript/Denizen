@@ -82,7 +82,6 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     //  MECHANICS
     ///////////
 
-    // TODO: Actually use these variables?
     private boolean broad_detection = false;
     private Map<String, List<dCuboid>> player_cuboids = new ConcurrentHashMap<String, List<dCuboid>>();
 
@@ -95,13 +94,11 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     //
     // @Regex on player (?:enters|exits) (notable cuboid|(cu@)?\w+)
     //
-    // @Warning This event is not fully functional yet.
-    // @Warning Additionally, cancelling this event will fire a similar event immediately after.
-    //
     // @Triggers when a player enters or exits a notable cuboid.
     // @Context
     // <context.from> returns the block location moved from.
     // <context.to> returns the block location moved to.
+    // <context.cuboids> returns a list of cuboids entered/exited (when no cuboid is specified in the event name)
     //
     // @Determine
     // "CANCELLED" to stop the player from moving.
@@ -112,10 +109,6 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     public void playerMoveEvent(PlayerMoveEvent event) {
 
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
-
-        // Initialize events and context
-        List<String> events = new ArrayList<String>(); // TODO: Add contexts!
-        Map<String, dObject> context = new HashMap<String, dObject>();
 
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getTo());
@@ -131,25 +124,58 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
 
         if (exits.isEmpty() && enters.isEmpty()) return;
 
-        // TODO: events.add("player enters notable cuboid"), etc?
+        if (!exits.isEmpty()) {
+            if (broad_detection) {
+                dList cuboid_context = new dList();
+                for (dCuboid cuboid : exits) {
+                    cuboid_context.add(cuboid.identify());
+                }
+                if (Fire(event, cuboid_context, "player exits notable cuboid"))
+                    return;
+            }
+            for (dCuboid cuboid : exits) {
+                if (Fire(event, new dList(cuboid.identify()), "player exits " + cuboid.identifySimple()))
+                    return;
+            }
+        }
 
-        if (!exits.isEmpty())
-            for (dCuboid cuboid : exits)
-                events.add("player exits " + cuboid.identifySimple());
+        if (!enters.isEmpty()) {
+            if (broad_detection) {
+                dList cuboid_context = new dList();
+                for (dCuboid cuboid : enters) {
+                    cuboid_context.add(cuboid.identify());
+                }
+                if (Fire(event, cuboid_context, "player enters notable cuboid"))
+                    return;
+            }
+            for (dCuboid cuboid : enters) {
+                if (Fire(event, new dList(cuboid.identify()), "player enters " + cuboid.identifySimple()))
+                    return;
+            }
+        }
 
-        if (!enters.isEmpty())
-            for (dCuboid cuboid : enters)
-                events.add("player enters " + cuboid.identifySimple());
+        player_cuboids.put(event.getPlayer().getName().toLowerCase(), cuboids);
+    }
+
+    /**
+     * Fires world events for the Cuboid Enter/Exit Smart Event.
+     *
+     */
+    private boolean Fire(PlayerMoveEvent event, dList cuboids, String EventName) {
+        List<String> events = new ArrayList<String>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("from", new dLocation(event.getFrom()));
+        context.put("to", new dLocation(event.getTo()));
+        context.put("cuboids", cuboids);
+        events.add(EventName);
 
         String determination = EventManager.doEvents(events,
                 null, new dPlayer(event.getPlayer()), context, true);
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);
-        // TODO: Should there be an 'else' here, to prevent the event from multi-firing?
-        player_cuboids.put(event.getPlayer().getName().toLowerCase(), cuboids);
+            return true;
+        }
+        return false;
     }
-
-
-
 }

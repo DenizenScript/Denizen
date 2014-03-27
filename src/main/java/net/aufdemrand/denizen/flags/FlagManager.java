@@ -192,6 +192,7 @@ public class FlagManager {
         private String flagName;
         private String flagOwner;
         private long expiration = (long) -1;
+        private boolean valid = true;
 
         Flag(String flagPath, String flagName, String flagOwner) {
             this.flagPath = flagPath;
@@ -208,7 +209,8 @@ public class FlagManager {
          *
          */
         public boolean contains(String stringValue) {
-            checkExpired();
+            if (checkExpired())
+                return false;
             for (String val : value.values) {
                 if (val.equalsIgnoreCase(stringValue)) return true;
                 try {
@@ -217,6 +219,14 @@ public class FlagManager {
             }
 
             return false;
+        }
+
+        /**
+         * Gets whether the flag is still valid.
+         *
+         */
+        public boolean StillValid() {
+            return valid;
         }
 
         /**
@@ -299,6 +309,7 @@ public class FlagManager {
 
             denizen.getSaves().set(flagPath, null);
             denizen.getSaves().set(flagPath + "-expiration", null);
+            valid = false;
             rebuild();
 
             EventManager.doEvents(world_script_events,
@@ -340,7 +351,8 @@ public class FlagManager {
          *
          */
         public void set(Object obj, int index) {
-            checkExpired();
+            if (checkExpired())
+                return;
 
             // No index? Work with last item in the Flag.
             if (index < 0) index = size();
@@ -365,7 +377,8 @@ public class FlagManager {
          *
          */
         public int add(Object obj) {
-            checkExpired();
+            if (checkExpired())
+                return 0;
             value.values.add((String) obj);
             save();
             rebuild();
@@ -378,7 +391,8 @@ public class FlagManager {
          *
          */
         public int split(Object obj) {
-            checkExpired();
+            if (checkExpired())
+                return 0;
             String[] split = ((String) obj).replace("li@", "").split("\\|"); // the pipe character | needs to be escaped
 
             if (split.length > 0) {
@@ -412,7 +426,8 @@ public class FlagManager {
          *
          */
         public void remove(Object obj, int index) {
-            checkExpired();
+            if (checkExpired())
+                return;
 
             // No index? Match object and remove it.
             if (index <= 0 && obj != null) {
@@ -566,6 +581,7 @@ public class FlagManager {
                 if (expiration > 1 && expiration < System.currentTimeMillis()) {
                     denizen.getSaves().set(flagPath + "-expiration", null);
                     denizen.getSaves().set(flagPath, null);
+                    valid = false;
                     rebuild();
                     dB.log('\'' + flagName + "' has expired! " + flagPath);
                     return true;

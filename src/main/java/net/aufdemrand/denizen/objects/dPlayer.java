@@ -1305,6 +1305,10 @@ public class dPlayer implements dObject, Adjustable {
     }
 
 
+    public void applyProperty(Mechanism mechanism) {
+        dB.echoError("Cannot apply properties to a player!");
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 

@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_7_R2.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -565,6 +565,10 @@ public class dWorld implements dObject, Adjustable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+
+    public void applyProperty(Mechanism mechanism) {
+        dB.echoError("Cannot apply properties to a world!");
+    }
 
     @Override
     public void adjust(Mechanism mechanism) {

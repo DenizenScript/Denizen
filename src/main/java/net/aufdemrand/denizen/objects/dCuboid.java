@@ -15,9 +15,12 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class dCuboid implements dObject, Notable, Adjustable {
@@ -721,6 +724,53 @@ public class dCuboid implements dObject, Notable, Adjustable {
             return new dList(players).getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <cu@cuboid.list_npcs>
+        // @returns dList(dNPC)
+        // @description
+        // Gets a list of all NPCs currently within the dCuboid.
+        // -->
+        if (attribute.startsWith("list_npcs")) {
+            ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                if (npc.isSpawned() && isInsideCuboid(npc.getEntity().getLocation()))
+                    npcs.add(dNPC.mirrorCitizensNPC(npc));
+            }
+            return new dList(npcs).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <cu@cuboid.list_entities>
+        // @returns dList(dEntity)
+        // @description
+        // Gets a list of all entities currently within the dCuboid.
+        // -->
+        if (attribute.startsWith("list_entities")) {
+            ArrayList<dEntity> entities = new ArrayList<dEntity>();
+            for (Entity ent: pairs.get(0).low.getWorld().getEntities()) {
+                if (ent.isValid() && isInsideCuboid(ent.getLocation()))
+                    entities.add(new dEntity(ent));
+            }
+            return new dList(entities).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <cu@cuboid.list_living_entities>
+        // @returns dList(dEntity)
+        // @description
+        // Gets a list of all living entities currently within the dCuboid.
+        // -->
+        if (attribute.startsWith("list_living_entities")) {
+            ArrayList<dEntity> entities = new ArrayList<dEntity>();
+            for (Entity ent: pairs.get(0).low.getWorld().getLivingEntities()) {
+                if (ent.isValid() && isInsideCuboid(ent.getLocation()))
+                    entities.add(new dEntity(ent));
+            }
+            return new dList(entities).getAttribute(attribute.fulfill(1));
+        }
+
+        // TODO: list_chunks, list_chunks.partial
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
@@ -730,6 +780,9 @@ public class dCuboid implements dObject, Notable, Adjustable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+    public void applyProperty(Mechanism mechanism) {
+        adjust(mechanism);
+    }
 
     @Override
     public void adjust(Mechanism mechanism) {
