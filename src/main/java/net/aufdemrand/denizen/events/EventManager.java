@@ -324,6 +324,7 @@ public class EventManager implements Listener {
         // Register all the 'Core' SmartEvents. This is called by Denizen's onEnable().
         registerSmartEvent(new BiomeEnterExitSmartEvent());
         registerSmartEvent(new BlockFallsSmartEvent());
+        registerSmartEvent(new ChunkLoadSmartEvent());
         registerSmartEvent(new CuboidEnterExitSmartEvent());
         registerSmartEvent(new EntitySpawnSmartEvent());
         registerSmartEvent(new ListPingSmartEvent());
