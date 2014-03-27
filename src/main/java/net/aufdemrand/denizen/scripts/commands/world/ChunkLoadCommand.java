@@ -34,9 +34,6 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        Chunk chunk = null;
-        Duration length = new Duration(0);
-        Action action = Action.ADD;
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (arg.matchesEnum(Action.values())

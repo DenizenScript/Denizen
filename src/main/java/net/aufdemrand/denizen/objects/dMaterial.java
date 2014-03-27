@@ -448,13 +448,13 @@ public class dMaterial implements dObject {
     }
 
     /**
-     * Gets a dMaterial from a bukkit Material/Data. dMaterials can identify
+     * Gets a dMaterial from a Bukkit Material/Data. dMaterials can identify
      * as something more straight-forward than the traditional material,data format.
      * Example: wool,1 would return the ORANGE_WOOL dMaterial.
      *
-     * @param material
-     * @param data
-     * @return
+     * @param material the base Bukkit material
+     * @param data the datavalue to use
+     * @return a dMaterial representation of the input Bukkit material
      */
     public static dMaterial getMaterialFrom(Material material, int data) {
         if (material == Material.AIR) return AIR;

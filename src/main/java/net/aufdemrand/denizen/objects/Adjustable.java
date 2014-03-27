@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.ArrayList;
-
 public interface Adjustable {
 
     /**

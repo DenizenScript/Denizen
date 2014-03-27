@@ -158,8 +158,9 @@ public class Utilities {
     /**
      * Gets the plugin version from the maven info in the jar, if available.
      *
-     * @return
+     * @return the version string
      */
+    @Deprecated // TODO: Can this be removed?
     public String getVersionNumber() {
         Properties props = new Properties();
         //Set a default just in case.

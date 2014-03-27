@@ -16,8 +16,8 @@ public interface SmartEvent {
      * Determines by the event names provided if this event handler should initialize.
      * Typically regex is used to determine a valid pattern. Called when scripts reload.
      *
-     * @param events
-     * @return
+     * @param events A list of events to test
+     * @return Whether they should initialize
      */
     public boolean shouldInitialize(Set<String> events);
 

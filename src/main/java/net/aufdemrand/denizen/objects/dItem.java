@@ -541,13 +541,8 @@ public class dItem implements dObject, Notable, Adjustable {
 
     @Override
     public Object getSaveObject() {
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("i@");
-        sb.append(item.getType().name().toUpperCase());
-
-        return sb.toString();
+        // TODO: Use identify() instead?
+        return "i@" + item.getType().name().toUpperCase();
     }
 
 

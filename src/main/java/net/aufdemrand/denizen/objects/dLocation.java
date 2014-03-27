@@ -255,8 +255,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
 
     /**
      * Turns a world and coordinates into a Location, which has some helpful methods
-     * for working with dScript. If working with temporary locations, this is
-     * a much better method to use than {@link #dLocation(org.bukkit.World, double, double, double)}.
+     * for working with dScript.
      *
      * @param world  the world in which the location resides
      * @param x  x-coordinate of the location
@@ -290,6 +289,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         super.setPitch(pitch);
     }
 
+    // TODO: Why does this and the above exist?
     @Override
     public void setYaw(float yaw) {
         super.setYaw(yaw);

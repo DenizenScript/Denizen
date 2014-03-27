@@ -111,11 +111,4 @@ public class PauseCommand extends AbstractCommand {
         }
 
     }
-
-    @Override
-    public void onEnable() {
-        // TODO Auto-generated method stub
-
-    }
-
 }

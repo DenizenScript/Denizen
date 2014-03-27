@@ -178,7 +178,6 @@ public class dList extends ArrayList<String> implements dObject {
     // Returns if the list contains objects from the specified dClass
     // by using the matches() method.
     public boolean containsObjectsFrom(Class<? extends dObject> dClass) {
-        List<dObject> results = new ArrayList<dObject>();
 
         // Iterate through elements until one matches() the dClass
         for (String element : this)

@@ -20,7 +20,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemScriptContainer extends ScriptContainer {
@@ -106,8 +105,6 @@ public class ItemScriptContainer extends ScriptContainer {
         // Set Recipe
         if (contains("RECIPE")) {
 
-            boolean usesItemscripts = false;
-
             // Get recipe list from item script
             List<String> recipeList = getStringList("RECIPE");
 
@@ -124,14 +121,6 @@ public class ItemScriptContainer extends ScriptContainer {
 
                 for (String element : elements) {
                     ingredients.add(element.replaceAll("[iImM]@", ""));
-                }
-            }
-
-            // Check if this recipe uses itemscripts as ingredients,
-            // or only Bukkit materials
-            for (String ingredient : ingredients) {
-                if (dMaterial.valueOf(ingredient) == null) {
-                    usesItemscripts = true;
                 }
             }
 

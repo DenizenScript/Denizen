@@ -121,9 +121,9 @@ public class dB {
      * Should be supplied a concatenated String with aH.debugObject() or dObject.debug() of all
      * applicable objects used by the Command.
      *
-     * @param caller
-     * @param name
-     * @param report
+     * @param caller the object calling this debug
+     * @param name the name of the command
+     * @param report all the debug information related to the command
      */
     public static void report(Debuggable caller, String name, String report) {
         if (!showDebug) return;

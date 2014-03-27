@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.objects.*;
 import net.minecraft.server.v1_7_R2.PacketPlayOutBlockAction;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;

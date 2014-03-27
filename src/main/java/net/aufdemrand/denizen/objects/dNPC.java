@@ -466,7 +466,6 @@ public class dNPC implements dObject, Adjustable {
         // returns the specified constant from the NPC.
         // -->
         if (attribute.startsWith("constant")) {
-            String constant_name;
             if (attribute.hasContext(1)) {
                 if (getCitizen().hasTrait(ConstantsTrait.class)
                     && getCitizen().getTrait(ConstantsTrait.class).getConstant(attribute.getContext(1)) != null) {
@@ -901,8 +900,7 @@ public class dNPC implements dObject, Adjustable {
         // @description
         // Sets the NPC's block examiner
         // @tags
-        // s
-        // @test
+        // TODO
         // -->
         if (mechanism.matches("set_examiner")) {
 
@@ -928,6 +926,7 @@ public class dNPC implements dObject, Adjustable {
         // @description
         // Sets the NPC's distance margin
         // @tags
+        // TODO
         // -->
         if (mechanism.matches("set_distance") && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());

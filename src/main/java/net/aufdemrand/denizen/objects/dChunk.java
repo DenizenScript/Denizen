@@ -71,6 +71,10 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         super(chunk.getHandle());
     }
 
+    public dChunk(Chunk chunk) {
+        this((CraftChunk) chunk);
+    }
+
     /**
      * dChunk can be constructed with a Location (or dLocation)
      *

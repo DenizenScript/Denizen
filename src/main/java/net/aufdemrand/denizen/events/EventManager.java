@@ -17,7 +17,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -325,6 +324,7 @@ public class EventManager implements Listener {
         // Register all the 'Core' SmartEvents. This is called by Denizen's onEnable().
         registerSmartEvent(new BiomeEnterExitSmartEvent());
         registerSmartEvent(new BlockFallsSmartEvent());
+        registerSmartEvent(new ChunkLoadSmartEvent());
         registerSmartEvent(new CuboidEnterExitSmartEvent());
         registerSmartEvent(new EntitySpawnSmartEvent());
         registerSmartEvent(new ListPingSmartEvent());

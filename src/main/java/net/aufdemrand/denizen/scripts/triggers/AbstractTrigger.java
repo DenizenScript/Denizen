@@ -115,8 +115,8 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
      * This method will find all NPCs within a certain range of a location that
      * have a trigger, and the trigger is enabled.
      *
-     * @param location
-     * @param maxRange
+     * @param location the location to search around
+     * @param maxRange how far to search
      *
      * @return    The Set of NPCs that are
      */

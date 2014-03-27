@@ -107,7 +107,7 @@ public class ListenerRegistry implements dRegistry, Listener {
      * this method as it fires a bukkit/world script event, as well.
      *
      * @param player  the dPlayer
-     * @param id
+     * @param id id of the listener to cancel
      */
     public void cancel(dPlayer player, String id) {
         if (player == null || id == null) return;

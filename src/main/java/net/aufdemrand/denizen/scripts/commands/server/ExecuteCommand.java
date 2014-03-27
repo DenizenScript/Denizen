@@ -15,8 +15,6 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import java.util.ArrayList;
-
 public class ExecuteCommand extends AbstractCommand {
 
     enum Type { AS_SERVER, AS_NPC, AS_PLAYER, AS_OP }

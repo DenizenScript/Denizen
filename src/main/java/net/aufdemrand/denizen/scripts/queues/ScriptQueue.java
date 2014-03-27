@@ -6,15 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
-import net.aufdemrand.denizen.scripts.queues.core.Delayable;
-import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
@@ -350,7 +345,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      * replaceable tags/etc. are already replaced
      * in this ScriptEntry.
      *
-     * @return
+     * @return the last entry executed
      */
     public ScriptEntry getLastEntryExecuted() {
         return lastEntryExecuted;

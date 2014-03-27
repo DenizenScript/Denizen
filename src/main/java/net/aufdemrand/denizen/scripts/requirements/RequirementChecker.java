@@ -25,7 +25,7 @@ public class RequirementChecker {
     /**
      * Checks a RequirementsContext with Requirements from the RequirementsRegistry.
      *
-     * @param context
+     * @param context the context to check against
      * @return true if the list meets the requirements and context set
      *
      */

@@ -101,7 +101,7 @@ public class PushableTrait extends Trait implements Listener {
      * Indicates that the NPC should be pushable. By default,
      * C2 NPCs are not pushable.
      *
-     * @param pushable
+     * @param pushable whether the NPC should be pushable
      */
     public void setPushable(boolean pushable) {
         this.pushable = pushable;
@@ -110,10 +110,10 @@ public class PushableTrait extends Trait implements Listener {
     /**
      * Indicates that the NPC should return to its location
      * after being pushed. Takes into account a delay which
-     * can be set with {@link #setReturnable(boolean)} and
-     * checked with {@link #isReturnable()}.
+     * can be set with {@link #setDelay(int)} and
+     * checked with {@link #getDelay()}}.
      *
-     * @param returnable
+     * @param returnable whether the NPC can return
      */
     public void setReturnable(boolean returnable) {
         this.returnable = returnable;
@@ -143,7 +143,6 @@ public class PushableTrait extends Trait implements Listener {
     /**
      * Fires an 'On Push:' action upon being pushed.
      *
-     * @param event
      */
     @EventHandler
     public void NPCPush (NPCPushEvent event) {
@@ -183,7 +182,6 @@ public class PushableTrait extends Trait implements Listener {
     /**
      * Fires a 'On Push Return:' action upon return after being pushed.
      *
-     * @param event
      */
     @EventHandler
     public void NPCCompleteDestination (NavigationCompleteEvent event) {

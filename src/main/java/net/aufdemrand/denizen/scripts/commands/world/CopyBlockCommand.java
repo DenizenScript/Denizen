@@ -72,7 +72,7 @@ public class CopyBlockCommand extends AbstractCommand{
         dLocation copy_location = (dLocation) scriptEntry.getObject("location");
         dLocation destination = (dLocation) scriptEntry.getObject("destination");
         dCuboid copy_cuboid = (dCuboid) scriptEntry.getObject("cuboid");
-        Element remove_original = (Element) scriptEntry.getObject("remove");
+        Element remove_original = (Element) scriptEntry.getObject("remove"); // TODO: Implement?
 
 
         List<Location> locations = new ArrayList<Location>();
