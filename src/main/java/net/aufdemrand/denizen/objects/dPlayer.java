@@ -1445,6 +1445,19 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name kick
+        // @input Element
+        // @description
+        // Kicks the player, with the specified message.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("kick")) {
+            getPlayerEntity().kickPlayer(mechanism.getValue().asString());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name weather
         // @input Element
         // @description
