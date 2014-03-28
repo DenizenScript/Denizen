@@ -1095,7 +1095,27 @@ public class CommandRegistry implements dRegistry {
         // <n@npc.flag[<flag>]>
         // <global.flag[<flag>]>
         // @Usage
-        // Todo
+        // @Usage
+        // Use to create a flag on the player named 'playstyle' with 'agressive' as the value.
+        // - flag <player> playstyle:agressive
+        // @Usage
+        // Use to create a flag on the NPC with its current location as the value.
+        // - flag <NPC> location:<npc.location>
+        // @Usage
+        // Use to increase the context player flag 'damage_dealt' with the context damage as amount.
+        // - flag <context.damager> damage_dealt:+:<context.damage>
+        // @Usage
+        // Use to add p@TheBlackCoyote to the server flag called 'cool_people' as a new value without removing existing values.
+        // - flag server cool_people:->:p@TheBlackCoyote
+        // @Usage
+        // Use to add both p@mcmonkey4eva and p@mortpahn1 as individual new values to the server flag 'cool_people'.
+        // - flag server cool_people:|:p@mcmonkey4eva|p@morphan1
+        // @Usage
+        // Use to remove p@morphan1 from the server flag 'cool_people' (because morphan1 is uncool).
+        // - flag server cool_people:<-:p@morphan1
+        // @Usage
+        // Use to completely remove a flag.
+        // - flag cool_people:!
         // -->
         registerCoreMember(FlagCommand.class,
                 "FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
