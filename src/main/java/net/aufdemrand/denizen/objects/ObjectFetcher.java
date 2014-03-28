@@ -144,6 +144,10 @@ public class ObjectFetcher {
             if (gotten != null && matched) {
                 for (int i = 1; i < matches.size(); i++) {
                     String[] data = matches.get(i).split("=", 2);
+                    if (data.length != 2) {
+                        dB.echoError("Invalid property string '" + matches.get(i) + "'!");
+                        continue;
+                    }
                     ((Adjustable) gotten).applyProperty(new Mechanism(new Element(data[0]),
                             new Element(data[1].replace((char)0x2011, ';'))));
                 }
