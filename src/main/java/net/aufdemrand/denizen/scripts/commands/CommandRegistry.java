@@ -1100,7 +1100,7 @@ public class CommandRegistry implements dRegistry {
         // - flag p@calicokid playstyle:agressive
         // @Usage
         // Use to create a flag on the npc (with ID 145) with its current location as the value.
-        // - flag @145 location:<npc.location>
+        // - flag n@145 location:<npc.location>
         // @Usage
         // Use to increase the context player flag 'damage_dealt' with the context damage as amount.
         // - flag <context.damager> damage_dealt:+:<context.damage>
