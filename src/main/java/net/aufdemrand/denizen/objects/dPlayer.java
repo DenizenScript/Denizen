@@ -1330,6 +1330,19 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name item_slot
+        // @input Element(Number)
+        // @description
+        // Sets the inventory slot that the player has selected.
+        // @tags
+        // <player.item_in_hand.slot>
+        // -->
+        if (mechanism.matches("item_slot") && mechanism.requireInteger()) {
+            getPlayerEntity().getInventory().setHeldItemSlot(mechanism.getValue().asInt() - 1);
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name award_achievement
         // @input Element
         // @description
