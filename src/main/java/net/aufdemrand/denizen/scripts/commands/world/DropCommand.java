@@ -123,13 +123,14 @@ public class DropCommand extends AbstractCommand {
                         + (entity != null ? entity.debug() : "")
                         + (speed != null ? speed.debug() : ""));
 
+        dList entityList = new dList();
 
         // Do the drop
         switch (Action.valueOf(action.asString())) {
             case DROP_EXP:
-                ((ExperienceOrb) location.getWorld()
-                        .spawnEntity(location, EntityType.EXPERIENCE_ORB))
-                        .setExperience(qty.asInt());
+                dEntity orb = new dEntity(location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB));
+                ((ExperienceOrb) orb.getBukkitEntity()).setExperience(qty.asInt());
+                entityList.add(orb.toString());
                 break;
 
             case DROP_ITEM:
@@ -137,19 +138,29 @@ public class DropCommand extends AbstractCommand {
                     dB.echoDebug(scriptEntry, "Cannot drop multiples of this item because it is Unique!");
                 // TODO: Make a dItem specific 'drop/give' to better keep track of it, like dEntity.
                 for (int x = 0; x < qty.asInt(); x++) {
-                    Entity e = location.getWorld().dropItemNaturally(location, item.getItemStack());
+                    dEntity e = new dEntity(location.getWorld().dropItemNaturally(location, item.getItemStack()));
                     e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble(): 1d));
+                    entityList.add(e.toString());
                 }
                 break;
 
             case DROP_ENTITY:
-                if (qty.asInt() > 1 && entity.isUnique())
+                if (qty.asInt() > 1 && entity.isUnique()) {
                     dB.echoDebug(scriptEntry, "Cannot drop multiples of this entity because it is Unique!");
-                for (int x = 0; x < qty.asInt(); x++)
                     entity.spawnAt(location);
+                    entityList.add(entity.toString());
+                    break;
+                }
+                for (int x = 0; x < qty.asInt(); x++) {
+                    dEntity ent = new dEntity(entity.getEntityType(), entity.getWaitingMechanisms());
+                    ent.spawnAt(location);
+                    entityList.add(ent.toString());
+                }
                 break;
         }
 
-        // Okay!
+        // Add entities to context so that the specific entities dropped can be fetched.
+        scriptEntry.addObject("dropped_entities", entityList);
+
     }
 }

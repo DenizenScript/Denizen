@@ -246,6 +246,11 @@ public class dEntity implements dObject, Adjustable {
         } else dB.echoError("Entity_type referenced is null!");
     }
 
+    public dEntity(EntityType entityType, ArrayList<Mechanism> mechanisms) {
+        this(entityType);
+        this.mechanisms = mechanisms;
+    }
+
     public dEntity(EntityType entityType, String data1) {
         if (entityType != null) {
             this.entity = null;
