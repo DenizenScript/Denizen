@@ -1,6 +1,5 @@
 # Whether debug information about Denizen should appear in the
 # server console
-
 Debug:
   Show: true
   ex command help: true
@@ -10,7 +9,8 @@ Scripts:
   World:
     Events:
       On player chats:
-        Use asynchronous event: true
+        # Whether to use the dangerous 'async' chat event (not recommended!)
+        Use asynchronous event: false
       On time changes:
         Frequency of check: 250t
   Queue speed: 0.5s
@@ -19,7 +19,7 @@ Scripts:
     Alternative folder path: 'plugins/Denizen'
   Load scripts in subfolders: true
 
-# The default options for new Denizens
+# The default options for new Denizen NPCs
 
 Traits:
   Health:
@@ -33,7 +33,7 @@ Traits:
 Triggers:
   Chat:
     Enabled: true
-    Use asynchronous event: true
+    Use asynchronous event: false
     Cooldown: 2s
     Range: 3
     Overhearing range: 4
@@ -65,6 +65,5 @@ Commands:
 
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
-
 Config:
   Version: 5

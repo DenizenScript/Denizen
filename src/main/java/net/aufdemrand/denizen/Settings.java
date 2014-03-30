@@ -176,7 +176,7 @@ public class Settings {
 
     */
 
-    public static boolean ClickTriggerAllowsLeftClick() {
+    public static boolean ClickTriggerAllowsLeftClick() { // TODO: Remove?
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Triggers.Click.Allows left click", false);
     }
@@ -203,7 +203,7 @@ public class Settings {
 
     public static boolean ChatAsynchronous() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Use asynchronous event", true);
+                .getBoolean("Triggers.Chat.Use asynchronous event", false);
     }
 
     /*
@@ -288,7 +288,7 @@ public class Settings {
 
     public static boolean WorldScriptChatEventAsynchronous() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Scripts.World.Events.On player chats.Use asynchronous event", true);
+                .getBoolean("Scripts.World.Events.On player chats.Use asynchronous event", false);
     }
 
     /*
