@@ -1127,6 +1127,28 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <e@entity.eid>
+        // @returns Element(Number)
+        // @group data
+        // @description
+        // Returns the entity's temporary server entity ID.
+        // -->
+        if (attribute.startsWith("eid"))
+            return new Element(entity.getEntityId())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.uuid>
+        // @returns Element
+        // @group data
+        // @description
+        // Returns the permanent unique ID of the entity.
+        // -->
+        if (attribute.startsWith("uuid"))
+            return new Element(getUUID().toString())
+                    .getAttribute(attribute.fulfill(1));
+
         if (entity == null) {
             return new Element(identify()).getAttribute(attribute);
         }
@@ -1183,17 +1205,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.eid>
-        // @returns Element(Number)
-        // @group data
-        // @description
-        // Returns the entity's temporary server entity ID.
-        // -->
-        if (attribute.startsWith("eid"))
-            return new Element(entity.getEntityId())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <e@entity.name>
         // @returns Element
         // @group data
@@ -1223,17 +1234,6 @@ public class dEntity implements dObject, Adjustable {
             return new Element(entity.getMetadata("spawnreason").get(0).asString())
                     .getAttribute(attribute.fulfill(1));
         }
-
-        // <--[tag]
-        // @attribute <e@entity.uuid>
-        // @returns Element
-        // @group data
-        // @description
-        // Returns the permanent unique ID of the entity.
-        // -->
-        if (attribute.startsWith("uuid"))
-            return new Element(getUUID().toString())
-                    .getAttribute(attribute.fulfill(1));
 
 
         /////////////////////

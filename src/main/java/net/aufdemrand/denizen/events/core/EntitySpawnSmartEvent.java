@@ -29,6 +29,7 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
+            // TODO: Cleaner regex?
             Matcher m = Pattern.compile("on (.+|entity|npc) spawns(?: because (\\w+))?", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
