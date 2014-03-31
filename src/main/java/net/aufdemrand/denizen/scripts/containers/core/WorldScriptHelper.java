@@ -3319,7 +3319,7 @@ public class WorldScriptHelper implements Listener {
     // # | of a Bukkit /command. Here's an example script that shows basic usage.
     //
     // On Command Event Tutorial:
-    //  type: world
+    //   type: world
     //
     // # +-- EVENTS: Node --+
     // # To 'hook' into the on command event, just create a 'on <command_name> command'
