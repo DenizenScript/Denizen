@@ -8,20 +8,14 @@ import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,7 +63,7 @@ public class SyncChatSmartEvent implements SmartEvent, Listener {
     @Override
     public void breakDown() {
         // Unregister events or any other temporary links your event created in _intialize()
-        AsyncPlayerChatEvent.getHandlerList().unregister(this);
+        PlayerChatEvent.getHandlerList().unregister(this);
     }
 
 

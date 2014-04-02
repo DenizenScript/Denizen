@@ -65,7 +65,7 @@ public class SittingTrait extends Trait implements Listener  {
     /**
      * Makes the NPC sit a the specified location
      *
-     * @param location
+     * @param location where to sit
      */
     public void sit(Location location) {
         DenizenAPI.getDenizenNPC(npc).action("sit", null);

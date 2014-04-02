@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -14,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;

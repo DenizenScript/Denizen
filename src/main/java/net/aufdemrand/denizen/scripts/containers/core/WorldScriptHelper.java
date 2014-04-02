@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
@@ -721,8 +719,8 @@ public class WorldScriptHelper implements Listener {
     // <entity> forms block
     // <entity> forms <block>
     //
-    // @Triggers when a block is formed by an entity,
-    //           e.g. when a snowman forms snow
+    // @Triggers when a block is formed by an entity.
+    // For example, when a snowman forms snow.
     // @Context
     // <context.location> returns the dLocation the block.
     // <context.material> returns the dMaterial of the block.
@@ -1226,9 +1224,10 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity changes block
-    // <entity> changes block
-    // <entity> changes block
+    // entity changes block (into <material>)
+    // entity changes <material> (into <material>)
+    // <entity> changes block (into <material>)
+    // <entity> changes <material> (into <material>)
     //
     // @Triggers when an entity changes the material of a block.
     // @Context
