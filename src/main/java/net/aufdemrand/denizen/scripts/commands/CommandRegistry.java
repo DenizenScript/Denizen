@@ -804,7 +804,7 @@ public class CommandRegistry implements dRegistry {
         // For items, you can add 'speed:' to modify the launch velocity.
 
         // @Tags
-        // None
+        // <entry[saveName].dropped_entities> returns a list of entities that were dropped.
 
         // @Usage
         // Use to drop some loot around the player.
