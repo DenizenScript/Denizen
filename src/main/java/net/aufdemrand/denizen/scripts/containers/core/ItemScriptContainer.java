@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;

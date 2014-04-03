@@ -322,6 +322,7 @@ public class EventManager implements Listener {
 
     public void registerCoreMembers() {
         // Register all the 'Core' SmartEvents. This is called by Denizen's onEnable().
+        registerSmartEvent(new AsyncChatSmartEvent());
         registerSmartEvent(new BiomeEnterExitSmartEvent());
         registerSmartEvent(new BlockFallsSmartEvent());
         registerSmartEvent(new ChunkLoadSmartEvent());
@@ -330,6 +331,7 @@ public class EventManager implements Listener {
         registerSmartEvent(new ListPingSmartEvent());
         registerSmartEvent(new PlayerEquipsArmorSmartEvent());
         registerSmartEvent(new PlayerJumpSmartEvent());
+        registerSmartEvent(new SyncChatSmartEvent());
     }
 
 

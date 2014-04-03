@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.properties.*;
 import net.aufdemrand.denizen.objects.properties.entity.*;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -1126,6 +1127,28 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <e@entity.eid>
+        // @returns Element(Number)
+        // @group data
+        // @description
+        // Returns the entity's temporary server entity ID.
+        // -->
+        if (attribute.startsWith("eid"))
+            return new Element(entity.getEntityId())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.uuid>
+        // @returns Element
+        // @group data
+        // @description
+        // Returns the permanent unique ID of the entity.
+        // -->
+        if (attribute.startsWith("uuid"))
+            return new Element(getUUID().toString())
+                    .getAttribute(attribute.fulfill(1));
+
         if (entity == null) {
             return new Element(identify()).getAttribute(attribute);
         }
@@ -1182,17 +1205,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.eid>
-        // @returns Element(Number)
-        // @group data
-        // @description
-        // Returns the entity's temporary server entity ID.
-        // -->
-        if (attribute.startsWith("eid"))
-            return new Element(entity.getEntityId())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <e@entity.name>
         // @returns Element
         // @group data
@@ -1222,17 +1234,6 @@ public class dEntity implements dObject, Adjustable {
             return new Element(entity.getMetadata("spawnreason").get(0).asString())
                     .getAttribute(attribute.fulfill(1));
         }
-
-        // <--[tag]
-        // @attribute <e@entity.uuid>
-        // @returns Element
-        // @group data
-        // @description
-        // Returns the permanent unique ID of the entity.
-        // -->
-        if (attribute.startsWith("uuid"))
-            return new Element(getUUID().toString())
-                    .getAttribute(attribute.fulfill(1));
 
 
         /////////////////////
@@ -2046,6 +2047,52 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class))
             getLivingEntity().setLeashHolder(value.asType(dEntity.class).getBukkitEntity());
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name max_health
+        // @input Number
+        // @description
+        // Sets the maximum health the entity may have.
+        // @tags
+        // <e@entity.health>
+        // <e@entity.health.max>
+        // -->
+        // TODO: Maybe a property?
+        if (mechanism.matches("max_health") && mechanism.requireInteger()) {
+            if (isNPC()) {
+                if (getNPC().hasTrait(HealthTrait.class))
+                    getNPC().getTrait(HealthTrait.class).setMaxhealth(mechanism.getValue().asInt());
+                else
+                    dB.echoError("NPC doesn't have health trait!");
+            }
+            else if (isLivingEntity()) {
+                getLivingEntity().setMaxHealth(mechanism.getValue().asDouble());
+            }
+            else {
+                dB.echoError("Entity is not alive!");
+            }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name health
+        // @input Number(Decimal)
+        // @description
+        // Sets the amount of health the entity has.
+        // @tags
+        // <e@entity.health>
+        // <e@entity.health.max>
+        // -->
+        // TODO: Maybe a property?
+        if (mechanism.matches("health") && mechanism.requireDouble()) {
+            if (isLivingEntity()) {
+                getLivingEntity().setHealth(mechanism.getValue().asDouble());
+            }
+            else {
+                dB.echoError("Entity is not alive!");
+            }
+        }
 
         // <--[mechanism]
         // @object dEntity

@@ -196,7 +196,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
     ArrayList<dObject> filter = new ArrayList<dObject>();
 
 
-    private dCuboid(Location point_1, Location point_2) {
+    public dCuboid(Location point_1, Location point_2) {
         addPair(point_1, point_2);
     }
 
@@ -493,6 +493,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
                     + ',' + pair.high.getBlockZ() + ',' + pair.high.getWorld().getName()
                     + '|');
         }
+        // TODO: Maybe just use identify()?
 
         return sb.toString().substring(0, sb.toString().length() - 1);
     }
@@ -556,12 +557,10 @@ public class dCuboid implements dObject, Notable, Adjustable {
             sb.append("cu@");
 
             for (LocationPair pair : pairs) {
-                sb.append(pair.low.getBlockX() + ',' + pair.low.getBlockY()
-                        + "," + pair.low.getBlockZ() + ',' + pair.low.getWorld().getName()
-                        + '|'
-                        + pair.high.getBlockX() + ',' + pair.high.getBlockY()
-                        + ',' + pair.high.getBlockZ() + ',' + pair.high.getWorld().getName()
-                        + '|');
+                sb.append(pair.low.getBlockX()).append(',').append(pair.low.getBlockY())
+                        .append(',').append(pair.low.getBlockZ()).append(',').append(pair.low.getWorld().getName())
+                        .append('|').append(pair.high.getBlockX()).append(',').append(pair.high.getBlockZ())
+                        .append(',').append(pair.high.getBlockZ()).append(',').append(pair.high.getWorld().getName()).append('|');
             }
 
             return sb.toString().substring(0, sb.toString().length() - 1);

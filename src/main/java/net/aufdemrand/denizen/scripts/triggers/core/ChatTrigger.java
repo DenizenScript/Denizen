@@ -225,6 +225,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         return ret;
     }
 
+    // TODO: Clean these events up - smartEvent style system (or directly use smart events?)
     @EventHandler
     public void asyncChatTrigger(final AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
@@ -250,7 +251,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             dB.echoError(e);
         }
 
-        event.setCancelled(cancelled);
+        if (cancelled)
+            event.setCancelled(true);
     }
 
     @EventHandler
@@ -260,8 +262,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Return if "Use asynchronous event" is true in config file
         if (Settings.ChatAsynchronous()) return;
 
-        Boolean cancelled = process(event.getPlayer(), event.getMessage());
-        event.setCancelled(cancelled);
+        if (process(event.getPlayer(), event.getMessage()))
+            event.setCancelled(true);
     }
 
     private boolean isKeywordRegex (String keyWord) {

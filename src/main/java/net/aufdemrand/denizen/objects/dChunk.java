@@ -168,6 +168,17 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
             return dWorld.mirrorBukkitWorld(getWorld()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <ch@chunk.cuboid>
+        // @returns dCuboid
+        // @description
+        // returns a cuboid of this chunk.
+        // -->
+        if (attribute.startsWith("cuboid")) {
+            return new dCuboid(new Location(getWorld(), getX() * 16, 0, getZ() * 16),
+                    new Location(getWorld(), getX() * 16 + 15, 255, getZ() * 16 + 15)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <ch@chunk.entities>
         // @returns dList(dEntity)
         // @description

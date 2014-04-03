@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
@@ -721,8 +719,8 @@ public class WorldScriptHelper implements Listener {
     // <entity> forms block
     // <entity> forms <block>
     //
-    // @Triggers when a block is formed by an entity,
-    //           e.g. when a snowman forms snow
+    // @Triggers when a block is formed by an entity.
+    // For example, when a snowman forms snow.
     // @Context
     // <context.location> returns the dLocation the block.
     // <context.material> returns the dMaterial of the block.
@@ -1226,9 +1224,10 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity changes block
-    // <entity> changes block
-    // <entity> changes block
+    // entity changes block (into <material>)
+    // entity changes <material> (into <material>)
+    // <entity> changes block (into <material>)
+    // <entity> changes <material> (into <material>)
     //
     // @Triggers when an entity changes the material of a block.
     // @Context
@@ -3021,57 +3020,21 @@ public class WorldScriptHelper implements Listener {
     //   PLAYER EVENTS
     /////////////////
 
-    // <--[event]
-    // @Events
-    // player chats
-    //
-    // @Triggers when a player chats.
-    // @Context
-    // <context.message> returns the player's message as an Element.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from chatting.
-    // Element(String) to change the message.
-    //
-    // -->
-    // TODO: Why are we doing this... we're just forcing sync-chat.
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void asyncPlayerChat(final AsyncPlayerChatEvent event) {
 
-        // Return if "Use asynchronous event" is false in config file
-        if (!Settings.WorldScriptChatEventAsynchronous()) return;
-
-        final Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getMessage()));
-
-        Callable<String> call = new Callable<String>() {
+    // Original chat events moved to smart event, this event just retained
+    // for debug chat recording.
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        final String message = ChatColor.DARK_GREEN + "CHAT: " +
+                event.getPlayer().getName() + ": " + event.getMessage();
+        Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
             @Override
-            public String call() {
-                return EventManager.doEvents(Arrays.asList("player chats"),
-                        null, new dPlayer(event.getPlayer()), context);
+            public void run() {
+                // If currently recording debug information, add the chat message to debug output
+                if (dB.record) dB.log(message);
             }
-        };
-        String determination = null;
-        try {
-            determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
-        } catch (InterruptedException e) {
-            // TODO: Need to find a way to fix this eventually
-            // dB.echoError(e);
-        } catch (ExecutionException e) {
-            dB.echoError(e);
-        } catch (Exception e) {
-            dB.echoError(e);
-        }
-
-        if (determination == null)
-            return;
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (!determination.equals("none")) {
-            event.setMessage(determination);
-        }
+        }, 1);
     }
-
 
     // <--[event]
     // @Events
@@ -3340,30 +3303,6 @@ public class WorldScriptHelper implements Listener {
                 null, new dPlayer(event.getPlayer()), context, true);
     }
 
-    // Shares description with asyncPlayerChat
-    @EventHandler
-    public void playerChat(final PlayerChatEvent event) {
-
-        // If currently recording debug information, quickly add the chat message to debug output
-        // (Intentionally placed in the sync event to prevent glitching)
-        if (dB.record) dB.log(ChatColor.DARK_GREEN + "CHAT: " +
-                event.getPlayer().getName() + ": " + event.getMessage());
-
-        // Return if "Use asynchronous event" is true in config file
-        if (Settings.WorldScriptChatEventAsynchronous()) return;
-
-        final Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getMessage()));
-
-        String determination = EventManager.doEvents(Arrays.asList("player chats"),
-                null, new dPlayer(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (!determination.equals("none")) {
-            event.setMessage(determination);
-        }
-    }
 
     // <--[example]
     // @Title On Command Event tutorial
@@ -3379,7 +3318,7 @@ public class WorldScriptHelper implements Listener {
     // # | of a Bukkit /command. Here's an example script that shows basic usage.
     //
     // On Command Event Tutorial:
-    //  type: world
+    //   type: world
     //
     // # +-- EVENTS: Node --+
     // # To 'hook' into the on command event, just create a 'on <command_name> command'
