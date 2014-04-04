@@ -1161,8 +1161,8 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ForEach
-        // @Syntax foreach [<object>|...] [<commands>]
-        // @Required 2
+        // @Syntax foreach [stop/<object>|...] [<commands>]
+        // @Required 1
         // @Stable stable
         // @Short Loops through a dList, running a set of commands for each item.
         // @Author Morphan1, mcmonkey
@@ -1171,6 +1171,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
         // that list entry. To call the value of the entry while in the loop, you can use %value%.
+        //
+        // To end a foreach loop, do - foreach stop
 
         // @Tags
         // %value% to get the current item in the loop
@@ -1190,7 +1192,7 @@ public class CommandRegistry implements dRegistry {
 
         // -->
         registerCoreMember(ForEachCommand.class,
-                "FOREACH", "foreach [<object>|...] [<commands>]", 2);
+                "FOREACH", "foreach [stop/<object>|...] [<commands>]", 1);
 
 
         // <--[command]
@@ -2026,7 +2028,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Repeat
-        // @Syntax repeat [<amount>] [<commands>]
+        // @Syntax repeat [stop/<amount>] [<commands>]
         // @Required 1
         // @Stable stable
         // @Short Runs a series of braced commands several times.
@@ -2036,6 +2038,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Loops through a series of braced commands a specified number of times.
         // To get the number of loops so far, you can use %value%.
+        //
+        // To stop a repeat loop, do - repeat stop
 
         // @Tags
         // %value% to get the number of loops so far
@@ -2047,7 +2051,7 @@ public class CommandRegistry implements dRegistry {
         //   }
         // -->
         registerCoreMember(RepeatCommand.class,
-                "REPEAT", "repeat [<amount>] [<commands>]", 1);
+                "REPEAT", "repeat [stop/<amount>] [<commands>]", 1);
 
 
         // <--[command]

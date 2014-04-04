@@ -20,18 +20,22 @@ public class RepeatCommand extends BracedCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("qty")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("qty", arg.asElement());
+                break;
+            }
 
-            break;
+            else if (!scriptEntry.hasObject("stop")
+                    && arg.matches("stop"))
+                scriptEntry.addObject("stop", Element.TRUE);
 
-            // Don't report unhandled argument since getBracedCommands will handle
-            // the remainder of the commands.
+            else
+                arg.reportUnhandled();
 
         }
 
-        if (!scriptEntry.hasObject("qty"))
-            throw new InvalidArgumentsException("Must specify a quantity!");
+        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("stop"))
+            throw new InvalidArgumentsException("Must specify a quantity or 'stop'!");
 
         scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
 
@@ -40,6 +44,15 @@ public class RepeatCommand extends BracedCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+
+        Element stop = scriptEntry.getElement("stop");
+
+        if (stop != null && stop.asBoolean()) {
+            // Report to dB
+            dB.report(scriptEntry, getName(), stop.debug());
+            scriptEntry.getResidingQueue().BreakLoop("REPEAT");
+            return;
+        }
 
         // Get objects
         Element qty = scriptEntry.getElement("qty");
@@ -81,7 +94,8 @@ public class RepeatCommand extends BracedCommand {
             scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(incr + 1));
 
             // Run everything instantly
-            scriptEntry.getResidingQueue().runNow(newEntries);
+            if (scriptEntry.getResidingQueue().runNow(newEntries, "REPEAT"))
+                return;
         }
     }
 }

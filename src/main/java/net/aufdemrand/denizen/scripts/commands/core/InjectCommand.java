@@ -173,7 +173,7 @@ public class InjectCommand extends AbstractCommand {
 
         // If 'instantly' was specified, run the commands immediately.
         if (scriptEntry.hasObject("instant")) {
-            scriptEntry.getResidingQueue().runNow(entries);
+            scriptEntry.getResidingQueue().runNow(entries, "INJECT");
         }
         else {
             // Inject the entries into the current scriptqueue
