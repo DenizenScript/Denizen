@@ -172,8 +172,8 @@ public class TakeCommand extends AbstractCommand{
                     // Remove books with a certain title even if they
                     // are not identical to an item script, to allow
                     // books that update
-                    if (is.getItemMeta() instanceof BookMeta) {
-                        if (((BookMeta) is.getItemMeta()).hasTitle())
+                    if (is.getItemMeta() instanceof BookMeta
+                        && ((BookMeta) is.getItemMeta()).hasTitle()) {
                             inventory.removeBook(is);
                     }
                     else if (!inventory.getInventory().removeItem(is).isEmpty())
