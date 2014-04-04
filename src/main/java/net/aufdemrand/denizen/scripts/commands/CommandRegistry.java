@@ -1176,6 +1176,7 @@ public class CommandRegistry implements dRegistry {
 
         // @Tags
         // %value% to get the current item in the loop
+        // %loop_index% to get the current loop iteration number
 
         // @Usage
         // Use to run commands for 'each entry' in a list of objects/elements.

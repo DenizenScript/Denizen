@@ -11,6 +11,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 
+import java.util.ArrayList;
+
 /**
  * Drops things into the world.
  *
@@ -152,7 +154,11 @@ public class DropCommand extends AbstractCommand {
                     break;
                 }
                 for (int x = 0; x < qty.asInt(); x++) {
-                    dEntity ent = new dEntity(entity.getEntityType(), entity.getWaitingMechanisms());
+                    ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
+                    for (Mechanism mechanism: entity.getWaitingMechanisms()) {
+                        mechanisms.add(new Mechanism(new Element(mechanism.getName()), mechanism.getValue()));
+                    }
+                    dEntity ent = new dEntity(entity.getEntityType(), mechanisms);
                     ent.spawnAt(location);
                     entityList.add(ent.toString());
                 }
