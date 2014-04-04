@@ -162,6 +162,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         // can be cleanly removed from memory.
 
         EntityDeathEvent.getHandlerList().unregister(this);
+        ReplaceableTagEvent.getHandlerList().unregister(this);
     }
 
 

@@ -27,13 +27,15 @@ public class MidiUtil
 {
     public static Map<String, Receiver> receivers = new HashMap<String, Receiver>();
 
-    public static void startSequencer(File file, float tempo, Receiver receiver)
+    public static void startSequencer(File file, float tempo, NoteBlockReceiver receiver)
             throws InvalidMidiDataException, IOException, MidiUnavailableException
     {
 
         Sequencer sequencer = MidiSystem.getSequencer(false);
         sequencer.setSequence(MidiSystem.getSequence(file));
         sequencer.open();
+
+        receiver.setSequencer(sequencer);
 
         // Set desired tempo
         sequencer.setTempoFactor(tempo);
@@ -45,14 +47,14 @@ public class MidiUtil
     public static void playMidi(File file, float tempo, List<dEntity> entities)
     {
         try {
-            NoteBlockReceiver receiver = new NoteBlockReceiver(entities);
+            NoteBlockReceiver receiver = new NoteBlockReceiver(entities, entities.get(0).getUUID().toString());
             // If there is already a midi file being played for one of the entities,
             // stop playing it
             for (dEntity entity : entities) {
                 stopMidi(entity.getUUID().toString());
-                receivers.put(entity.getUUID().toString(), receiver);
             }
 
+            receivers.put(entities.get(0).getUUID().toString(), receiver);
             startSequencer(file, tempo, receiver);
         }
         catch (Exception e) {
@@ -63,7 +65,7 @@ public class MidiUtil
     public static void playMidi(File file, float tempo, dLocation location)
     {
         try {
-            NoteBlockReceiver receiver = new NoteBlockReceiver(location);
+            NoteBlockReceiver receiver = new NoteBlockReceiver(location, location.identify());
             // If there is already a midi file being played for this location,
             // stop playing it
             stopMidi(location.identify());
@@ -79,7 +81,6 @@ public class MidiUtil
     public static void stopMidi(String object) {
         if (receivers.containsKey(object)) {
             receivers.get(object).close();
-            receivers.remove(object);
         }
     }
 
