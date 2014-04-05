@@ -84,6 +84,14 @@ public class CommandRegistry implements dRegistry {
     // Also, you should never directly type in [], (), {}, or <> even though they are in the syntax info.
     // The only exception is in a replaceable tag (EG: <npc.has_trait[<traitname>]> will take <npc.has_trait[mytrait]> as a valid actual usage)
     //
+    // Highly specific note: <commands> means a block of commands wrapped in braces... EG:
+    // <code>
+    // - repeat 3 {
+    //   - narrate "%value%"
+    //   - narrate "everything between the {and} symbols (including them) are for the <commands> input!"
+    //   }
+    // </code>
+    //
     // -->
 
     @Override
@@ -1952,7 +1960,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Random
-        // @Syntax random [<#>/{braced commands}]
+        // @Syntax random [<#>/<commands>]
         // @Required 1
         // @Stable stable
         // @Short Selects a random choice from the following script commands.
@@ -1981,7 +1989,7 @@ public class CommandRegistry implements dRegistry {
 
         // -->
         registerCoreMember(RandomCommand.class,
-                "RANDOM", "random [<#>/{braced commands}]", 1);
+                "RANDOM", "random [<#>/<commands>]", 1);
 
 
         // <--[command]

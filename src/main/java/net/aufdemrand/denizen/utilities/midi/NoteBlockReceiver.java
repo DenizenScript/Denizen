@@ -134,7 +134,7 @@ public class NoteBlockReceiver implements Receiver
     {
         entities = null;
         location = null;
-        unusedEntities =  null;
+        unusedEntities = null;
         channelPatches.clear();
         channelPatches = null;
         if (MidiUtil.receivers.containsKey(key)) {

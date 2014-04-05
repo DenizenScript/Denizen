@@ -278,6 +278,18 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.java_version>
+        // @returns Element
+        // @description
+        // Returns the current Java version of the server.
+        // -->
+        if (attribute.startsWith("java_version")) {
+            event.setReplaced(new Element(System.getProperty("java.version"))
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.max_players>
         // @returns Element(Number)
         // @description

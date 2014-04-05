@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 
 public class ExecuteCommand extends AbstractCommand {
 
@@ -132,6 +133,7 @@ public class ExecuteCommand extends AbstractCommand {
             return;
 
         case AS_SERVER:
+            // TODO: new ServerCommandEvent(dcs, command)
             dcs.clearOutput();
             denizen.getServer().dispatchCommand(dcs, command);
             scriptEntry.addObject("output", new dList(dcs.getOutput()));

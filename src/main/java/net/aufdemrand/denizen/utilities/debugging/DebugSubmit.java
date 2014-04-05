@@ -62,7 +62,8 @@ public class DebugSubmit extends Thread {
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pastetext&pastetype=log"
                         + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
-                        + "&pastecontents=" + URLEncoder.encode("CraftBukkit Version: " + Bukkit.getServer().getVersion() + "\nActive Plugins: "
+                        + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
+                        + "\nCraftBukkit Version: " + Bukkit.getServer().getVersion() + "\nActive Plugins: "
                         + pluginlist.substring(0, pluginlist.length() - 2) + "\nLoaded Worlds: " + worldlist.substring(0, worldlist.length() - 2) + "\nOnline Players: "
                         + playerlist.substring(0, playerlist.length() - 2) + "\n\n") + recording)
                         .getBytes("UTF-8"));
