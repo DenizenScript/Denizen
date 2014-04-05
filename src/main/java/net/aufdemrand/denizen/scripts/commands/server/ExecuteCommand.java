@@ -103,7 +103,7 @@ public class ExecuteCommand extends AbstractCommand {
                 PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(scriptEntry.getPlayer().getPlayerEntity(), "/" + command);
                 Bukkit.getPluginManager().callEvent(pcpe);
                 if (!pcpe.isCancelled())
-                    scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+                    scriptEntry.getPlayer().getPlayerEntity().performCommand(pcpe.getMessage());
             }
             catch (Throwable e) {
                 dB.echoError("Exception while executing command as OP.");
@@ -133,9 +133,10 @@ public class ExecuteCommand extends AbstractCommand {
             return;
 
         case AS_SERVER:
-            // TODO: new ServerCommandEvent(dcs, command)
             dcs.clearOutput();
-            denizen.getServer().dispatchCommand(dcs, command);
+            ServerCommandEvent sce = new ServerCommandEvent(dcs, command);
+            Bukkit.getPluginManager().callEvent(sce);
+            denizen.getServer().dispatchCommand(dcs, sce.getCommand());
             scriptEntry.addObject("output", new dList(dcs.getOutput()));
         }
     }
