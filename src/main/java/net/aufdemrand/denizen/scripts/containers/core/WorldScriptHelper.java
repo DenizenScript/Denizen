@@ -85,6 +85,7 @@ public class WorldScriptHelper implements Listener {
     // <context.location> returns the dLocation the block was broken at.
     // <context.material> returns the dMaterial of the block that was broken.
     // <context.cuboids> returns a dList of notable cuboids surrounding the block broken.
+    // <context.xp> returns how much XP will be dropped.
     //
     // @Determine
     // "CANCELLED" to stop the block from breaking.
@@ -139,6 +140,7 @@ public class WorldScriptHelper implements Listener {
         // Add in more context
         context.put("location", new dLocation(block.getLocation()));
         context.put("material", material);
+        context.put("xp", new Element(event.getExpToDrop()));
 
         // Do events, get the determination
         String determination = EventManager.doEvents(events, null, new dPlayer(event.getPlayer()), context, true);
@@ -167,6 +169,7 @@ public class WorldScriptHelper implements Listener {
                 block.getWorld().dropItemNaturally(block.getLocation(),
                         newItem.getItemStack()); // Drop each item
             }
+            // TODO: Determine XP drop replacement? (Manually drop the XP like above)
         }
     }
 
@@ -1868,6 +1871,12 @@ public class WorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerPortalEnter(PlayerPortalEvent event) {
+
+        if (event.getPlayer() == null || event.getFrom() == null ||
+                event.getTo() == null) {
+            // If some other plugin is messing with this event... just back off.
+            return;
+        }
 
         dPlayer player = new dPlayer(event.getPlayer());
 

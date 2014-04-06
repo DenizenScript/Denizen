@@ -451,8 +451,10 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 removeEntry(0);
             }
             else {
-                // Ensure the engine won't try to run its own instant code on the entry
+                // Ensure the engine won't try to run its own instant code on the entry.
                 getEntry(0).setInstant(false);
+                // Don't let the system try to 'hold' this entry.
+                getEntry(0).setFinished(true);
                 // Execute the ScriptEntry properly through the Script Engine.
                 DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
             }

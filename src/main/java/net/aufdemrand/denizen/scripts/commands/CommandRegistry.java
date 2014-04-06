@@ -721,7 +721,7 @@ public class CommandRegistry implements dRegistry {
         // @Syntax determine (passively) [<value>]
         // @Required 1
         // @Stable stable
-        // @Short Sets the outcome of an event.
+        // @Short Sets the outcome of a world event.
         // @Author aufdemrand
         // @Group core
         // @Description
@@ -729,7 +729,8 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
+        // - determine <context.message.substring[5]>
+        // - determine passively cancelled
         // -->
         registerCoreMember(DetermineCommand.class,
                 "DETERMINE", "determine (passively) [<value>]", 1);
