@@ -26,7 +26,6 @@ public class NoteBlockReceiver implements Receiver
     private List<dEntity> entities;
     private dLocation location;
     private Map<Integer, Integer> channelPatches;
-    private Collection<dEntity> unusedEntities = new LinkedList<dEntity>();
     public String key = null;
     public Sequencer sequencer;
 
@@ -100,11 +99,12 @@ public class NoteBlockReceiver implements Receiver
         if (patch != null) instrument = MidiUtil.patchToInstrument(patch);
 
         if (location != null) {
-
             location.getWorld().playSound(location, instrument, volume, pitch);
         }
+
         else if (entities != null && !entities.isEmpty()) {
-            for (dEntity entity : entities) {
+            for (int i = 0; i < entities.size(); i++) {
+                dEntity entity = entities.get(i);
                 if (entity.isSpawned()) {
                     if (entity.isPlayer()) {
                         entity.getPlayer().playSound(entity.getLocation(), instrument, volume, pitch);
@@ -114,16 +114,9 @@ public class NoteBlockReceiver implements Receiver
                     }
                 }
                 else {
-                    unusedEntities.add(entity);
+                    entities.remove(i);
+                    i--;
                 }
-            }
-
-            // Remove any entities that are no longer spawned
-            if (!unusedEntities.isEmpty()) {
-                for (dEntity unusedEntity : unusedEntities) {
-                    entities.remove(unusedEntity);
-                }
-                unusedEntities.clear();
             }
         }
         else this.close();
@@ -134,7 +127,6 @@ public class NoteBlockReceiver implements Receiver
     {
         entities = null;
         location = null;
-        unusedEntities = null;
         channelPatches.clear();
         channelPatches = null;
         if (MidiUtil.receivers.containsKey(key)) {
