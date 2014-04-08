@@ -2,7 +2,9 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.ObjectFetcher;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,15 +30,6 @@ public class DefinitionTags implements Listener {
             return;
         }
 
-        // Get the definition from the name input
-        String def = event.getScriptEntry().getResidingQueue().getDefinition(event.getNameContext());
-
-        // No invalid definitions!
-        if (def == null) {
-            dB.echoError("Invalid definition name '" + event.getNameContext() + "'.");
-            return;
-        }
-
         // <--[tag]
         // @attribute <definition[<name>]>
         // @returns dObject
@@ -44,9 +37,34 @@ public class DefinitionTags implements Listener {
         // Returns a definition from the current queue.
         // The object will be returned as the most-valid type based on the input.
         // -->
+        // Get the definition from the name input
+        String def = event.getScriptEntry().getResidingQueue().getDefinition(event.getNameContext());
+
+        Attribute atttribute = event.getAttributes().fulfill(1);
+
+        // <--[tag]
+        // @attribute <definition[<name>].exists>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether a definition exists for the given definition name.
+        // -->
+        if (atttribute.startsWith("exists")) {
+            if (def == null)
+                event.setReplaced(Element.FALSE.getAttribute(atttribute.fulfill(1)));
+            else
+                event.setReplaced(Element.TRUE.getAttribute(atttribute.fulfill(1)));
+            return;
+        }
+
+        // No invalid definitions!
+        if (def == null) {
+            dB.echoError("Invalid definition name '" + event.getNameContext() + "'.");
+            return;
+        }
+
 
         event.setReplaced(ObjectFetcher.pickObjectFor(def)
-                .getAttribute(event.getAttributes().fulfill(1)));
+                .getAttribute(atttribute));
     }
 
 

@@ -998,7 +998,7 @@ public class WorldScriptHelper implements Listener {
                 null, null, null);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
-            Bukkit.getServer().shutdown();
+            Bukkit.getServer().shutdown(); // TODO: WHY IS THIS AN OPTION?!
     }
 
     private final Map<String, Integer> current_time = new HashMap<String, Integer>();
