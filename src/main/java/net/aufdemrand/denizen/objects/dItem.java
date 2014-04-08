@@ -663,6 +663,19 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <i@item.is_firework>
+        // @returns Element(Boolean)
+        // @group properties
+        // Returns whether the item is a firework.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dItem.firework>, and <@link tag i@item.firework>
+        // -->
+        if (attribute.startsWith("is_firework")) {
+            return new Element(ItemFirework.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <i@item.material.formatted>
         // @returns Element
         // @group formatting

@@ -2,8 +2,6 @@ package net.aufdemrand.denizen.utilities.midi;
 
 import javax.sound.midi.*;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 

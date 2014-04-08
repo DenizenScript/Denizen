@@ -32,10 +32,11 @@ public class PropertyParser {
         // register core dEntity properties
         registerProperty(EntityAge.class, dEntity.class);
         registerProperty(EntityColor.class, dEntity.class);
+        registerProperty(EntityCritical.class, dEntity.class);
+        registerProperty(EntityFirework.class, dEntity.class);
         registerProperty(EntityFramed.class, dEntity.class);
         registerProperty(EntityInfected.class, dEntity.class);
         registerProperty(EntityPotion.class, dEntity.class);
-        registerProperty(EntityCritical.class, dEntity.class);
         registerProperty(EntityPowered.class, dEntity.class);
         registerProperty(EntityProfession.class, dEntity.class);
         registerProperty(EntitySize.class, dEntity.class);
@@ -54,6 +55,7 @@ public class PropertyParser {
         registerProperty(ItemDurability.class, dItem.class);
         registerProperty(ItemDye.class, dItem.class);
         registerProperty(ItemEnchantments.class, dItem.class);
+        registerProperty(ItemFirework.class, dItem.class);
         registerProperty(ItemLore.class, dItem.class);
         registerProperty(ItemPlantgrowth.class, dItem.class);
         registerProperty(ItemPotion.class, dItem.class);

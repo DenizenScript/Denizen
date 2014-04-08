@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dEntity;

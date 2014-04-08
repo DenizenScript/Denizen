@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;

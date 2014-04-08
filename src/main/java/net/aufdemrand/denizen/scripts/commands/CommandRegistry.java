@@ -117,7 +117,12 @@ public class CommandRegistry implements dRegistry {
 
         // @Usage
         // Use to set a custom display name on an entity.
-        // - adjust e@1000 'set_custom_name:ANGRY!'
+        // - adjust e@1000 'custom_name:ANGRY!'
+        // @Usage
+        // Use as part of the steps to modify the item a player is holding
+        // - adjust <player.item_in_hand> "lore:Advanced Item" save:myitem
+        // - take iteminhand
+        // - give <entry[myitem].result>
 
         // -->
         registerCoreMember(AdjustCommand.class,
@@ -729,7 +734,10 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
+        // Use to modify the result of an event
         // - determine <context.message.substring[5]>
+        // @Usage
+        // Use to cancel an event, but continue running script commands
         // - determine passively cancelled
         // -->
         registerCoreMember(DetermineCommand.class,
