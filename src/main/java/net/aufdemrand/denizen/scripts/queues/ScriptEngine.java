@@ -23,17 +23,22 @@ public class ScriptEngine {
     }
 
 
-    public void revolve(ScriptQueue scriptQueue) {
-        // Check last ScriptEntry to see if it should be waited for
+    boolean shouldHold(ScriptQueue scriptQueue) {
         if (scriptQueue.getLastEntryExecuted() != null
                 && scriptQueue.getLastEntryExecuted().shouldWaitFor()) {
             if (!(scriptQueue instanceof Delayable)) {
-                dB.echoError("Cannot wait for an instant command!");
+                dB.echoError("Cannot wait in an instant queue!");
             }
             else {
-                return;
+                return true;
             }
         }
+        return false;
+    }
+    public void revolve(ScriptQueue scriptQueue) {
+        // Check last ScriptEntry to see if it should be waited for
+        if (shouldHold(scriptQueue))
+            return;
 
         // Okay to run next scriptEntry
         ScriptEntry scriptEntry = scriptQueue.getNext();
@@ -63,6 +68,9 @@ public class ScriptEngine {
 
             // If the entry is instant, and not injected, get the next Entry
             if (scriptEntry.isInstant()) {
+                // If it's holding, even if it's instant, just stop and wait
+                if (shouldHold(scriptQueue))
+                    return;
                 // Remove from execution list
                 scriptEntry = scriptQueue.getNext();
             }

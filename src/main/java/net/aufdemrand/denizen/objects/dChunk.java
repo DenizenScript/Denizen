@@ -340,7 +340,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dChunk
-        // @name unload
+        // @name load
         // @input None
         // @description
         // Loads a chunk into memory.

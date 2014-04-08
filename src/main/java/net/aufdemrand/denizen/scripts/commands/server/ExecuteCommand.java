@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 
 public class ExecuteCommand extends AbstractCommand {
 
@@ -102,7 +103,7 @@ public class ExecuteCommand extends AbstractCommand {
                 PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(scriptEntry.getPlayer().getPlayerEntity(), "/" + command);
                 Bukkit.getPluginManager().callEvent(pcpe);
                 if (!pcpe.isCancelled())
-                    scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+                    scriptEntry.getPlayer().getPlayerEntity().performCommand(pcpe.getMessage());
             }
             catch (Throwable e) {
                 dB.echoError("Exception while executing command as OP.");
@@ -133,7 +134,9 @@ public class ExecuteCommand extends AbstractCommand {
 
         case AS_SERVER:
             dcs.clearOutput();
-            denizen.getServer().dispatchCommand(dcs, command);
+            ServerCommandEvent sce = new ServerCommandEvent(dcs, command);
+            Bukkit.getPluginManager().callEvent(sce);
+            denizen.getServer().dispatchCommand(dcs, sce.getCommand());
             scriptEntry.addObject("output", new dList(dcs.getOutput()));
         }
     }

@@ -128,6 +128,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         BlockBreakEvent.getHandlerList().unregister(this);
         PlayerPickupItemEvent.getHandlerList().unregister(this);
         BlockPlaceEvent.getHandlerList().unregister(this);
+        ReplaceableTagEvent.getHandlerList().unregister(this);
     }
 
     public void check() {

@@ -30,6 +30,7 @@ public class DebugSubmit extends Thread {
             // Build a list of plugins
             StringBuilder pluginlist = new StringBuilder();
             int newlineLength = 0;
+            int pluginCount = Bukkit.getPluginManager().getPlugins().length;
             for (Plugin pl: Bukkit.getPluginManager().getPlugins()) {
                 String temp = ((char)0x01) + (pl.isEnabled() ? "2": "4") + pl.getName() + ": " + pl.getDescription().getVersion() + ", ";
                 pluginlist.append(temp);
@@ -41,12 +42,21 @@ public class DebugSubmit extends Thread {
             }
             // Build a list of worlds
             StringBuilder worldlist = new StringBuilder();
+            newlineLength = 0;
+            int worldCount = Bukkit.getWorlds().size();
             for (World w: Bukkit.getWorlds()) {
-                worldlist.append(w.getName() + ", ");
+                String temp = w.getName() + ", ";
+                worldlist.append(temp);
+                newlineLength += temp.length();
+                if (newlineLength > 80) {
+                    newlineLength = 0;
+                    worldlist.append("\n");
+                }
             }
             // Build a list of players
             StringBuilder playerlist = new StringBuilder();
             newlineLength = 0;
+            int playerCount = Bukkit.getOnlinePlayers().length;
             for (Player pla: Bukkit.getOnlinePlayers()) {
                 String temp = pla.getDisplayName().replace(ChatColor.COLOR_CHAR, (char)0x01) + ((char)0x01) + "7(" + pla.getName() + "), ";
                 playerlist.append(temp);
@@ -62,9 +72,11 @@ public class DebugSubmit extends Thread {
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pastetext&pastetype=log"
                         + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
-                        + "&pastecontents=" + URLEncoder.encode("CraftBukkit Version: " + Bukkit.getServer().getVersion() + "\nActive Plugins: "
-                        + pluginlist.substring(0, pluginlist.length() - 2) + "\nLoaded Worlds: " + worldlist.substring(0, worldlist.length() - 2) + "\nOnline Players: "
-                        + playerlist.substring(0, playerlist.length() - 2) + "\n\n") + recording)
+                        + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
+                        + "\nCraftBukkit Version: " + Bukkit.getServer().getVersion()
+                        + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
+                        + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
+                        + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2) + "\n\n") + recording)
                         .getBytes("UTF-8"));
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));

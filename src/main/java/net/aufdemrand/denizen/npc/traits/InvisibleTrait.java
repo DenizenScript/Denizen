@@ -4,6 +4,7 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.trait.Toggleable;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -23,7 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 public class InvisibleTrait extends Trait implements Listener, Toggleable {
 
     @Persist("")
-    private boolean invisible = false;
+    private boolean invisible = true;
 
     PotionEffect invis = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
 
@@ -36,14 +37,15 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
     public void setInvisible(boolean invisible) {
         this.invisible = invisible;
         if (invisible) setInvisible();
-        else if (npc.isSpawned())
-            if (npc.getBukkitEntity().hasPotionEffect(PotionEffectType.INVISIBILITY))
-                npc.getBukkitEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
+        else if (npc.isSpawned() && npc.getEntity() instanceof LivingEntity)
+            if (((LivingEntity)npc.getEntity()).hasPotionEffect(PotionEffectType.INVISIBILITY))
+                ((LivingEntity)npc.getEntity()).removePotionEffect(PotionEffectType.INVISIBILITY);
     }
 
 
     private void setInvisible() {
-        invis.apply(npc.getBukkitEntity());
+        if (npc.isSpawned() && npc.getEntity() instanceof LivingEntity)
+            invis.apply((LivingEntity)npc.getEntity());
     }
 
 
@@ -59,4 +61,15 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
         return invisible;
     }
 
+
+    @Override
+    public void onRemove() {
+        setInvisible(false);
+    }
+
+
+    @Override
+    public void onAttach() {
+        setInvisible(invisible);
+    }
 }

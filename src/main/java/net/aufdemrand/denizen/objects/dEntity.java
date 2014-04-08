@@ -1935,6 +1935,19 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <e@entity.is_firework>
+        // @returns Element(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the entity is a firework.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dEntity.firework_item> and <@link tag e@entity.firework_item>
+        // -->
+        if (attribute.startsWith("is_firework"))
+            return new Element(EntityFirework.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <e@entity.describe>
         // @returns Element(Boolean)
         // @group properties

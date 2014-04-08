@@ -26,7 +26,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 public class InvisibleCommand extends AbstractCommand {
 
     enum Action { TRUE, FALSE, TOGGLE }
-    enum Target { PLAYER, NPC }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

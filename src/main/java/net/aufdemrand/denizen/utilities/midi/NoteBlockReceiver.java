@@ -1,12 +1,7 @@
 package net.aufdemrand.denizen.utilities.midi;
 
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.ShortMessage;
+import javax.sound.midi.*;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,21 +23,28 @@ public class NoteBlockReceiver implements Receiver
 
     private List<dEntity> entities;
     private dLocation location;
-    private final Map<Integer, Integer> channelPatches;
-    private Collection<dEntity> unusedEntities = new LinkedList<dEntity>();
+    private Map<Integer, Integer> channelPatches;
+    public String key = null;
+    public Sequencer sequencer;
 
-    public NoteBlockReceiver(List<dEntity> entities) throws InvalidMidiDataException, IOException
+    public NoteBlockReceiver(List<dEntity> entities, String _Key) throws InvalidMidiDataException, IOException
     {
         this.entities = entities;
         this.location = null;
         this.channelPatches = Maps.newHashMap();
+        this.key = _Key;
     }
 
-    public NoteBlockReceiver(dLocation location) throws InvalidMidiDataException, IOException
+    public NoteBlockReceiver(dLocation location, String _Key) throws InvalidMidiDataException, IOException
     {
         this.entities = null;
         this.location = location;
         this.channelPatches = Maps.newHashMap();
+        this.key = _Key;
+    }
+
+    public void setSequencer(Sequencer sequencer) {
+        this.sequencer = sequencer;
     }
 
     @Override
@@ -65,6 +67,10 @@ public class NoteBlockReceiver implements Receiver
                     break;
 
                 case ShortMessage.NOTE_OFF:
+                    break;
+
+                case ShortMessage.STOP:
+                    close();
                     break;
             }
         }
@@ -91,11 +97,12 @@ public class NoteBlockReceiver implements Receiver
         if (patch != null) instrument = MidiUtil.patchToInstrument(patch);
 
         if (location != null) {
-
             location.getWorld().playSound(location, instrument, volume, pitch);
         }
+
         else if (entities != null && !entities.isEmpty()) {
-            for (dEntity entity : entities) {
+            for (int i = 0; i < entities.size(); i++) {
+                dEntity entity = entities.get(i);
                 if (entity.isSpawned()) {
                     if (entity.isPlayer()) {
                         entity.getPlayer().playSound(entity.getLocation(), instrument, volume, pitch);
@@ -105,16 +112,9 @@ public class NoteBlockReceiver implements Receiver
                     }
                 }
                 else {
-                    unusedEntities.add(entity);
+                    entities.remove(i);
+                    i--;
                 }
-            }
-
-            // Remove any entities that are no longer spawned
-            if (!unusedEntities.isEmpty()) {
-                for (dEntity unusedEntity : unusedEntities) {
-                    entities.remove(unusedEntity);
-                }
-                unusedEntities.clear();
             }
         }
         else this.close();
@@ -123,8 +123,16 @@ public class NoteBlockReceiver implements Receiver
     @Override
     public void close()
     {
-        if (entities != null) entities = null;
-        if (location != null) location = null;
+        entities = null;
+        location = null;
         channelPatches.clear();
+        channelPatches = null;
+        if (MidiUtil.receivers.containsKey(key)) {
+            MidiUtil.receivers.remove(key);
+        }
+        if (sequencer != null) {
+            sequencer.close();
+            sequencer = null;
+        }
     }
 }

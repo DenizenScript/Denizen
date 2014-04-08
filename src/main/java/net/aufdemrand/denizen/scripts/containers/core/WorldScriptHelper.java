@@ -85,6 +85,7 @@ public class WorldScriptHelper implements Listener {
     // <context.location> returns the dLocation the block was broken at.
     // <context.material> returns the dMaterial of the block that was broken.
     // <context.cuboids> returns a dList of notable cuboids surrounding the block broken.
+    // <context.xp> returns how much XP will be dropped.
     //
     // @Determine
     // "CANCELLED" to stop the block from breaking.
@@ -139,6 +140,7 @@ public class WorldScriptHelper implements Listener {
         // Add in more context
         context.put("location", new dLocation(block.getLocation()));
         context.put("material", material);
+        context.put("xp", new Element(event.getExpToDrop()));
 
         // Do events, get the determination
         String determination = EventManager.doEvents(events, null, new dPlayer(event.getPlayer()), context, true);
@@ -167,6 +169,7 @@ public class WorldScriptHelper implements Listener {
                 block.getWorld().dropItemNaturally(block.getLocation(),
                         newItem.getItemStack()); // Drop each item
             }
+            // TODO: Determine XP drop replacement? (Manually drop the XP like above)
         }
     }
 
@@ -995,7 +998,7 @@ public class WorldScriptHelper implements Listener {
                 null, null, null);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
-            Bukkit.getServer().shutdown();
+            Bukkit.getServer().shutdown(); // TODO: WHY IS THIS AN OPTION?!
     }
 
     private final Map<String, Integer> current_time = new HashMap<String, Integer>();
@@ -1801,7 +1804,7 @@ public class WorldScriptHelper implements Listener {
     // <context.location> returns the dLocation of the portal block touched by the entity.
     //
     // -->
-    @EventHandler
+    @EventHandler // TODO: This fires very rapidly. Smart event?
     public void entityPortalEnter(EntityPortalEnterEvent event) {
 
         dPlayer player = null;
@@ -1852,6 +1855,44 @@ public class WorldScriptHelper implements Listener {
                 ("entity exits portal",
                         entity.identifyType() + " exits portal"),
                 npc, player, context, true);
+    }
+
+    // <--[event]
+    // @Events
+    // player uses portal
+    //
+    // @Triggers when a player enters a portal.
+    // @Context
+    // <context.from> returns the location teleported from.
+    // <context.to> returns the location teleported to.
+    // @Determine
+    // "CANCELLED" to stop the teleport.
+    // dLocation to change the destination.
+    // -->
+    @EventHandler
+    public void playerPortalEnter(PlayerPortalEvent event) {
+
+        if (event.getPlayer() == null || event.getFrom() == null ||
+                event.getTo() == null) {
+            // If some other plugin is messing with this event... just back off.
+            return;
+        }
+
+        dPlayer player = new dPlayer(event.getPlayer());
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("from", new dLocation(event.getFrom()));
+        context.put("to", new dLocation(event.getTo()));
+
+        String determination = EventManager.doEvents(Arrays.asList
+                ("player uses portal"), null, player, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
+            event.setCancelled(true);
+        }
+        else if (dLocation.matches(determination)) {
+            event.setTo(dLocation.valueOf(determination));
+        }
     }
 
     // <--[event]
@@ -4296,90 +4337,6 @@ public class WorldScriptHelper implements Listener {
     //   VEHICLE EVENTS
     /////////////////
 
-    // <--[event]
-    // @Events
-    // vehicle collides with block
-    // vehicle collides with <material>
-    // <vehicle> collides with block
-    // <vehicle> collides with <material>
-    //
-    // @Triggers when a vehicle collides with a block.
-    // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.location> returns the dLocation of the block.
-    //
-    // -->
-    @EventHandler
-    public void vehicleBlockCollision(VehicleBlockCollisionEvent event) {
-
-        // Bukkit seems to be triggering collision on air.. let's filter that out.
-        if (event.getBlock().getType() == Material.AIR) return;
-
-        dPlayer player = null;
-        dNPC npc = null; // TODO: These are always null!
-
-        dEntity vehicle = new dEntity(event.getVehicle());
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("vehicle", vehicle);
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-
-        List<String> events = new ArrayList<String>();
-        events.add("vehicle collides with block");
-        events.add("vehicle collides with " + material.identifySimple());
-        events.add(vehicle.identifyType() + " collides with block");
-        events.add(vehicle.identifyType() + " collides with " + material.identifySimple());
-
-        EventManager.doEvents(events, npc, player, context, true);
-    }
-
-    // <--[event]
-    // @Events
-    // vehicle collides with entity
-    // vehicle collides with <entity>
-    // <vehicle> collides with entity
-    // <vehicle> collides with <entity>
-    //
-    // @Triggers when a vehicle collides with an entity.
-    // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.entity> returns the dEntity of the entity the vehicle has collided with.
-    //
-    // @Determine
-    // "CANCELLED" to stop the collision from happening.
-    // "NOPICKUP" to stop the vehicle from picking up the entity.
-    //
-    // -->
-    @EventHandler
-    public void vehicleEntityCollision(VehicleEntityCollisionEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        dEntity vehicle = new dEntity(event.getVehicle());
-        dEntity entity = new dEntity(event.getEntity());
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("vehicle", vehicle);
-        context.put("entity", entity.getDenizenObject());
-
-        if (entity.isNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer());
-
-        List<String> events = new ArrayList<String>();
-        events.add("vehicle collides with entity");
-        events.add("vehicle collides with " + entity.identifyType());
-        events.add(vehicle.identifyType() + " collides with entity");
-        events.add(vehicle.identifyType() + " collides with " + entity.identifyType());
-
-        String determination = EventManager.doEvents(events, npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        if (determination.toUpperCase().startsWith("NOPICKUP"))
-            event.setPickupCancelled(true);
-    }
 
     // <--[event]
     // @Events

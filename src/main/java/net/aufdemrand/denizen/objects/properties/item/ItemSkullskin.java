@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
-
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dItem;
@@ -15,7 +14,7 @@ public class ItemSkullskin implements Property {
 
     public static boolean describes(dObject item) {
         return item instanceof dItem
-                && ((dItem) item).getItemStack().getType() == Material.SKULL_ITEM;
+                && ((dItem) item).getItemStack().getItemMeta() instanceof SkullMeta;
     }
 
     public static ItemSkullskin getFrom(dObject _item) {
@@ -46,8 +45,6 @@ public class ItemSkullskin implements Property {
         // -->
         if (attribute.startsWith("skin")) {
             if (item.getItemStack().getDurability() == 3
-                    && item.getItemStack().hasItemMeta()
-                    && item.getItemStack().getItemMeta() instanceof SkullMeta
                     && ((SkullMeta)item.getItemStack().getItemMeta()).hasOwner())
                 return new Element(((SkullMeta)item.getItemStack().getItemMeta()).getOwner())
                     .getAttribute(attribute.fulfill(1));
@@ -66,8 +63,6 @@ public class ItemSkullskin implements Property {
         // -->
         if (attribute.startsWith("has_skin"))
             return new Element(item.getItemStack().getDurability() == 3
-                                && item.getItemStack().hasItemMeta()
-                                && item.getItemStack().getItemMeta() instanceof SkullMeta
                                 && ((SkullMeta)item.getItemStack().getItemMeta()).hasOwner())
                     .getAttribute(attribute.fulfill(1));
 
@@ -79,8 +74,6 @@ public class ItemSkullskin implements Property {
     @Override
     public String getPropertyString() {
         if (item.getItemStack().getDurability() == 3
-                && item.getItemStack().hasItemMeta()
-                && item.getItemStack().getItemMeta() instanceof SkullMeta
                 && ((SkullMeta)item.getItemStack().getItemMeta()).hasOwner())
             return ((SkullMeta)item.getItemStack().getItemMeta()).getOwner();
         else

@@ -84,6 +84,14 @@ public class CommandRegistry implements dRegistry {
     // Also, you should never directly type in [], (), {}, or <> even though they are in the syntax info.
     // The only exception is in a replaceable tag (EG: <npc.has_trait[<traitname>]> will take <npc.has_trait[mytrait]> as a valid actual usage)
     //
+    // Highly specific note: <commands> means a block of commands wrapped in braces... EG:
+    // <code>
+    // - repeat 3 {
+    //   - narrate "%value%"
+    //   - narrate "everything between the {and} symbols (including them) are for the <commands> input!"
+    //   }
+    // </code>
+    //
     // -->
 
     @Override
@@ -109,7 +117,12 @@ public class CommandRegistry implements dRegistry {
 
         // @Usage
         // Use to set a custom display name on an entity.
-        // - adjust e@1000 'set_custom_name:ANGRY!'
+        // - adjust e@1000 'custom_name:ANGRY!'
+        // @Usage
+        // Use as part of the steps to modify the item a player is holding
+        // - adjust <player.item_in_hand> "lore:Advanced Item" save:myitem
+        // - take iteminhand
+        // - give <entry[myitem].result>
 
         // -->
         registerCoreMember(AdjustCommand.class,
@@ -713,7 +726,7 @@ public class CommandRegistry implements dRegistry {
         // @Syntax determine (passively) [<value>]
         // @Required 1
         // @Stable stable
-        // @Short Sets the outcome of an event.
+        // @Short Sets the outcome of a world event.
         // @Author aufdemrand
         // @Group core
         // @Description
@@ -721,7 +734,11 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
+        // Use to modify the result of an event
+        // - determine <context.message.substring[5]>
+        // @Usage
+        // Use to cancel an event, but continue running script commands
+        // - determine passively cancelled
         // -->
         registerCoreMember(DetermineCommand.class,
                 "DETERMINE", "determine (passively) [<value>]", 1);
@@ -1161,8 +1178,8 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ForEach
-        // @Syntax foreach [<object>|...] [<commands>]
-        // @Required 2
+        // @Syntax foreach [stop/<object>|...] [<commands>]
+        // @Required 1
         // @Stable stable
         // @Short Loops through a dList, running a set of commands for each item.
         // @Author Morphan1, mcmonkey
@@ -1171,9 +1188,12 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
         // that list entry. To call the value of the entry while in the loop, you can use %value%.
+        //
+        // To end a foreach loop, do - foreach stop
 
         // @Tags
         // %value% to get the current item in the loop
+        // %loop_index% to get the current loop iteration number
 
         // @Usage
         // Use to run commands for 'each entry' in a list of objects/elements.
@@ -1190,7 +1210,7 @@ public class CommandRegistry implements dRegistry {
 
         // -->
         registerCoreMember(ForEachCommand.class,
-                "FOREACH", "foreach [<object>|...] [<commands>]", 2);
+                "FOREACH", "foreach [stop/<object>|...] [<commands>]", 1);
 
 
         // <--[command]
@@ -1949,7 +1969,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Random
-        // @Syntax random [<#>/{braced commands}]
+        // @Syntax random [<#>/<commands>]
         // @Required 1
         // @Stable stable
         // @Short Selects a random choice from the following script commands.
@@ -1978,7 +1998,7 @@ public class CommandRegistry implements dRegistry {
 
         // -->
         registerCoreMember(RandomCommand.class,
-                "RANDOM", "random [<#>/{braced commands}]", 1);
+                "RANDOM", "random [<#>/<commands>]", 1);
 
 
         // <--[command]
@@ -2026,7 +2046,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Repeat
-        // @Syntax repeat [<amount>] [<commands>]
+        // @Syntax repeat [stop/<amount>] [<commands>]
         // @Required 1
         // @Stable stable
         // @Short Runs a series of braced commands several times.
@@ -2036,6 +2056,8 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Loops through a series of braced commands a specified number of times.
         // To get the number of loops so far, you can use %value%.
+        //
+        // To stop a repeat loop, do - repeat stop
 
         // @Tags
         // %value% to get the number of loops so far
@@ -2047,7 +2069,7 @@ public class CommandRegistry implements dRegistry {
         //   }
         // -->
         registerCoreMember(RepeatCommand.class,
-                "REPEAT", "repeat [<amount>] [<commands>]", 1);
+                "REPEAT", "repeat [stop/<amount>] [<commands>]", 1);
 
 
         // <--[command]
