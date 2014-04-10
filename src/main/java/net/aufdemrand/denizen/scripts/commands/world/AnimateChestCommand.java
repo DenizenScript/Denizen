@@ -80,8 +80,8 @@ public class AnimateChestCommand extends AbstractCommand {
                 for (dPlayer player: players) {
                     if (sound.asBoolean()) player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
                     ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
-                            new PacketPlayOutBlockAction((int) location.getX(), (int) location.getY(), (int) location.getZ(),
-                            ((CraftWorld) location.getWorld()).getHandle().getType((int) location.getX(), (int) location.getY(), (int) location.getZ()), 1, 1));
+                            new PacketPlayOutBlockAction(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
+                            ((CraftWorld) location.getWorld()).getHandle().getType(location.getBlockX(), location.getBlockY(), location.getBlockZ()), 1, 1));
                 }
                 break;
 
@@ -89,8 +89,8 @@ public class AnimateChestCommand extends AbstractCommand {
                 for (dPlayer player: players) {
                     if (sound.asBoolean()) player.getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
                     ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
-                            new PacketPlayOutBlockAction((int)location.getX(), (int)location.getY(), (int)location.getZ(),
-                            ((CraftWorld)location.getWorld()).getHandle().getType((int)location.getX(), (int)location.getY(), (int)location.getZ()), 1, 0));
+                            new PacketPlayOutBlockAction(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
+                            ((CraftWorld)location.getWorld()).getHandle().getType(location.getBlockX(), location.getBlockY(), location.getBlockZ()), 1, 0));
                 }
                 break;
         }
