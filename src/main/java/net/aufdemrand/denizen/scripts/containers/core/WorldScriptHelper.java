@@ -2781,12 +2781,16 @@ public class WorldScriptHelper implements Listener {
                     item.identifySimple() + " in inventory");
             events.add(interaction +
                     item.identifySimple() + " in inventory");
+            events.add("player clicks " +
+                    item.identifySimple() + " in " + type);
             events.add(interaction +
                     item.identifySimple() + " in " + type);
             events.add("player clicks " +
                     item.identifyMaterial() + " in inventory");
             events.add(interaction +
                     item.identifyMaterial() + " in inventory");
+            events.add("player clicks " +
+                    item.identifyMaterial() + " in " + type);
             events.add(interaction +
                     item.identifyMaterial() + " in " + type);
 

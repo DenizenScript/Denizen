@@ -105,11 +105,16 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
         // Do the execution
 
         for (dNPC npc: npcs) {
+            if (!npc.isSpawned()) {
+                dB.echoError("NPC " + npc.identify() + " is not spawned!");
+                continue;
+            }
             if (auto_range != null
                     && auto_range == Element.TRUE) {
                 double distance = npc.getLocation().distance(loc);
-                if (npc.getNavigator().getLocalParameters().range() < distance)
+                if (npc.getNavigator().getLocalParameters().range() < distance + 10)
                     npc.getNavigator().getDefaultParameters().range((float) distance + 10);
+                // TODO: Should be using local params rather than default?
             }
 
             npc.getNavigator().setTarget(loc);

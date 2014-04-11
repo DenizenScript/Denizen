@@ -88,7 +88,8 @@ public class ExecuteCommand extends AbstractCommand {
                 PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(scriptEntry.getPlayer().getPlayerEntity(), "/" + command);
                 Bukkit.getPluginManager().callEvent(pcpe);
                 if (!pcpe.isCancelled())
-                    scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+                    scriptEntry.getPlayer().getPlayerEntity().performCommand(
+                            pcpe.getMessage().startsWith("/") ? pcpe.getMessage().substring(1): pcpe.getMessage());
             }
             catch (Throwable e) {
                 dB.echoError("Exception while executing command as player.");
@@ -103,7 +104,8 @@ public class ExecuteCommand extends AbstractCommand {
                 PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(scriptEntry.getPlayer().getPlayerEntity(), "/" + command);
                 Bukkit.getPluginManager().callEvent(pcpe);
                 if (!pcpe.isCancelled())
-                    scriptEntry.getPlayer().getPlayerEntity().performCommand(pcpe.getMessage());
+                    scriptEntry.getPlayer().getPlayerEntity().performCommand(
+                            pcpe.getMessage().startsWith("/") ? pcpe.getMessage().substring(1): pcpe.getMessage());
             }
             catch (Throwable e) {
                 dB.echoError("Exception while executing command as OP.");
