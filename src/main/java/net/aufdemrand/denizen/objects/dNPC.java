@@ -24,7 +24,6 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
-import net.citizensnpcs.trait.PlayerSkin;
 import net.citizensnpcs.trait.Poses;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
@@ -528,20 +527,6 @@ public class dNPC implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("id"))
             return new Element(getId()).getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <n@npc.skin>
-        // @returns Element
-        // @description
-        // returns the name of the skin the NPC is wearing.
-        // -->
-        if (attribute.startsWith("skin")) {
-            if (!getCitizen().hasTrait(PlayerSkin.class)) {
-                return Element.NULL.getAttribute(attribute.fulfill(1));
-            }
-            return new Element(getCitizen().getTrait(PlayerSkin.class).getSkinName())
-                    .getAttribute(attribute.fulfill(1));
-        }
 
         // <--[tag]
         // @attribute <n@npc.owner>
