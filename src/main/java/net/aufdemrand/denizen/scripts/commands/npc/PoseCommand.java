@@ -56,7 +56,7 @@ public class PoseCommand extends AbstractCommand {
             throw new InvalidArgumentsException("This command requires an NPC!");
 
         // It also requires a pose ID
-        if (!scriptEntry.hasObject("id"))
+        if (!scriptEntry.hasObject("pose_id"))
                 throw new InvalidArgumentsException("No ID specified!");
 
         // Set default objects
