@@ -2,12 +2,12 @@ package net.aufdemrand.denizen.utilities.nbt;
 
 // NMS/CB imports start
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
-import net.minecraft.server.v1_7_R2.*;
-import net.minecraft.server.v1_7_R2.PlayerInventory;
+import net.minecraft.server.v1_7_R3.*;
+import net.minecraft.server.v1_7_R3.PlayerInventory;
 import org.bukkit.*;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R2.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_7_R2.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_7_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_7_R3.inventory.CraftInventoryPlayer;
 // NMS/CB imports end
 
 import java.io.File;
