@@ -123,6 +123,8 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     @EventHandler
     public void stopDespawn(NPCDespawnEvent e) {
+        if (e.getNPC() == null || !e.getNPC().isSpawned())
+            return;
         Chunk chnk = e.getNPC().getEntity().getLocation().getChunk();
         String chunkString = chnk.getX()+", "+ chnk.getZ();
         if(chunkDelays.containsKey(chunkString)) {

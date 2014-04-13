@@ -15,16 +15,16 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_7_R2.EntityLiving;
+import net.minecraft.server.v1_7_R3.EntityLiving;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R2.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_7_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryHolder;
@@ -126,7 +126,7 @@ public class dEntity implements dObject, Adjustable {
                     Entity entity = null;
 
                     for (World world : Bukkit.getWorlds()) {
-                        net.minecraft.server.v1_7_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
+                        net.minecraft.server.v1_7_R3.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
 
                         // Make sure the nmsEntity is valid, to prevent
                         // unpleasant errors
@@ -959,7 +959,7 @@ public class dEntity implements dObject, Adjustable {
                 return "n@" + getNPC().getId();
 
             else if (isPlayer())
-                return "p@" + getPlayer().getName();
+                return "p@" + getPlayer().getUniqueId();
 
                 // TODO:
                 // Check if entity is a 'notable entity'

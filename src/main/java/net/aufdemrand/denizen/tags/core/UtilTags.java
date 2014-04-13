@@ -419,7 +419,7 @@ public class UtilTags implements Listener {
         // -->
         if (attribute.startsWith("list_players")) {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
-            for (OfflinePlayer player : dPlayer.offlinePlayers)
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
                     players.add(dPlayer.mirrorBukkitPlayer(player));
             event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
             return;
@@ -447,7 +447,7 @@ public class UtilTags implements Listener {
         // -->
         if (attribute.startsWith("list_offline_players")) {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
-            for (OfflinePlayer player : dPlayer.offlinePlayers)
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
                 if (!player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player));
             event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
             return;
@@ -461,7 +461,7 @@ public class UtilTags implements Listener {
         // -->
         if (attribute.startsWith("list_ops")) {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
-            for (OfflinePlayer player : dPlayer.offlinePlayers)
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
                 if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
             event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
             return;
@@ -489,7 +489,7 @@ public class UtilTags implements Listener {
         // -->
         if (attribute.startsWith("list_offline_ops")) {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
-            for (OfflinePlayer player : dPlayer.offlinePlayers)
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
                 if (player.isOp() && !player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player));
             event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
             return;

@@ -28,7 +28,7 @@ public class ShowFakeCommand extends AbstractCommand {
             if (arg.matchesPrefix("to, e, entities")) {
                 for (String entity : dList.valueOf(arg.getValue()))
                     if (dPlayer.matches(entity)) entities.add(entity);
-                added_entities = true;
+                added_entities = true; // TODO: handle lists properly
             }
 
             else if (arg.matchesArgumentType(dList.class)) {
@@ -63,6 +63,9 @@ public class ShowFakeCommand extends AbstractCommand {
         if (entities.isEmpty() && added_entities)
             throw new InvalidArgumentsException("Must specify valid targets!");
 
+        if (!scriptEntry.hasObject("material"))
+            throw new InvalidArgumentsException("Must specify a valid material!");
+
         scriptEntry.addObject("entities", entities);
         scriptEntry.addObject("locations", locations);
     }
@@ -78,7 +81,7 @@ public class ShowFakeCommand extends AbstractCommand {
         dList players = (dList) scriptEntry.getObject("entities");
 
         dB.report(scriptEntry, getName(), material.debug()
-                + list.debug() + scriptEntry.getPlayer().debug() + duration.debug());
+                + list.debug() + players.debug() + duration.debug());
 
         for (dObject plr : players.filter(dPlayer.class)) {
 

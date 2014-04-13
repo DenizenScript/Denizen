@@ -38,12 +38,9 @@ public class dPlayer implements dObject, Adjustable {
     //   STATIC METHODS
     /////////////////
 
-    static Map<String, dPlayer> players = new HashMap<String, dPlayer>();
-    public static ArrayList<OfflinePlayer> offlinePlayers = new ArrayList<OfflinePlayer>();
 
     public static dPlayer mirrorBukkitPlayer(OfflinePlayer player) {
         if (player == null) return null;
-        if (players.containsKey(player.getName())) return players.get(player.getName());
         else return new dPlayer(player);
     }
 
@@ -64,27 +61,40 @@ public class dPlayer implements dObject, Adjustable {
 
     @Fetchable("p")
     public static dPlayer valueOf(String string) {
+        return valueOfInternal(string, true);
+    }
+
+
+    static dPlayer valueOfInternal(String string, boolean announce) {
         if (string == null) return null;
 
         string = string.replace("p@", "").replace("P@", "");
 
-        ////////
-        // Match player name
+        // Match as a UUID
 
-        OfflinePlayer returnable = null;
-
-        for (OfflinePlayer player : offlinePlayers)
-            if (player.getName().equalsIgnoreCase(string)) {
-                returnable = player;
-                break;
+        try {
+            UUID uuid = UUID.fromString(string);
+            if (uuid != null) {
+                OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+                if (player != null) {
+                    return new dPlayer(player);
+                }
             }
-
-        if (returnable != null) {
-            if (players.containsKey(returnable.getName())) return players.get(returnable.getName());
-            else return new dPlayer(returnable);
+        }
+        catch (IllegalArgumentException e) {
+            // Nothing
         }
 
-        else dB.echoError("Invalid Player! '" + string + "' could not be found.");
+        // Match as a player name
+
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            if (player.getName().equalsIgnoreCase(string)) {
+                return new dPlayer(player);
+            }
+        }
+
+        if (announce)
+            dB.echoError("Invalid Player! '" + string + "' could not be found.");
 
         return null;
     }
@@ -100,13 +110,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // No identifier supplied? Let's check offlinePlayers. Return true if
         // a match is found.
-        OfflinePlayer returnable = null;
-        for (OfflinePlayer player : offlinePlayers)
-            if (player.getName().equalsIgnoreCase(arg)) {
-                returnable = player;
-                break;
-            }
-        return returnable != null;
+        return valueOfInternal(arg, false) != null;
     }
 
 
@@ -115,13 +119,7 @@ public class dPlayer implements dObject, Adjustable {
     /////////////////
 
     public dPlayer(OfflinePlayer player) {
-        if (player == null) return;
-
-        this.player_name = player.getName();
-        this.nbtEditor = new ImprovedOfflinePlayer(player);
-
-        // Keep in a map to avoid multiple instances of a dPlayer per player.
-        players.put(this.player_name, this);
+        offlinePlayer = player;
     }
 
 
@@ -129,25 +127,23 @@ public class dPlayer implements dObject, Adjustable {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    String player_name = null;
-    ImprovedOfflinePlayer nbtEditor = null;
+    OfflinePlayer offlinePlayer = null;
 
     public boolean isValid() {
         return getPlayerEntity() != null || getOfflinePlayer() != null;
     }
 
     public Player getPlayerEntity() {
-        if (player_name == null) return null;
-        return Bukkit.getPlayer(player_name);
+        if (offlinePlayer == null) return null;
+        return Bukkit.getPlayer(offlinePlayer.getUniqueId());
     }
 
     public OfflinePlayer getOfflinePlayer() {
-        if (player_name == null) return null;
-        return Bukkit.getOfflinePlayer(player_name);
+        return offlinePlayer;
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        return nbtEditor;
+        return new ImprovedOfflinePlayer(getOfflinePlayer());
     }
 
     public dEntity getDenizenEntity() {
@@ -163,7 +159,7 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public String getName() {
-        return player_name;
+        return offlinePlayer.getName();
     }
 
     public dLocation getLocation() {
@@ -246,7 +242,7 @@ public class dPlayer implements dObject, Adjustable {
 
     @Override
     public String identify() {
-        return "p@" + player_name;
+        return "p@" + offlinePlayer.getUniqueId().toString();
     }
 
     @Override
@@ -265,7 +261,7 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute == null)
             return "null";
 
-        if (player_name == null)
+        if (offlinePlayer == null)
             return Element.NULL.getAttribute(attribute);
 
         /////////////////////
@@ -338,7 +334,7 @@ public class dPlayer implements dObject, Adjustable {
         // if the player hasn't said all that much.
         // -->
         if (attribute.startsWith("chat_history_list"))
-            return new dList(PlayerTags.playerChatHistory.get(player_name))
+            return new dList(PlayerTags.playerChatHistory.get(getName())) // TODO: UUID?
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -353,10 +349,10 @@ public class dPlayer implements dObject, Adjustable {
             if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
                 x = attribute.getIntContext(1);
             // No playerchathistory? Return null.
-            if (!PlayerTags.playerChatHistory.containsKey(player_name))
+            if (!PlayerTags.playerChatHistory.containsKey(getName())) // TODO: UUID?
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             else
-                return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
+                return new Element(PlayerTags.playerChatHistory.get(getName()).get(x - 1)) // TODO: UUID?
                         .getAttribute(attribute.fulfill(1));
         }
 
@@ -448,7 +444,7 @@ public class dPlayer implements dObject, Adjustable {
                     return new Element(Depends.economy.currencyNamePlural())
                             .getAttribute(attribute.fulfill(2));
 
-                return new Element(Depends.economy.getBalance(player_name))
+                return new Element(Depends.economy.getBalance(getName())) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(1));
 
             } else {
@@ -602,15 +598,15 @@ public class dPlayer implements dObject, Adjustable {
             // ** NOTE: This tag is old. Please instead use <server.list_offline_players> **
             // -->
             else if (attribute.startsWith("list.offline")) {
-                for(OfflinePlayer player : offlinePlayers) {
+                for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     if (!player.isOnline())
-                        players.add(player.getName());
+                        players.add("p@" + player.getUniqueId().toString());
                 }
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
             else {
-                for(OfflinePlayer player : offlinePlayers)
-                    players.add(player.getName());
+                for(OfflinePlayer player : Bukkit.getOfflinePlayers())
+                    players.add("p@" + player.getUniqueId().toString());
                 return new dList(players).getAttribute(attribute.fulfill(1));
             }
         }
@@ -622,7 +618,11 @@ public class dPlayer implements dObject, Adjustable {
 
         if (attribute.startsWith("name") && !isOnline())
             // This can be parsed later with more detail if the player is online, so only check for offline.
-            return new Element(player_name).getAttribute(attribute.fulfill(1));
+            return new Element(getName()).getAttribute(attribute.fulfill(1));
+
+        else if (attribute.startsWith("uuid") && !isOnline())
+            // This can be parsed later with more detail if the player is online, so only check for offline.
+            return new Element(offlinePlayer.getUniqueId().toString()).getAttribute(attribute.fulfill(1));
 
 
         /////////////////////
@@ -781,7 +781,7 @@ public class dPlayer implements dObject, Adjustable {
 
             // Non-world specific permission
             if (attribute.getAttribute(2).startsWith("global"))
-                return new Element(Depends.permissions.playerInGroup((World) null, player_name, group))
+                return new Element(Depends.permissions.playerInGroup((World) null, getName(), group)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
 
                 // <--[tag]
@@ -796,7 +796,7 @@ public class dPlayer implements dObject, Adjustable {
 
                 // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world"))
-                return new Element(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group))
+                return new Element(Depends.permissions.playerInGroup(attribute.getContext(2), getName(), group)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
 
             // Permission in current world
@@ -832,7 +832,7 @@ public class dPlayer implements dObject, Adjustable {
 
             // Non-world specific permission
             if (attribute.getAttribute(2).startsWith("global"))
-                return new Element(Depends.permissions.has((World) null, player_name, permission))
+                return new Element(Depends.permissions.has((World) null, getName(), permission)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
 
                 // <--[tag]
@@ -847,7 +847,7 @@ public class dPlayer implements dObject, Adjustable {
 
                 // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world"))
-                return new Element(Depends.permissions.has(attribute.getContext(2), player_name, permission))
+                return new Element(Depends.permissions.has(attribute.getContext(2), getName(), permission)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
 
             // Permission in current world
@@ -1002,7 +1002,7 @@ public class dPlayer implements dObject, Adjustable {
         // returns the name of the player.
         // -->
         if (attribute.startsWith("name"))
-            return new Element(player_name).getAttribute(attribute.fulfill(1));
+            return new Element(getName()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <p@player.has_finished[<script>]>

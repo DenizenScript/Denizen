@@ -4,16 +4,16 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.minecraft.server.v1_7_R2.DataWatcher;
-import net.minecraft.server.v1_7_R2.EntityPlayer;
-import net.minecraft.server.v1_7_R2.Packet;
-import net.minecraft.server.v1_7_R2.PacketPlayInClientCommand;
-import net.minecraft.server.v1_7_R2.PacketPlayOutSpawnEntityLiving;
-import net.minecraft.server.v1_7_R2.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_7_R2.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_7_R3.DataWatcher;
+import net.minecraft.server.v1_7_R3.EntityPlayer;
+import net.minecraft.server.v1_7_R3.Packet;
+import net.minecraft.server.v1_7_R3.PacketPlayInClientCommand;
+import net.minecraft.server.v1_7_R3.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.v1_7_R3.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_7_R3.PacketPlayOutEntityMetadata;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
