@@ -959,7 +959,7 @@ public class dEntity implements dObject, Adjustable {
                 return "n@" + getNPC().getId();
 
             else if (isPlayer())
-                return "p@" + getPlayer().getName();
+                return "p@" + getPlayer().getUniqueId();
 
                 // TODO:
                 // Check if entity is a 'notable entity'

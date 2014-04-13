@@ -4013,13 +4013,13 @@ public class WorldScriptHelper implements Listener {
         context.put("hostname", new Element(event.getHostname()));
 
         boolean NewPlayer = true;
-        for (OfflinePlayer player: dPlayer.offlinePlayers) {
-            if (player.getName().equalsIgnoreCase(event.getPlayer().getName())) {
+        for (OfflinePlayer player: Bukkit.getOfflinePlayers()) {
+            if (player.getUniqueId().compareTo(event.getPlayer().getUniqueId()) == 0) {
                 NewPlayer = false;
+                break;
             }
         }
         if (NewPlayer) {
-            dPlayer.offlinePlayers.add(event.getPlayer());
             events.add("player logs in for the first time");
             events.add("player first login");
         }
