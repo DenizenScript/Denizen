@@ -201,8 +201,6 @@ public class TagManager implements Listener {
 
     private static int[] locateTag(String arg) {
         // find escaped brackets
-        arg = arg.replace("\\<", "  ")
-            .replace("\\>", "  ");
 
         // find tag brackets pattern
         Matcher tagMatcher = tagRegex.matcher(arg);

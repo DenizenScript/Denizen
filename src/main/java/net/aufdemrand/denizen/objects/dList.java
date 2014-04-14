@@ -403,6 +403,15 @@ public class dList extends ArrayList<String> implements dObject {
                         dScriptArg.append(get(n).replaceAll("\\w\\w?@", ""));
                     }
                 }
+                else if (dPlayer.matches(get(n))) {
+                    dPlayer gotten = dPlayer.valueOf(get(n));
+                    if (gotten != null) {
+                        dScriptArg.append(gotten.getName());
+                    }
+                    else {
+                        dScriptArg.append(get(n).replaceAll("\\w\\w?@", ""));
+                    }
+                }
                 else {
                     dScriptArg.append(get(n).replaceAll("\\w\\w?@", ""));
                 }
