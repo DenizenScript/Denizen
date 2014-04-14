@@ -350,13 +350,33 @@ public class Duration implements dObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <d@duration.in_weeks>
+        // @returns Element(Decimal)
+        // @description
+        // returns the number of days in the Duration.
+        // -->
+        if (attribute.startsWith("in_weeks") || attribute.startsWith("weeks"))
+            return new Element(seconds / 604800)
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <d@duration.in_days>
+        // @returns Element(Decimal)
+        // @description
+        // returns the number of days in the Duration.
+        // -->
+        if (attribute.startsWith("in_days") || attribute.startsWith("days"))
+            return new Element(seconds / 86400)
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <d@duration.in_hours>
         // @returns Element(Decimal)
         // @description
         // returns the number of hours in the Duration.
         // -->
         if (attribute.startsWith("in_hours") || attribute.startsWith("hours"))
-            return new Element(seconds / 1800)
+            return new Element(seconds / 3600)
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
