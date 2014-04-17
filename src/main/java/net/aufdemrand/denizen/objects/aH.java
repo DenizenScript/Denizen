@@ -1,10 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -353,6 +349,20 @@ public class aH {
      */
     public static String debugObj(String prefix, Object value) {
         return "<G>" + prefix + "='<Y>" + (value != null ? value.toString() : "null") + "<G>'  ";
+    }
+
+    public static <T extends dObject> String debugList(String prefix, Collection<T> objects) {
+        if (objects == null)
+            return debugObj(prefix, null);
+        StringBuilder sb = new StringBuilder();
+        for (dObject obj: objects) {
+            String output = obj.debug();
+            sb.append(output.substring((obj.getPrefix() + "='<A>").length(), output.length() - 6)).append(", ");
+        }
+        if (sb.length() == 0)
+            return debugObj(prefix, sb);
+        else
+            return debugObj(prefix, "[" + sb.substring(0, sb.length() - 2) + "]");
     }
 
     /**
