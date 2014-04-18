@@ -88,6 +88,10 @@ public class dPlayer implements dObject, Adjustable {
         // Match as a player name
 
         for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            if (player.getName() == null) {
+                dB.echoError("Player file for UUID " + player.getUniqueId().toString() + " is invalid!");
+                continue;
+            }
             if (player.getName().equalsIgnoreCase(string)) {
                 return new dPlayer(player);
             }
@@ -227,7 +231,7 @@ public class dPlayer implements dObject, Adjustable {
 
     @Override
     public String debug() {
-        return (prefix + "='<A>" + identify() + "<G>'  ");
+        return (prefix + "='<A>" + identifySimple() + "<G>'  ");
     }
 
     @Override
@@ -247,7 +251,7 @@ public class dPlayer implements dObject, Adjustable {
 
     @Override
     public String identifySimple() {
-        return identify();
+        return "p@" + offlinePlayer.getName();
     }
 
     @Override

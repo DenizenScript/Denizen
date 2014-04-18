@@ -79,7 +79,7 @@ public class NarrateCommand extends AbstractCommand {
         // Report to dB
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Narrating", text)
-                        + aH.debugObj("Targets", targets)
+                        + aH.debugList("Targets", targets)
                         + (format != null ? aH.debugObj("Format", format.getName()) : ""));
 
         if (targets == null) {

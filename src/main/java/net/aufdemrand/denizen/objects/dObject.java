@@ -44,7 +44,8 @@ import net.aufdemrand.denizen.tags.Attribute;
 // + ----- dPlayer ----- +
 // | object notation: p@    can reference unique objects: yes    can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   p@<player_name>  - fetches an online or offline player with the specified name
+// |   p@<UUID> - fetches an online or offline player with the specified UUID
+// |   p@<player_name> - Outdated constructor for back-support, fetches by name instead of UUID
 //
 // + ----- dNPC ---------+
 // | object notation: n@    can reference unique objects: yes    can be notable: no
