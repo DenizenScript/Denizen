@@ -440,7 +440,7 @@ public class CommandRegistry implements dRegistry {
 
         // @Usage
         // Use to remove an effect from an entity
-        // - if <p@Player.has_effect[jump]> {
+        // - if <player.has_effect[jump]> {
         //   - potion jump remove <player>
         //   }
         //

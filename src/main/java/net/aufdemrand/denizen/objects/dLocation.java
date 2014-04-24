@@ -468,6 +468,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         // Returns a list of lines on a sign, pre-escaped to prevent issues.
         // See <@link language Property Escaping>
         // -->
+        //  TODO: Mech for this...
         if (attribute.startsWith("sign_contents.escaped")) {
             if (getBlock().getState() instanceof Sign) {
                 dList toReturn = new dList();

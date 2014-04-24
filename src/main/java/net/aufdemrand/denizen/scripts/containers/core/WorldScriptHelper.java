@@ -3514,7 +3514,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a player throws an egg.
     // @Context
-    // <context.item> returns the dEntity of the egg.
+    // <context.egg> returns the dEntity of the egg.
     // <context.is_hatching> returns an Element with a value of "true" if the egg will hatch and "false" otherwise.
     //
     // @Determine
