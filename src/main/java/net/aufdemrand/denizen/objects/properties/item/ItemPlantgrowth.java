@@ -67,6 +67,9 @@ public class ItemPlantgrowth implements Property {
             else if (item.getItemStack().getData() instanceof CocoaPlant)
                 return new Element(((CocoaPlant)item.getItemStack().getData()).getSize().name())
                         .getAttribute(attribute.fulfill(1));
+            else
+                return new Element(item.getItemStack().getData().getData())
+                        .getAttribute(attribute.fulfill(1));
         }
 
         return null;
