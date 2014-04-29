@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_7_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -731,6 +732,23 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("material"))
             return getMaterial().getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <i@item.json>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns the item converted to a raw JSON object for transmission
+        // EG, via /tellraw.
+        // EXAMPLE USAGE: execute as_server "tellraw <player.name>
+        // {'text':'','extra':[{'text':'This is the item in your hand ','color':'white'},
+        // {'text':'Item','color':'white','hoverEvent':{'action':'show_item','value':'{<player.item_in_hand.json>}'}}]}"
+        // -->
+        if (attribute.startsWith("json")) {
+            String JSON = CraftItemStack.asNMSCopy(item).E().getChatModifier().toString();
+            return new Element(JSON.substring(176, JSON.length() - 154))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <i@item.scriptname>

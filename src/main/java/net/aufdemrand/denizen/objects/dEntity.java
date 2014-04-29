@@ -953,12 +953,14 @@ public class dEntity implements dObject, Adjustable {
     @Override
     public String identify() {
 
-        // Check if entity is a Player or NPC
-        if (entity != null) {
-            if (isNPC())
-                return "n@" + getNPC().getId();
+        // Check if entity is an NPC
+        if (npc != null) {
+            return "n@" + npc.getId();
+        }
 
-            else if (isPlayer())
+        // Check if entity is a Player or is spawned
+        if (entity != null) {
+            if (isPlayer())
                 return "p@" + getPlayer().getUniqueId();
 
                 // TODO:
@@ -990,12 +992,15 @@ public class dEntity implements dObject, Adjustable {
 
     @Override
     public String identifySimple() {
-        // Check if entity is a Player or NPC
-        if (entity != null) {
-            if (isNPC())
-                return "n@" + getNPC().getId();
 
-            else if (isPlayer())
+        // Check if entity is an NPC
+        if (npc != null) {
+            return "n@" + npc.getId();
+        }
+
+        // Check if entity is a Player or is spawned
+        if (entity != null) {
+            if (isPlayer())
                 return "p@" + getPlayer().getName();
 
                 // TODO:
