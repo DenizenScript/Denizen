@@ -65,7 +65,8 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     // @Triggers when the NPC breaks a block with the Break Command
     //
     // @Context
-    // <context.Location> returns the location the NPC Dug
+    // <context.Location> returns the location the NPC Dug    
+    // <context.material> Returns the Block dug
     //
     // -->
     @Override
@@ -76,7 +77,9 @@ public class BreakCommand extends AbstractCommand implements Holdable {
         Element radius = scriptEntry.getElement("radius");
 
         final HashMap<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = dMaterial.getMaterialFrom(location.getBlock().getType());
         context.put("location", location);
+        context.put("material", material);
 
 
         dB.report(scriptEntry, getName(), location.debug() + entity.debug() + radius.debug());
