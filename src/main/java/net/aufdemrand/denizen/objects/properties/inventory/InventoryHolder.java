@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects.properties.inventory;
 
 import net.aufdemrand.denizen.objects.*;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import net.aufdemrand.denizen.objects.properties.Property;
@@ -52,6 +53,9 @@ public class InventoryHolder implements Property {
             }
             else if (holder instanceof Entity) {
                 return new dEntity((Entity) holder);
+            }
+            else if (holder instanceof DoubleChest) {
+                return new dLocation(((DoubleChest) holder).getLocation());
             }
             else if (holder instanceof BlockState) {
                 return new dLocation(((BlockState) holder).getLocation());
