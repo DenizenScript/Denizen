@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.TagManager;
 
 public class dScript implements dObject {
 
@@ -309,13 +310,15 @@ public class dScript implements dObject {
         if (attribute.startsWith("cons")) {
             if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
 
+            // TODO: Should this be getList or similar?
             Object obj = getContainer().getConfigurationSection("").get(attribute.getContext(1).toUpperCase());
             if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
 
             if (obj instanceof List) {
                 dList list = new dList();
                 for (Object each : (List<Object>) obj)
-                    list.add(each.toString());
+                    list.add(TagManager.tag(attribute.getScriptEntry().getPlayer(),
+                            attribute.getScriptEntry().getNPC(), each.toString(), false, attribute.getScriptEntry()));
                 return list.getAttribute(attribute.fulfill(1));
 
             }
