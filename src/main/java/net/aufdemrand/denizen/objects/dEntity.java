@@ -1489,7 +1489,7 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <e@entity.get_leash_holder>
-        // @returns dPlayer
+        // @returns dEntity
         // @group attributes
         // @description
         // Returns the leash holder of entity.

@@ -98,6 +98,37 @@ public class CommandRegistry implements dRegistry {
     public void registerCoreMembers() {
 
         // <--[command]
+        // @Name Action
+        // @Syntax Action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)
+        // @Required 1
+        // @Stable unstable
+        // @Short Manually fires an NPC action.
+        // @Author mcmonkey
+        // @Group npc
+        // @Description
+        // This command will trigger an NPC action (an action within an 'assignment' type script attached to the NPC) exactly the same
+        // as if an actual serverside event had caused it.
+        // You can specify as many action names as you want in the list, they will all be fired.
+        // You may also specify as many NPCs as you would like to run the action on, in a list.
+        // If no NPCs are specified, the NPC linked to the script will be assumed.
+        // The script's linked player and the specified NPC will automatically be sent through to the action.
+        // To add context information (tags like <context.location>) to the event, simplify specify all context values in a list.
+        // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
+        // To do this, the best way is to just escape the list value (see <@link language property escaping>).
+        // @Tags
+        // TODO
+        // @Usage
+        // Use to trigger a custom action
+        // - event "custom action"
+        // @Usage
+        // Use to trigger multiple custom action with context on a different NPC
+        // - event "player dances|target enemy" n@10 context:action|custom|target|<player.selected_npc>
+        // -->
+        registerCoreMember(ActionCommand.class,
+                "ACTION", "Action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
+
+
+        // <--[command]
         // @Name Adjust
         // @Syntax adjust [<dObject>|...] [<mechanism>](:<value>)
         // @Required 2

@@ -57,7 +57,7 @@ import java.util.*;
 // return false. To see a list of flag tags, see 'A list of flag-specific tags'.
 // <code>
 // - flag <player> stoneskin
-// - narrate "<player> has flag 'stoneskin'? <player.has_flag[stoneskin]>"
+// - narrate "<player.name> has flag 'stoneskin'? <player.has_flag[stoneskin]>"
 // </code>
 //
 //
@@ -90,7 +90,7 @@ import java.util.*;
 // Need to store a location? Store it in a flag!
 // <code>
 // - flag <player> home_location:<player.location.simple>
-// - narrate "Your home location is now '<player.flag[home_location].as_location.formatted>'!"
+// - narrate "Your home location is now '<player.flag[home_location].as_location.simple>'!"
 // </code>
 //
 //
