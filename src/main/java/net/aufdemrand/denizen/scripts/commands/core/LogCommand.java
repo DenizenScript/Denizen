@@ -24,7 +24,7 @@ public class LogCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (!scriptEntry.hasObject("type")
-                &&arg.matchesPrefix("type")
+                && arg.matchesPrefix("type")
                 && arg.matchesEnum(Type.values()))
                 scriptEntry.addObject("type", arg.asElement());
 

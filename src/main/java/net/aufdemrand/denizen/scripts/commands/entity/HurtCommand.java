@@ -34,6 +34,12 @@ public class HurtCommand extends AbstractCommand {
                     || arg.matchesPrimitive(aH.PrimitiveType.Integer)))
                 scriptEntry.addObject("amount", arg.asElement());
 
+            else if (!scriptEntry.hasObject("source")
+                    && arg.matchesPrefix("source", "s")
+                    && arg.matchesArgumentType(dEntity.class)) {
+                scriptEntry.addObject("source", arg.asType(dEntity.class));
+            }
+
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(dList.class)) {
                 // Entity arg
@@ -72,13 +78,20 @@ public class HurtCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        if (entities == null)
-            return;
-        Element amountelement = scriptEntry.getElement("amount");
+        dEntity source = (dEntity) scriptEntry.getObject("source");
+        Element amountElement = scriptEntry.getElement("amount");
 
-        dB.report(scriptEntry, getName(), amountelement.debug() + aH.debugObj("entities", entities));
-        for (dEntity entity : entities)
-            entity.getLivingEntity().damage(amountelement.asDouble());
+        dB.report(scriptEntry, getName(), amountElement.debug()
+                                          + aH.debugList("entities", entities)
+                                          + (source == null ? "" : source.debug()));
+
+        double amount = amountElement.asDouble();
+        for (dEntity entity : entities) {
+            if (source == null)
+                entity.getLivingEntity().damage(amount);
+            else
+                entity.getLivingEntity().damage(amount, source.getBukkitEntity());
+        }
 
     }
 }

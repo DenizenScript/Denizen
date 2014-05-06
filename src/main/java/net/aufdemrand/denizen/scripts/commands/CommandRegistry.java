@@ -112,7 +112,7 @@ public class CommandRegistry implements dRegistry {
         // You may also specify as many NPCs as you would like to run the action on, in a list.
         // If no NPCs are specified, the NPC linked to the script will be assumed.
         // The script's linked player and the specified NPC will automatically be sent through to the action.
-        // To add context information (tags like <context.location>) to the event, simplify specify all context values in a list.
+        // To add context information (tags like <context.location>) to the action, simply specify all context values in a list.
         // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
         // To do this, the best way is to just escape the list value (see <@link language property escaping>).
         // @Tags
@@ -335,7 +335,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Assignment
-        // @Syntax assignment [{set}/remove] (script:<name>)
+        // @Syntax assignment [set/remove] (script:<name>)
         // @Required 1
         // @Stable unstable
         // @Short Changes an NPC's assignment.
@@ -349,7 +349,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(AssignmentCommand.class,
-                "ASSIGNMENT", "assignment [{set}/remove] (script:<name>)", 1);
+                "ASSIGNMENT", "assignment [set/remove] (script:<name>)", 1);
 
 
         // <--[command]
@@ -954,7 +954,7 @@ public class CommandRegistry implements dRegistry {
         // You can specify as many event names as you want in the list, they will all be fired. It will also automatically
         // fire a duplicate of each event name with object identifiers (eg 'i@', see <@link language dobject>) removed.
         // The script's linked player and NPC will automatically be sent through to the event.
-        // To add context information (tags like <context.location>) to the event, simplify specify all context values in a list.
+        // To add context information (tags like <context.location>) to the event, simply specify all context values in a list.
         // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
         // To do this, the best way is to just escape the list value (see <@link language property escaping>).
         // @Tags
