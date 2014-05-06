@@ -38,7 +38,8 @@ public class DefinitionTags implements Listener {
         // The object will be returned as the most-valid type based on the input.
         // -->
         // Get the definition from the name input
-        String def = event.getScriptEntry().getResidingQueue().getDefinition(event.getNameContext());
+        String defName = event.getNameContext();
+        String def = event.getScriptEntry().getResidingQueue().getDefinition(defName);
 
         Attribute atttribute = event.getAttributes().fulfill(1);
 
@@ -58,7 +59,8 @@ public class DefinitionTags implements Listener {
 
         // No invalid definitions!
         if (def == null) {
-            dB.echoError("Invalid definition name '" + event.getNameContext() + "'.");
+            if (!event.hasAlternative())
+            dB.echoError("Invalid definition name '" + defName + "'.");
             return;
         }
 

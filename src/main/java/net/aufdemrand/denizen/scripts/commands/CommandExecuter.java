@@ -104,7 +104,7 @@ public class CommandExecuter {
                     m = definition_pattern.matcher(arg.raw_value);
                     sb = new StringBuffer();
                     while (m.find()) {
-                        String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
+                        String definition = TagManager.EscapeOutput(scriptEntry.getResidingQueue().getDefinition(m.group(1)));
                         if (definition == null) definition = "null";
                         m.appendReplacement(sb, definition);
                     }
@@ -157,8 +157,7 @@ public class CommandExecuter {
             scriptEntry.setArguments(newArgs);
 
             // Now process non-instant tags.
-            if (scriptEntry.has_tags)
-                scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, false));
+            scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, false));
 
             // Parse the rest of the arguments for execution.
             command.parseArgs(scriptEntry);
