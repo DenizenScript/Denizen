@@ -19,6 +19,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
@@ -298,6 +299,21 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("max_players")) {
             event.setReplaced(new Element(Bukkit.getServer().getMaxPlayers())
                     .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_permission_groups>
+        // @returns dList
+        // @description
+        // Returns a list of all permission groups on the server.
+        // -->
+        if (attribute.startsWith("list_permission_groups")) {
+            if (Depends.permissions == null) {
+                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                return;
+            }
+            event.setReplaced(new dList(Arrays.asList(Depends.permissions.getGroups())).getAttribute(attribute.fulfill(1)));
             return;
         }
 
