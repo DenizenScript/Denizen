@@ -15,6 +15,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
  * @author Jeremy Schroeder
  *
  */
+
+// TODO: Fully update command to 0.9+ style
 public class AssignmentCommand extends AbstractCommand {
 
     private enum Action { SET, REMOVE }
@@ -45,8 +47,11 @@ public class AssignmentCommand extends AbstractCommand {
         }
 
         // Check required arguments
-        if (scriptEntry.getNPC() == null)
+        if (!scriptEntry.hasNPC())
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
+
+        if (!scriptEntry.hasObject("action"))
+            throw new InvalidArgumentsException("Must specify an action!");
 
         if (scriptEntry.getObject("action").equals(Action.SET) && !scriptEntry.hasObject("script"))
             throw new InvalidArgumentsException("Script specified was missing or invalid.");

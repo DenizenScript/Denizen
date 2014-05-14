@@ -155,7 +155,7 @@ public class TagManager implements Listener {
         if (arg == null) return null;
 
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
-        if (arg.indexOf('>') == -1 || arg.length() < 3) return arg;
+        if (arg.indexOf('>') == -1 || arg.length() < 3) return CleanOutput(arg);
 
         // Parse \escaping down to internal escaping.
         if (!instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));

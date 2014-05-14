@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.trait.Anchors;
+import net.citizensnpcs.util.Anchor;
 
 import static net.aufdemrand.denizen.objects.aH.Argument;
 
@@ -81,6 +82,9 @@ public class AnchorCommand extends AbstractCommand {
 
         dNPC npc = scriptEntry.getNPC();
 
+        if (!npc.getCitizen().hasTrait(Anchors.class))
+            npc.getCitizen().addTrait(Anchors.class);
+
         switch (action) {
 
             case ADD:
@@ -88,25 +92,50 @@ public class AnchorCommand extends AbstractCommand {
                 return;
 
             case ASSUME:
-                npc.getEntity().teleport(npc.getCitizen().getTrait(Anchors.class)
-                        .getAnchor(id.asString()).getLocation());
+            {
+                Anchor n = npc.getCitizen().getTrait(Anchors.class)
+                        .getAnchor(id.asString());
+                if (n == null)
+                    dB.echoError("Invalid anchor name '" + id.asString() + "'");
+                else
+                    npc.getEntity().teleport(n.getLocation());
+            }
                 return;
 
             case WALKNEAR:
-                npc.getNavigator().setTarget(
-                        Utilities.getWalkableLocationNear(npc.getCitizen().getTrait(Anchors.class)
-                                .getAnchor(id.asString()).getLocation(), range.asInt()));
+            {
+                Anchor n = npc.getCitizen().getTrait(Anchors.class)
+                        .getAnchor(id.asString());
+                if (n == null)
+                    dB.echoError("Invalid anchor name '" + id.asString() + "'");
+                else if (range == null)
+                    dB.echoError("Must specify a range!");
+                else
+                    npc.getNavigator().setTarget(
+                        Utilities.getWalkableLocationNear(n.getLocation(), range.asInt()));
+            }
                 return;
 
             case WALKTO:
-                npc.getNavigator().setTarget(npc.getCitizen().getTrait(Anchors.class)
-                        .getAnchor(id.asString()).getLocation());
+            {
+                Anchor n = npc.getCitizen().getTrait(Anchors.class)
+                        .getAnchor(id.asString());
+                if (n == null)
+                    dB.echoError("Invalid anchor name '" + id.asString() + "'");
+                else
+                    npc.getNavigator().setTarget(n.getLocation());
+            }
                 return;
 
             case REMOVE:
-                npc.getCitizen().getTrait(Anchors.class)
-                        .removeAnchor(npc.getCitizen().getTrait(Anchors.class)
-                                .getAnchor(id.asString()));
+            {
+                Anchor n = npc.getCitizen().getTrait(Anchors.class)
+                        .getAnchor(id.asString());
+                if (n == null)
+                    dB.echoError("Invalid anchor name '" + id.asString() + "'");
+                else
+                    npc.getCitizen().getTrait(Anchors.class).removeAnchor(n);
+            }
         }
 
 

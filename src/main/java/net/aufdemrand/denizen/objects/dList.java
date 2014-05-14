@@ -473,14 +473,17 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("exclude") &&
                 attribute.hasContext(1)) {
-            dList exclusions = new dList(attribute.getContext(1));
+            dList exclusions = dList.valueOf(attribute.getContext(1));
             // Create a new dList that will contain the exclusions
             dList list = new dList(this);
             // Iterate through
-            for (String exclusion : exclusions)
-                for (int i = 0;i < list.size();i++)
-                    if (list.get(i).equalsIgnoreCase(exclusion))
+            for (String exclusion : exclusions) {
+                for (int i = 0;i < list.size();i++) {
+                    if (list.get(i).equalsIgnoreCase(exclusion)) {
                         list.remove(i--);
+                    }
+                }
+            }
 
             // Return the modified list
             return list.getAttribute(attribute.fulfill(1));
