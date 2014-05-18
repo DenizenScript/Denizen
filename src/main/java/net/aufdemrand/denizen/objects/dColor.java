@@ -182,11 +182,11 @@ public class dColor implements dObject {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
-        }
+        // No tags currently
+
+        // TODO: Red/Green/Blue
+        // TODO: Hue/Sat/Val
+        // TODO: Name ('red', etc.)
 
         return new Element(identify()).getAttribute(attribute);
     }

@@ -397,10 +397,12 @@ public class Comparable {
     @Override
     public String toString() {
         return  (logic != Logic.REGULAR ? "Logic='" + logic.toString() + "', " : "")
-                + "Comparable='" + (comparable == null ? "null'" : comparable.getClass().getSimpleName()
+                + "Comparable='" + (comparable == null ? "null'" : (comparable instanceof Double ? "Decimal":
+                comparable instanceof String ? "Element": comparable.getClass().getSimpleName())
                 + "(" + ChatColor.AQUA + comparable + ChatColor.WHITE + ")'")
                 + ", Operator='" + operator.toString()
-                + "', ComparedTo='" + (comparedto == null ? "null'" : comparedto.getClass().getSimpleName()
+                + "', ComparedTo='" + (comparedto == null ? "null'" : (comparedto instanceof Double ? "Decimal":
+                comparedto instanceof String ? "Element": comparedto.getClass().getSimpleName())
                 + "(" + ChatColor.AQUA + comparedto + ChatColor.WHITE + ")' ")
                 + ChatColor.YELLOW + "--> OUTCOME='" + outcome + "'";
     }

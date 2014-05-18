@@ -31,6 +31,11 @@ public class ItemPotion implements Property {
     public String getPropertyString() {
         if (item.getItemStack().getDurability() == 0)
             return null;
+        // World record winning stupidest necessary workaround for a Bukkit issue
+        if ((item.getItemStack().getDurability() & 0x40) != 0
+                && PotionType.getByDamageValue(item.getItemStack().getDurability() & 0xF).isInstant()) {
+            item.getItemStack().setDurability((short)(item.getItemStack().getDurability() & ~0x40));
+        }
         Potion pot = Potion.fromItemStack(item.getItemStack());
         if (pot == null || pot.getType() == null)
             return String.valueOf(item.getItemStack().getDurability());
@@ -200,7 +205,8 @@ public class ItemPotion implements Property {
                 }
                 Potion pot = new Potion(type);
                 pot.setLevel(data1.asInt());
-                pot.setHasExtendedDuration(data2.asBoolean());
+                if (!pot.getType().isInstant())
+                    pot.setHasExtendedDuration(data2.asBoolean());
                 pot.setSplash(data3.asBoolean());
                 pot.apply(item.getItemStack());
             }
