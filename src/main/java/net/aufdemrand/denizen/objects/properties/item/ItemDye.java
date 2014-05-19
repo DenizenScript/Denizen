@@ -30,11 +30,6 @@ public class ItemDye implements Property {
 
     dItem item;
 
-    public String GetColor() {
-        Color c = ((LeatherArmorMeta) item.getItemStack().getItemMeta()).getColor();
-        return c.getRed() + "," + c.getGreen() + "," + c.getBlue();
-    }
-
     @Override
     public String getAttribute(Attribute attribute) {
 
@@ -42,14 +37,14 @@ public class ItemDye implements Property {
 
         // <--[tag]
         // @attribute <i@item.dye_color>
-        // @returns dList
+        // @returns dColor
         // @mechanism dItem.dye
         // @group properties
         // @description
         // Returns the color of the leather armor item.
         // -->
         if (attribute.startsWith("dye_color")) {
-            return new Element(GetColor()).getAttribute(attribute.fulfill(1));
+            return new dColor(((LeatherArmorMeta) item.getItemStack().getItemMeta()).getColor()).getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -58,7 +53,7 @@ public class ItemDye implements Property {
 
     @Override
     public String getPropertyString() {
-        return GetColor();
+        return new dColor(((LeatherArmorMeta) item.getItemStack().getItemMeta()).getColor()).identify();
     }
 
     @Override
@@ -72,25 +67,17 @@ public class ItemDye implements Property {
         // <--[mechanism]
         // @object dItem
         // @name dye
-        // @input Element
+        // @input dColor
         // @description
         // Sets the leather armor item's dye color in the format RED,GREEN,BLUE
         // See <@link language Property Escaping>
         // @tags
         // <i@item.lore>
         // -->
-
-        if (mechanism.matches("dye")) {
-            String[] colors = mechanism.getValue().asString().split(",");
-            if (colors.length != 3) {
-                dB.echoError("Invalid color '" + mechanism.getValue().asString() + "'");
-                return;
-            }
-            Element red = new Element(colors[0]);
-            Element green = new Element(colors[1]);
-            Element blue = new Element(colors[2]);
+        if (mechanism.matches("dye") && mechanism.requireObject(dColor.class)) {
+            dColor color = mechanism.getValue().asType(dColor.class);
             LeatherArmorMeta meta = ((LeatherArmorMeta) item.getItemStack().getItemMeta());
-            meta.setColor(Color.fromRGB(red.asInt(), green.asInt(), blue.asInt()));
+            meta.setColor(color.getColor());
             item.getItemStack().setItemMeta(meta);
         }
     }
