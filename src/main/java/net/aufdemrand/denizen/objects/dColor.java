@@ -182,13 +182,96 @@ public class dColor implements dObject {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        // No tags currently
+        // <--[tag]
+        // @attribute <co@color.red>
+        // @returns Element(Number)
+        // @description
+        // returns the red value of this color.
+        // -->
+        if (attribute.startsWith("red"))
+            return new Element(color.getRed()).getAttribute(attribute.fulfill(1));
 
-        // TODO: Red/Green/Blue
-        // TODO: Hue/Sat/Val
-        // TODO: Name ('red', etc.)
+        // <--[tag]
+        // @attribute <co@color.green>
+        // @returns Element(Number)
+        // @description
+        // returns the green value of this color.
+        // -->
+        if (attribute.startsWith("green"))
+            return new Element(color.getGreen()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <co@color.blue>
+        // @returns Element(Number)
+        // @description
+        // returns the blue value of this color.
+        // -->
+        if (attribute.startsWith("blue"))
+            return new Element(color.getBlue()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <co@color.hue>
+        // @returns Element(Number)
+        // @description
+        // returns the hue value of this color.
+        // -->
+        if (attribute.startsWith("hue"))
+            return new Element(ToHSB()[0]).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <co@color.saturation>
+        // @returns Element(Number)
+        // @description
+        // returns the saturation value of this color.
+        // -->
+        if (attribute.startsWith("saturation"))
+            return new Element(ToHSB()[1]).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <co@color.brightness>
+        // @returns Element(Number)
+        // @description
+        // returns the brightness value of this color.
+        // -->
+        if (attribute.startsWith("brightness"))
+            return new Element(ToHSB()[2]).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <co@color.name>
+        // @returns Element
+        // @description
+        // returns the name of this color (or red,green,blue if none).
+        // -->
+        if (attribute.startsWith("name"))
+            return new Element(identify().substring(3)).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <co@color.mix[<color>]>
+        // @returns dColor
+        // @description
+        // returns the color that results if you mix this color with another.
+        // -->
+        if (attribute.startsWith("mix")
+                && attribute.hasContext(1)) {
+            dColor mixed_with = dColor.valueOf(attribute.getContext(1));
+            if (mixed_with != null)
+                return new dColor(color.mixColors(mixed_with.getColor())).getAttribute(attribute.fulfill(1));
+            else
+                dB.echoError("'" + attribute.getContext(1) + "' is not a valid color!");
+        }
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
+        }
 
         return new Element(identify()).getAttribute(attribute);
+    }
+
+    int[] ToHSB() {
+        float[] base = java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+        return new int[] { (int)(base[0] * 255), (int)(base[1] * 255), (int)(base[2] * 255)};
     }
 
 }
