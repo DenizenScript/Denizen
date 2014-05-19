@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.Conversion;
@@ -32,7 +33,7 @@ import org.bukkit.util.Vector;
  * @author David Cernat, mcmonkey
  */
 
-public class PushCommand extends AbstractCommand {
+public class PushCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -130,6 +131,7 @@ public class PushCommand extends AbstractCommand {
         // TODO: Should this be checked in argument parsing?
         if (destination == null) {
             dB.report(scriptEntry, getName(), "No destination specified!");
+            scriptEntry.setFinished(true);
             return;
         }
 
@@ -228,6 +230,7 @@ public class PushCommand extends AbstractCommand {
                         queue.addDefinition("last_entity", lastEntity.identify());
                         queue.start();
                     }
+                    scriptEntry.setFinished(true);
                 }
             }
         };
