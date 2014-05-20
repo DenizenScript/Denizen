@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.apache.commons.lang.StringUtils;
@@ -543,6 +544,16 @@ public class Element implements dObject {
         if (attribute.startsWith("asworld")
                 || attribute.startsWith("as_world"))
             return HandleNull(element, dWorld.valueOf(element), "dWorld").getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.escaped>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns the element, escaped for safe reuse.
+        // -->
+        if (attribute.startsWith("escaped"))
+            return new Element(EscapeTags.Escape(element)).getAttribute(attribute.fulfill(1));
 
 
         /////////////////////
