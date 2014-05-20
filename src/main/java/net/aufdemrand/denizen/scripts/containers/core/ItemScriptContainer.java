@@ -80,7 +80,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # For colorable items, such as leather armor, you can specify a valid dColor to specify the item's appearance.
     //   # See 'dColor' for more information.
-    //   color: c@color
+    //   color: co@color
     //
     //   # If your material is a 'm@written_book', you can specify a book script to automatically scribe your item
     //   # upon creation. See 'book script containers' for more information.

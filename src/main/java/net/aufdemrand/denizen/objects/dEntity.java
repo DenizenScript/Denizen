@@ -1042,6 +1042,9 @@ public class dEntity implements dObject, Adjustable {
         if (attribute == null) return null;
 
         if (entity == null && entity_type == null) {
+            if (npc != null) {
+                return new Element(identify()).getAttribute(attribute);
+            }
             dB.echoError("dEntity has returned null.");
             return Element.NULL.getAttribute(attribute);
         }
