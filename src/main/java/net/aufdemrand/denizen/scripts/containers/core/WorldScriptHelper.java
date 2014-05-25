@@ -4351,9 +4351,6 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
     //
-    // @Determine
-    // "CANCELLED" to stop the entity from entering the vehicle.
-    //
     // -->
     @EventHandler
     public void vehicleCreate(VehicleCreateEvent event) {

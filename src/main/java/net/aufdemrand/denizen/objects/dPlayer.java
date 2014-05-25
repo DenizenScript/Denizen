@@ -87,15 +87,9 @@ public class dPlayer implements dObject, Adjustable {
 
         // Match as a player name
 
-        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-            if (player.getName() == null) {
-                dB.echoError("Player file for UUID " + player.getUniqueId().toString() + " is invalid!");
-                continue;
-            }
-            if (player.getName().equalsIgnoreCase(string)) {
-                return new dPlayer(player);
-            }
-        }
+        OfflinePlayer player = Bukkit.getOfflinePlayer(string);
+        if (player.hasPlayedBefore())
+            return new dPlayer(player);
 
         if (announce)
             dB.echoError("Invalid Player! '" + string + "' could not be found.");
