@@ -258,11 +258,12 @@ public class dNPC implements dObject, Adjustable {
         return getCitizen().getTrait(TriggerTrait.class);
     }
 
-    public void action(String actionName, dPlayer player, Map<String, dObject> context) {
+    public String action(String actionName, dPlayer player, Map<String, dObject> context) {
         if (getCitizen() != null)
         {
             if (getCitizen().hasTrait(AssignmentTrait.class))
-                DenizenAPI.getCurrentInstance().getNPCRegistry()
+                // Return the result from the ActionHandler
+                return DenizenAPI.getCurrentInstance().getNPCRegistry()
                         .getActionHandler().doAction(
                         actionName,
                         this,
@@ -270,6 +271,8 @@ public class dNPC implements dObject, Adjustable {
                         getAssignmentTrait().getAssignment(),
                         context);
         }
+
+        return "none";
     }
 
     public void action(String actionName, dPlayer player) {
