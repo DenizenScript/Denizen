@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.ChatbotTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
@@ -50,24 +51,28 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     // <context.message> returns the triggering message
     // <context.keyword> returns the keyword matched by a RegEx trigger
     //
+    // @Determine
+    // "CANCELLED" to stop the player from chatting.
+    // Element(String) to change the message.
+    //
     // -->
-    public Boolean process(Player player, String message) {
+    public ChatContext process(Player player, String message) {
 
         // Check if there is an NPC within range of a player to chat to.
         dNPC npc = Utilities.getClosestNPC_ChatTrigger(player.getLocation(), 25);
         dPlayer denizenPlayer = dPlayer.mirrorBukkitPlayer(player);
 
         // No NPC? Nothing else to do here.
-        if (npc == null) return false;
+        if (npc == null) return new ChatContext(false);
 
         // If the NPC doesn't have triggers, or the triggers are not enabled, then
         // just return false.
-        if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return false;
-        if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) return false;
+        if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return new ChatContext(false);
+        if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) return new ChatContext(false);
 
         // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(player.getLocation()))
-            return false;
+            return new ChatContext(false);
 
         // The Denizen config can require some other criteria for a successful chat-with-npc.
         // Should we check 'line of sight'? Players cannot talk to NPCs through walls
@@ -76,10 +81,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 
         if (Settings.ChatMustSeeNPC())
-            if (!player.hasLineOfSight(npc.getEntity())) return false;
+            if (!player.hasLineOfSight(npc.getEntity())) return new ChatContext(false);
 
         if (Settings.ChatMustLookAtNPC())
-            if (!Rotation.isFacingEntity(player, npc.getEntity(), 45)) return false;
+            if (!Rotation.isFacingEntity(player, npc.getEntity(), 45)) return new ChatContext(false);
 
         Boolean ret = false;
 
@@ -89,18 +94,34 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(message));
 
+        //
+        // Fire the Actions!
+        //
+
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
-        if (!npc.getTriggerTrait().trigger(ChatTrigger.this, denizenPlayer, context)) {
-            // If the NPC is not interactable, Settings may allow the chat to filter
+        TriggerTrait.TriggerContext trigger = npc.getTriggerTrait()
+                .trigger(ChatTrigger.this, denizenPlayer, context);
+
+        // Return false if determine cancelled
+        if (trigger.hasDetermination()) {
+            if (trigger.getDetermination().equalsIgnoreCase("cancelled")) {
+                // Mark as handled, the event will cancel.
+                return new ChatContext(true);
+            }
+        }
+
+        // Return false if trigger was unable to fire
+        if (!trigger.wasTriggered()) {
+            // If the NPC is not interact-able, Settings may allow the chat to filter
             // through. Check the Settings if this is enabled.
             if (Settings.ChatGloballyIfUninteractable()) {
                 dB.echoDebug(script, ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
                         + "The NPC is currently cooling down or engaged.");
-                return false;
-            } else {
+                return new ChatContext(false);
+
+            } else
                 ret = true;
-            }
         }
 
         // Debugger
@@ -112,7 +133,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 + aH.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
                 + aH.debugObj("Facing", String.valueOf(Rotation.isFacingEntity(player, npc.getEntity(), 45))));
 
-        if (script == null) return false;
+        // Change the text if it's in the determination
+        if (trigger.hasDetermination()) {
+            message = trigger.getDetermination();
+        }
+
+        if (script == null) return new ChatContext(message, false);
 
         // Check if the NPC has Chat Triggers for this step.
         if (!script.containsTriggerInStep(
@@ -124,16 +150,17 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             if (npc.getCitizen().hasTrait(ChatbotTrait.class)) {
                 Utilities.talkToNPC(message, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
                 npc.getCitizen().getTrait(ChatbotTrait.class).chatTo(player, message);
-                return true;
+                return new ChatContext(false);
             }
+
             // No chat trigger for this step.. do we chat globally, or to the NPC?
             else if (!Settings.ChatGloballyIfNoChatTriggers()) {
                 dB.echoDebug(script, player.getName() + " says to "
                         + npc.getNicknameTrait().getNickname() + ", " + message);
-                return true;
+                return new ChatContext(false);
             }
 
-            else return ret;
+            else return new ChatContext(message, ret);
         }
 
 
@@ -205,7 +232,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (id != null) {
             Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
             parse(npc, denizenPlayer, script, id, context);
-            return true;
+            return new ChatContext(true);
         }
         else {
             // If this is a Chatbot, make it chat anything it wants if
@@ -213,19 +240,19 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             if (npc.getCitizen().hasTrait(ChatbotTrait.class)) {
                 Utilities.talkToNPC(message, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
                 npc.getCitizen().getTrait(ChatbotTrait.class).chatTo(player, message);
-                return true;
+                return new ChatContext(true);
             }
             else if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
                 Utilities.talkToNPC(message, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
-                return true;
+                return new ChatContext(true);
             }
             // No matching chat triggers, and the config.yml says we
             // should just ignore the interaction...
         }
-        return ret;
+        return new ChatContext(message, ret);
     }
 
-    // TODO: Clean these events up - smartEvent style system (or directly use smart events?)
+
     @EventHandler
     public void asyncChatTrigger(final AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
@@ -233,8 +260,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Return if "Use asynchronous event" is false in config file
         if (!Settings.ChatAsynchronous()) return;
 
-        Callable<Boolean> call = new Callable<Boolean>() {
-            public Boolean call() {
+        Callable<ChatContext> call = new Callable<ChatContext>() {
+            public ChatContext call() {
                 return process(event.getPlayer(), event.getMessage());
             }
         };
@@ -242,14 +269,24 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         Boolean cancelled = false;
 
         try {
-            cancelled = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
+            // Determine if the chat should be cancelled
+            cancelled = event.isAsynchronous()
+                    ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get().wasTriggered()
+                    : call.call().wasTriggered();
+
+            // Handle any changes with the ChatContext message
+            if (call.call().hasChanges())
+                event.setMessage(call.call().getChanges());
+
         } catch (InterruptedException e) {
+            // This is normal -- probably.
             // dB.echoError(e);
         } catch (ExecutionException e) {
             dB.echoError(e);
         } catch (Exception e) {
             dB.echoError(e);
         }
+
 
         if (cancelled)
             event.setCancelled(true);
@@ -262,8 +299,14 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Return if "Use asynchronous event" is true in config file
         if (Settings.ChatAsynchronous()) return;
 
-        if (process(event.getPlayer(), event.getMessage()))
+        ChatContext chat = process(event.getPlayer(), event.getMessage());
+
+        if (chat.wasTriggered())
             event.setCancelled(true);
+
+
+        if (chat.hasChanges())
+            event.setMessage(chat.getChanges());
     }
 
     private boolean isKeywordRegex (String keyWord) {
@@ -272,6 +315,39 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
     private boolean isKeywordStrict (String keyWord) {
         return keyWord.toUpperCase().startsWith("STRICT:");
+    }
+
+
+    /**
+     * Contains whether the chat trigger successfully 'triggered' and any context that was
+     * available while triggering or attempting to trigger.
+     *
+     */
+    public class ChatContext {
+
+        public ChatContext(boolean triggered) {
+            this.triggered = triggered;
+        }
+
+        public ChatContext(String changed_text, boolean triggered) {
+            this.changed_text = changed_text;
+            this.triggered = triggered;
+        }
+
+        String changed_text; boolean triggered;
+
+        public boolean hasChanges() {
+            return changed_text != null;
+        }
+
+        public String getChanges() {
+            return changed_text != null ? changed_text : DetermineCommand.DETERMINE_NONE;
+        }
+
+        public Boolean wasTriggered() {
+            return triggered;
+        }
+
     }
 
 }

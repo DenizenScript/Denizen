@@ -275,8 +275,8 @@ public class dNPC implements dObject, Adjustable {
         return "none";
     }
 
-    public void action(String actionName, dPlayer player) {
-        action(actionName, player, null);
+    public String action(String actionName, dPlayer player) {
+        return action(actionName, player, null);
     }
 
     private String prefix = "npc";
