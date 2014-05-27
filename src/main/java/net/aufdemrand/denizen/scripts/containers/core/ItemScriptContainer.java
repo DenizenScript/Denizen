@@ -42,7 +42,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   type: item
     //
-    //   # Must be a valid dItem (ie. i@red_wool or i@potion,8226) See 'dItem' for more information.
+    //   # Must be a valid dItem (EG i@red_wool or i@potion,8226) See 'dItem' for more information.
     //   material: i@base_material
     //
     //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.

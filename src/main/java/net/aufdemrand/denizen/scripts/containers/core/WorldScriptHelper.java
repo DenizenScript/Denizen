@@ -1348,6 +1348,8 @@ public class WorldScriptHelper implements Listener {
         events.add("entity damaged by " + cause);
         events.add(entity.identifyType() + " damaged");
         events.add(entity.identifyType() + " damaged by " + cause);
+        events.add(entity.identifySimple() + " damaged");
+        events.add(entity.identifySimple() + " damaged by " + cause);
 
         if (isFatal) {
 
@@ -1376,6 +1378,8 @@ public class WorldScriptHelper implements Listener {
             events.add("entity killed by " + cause);
             events.add(entity.identifyType() + " killed");
             events.add(entity.identifyType() + " killed by " + cause);
+            events.add(entity.identifySimple() + " killed");
+            events.add(entity.identifySimple() + " killed by " + cause);
         }
 
         if (event instanceof EntityDamageByEntityEvent) {
@@ -1425,8 +1429,14 @@ public class WorldScriptHelper implements Listener {
                 }
 
                 if (!damager.getEntityType().equals(projectile.getEntityType())) {
+                    events.add("entity damaged by projectile");
                     events.add("entity damaged by " + projectile.identifyType());
                     events.add(entity.identifyType() + " damaged by " + projectile.identifyType());
+                    events.add(entity.identifySimple() + " damaged by " + projectile.identifyType());
+                    events.add(entity.identifySimple() + " damaged by projectile");
+                    events.add("entity damaged by " + projectile.identifyType());
+                    events.add(entity.identifyType() + " damaged by " + projectile.identifyType());
+                    events.add(entity.identifySimple() + " damaged by " + projectile.identifyType());
                 }
             }
 
@@ -1434,8 +1444,13 @@ public class WorldScriptHelper implements Listener {
 
             events.add("entity damaged by entity");
             events.add("entity damaged by " + damager.identifyType());
+            events.add("entity damaged by " + damager.identifySimple());
             events.add(entity.identifyType() + " damaged by entity");
             events.add(entity.identifyType() + " damaged by " + damager.identifyType());
+            events.add(entity.identifyType() + " damaged by " + damager.identifySimple());
+            events.add(entity.identifySimple() + " damaged by entity");
+            events.add(entity.identifySimple() + " damaged by " + damager.identifyType());
+            events.add(entity.identifySimple() + " damaged by " + damager.identifySimple());
 
             if (damager.isNPC()) {
                 subNPC = damager.getDenizenNPC();
@@ -1458,12 +1473,24 @@ public class WorldScriptHelper implements Listener {
 
             subEvents.add("entity damages entity");
             subEvents.add("entity damages " + entity.identifyType());
+            subEvents.add("entity damages " + entity.identifySimple());
             subEvents.add(damager.identifyType() + " damages entity");
             subEvents.add(damager.identifyType() + " damages " + entity.identifyType());
+            subEvents.add(damager.identifyType() + " damages " + entity.identifySimple());
+            subEvents.add(damager.identifySimple() + " damages entity");
+            subEvents.add(damager.identifySimple() + " damages " + entity.identifyType());
+            subEvents.add(damager.identifySimple() + " damages " + entity.identifySimple());
 
             if (projectile != null && !damager.getEntityType().equals(projectile.getEntityType())) {
+                subEvents.add("projectile damages entity");
+                subEvents.add("projectile damages " + entity.identifyType());
+                subEvents.add("projectile damages " + entity.identifySimple());
                 subEvents.add(projectile.identifyType() + " damages entity");
                 subEvents.add(projectile.identifyType() + " damages " + entity.identifyType());
+                subEvents.add(projectile.identifyType() + " damages " + entity.identifySimple());
+                subEvents.add(projectile.identifySimple() + " damages entity");
+                subEvents.add(projectile.identifySimple() + " damages " + entity.identifyType());
+                subEvents.add(projectile.identifySimple() + " damages " + entity.identifySimple());
             }
 
             if (isFatal) {
@@ -1476,12 +1503,23 @@ public class WorldScriptHelper implements Listener {
 
                 events.add("entity killed by entity");
                 events.add("entity killed by " + damager.identifyType());
+                events.add("entity killed by " + damager.identifySimple());
                 events.add(entity.identifyType() + " killed by entity");
                 events.add(entity.identifyType() + " killed by " + damager.identifyType());
+                events.add(entity.identifyType() + " killed by " + damager.identifySimple());
+                events.add(entity.identifySimple() + " killed by entity");
+                events.add(entity.identifySimple() + " killed by " + damager.identifyType());
+                events.add(entity.identifySimple() + " killed by " + damager.identifySimple());
 
                 if (projectile != null && !damager.getEntityType().equals(projectile.getEntityType())) {
+                    events.add("entity killed by projectile");
                     events.add("entity killed by " + projectile.identifyType());
+                    events.add(entity.identifyType() + " killed by projectile");
                     events.add(entity.identifyType() + " killed by " + projectile.identifyType());
+                    events.add(entity.identifyType() + " killed by " + projectile.identifySimple());
+                    events.add(entity.identifySimple() + " killed by projectile");
+                    events.add(entity.identifySimple() + " killed by " + projectile.identifyType());
+                    events.add(entity.identifySimple() + " killed by " + projectile.identifySimple());
                 }
 
                 // <--[event]
@@ -1506,12 +1544,22 @@ public class WorldScriptHelper implements Listener {
 
                 subEvents.add("entity kills entity");
                 subEvents.add("entity kills " + entity.identifyType());
+                subEvents.add("entity kills " + entity.identifySimple());
                 subEvents.add(damager.identifyType() + " kills entity");
                 subEvents.add(damager.identifyType() + " kills " + entity.identifyType());
+                subEvents.add(damager.identifyType() + " kills " + entity.identifySimple());
+                subEvents.add(damager.identifySimple() + " kills entity");
+                subEvents.add(damager.identifySimple() + " kills " + entity.identifyType());
+                subEvents.add(damager.identifySimple() + " kills " + entity.identifySimple());
 
                 if (projectile != null && !damager.getEntityType().equals(projectile.getEntityType())) {
+                    subEvents.add("projectile kills entity");
                     subEvents.add(projectile.identifyType() + " kills entity");
                     subEvents.add(projectile.identifyType() + " kills " + entity.identifyType());
+                    subEvents.add(projectile.identifyType() + " kills " + entity.identifySimple());
+                    subEvents.add(projectile.identifySimple() + " kills entity");
+                    subEvents.add(projectile.identifySimple() + " kills " + entity.identifyType());
+                    subEvents.add(projectile.identifySimple() + " kills " + entity.identifySimple());
                 }
             }
 
@@ -1538,7 +1586,9 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // entity death
     // entity dies
+    // <entity> dies
     // <entity> death
     //
     // @Triggers when an entity dies.
@@ -1594,6 +1644,8 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("entity dies",
                         entity.identifyType() + " dies",
+                        entity.identifySimple() + " dies",
+                        entity.identifySimple() + " death",
                         "entity death",
                         entity.identifyType() + " death"),
                 npc, player, context, true);
@@ -1677,7 +1729,8 @@ public class WorldScriptHelper implements Listener {
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("entity explodes",
-                        entity.identifyType() + " explodes"),
+                        entity.identifyType() + " explodes",
+                        entity.identifySimple() + " explodes"),
                 null, null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
