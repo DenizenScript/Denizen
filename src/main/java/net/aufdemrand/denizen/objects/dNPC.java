@@ -856,6 +856,19 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dNPC
+        // @name speed
+        // @input Element(Decimal)
+        // @description
+        // Sets the movement speed of the NPC.
+        // @tags
+        // <n@npc.navigator.speed>
+        // -->
+        if (mechanism.matches("speed") && mechanism.requireFloat()) {
+            getCitizen().getNavigator().getDefaultParameters().speedModifier(mechanism.getValue().asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
         // @name despawn
         // @input none
         // @description
