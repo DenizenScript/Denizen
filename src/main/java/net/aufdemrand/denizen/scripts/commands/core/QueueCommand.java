@@ -69,6 +69,7 @@ public class QueueCommand extends AbstractCommand {
                 return;
 
             case STOP:
+                queue.clear();
                 queue.stop();
                 return;
 

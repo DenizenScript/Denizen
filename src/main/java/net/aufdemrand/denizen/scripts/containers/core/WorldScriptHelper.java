@@ -131,12 +131,6 @@ public class WorldScriptHelper implements Listener {
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
 
-        // Trim events not used
-        events = EventManager.trimEvents(events);
-
-        // Don't continue if there are no events to run
-        if (events.size() == 0) return;
-
         // Add in more context
         context.put("location", new dLocation(block.getLocation()));
         context.put("material", material);
