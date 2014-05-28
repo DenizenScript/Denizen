@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*
+/**
  * Template for a Denizen Smart Event.
  * Remember to register the smart event!
  * (In EventManager if you're a Denizen developer, or in an
@@ -61,7 +61,7 @@ public class _TemplateSmartEvent implements SmartEvent, Listener {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
         // Record that you loaded in the debug.
-        dB.log("Loaded Player Jump SmartEvent.");
+        dB.log("Loaded Template SmartEvent.");
     }
 
 
