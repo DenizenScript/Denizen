@@ -41,6 +41,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockIterator;
 
 @SuppressWarnings("deprecation")
@@ -3952,8 +3953,9 @@ public class WorldScriptHelper implements Listener {
         // As a tie-in with ScoreboardHelper, make this player view
         // the scoreboard he/she is supposed to view
         if (ScoreboardHelper.viewerMap.containsKey(player.getName())) {
-            player.setScoreboard(ScoreboardHelper
-                    .getScoreboard(ScoreboardHelper.viewerMap.get(player.getName())));
+            Scoreboard score = ScoreboardHelper.getScoreboard(ScoreboardHelper.viewerMap.get(player.getName()));
+            if (score != null)
+                player.setScoreboard(score);
         }
     }
 

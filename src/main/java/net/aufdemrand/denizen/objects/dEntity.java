@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.objects.properties.*;
 import net.aufdemrand.denizen.objects.properties.entity.*;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -235,10 +236,7 @@ public class dEntity implements dObject, Adjustable {
     public dEntity(Entity entity) {
         if (entity != null) {
             this.entity = entity;
-            List<MetadataValue> data = entity.getMetadata("denizen_entityscript");
-            if (data != null && data.size() == 1) {
-                EntityScript = (String)data.get(0).value();
-            }
+            EntityScript = EntityScriptHelper.getEntityScript(entity);
             this.uuid = entity.getUniqueId();
             this.entity_type = entity.getType();
             if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
@@ -697,10 +695,9 @@ public class dEntity implements dObject, Adjustable {
 
                         ent = location.getWorld().spawnEntity(location, entity_type);
                         entity = ent;
-                        if (EntityScript != null)
-                            entity.setMetadata("denizen_entityscript", new FixedMetadataValue(DenizenAPI.getCurrentInstance(), EntityScript));
-                        // NOTE: Need better storage method than metadata : UUID map?
                         uuid = entity.getUniqueId();
+                        if (EntityScript != null)
+                            EntityScriptHelper.setEntityScript(entity, EntityScript);
 
                         if (entity_type.name().matches("PIG_ZOMBIE")) {
 
@@ -822,6 +819,7 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public void remove() {
+        EntityScriptHelper.unlinkEntity(entity);
         entity.remove();
     }
 
