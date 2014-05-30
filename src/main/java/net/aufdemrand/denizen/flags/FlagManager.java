@@ -514,9 +514,9 @@ public class FlagManager {
         public void save() {
             String OldOwner = flagOwner;
             String OldName = flagName;
-            dObject OldValue = value.size() > 1
-                    ? new dList(denizen.getSaves().getStringList(flagPath))
-                    : value.size() == 1 ? new Element(denizen.getSaves().getStringList(flagPath).get(0)): Element.valueOf("null");
+            List<String> oldValueList = denizen.getSaves().getStringList(flagPath);
+            dObject OldValue = oldValueList.size() > 1 ? new dList(oldValueList)
+                    : oldValueList.size() == 1 ? new Element(oldValueList.get(0)): Element.valueOf("null");
 
             denizen.getSaves().set(flagPath, value.values);
             denizen.getSaves().set(flagPath + "-expiration", (expiration > 0 ? expiration : null));

@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +33,7 @@ public class ScriptHelper {
         try {
             _yamlScripts.loadFromString(concatenated);
         } catch (InvalidConfigurationException e) {
+            hadError = true;
             dB.echoError("Could not load scripts!");
             dB.echoError(e);
         }
@@ -66,6 +68,24 @@ public class ScriptHelper {
         hadError = false;
     }
 
+    public static void setHadError() {
+        hadError = true;
+    }
+
+
+    static void HandleListing(YamlConfiguration config, List<String> list) {
+        for (String str: config.getKeys(false)) {
+            String up = str.toUpperCase();
+            if (list.contains(up)) {
+                hadError = true;
+                dB.echoError("There is more than one script named '" + up + "'!");
+            }
+            else {
+                list.add(up);
+            }
+        }
+    }
+
 
     private static String _concatenateCoreScripts() {
 
@@ -91,11 +111,13 @@ public class ScriptHelper {
 
             if (files.size() > 0) {
                 StringBuilder sb = new StringBuilder();
+                List<String> scriptNames = new ArrayList<String>();
 
                 YamlConfiguration yaml;
                 dB.log("Processing 'util.dscript'... ");
                 yaml = YamlConfiguration.loadConfiguration(DenizenAPI.getCurrentInstance()
                         .getResource("util.dscript"));
+                HandleListing(yaml, scriptNames);
                 sb.append(yaml.saveToString() + "\r\n");
 
                 dB.log("Processing outside scripts... ");
@@ -115,8 +137,10 @@ public class ScriptHelper {
                     try {
                         yaml = YamlConfiguration.loadConfiguration(f);
                         String saved = yaml.saveToString();
-                        if (yaml != null && saved.length() > 0)
+                        if (yaml != null && saved.length() > 0) {
+                            HandleListing(yaml, scriptNames);
                             sb.append(saved + "\r\n");
+                        }
                         else {
                             dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. No internal error - is the file empty?");
                             hadError = true;
