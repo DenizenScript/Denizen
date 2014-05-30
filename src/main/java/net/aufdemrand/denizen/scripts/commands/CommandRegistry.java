@@ -835,7 +835,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Drop
-        // @Syntax drop [<item>/<entity_type>/xp] [<location>] (qty:<#>) (speed:<#.#>)
+        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
@@ -868,7 +868,7 @@ public class CommandRegistry implements dRegistry {
 
         // -->
         registerCoreMember(DropCommand.class,
-                "DROP", "drop [<item>/<entity_type>/xp] [<location>] (qty:<#>) (speed:<#.#>)", 1);
+                "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>)", 1);
 
 
         // <--[command]

@@ -157,7 +157,13 @@ public class Element implements dObject {
     }
 
     public int asInt() {
-        return Integer.valueOf(element.replaceAll("(el@)|%", ""));
+        try {
+            return Integer.valueOf(element.replaceAll("(el@)|%", ""));
+        }
+        catch (NumberFormatException ex) {
+            dB.echoError("'" + element + "' is not a valid integer!");
+            return 0;
+        }
     }
 
     public boolean asBoolean() {
@@ -342,16 +348,10 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asboolean")
                 || attribute.startsWith("as_boolean"))
-            return new Element(Boolean.valueOf(element).toString())
+            return new Element(element.equalsIgnoreCase("true") ||
+                    element.equalsIgnoreCase("t") || element.equalsIgnoreCase("1"))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <el@element.as_double>
-        // @returns Element(Decimal)
-        // @group conversion
-        // @description
-        // Returns the element as a number with a decimal.
-        // -->
         // TODO: Why does this exist? It just throws an error or makes no changes.
         if (attribute.startsWith("asdouble")
                 || attribute.startsWith("as_double"))
@@ -396,7 +396,7 @@ public class Element implements dObject {
                 return new Element(d.format(Double.valueOf(element)))
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid Money format.");
+                dB.echoError("'" + element + "' is not a valid number.");
                 return new Element("null").getAttribute(attribute.fulfill(1));
             }
         }
@@ -614,7 +614,7 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <el@element.contains[<string>]>
+        // @attribute <el@element.contains[<element>]>
         // @returns Element(Boolean)
         // @group string checking
         // @description
@@ -637,7 +637,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <el@element.ends_with[<string>]>
+        // @attribute <el@element.ends_with[<element>]>
         // @returns Element(Boolean)
         // @group string checking
         // @description
@@ -653,6 +653,7 @@ public class Element implements dObject {
         // @description
         // Returns whether the element matches a regex input.
         // -->
+        // TODO: .group[#] and such
         if (attribute.startsWith("matches")
                 && attribute.hasContext(1))
             return new Element(element.matches(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
@@ -945,10 +946,10 @@ public class Element implements dObject {
         // element after the specified index.
         // -->
         if (attribute.startsWith("substring")||attribute.startsWith("substr")) {            // substring[2,8]
-            int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
+            int beginning_index = new Element(attribute.getContext(1).split(",")[0]).asInt() - 1;
             int ending_index;
             if (attribute.getContext(1).split(",").length > 1)
-                ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]);
+                ending_index = new Element(attribute.getContext(1).split(",")[1]).asInt();
             else
                 ending_index = element.length();
             if (beginning_index < 0) beginning_index = 0;
