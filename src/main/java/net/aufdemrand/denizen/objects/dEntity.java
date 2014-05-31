@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
@@ -31,8 +30,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -1261,19 +1258,6 @@ public class dEntity implements dObject, Adjustable {
                 return new Element(((Player) entity).getName())
                         .getAttribute(attribute.fulfill(1));
             return new Element(entity.getType().getName())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.spawn_reason>
-        // @returns String
-        // @group attributes
-        // @description
-        // Returns the reason an entity was spawned.
-        // -->
-        if (attribute.startsWith("spawn_reason")) {
-            if (entity.getMetadata("spawnreason").size() == 0) return "null";
-            return new Element(entity.getMetadata("spawnreason").get(0).asString())
                     .getAttribute(attribute.fulfill(1));
         }
 

@@ -22,11 +22,7 @@ import net.aufdemrand.denizen.utilities.entity.Position;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
+import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.enchantment.*;
@@ -2872,10 +2868,6 @@ public class WorldScriptHelper implements Listener {
             }
         }
 
-        events = EventManager.trimEvents(events);
-
-        if (events.size() == 0) return;
-
         context.put("item", item);
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("click", new Element(click));
@@ -3625,13 +3617,14 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player fishes (while <state>)
+    // player fishes (<entity>) (while <state>)
     //
     // @Triggers when a player uses a fishing rod.
     // @Context
-    // <context.hook> returns a dItem of the hook.
+    // <context.hook> returns a dEntity of the hook.
     // <context.state> returns an Element of the fishing state.
-    // <context.entity> returns a dEntity, dPlayer or dNPC of the entity being fished.
+    // <context.entity> returns a dEntity of the entity that got caught.
+    // <context.item> returns a dItem of the item gotten, if any.
     //
     // @Determine
     // "CANCELLED" to stop the player from fishing.
@@ -3653,8 +3646,12 @@ public class WorldScriptHelper implements Listener {
 
         if (event.getCaught() != null) {
 
-            dEntity entity = new dEntity(event.getCaught());
+            Entity caught = event.getCaught();
+            dEntity entity = new dEntity(caught);
             context.put("entity", entity.getDenizenObject());
+            if (caught instanceof Item) {
+                context.put("item", new dItem(((Item) caught).getItemStack()));
+            }
 
             if (entity.isNPC()) npc = entity.getDenizenNPC();
 
