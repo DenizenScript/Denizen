@@ -38,6 +38,9 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     // @Context
     // None
     //
+    // @Determine
+    // "cancelled" to cancel the damage event.
+    //
     // -->
     @EventHandler
     public void damageTrigger(EntityDamageByEntityEvent event) {
@@ -67,8 +70,21 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 
             if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
             if (!npc.getTriggerTrait().isEnabled(name)) return;
-            if (!npc.getTriggerTrait().trigger(this, dplayer)) return;
 
+            // Get the TriggerContext
+            TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(this, dplayer);
+
+            // Return if the trigger wasn't triggered.
+            if (!trigger.wasTriggered()) return;
+
+            // ..or if the determination was cancelled.
+            if (trigger.hasDetermination()
+                    && trigger.getDetermination().equalsIgnoreCase("cancelled")) {
+                event.setCancelled(true);
+                return;
+            }
+
+            // Build the interact script
             InteractScriptContainer script = InteractScriptHelper
                     .getInteractScript(npc, dplayer, getClass());
 

@@ -18,31 +18,85 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
  */
 public class DetermineCommand extends AbstractCommand {
 
-    private static Map<Long, String> outcomes = new ConcurrentHashMap<Long, String>(8, 0.9f, 1);
+    //
+    // Static helpers
+    //
 
+
+    // Default 'DETERMINE_NONE' value.
+    public static String DETERMINE_NONE = "none";
+
+    // Map for keeping track of cache
+    // Key: ID, Value: outcome
+    private static Map<Long, String> cache = new ConcurrentHashMap<Long, String>(8, 0.9f, 1);
+
+    // Start at 0
     public static long uniqueId = 0;
 
+
+    /**
+     * Increment the counter and return it, thus returning
+     * a unique id. Determinations are very short lived.
+     *
+     * @return long ID
+     */
     public static long getNewId() {
-        uniqueId++;
-        return uniqueId;
+        // Just in case? Start over if already max_value.
+        if (uniqueId == Long.MAX_VALUE)
+            uniqueId = 0;
+        // Increment the counter
+        return uniqueId++;
     }
 
+
+    /**
+     * Checks the cache for existence of an outcome.
+     *
+     * @param id the outcome id to check
+     * @return if the cache has the outcome
+     */
     public static boolean hasOutcome(long id) {
-        return outcomes.containsKey(id);
+        return cache.containsKey(id);
     }
 
+
+    /**
+     * Gets the outcome, and removes it from the cache.
+     *
+     * @param id the outcome id to check
+     * @return the outcome
+     */
     public static String getOutcome(long id) {
-        String outcome = outcomes.get(id);
-        outcomes.remove(id);
+        String outcome = cache.get(id);
+        cache.remove(id);
         return outcome;
     }
 
+
+    /**
+     * Gets the current value of the outcome.
+     * Note: The value of the outcome may change.
+     *
+     * @param id the outcome id to check
+     * @return the current value of the outcome
+     */
     public static String readOutcome(long id) {
-        return outcomes.get(id);
+        return cache.get(id);
     }
+
+
+
+
+    //
+    // Command Singleton
+    //
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        //
+        // Parse the arguments
+        //
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
@@ -55,10 +109,14 @@ public class DetermineCommand extends AbstractCommand {
             else arg.reportUnhandled();
         }
 
+        //
         // Set defaults
+        //
+
         scriptEntry.defaultObject("passively", new Element(false));
-        scriptEntry.defaultObject("outcome", new Element(false));
+        scriptEntry.defaultObject("outcome", new Element(DETERMINE_NONE));
     }
+
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
@@ -67,26 +125,25 @@ public class DetermineCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), scriptEntry.getElement("outcome").debug()
                 + scriptEntry.getElement("passively").debug());
 
-        // Fetch
+        // Fetch the ScriptEntry elements
         String outcome = scriptEntry.getElement("outcome").asString();
         Boolean passively = scriptEntry.getElement("passively").asBoolean();
 
         Long uniqueId = (Long) scriptEntry.getObject("reqId");
+
+        // Useful for debug
         if (uniqueId == null) {
             dB.echoError("Cannot use determine in this queue!");
             return;
         }
 
-        if (outcomes.containsKey(uniqueId)) {
-            dB.echoError("This queue already has a determination!");
-            return;
-        }
-
-        outcomes.put(uniqueId, outcome);
+        // Store the outcome in the cache
+        cache.put(uniqueId, outcome);
 
         if (!passively)
             // Stop the queue by clearing the remainder of it.
             scriptEntry.getResidingQueue().clear();
     }
+
 
 }

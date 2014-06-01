@@ -37,6 +37,9 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
     // @Context
     // None
     //
+    // @Determine
+    // "cancelled" to cancel the click event completely.
+    //
     // -->
     @EventHandler
     public void clickTrigger(NPCRightClickEvent event) {
@@ -64,7 +67,15 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         // provided (and adjustable) by the TriggerTrait. Just use .trigger(...)!
         // If unavailable (engaged or not cool), .trigger calls 'On Unavailable' action and returns false.
         // If available (not engaged, and cool), .trigger sets cool down and returns true.
-        if (!npc.getTriggerTrait().trigger(this, player)) return;
+        TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(this, player);
+
+        if (!trigger.wasTriggered()) return;
+
+        if (trigger.hasDetermination()
+                && trigger.getDetermination().equalsIgnoreCase("cancelled")) {
+            event.setCancelled(true);
+            return;
+        }
 
         // Note: In some cases, the automatic actions that .trigger offers may not be
         // desired. In this case, it's recommended to at least use .triggerCooldownOnly which
