@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -101,24 +102,30 @@ public class PlaySoundCommand extends AbstractCommand {
 
         try {
             if (locations != null) {
-                for (dLocation location : locations) {
+                if (custom.asBoolean()) {
+                    for (dLocation location : locations)
+                        for (Player player: location.getWorld().getPlayers())
+                            // Note: Randomly defining 100 blocks as maximum hear distance.
+                            if (player.getLocation().distanceSquared(location) < 100 * 100)
+                                player.playSound(location, sound.asString(),
+                                        volume.asFloat(), pitch.asFloat());
+                }
+                else {
+                for (dLocation location : locations)
                     location.getWorld().playSound(location,
                             Sound.valueOf(sound.asString().toUpperCase()),
-                            volume.asFloat(),
-                            pitch.asFloat());
+                            volume.asFloat(), pitch.asFloat());
                 }
-            } else {
+            }
+            else {
                 for (dPlayer player: players) {
                     if (custom.asBoolean())
                         player.getPlayerEntity().playSound(player.getLocation(),
-                                sound.asString(),
-                                volume.asFloat(),
-                                pitch.asFloat());
+                                sound.asString(), volume.asFloat(), pitch.asFloat());
                     else
                         player.getPlayerEntity().playSound(player.getLocation(),
                                 Sound.valueOf(sound.asString().toUpperCase()),
-                                volume.asFloat(),
-                                pitch.asFloat());
+                                volume.asFloat(), pitch.asFloat());
                 }
             }
         } catch (Exception e) {
