@@ -27,6 +27,7 @@ import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -71,6 +72,14 @@ public class ShootCommand extends AbstractCommand implements Listener {
                      && arg.matchesPrefix("destination, d")) {
 
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
+            }
+
+
+            else if (!scriptEntry.hasObject("lead")
+                    && arg.matchesArgumentType(dLocation.class)
+                    && arg.matchesPrefix("lead")) {
+
+                scriptEntry.addObject("lead", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("height")
@@ -150,8 +159,7 @@ public class ShootCommand extends AbstractCommand implements Listener {
         dLocation originLocation = scriptEntry.hasObject("originLocation") ?
                                    (dLocation) scriptEntry.getObject("originLocation") :
                                    new dLocation(originEntity.getEyeLocation()
-                                               .add(originEntity.getEyeLocation().getDirection())
-                                               .subtract(0, 0.4, 0));
+                                               .add(originEntity.getEyeLocation().getDirection()));
 
         // If there is no destination set, but there is a shooter, get a point
         // in front of the shooter and set it as the destination
@@ -177,6 +185,8 @@ public class ShootCommand extends AbstractCommand implements Listener {
         Element speed = scriptEntry.getElement("speed");
         Element spread = scriptEntry.getElement("spread");
 
+        dLocation lead = (dLocation) scriptEntry.getObject("lead");
+
         // Report to dB
         dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                              aH.debugObj("entities", entities.toString()) +
@@ -186,7 +196,8 @@ public class ShootCommand extends AbstractCommand implements Listener {
                              (speed != null ? speed.debug(): "") +
                              (script != null ? script.debug() : "") +
                              (shooter != null ? shooter.debug() : "") +
-                             (spread != null ? spread.debug() : ""));
+                             (spread != null ? spread.debug() : "") +
+                             (lead != null ? lead.debug(): ""));
 
         // Keep a dList of entities that can be called using <entry[name].shot_entities>
         // later in the script queue
@@ -249,9 +260,26 @@ public class ShootCommand extends AbstractCommand implements Listener {
             Vector v3 = Velocity.calculate(v1, v2, gravity.asDouble(), height.asDouble());
             lastEntity.setVelocity(v3);
         }
+        else if (lead == null) {
+            Vector relative = destination.clone().subtract(originLocation).toVector();
+            lastEntity.setVelocity(relative.normalize().multiply(speed.asDouble()));
+        }
         else {
-            lastEntity.setVelocity(destination.subtract(originLocation).toVector()
-                    .normalize().multiply(speed.asDouble()));
+            double g = 20;
+            double v = speed.asDouble();
+            Vector relative = destination.clone().subtract(originLocation).toVector();
+            double testAng = Velocity.launchAngle(originLocation, destination.toVector(), v, relative.getY(), g);
+            double hangTime = Velocity.hangtime(testAng, v, relative.getY(), g);
+            Vector to = destination.clone().add(lead.clone().multiply(hangTime)).toVector();
+            relative = to.clone().subtract(originLocation.toVector());
+            Double dist = Math.sqrt(relative.getX() * relative.getX() + relative.getZ() * relative.getZ());
+            if (dist == 0) dist = 0.1d;
+            testAng = Velocity.launchAngle(originLocation, to, v, relative.getY(), g);
+            relative.setY(Math.tan(testAng) * dist);
+            relative = relative.normalize();
+            v = v + (1.188 * Math.pow(hangTime, 2));
+            relative = relative.multiply(v / 20.0d);
+            lastEntity.setVelocity(relative);
         }
 
         if (spread != null) {
