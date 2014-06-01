@@ -633,7 +633,7 @@ public class FlagManager {
          * of the plugin.
          *
          */
-        private Flag rebuild() {
+        public Flag rebuild() {
             if (denizen.getSaves().contains(flagPath + "-expiration"))
                 this.expiration = (denizen.getSaves().getLong(flagPath + "-expiration"));
             List<String> cval = denizen.getSaves().getStringList(flagPath);

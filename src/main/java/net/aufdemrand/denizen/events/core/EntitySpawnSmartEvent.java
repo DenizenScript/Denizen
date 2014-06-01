@@ -30,7 +30,7 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
 
             // Use a regex pattern to narrow down matches
             // TODO: Cleaner regex?
-            Matcher m = Pattern.compile("on (.+|entity|npc) spawns(?: because (\\w+))?", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on (\\w+) spawns(?: in (\\w+))?(?: because (\\w+))?", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {
@@ -91,15 +91,11 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
     // <--[event]
     // @Events
     // entity spawns
-    // entity spawns in <notable cuboid>
-    // entity spawns because <cause>
-    // entity spawns in <notable cuboid> because <cause>
+    // entity spawns (in <notable cuboid>) (because <cause>)
     // <entity> spawns
-    // <entity> spawns in <notable cuboid>
-    // <entity> spawns because <cause>
-    // <entity> spawns in <notable cuboid> because <cause>
+    // <entity> spawns (in <notable cuboid>) (because <cause>)
     //
-    // @Regex on (.+|entity|npc) spawns(?: because (\w+))?
+    // @Regex on (\w+) spawns(?: in (\w+))?(?: because (\w+))?
     //
     // @Warning This event may fire very rapidly.
     //
@@ -132,6 +128,8 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
             events.add("entity spawns in " + cuboid.identifySimple() + " because " + reason);
             events.add(entity.identifyType() + " spawns in " + cuboid.identifySimple());
             events.add(entity.identifyType() + " spawns in " + cuboid.identifySimple() + " because " + reason);
+            events.add(entity.identifySimple() + " spawns in " + cuboid.identifySimple());
+            events.add(entity.identifySimple() + " spawns in " + cuboid.identifySimple() + " because " + reason);
         }
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
@@ -141,6 +139,8 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
         events.add("entity spawns because " + reason);
         events.add(entity.identifyType() + " spawns");
         events.add(entity.identifyType() + " spawns because " + reason);
+        events.add(entity.identifySimple() + " spawns");
+        events.add(entity.identifySimple() + " spawns because " + reason);
 
         // Add in other contexts associated with this event
         context.put("entity", entity);
@@ -153,7 +153,4 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
-
-
-
 }

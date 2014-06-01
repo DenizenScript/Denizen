@@ -37,7 +37,10 @@ public class MobproxTrait extends Trait {
         if (checkTimer == 10) {
             checkTimer = 0;
             timerBounce++;
-            if (timerBounce == ftimer.getLast().asInteger()) {
+            if (timerBounce >= ftimer.getLast().asInteger()) {
+                ftimer.rebuild();
+                frange.rebuild();
+                facceptnpc.rebuild();
                 timerBounce = 0;
                 if (getNPC().isSpawned()) {
                     int range = frange.getLast().asInteger();

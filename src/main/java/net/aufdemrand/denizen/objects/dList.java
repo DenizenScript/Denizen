@@ -395,7 +395,7 @@ public class dList extends ArrayList<String> implements dObject {
 
             for (int n = 0; n < this.size(); n++) {
 
-                if (dNPC.matches(get(n))) {
+                if (get(n).contains("n@")) {
                     dNPC gotten = dNPC.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
@@ -404,7 +404,7 @@ public class dList extends ArrayList<String> implements dObject {
                         dScriptArg.append(get(n).replaceAll("\\w\\w?@", ""));
                     }
                 }
-                else if (dPlayer.matches(get(n))) {
+                else if (get(n).contains("p@")) {
                     dPlayer gotten = dPlayer.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());

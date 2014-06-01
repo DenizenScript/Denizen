@@ -302,11 +302,6 @@ public class Element implements dObject {
             // Use the Comparable object as implemented for the IF command. First, a new Comparable!
             Comparable com = new net.aufdemrand.denizen.scripts.commands.core.Comparable();
 
-            // Comparable is the value of this element
-            com.setComparable(element);
-            // Compared_to is the value of the .to[] context.
-            com.setComparedto(attribute.getContext(2));
-
             // Check for negative logic
             String operator;
             if (attribute.getContext(1).startsWith("!")) {
@@ -326,6 +321,11 @@ public class Element implements dObject {
 
             if (comparableOperator != null) {
                 com.setOperator(comparableOperator);
+
+                // Comparable is the value of this element
+                com.setComparable(element);
+                // Compared_to is the value of the .to[] context.
+                com.setComparedto(attribute.getContext(2));
 
                 return new Element(com.determineOutcome()).getAttribute(attribute.fulfill(2));
             }
