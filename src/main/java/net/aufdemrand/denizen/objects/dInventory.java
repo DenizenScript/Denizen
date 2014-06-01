@@ -1123,7 +1123,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
 
                 return new Element(getInventory().containsAtLeast
-                        (dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
+                        (dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(),
+                                attribute.getScriptEntry().getNPC()).getItemStack(), qty))
                         .getAttribute(attribute.fulfill(attribs));
             }
         }
@@ -1182,6 +1183,22 @@ public class dInventory implements dObject, Notable, Adjustable {
             else
                 return new Element(count(null, true))
                         .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <in@inventory.slot[<#>]>
+        // @returns dItem
+        // @description
+        // Returns the item in the specified slot.
+        // -->
+        if (attribute.startsWith("slot")
+                &&attribute.hasContext(1)
+                && aH.matchesInteger(attribute.getContext(1))) {
+            int slot = new Element(attribute.getContext(1)).asInt() - 1;
+            if (slot < 0) slot = 0;
+            if (slot > getInventory().getSize() - 1) slot = getInventory().getSize() - 1;
+            return new dItem(getInventory().getItem(slot))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <in@inventory.type>

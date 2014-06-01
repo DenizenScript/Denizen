@@ -551,9 +551,23 @@ public class Element implements dObject {
         // @group conversion
         // @description
         // Returns the element, escaped for safe reuse.
+        // Inverts <@link tag el@element.unescaped>
+        // See <@link language property escaping>
         // -->
         if (attribute.startsWith("escaped"))
             return new Element(EscapeTags.Escape(element)).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.unescaped>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns the element, unescaped.
+        // Inverts <@link tag el@element.escaped>
+        // See <@link language property escaping>
+        // -->
+        if (attribute.startsWith("unescaped"))
+            return new Element(EscapeTags.unEscape(element)).getAttribute(attribute.fulfill(1));
 
 
         /////////////////////
