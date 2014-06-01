@@ -4058,14 +4058,8 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         context.put("hostname", new Element(event.getHostname()));
 
-        boolean NewPlayer = true;
-        for (OfflinePlayer player: Bukkit.getOfflinePlayers()) {
-            if (player.getUniqueId().compareTo(event.getPlayer().getUniqueId()) == 0) {
-                NewPlayer = false;
-                break;
-            }
-        }
-        if (NewPlayer) {
+        dPlayer.notePlayer(event.getPlayer());
+        if (Bukkit.getOfflinePlayer(event.getPlayer().getUniqueId()).hasPlayedBefore()) {
             events.add("player logs in for the first time");
             events.add("player first login");
         }

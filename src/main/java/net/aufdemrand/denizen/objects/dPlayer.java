@@ -44,6 +44,17 @@ public class dPlayer implements dObject, Adjustable {
         else return new dPlayer(player);
     }
 
+    static ArrayList<String> playerNames = new ArrayList<String>();
+
+    /**
+     * Notes that the player exists, for easy dPlayer valueOf handling.
+     */
+    public static void notePlayer(OfflinePlayer player) {
+        if (!playerNames.contains(player.getName().toUpperCase())) {
+            playerNames.add(player.getName().toUpperCase());
+        }
+    }
+
 
     /////////////////////
     //   OBJECT FETCHER
@@ -72,17 +83,19 @@ public class dPlayer implements dObject, Adjustable {
 
         // Match as a UUID
 
-        try {
-            UUID uuid = UUID.fromString(string);
-            if (uuid != null) {
-                OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                if (player != null) {
-                    return new dPlayer(player);
+        if (string.indexOf('-') >= 0) {
+            try {
+                UUID uuid = UUID.fromString(string);
+                if (uuid != null) {
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+                    if (player != null) {
+                        return new dPlayer(player);
+                    }
                 }
             }
-        }
-        catch (IllegalArgumentException e) {
-            // Nothing
+            catch (IllegalArgumentException e) {
+                // Nothing
+            }
         }
 
         // Match as a player name
@@ -106,9 +119,28 @@ public class dPlayer implements dObject, Adjustable {
         // even if the player doesn't technically exist.
         if (arg.toLowerCase().startsWith("p@")) return true;
 
-        // No identifier supplied? Let's check offlinePlayers. Return true if
-        // a match is found.
-        return valueOfInternal(arg, false) != null;
+        arg = arg.replace("p@", "").replace("P@", "");
+        if (arg.indexOf('-') >= 0) {
+            try {
+                UUID uuid = UUID.fromString(arg);
+                if (uuid != null) {
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+                    if (player != null) {
+                        return true;
+                    }
+                }
+            }
+            catch (IllegalArgumentException e) {
+                // Nothing
+            }
+        }
+        arg = arg.toUpperCase();
+        for (String name: playerNames) {
+            if (arg.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -187,6 +187,11 @@ public class Denizen extends JavaPlugin {
 
             // Register CommandHandler with Citizens
             Depends.citizens.registerCommandClass(CommandHandler.class);
+
+            // Track all player names for quick dPlayer matching
+            for (OfflinePlayer player: Bukkit.getOfflinePlayers()) {
+                dPlayer.notePlayer(player);
+            }
         }
         catch (Exception e) {
             dB.echoError(e);
