@@ -400,7 +400,8 @@ public class WorldScriptHelper implements Listener {
     public void blockForm(BlockFormEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+
+        dMaterial material = dMaterial.getMaterialFrom(event.getNewState().getType(), event.getNewState().getData().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);

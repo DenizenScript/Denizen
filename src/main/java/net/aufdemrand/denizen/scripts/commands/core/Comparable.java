@@ -110,8 +110,9 @@ public class Comparable {
             else if (aH.matchesDouble(arg))
                 comparedto = aH.getDoubleFrom(arg);
             else {
-                dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
-                        + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
+                if (!arg.equalsIgnoreCase("null"))
+                    dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
+                            + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
                 comparedto = Double.NaN;
             }
         }

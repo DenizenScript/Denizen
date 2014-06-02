@@ -567,7 +567,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns dList
         // @description
         // returns a copy of the list with all its contents escaped.
-        // Inverts <@link li@list.unescape_contents>
+        // Inverts <@link tag li@list.unescape_contents>
         // See <@link language property escaping>
         // -->
         if (attribute.startsWith("escape_contents")) {
@@ -583,7 +583,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns dList
         // @description
         // returns a copy of the list with all its contents unescaped.
-        // Inverts <@link li@list.escape_contents>
+        // Inverts <@link tag li@list.escape_contents>
         // See <@link language property escaping>
         // -->
         if (attribute.startsWith("unescape_contents")) {
