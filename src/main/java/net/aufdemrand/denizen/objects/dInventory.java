@@ -207,6 +207,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         loadIdentifiers();
     }
 
+    public dInventory(Inventory inventory, InventoryHolder holder) {
+        this.inventory = inventory;
+        loadIdentifiers(holder);
+    }
+
     public dInventory(InventoryHolder holder) {
         inventory = holder.getInventory();
         loadIdentifiers();
@@ -301,6 +306,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         loadIdentifiers();
     }
 
+    public void setInventory(Inventory inventory, InventoryHolder holder) {
+        this.inventory = inventory;
+        loadIdentifiers(holder);
+    }
+
     public void setTitle(String title) {
         if (!idType.equals("generic") || title == null)
             return;
@@ -343,7 +353,10 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     private void loadIdentifiers() {
-        InventoryHolder holder = inventory.getHolder();
+        loadIdentifiers(inventory.getHolder());
+    }
+
+    private void loadIdentifiers(InventoryHolder holder) {
         boolean isEquipment = idType != null && idType.equals("equipment");
 
         if (holder != null) {
@@ -356,7 +369,10 @@ public class dInventory implements dObject, Notable, Adjustable {
             else if (holder instanceof Player) {
                 if (!isEquipment)
                     idType = "player";
-                idHolder = "p@" + ((Player) holder).getName();
+                if (inventory.getType() == InventoryType.ENDER_CHEST)
+                    idHolder = "enderchest,p@" + ((Player) holder).getName();
+                else
+                    idHolder = "p@" + ((Player) holder).getName();
                 return;
             }
             else if (holder instanceof Entity) {

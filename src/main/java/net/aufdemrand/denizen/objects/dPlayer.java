@@ -207,6 +207,11 @@ public class dPlayer implements dObject, Adjustable {
         else return new dInventory(getNBTEditor());
     }
 
+    public dInventory getEnderChest() {
+        if (isOnline()) return new dInventory(getPlayerEntity().getEnderChest(), getPlayerEntity());
+        else return new dInventory(getNBTEditor());
+    }
+
     public World getWorld() {
         if (isOnline()) return getPlayerEntity().getWorld();
         else return null;
@@ -918,6 +923,15 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("open_inventory"))
             return new dInventory(getPlayerEntity().getOpenInventory().getTopInventory())
                     .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.enderchest>
+        // @returns dInventory
+        // @description
+        // Gets the player's enderchest inventory.
+        // -->
+        if (attribute.startsWith("enderchest"))
+            return getEnderChest().getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <p@player.item_on_cursor>

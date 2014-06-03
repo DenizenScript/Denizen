@@ -234,7 +234,7 @@ public class TriggerTrait extends Trait implements Listener {
         String determination; boolean triggered;
 
         public boolean hasDetermination() {
-            return determination != null;
+            return determination != null && !determination.equalsIgnoreCase("none");
         }
 
         public String getDetermination() {
