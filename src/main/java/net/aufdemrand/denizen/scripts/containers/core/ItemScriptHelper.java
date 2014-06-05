@@ -203,11 +203,13 @@ public class ItemScriptHelper implements Listener {
                     Map<String, dObject> context = new HashMap<String, dObject>();
                     context.put("inventory", new dInventory(inventory));
 
-                    String determination = doEvents(result.getScriptName(), Arrays.asList
-                            ("craft"), null, player, context);
+                    if (result.isItemscript()) {
+                        String determination = doEvents(result.getScriptName(), Arrays.asList
+                                ("craft"), null, player, context);
 
-                    if (determination.toUpperCase().startsWith("CANCELLED"))
-                        return;
+                        if (determination.toUpperCase().startsWith("CANCELLED"))
+                            return;
+                    }
 
                     // If this was a valid match, set the crafting's result
                     inventory.setResult(result.getItemStack());

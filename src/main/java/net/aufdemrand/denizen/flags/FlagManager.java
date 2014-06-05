@@ -553,7 +553,7 @@ public class FlagManager {
                 world_script_events.add("flag changed");
 
                 EventManager.doEvents(world_script_events,
-                        npc, player, context, 1);
+                        npc, player, context);
             }
 
         }

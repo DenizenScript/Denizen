@@ -17,6 +17,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -68,8 +69,18 @@ public class EventManager implements Listener {
             if (script == null) continue;
 
             // ...and through each event inside the script.
-            if (script.contains("EVENTS"))
-                for (String eventName : script.getConfigurationSection("EVENTS").getKeys(false)) {
+            if (script.contains("EVENTS")) {
+                ConfigurationSection configSection = script.getConfigurationSection("EVENTS");
+                if (configSection == null) {
+                    dB.echoError("Script '" + script.getName() + "' has an invalid events block!");
+                    break;
+                }
+                Set<String> keys = configSection.getKeys(false);
+                if (keys == null) {
+                    dB.echoError("Script '" + script.getName() + "' has an empty events block!");
+                    break;
+                }
+                for (String eventName : keys) {
                     List<WorldScriptContainer> list;
                     if (events.containsKey(eventName))
                         list = events.get(eventName);
@@ -78,6 +89,9 @@ public class EventManager implements Listener {
                     list.add(script);
                     events.put(eventName, list);
                 }
+            }
+            else
+                dB.echoError("Script '" + script.getName() + "' does not have an events block!");
         }
         // dB.echoApproval("Built events map: " + events);
 

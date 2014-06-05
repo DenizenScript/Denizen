@@ -31,8 +31,10 @@ public class EntityScriptHelper implements Listener {
     }
 
     @EventHandler
-    public void onEntityDespawn(ChunkUnloadEvent event) {
-        // TODO: This doesn't seem to work + no proper entity despawn event... eck.
+    public void onChunkUnload(ChunkUnloadEvent event) {
+        // TODO: This doesn't work. Awaiting Entity Despawn Event PR's for Bukkit:
+        // Bukkit: https://github.com/Bukkit/Bukkit/pull/1070
+        // CraftBukkit: https://github.com/Bukkit/CraftBukkit/pull/1386
         for (Entity ent: event.getChunk().getEntities()) {
             if (!(ent instanceof LivingEntity) || ((LivingEntity)ent).getRemoveWhenFarAway())
                 unlinkEntity(ent);

@@ -36,7 +36,7 @@ public class FlagSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on (player|npc|server )?flag( \\w+)? (cleared|changed)", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on ((player|npc|server) )?flag( \\w+)? (cleared|changed)", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {

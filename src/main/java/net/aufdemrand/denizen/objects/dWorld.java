@@ -585,7 +585,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.ambient_spawn_limit>
         // -->
         if (mechanism.matches("ambient_spawn_limit")
-                && mechanism.requireInteger("Invalid spawn limit specified.")) {
+                && mechanism.requireInteger()) {
             getWorld().setAmbientSpawnLimit(value.asInt());
         }
 
@@ -599,7 +599,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.animal_spawn_limit>
         // -->
         if (mechanism.matches("animal_spawn_limit")
-                && mechanism.requireInteger("Invalid spawn limit specified.")) {
+                && mechanism.requireInteger()) {
             getWorld().setAnimalSpawnLimit(value.asInt());
         }
 
@@ -608,12 +608,12 @@ public class dWorld implements dObject, Adjustable {
         // @name auto_save
         // @input Element(Integer)
         // @description
-        // Sets the limit for number of animals that can spawn in a chunk in this world.
+        // Sets whether the world will automatically save edits.
         // @tags
-        // <w@world.animal_spawn_limit>
+        // <w@world.auto_save>
         // -->
         if (mechanism.matches("auto_save")
-                && mechanism.requireBoolean("Invalid boolean. Must specify TRUE or FALSE.")) {
+                && mechanism.requireBoolean()) {
             getWorld().setAutoSave(value.asBoolean());
         }
 

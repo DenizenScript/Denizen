@@ -3003,10 +3003,6 @@ public class WorldScriptHelper implements Listener {
                 item.identifySimple() + " moves from " + originType
                         + " to " + destinationType);
 
-        events = EventManager.trimEvents(events);
-
-        if (events.size() == 0) return;
-
         context.put("origin", dInventory.mirrorBukkitInventory(event.getSource()));
         context.put("destination", dInventory.mirrorBukkitInventory(event.getDestination()));
         context.put("initiator", dInventory.mirrorBukkitInventory(event.getInitiator()));
@@ -3085,10 +3081,6 @@ public class WorldScriptHelper implements Listener {
                 "inventory picks up " + item.identifySimple(),
                 type + " picks up item",
                 type + " picks up " + item.identifySimple());
-
-        events = EventManager.trimEvents(events);
-
-        if (events.size() == 0) return;
 
         dInventory inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         context.put("inventory", inventory);
@@ -3370,6 +3362,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a player moves to a different world.
     // @Context
     // <context.origin_world> returns the dWorld that the player was previously on.
+    // <context.destination_world> returns the dWorld that the player is now in.
     //
     // -->
     @EventHandler
@@ -3379,6 +3372,7 @@ public class WorldScriptHelper implements Listener {
         dWorld originWorld = new dWorld(event.getFrom());
         dWorld destinationWorld = new dWorld(event.getPlayer().getWorld());
         context.put("origin_world", originWorld);
+        context.put("destination_world", destinationWorld);
 
         EventManager.doEvents(Arrays.asList
                 ("player changes world",

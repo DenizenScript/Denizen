@@ -419,7 +419,10 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public String getScriptName() {
-        return getLore(itemscriptIdentifier);
+        if (isItemscript())
+            return getLore(itemscriptIdentifier);
+        else
+            return null;
     }
 
     public dMaterial getMaterial() {

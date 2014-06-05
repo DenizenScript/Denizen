@@ -68,6 +68,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
      * @param chunk The chunk to use.
      */
     public dChunk(CraftChunk chunk) {
+        // TODO: Store chunk as a variable, don't extend it!
         super(chunk.getHandle());
     }
 
