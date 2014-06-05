@@ -207,6 +207,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         loadIdentifiers();
     }
 
+    public dInventory(Inventory inventory, InventoryHolder holder) {
+        this.inventory = inventory;
+        loadIdentifiers(holder);
+    }
+
     public dInventory(InventoryHolder holder) {
         inventory = holder.getInventory();
         loadIdentifiers();
@@ -301,6 +306,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         loadIdentifiers();
     }
 
+    public void setInventory(Inventory inventory, InventoryHolder holder) {
+        this.inventory = inventory;
+        loadIdentifiers(holder);
+    }
+
     public void setTitle(String title) {
         if (!idType.equals("generic") || title == null)
             return;
@@ -343,7 +353,10 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     private void loadIdentifiers() {
-        InventoryHolder holder = inventory.getHolder();
+        loadIdentifiers(inventory.getHolder());
+    }
+
+    private void loadIdentifiers(InventoryHolder holder) {
         boolean isEquipment = idType != null && idType.equals("equipment");
 
         if (holder != null) {
@@ -356,7 +369,10 @@ public class dInventory implements dObject, Notable, Adjustable {
             else if (holder instanceof Player) {
                 if (!isEquipment)
                     idType = "player";
-                idHolder = "p@" + ((Player) holder).getName();
+                if (inventory.getType() == InventoryType.ENDER_CHEST)
+                    idHolder = "enderchest,p@" + ((Player) holder).getName();
+                else
+                    idHolder = "p@" + ((Player) holder).getName();
                 return;
             }
             else if (holder instanceof Entity) {
@@ -1123,7 +1139,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
 
                 return new Element(getInventory().containsAtLeast
-                        (dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
+                        (dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(),
+                                attribute.getScriptEntry().getNPC()).getItemStack(), qty))
                         .getAttribute(attribute.fulfill(attribs));
             }
         }
@@ -1182,6 +1199,22 @@ public class dInventory implements dObject, Notable, Adjustable {
             else
                 return new Element(count(null, true))
                         .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <in@inventory.slot[<#>]>
+        // @returns dItem
+        // @description
+        // Returns the item in the specified slot.
+        // -->
+        if (attribute.startsWith("slot")
+                &&attribute.hasContext(1)
+                && aH.matchesInteger(attribute.getContext(1))) {
+            int slot = new Element(attribute.getContext(1)).asInt() - 1;
+            if (slot < 0) slot = 0;
+            if (slot > getInventory().getSize() - 1) slot = getInventory().getSize() - 1;
+            return new dItem(getInventory().getItem(slot))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <in@inventory.type>

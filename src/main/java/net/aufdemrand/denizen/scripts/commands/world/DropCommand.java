@@ -11,6 +11,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Drops things into the world.
@@ -48,24 +49,22 @@ public class DropCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("action")
                     && !arg.matchesPrefix("qty")
-                    && arg.matchesArgumentType(dItem.class)) {
+                    && arg.matchesArgumentList(dItem.class)) {
                 // Item arg
                 scriptEntry.addObject("action", new Element(Action.DROP_ITEM.toString()).setPrefix("action"));
-                scriptEntry.addObject("item", dItem.valueOf(arg.getValue(), scriptEntry.getPlayer(), scriptEntry.getNPC()).setPrefix("item"));  }
-
+                scriptEntry.addObject("item", arg.asType(dList.class).filter(dItem.class));
+            }
 
             else if (!scriptEntry.hasObject("action")
                     && arg.matches("experience, exp, xp"))
                 // Experience arg
                 scriptEntry.addObject("action", new Element(Action.DROP_EXP.toString()).setPrefix("action"));
 
-
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("action", new Element(Action.DROP_ENTITY.toString()).setPrefix("action"));
                 scriptEntry.addObject("entity", arg.asType(dEntity.class).setPrefix("entity"));  }
-
 
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
@@ -113,14 +112,14 @@ public class DropCommand extends AbstractCommand {
         Element qty = scriptEntry.getElement("qty");
         Element action = scriptEntry.getElement("action");
         Element speed = scriptEntry.getElement("speed");
-        dItem item = (dItem) scriptEntry.getObject("item");
+        List<dItem> items = (List<dItem>) scriptEntry.getObject("item");
         dEntity entity = (dEntity) scriptEntry.getObject("entity");
 
 
         // Report to dB
         dB.report(scriptEntry, getName(),
                 action.debug() + location.debug() + qty.debug()
-                        + (item != null ? item.debug() : "")
+                        + (items != null ? aH.debugList("items", items) : "")
                         + (entity != null ? entity.debug() : "")
                         + (speed != null ? speed.debug() : ""));
 
@@ -135,13 +134,14 @@ public class DropCommand extends AbstractCommand {
                 break;
 
             case DROP_ITEM:
-                if (qty.asInt() > 1 && item.isUnique())
-                    dB.echoDebug(scriptEntry, "Cannot drop multiples of this item because it is Unique!");
-                // TODO: Make a dItem specific 'drop/give' to better keep track of it, like dEntity.
-                for (int x = 0; x < qty.asInt(); x++) {
-                    dEntity e = new dEntity(location.getWorld().dropItemNaturally(location, item.getItemStack()));
-                    e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble(): 1d));
-                    entityList.add(e.toString());
+                for (dItem item: items) {
+                    if (qty.asInt() > 1 && item.isUnique())
+                        dB.echoDebug(scriptEntry, "Cannot drop multiples of this item because it is Unique!");
+                    for (int x = 0; x < qty.asInt(); x++) {
+                        dEntity e = new dEntity(location.getWorld().dropItemNaturally(location, item.getItemStack()));
+                        e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble(): 1d));
+                        entityList.add(e.toString());
+                    }
                 }
                 break;
 

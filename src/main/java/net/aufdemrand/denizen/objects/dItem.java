@@ -198,6 +198,14 @@ public class dItem implements dObject, Notable, Adjustable {
         if (arg.toLowerCase().startsWith("i@"))
             return true;
 
+        // Try a quick and simple item/book script match
+        if (ScriptRegistry.containsScript(arg, ItemScriptContainer.class)) {
+            return true;
+        }
+        else if (ScriptRegistry.containsScript(arg, BookScriptContainer.class)) {
+            return true;
+        }
+
         // TODO: Make this better. Probably creating some unnecessary
         // objects by doing this :(
         nope = true;
@@ -216,31 +224,34 @@ public class dItem implements dObject, Notable, Adjustable {
     /////////////
 
     public dItem(Material material) {
-        item = new ItemStack(material);
+        this(new ItemStack(material));
     }
 
     public dItem(int itemId) {
-        item = new ItemStack(itemId);
+        this(new ItemStack(itemId));
     }
 
     public dItem(Material material, int qty) {
-        item = new ItemStack(material, qty);
+        this(new ItemStack(material, qty));
     }
 
     public dItem(dMaterial material, int qty) {
-        item = new ItemStack(material.getMaterial(), qty, (short)0, material.getData());
+        this(new ItemStack(material.getMaterial(), qty, (short)0, material.getData()));
     }
 
     public dItem(int type, int qty) {
-        item = new ItemStack(type, qty);
+        this(new ItemStack(type, qty));
     }
 
     public dItem(ItemStack item) {
-        this.item = item;
+        if (item == null)
+            this.item = new ItemStack(Material.AIR);
+        else
+            this.item = item;
     }
 
     public dItem(Item item) {
-        this.item = item.getItemStack();
+        this(item.getItemStack());
     }
 
 
@@ -408,7 +419,10 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public String getScriptName() {
-        return getLore(itemscriptIdentifier);
+        if (isItemscript())
+            return getLore(itemscriptIdentifier);
+        else
+            return null;
     }
 
     public dMaterial getMaterial() {

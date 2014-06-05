@@ -40,7 +40,8 @@ public class InventoryHolder implements Property {
             return null;
         if (inventory.getIdType() != null
                 && inventory.getIdType().equals("player")
-                && inventory.getIdHolder() != null)
+                && inventory.getIdHolder() != null
+                && !inventory.getIdHolder().startsWith("enderchest,"))
             return dPlayer.valueOf(inventory.getIdHolder());
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
@@ -133,6 +134,12 @@ public class InventoryHolder implements Property {
         // -->
         if (mechanism.matches("holder")) {
             Element value = mechanism.getValue();
+            if (value.asString().startsWith("enderchest,")) {
+                dPlayer player = dPlayer.valueOf(value.asString().substring("enderchest,".length()));
+                if (player != null) {
+                    inventory.setInventory(player.getEnderChest().getInventory(), player.getPlayerEntity());
+                }
+            }
             if (value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
             else if (value.matchesType(dEntity.class)) setHolder(value.asType(dEntity.class));
             else if (value.matchesType(dLocation.class)) setHolder(value.asType(dLocation.class));

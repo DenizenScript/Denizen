@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -394,7 +395,7 @@ public class dList extends ArrayList<String> implements dObject {
 
             for (int n = 0; n < this.size(); n++) {
 
-                if (dNPC.matches(get(n))) {
+                if (get(n).contains("n@")) {
                     dNPC gotten = dNPC.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
@@ -403,7 +404,7 @@ public class dList extends ArrayList<String> implements dObject {
                         dScriptArg.append(get(n).replaceAll("\\w\\w?@", ""));
                     }
                 }
-                else if (dPlayer.matches(get(n))) {
+                else if (get(n).contains("p@")) {
                     dPlayer gotten = dPlayer.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
@@ -559,6 +560,38 @@ public class dList extends ArrayList<String> implements dObject {
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             else
                 return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.escape_contents>
+        // @returns dList
+        // @description
+        // returns a copy of the list with all its contents escaped.
+        // Inverts <@link tag li@list.unescape_contents>
+        // See <@link language property escaping>
+        // -->
+        if (attribute.startsWith("escape_contents")) {
+            dList escaped = new dList();
+            for (String entry: this) {
+                escaped.add(EscapeTags.Escape(entry));
+            }
+            return escaped.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.unescape_contents>
+        // @returns dList
+        // @description
+        // returns a copy of the list with all its contents unescaped.
+        // Inverts <@link tag li@list.escape_contents>
+        // See <@link language property escaping>
+        // -->
+        if (attribute.startsWith("unescape_contents")) {
+            dList escaped = new dList();
+            for (String entry: this) {
+                escaped.add(EscapeTags.unEscape(entry));
+            }
+            return escaped.getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("contains")) {

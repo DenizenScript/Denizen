@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.objects.properties.*;
 import net.aufdemrand.denizen.objects.properties.entity.*;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -152,7 +153,7 @@ public class dEntity implements dObject, Adjustable {
 
         if (ScriptRegistry.containsScript(string, EntityScriptContainer.class)) {
             // Construct a new custom unspawned entity from script
-            return ScriptRegistry.getScriptContainerAs(m.group(0), EntityScriptContainer.class).getEntityFrom();
+            return ScriptRegistry.getScriptContainerAs(string, EntityScriptContainer.class).getEntityFrom();
         }
 
         ////////
@@ -232,6 +233,7 @@ public class dEntity implements dObject, Adjustable {
     public dEntity(Entity entity) {
         if (entity != null) {
             this.entity = entity;
+            EntityScript = EntityScriptHelper.getEntityScript(entity);
             this.uuid = entity.getUniqueId();
             this.entity_type = entity.getType();
             if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
@@ -294,9 +296,18 @@ public class dEntity implements dObject, Adjustable {
     private DespawnedEntity despawned_entity = null;
     private NPC npc = null;
     private UUID uuid = null;
+    private String EntityScript = null;
 
     public EntityType getEntityType() {
         return entity_type;
+    }
+
+    public void setEntityScript(String EntityScript) {
+        this.EntityScript = EntityScript;
+    }
+
+    public String getEntityScript() {
+        return EntityScript;
     }
 
     /**
@@ -682,6 +693,8 @@ public class dEntity implements dObject, Adjustable {
                         ent = location.getWorld().spawnEntity(location, entity_type);
                         entity = ent;
                         uuid = entity.getUniqueId();
+                        if (EntityScript != null)
+                            EntityScriptHelper.setEntityScript(entity, EntityScript);
 
                         if (entity_type.name().matches("PIG_ZOMBIE")) {
 
@@ -803,6 +816,7 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public void remove() {
+        EntityScriptHelper.unlinkEntity(entity);
         entity.remove();
     }
 
@@ -906,6 +920,9 @@ public class dEntity implements dObject, Adjustable {
 
 
     public int comparesTo(dEntity entity) {
+        // Never matches a null
+        if (entity == null) return 0;
+
         // If provided is unique, and both are the same unique entity, return 1.
         if (entity.isUnique() && entity.identify().equals(identify())) return 1;
 
@@ -972,6 +989,10 @@ public class dEntity implements dObject, Adjustable {
                 return "e@" + entity.getEntityId();
         }
 
+        // Try to identify as an entity script
+        if (EntityScript != null)
+            return "e@" + EntityScript;
+
         // Check if an entity_type is available
         if (entity_type != null) {
             // Build the pseudo-property-string, if any
@@ -998,19 +1019,12 @@ public class dEntity implements dObject, Adjustable {
             return "n@" + npc.getId();
         }
 
-        // Check if entity is a Player or is spawned
-        if (entity != null) {
-            if (isPlayer())
-                return "p@" + getPlayer().getName();
+        if (isPlayer())
+            return "p@" + getPlayer().getName();
 
-                // TODO:
-                // Check if entity is a 'notable entity'
-                // if (isSaved(this))
-                //    return "e@" + getSaved(this);
-
-            else if (isSpawned())
-                return "e@" + entity.getEntityId();
-        }
+        // Try to identify as an entity script
+        if (EntityScript != null)
+            return "e@" + EntityScript;
 
         // Check if an entity_type is available
         if (entity_type != null)
@@ -1042,6 +1056,9 @@ public class dEntity implements dObject, Adjustable {
         if (attribute == null) return null;
 
         if (entity == null && entity_type == null) {
+            if (npc != null) {
+                return new Element(identify()).getAttribute(attribute);
+            }
             dB.echoError("dEntity has returned null.");
             return Element.NULL.getAttribute(attribute);
         }
@@ -1159,6 +1176,18 @@ public class dEntity implements dObject, Adjustable {
             return new Element(getUUID().toString())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <e@entity.scriptname>
+        // @returns Element(Boolean)
+        // @group data
+        // @description
+        // Returns the name of the entity script that spawned this entity, if any.
+        // -->
+        if (attribute.startsWith("script")) {
+            return new Element(EntityScript == null ? "null": EntityScript)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         if (entity == null) {
             return new Element(identify()).getAttribute(attribute);
         }
@@ -1229,19 +1258,6 @@ public class dEntity implements dObject, Adjustable {
                 return new Element(((Player) entity).getName())
                         .getAttribute(attribute.fulfill(1));
             return new Element(entity.getType().getName())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.spawn_reason>
-        // @returns String
-        // @group attributes
-        // @description
-        // Returns the reason an entity was spawned.
-        // -->
-        if (attribute.startsWith("spawn_reason")) {
-            if (entity.getMetadata("spawnreason").size() == 0) return "null";
-            return new Element(entity.getMetadata("spawnreason").get(0).asString())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1355,7 +1371,8 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("can_see")) {
             if (attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
                 dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
-                return new Element(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
+                if (toEntity.isSpawned())
+                    return new Element(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
             }
         }
 

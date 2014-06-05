@@ -42,7 +42,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   type: item
     //
-    //   # Must be a valid dItem (ie. i@red_wool or i@potion,8226) See 'dItem' for more information.
+    //   # Must be a valid dItem (EG i@red_wool or i@potion,8226) See 'dItem' for more information.
     //   material: i@base_material
     //
     //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
@@ -80,7 +80,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # For colorable items, such as leather armor, you can specify a valid dColor to specify the item's appearance.
     //   # See 'dColor' for more information.
-    //   color: c@color
+    //   color: co@color
     //
     //   # If your material is a 'm@written_book', you can specify a book script to automatically scribe your item
     //   # upon creation. See 'book script containers' for more information.

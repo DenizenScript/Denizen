@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.apache.commons.lang.StringUtils;
@@ -156,7 +157,13 @@ public class Element implements dObject {
     }
 
     public int asInt() {
-        return Integer.valueOf(element.replaceAll("(el@)|%", ""));
+        try {
+            return Integer.valueOf(element.replaceAll("(el@)|%", ""));
+        }
+        catch (NumberFormatException ex) {
+            dB.echoError("'" + element + "' is not a valid integer!");
+            return 0;
+        }
     }
 
     public boolean asBoolean() {
@@ -295,11 +302,6 @@ public class Element implements dObject {
             // Use the Comparable object as implemented for the IF command. First, a new Comparable!
             Comparable com = new net.aufdemrand.denizen.scripts.commands.core.Comparable();
 
-            // Comparable is the value of this element
-            com.setComparable(element);
-            // Compared_to is the value of the .to[] context.
-            com.setComparedto(attribute.getContext(2));
-
             // Check for negative logic
             String operator;
             if (attribute.getContext(1).startsWith("!")) {
@@ -319,6 +321,11 @@ public class Element implements dObject {
 
             if (comparableOperator != null) {
                 com.setOperator(comparableOperator);
+
+                // Comparable is the value of this element
+                com.setComparable(element);
+                // Compared_to is the value of the .to[] context.
+                com.setComparedto(attribute.getContext(2));
 
                 return new Element(com.determineOutcome()).getAttribute(attribute.fulfill(2));
             }
@@ -341,16 +348,10 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asboolean")
                 || attribute.startsWith("as_boolean"))
-            return new Element(Boolean.valueOf(element).toString())
+            return new Element(element.equalsIgnoreCase("true") ||
+                    element.equalsIgnoreCase("t") || element.equalsIgnoreCase("1"))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <el@element.as_double>
-        // @returns Element(Decimal)
-        // @group conversion
-        // @description
-        // Returns the element as a number with a decimal.
-        // -->
         // TODO: Why does this exist? It just throws an error or makes no changes.
         if (attribute.startsWith("asdouble")
                 || attribute.startsWith("as_double"))
@@ -395,7 +396,7 @@ public class Element implements dObject {
                 return new Element(d.format(Double.valueOf(element)))
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid Money format.");
+                dB.echoError("'" + element + "' is not a valid number.");
                 return new Element("null").getAttribute(attribute.fulfill(1));
             }
         }
@@ -544,6 +545,30 @@ public class Element implements dObject {
                 || attribute.startsWith("as_world"))
             return HandleNull(element, dWorld.valueOf(element), "dWorld").getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <el@element.escaped>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns the element, escaped for safe reuse.
+        // Inverts <@link tag el@element.unescaped>
+        // See <@link language property escaping>
+        // -->
+        if (attribute.startsWith("escaped"))
+            return new Element(EscapeTags.Escape(element)).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.unescaped>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns the element, unescaped.
+        // Inverts <@link tag el@element.escaped>
+        // See <@link language property escaping>
+        // -->
+        if (attribute.startsWith("unescaped"))
+            return new Element(EscapeTags.unEscape(element)).getAttribute(attribute.fulfill(1));
+
 
         /////////////////////
         //   DEBUG ATTRIBUTES
@@ -603,7 +628,7 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <el@element.contains[<string>]>
+        // @attribute <el@element.contains[<element>]>
         // @returns Element(Boolean)
         // @group string checking
         // @description
@@ -626,7 +651,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <el@element.ends_with[<string>]>
+        // @attribute <el@element.ends_with[<element>]>
         // @returns Element(Boolean)
         // @group string checking
         // @description
@@ -642,6 +667,7 @@ public class Element implements dObject {
         // @description
         // Returns whether the element matches a regex input.
         // -->
+        // TODO: .group[#] and such
         if (attribute.startsWith("matches")
                 && attribute.hasContext(1))
             return new Element(element.matches(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
@@ -934,10 +960,10 @@ public class Element implements dObject {
         // element after the specified index.
         // -->
         if (attribute.startsWith("substring")||attribute.startsWith("substr")) {            // substring[2,8]
-            int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
+            int beginning_index = new Element(attribute.getContext(1).split(",")[0]).asInt() - 1;
             int ending_index;
             if (attribute.getContext(1).split(",").length > 1)
-                ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]);
+                ending_index = new Element(attribute.getContext(1).split(",")[1]).asInt();
             else
                 ending_index = element.length();
             if (beginning_index < 0) beginning_index = 0;

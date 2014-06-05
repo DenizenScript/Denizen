@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.flags;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizen.events.core.FlagSmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -270,50 +271,52 @@ public class FlagManager {
          *
          */
         public void clear() {
-            List<String> world_script_events = new ArrayList<String>();
-
-            Map<String, dObject> context = new HashMap<String, dObject>();
-            dPlayer player = null;
-            if (dPlayer.matches(flagOwner))
-                player = dPlayer.valueOf(flagOwner);
-            dNPC npc = null;
-            if (dNPC.matches(flagOwner))
-                npc = dNPC.valueOf(flagOwner);
-
-            String type;
-
-            if (player != null) {
-                type = "player";
-                world_script_events.add("player flag cleared");
-                world_script_events.add("player flag " + flagName + " cleared");
-            }
-            else if (npc != null) {
-                type = "npc";
-                world_script_events.add("npc flag cleared");
-                world_script_events.add("npc flag " + flagName + " cleared");
-            }
-            else                  {
-                type = "server";
-                world_script_events.add("server flag cleared");
-                world_script_events.add("server flag " + flagName + " cleared");
-            }
-
-            context.put("owner", Element.valueOf(flagOwner));
-            context.put("name", Element.valueOf(flagName));
-            context.put("type", Element.valueOf(type));
-            context.put("old_value", value.size() > 1
+            String OldOwner = flagOwner;
+            String OldName = flagName;
+            dObject OldValue = value.size() > 1
                     ? new dList(denizen.getSaves().getStringList(flagPath))
-                    : value.size() == 1 ? new Element(value.get(0).asString()): Element.valueOf("null"));
-
-            world_script_events.add("flag cleared");
+                    : value.size() == 1 ? new Element(value.get(0).asString()): Element.valueOf("null");
 
             denizen.getSaves().set(flagPath, null);
             denizen.getSaves().set(flagPath + "-expiration", null);
             valid = false;
             rebuild();
 
-            EventManager.doEvents(world_script_events,
-                    npc, player, context, 1);
+            if (FlagSmartEvent.IsActive()) {
+                List<String> world_script_events = new ArrayList<String>();
+
+                Map<String, dObject> context = new HashMap<String, dObject>();
+                dPlayer player = null;
+                if (dPlayer.matches(OldOwner))
+                    player = dPlayer.valueOf(OldOwner);
+                dNPC npc = null;
+                if (dNPC.matches(OldOwner))
+                    npc = dNPC.valueOf(OldOwner);
+
+                String type;
+
+                if (player != null) {
+                    type = "player";
+                }
+                else if (npc != null) {
+                    type = "npc";
+                }
+                else {
+                    type = "server";
+                }
+                world_script_events.add(type + " flag cleared");
+                world_script_events.add(type + " flag " + OldName + " cleared");
+
+                context.put("owner", Element.valueOf(OldOwner));
+                context.put("name", Element.valueOf(OldName));
+                context.put("type", Element.valueOf(type));
+                context.put("old_value", OldValue);
+
+                world_script_events.add("flag cleared");
+
+                EventManager.doEvents(world_script_events,
+                        npc, player, context);
+            }
         }
 
         /**
@@ -509,49 +512,49 @@ public class FlagManager {
          *
          */
         public void save() {
-
-            List<String> world_script_events = new ArrayList<String>();
-
-            Map<String, dObject> context = new HashMap<String, dObject>();
-            dPlayer player = null;
-            if (dPlayer.matches(flagOwner)) player = dPlayer.valueOf(flagOwner);
-            dNPC npc = null;
-            if (dNPC.matches(flagOwner)) npc = dNPC.valueOf(flagOwner);
-
-            String type;
-
-            if (player != null) {
-                type = "player";
-                world_script_events.add("player flag changed");
-                world_script_events.add("player flag " + flagName + " changed");
-            }
-            else if (npc != null) {
-                type = "npc";
-                world_script_events.add("npc flag changed");
-                world_script_events.add("npc flag " + flagName + " changed");
-            }
-            else                  {
-                type = "server";
-                world_script_events.add("server flag changed");
-                world_script_events.add("server flag " + flagName + " changed");
-            }
-
-            context.put("owner", Element.valueOf(flagOwner));
-            context.put("name", Element.valueOf(flagName));
-            context.put("type", Element.valueOf(type));
-            context.put("old_value", value.size() > 1
-                    ? new dList(denizen.getSaves().getStringList(flagPath))
-                    : value.size() == 1 ? new Element(value.get(0).asString()): Element.valueOf("null"));
-
-            world_script_events.add("flag changed");
+            String OldOwner = flagOwner;
+            String OldName = flagName;
+            List<String> oldValueList = denizen.getSaves().getStringList(flagPath);
+            dObject OldValue = oldValueList.size() > 1 ? new dList(oldValueList)
+                    : oldValueList.size() == 1 ? new Element(oldValueList.get(0)): Element.valueOf("null");
 
             denizen.getSaves().set(flagPath, value.values);
             denizen.getSaves().set(flagPath + "-expiration", (expiration > 0 ? expiration : null));
             rebuild();
 
-            EventManager.doEvents(world_script_events,
-                    npc, player, context, 1);
+            if (FlagSmartEvent.IsActive()) {
+                List<String> world_script_events = new ArrayList<String>();
 
+                Map<String, dObject> context = new HashMap<String, dObject>();
+                dPlayer player = null;
+                if (dPlayer.matches(OldOwner)) player = dPlayer.valueOf(OldOwner);
+                dNPC npc = null;
+                if (dNPC.matches(OldOwner)) npc = dNPC.valueOf(OldOwner);
+
+                String type;
+
+                if (player != null) {
+                    type = "player";
+                }
+                else if (npc != null) {
+                    type = "npc";
+                }
+                else {
+                    type = "server";
+                }
+                world_script_events.add(type + " flag changed");
+                world_script_events.add(type + " flag " + OldName + " changed");
+
+                context.put("owner", Element.valueOf(OldOwner));
+                context.put("name", Element.valueOf(OldName));
+                context.put("type", Element.valueOf(type));
+                context.put("old_value", OldValue);
+
+                world_script_events.add("flag changed");
+
+                EventManager.doEvents(world_script_events,
+                        npc, player, context);
+            }
 
         }
 
@@ -630,7 +633,7 @@ public class FlagManager {
          * of the plugin.
          *
          */
-        private Flag rebuild() {
+        public Flag rebuild() {
             if (denizen.getSaves().contains(flagPath + "-expiration"))
                 this.expiration = (denizen.getSaves().getLong(flagPath + "-expiration"));
             List<String> cval = denizen.getSaves().getStringList(flagPath);

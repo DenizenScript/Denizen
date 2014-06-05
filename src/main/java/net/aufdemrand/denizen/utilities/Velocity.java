@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities;
 
+import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class Velocity {
@@ -73,4 +74,27 @@ public class Velocity {
         return new Vector(bX * cosyaw - vec.getZ() * sinyaw, bY, bX * sinyaw + vec.getZ() * cosyaw);
     }
 
+    public static double launchAngle(Location from, Vector to, double v, double elev, double g) {
+        Vector victor = from.toVector().subtract(to);
+        Double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
+        double v2 = Math.pow(v,2);
+        double v4 = Math.pow(v,4);
+        double derp = g * (g * Math.pow(dist, 2) + 2 * elev * v2);
+        if( v4 < derp) {
+            // Max optimal (won't hit!)
+            return Math.atan((2 * g * elev + v2) / (2 * g * elev + 2 * v2));
+        }
+        else {
+            return Math.atan((v2 - Math.sqrt(v4 - derp)) / (g * dist));
+        }
+    }
+
+    public static double hangtime(double launchAngle, double v, double elev, double g) {
+        double a = v * Math.sin(launchAngle);
+        double b = -2*g*elev;
+        if(Math.pow(a, 2) + b < 0){
+            return 0;
+        }
+        return (a + Math.sqrt(Math.pow(a, 2) + b)) / g;
+    }
 }

@@ -44,6 +44,17 @@ public class dPlayer implements dObject, Adjustable {
         else return new dPlayer(player);
     }
 
+    static ArrayList<String> playerNames = new ArrayList<String>();
+
+    /**
+     * Notes that the player exists, for easy dPlayer valueOf handling.
+     */
+    public static void notePlayer(OfflinePlayer player) {
+        if (!playerNames.contains(player.getName().toUpperCase())) {
+            playerNames.add(player.getName().toUpperCase());
+        }
+    }
+
 
     /////////////////////
     //   OBJECT FETCHER
@@ -72,30 +83,26 @@ public class dPlayer implements dObject, Adjustable {
 
         // Match as a UUID
 
-        try {
-            UUID uuid = UUID.fromString(string);
-            if (uuid != null) {
-                OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                if (player != null) {
-                    return new dPlayer(player);
+        if (string.indexOf('-') >= 0) {
+            try {
+                UUID uuid = UUID.fromString(string);
+                if (uuid != null) {
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+                    if (player != null) {
+                        return new dPlayer(player);
+                    }
                 }
             }
-        }
-        catch (IllegalArgumentException e) {
-            // Nothing
+            catch (IllegalArgumentException e) {
+                // Nothing
+            }
         }
 
         // Match as a player name
 
-        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-            if (player.getName() == null) {
-                dB.echoError("Player file for UUID " + player.getUniqueId().toString() + " is invalid!");
-                continue;
-            }
-            if (player.getName().equalsIgnoreCase(string)) {
-                return new dPlayer(player);
-            }
-        }
+        OfflinePlayer player = Bukkit.getOfflinePlayer(string);
+        if (player.hasPlayedBefore())
+            return new dPlayer(player);
 
         if (announce)
             dB.echoError("Invalid Player! '" + string + "' could not be found.");
@@ -112,9 +119,28 @@ public class dPlayer implements dObject, Adjustable {
         // even if the player doesn't technically exist.
         if (arg.toLowerCase().startsWith("p@")) return true;
 
-        // No identifier supplied? Let's check offlinePlayers. Return true if
-        // a match is found.
-        return valueOfInternal(arg, false) != null;
+        arg = arg.replace("p@", "").replace("P@", "");
+        if (arg.indexOf('-') >= 0) {
+            try {
+                UUID uuid = UUID.fromString(arg);
+                if (uuid != null) {
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+                    if (player != null) {
+                        return true;
+                    }
+                }
+            }
+            catch (IllegalArgumentException e) {
+                // Nothing
+            }
+        }
+        arg = arg.toUpperCase();
+        for (String name: playerNames) {
+            if (arg.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -178,6 +204,11 @@ public class dPlayer implements dObject, Adjustable {
 
     public dInventory getInventory() {
         if (isOnline()) return new dInventory(getPlayerEntity().getInventory());
+        else return new dInventory(getNBTEditor());
+    }
+
+    public dInventory getEnderChest() {
+        if (isOnline()) return new dInventory(getPlayerEntity().getEnderChest(), getPlayerEntity());
         else return new dInventory(getNBTEditor());
     }
 
@@ -892,6 +923,15 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("open_inventory"))
             return new dInventory(getPlayerEntity().getOpenInventory().getTopInventory())
                     .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.enderchest>
+        // @returns dInventory
+        // @description
+        // Gets the player's enderchest inventory.
+        // -->
+        if (attribute.startsWith("enderchest"))
+            return getEnderChest().getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <p@player.item_on_cursor>

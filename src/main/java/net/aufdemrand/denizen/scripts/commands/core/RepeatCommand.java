@@ -26,11 +26,15 @@ public class RepeatCommand extends BracedCommand {
             }
 
             else if (!scriptEntry.hasObject("stop")
-                    && arg.matches("stop"))
+                    && arg.matches("stop")) {
                 scriptEntry.addObject("stop", Element.TRUE);
+                break;
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+                break;
+            }
 
         }
 

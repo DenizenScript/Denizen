@@ -835,7 +835,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Drop
-        // @Syntax drop [<item>/<entity_type>/xp] [<location>] (qty:<#>) (speed:<#.#>)
+        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
@@ -868,7 +868,7 @@ public class CommandRegistry implements dRegistry {
 
         // -->
         registerCoreMember(DropCommand.class,
-                "DROP", "drop [<item>/<entity_type>/xp] [<location>] (qty:<#>) (speed:<#.#>)", 1);
+                "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>)", 1);
 
 
         // <--[command]
@@ -2395,7 +2395,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>)
+        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>)
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air up to a certain height.
@@ -2410,6 +2410,7 @@ public class CommandRegistry implements dRegistry {
         // %shot_entities% for all shot entities, %last_entity% for the last one (The controlling entity),
         // %location% for the last known location of the last shot entity, and
         // %hit_entities% for a list of any entities that were hit by fired projectiles.
+        // Optionally, specify a speed and 'lead' value to use the experimental arrow-aiming system.
         // @Tags
         // <entry[saveName].shot_entities> returns a dList of entities that were shot.
         // @Usage
@@ -2420,7 +2421,7 @@ public class CommandRegistry implements dRegistry {
         // - shoot arrow origin:<player> speed:2
         // -->
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>)", 1);
 
 
         // <--[command]

@@ -83,11 +83,11 @@ import net.aufdemrand.denizen.tags.Attribute;
 // |   w@<world_name> - fetches the world with the specified name
 //
 // + ----- dColor -------+
-// | object notation: c@    can reference unique objects: no      can be notable: soon
+// | object notation: co@    can reference unique objects: no      can be notable: soon
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   c@<color_name> - fetches a named color, as implemented by Bukkit's color enumeration
-// |   c@<r>,<g>,<b> - fetches a color made of the specified Red,Green,Blue value
-// |   c@random - fetches a random color
+// |   co@<color_name> - fetches a named color, as implemented by Bukkit's color enumeration
+// |   co@<r>,<g>,<b> - fetches a color made of the specified Red,Green,Blue value
+// |   co@random - fetches a random color
 //
 // + ----- dCuboid ------+
 // | object notation: cu@   can reference unique objects: no      can be notable: yes

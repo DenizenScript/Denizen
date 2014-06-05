@@ -120,7 +120,7 @@ public class dNPCRegistry implements Listener {
     @EventHandler
     public void onSpawn(NPCSpawnEvent event) {
         _registerNPC(event.getNPC());
-        // Do world script event 'On NPC Completes Navigation'
+        // Do world script event 'On NPC spawns'
         EventManager.doEvents(Arrays.asList
                 ("npc spawns"),
                 dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
@@ -175,6 +175,7 @@ public class dNPCRegistry implements Listener {
         if (_isRegistered(event.getNPC()))
             denizenNPCs.remove(event.getNPC().getId());
         dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + event.getNPC().getName() + "/" + event.getNPC().getId());
+        // TODO: Delete flags / etc.
     }
 
 

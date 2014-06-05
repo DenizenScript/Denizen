@@ -25,8 +25,10 @@ public class ForEachCommand extends BracedCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("stop")
-                    && arg.matches("stop"))
+                    && arg.matches("stop")) {
                 scriptEntry.addObject("stop", Element.TRUE);
+                break;
+            }
 
             else if (!scriptEntry.hasObject("list")
                     && arg.matchesArgumentType(dList.class)) {
@@ -35,8 +37,10 @@ public class ForEachCommand extends BracedCommand {
                 break;
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+                break;
+            }
 
         }
 

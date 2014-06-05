@@ -321,7 +321,8 @@ public class dScript implements dObject {
                 return list.getAttribute(attribute.fulfill(1));
 
             }
-            else return new Element(obj.toString())
+            else return new Element(TagManager.tag(attribute.getScriptEntry().getPlayer(),
+                    attribute.getScriptEntry().getNPC(), obj.toString()))
                     .getAttribute(attribute.fulfill(1));
         }
 

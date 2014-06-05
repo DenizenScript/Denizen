@@ -873,7 +873,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                     && attribute.hasContext(2)) {
                 dList ent_list = new dList();
                 if (attribute.hasContext(1)) {
-                    for (String ent : attribute.getContext(1).split("\\|")) {
+                    for (String ent : dList.valueOf(attribute.getContext(1))) {
                         if (dEntity.matches(ent))
                             ent_list.add(ent.toUpperCase());
                     }

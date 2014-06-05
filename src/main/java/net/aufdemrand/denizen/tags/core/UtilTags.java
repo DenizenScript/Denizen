@@ -386,6 +386,25 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.get_npcs_flagged[<flag_name>]>
+        // @returns dList(dNPC)
+        // @description
+        // Returns a list of all NPCs with a specified flag set.
+        // -->
+        if (attribute.startsWith("get_npcs_flagged")
+                && attribute.hasContext(1)) {
+            String flag = attribute.getContext(1);
+            ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                dNPC dNpc = dNPC.mirrorCitizensNPC(npc);
+                if (FlagManager.npcHasFlag(dNpc, flag))
+                    npcs.add(dNpc);
+            }
+            event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.list_npcs>
         // @returns dList(dNPC)
         // @description

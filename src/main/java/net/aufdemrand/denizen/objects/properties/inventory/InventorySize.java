@@ -47,8 +47,8 @@ public class InventorySize implements Property {
 
     @Override
     public String getPropertyString() {
-        if (getSize() > 0 && inventory.getIdType().equals("generic")
-                && inventory.getIdType().equals("CHEST"))
+        if (getSize() > 0 && (inventory.getIdType().equals("generic")
+                || inventory.getIdType().equals("CHEST")))
             return String.valueOf(getSize());
         else
             return null;

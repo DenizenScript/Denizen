@@ -68,6 +68,7 @@ public class ScriptRegistry {
                 // Check that types is a registered type
                 if (!scriptContainerTypes.containsKey(type.toUpperCase())) {
                     dB.log("<G>Trying to load an invalid script. '<A>" + scriptName + "<Y>(" + type + ")'<G> is an unknown type.");
+                    ScriptHelper.setHadError();
                     continue;
                 }
                 // Instantiate a new scriptContainer of specified type.
@@ -77,6 +78,7 @@ public class ScriptRegistry {
                             .newInstance(ScriptHelper._gs().getConfigurationSection(scriptName), scriptName));
                 } catch (Exception e) {
                     dB.echoError(e);
+                    ScriptHelper.setHadError();
                 }
             }
     }
