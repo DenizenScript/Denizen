@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -81,7 +82,7 @@ public class dList extends ArrayList<String> implements dObject {
     //////////
 
     // A list of dObjects
-    public dList(ArrayList<? extends dObject> dObjectList) {
+    public dList(Collection<? extends dObject> dObjectList) {
         for (dObject obj : dObjectList)
             add(obj.identify());
     }

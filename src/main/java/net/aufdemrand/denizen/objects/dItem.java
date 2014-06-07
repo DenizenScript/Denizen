@@ -355,6 +355,10 @@ public class dItem implements dObject, Notable, Adjustable {
 
     // Additional helper methods
 
+    public void setStackSize(int size) {
+        getItemStack().setAmount(size);
+    }
+
     /**
      * Check whether this item contains a lore that starts
      * with a certain prefix.

@@ -3553,6 +3553,7 @@ public class WorldScriptHelper implements Listener {
     // <context.is_hatching> returns an Element with a value of "true" if the egg will hatch and "false" otherwise.
     //
     // @Determine
+    // "CANCELLED" to stop the hatching.
     // dEntity to set the type of the hatching entity.
     //
     // -->
@@ -3572,7 +3573,10 @@ public class WorldScriptHelper implements Listener {
 
         String determination = EventManager.doEvents(events, null, new dPlayer(event.getPlayer()), context);
 
-        if (dEntity.matches(determination)) {
+        if (determination.equalsIgnoreCase("CANCELLED")) {
+            event.setHatching(false);
+        }
+        else if (dEntity.matches(determination)) {
             event.setHatching(true);
             event.setHatchingType(dEntity.valueOf(determination).getEntityType());
         }
@@ -3607,7 +3611,6 @@ public class WorldScriptHelper implements Listener {
         else if (Argument.valueOf(determination).matchesPrimitive(PrimitiveType.Integer)) {
             event.setAmount(Integer.valueOf(determination));
         }
-
     }
 
     // <--[event]

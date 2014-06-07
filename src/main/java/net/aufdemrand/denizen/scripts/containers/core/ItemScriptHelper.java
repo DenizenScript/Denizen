@@ -237,8 +237,15 @@ public class ItemScriptHelper implements Listener {
 
                 // Use dItem.valueOf on the entry values to ensure
                 // correct comparison
-                if (!dItem.valueOf(entry.getValue().get(n)).identify()
-                        .equals(new dItem(matrix[n]).identify())) {
+                dItem valueN = dItem.valueOf(entry.getValue().get(n));
+                dItem matrixN = new dItem(matrix[n].clone());
+
+                // Set both items to size=1 to avoid miscomparison due to quantities
+                valueN.setStackSize(1);
+                matrixN.setStackSize(1);
+
+                if (!valueN.identify()
+                        .equals(matrixN.identify())) {
 
                     // If the current item does not match, continue the loop
                     continue master;

@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -544,6 +545,17 @@ public class Element implements dObject {
         if (attribute.startsWith("asworld")
                 || attribute.startsWith("as_world"))
             return HandleNull(element, dWorld.valueOf(element), "dWorld").getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.as_queue>
+        // @returns dQueue
+        // @group conversion
+        // @description
+        // Returns the element as a queue.
+        // -->
+        if (attribute.startsWith("asqueue")
+                || attribute.startsWith("as_queue"))
+            return HandleNull(element, ScriptQueue.valueOf(element), "dQueue").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.escaped>

@@ -169,6 +169,8 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     private final Map<String, ScriptEntry>
             held_entries = new ConcurrentHashMap<String, ScriptEntry>(8, 0.9f, 1);
 
+    private dScript script;
+
     /**
      * Creates a ScriptQueue instance. Users of
      * the API should instead use the static members
@@ -405,6 +407,10 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // Set as started, and check for a valid delay_time.
         is_started = true;
         boolean is_delayed = delay_time > System.currentTimeMillis();
+
+        // Record what script generated the first entry in the queue
+        if (script_entries.size() > 0)
+            script = script_entries.get(0).getScript();
 
         // Debug info
         Class<? extends ScriptQueue> clazz = this.cachedClass == null ? this.cachedClass = getClass() : this.cachedClass;
@@ -657,6 +663,9 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     public static ScriptQueue valueOf(String string) {
         if (string == null) return null;
 
+        if (string.startsWith("q@") && string.length() > 2)
+            string = string.substring(2);
+
         if (_queueExists(string))
             return _getExistingQueue(string);
 
@@ -747,6 +756,34 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             else if (is_stopping) state = "stopping";
             else state = "unknown";
             return new Element(state).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <q@queue.script>
+        // @returns dScript
+        // @description
+        // Returns the script that started this queue.
+        // -->
+        if (attribute.startsWith("script") && script != null) {
+            return script.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <q@queue.commands>
+        // @returns dList
+        // @description
+        // Returns a list of commands waiting in the queue.
+        // -->
+        if (attribute.startsWith("commands")) {
+            dList commands = new dList();
+            for (ScriptEntry entry: script_entries) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(entry.getCommandName()).append(" ");
+                for (String arg: entry.getOriginalArguments()) {
+                    sb.append(arg).append(" ");
+                }
+                commands.add(sb.substring(0, sb.length() - 1));
+            }
         }
 
         // <--[tag]
