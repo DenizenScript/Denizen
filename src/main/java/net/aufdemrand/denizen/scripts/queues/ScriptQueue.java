@@ -784,16 +784,17 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 }
                 commands.add(sb.substring(0, sb.length() - 1));
             }
+            return commands.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
         // @attribute <q@queue.definitions>
-        // @returns Element
+        // @returns dList
         // @description
-        // Returns all definitions that were passed to the current queue.
+        // Returns the names of all definitions that were passed to the current queue.
         // -->
         if (attribute.startsWith("definitions")) {
-            return new Element(getAllDefinitions().toString()).getAttribute(attribute.fulfill(1));
+            return new dList(getAllDefinitions().keySet()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

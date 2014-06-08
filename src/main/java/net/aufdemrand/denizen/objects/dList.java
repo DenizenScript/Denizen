@@ -15,6 +15,7 @@ import org.bukkit.ChatColor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,6 +123,11 @@ public class dList extends ArrayList<String> implements dObject {
 
     // A List<String> of items
     public dList(List<String> items) {
+        if (items != null) addAll(items);
+    }
+
+    // A Set<String> of items
+    public dList(Set<String> items) {
         if (items != null) addAll(items);
     }
 
