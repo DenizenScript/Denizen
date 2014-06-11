@@ -474,6 +474,19 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.include[...|...]>
+        // @returns dList
+        // @description
+        // returns a new dList including the items specified.
+        // -->
+        if (attribute.startsWith("include") &&
+                attribute.hasContext(1)) {
+            dList list = new dList(this);
+            list.addAll(dList.valueOf(attribute.getContext(1)));
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.exclude[...|...]>
         // @returns dList
         // @description
@@ -494,6 +507,33 @@ public class dList extends ArrayList<String> implements dObject {
             }
 
             // Return the modified list
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.deduplicate>
+        // @returns dList
+        // @description
+        // returns a copy of the list with any duplicate items removed.
+        // -->
+        if (attribute.startsWith("deduplicate")) {
+            dList list = new dList();
+            int listSize = 0;
+            int size = this.size();
+            for (int i = 0; i < size; i++) {
+                String entry = get(i);
+                boolean duplicate = false;
+                for (int x = 0; x < listSize; x++) {
+                    if (get(x).equalsIgnoreCase(entry)) {
+                        duplicate = true;
+                        break;
+                    }
+                }
+                if (!duplicate) {
+                    list.add(entry);
+                    listSize++;
+                }
+            }
             return list.getAttribute(attribute.fulfill(1));
         }
 
