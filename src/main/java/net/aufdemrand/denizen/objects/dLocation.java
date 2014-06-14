@@ -1041,7 +1041,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         /////////////////
 
         // <--[tag]
-        // @attribute <l@location.add[x,y,z]>
+        // @attribute <l@location.add[<x,y,z>]>
         // @returns dLocation
         // @description
         // Returns the location with the specified coordinates added to it.
@@ -1065,7 +1065,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         }
 
         // <--[tag]
-        // @attribute <l@location.sub[x,y,z]>
+        // @attribute <l@location.sub[<x,y,z>]>
         // @returns dLocation
         // @description
         // Returns the location with the specified coordinates subtracted from it.
@@ -1092,7 +1092,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         // @attribute <l@location.mul[<length>]>
         // @returns dLocation
         // @description
-        // Returns the location multiplied by the given length.
+        // Returns the location multiplied by the specified length.
         // -->
         if (attribute.startsWith("mul") &&
                 attribute.hasContext(1)) {
@@ -1104,7 +1104,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         // @attribute <l@location.div[<length>]>
         // @returns dLocation
         // @description
-        // Returns the location divided the given certain length.
+        // Returns the location divided by the specified length.
         // -->
         if (attribute.startsWith("div") &&
                 attribute.hasContext(1)) {
