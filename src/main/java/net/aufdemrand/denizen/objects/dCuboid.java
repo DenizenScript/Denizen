@@ -32,9 +32,9 @@ public class dCuboid implements dObject, Notable, Adjustable {
 
     public static List<dCuboid> getNotableCuboidsContaining(Location location) {
         List<dCuboid> cuboids = new ArrayList<dCuboid>();
-        for (dObject notable : NotableManager.getAllType(dCuboid.class))
-            if (((dCuboid) notable).isInsideCuboid(location))
-                cuboids.add((dCuboid) notable);
+        for (dCuboid cuboid : NotableManager.getAllType(dCuboid.class))
+            if (cuboid.isInsideCuboid(location))
+                cuboids.add(cuboid);
 
         return cuboids;
     }

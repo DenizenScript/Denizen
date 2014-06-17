@@ -53,31 +53,27 @@ import com.google.common.io.Files;
  */
 
 public class ImprovedOfflinePlayer {
-    private String player;
+
+    private UUID player;
     private File file;
     private NBTTagCompound compound;
     private boolean exists = false;
     private boolean autosave = true;
 
-    public ImprovedOfflinePlayer(String playername) {
-        this.exists = loadPlayerData(playername);
+    public ImprovedOfflinePlayer(UUID playeruuid) {
+        this.exists = loadPlayerData(playeruuid);
     }
     public ImprovedOfflinePlayer(OfflinePlayer offlineplayer) {
-        this.exists = loadPlayerData(offlineplayer.getName());
+        this.exists = loadPlayerData(offlineplayer.getUniqueId());
     }
 
     public org.bukkit.inventory.PlayerInventory getInventory() {
-        if (InventoryScriptHelper.offlineInventories.containsKey(getName()))
-            return InventoryScriptHelper.offlineInventories.get(getName());
+        if (InventoryScriptHelper.offlineInventories.containsKey(getUniqueId()))
+            return InventoryScriptHelper.offlineInventories.get(getUniqueId());
         PlayerInventory inventory = new PlayerInventory(null);
         inventory.b(this.compound.getList("Inventory", 10));
-        org.bukkit.inventory.Inventory base_inv = Bukkit.createInventory(null, InventoryType.PLAYER);
-        if (!(base_inv instanceof org.bukkit.inventory.PlayerInventory))
-            return null; // TODO: I don't understand this code... but I don't think this should ever happen. Needs fixing!
-        org.bukkit.inventory.PlayerInventory inv =
-                (org.bukkit.inventory.PlayerInventory) base_inv;
-        inv.setContents(new CraftInventoryPlayer(inventory).getContents());
-        InventoryScriptHelper.offlineInventories.put(getName(), inv);
+        org.bukkit.inventory.PlayerInventory inv = new CraftInventoryPlayer(inventory);
+        InventoryScriptHelper.offlineInventories.put(getUniqueId(), inv);
         return inv;
     }
 
@@ -120,14 +116,13 @@ public class ImprovedOfflinePlayer {
         if(this.autosave) savePlayerData();
     }
 
-    private boolean loadPlayerData(String name) {
+    private boolean loadPlayerData(UUID uuid) {
         try {
-            this.player = name;
+            this.player = uuid;
             for(World w : Bukkit.getWorlds()) {
-                this.file = new File(w.getWorldFolder(), "players" + File.separator + this.player + ".dat");
+                this.file = new File(w.getWorldFolder(), "playerdata" + File.separator + this.player + ".dat");
                 if(this.file.exists()){
                     this.compound = NBTCompressedStreamTools.a(new FileInputStream(this.file));
-                    this.player = this.file.getCanonicalFile().getName().replace(".dat", "");
                     return true;
                 }
             }
@@ -157,22 +152,22 @@ public class ImprovedOfflinePlayer {
         this.autosave = autosave;
     }
 
-    public void copyDataTo(String playername) {
+    public void copyDataTo(UUID playeruuid) {
         try {
-            if(!playername.equalsIgnoreCase(this.player)) {
-                Player to = Bukkit.getPlayerExact(playername);
-                Player from = Bukkit.getPlayerExact(this.player);
+            if (!playeruuid.equals(this.player)) {
+                Player to = Bukkit.getPlayer(playeruuid);
+                Player from = Bukkit.getPlayer(playeruuid);
                 if(from != null) {
                     from.saveData();
                 }
-                Files.copy(this.file, new File(this.file.getParentFile(), playername + ".dat"));
+                Files.copy(this.file, new File(this.file.getParentFile(), playeruuid + ".dat"));
                 if(to != null) {
                     to.teleport(from == null ? getLocation() : from.getLocation());
                     to.loadData();
                 }
             }
             else {
-                Player player = Bukkit.getPlayerExact(this.player);
+                Player player = Bukkit.getPlayer(playeruuid);
                 if(player != null) {
                     player.saveData();
                 }
@@ -341,9 +336,8 @@ public class ImprovedOfflinePlayer {
         this.compound.setInt("XpLevel", input);
         if(this.autosave) savePlayerData();
     }
-    public String getName() {
-        return this.player;
-    }
+
+    public UUID getUniqueId() { return this.player; }
 
     public int getPortalCooldown() {
         return this.compound.getInt("PortalCooldown");

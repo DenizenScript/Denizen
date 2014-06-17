@@ -31,7 +31,8 @@ public class InventoryTitle implements Property {
     }
 
     public String getTitle() {
-        if (inventory.getInventory() != null)
+        if (inventory.getInventory() != null && inventory.getIdType().equals("generic")
+                && !inventory.getInventory().getTitle().startsWith("container."))
             return inventory.getInventory().getTitle();
         else
             return null;
@@ -44,12 +45,7 @@ public class InventoryTitle implements Property {
 
     @Override
     public String getPropertyString() {
-        if (inventory.getIdType().equals("generic")
-                && inventory.getIdHolder().equals("CHEST")
-                && !getTitle().equals("Chest"))
-            return getTitle();
-        else
-            return null;
+        return getTitle();
     }
 
     @Override
@@ -85,7 +81,7 @@ public class InventoryTitle implements Property {
         // @name title
         // @input Element
         // @description
-        // Sets the title of the inventory. (Only works for "generic" chest inventories.)
+        // Sets the title of the inventory. (Only works for "generic" inventories.)
         // @tags
         // <in@inventory.title>
         // -->

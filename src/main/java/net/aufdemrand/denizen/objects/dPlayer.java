@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.*;
-
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -16,20 +14,18 @@ import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
 import net.aufdemrand.denizen.utilities.packets.PlayerBars;
 import net.citizensnpcs.api.CitizensAPI;
-
-import org.bukkit.Achievement;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.WeatherType;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.BlockIterator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class dPlayer implements dObject, Adjustable {
 
@@ -202,14 +198,24 @@ public class dPlayer implements dObject, Adjustable {
         else return null;
     }
 
+    public PlayerInventory getBukkitInventory() {
+        if (isOnline()) return getPlayerEntity().getInventory();
+        else return getNBTEditor().getInventory();
+    }
+
     public dInventory getInventory() {
         if (isOnline()) return new dInventory(getPlayerEntity().getInventory());
         else return new dInventory(getNBTEditor());
     }
 
+    public Inventory getBukkitEnderChest() {
+        if (isOnline()) return getPlayerEntity().getEnderChest();
+        else return getNBTEditor().getEnderChest();
+    }
+
     public dInventory getEnderChest() {
         if (isOnline()) return new dInventory(getPlayerEntity().getEnderChest(), getPlayerEntity());
-        else return new dInventory(getNBTEditor());
+        else return new dInventory(getNBTEditor(), true);
     }
 
     public World getWorld() {
@@ -905,6 +911,15 @@ public class dPlayer implements dObject, Adjustable {
             return getInventory().getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <p@player.enderchest>
+        // @returns dInventory
+        // @description
+        // Gets the player's enderchest inventory.
+        // -->
+        if (attribute.startsWith("enderchest"))
+            return getEnderChest().getAttribute(attribute.fulfill(1));
+
 
         /////////////////////
         //   ONLINE ATTRIBUTES
@@ -923,15 +938,6 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("open_inventory"))
             return new dInventory(getPlayerEntity().getOpenInventory().getTopInventory())
                     .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.enderchest>
-        // @returns dInventory
-        // @description
-        // Gets the player's enderchest inventory.
-        // -->
-        if (attribute.startsWith("enderchest"))
-            return getEnderChest().getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <p@player.item_on_cursor>

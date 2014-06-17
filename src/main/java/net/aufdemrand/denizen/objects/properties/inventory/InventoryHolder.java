@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
 import net.aufdemrand.denizen.objects.*;
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
@@ -9,6 +10,7 @@ import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 
 public class InventoryHolder implements Property {
 
@@ -39,9 +41,7 @@ public class InventoryHolder implements Property {
         if (inventory.getInventory() == null)
             return null;
         if (inventory.getIdType() != null
-                && inventory.getIdType().equals("player")
-                && inventory.getIdHolder() != null
-                && !inventory.getIdHolder().startsWith("enderchest,"))
+                && (inventory.getIdType().equals("player") || inventory.getIdType().equals("enderchest")))
             return dPlayer.valueOf(inventory.getIdHolder());
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
@@ -68,8 +68,25 @@ public class InventoryHolder implements Property {
         return null;
     }
 
-    public void setHolder(dObject object) {
-        inventory.setInventory(new dInventory(object).getInventory());
+    public void setHolder(dPlayer player) {
+        if (inventory.getIdType().equals("enderchest"))
+            inventory.setInventory(player.getBukkitEnderChest(), player);
+        else
+            inventory.setInventory(player.getBukkitInventory(), player);
+    }
+
+    public void setHolder(dEntity entity) {
+        inventory.setInventory(entity.getBukkitInventory());
+    }
+
+    public void setHolder(dLocation location) {
+        inventory.setInventory(location.getBukkitInventory());
+    }
+
+    public void setHolder(Element element) {
+        if (element.matchesEnum(InventoryType.values()))
+            inventory.setInventory(Bukkit.getServer().createInventory(null,
+                    InventoryType.valueOf(element.asString().toUpperCase())));
     }
 
 
@@ -134,16 +151,10 @@ public class InventoryHolder implements Property {
         // -->
         if (mechanism.matches("holder")) {
             Element value = mechanism.getValue();
-            if (value.asString().startsWith("enderchest,")) {
-                dPlayer player = dPlayer.valueOf(value.asString().substring("enderchest,".length()));
-                if (player != null) {
-                    inventory.setInventory(player.getEnderChest().getInventory(), player.getPlayerEntity());
-                }
-            }
             if (value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
             else if (value.matchesType(dEntity.class)) setHolder(value.asType(dEntity.class));
             else if (value.matchesType(dLocation.class)) setHolder(value.asType(dLocation.class));
-            else if (value.matchesEnum(InventoryType.values()) || value.isInt()) setHolder(value);
+            else if (value.matchesEnum(InventoryType.values())) setHolder(value);
         }
 
     }

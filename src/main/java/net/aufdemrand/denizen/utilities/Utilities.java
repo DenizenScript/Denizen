@@ -20,6 +20,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -552,4 +553,15 @@ public class Utilities {
             }
         }
     }
+
+    private final static String colors = "0123456789abcdefklmnorABCDEFKLMNOR";
+
+    public static String generateRandomColors(int count) {
+        String ret = "";
+        for (int i = 0; i < count; i++) {
+            ret += "§" + colors.charAt(random.nextInt(34));
+        }
+        return ret;
+    }
+
 }
