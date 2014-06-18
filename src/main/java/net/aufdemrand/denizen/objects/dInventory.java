@@ -90,7 +90,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (title.length() > 26) title = title.substring(0, title.charAt(25) == '§' ? 25 : 26);
         String colors;
         while (true) {
-            colors = Utilities.generateRandomColors(3);
+            colors = Utilities.generateRandomColors((32-title.length())/2);
             if (!InventoryScriptHelper.notableTitles.contains(title + colors)) {
                 if (getInventoryType() == InventoryType.CHEST) {
                     inventory = Bukkit.getServer().createInventory(null, inventory.getSize(), title + colors);
