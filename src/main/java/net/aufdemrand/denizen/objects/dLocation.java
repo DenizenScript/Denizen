@@ -364,7 +364,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     }
 
     public String identifyRaw() {
-        if (getYaw() != 0.0 && getPitch() != 0.0)
+        if (getYaw() != 0.0 || getPitch() != 0.0)
             return "l@" + getX() + "," + getY()
                     + "," + getZ() + "," + getPitch() + "," + getYaw() + "," + getWorld().getName();
         else
@@ -639,7 +639,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         }
 
         // <--[tag]
-        // @attribute <l@location.with_pose[<entity>/<yaw>,<pitch>]>
+        // @attribute <l@location.with_pose[<entity>/<pitch>,<yaw>]>
         // @returns dLocation
         // @description
         // Returns the location with pitch and yaw.
@@ -1185,6 +1185,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                 else return new Element(this.distance(toLocation))
                             .getAttribute(attribute.fulfill(1));
             }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.is_within[<cuboid>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the location is within the cuboid.
+        // -->
+        if (attribute.startsWith("is_within")
+                && attribute.hasContext(1)) {
+            dCuboid cuboid = dCuboid.valueOf(attribute.getContext(1));
+            if (cuboid != null)
+                return new Element(cuboid.isInsideCuboid(this))
+                        .getAttribute(attribute.fulfill(1));
         }
 
 
