@@ -368,7 +368,7 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public boolean hasInventory() {
-        return isLivingEntity() && getLivingEntity() instanceof InventoryHolder;
+        return getBukkitEntity() instanceof InventoryHolder;
     }
 
     /**
@@ -395,7 +395,7 @@ public class dEntity implements dObject, Adjustable {
         if (npc != null)
             return new dNPC(npc);
         else if (entity != null && CitizensAPI.getNPCRegistry().isNPC(entity))
-            return new dNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+            return dNPC.fromEntity(entity);
         else return null;
     }
 

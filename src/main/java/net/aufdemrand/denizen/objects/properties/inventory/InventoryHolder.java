@@ -47,7 +47,7 @@ public class InventoryHolder implements Property {
 
         if (holder != null) {
             if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
-                return new dNPC(CitizensAPI.getNPCRegistry().getNPC((Entity) holder));
+                return dNPC.fromEntity((Entity) holder);
             }
             else if (holder instanceof Player) {
                 return new dPlayer((Player) holder);

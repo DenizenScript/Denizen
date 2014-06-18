@@ -97,7 +97,7 @@ public class InventorySize implements Property {
         // @tags
         // <in@inventory.size>
         // -->
-        if (mechanism.matches("size") && mechanism.requireInteger()) {
+        if (mechanism.matches("size") && inventory.getIdType().equals("generic") && mechanism.requireInteger()) {
             setSize(mechanism.getValue().asInt());
         }
 

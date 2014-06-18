@@ -179,7 +179,7 @@ public class InventoryContents implements Property {
         // <in@inventory.list_contents.with_lore[<lore>]>
         // <in@inventory.list_contents.with_lore[<lore>].simple>
         // -->
-        if (mechanism.matches("contents")) {
+        if (mechanism.matches("contents") && inventory.getIdType().equals("generic")) {
             inventory.setContents(mechanism.getValue().asType(dList.class));
         }
 

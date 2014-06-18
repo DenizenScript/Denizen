@@ -36,9 +36,6 @@ import java.util.regex.Pattern;
 
 public class dInventory implements dObject, Notable, Adjustable {
 
-    // The maximum number of slots a Bukkit inventory can have
-    final static public int maxSlots = 54;
-
     public static dInventory mirrorBukkitInventory(Inventory inventory) {
         // Iterate through offline player inventories
         for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
@@ -60,6 +57,18 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|enderchest|entity|location|equipment|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
     final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
+
+
+    /////////////////////
+    //   STATIC FIELDS
+    /////////////////
+
+    // The maximum number of slots a Bukkit inventory can have
+    public final static int maxSlots = 54;
+
+    // All of the inventory id types we use
+    public final static String[] idTypes = { "npc", "player", "enderchest", "entity", "location", "equipment", "generic" };
+
 
     /////////////////////
     //   NOTABLE METHODS
@@ -145,7 +154,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dInventory.class))
                 return (dInventory) NotableManager.getSavedObject(m.group(2));
 
-            if (m.group(2).toLowerCase().matches("npc|player|enderchest|entity|location|equipment|generic"))
+            for (String idType : idTypes) if (m.group(2).equalsIgnoreCase(idType))
                 return new dInventory(m.group(2));
         }
 
@@ -281,7 +290,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dInventory(String idType) {
         this.idType = idType.toLowerCase();
-        for (Mechanism mechanism: mechanisms) {
+        for (Mechanism mechanism : mechanisms) {
             adjust(mechanism);
         }
         mechanisms.clear();
@@ -316,7 +325,7 @@ public class dInventory implements dObject, Notable, Adjustable {
       
     public void setInventory(Inventory inventory, dPlayer player) {
         this.inventory = inventory;
-        this.idHolder = "p@" + player.getOfflinePlayer().getUniqueId();
+        this.idHolder = player.identify();
     }
 
     public void setTitle(String title) {
@@ -376,7 +385,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
                 if (!isEquipment)
                     idType = "npc";
-                idHolder = "n@" + CitizensAPI.getNPCRegistry().getNPC((Entity) holder).getId();
+                idHolder = dNPC.fromEntity((Entity) holder).identify();
                 return;
             }
             else if (holder instanceof Player) {
@@ -384,13 +393,13 @@ public class dInventory implements dObject, Notable, Adjustable {
                     idType = "enderchest";
                 else if (!isEquipment)
                     idType = "player";
-                idHolder = "p@" + ((Player) holder).getUniqueId();
+                idHolder = new dPlayer((Player) holder).identify();
                 return;
             }
             else if (holder instanceof Entity) {
                 if (!isEquipment)
                     idType = "entity";
-                idHolder = "e@" + ((Entity) holder).getEntityId();
+                idHolder = new dEntity((Entity) holder).identify();
                 return;
             }
             else {
@@ -406,7 +415,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // Iterate through offline player inventories
             for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
                 if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
-                    idHolder = "p@" + inv.getKey();
+                    idHolder = dPlayer.valueOf(inv.getKey().toString()).identify();
                     return;
                 }
             }
@@ -420,7 +429,15 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
             }
         }
-        // TODO: Add notable check
+        else if (getIdType().equals("notable")) {
+            // Iterate through Notable Inventories
+            for (dInventory inv : NotableManager.getAllType(dInventory.class)) {
+                if (inv.getInventory().getTitle().equals(inventory.getTitle())) {
+                    idHolder = NotableManager.getSavedId(inv);
+                    return;
+                }
+            }
+        }
         idType = "generic";
         idHolder = getInventory().getType().name();
     }
@@ -504,7 +521,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public void setContents(dList list) {
-        int size = 0;
+        int size;
         if (inventory == null) {
             size = (int) Math.ceil(list.size() / 9)*9;
             if (size == 0) size = 9;
