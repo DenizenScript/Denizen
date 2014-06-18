@@ -3,10 +3,13 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.util.Collection;
 
 public class QueueTags implements Listener {
 
@@ -61,6 +64,18 @@ public class QueueTags implements Listener {
         // -->
         if (attribute.startsWith("stats")) {
             event.setReplaced(new Element(ScriptQueue._getStats())
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <queue.list>
+        // @returns dList(Queue)
+        // @description
+        // Returns a list of all currently running queues on the server.
+        // -->
+        if (attribute.startsWith("list")) {
+            event.setReplaced(new dList(ScriptQueue._getQueues())
                     .getAttribute(attribute.fulfill(1)));
             return;
         }

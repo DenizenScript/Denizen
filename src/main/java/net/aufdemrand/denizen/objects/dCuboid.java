@@ -217,7 +217,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
                 continue;
             if (!Utilities.isBetween(pair.low.getBlockY(), pair.high.getBlockY(), location.getBlockY()))
                 continue;
-            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ(), location.getZ()))
+            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ(), location.getBlockZ()))
                 return true;
         }
 
@@ -559,7 +559,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
             for (LocationPair pair : pairs) {
                 sb.append(pair.low.getBlockX()).append(',').append(pair.low.getBlockY())
                         .append(',').append(pair.low.getBlockZ()).append(',').append(pair.low.getWorld().getName())
-                        .append('|').append(pair.high.getBlockX()).append(',').append(pair.high.getBlockZ())
+                        .append('|').append(pair.high.getBlockX()).append(',').append(pair.high.getBlockY())
                         .append(',').append(pair.high.getBlockZ()).append(',').append(pair.high.getWorld().getName()).append('|');
             }
 

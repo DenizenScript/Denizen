@@ -308,6 +308,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         else return null;
     }
 
+    int Compare(dLocation loc1, dLocation loc2) {
+        if (loc1.equals(loc2))
+            return 0;
+        else {
+            double dist = distanceSquared(loc1) - distanceSquared(loc2);
+            return dist == 0 ? 0: (dist > 0 ? 1: -1);
+        }
+    }
+
 
 
     String prefix = "Location";
@@ -745,7 +754,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
                     public int compare(dLocation loc1, dLocation loc2) {
-                        return (int) (distanceSquared(loc1) - distanceSquared(loc2));
+                        return Compare(loc1, loc2);
                     }
                 });
 
@@ -799,10 +808,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
                     public int compare(dLocation loc1, dLocation loc2) {
-                        if (loc1.equals(loc2))
-                            return 0;
-                        else
-                            return (distanceSquared(loc1) - distanceSquared(loc2)) > 0 ? 1: -1;
+                        return Compare(loc1, loc2);
                     }
                 });
 
@@ -828,7 +834,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                 Collections.sort(found, new Comparator<dPlayer>() {
                     @Override
                     public int compare(dPlayer pl1, dPlayer pl2) {
-                        return (int) (distanceSquared(pl1.getLocation()) - distanceSquared(pl2.getLocation()));
+                        return Compare(pl1.getLocation(), pl2.getLocation());
                     }
                 });
 
@@ -854,7 +860,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                 Collections.sort(found, new Comparator<dNPC>() {
                     @Override
                     public int compare(dNPC npc1, dNPC npc2) {
-                        return (int) (distanceSquared(npc1.getLocation()) - distanceSquared(npc2.getLocation()));
+                        return Compare(npc1.getLocation(), npc2.getLocation());
                     }
                 });
 
@@ -900,7 +906,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                 Collections.sort(found, new Comparator<dEntity>() {
                     @Override
                     public int compare(dEntity ent1, dEntity ent2) {
-                        return (int) (distanceSquared(ent1.getBukkitEntity().getLocation()) - distanceSquared(ent2.getBukkitEntity().getLocation()));
+                        return Compare(ent1.getLocation(), ent2.getLocation());
                     }
                 });
 
@@ -927,7 +933,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                 Collections.sort(found, new Comparator<dEntity>() {
                     @Override
                     public int compare(dEntity ent1, dEntity ent2) {
-                        return (int) (distanceSquared(ent1.getBukkitEntity().getLocation()) - distanceSquared(ent2.getBukkitEntity().getLocation()));
+                        return Compare(ent1.getLocation(), ent2.getLocation());
                     }
                 });
 
@@ -1035,7 +1041,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         /////////////////
 
         // <--[tag]
-        // @attribute <l@location.add[x,y,z]>
+        // @attribute <l@location.add[<x,y,z>]>
         // @returns dLocation
         // @description
         // Returns the location with the specified coordinates added to it.
@@ -1059,7 +1065,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         }
 
         // <--[tag]
-        // @attribute <l@location.sub[x,y,z]>
+        // @attribute <l@location.sub[<x,y,z>]>
         // @returns dLocation
         // @description
         // Returns the location with the specified coordinates subtracted from it.
@@ -1086,7 +1092,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         // @attribute <l@location.mul[<length>]>
         // @returns dLocation
         // @description
-        // Returns the location multiplied by the given length.
+        // Returns the location multiplied by the specified length.
         // -->
         if (attribute.startsWith("mul") &&
                 attribute.hasContext(1)) {
@@ -1098,7 +1104,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         // @attribute <l@location.div[<length>]>
         // @returns dLocation
         // @description
-        // Returns the location divided the given certain length.
+        // Returns the location divided by the specified length.
         // -->
         if (attribute.startsWith("div") &&
                 attribute.hasContext(1)) {

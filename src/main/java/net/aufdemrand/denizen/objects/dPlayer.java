@@ -99,15 +99,26 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // Match as a player name
-
-        OfflinePlayer player = Bukkit.getOfflinePlayer(string);
-        if (player.hasPlayedBefore())
-            return new dPlayer(player);
+        if (playerNameIsValid(string)) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(string);
+            if (player.hasPlayedBefore())
+                return new dPlayer(player);
+        }
 
         if (announce)
             dB.echoError("Invalid Player! '" + string + "' could not be found.");
 
         return null;
+    }
+
+    public static boolean playerNameIsValid(String arg) {
+        arg = arg.toLowerCase();
+        for (String name: playerNames) {
+            if (arg.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

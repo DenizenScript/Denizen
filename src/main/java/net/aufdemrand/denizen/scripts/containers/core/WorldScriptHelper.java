@@ -588,7 +588,7 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // player places block
     // player places <material>
-    // player place <item>
+    // player places <item>
     // player places block in <notable cuboid>
     // player places <material> in <notable cuboid>
     // player places <item> in <notable cuboid>
@@ -3553,6 +3553,7 @@ public class WorldScriptHelper implements Listener {
     // <context.is_hatching> returns an Element with a value of "true" if the egg will hatch and "false" otherwise.
     //
     // @Determine
+    // "CANCELLED" to stop the hatching.
     // dEntity to set the type of the hatching entity.
     //
     // -->
@@ -3572,7 +3573,10 @@ public class WorldScriptHelper implements Listener {
 
         String determination = EventManager.doEvents(events, null, new dPlayer(event.getPlayer()), context);
 
-        if (dEntity.matches(determination)) {
+        if (determination.equalsIgnoreCase("CANCELLED")) {
+            event.setHatching(false);
+        }
+        else if (dEntity.matches(determination)) {
             event.setHatching(true);
             event.setHatchingType(dEntity.valueOf(determination).getEntityType());
         }
@@ -3607,7 +3611,6 @@ public class WorldScriptHelper implements Listener {
         else if (Argument.valueOf(determination).matchesPrimitive(PrimitiveType.Integer)) {
             event.setAmount(Integer.valueOf(determination));
         }
-
     }
 
     // <--[event]
@@ -4398,7 +4401,8 @@ public class WorldScriptHelper implements Listener {
 
         EventManager.doEvents(Arrays.asList
                 ("vehicle created",
-                        vehicle.identifyType() + " created"),
+                        vehicle.identifyType() + " created",
+                        vehicle.identifySimple() + " created"),
                 null, null, context, true);
     }
 
@@ -4436,6 +4440,7 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("vehicle damaged");
         events.add(vehicle.identifyType() + " damaged");
+        events.add(vehicle.identifySimple() + " damaged");
 
         if (event.getAttacker() != null) {
 
@@ -4447,8 +4452,13 @@ public class WorldScriptHelper implements Listener {
 
             events.add("entity damages vehicle");
             events.add("entity damages " + vehicle.identifyType());
+            events.add("entity damages " + vehicle.identifySimple());
             events.add(entity.identifyType() + " damages vehicle");
             events.add(entity.identifyType() + " damages " + vehicle.identifyType());
+            events.add(entity.identifyType() + " damages " + vehicle.identifySimple());
+            events.add(entity.identifySimple() + " damages vehicle");
+            events.add(entity.identifySimple() + " damages " + vehicle.identifyType());
+            events.add(entity.identifySimple() + " damages " + vehicle.identifySimple());
         }
 
         String determination = EventManager.doEvents(events, npc, player, context, true);
@@ -4494,6 +4504,7 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("vehicle destroyed");
         events.add(vehicle.identifyType() + " destroyed");
+        events.add(vehicle.identifySimple() + " destroyed");
 
         if (event.getAttacker() != null) {
 
@@ -4505,8 +4516,13 @@ public class WorldScriptHelper implements Listener {
 
             events.add("entity destroys vehicle");
             events.add("entity destroys " + vehicle.identifyType());
+            events.add("entity destroys " + vehicle.identifySimple());
             events.add(entity.identifyType() + " destroys vehicle");
             events.add(entity.identifyType() + " destroys " + vehicle.identifyType());
+            events.add(entity.identifyType() + " destroys " + vehicle.identifySimple());
+            events.add(entity.identifySimple() + " destroys vehicle");
+            events.add(entity.identifySimple() + " destroys " + vehicle.identifyType());
+            events.add(entity.identifySimple() + " destroys " + vehicle.identifySimple());
         }
 
         String determination = EventManager.doEvents(events, npc, player, context, true);
@@ -4551,8 +4567,13 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("entity enters vehicle",
                         entity.identifyType() + " enters vehicle",
+                        entity.identifySimple() + " enters vehicle",
                         "entity enters " + vehicle.identifyType(),
-                        entity.identifyType() + " enters " + vehicle.identifyType()),
+                        "entity enters " + vehicle.identifySimple(),
+                        entity.identifyType() + " enters " + vehicle.identifyType(),
+                        entity.identifySimple() + " enters " + vehicle.identifyType(),
+                        entity.identifyType() + " enters " + vehicle.identifySimple(),
+                        entity.identifySimple() + " enters " + vehicle.identifySimple()),
                 npc, player, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -4595,8 +4616,12 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("entity exits vehicle",
                         "entity exits " + vehicle.identifyType(),
+                        "entity exits " + vehicle.identifySimple(),
                         entity.identifyType() + " exits vehicle",
-                        entity.identifyType() + " exits " + vehicle.identifyType()),
+                        entity.identifyType() + " exits " + vehicle.identifyType(),
+                        entity.identifyType() + " exits " + vehicle.identifySimple(),
+                        entity.identifySimple() + " exits " + vehicle.identifyType(),
+                        entity.identifySimple() + " exits " + vehicle.identifySimple()),
                 npc, player, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
