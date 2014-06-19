@@ -3,7 +3,13 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.scripts.containers.core.ProcedureScriptContainer;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -679,6 +685,76 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.sort[<procedure>]>
+        // @returns Element
+        // @description
+        // returns a list sorted according to the return values of a procedure.
+        // The <procedure> should link a procedure script that takes two definitions
+        // each of which will be an item in the list, and returns -1, 0, or 1 based on
+        // whether the second item should be added. EG, if a procedure with definitions
+        // "one" and "two" returned 1, it would place "two" after "one". Note that this
+        // uses some complex internal sorting code that could potentially throw errors
+        // if the procedure does not return consistently - EG, if "one" and "two" returned
+        // 1, but "two" and "one" returned 1 as well - obviously, "two" can not be both
+        // before AND after "one"!
+        // Note that the script should ALWAYS return -1, 0, or 1, or glitches will happen!
+        // Note that if two inputs are exactly equal, the procedure should always return 0.
+        // -->
+        if (attribute.startsWith("sort")
+                && attribute.hasContext(1)) {
+            final ProcedureScriptContainer script = ScriptRegistry.getScriptContainerAs(attribute.getContext(1), ProcedureScriptContainer.class);
+            if (script == null) {
+                dB.echoError("'" + attribute.getContext(1) + "' is not a valid procedure script!");
+                return getAttribute(attribute.fulfill(1));
+            }
+            final ScriptEntry entry = attribute.getScriptEntry();
+            List<String> list = new ArrayList<String>(this);
+            try {
+                Collections.sort(list, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        List<ScriptEntry> entries = script.getBaseEntries(entry.getPlayer(), entry.getNPC());
+                        if (entries.isEmpty()) {
+                            return 0;
+                        }
+                        long id = DetermineCommand.getNewId();
+                        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+                        InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
+                        queue.addEntries(entries);
+                        queue.setReqId(id);
+                        int x = 1;
+                        dList definitions = new dList();
+                        definitions.add(o1);
+                        definitions.add(o2);
+                        String[] definition_names = null;
+                        try { definition_names = script.getString("definitions").split("\\|"); } catch (Exception e) { /* IGNORE */ }
+                        for (String definition : definitions) {
+                            String name = definition_names != null && definition_names.length >= x ?
+                                    definition_names[x - 1].trim() : String.valueOf(x);
+                            queue.addDefinition(name, definition);
+                            dB.echoDebug(entry, "Adding definition %" + name + "% as " + definition);
+                            x++;
+                        }
+                        queue.start();
+                        int res = 0;
+                        if (DetermineCommand.hasOutcome(id))
+                            res = new Element(DetermineCommand.getOutcome(id)).asInt();
+                        if (res < 0)
+                            return -1;
+                        else if (res > 0)
+                            return 1;
+                        else
+                            return 0;
+                    }
+                });
+            }
+            catch (Exception e) {
+                dB.echoError("list.sort[...] tag failed - procedure returned unreasonable valid - internal error: " + e.getMessage());
+            }
+            return new dList(list).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.escape_contents>
         // @returns dList
         // @description
@@ -801,6 +877,7 @@ public class dList extends ArrayList<String> implements dObject {
         // returns true of the flag is expired or does not exist, false if it
         // is not yet expired, or has no expiration.
         // -->
+        // NOTE: Defined in UtilTags.java
 
         // <--[tag]
         // @attribute <fl@flag_name.expiration>

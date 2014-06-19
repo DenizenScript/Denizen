@@ -97,7 +97,7 @@ public class UtilTags implements Listener {
         // @attribute <server.has_flag[<flag_name>]>
         // @returns Element(boolean)
         // @description
-        // returns true if the Player has the specified flag, otherwise returns false.
+        // returns true if the server has the specified flag, otherwise returns false.
         // -->
         if (attribute.startsWith("has_flag")) {
             String flag_name;
@@ -123,12 +123,14 @@ public class UtilTags implements Listener {
                 return;
             }
             attribute.fulfill(1);
+            // NOTE: Meta is in dList.java
             if (attribute.startsWith("is_expired")
                     || attribute.startsWith("isexpired")) {
                 event.setReplaced(new Element(!FlagManager.serverHasFlag(flag_name))
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }
+            // NOTE: Meta is in dList.java
             if (attribute.startsWith("size") && !FlagManager.serverHasFlag(flag_name)) {
                 event.setReplaced(new Element(0).getAttribute(attribute.fulfill(1)));
                 return;
@@ -336,8 +338,8 @@ public class UtilTags implements Listener {
         // @returns dPlayer
         // @description
         // Returns the online player that best matches the input name.
-        // (EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns p@bob,
-        // input 'bobb' returns p@bobby, and input 'b' returns p@bo.)
+        // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns p@bob,
+        // input 'bobb' returns p@bobby, and input 'b' returns p@bo.
         // -->
         if (attribute.startsWith("match_player") && attribute.hasContext(1)) {
             Player matchPlayer = null;
@@ -563,7 +565,8 @@ public class UtilTags implements Listener {
             // @attribute <util.random.int[<#>].to[<#>]>
             // @returns Element(Number)
             // @description
-            // Returns a random number between the 2 specified numbers.
+            // Returns a random number between the 2 specified numbers, inclusive.
+            // EG, random.int[1].to[3] could return 1, 2, or 3.
             // -->
             if (subType.equalsIgnoreCase("INT")) {
                 if (specifier.equalsIgnoreCase("TO")) {
@@ -585,12 +588,7 @@ public class UtilTags implements Listener {
                 }
             }
 
-            // <--[tag]
-            // @attribute <util.random.element[<value>|...]>
-            // @returns Element
-            // @description
-            // Returns a random element from a list.
-            // -->
+            // TODO: Delete (Deprecated in favor of li@list.random)
             else if (subType.equalsIgnoreCase("ELEMENT")) {
                 dList list = dList.valueOf(subTypeContext);
                 event.setReplaced(new Element(list.get(new Random().nextInt(list.size())))
@@ -628,35 +626,17 @@ public class UtilTags implements Listener {
             int to = text.length() + 1;
             int tags = 2;
 
-            // <--[tag]
-            // @attribute <util.substr[<text1>].after[<text2>]>
-            // @returns Element
-            // @description
-            // Returns all text in text1 after the first occurrence of text2.
-            // (Deprecated in favor of <el@element.after[<text>]>)
-            // -->
+            // TODO: Delete (Deprecated in favor of el@element.after)
             if (subType.equalsIgnoreCase("AFTER")) {
                 from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
             }
 
-            // <--[tag]
-            // @attribute <util.substr[<text1>].before[<text2>]>
-            // @returns Element
-            // @description
-            // Returns all text in text1 before the first occurrence of text2.
-            // (Deprecated in favor of <element.before[<text>]>)
-            // -->
+            // TODO: Delete (Deprecated in favor of el@element.before)
             if (subType.equalsIgnoreCase("BEFORE")) {
                 to = text.toUpperCase().indexOf(subTypeContext) + 1;
             }
 
-            // <--[tag]
-            // @attribute <util.substr[<text>].from[<#>].to[<#>]>
-            // @returns Element
-            // @description
-            // Returns all text in between the 2 points in the text.
-            // (Deprecated in favor of <element.substring[<#>(,<#>)]>)
-            // -->
+            // TODO: Delete (Deprecated in favor of el@element.substring)
             try {
                 if (subType.equalsIgnoreCase("FROM"))
                     from = Integer.valueOf(subTypeContext);
@@ -676,13 +656,8 @@ public class UtilTags implements Listener {
                     .getAttribute(attribute.fulfill(tags)));
         }
 
-        // <--[tag]
-        // @attribute <util.replace[<text>].from[<fromText>].to[<toText>]>
-        // @returns Element
-        // @description
-        // Returns the text with all instances of fromText replaced as toText.
-        // (Deprecated in favor of <el@element.replace[<text>].with[<text>]>)
-        // -->
+
+        // TODO: Delete (Deprecated in favor of el@element.replace)
         else if (type.equalsIgnoreCase("REPLACE")) {
             String item_to_replace = event.getTypeContext();
             String replace = event.getSubTypeContext();
@@ -717,24 +692,15 @@ public class UtilTags implements Listener {
                     .getAttribute(attribute.fulfill(1)));
         }
 
-        // <--[tag]
-        // @attribute <util.uppercase[<text>]>
-        // @returns Element
-        // @description
-        // Returns the text in uppercase letters.
-        // -->
+
+        // TODO: Delete (Deprecated in favor of el@element.to_uppercase)
         else if (type.equalsIgnoreCase("UPPERCASE")) {
             String item_to_uppercase = event.getTypeContext();
             event.setReplaced(new Element(item_to_uppercase.toUpperCase())
                     .getAttribute(attribute.fulfill(1)));
         }
 
-        // <--[tag]
-        // @attribute <util.lowercase[<text>]>
-        // @returns Element
-        // @description
-        // Returns the text in lowercase letters.
-        // -->
+        // TODO: Delete (Deprecated in favor of el@element.to_lowercase)
         else if (type.equalsIgnoreCase("LOWERCASE")) {
             String item_to_uppercase = event.getTypeContext();
             event.setReplaced(new Element(item_to_uppercase.toLowerCase())

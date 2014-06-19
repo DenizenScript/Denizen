@@ -176,7 +176,7 @@ public class ProcedureScriptTag implements Listener {
                 String name = definition_names != null && definition_names.length >= x ?
                         definition_names[x - 1].trim() : String.valueOf(x);
                 queue.addDefinition(name, definition);
-                // dB.echoDebug(event.getScriptEntry(), "Adding definition %" + name + "% as " + definition);
+                dB.echoDebug(event.getScriptEntry(), "Adding definition %" + name + "% as " + definition);
                 x++;
             }
         }
