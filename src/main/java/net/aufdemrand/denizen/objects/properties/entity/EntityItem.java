@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.objects.properties.entity;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 
@@ -81,7 +80,8 @@ public class EntityItem implements Property {
         // -->
 
         if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
-            ((Item)item.getBukkitEntity()).setItemStack(mechanism.getValue().asType(dItem.class).getItemStack());
+            ((Item)item.getBukkitEntity()).setItemStack(mechanism.getValue()
+                    .asType(dItem.class).getItemStack());
         }
     }
 }

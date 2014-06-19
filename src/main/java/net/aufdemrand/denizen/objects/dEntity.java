@@ -731,17 +731,17 @@ public class dEntity implements dObject, Adjustable {
                             // TODO: Discourage usage of + delete the below (Use properties instead!)
                             try {
 
-                                // Allow creepers to be powered
+                                // Allow creepers to be powered - replaced by EntityPowered
                                 if (ent instanceof Creeper && data1.equalsIgnoreCase("POWERED")) {
                                     ((Creeper) entity).setPowered(true);
                                 }
 
-                                // Allow setting of blocks held by endermen
+                                // Allow setting of blocks held by endermen - TODO: REPLACE!
                                 else if (ent instanceof Enderman && dMaterial.matches(data1)) {
                                     ((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
                                 }
 
-                                // Allow setting of horse variants and colors
+                                // Allow setting of horse variants and colors - replaced by EntityColor
                                 else if (ent instanceof Horse) {
                                     setSubtype("org.bukkit.entity.Horse", "org.bukkit.entity.Horse$Variant", "setVariant", data1);
 
@@ -750,26 +750,26 @@ public class dEntity implements dObject, Adjustable {
                                     }
                                 }
 
-                                // Allow setting of ocelot types
+                                // Allow setting of ocelot types - TODO: REPLACE -- inside EntityColor?
                                 else if (ent instanceof Ocelot) {
                                     setSubtype("org.bukkit.entity.Ocelot", "org.bukkit.entity.Ocelot$Type", "setCatType", data1);
                                 }
 
-                                // Allow setting of sheep colors
+                                // Allow setting of sheep colors - replaced by EntityColor
                                 else if (ent instanceof Sheep) {
                                     setSubtype("org.bukkit.entity.Sheep", "org.bukkit.DyeColor", "setColor", data1);
                                 }
 
-                                // Allow setting of skeleton types
+                                // Allow setting of skeleton types - replaced by EntitySkeleton
                                 else if (ent instanceof Skeleton) {
                                     setSubtype("org.bukkit.entity.Skeleton", "org.bukkit.entity.Skeleton$SkeletonType", "setSkeletonType", data1);
                                 }
-                                // Allow setting of slime sizes
+                                // Allow setting of slime sizes - replaced by EntitySize
                                 else if (ent instanceof Slime && aH.matchesInteger(data1)) {
                                     ((Slime) entity).setSize(aH.getIntegerFrom(data1));
                                 }
 
-                                // Allow setting of villager professions
+                                // Allow setting of villager professions - replaced by EntityProfession
                                 else if (ent instanceof Villager) {
                                     setSubtype("org.bukkit.entity.Villager", "org.bukkit.entity.Villager$Profession", "setProfession", data1);
                                 }
@@ -1907,20 +1907,6 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@entity.is_frame>
-        // @returns Element(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the entity can hold a framed item.
-        // If this returns true, it will enable access to:
-        // <@link mechanism dEntity.framed>, <@link tag e@entity.framed_item>,
-        // <@link tag e@entity.has_framed_item>, and <@link tag e@entity.framed_item_rotation>
-        // -->
-        if (attribute.startsWith("is_frame"))
-            return new Element(EntityFramed.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <e@entity.is_colorable>
         // @returns Element(Boolean)
         // @group properties
@@ -1931,45 +1917,6 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("is_colorable"))
             return new Element(EntityColor.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <e@entity.is_powerable>
-        // @returns Element(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the entity can be powered.
-        // If this returns true, it will enable access to:
-        // <@link mechanism dEntity.powered> and <@link tag e@entity.powered>
-        // -->
-        if (attribute.startsWith("is_powerable"))
-            return new Element(EntityPowered.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <e@entity.is_sizeable>
-        // @returns Element(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the entity is sizeable.
-        // If this returns true, it will enable access to:
-        // <@link mechanism dEntity.size> and <@link tag e@entity.size>
-        // -->
-        if (attribute.startsWith("is_sizeable"))
-            return new Element(EntitySize.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <e@entity.is_firework>
-        // @returns Element(Boolean)
-        // @group properties
-        // @description
-        // Returns whether the entity is a firework.
-        // If this returns true, it will enable access to:
-        // <@link mechanism dEntity.firework_item> and <@link tag e@entity.firework_item>
-        // -->
-        if (attribute.startsWith("is_firework"))
-            return new Element(EntityFirework.describes(this))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]

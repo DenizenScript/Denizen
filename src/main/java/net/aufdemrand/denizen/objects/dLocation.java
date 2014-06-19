@@ -309,7 +309,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     }
 
     int Compare(dLocation loc1, dLocation loc2) {
-        if (loc1.equals(loc2))
+        if (loc1 == null || loc1.equals(loc2))
             return 0;
         else {
             double dist = distanceSquared(loc1) - distanceSquared(loc2);
