@@ -74,7 +74,6 @@ import net.aufdemrand.denizen.tags.Attribute;
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   i@<material_name> - fetches a new item of the specified material
 // |   i@<material_name>,<data> - fetches a new item with the specified data
-// |   i@<item_entity_id> - fetches an item that is laying on the ground in a world by its Bukkit EntityID
 // |   i@<item_script_name> - fetches a new custom item as specified by the referenced item script
 //
 // + ----- dWorld -------+

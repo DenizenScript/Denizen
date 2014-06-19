@@ -37,6 +37,8 @@ public class dItem implements dObject, Notable, Adjustable {
             Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
                     Pattern.CASE_INSENSITIVE);
 
+    final static Pattern item_by_saved = Pattern.compile("(i@)(.+)\\[?(\\d+)?\\]?");
+
     final public static String itemscriptIdentifier = "§0id:";
 
 
@@ -74,33 +76,9 @@ public class dItem implements dObject, Notable, Adjustable {
             return ObjectFetcher.getObjectFrom(dItem.class, string, player, npc);
         }
 
-        ///////
-        // Match @object format for spawned Item entities
-
-        final Pattern item_by_entity_id = Pattern.compile("(i@)(\\d+)\\[?(\\d+)?\\]?");
-        m = item_by_entity_id.matcher(string);
-
-        // Check if it's an entity in the world
-        if (m.matches()) {
-            for (World world : Bukkit.getWorlds()) {
-                for (Entity entity : world.getEntitiesByClass(Item.class)) {
-                    if (entity.getEntityId() == Integer.valueOf(m.group(2))) {
-                        stack = new dItem(((Item) entity).getItemStack());
-
-                        if (m.group(3) != null) {
-                            stack.setAmount(Integer.valueOf(m.group(3)));
-                        }
-
-                        return stack;
-                    }
-                }
-            }
-        }
-
         ////////
         // Match @object format for saved dItems
 
-        final Pattern item_by_saved = Pattern.compile("(i@)(.+)\\[?(\\d+)?\\]?");
         m = item_by_saved.matcher(string);
 
         if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dItem.class)) {

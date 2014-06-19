@@ -124,19 +124,7 @@ public class dEntity implements dObject, Adjustable {
             else {
                 if (aH.matchesInteger(m.group(2))) {
                     int entityID = Integer.valueOf(m.group(2));
-                    Entity entity = null;
-
-                    for (World world : Bukkit.getWorlds()) {
-                        net.minecraft.server.v1_7_R3.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
-
-                        // Make sure the nmsEntity is valid, to prevent
-                        // unpleasant errors
-
-                        if (nmsEntity != null) {
-                            entity = nmsEntity.getBukkitEntity();
-                            break;
-                        }
-                    }
+                    Entity entity = getEntityForID(entityID);
                     if (entity != null) return new dEntity(entity);
                     return null;
                 }
@@ -188,6 +176,17 @@ public class dEntity implements dObject, Adjustable {
         return null;
     }
 
+    public static Entity getEntityForID(int ID) {
+        for (World world : Bukkit.getWorlds()) {
+            net.minecraft.server.v1_7_R3.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(ID);
+
+            // Make sure the nmsEntity is valid, to prevent unpleasant errors
+            if (nmsEntity != null) {
+                return nmsEntity.getBukkitEntity();
+            }
+        }
+        return null;
+    }
 
     final static Pattern entity_by_id = Pattern.compile("(n@|e@|p@)(.+)",
             Pattern.CASE_INSENSITIVE);
