@@ -402,10 +402,11 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
             else {
                 idType = "location";
-                if (getLocation() != null)
-                    idHolder = getLocation().identify();
-                else
+                try {
+                    idHolder = getLocation(holder).identify();
+                } catch (NullPointerException e) {
                     idHolder = "null";
+                }
                 return;
             }
         }
@@ -463,11 +464,11 @@ public class dInventory implements dObject, Notable, Adjustable {
      */
 
     public dLocation getLocation() {
+        return getLocation(inventory.getHolder());
+    }
 
-        if (inventory != null) {
-
-            InventoryHolder holder = inventory.getHolder();
-
+    public dLocation getLocation(InventoryHolder holder) {
+        if (inventory != null && holder != null) {
             if (holder instanceof Chest) {
                 return new dLocation(((Chest) holder).getLocation());
             }
@@ -1186,9 +1187,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns the location of this inventory's holder.
         // -->
         if (attribute.startsWith("location")) {
-            if (getLocation() != null)
-                return getLocation().getAttribute(attribute.fulfill(1));
-            else return "null";
+            dLocation location = getLocation();
+            if (location != null)
+                return location.getAttribute(attribute.fulfill(1));
+            else
+                return Element.NULL.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1262,7 +1265,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (equipment == null)
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             else
-                return getEquipment().getAttribute(attribute.fulfill(1));
+                return equipment.getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
