@@ -31,8 +31,7 @@ public class InventoryTitle implements Property {
     }
 
     public String getTitle() {
-        if (inventory.getInventory() != null && inventory.getIdType().equals("generic")
-                && !inventory.getInventory().getTitle().startsWith("container."))
+        if (inventory.getInventory() != null && !inventory.getInventory().getTitle().startsWith("container."))
             return inventory.getInventory().getTitle();
         else
             return null;
@@ -67,7 +66,11 @@ public class InventoryTitle implements Property {
         // Returns the title of the inventory.
         // -->
         if (attribute.startsWith("title")) {
-            return new Element(getTitle()).getAttribute(attribute.fulfill(1));
+            String title = getTitle();
+            if (title == null)
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return new Element(title.substring(title.length()-6, title.length())).getAttribute(attribute.fulfill(1));
         }
 
         return null;

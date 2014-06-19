@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import org.bukkit.event.EventHandler;
@@ -8,7 +9,9 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InventoryScriptHelper implements Listener {
@@ -16,7 +19,7 @@ public class InventoryScriptHelper implements Listener {
     public static Map<String, InventoryScriptContainer> inventory_scripts = new ConcurrentHashMap<String, InventoryScriptContainer>(8, 0.9f, 1);
     public static Map<UUID, PlayerInventory> offlineInventories = new HashMap<UUID, PlayerInventory>();
     public static Map<UUID, Inventory> offlineEnderChests = new HashMap<UUID, Inventory>();
-    public static List<String> notableTitles = new ArrayList<String>();
+    public static Map<String, dInventory> notableInventories = new HashMap<String, dInventory>();
 
     public InventoryScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()

@@ -37,15 +37,13 @@ import java.util.regex.Pattern;
 public class dInventory implements dObject, Notable, Adjustable {
 
     public static dInventory mirrorBukkitInventory(Inventory inventory) {
+        // Use the map to get notable inventories
+        if (InventoryScriptHelper.notableInventories.containsKey(inventory.getTitle()))
+            return InventoryScriptHelper.notableInventories.get(inventory.getTitle());
         // Iterate through offline player inventories
         for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
             if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory()))
                 return new dInventory(new ImprovedOfflinePlayer(inv.getKey()));
-        }
-        // Iterate through Notable Inventories
-        for (dInventory inv : NotableManager.getAllType(dInventory.class)) {
-            if (inv.getInventory().getTitle().equals(inventory.getTitle()))
-                return inv;
         }
 
         return new dInventory(inventory);
@@ -90,15 +88,15 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (title.length() > 26) title = title.substring(0, title.charAt(25) == '§' ? 25 : 26);
         String colors;
         while (true) {
-            colors = Utilities.generateRandomColors((32-title.length())/2);
-            if (!InventoryScriptHelper.notableTitles.contains(title + colors)) {
+            colors = Utilities.generateRandomColors(3);
+            if (!InventoryScriptHelper.notableInventories.containsKey(title + colors)) {
                 if (getInventoryType() == InventoryType.CHEST) {
                     inventory = Bukkit.getServer().createInventory(null, inventory.getSize(), title + colors);
                 }
                 else {
                     inventory = Bukkit.getServer().createInventory(null, inventory.getType(), title + colors);
                 }
-                InventoryScriptHelper.notableTitles.add(title + colors);
+                InventoryScriptHelper.notableInventories.put(title + colors, this);
                 break;
             }
         }
@@ -415,7 +413,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // Iterate through offline player inventories
             for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
                 if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
-                    idHolder = dPlayer.valueOf(inv.getKey().toString()).identify();
+                    idHolder = new dPlayer(inv.getKey()).identify();
                     return;
                 }
             }

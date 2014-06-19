@@ -148,6 +148,10 @@ public class dPlayer implements dObject, Adjustable {
         offlinePlayer = player;
     }
 
+    public dPlayer(UUID uuid) {
+        offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+    }
+
 
     /////////////////////
     //   INSTANCE FIELDS/METHODS

@@ -559,7 +559,7 @@ public class Utilities {
     public static String generateRandomColors(int count) {
         String ret = "";
         for (int i = 0; i < count; i++) {
-            ret += "§" + colors.charAt(random.nextInt(34));
+            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(random.nextInt(34));
         }
         return ret;
     }
