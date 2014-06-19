@@ -2450,17 +2450,19 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Modifies a sign.
-        // @Author David Cernat
+        // @Author David Cernat, mcmonkey
         // @Group world
         // @Description
         // Todo
+        // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
+        // If there is not already a sign there, defaults to a sign_post.
         // @Tags
         // Todo
         // @Usage
         // Todo
         // -->
         registerCoreMember(SignCommand.class,
-                "SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>] (direction:n/e/w/s)", 1);
+                "SIGN", "sign (type:{automatic}/sign_post/wall_sign) [\"<line>|...\"] [<location>] (direction:n/s/e/w)", 1);
 
 
         // <--[command]
