@@ -4,10 +4,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.DyeColor;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Wolf;
+import org.bukkit.entity.*;
 
 public class EntityColor implements Property {
 
@@ -16,7 +13,8 @@ public class EntityColor implements Property {
         return entity instanceof dEntity &&
                 (((dEntity) entity).getEntityType() == EntityType.SHEEP
                 || ((dEntity) entity).getEntityType() == EntityType.HORSE
-                || ((dEntity) entity).getEntityType() == EntityType.WOLF);
+                || ((dEntity) entity).getEntityType() == EntityType.WOLF
+                || ((dEntity) entity).getEntityType() == EntityType.OCELOT);
     }
 
     public static EntityColor getFrom(dObject entity) {
@@ -48,6 +46,9 @@ public class EntityColor implements Property {
         else if (colored.getEntityType() == EntityType.WOLF)
             return ((Wolf) colored.getBukkitEntity()).getCollarColor().name();
 
+        else if (colored.getEntityType() == EntityType.OCELOT)
+            return ((Ocelot) colored.getBukkitEntity()).getCatType().name();
+
         else // Should never happen
             return null;
     }
@@ -71,6 +72,23 @@ public class EntityColor implements Property {
     // dObject Attributes
     ////////
 
+    // <--[language]
+    // @name Horse Type
+    // @group Properties
+    // @description
+    // This is a quick rundown of the styling information used to create a horse,
+    // used for both <@link tag e@entity.color> and <@link mechanism e@entity.color>.
+    //
+    // The output/input is formatted as COLOR|STYLE|VARIANT
+    // Where color is:
+    // BLACK, BROWN, CHESTNUT, CREAMY, DARK_BROWN, GRAY, or WHITE.
+    // and where style is:
+    // WHITE, WHITE_DOTS, WHITE_FIELD, BLACK_DOTS, or NONE.
+    // and where variant is:
+    // DONKEY, MULE, SKELETON_HORSE, UNDEAD_HORSE, or HORSE.
+    // -->
+
+
     @Override
     public String getAttribute(Attribute attribute) {
 
@@ -83,8 +101,9 @@ public class EntityColor implements Property {
         // @group properties
         // @description
         // If the entity can have a color, returns the entity's color.
-        // Currently, only Horse, Wolf, and Sheep type entities can have a color.
-        // For horses, the output is COLOR|STYLE|VARIANT
+        // Currently, only Horse, Wolf, Ocelot, and Sheep type entities can have a color.
+        // For horses, the output is COLOR|STYLE|VARIANT, see <@link language horse types>.
+        // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // -->
         if (attribute.startsWith("color"))
             return new Element(getColor().toLowerCase())
@@ -102,8 +121,9 @@ public class EntityColor implements Property {
         // @input Element
         // @description
         // Changes the entity's color.
-        // Currently, only Horse, Wolf, and Sheep type entities can have a color.
-        // For horses, the input is COLOR|STYLE|VARIANT
+        // Currently, only Horse, Wolf, Ocelot, and Sheep type entities can have a color.
+        // For horses, the input is COLOR|STYLE|VARIANT, see <@link language horse types>
+        // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // @tags
         // <e@entity.color>
         // <e@entity.is_colorable>
@@ -132,6 +152,11 @@ public class EntityColor implements Property {
                     && mechanism.getValue().matchesEnum(DyeColor.values()))
                 ((Wolf) colored.getBukkitEntity())
                         .setCollarColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
+
+            else if (colored.getEntityType() == EntityType.OCELOT
+                && mechanism.getValue().matchesEnum(Ocelot.Type.values()))
+                ((Ocelot) colored.getBukkitEntity())
+                        .setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
 
         }
     }

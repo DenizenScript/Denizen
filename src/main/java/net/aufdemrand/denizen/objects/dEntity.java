@@ -750,7 +750,7 @@ public class dEntity implements dObject, Adjustable {
                                     }
                                 }
 
-                                // Allow setting of ocelot types - TODO: REPLACE -- inside EntityColor?
+                                // Allow setting of ocelot types - replaced by EntityColor
                                 else if (ent instanceof Ocelot) {
                                     setSubtype("org.bukkit.entity.Ocelot", "org.bukkit.entity.Ocelot$Type", "setCatType", data1);
                                 }
