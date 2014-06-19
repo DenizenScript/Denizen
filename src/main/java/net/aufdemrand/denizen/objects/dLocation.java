@@ -153,6 +153,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     //    OBJECT FETCHER
     ////////////////
 
+    final static Pattern item_by_saved = Pattern.compile("(l@)(.+)");
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
      * or a dScript argument (location:)x,y,z,world. If including an Id,
@@ -170,7 +171,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         // Match @object format for saved dLocations
         Matcher m;
 
-        final Pattern item_by_saved = Pattern.compile("(l@)(.+)");
         m = item_by_saved.matcher(string);
 
         if (m.matches() && isSaved(m.group(2)))
@@ -217,19 +217,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         return null;
     }
 
+    final static Pattern location_by_saved = Pattern.compile("(l@)(.+)");
+    final static Pattern location =
+            Pattern.compile("(-?\\d+\\.?\\d*,){3,5}[\\w\\s]+",
+                    Pattern.CASE_INSENSITIVE);
 
     public static boolean matches(String string) {
         if (string == null || string.length() == 0)
             return false;
 
-        final Pattern location_by_saved = Pattern.compile("(l@)(.+)");
         Matcher m = location_by_saved.matcher(string);
         if (m.matches())
             return true;
 
-        final Pattern location =
-                Pattern.compile("(-?\\d+\\.?\\d*,){3,5}[\\w\\s]+",
-                        Pattern.CASE_INSENSITIVE);
         m = location.matcher(string);
         return m.matches();
     }

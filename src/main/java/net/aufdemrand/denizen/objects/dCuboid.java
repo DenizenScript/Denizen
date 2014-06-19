@@ -44,6 +44,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    final static Pattern item_by_saved = Pattern.compile("(cu@)(.+)");
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
      * or a dScript argument (location:)x,y,z,world. If including an Id,
@@ -97,7 +98,6 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // Match @object format for Notable dCuboids
         Matcher m;
 
-        final Pattern item_by_saved = Pattern.compile("(cu@)(.+)");
         m = item_by_saved.matcher(string);
 
         if (m.matches() && NotableManager.isType(m.group(2), dCuboid.class))
@@ -108,17 +108,17 @@ public class dCuboid implements dObject, Notable, Adjustable {
         return null;
     }
 
+    // regex patterns used for matching
+    final static Pattern location_by_saved = Pattern.compile("(cu@)?(.+)");
+    // The regex below: optional-"|" + "<#.#>," x3 + <text> + "|" + "<#.#>," x3 + <text> -- repeating
+    final static Pattern location =
+            Pattern.compile("(\\|?([\\d\\.]+,){3}[\\w\\s]+\\|([\\d\\.]+,){3}[\\w\\s]+)+",
+                    Pattern.CASE_INSENSITIVE);
+
 
     public static boolean matches(String string) {
         // Starts with cu@? Assume match.
         if (string.toLowerCase().startsWith("cu@")) return true;
-
-        // regex patterns used for matching
-        final Pattern location_by_saved = Pattern.compile("(cu@)?(.+)");
-        // The regex below: optional-"|" + "<#.#>," x3 + <text> + "|" + "<#.#>," x3 + <text> -- repeating
-        final Pattern location =
-                Pattern.compile("(\\|?([\\d\\.]+,){3}[\\w\\s]+\\|([\\d\\.]+,){3}[\\w\\s]+)+",
-                        Pattern.CASE_INSENSITIVE);
 
         Matcher m;
 

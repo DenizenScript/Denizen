@@ -100,6 +100,8 @@ public class InventoryScriptContainer extends ScriptContainer {
         return getInventoryFrom(null, null);
     }
 
+    static Pattern fromPattern = Pattern.compile("(\\[)(.*)(\\])");
+
     public dInventory getInventoryFrom(dPlayer player, dNPC npc) {
 
         dInventory inventory = null;
@@ -146,7 +148,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                     items = TagManager.tag(player, npc, items);
                     String[] itemsInLine = items.split(" ");
                     for (String item : itemsInLine) {
-                        Matcher m = Pattern.compile("(\\[)(.*)(\\])").matcher(item);
+                        Matcher m = fromPattern.matcher(item);
                         if (!m.matches()) {
                             dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item.");
                             return null;

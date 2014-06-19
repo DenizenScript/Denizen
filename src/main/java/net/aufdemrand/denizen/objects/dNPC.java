@@ -121,7 +121,7 @@ public class dNPC implements dObject, Adjustable {
     public NPC getCitizen() {
         NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
         if (npc == null)
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC. " +
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC. " +
                     "Has this NPC been removed?");
         return npc;
     }
@@ -130,7 +130,7 @@ public class dNPC implements dObject, Adjustable {
         try {
             return getCitizen().getEntity();
         } catch (NullPointerException e) {
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. " +
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC entity. " +
                     "Has this NPC been removed?");
             return null;
         }
@@ -145,7 +145,7 @@ public class dNPC implements dObject, Adjustable {
                 return null;
             }
         } catch (NullPointerException e) {
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. " +
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC livingEntity. " +
                     "Has this NPC been removed?");
             return null;
         }
@@ -156,7 +156,7 @@ public class dNPC implements dObject, Adjustable {
         try {
             return new dEntity(getCitizen().getEntity());
         } catch (NullPointerException e) {
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. " +
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC dEntity. " +
                     "Has this NPC been removed?");
             return null;
         }
