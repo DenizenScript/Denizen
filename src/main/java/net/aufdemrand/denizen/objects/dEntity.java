@@ -689,7 +689,10 @@ public class dEntity implements dObject, Adjustable {
                     }
                     else {
 
-                        ent = location.getWorld().spawnEntity(location, entity_type);
+                        if (entity_type == EntityType.DROPPED_ITEM)
+                            ent = location.getWorld().dropItem(location, new ItemStack(Material.STONE));
+                        else
+                            ent = location.getWorld().spawnEntity(location, entity_type);
                         entity = ent;
                         uuid = entity.getUniqueId();
                         if (EntityScript != null)
@@ -725,6 +728,7 @@ public class dEntity implements dObject, Adjustable {
                         // Otherwise, just use entity-specific methods manually
                         if (data1 != null) {
 
+                            // TODO: Discourage usage of + delete the below (Use properties instead!)
                             try {
 
                                 // Allow creepers to be powered
