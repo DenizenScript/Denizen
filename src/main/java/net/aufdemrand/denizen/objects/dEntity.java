@@ -736,7 +736,7 @@ public class dEntity implements dObject, Adjustable {
                                     ((Creeper) entity).setPowered(true);
                                 }
 
-                                // Allow setting of blocks held by endermen - TODO: REPLACE!
+                                // Allow setting of blocks held by endermen - replaced by EntityItem
                                 else if (ent instanceof Enderman && dMaterial.matches(data1)) {
                                     ((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
                                 }

@@ -3,13 +3,17 @@ package net.aufdemrand.denizen.objects.properties.entity;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import org.bukkit.Material;
+import org.bukkit.entity.Enderman;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 
 public class EntityItem implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.DROPPED_ITEM;
+        return entity instanceof dEntity &&
+                ( ((dEntity)entity).getEntityType() == EntityType.DROPPED_ITEM
+                || ((dEntity)entity).getEntityType() == EntityType.ENDERMAN);
     }
 
     public static EntityItem getFrom(dObject entity) {
@@ -28,13 +32,25 @@ public class EntityItem implements Property {
 
     dEntity item;
 
+    public dItem getItem() {
+        if (item.getBukkitEntity() instanceof Item)
+            return new dItem(((Item)item.getBukkitEntity()).getItemStack());
+        else
+            return new dItem(((Enderman)item.getBukkitEntity())
+                    .getCarriedMaterial().toItemStack());
+    }
+
     /////////
     // Property Methods
     ///////
 
     @Override
     public String getPropertyString() {
-        return new dItem(((Item)item.getBukkitEntity()).getItemStack()).identify();
+        dItem item = getItem();
+        if (item.getItemStack().getType() != Material.AIR)
+            return item.identify();
+        else
+            return null;
     }
 
     @Override
@@ -57,11 +73,10 @@ public class EntityItem implements Property {
         // @mechanism dEntity.item
         // @group properties
         // @description
-        // If the entity is a dropped item, returns the dItem the entity holds.
+        // If the entity is a dropped item or an Enderman, returns the dItem the entity holds.
         // -->
         if (attribute.startsWith("item"))
-            return new dItem(((Item)item.getBukkitEntity()).getItemStack())
-                    .getAttribute(attribute.fulfill(1));
+            return getItem().getAttribute(attribute.fulfill(1));
 
         return null;
     }
@@ -74,14 +89,18 @@ public class EntityItem implements Property {
         // @name item
         // @input dItem
         // @description
-        // Changes what item a dropped item holds.
+        // Changes what item a dropped or an Enderman item holds.
         // @tags
         // <e@entity.item>
         // -->
 
         if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
-            ((Item)item.getBukkitEntity()).setItemStack(mechanism.getValue()
-                    .asType(dItem.class).getItemStack());
+            if (item.getBukkitEntity() instanceof Item)
+                ((Item)item.getBukkitEntity()).setItemStack(mechanism.getValue()
+                        .asType(dItem.class).getItemStack());
+            else
+                ((Enderman)item.getBukkitEntity()).setCarriedMaterial(
+                        mechanism.getValue().asType(dItem.class).getItemStack().getData());
         }
     }
 }

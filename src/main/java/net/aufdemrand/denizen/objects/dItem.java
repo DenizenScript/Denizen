@@ -573,6 +573,8 @@ public class dItem implements dObject, Notable, Adjustable {
         // @group deprecated info
         // @description
         // Returns the item ID number of the item.
+        // EG, a stone item will return 1.
+        // Note that ID numbers are considered deprecated - you should use the names instead!
         // -->
         if (attribute.startsWith("id"))
             return new Element(getItemStack().getTypeId())
@@ -584,6 +586,8 @@ public class dItem implements dObject, Notable, Adjustable {
         // @group deprecated info
         // @description
         // Returns the data value of the material of the item.
+        // EG, white wool will return 0, while red wool will return 14.
+        // Note that data values are considered deprecated - you should use the names instead!
         // -->
         if (attribute.startsWith("data")) {
             return new Element(getItemStack().getData().getData())
@@ -631,20 +635,6 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("is_book")) {
             return new Element(ItemBook.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <i@item.is_potion>
-        // @returns Element(Boolean)
-        // @group properties
-        // Returns whether the item is a potion.
-        // If this returns true, it will enable access to:
-        // <@link mechanism dItem.potion_effects>, <@link tag i@item.potion_effects>,
-        // <@link mechanism dItem.splash>, and <@link tag i@item.is_splash>
-        // -->
-        if (attribute.startsWith("is_potion")) {
-            return new Element(ItemPotion.describes(this))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -726,7 +716,8 @@ public class dItem implements dObject, Notable, Adjustable {
         // @returns dMaterial
         // @group conversion
         // @description
-        // Returns the material corresponding to the item.
+        // Returns the dMaterial that is the basis of the item.
+        // EG, a stone with lore and a display name, etc. will return only "m@stone".
         // -->
         if (attribute.startsWith("material"))
             return getMaterial().getAttribute(attribute.fulfill(1));
@@ -736,7 +727,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // @returns Element
         // @group conversion
         // @description
-        // Returns the item converted to a raw JSON object for transmission
+        // Returns the item converted to a raw JSON object for network transmission.
         // EG, via /tellraw.
         // EXAMPLE USAGE: execute as_server "tellraw <player.name>
         // {'text':'','extra':[{'text':'This is the item in your hand ','color':'white'},
@@ -755,7 +746,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // @description
         // Returns the script name of the item if it was created by an item script.
         // -->
-        if (attribute.startsWith("scriptname")) // TODO: Update this when the id: is stored differently
+        if (attribute.startsWith("scriptname"))
             if (isItemscript()) {
                 return new Element(getScriptName())
                         .getAttribute(attribute.fulfill(1));
