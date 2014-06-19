@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +20,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +31,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ItemScriptHelper implements Listener {
 
     public static Map<String, ItemScriptContainer> item_scripts = new ConcurrentHashMap<String, ItemScriptContainer>(8, 0.9f, 1);
+
+    public static Map<String, ItemScriptContainer> item_scripts_by_hash_id = new HashMap<String, ItemScriptContainer>();
 
     public ItemScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
@@ -97,25 +102,42 @@ public class ItemScriptHelper implements Listener {
     }
 
     public static boolean isItemscript(ItemStack item) {
-        if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
-            for (String itemLore : item.getItemMeta().getLore()) {
-                if (itemLore.startsWith(dItem.itemscriptIdentifier)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return getItemScriptContainer(item) != null;
     }
 
     public static ItemScriptContainer getItemScriptContainer(ItemStack item) {
-        if (isItemscript(item)) {
-            for (String itemLore : item.getItemMeta().getLore()) {
-                if (itemLore.startsWith(dItem.itemscriptIdentifier))
-                    return item_scripts.get(itemLore.replace(dItem.itemscriptIdentifier, ""));
-            }
+        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore())
+            return null;
+        for (String itemLore : item.getItemMeta().getLore()) {
+            if (itemLore.startsWith(dItem.itemscriptIdentifier))
+                return item_scripts.get(itemLore.replace(dItem.itemscriptIdentifier, ""));
+            if (itemLore.startsWith(ItemScriptHashID))
+                return item_scripts_by_hash_id.get(itemLore);
         }
         return null;
+    }
+
+    public static String ItemScriptHashID = ChatColor.RED.toString() + ChatColor.BLUE + ChatColor.BLACK;
+
+    public static String createItemScriptID(ItemScriptContainer container) {
+        String script = container.getName().toUpperCase();
+        StringBuilder colors = new StringBuilder();
+        colors.append(ItemScriptHashID);
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] bytes = script.getBytes("UTF-8");
+            md.update(bytes, 0, bytes.length);
+            String hash = new BigInteger(1, md.digest()).toString(16);
+            for (int i = 0; i < 16; i++) {
+                colors.append(ChatColor.COLOR_CHAR).append(hash.charAt(i));
+            }
+        }
+        catch (Exception ex) {
+            dB.echoError(ex);
+            colors.append(ChatColor.BLUE);
+        }
+        container.setHashID(colors.toString());
+        return colors.toString();
     }
 
     // When special Denizen recipes that have itemscripts as ingredients

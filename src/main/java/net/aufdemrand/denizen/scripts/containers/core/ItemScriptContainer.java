@@ -95,11 +95,13 @@ public class ItemScriptContainer extends ScriptContainer {
     dNPC npc = null;
     dPlayer player = null;
     public boolean bound = false;
+    String hash = "";
 
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
 
         ItemScriptHelper.item_scripts.put(getName(), this);
+        ItemScriptHelper.item_scripts_by_hash_id.put(ItemScriptHelper.createItemScriptID(this), this);
 
         // Set Recipe
         if (contains("RECIPE")) {
@@ -140,6 +142,14 @@ public class ItemScriptContainer extends ScriptContainer {
         }
     }
 
+    public String getHashID() {
+        return hash;
+    }
+
+    public void setHashID(String HashID) {
+        hash = HashID;
+    }
+
     public dItem getItemFrom() {
        return getItemFrom(null, null);
     }
@@ -168,7 +178,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 hideLore = Boolean.valueOf(getString("NO_ID"));
             }
             if (!hideLore)
-                lore.add(dItem.itemscriptIdentifier + getName());
+                lore.add(hash);
 
             // Set Display Name
             if (contains("DISPLAY NAME")){

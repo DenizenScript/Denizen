@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.*;
@@ -419,12 +420,13 @@ public class dItem implements dObject, Notable, Adjustable {
      *
      */
     public boolean isItemscript() {
-        return containsLore(itemscriptIdentifier);
+        return ItemScriptHelper.isItemscript(item);
     }
 
     public String getScriptName() {
-        if (isItemscript())
-            return getLore(itemscriptIdentifier);
+        ItemScriptContainer cont = ItemScriptHelper.getItemScriptContainer(item);
+        if (cont != null)
+            return cont.getName();
         else
             return null;
     }
@@ -509,7 +511,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
             // If not a saved item, but is a custom item, return the script id
             else if (isItemscript()) {
-                return "i@" + getLore(itemscriptIdentifier) + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
+                return "i@" + getScriptName() + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
             }
         }
 
@@ -531,7 +533,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
             // If not a saved item, but is a custom item, return the script id
             else if (isItemscript()) {
-                return "i@" + getLore(itemscriptIdentifier);
+                return "i@" + getScriptName();
             }
         }
 
