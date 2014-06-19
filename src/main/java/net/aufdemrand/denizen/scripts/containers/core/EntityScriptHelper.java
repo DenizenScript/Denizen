@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class EntityScriptHelper implements Listener {
 
-    static HashMap<UUID, String> entities = null;
+    static HashMap<UUID, String> entities = new HashMap<UUID, String>();
 
     public EntityScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
@@ -42,8 +42,6 @@ public class EntityScriptHelper implements Listener {
     }
 
     public static void reloadEntities() {
-        if (entities == null)
-            entities = new HashMap<UUID, String>();
         entities.clear();
         ConfigurationSection entity_scripts = DenizenAPI.getCurrentInstance()
                 .getEntities().getConfigurationSection("entities.scripts");

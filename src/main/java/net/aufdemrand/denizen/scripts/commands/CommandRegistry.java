@@ -1732,24 +1732,25 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ModifyBlock
-        // @Syntax modifyblock [<location>|...] [<material>] (radius:<#>) (height:<#>) (depth:<#>) (no_physics)
+        // @Syntax modifyblock [<location>|...] [<material>] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)
         // @Required 2
         // @Stable stable
         // @Short Modifies blocks.
-        // @Author Jeebiss, aufdemrand
+        // @Author Jeebiss, aufdemrand, mcmonkey
         // @Group world
         // @Description
         // Changes blocks in the world based on the criteria given. Specifying no radius/height/depth will result
         // in only the specified blocks being changed. Use 'no_physics' to place the blocks without
         // physics taking over the modified blocks. This is useful for block types such as portals. This does NOT
         // control physics for an extended period of time.
+        // Use 'naturally' when setting a block to air to break it naturally, meaning that it will drop items.
         // @Tags
         // <l@location.block.material>
         // @Usage
         // Todo
         // -->
         registerCoreMember(ModifyBlockCommand.class,
-                "MODIFYBLOCK", "modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>) (no_physics)", 2);
+                "MODIFYBLOCK", "modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)", 2);
 
 
         // <--[command]

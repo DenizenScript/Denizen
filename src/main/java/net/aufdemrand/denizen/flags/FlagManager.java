@@ -258,6 +258,8 @@ public class FlagManager {
         // server flag cleared
         // server flag <flagname> cleared
         //
+        // @Warning This event will fire rapidly and not exactly when you might expect it to fire.
+        //
         // @Triggers when a flag is cleared
         // @Context
         // <context.owner> returns an Element of the flag owner's object.
@@ -496,6 +498,8 @@ public class FlagManager {
         // npc flag <flagname> changed
         // server flag changed
         // server flag <flagname> changed
+        //
+        // @Warning This event will fire rapidly and not exactly when you might expect it to fire.
         //
         // @Triggers when a flag is changed
         // @Context

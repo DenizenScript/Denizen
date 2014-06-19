@@ -2,7 +2,10 @@ package net.aufdemrand.denizen.scripts.commands.server;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.utilities.FakeOfflinePlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_7_R3.CraftOfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -84,6 +87,13 @@ public class ScoreboardCommand extends AbstractCommand {
         scriptEntry.defaultObject("id", new Element("main"));
         scriptEntry.defaultObject("criteria", new Element("dummy"));
         scriptEntry.defaultObject("displayslot", new Element("sidebar"));
+    }
+
+    OfflinePlayer getOfflinePlayer(String name) {
+        if (dPlayer.playerNameIsValid(name))
+            return Bukkit.getOfflinePlayer(name);
+        else
+            return new FakeOfflinePlayer(name);
     }
 
     @SuppressWarnings("unchecked")
@@ -181,7 +191,7 @@ public class ScoreboardCommand extends AbstractCommand {
                     // for clarifications
                     for (String line : lines) {
                         line = line.replaceAll("[pP]@", "");
-                        ScoreboardHelper.addScore(obj, Bukkit.getOfflinePlayer(line), score.asInt());
+                        ScoreboardHelper.addScore(obj, getOfflinePlayer(line), score.asInt());
                     }
                 }
             }
@@ -206,7 +216,7 @@ public class ScoreboardCommand extends AbstractCommand {
                     else {
                         for (String line : lines) {
                             line = line.replaceAll("[pP]@", "");
-                            ScoreboardHelper.removeScore(obj, Bukkit.getOfflinePlayer(line));
+                            ScoreboardHelper.removeScore(obj, getOfflinePlayer(line));
                         }
                     }
                 }
@@ -223,7 +233,7 @@ public class ScoreboardCommand extends AbstractCommand {
 
                 for (String line : lines) {
                     line = line.replaceAll("[pP]@", "");
-                    ScoreboardHelper.removePlayer(id.asString(), Bukkit.getOfflinePlayer(line));
+                    ScoreboardHelper.removePlayer(id.asString(), getOfflinePlayer(line));
                 }
             }
             // Only remove all objectives from scoreboard if viewers
