@@ -1180,24 +1180,25 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <p@player.gamemode.id>
-        // @returns Element(Number)
-        // @description
-        // returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure
-        // -->
-        if (attribute.startsWith("gamemode.id"))
-            return new Element(getPlayerEntity().getGameMode().getValue())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <p@player.gamemode>
         // @returns Element
         // @description
         // returns the name of the gamemode the player is currently set to.
         // -->
-        if (attribute.startsWith("gamemode"))
+        if (attribute.startsWith("gamemode")) {
+            attribute = attribute.fulfill(1);
+            // <--[tag]
+            // @attribute <p@player.gamemode.id>
+            // @returns Element(Number)
+            // @description
+            // returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure
+            // -->
+            if (attribute.startsWith("id"))
+                return new Element(getPlayerEntity().getGameMode().getValue())
+                        .getAttribute(attribute.fulfill(1));
             return new Element(getPlayerEntity().getGameMode().name())
-                    .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute);
+        }
 
         // <--[tag]
         // @attribute <p@player.is_blocking>
