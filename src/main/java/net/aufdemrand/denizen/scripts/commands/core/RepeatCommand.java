@@ -31,6 +31,12 @@ public class RepeatCommand extends BracedCommand {
                 break;
             }
 
+            else if (!scriptEntry.hasObject("next")
+                    && arg.matches("next")) {
+                scriptEntry.addObject("next", Element.TRUE);
+                break;
+            }
+
             else {
                 arg.reportUnhandled();
                 break;
@@ -38,8 +44,8 @@ public class RepeatCommand extends BracedCommand {
 
         }
 
-        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("stop"))
-            throw new InvalidArgumentsException("Must specify a quantity or 'stop'!");
+        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next"))
+            throw new InvalidArgumentsException("Must specify a quantity or 'stop' or 'next'!");
 
         scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
 
@@ -50,11 +56,18 @@ public class RepeatCommand extends BracedCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Element stop = scriptEntry.getElement("stop");
+        Element next = scriptEntry.getElement("next");
 
         if (stop != null && stop.asBoolean()) {
             // Report to dB
             dB.report(scriptEntry, getName(), stop.debug());
             scriptEntry.getResidingQueue().BreakLoop("REPEAT");
+            return;
+        }
+        else if (next != null && next.asBoolean()) {
+            // Report to dB
+            dB.report(scriptEntry, getName(), next.debug());
+            scriptEntry.getResidingQueue().BreakLoop("REPEAT/NEXT");
             return;
         }
 
@@ -98,7 +111,8 @@ public class RepeatCommand extends BracedCommand {
             scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(incr + 1));
 
             // Run everything instantly
-            if (scriptEntry.getResidingQueue().runNow(newEntries, "REPEAT"))
+            String result = scriptEntry.getResidingQueue().runNow(newEntries, "REPEAT");
+            if (result != null && !result.endsWith("/NEXT"))
                 return;
         }
     }

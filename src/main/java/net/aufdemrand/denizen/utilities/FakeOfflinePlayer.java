@@ -14,7 +14,8 @@ public class FakeOfflinePlayer implements OfflinePlayer {
 
     public FakeOfflinePlayer(String _name) {
         name = _name;
-        uuid = new UUID((long)name.charAt(0), (long)name.charAt(1));
+        uuid = new UUID(name.length() > 0 ? (long)name.charAt(0): 52L,
+                name.length() > 1 ? (long)name.charAt(1): 27L);
     }
 
     @Override
