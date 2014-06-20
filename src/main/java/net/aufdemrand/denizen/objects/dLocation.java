@@ -309,7 +309,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     }
 
     int Compare(dLocation loc1, dLocation loc2) {
-        if (loc1 == null || loc1.equals(loc2))
+        if (loc1 == null || loc2 == null || loc1.equals(loc2))
             return 0;
         else {
             double dist = distanceSquared(loc1) - distanceSquared(loc2);
@@ -892,7 +892,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                         dEntity current = new dEntity(entity);
                         if (!ent_list.isEmpty()) {
                             for (String ent : ent_list) {
-                                if (entity.getType().name().equals(ent) || current.identify().equalsIgnoreCase(ent)) {
+                                if ((entity.getType().name().equals(ent) ||
+                                        current.identify().equalsIgnoreCase(ent)) && entity.isValid()) {
                                     found.add(current);
                                     break;
                                 }
