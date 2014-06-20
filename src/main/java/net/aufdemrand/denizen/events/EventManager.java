@@ -363,6 +363,7 @@ public class EventManager implements Listener {
         registerSmartEvent(new ListPingSmartEvent());
         registerSmartEvent(new PlayerEquipsArmorSmartEvent());
         registerSmartEvent(new PlayerJumpSmartEvent());
+        registerSmartEvent(new PlayerStepsOnSmartEvent());
         registerSmartEvent(new SyncChatSmartEvent());
         registerSmartEvent(new VehicleCollisionSmartEvent());
     }
