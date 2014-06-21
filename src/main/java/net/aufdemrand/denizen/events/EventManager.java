@@ -235,8 +235,25 @@ public class EventManager implements Listener {
         Set<String> newEvents = new HashSet<String>();
 
         for (String event : events) {
-            if (event.matches(".*?[a-z]{1,2}@[\\w ]+")) {
-                newEvents.add(event.replaceAll("[a-z]{1,2}@", ""));
+            // NOTE: The below code deletes [a-z]{1,2}\@
+            if (event.indexOf('@') != -1) {
+                StringBuilder sb = new StringBuilder();
+                int len = event.length();
+                char[] data = event.toCharArray();
+                for (int i = 0; i < len; i++) {
+                    if (data[i] >= 'a' && data[i] <= 'z' && i + 1 < len) {
+                        if (i + 2 < len && data[i + 2] == '@') {
+                            i += 2;
+                            continue;
+                        }
+                        if (data[i + 1] == '@') {
+                            i++;
+                            continue;
+                        }
+                    }
+                    sb.append(data[i]);
+                }
+                newEvents.add(sb.toString());
             }
         }
 
@@ -346,6 +363,7 @@ public class EventManager implements Listener {
         registerSmartEvent(new ListPingSmartEvent());
         registerSmartEvent(new PlayerEquipsArmorSmartEvent());
         registerSmartEvent(new PlayerJumpSmartEvent());
+        registerSmartEvent(new PlayerStepsOnSmartEvent());
         registerSmartEvent(new SyncChatSmartEvent());
         registerSmartEvent(new VehicleCollisionSmartEvent());
     }

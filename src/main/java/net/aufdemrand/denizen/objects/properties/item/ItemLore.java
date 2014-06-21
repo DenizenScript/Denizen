@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects.properties.item;
 
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -65,7 +66,8 @@ public class ItemLore implements Property {
             if (hasLore()) {
                 List<String> loreList = new ArrayList<String>();
                 for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
-                    if (!itemLore.startsWith(dItem.itemscriptIdentifier)) {
+                    if (!itemLore.startsWith(dItem.itemscriptIdentifier)
+                            && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                         loreList.add(itemLore);
                     }
                 }
@@ -94,7 +96,8 @@ public class ItemLore implements Property {
         if (hasLore()) {
             StringBuilder output = new StringBuilder();
             for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
-                if (!itemLore.startsWith(dItem.itemscriptIdentifier)) {
+                if (!itemLore.startsWith(dItem.itemscriptIdentifier)
+                        && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                     output.append(EscapeTags.Escape(itemLore)).append("|");
                 }
             }

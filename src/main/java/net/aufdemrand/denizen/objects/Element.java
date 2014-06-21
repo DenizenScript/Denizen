@@ -150,16 +150,16 @@ public class Element implements dObject {
     }
 
     public double asDouble() {
-        return Double.valueOf(element.replaceAll("(el@)|%", ""));
+        return Double.valueOf(element.replaceAll("%", ""));
     }
 
     public float asFloat() {
-        return Float.valueOf(element.replaceAll("(el@)|%", ""));
+        return Float.valueOf(element.replaceAll("%", ""));
     }
 
     public int asInt() {
         try {
-            return Integer.valueOf(element.replaceAll("(el@)|%", ""));
+            return Integer.valueOf(element.replaceAll("(%)|(\\.\\d+)", ""));
         }
         catch (NumberFormatException ex) {
             dB.echoError("'" + element + "' is not a valid integer!");
@@ -197,7 +197,7 @@ public class Element implements dObject {
 
     public boolean isInt() {
         try {
-            if (Integer.valueOf(element) != null)
+            if (Integer.valueOf(element.replaceAll("(%)|(\\.\\d+)", "")) != null)
                 return true;
         } catch (Exception e) {}
         return false;

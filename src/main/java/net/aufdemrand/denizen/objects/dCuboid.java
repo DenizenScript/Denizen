@@ -44,6 +44,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    final static Pattern item_by_saved = Pattern.compile("(cu@)(.+)");
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
      * or a dScript argument (location:)x,y,z,world. If including an Id,
@@ -63,33 +64,40 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // Split values
         String[] positions = string.replace("cu@", "").split("\\|");
 
-        dLocation pos_1;
-        dLocation pos_2;
-
-        // Quality control
-        if (dLocation.matches(positions[0]) && dLocation.matches(positions[1])) {
-            pos_1 = dLocation.valueOf(positions[0]);
-            pos_2 = dLocation.valueOf(positions[1]);
-
-            // Must not be null
-            if (pos_1 == null || pos_2 == null) {
-                dB.echoError("valueOf in dCuboid returning null: '" + string + "'.");
-                return null;
-
-            } else if (pos_1.getWorld() != pos_2.getWorld()) {
-                dB.echoError("Worlds must match on cuboid construction.");
+        // If there's a | and the first two points look like locations, assume it's a valid location-list constructor.
+        if (positions.length > 1
+                && dLocation.matches(positions[0])
+                && dLocation.matches(positions[1])) {
+            if (positions.length % 2 != 0) {
+                dB.echoError("valueOf dCuboid returning null (Uneven number of locations): '" + string + "'.");
                 return null;
             }
 
-            else
-                return new dCuboid(pos_1, pos_2);
+            // Form a cuboid to add to
+            dCuboid toReturn = new dCuboid();
+
+            // Add to the cuboid
+            for (int i = 0; i < positions.length; i += 2) {
+                dLocation pos_1 = dLocation.valueOf(positions[i]);
+                dLocation pos_2 = dLocation.valueOf(positions[i + 1]);
+
+                // Must be valid locations
+                if (pos_1 == null || pos_2 == null) {
+                    dB.echoError("valueOf in dCuboid returning null (null locations): '" + string + "'.");
+                    return null;
+                }
+                toReturn.addPair(pos_1, pos_2);
+            }
+
+            // Ensure validity and return the created cuboid
+            if (toReturn.pairs.size() > 0)
+                return toReturn;
         }
 
         ////////
         // Match @object format for Notable dCuboids
         Matcher m;
 
-        final Pattern item_by_saved = Pattern.compile("(cu@)(.+)");
         m = item_by_saved.matcher(string);
 
         if (m.matches() && NotableManager.isType(m.group(2), dCuboid.class))
@@ -100,16 +108,17 @@ public class dCuboid implements dObject, Notable, Adjustable {
         return null;
     }
 
+    // regex patterns used for matching
+    final static Pattern location_by_saved = Pattern.compile("(cu@)?(.+)");
+    // The regex below: optional-"|" + "<#.#>," x3 + <text> + "|" + "<#.#>," x3 + <text> -- repeating
+    final static Pattern location =
+            Pattern.compile("(\\|?([\\d\\.]+,){3}[\\w\\s]+\\|([\\d\\.]+,){3}[\\w\\s]+)+",
+                    Pattern.CASE_INSENSITIVE);
+
 
     public static boolean matches(String string) {
         // Starts with cu@? Assume match.
         if (string.toLowerCase().startsWith("cu@")) return true;
-
-        // regex patterns used for matching
-        final Pattern location_by_saved = Pattern.compile("(cu@)?(.+)");
-        final Pattern location =
-                Pattern.compile("((-?\\d+,){3})[\\w\\s]+\\|((-?\\d+,){3})[\\w\\s]+",
-                        Pattern.CASE_INSENSITIVE);
 
         Matcher m;
 
@@ -117,7 +126,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
         m = location_by_saved.matcher(string);
         if (m.matches() && NotableManager.isType(m.group(2), dCuboid.class)) return true;
 
-        // Check for standard cuboid format: cu@x,y,z,world|x,y,z,world
+        // Check for standard cuboid format: cu@x,y,z,world|x,y,z,world|...
         m = location.matcher(string.replace("cu@", ""));
         return m.matches();
     }
@@ -195,6 +204,12 @@ public class dCuboid implements dObject, Notable, Adjustable {
     // Only put dMaterials in filter.
     ArrayList<dObject> filter = new ArrayList<dObject>();
 
+    /**
+     * Construct the cuboid without adding pairs
+     * ONLY use this if addPair will be called immediately after!
+     */
+    public dCuboid() {
+    }
 
     public dCuboid(Location point_1, Location point_2) {
         addPair(point_1, point_2);
@@ -202,6 +217,14 @@ public class dCuboid implements dObject, Notable, Adjustable {
 
 
     public void addPair(Location point_1, Location point_2) {
+        if (point_1.getWorld() != point_2.getWorld()) {
+            dB.echoError("Tried to make cross-world cuboid!");
+            return;
+        }
+        if (pairs.size() > 0 && point_1.getWorld() != getWorld()) {
+            dB.echoError("Tried to make cross-world cuboid set!");
+            return;
+        }
         // Make a new pair
         LocationPair pair = new LocationPair(new dLocation(point_1), new dLocation(point_2));
         // Add it to the Cuboid pairs list
@@ -456,12 +479,16 @@ public class dCuboid implements dObject, Notable, Adjustable {
     }
 
     public dLocation getHigh(int index) {
+        if (index < 0)
+            return null;
         if (index >= pairs.size())
             return null;
         return pairs.get(index).high;
     }
 
     public dLocation getLow(int index) {
+        if (index < 0)
+            return null;
         if (index >= pairs.size())
             return null;
         return pairs.get(index).low;
@@ -611,17 +638,17 @@ public class dCuboid implements dObject, Notable, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_member[#]>
+        // @attribute <cu@cuboid.get_member[<#>]>
         // @returns dCuboid
         // @description
         // Returns a new dCuboid of a single member of this dCuboid. Just specify an index.
         // -->
         if (attribute.startsWith("get_member")) {
             int member = attribute.getIntContext(1);
-            if (member == 0)
-                return "null";
-            if (member - 1 > pairs.size())
-                return "null";
+            if (member < 1)
+                member = 1;
+            if (member > pairs.size())
+                member = pairs.size();
             return new dCuboid(pairs.get(member - 1).low, pairs.get(member - 1).high)
                     .getAttribute(attribute.fulfill(1));
         }
@@ -657,23 +684,20 @@ public class dCuboid implements dObject, Notable, Adjustable {
             return new dList(filter)
                     .getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <cu@cuboid.is_within[<location>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether if the dCuboid is within the location.
-        // -->
-        if (attribute.startsWith("is_within")) {
+        // Tag deprecated in favor of l@location.is_within
+        if (attribute.startsWith("is_within")
+                && attribute.hasContext(1)) {
             dLocation loc = dLocation.valueOf(attribute.getContext(1));
-            return new Element(isInsideCuboid(loc))
-                    .getAttribute(attribute.fulfill(1));
+            if (loc != null)
+                return new Element(isInsideCuboid(loc))
+                        .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <cu@cuboid.max>
+        // @attribute <cu@cuboid.max[<index>]>
         // @returns dLocation
         // @description
-        // Returns the highest-numbered corner location. If a single-member dCuboid, no
+        // Returns the lowest-numbered corner location. If a single-member dCuboid, no
         // index is required. If wanting the max of a specific member, just specify an index.
         // -->
         if (attribute.startsWith("max")) {
@@ -681,30 +705,30 @@ public class dCuboid implements dObject, Notable, Adjustable {
                 return pairs.get(0).high.getAttribute(attribute.fulfill(1));
             else {
                 int member = attribute.getIntContext(1);
-                if (member == 0)
-                    return "null";
-                if (member - 1 > pairs.size())
-                    return "null";
+                if (member < 1)
+                    member = 1;
+                if (member > pairs.size())
+                    member = pairs.size();
                 return pairs.get(member - 1).high.getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <cu@cuboid.min>
+        // @attribute <cu@cuboid.min[<index>]>
         // @returns dLocation
         // @description
         // Returns the lowest-numbered corner location. If a single-member dCuboid, no
-        // index is required. If wanting the max of a specific member, just specify an index.
+        // index is required. If wanting the min of a specific member, just specify an index.
         // -->
         if (attribute.startsWith("min")) {
             if (!attribute.hasContext(1))
                 return pairs.get(0).low.getAttribute(attribute.fulfill(1));
             else {
                 int member = attribute.getIntContext(1);
-                if (member == 0)
-                    return "null";
-                if (member - 1 > pairs.size())
-                    return "null";
+                if (member < 1)
+                    member = 1;
+                if (member > pairs.size())
+                    member = pairs.size();
                 return pairs.get(member - 1).low.getAttribute(attribute.fulfill(1));
             }
         }
@@ -746,7 +770,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("list_entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
-            for (Entity ent: pairs.get(0).low.getWorld().getEntities()) {
+            for (Entity ent: getWorld().getEntities()) {
                 if (ent.isValid() && isInsideCuboid(ent.getLocation()))
                     entities.add(new dEntity(ent));
             }
@@ -761,7 +785,7 @@ public class dCuboid implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("list_living_entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
-            for (Entity ent: pairs.get(0).low.getWorld().getLivingEntities()) {
+            for (Entity ent: getWorld().getLivingEntities()) {
                 if (ent.isValid() && isInsideCuboid(ent.getLocation()))
                     entities.add(new dEntity(ent));
             }

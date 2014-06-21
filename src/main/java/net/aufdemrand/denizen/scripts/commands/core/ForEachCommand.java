@@ -30,6 +30,12 @@ public class ForEachCommand extends BracedCommand {
                 break;
             }
 
+            else if (!scriptEntry.hasObject("next")
+                    && arg.matches("next")) {
+                scriptEntry.addObject("next", Element.TRUE);
+                break;
+            }
+
             else if (!scriptEntry.hasObject("list")
                     && arg.matchesArgumentType(dList.class)) {
                 scriptEntry.addObject("list", arg.asType(dList.class));
@@ -44,8 +50,10 @@ public class ForEachCommand extends BracedCommand {
 
         }
 
-        if (!scriptEntry.hasObject("list") && !scriptEntry.hasObject("stop"))
-            throw new InvalidArgumentsException("Must specify a valid list or 'stop'!");
+        if (!scriptEntry.hasObject("list")
+                && !scriptEntry.hasObject("stop")
+                && !scriptEntry.hasObject("next"))
+            throw new InvalidArgumentsException("Must specify a valid list or 'stop' or 'next'!");
     }
 
     @SuppressWarnings("unchecked")
@@ -53,11 +61,16 @@ public class ForEachCommand extends BracedCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Element stop = scriptEntry.getElement("stop");
+        Element next = scriptEntry.getElement("next");
 
         if (stop != null && stop.asBoolean()) {
-            // Report to dB
             dB.report(scriptEntry, getName(), stop.debug());
             scriptEntry.getResidingQueue().BreakLoop("FOREACH");
+            return;
+        }
+        else if (next != null && next.asBoolean()) {
+            dB.report(scriptEntry, getName(), next.debug());
+            scriptEntry.getResidingQueue().BreakLoop("FOREACH/NEXT");
             return;
         }
 
@@ -103,7 +116,8 @@ public class ForEachCommand extends BracedCommand {
             scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(index));
 
             // Run everything instantly
-            if (scriptEntry.getResidingQueue().runNow(newEntries, "FOREACH"))
+            String result = scriptEntry.getResidingQueue().runNow(newEntries, "FOREACH");
+            if (result != null && !result.endsWith("/NEXT"))
                 return;
         }
 

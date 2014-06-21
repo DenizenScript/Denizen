@@ -175,9 +175,9 @@ public class ScriptHelper {
      * reading and parsing scripts.
      */
 
+    static Pattern pattern = Pattern.compile("(^.*?[^\\s](:\\s))", Pattern.MULTILINE);
     private static String yamlKeysToUpperCase(String string) {
         StringBuffer sb = new StringBuffer();
-        Pattern pattern = Pattern.compile("(^.*?[^\\s](:\\s))", Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(string);
         while (matcher.find())
             matcher.appendReplacement(sb, matcher.group().toUpperCase());

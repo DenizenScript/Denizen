@@ -76,6 +76,8 @@ public class SyncChatSmartEvent implements SmartEvent, Listener {
     // @Events
     // player chats
     //
+    // @Warning Using this will forcibly sync the chat thread.
+    //
     // @Triggers when a player chats.
     // @Context
     // <context.message> returns the player's message as an Element.

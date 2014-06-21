@@ -446,14 +446,14 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      *
      * @param entries the entries to be run.
      */
-    public boolean runNow(List<ScriptEntry> entries, String type) {
+    public String runNow(List<ScriptEntry> entries, String type) {
         // Inject the entries at the start
         injectEntries(entries, 0);
         //Note which entry comes next in the existing queue
         ScriptEntry nextup = getQueueSize() > entries.size() ? getEntry(entries.size()): null;
         // Loop through until the queue is emptied or the entry noted above is reached
         while (getQueueSize() > 0 && getEntry(0) != nextup && !was_cleared) {
-            if (type.equalsIgnoreCase(breakMe)) {
+            if (breakMe != null) {
                 removeEntry(0);
             }
             else {
@@ -465,11 +465,12 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
             }
         }
-        if (type.equalsIgnoreCase(breakMe)) {
+        if (breakMe != null && breakMe.startsWith(type)) {
+            String origBreakMe = breakMe;
             breakMe = null;
-            return true;
+            return origBreakMe;
         }
-        return false;
+        return null;
     }
 
     private Runnable callback = null;
@@ -487,6 +488,10 @@ public abstract class ScriptQueue implements Debuggable, dObject {
 
     public void BreakLoop(String toBreak) {
         breakMe = toBreak;
+    }
+
+    public String IsLoopBroken() {
+        return breakMe;
     }
 
 

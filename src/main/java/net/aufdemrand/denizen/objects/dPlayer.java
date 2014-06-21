@@ -23,9 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.BlockIterator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class dPlayer implements dObject, Adjustable {
 
@@ -40,14 +38,14 @@ public class dPlayer implements dObject, Adjustable {
         else return new dPlayer(player);
     }
 
-    static ArrayList<String> playerNames = new ArrayList<String>();
+    static Map<String, UUID> playerNames = new HashMap<String, UUID>();
 
     /**
      * Notes that the player exists, for easy dPlayer valueOf handling.
      */
     public static void notePlayer(OfflinePlayer player) {
-        if (!playerNames.contains(player.getName().toLowerCase())) {
-            playerNames.add(player.getName().toLowerCase());
+        if (!playerNames.containsKey(player.getName().toLowerCase())) {
+            playerNames.put(player.getName().toLowerCase(), player.getUniqueId());
         }
     }
 
@@ -95,8 +93,8 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // Match as a player name
-        if (playerNameIsValid(string)) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(string);
+        if (playerNames.containsKey(string.toLowerCase())) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(string.toLowerCase()));
             if (player.hasPlayedBefore())
                 return new dPlayer(player);
         }
@@ -105,16 +103,6 @@ public class dPlayer implements dObject, Adjustable {
             dB.echoError("Invalid Player! '" + string + "' could not be found.");
 
         return null;
-    }
-
-    public static boolean playerNameIsValid(String arg) {
-        arg = arg.toLowerCase();
-        for (String name: playerNames) {
-            if (arg.equals(name)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 
@@ -141,13 +129,11 @@ public class dPlayer implements dObject, Adjustable {
                 // Nothing
             }
         }
-        arg = arg.toUpperCase();
-        for (String name: playerNames) {
-            if (arg.equals(name)) {
-                return true;
-            }
-        }
-        return false;
+        return playerNames.containsKey(arg.toLowerCase());
+    }
+
+    public static boolean playerNameIsValid(String name) {
+        return playerNames.containsKey(name.toLowerCase());
     }
 
 
@@ -1202,24 +1188,25 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <p@player.gamemode.id>
-        // @returns Element(Number)
-        // @description
-        // returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure
-        // -->
-        if (attribute.startsWith("gamemode.id"))
-            return new Element(getPlayerEntity().getGameMode().getValue())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <p@player.gamemode>
         // @returns Element
         // @description
         // returns the name of the gamemode the player is currently set to.
         // -->
-        if (attribute.startsWith("gamemode"))
+        if (attribute.startsWith("gamemode")) {
+            attribute = attribute.fulfill(1);
+            // <--[tag]
+            // @attribute <p@player.gamemode.id>
+            // @returns Element(Number)
+            // @description
+            // returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure
+            // -->
+            if (attribute.startsWith("id"))
+                return new Element(getPlayerEntity().getGameMode().getValue())
+                        .getAttribute(attribute.fulfill(1));
             return new Element(getPlayerEntity().getGameMode().name())
-                    .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute);
+        }
 
         // <--[tag]
         // @attribute <p@player.is_blocking>
