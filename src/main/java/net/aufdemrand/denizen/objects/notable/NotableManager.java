@@ -93,12 +93,12 @@ public class NotableManager {
         typeTracker.remove(id.toLowerCase());
     }
 
-    public static List<dObject> getAllType(Class<? extends dObject> type) {
-        List<dObject> objects = new ArrayList<dObject>();
+    public static <T extends dObject> List<T> getAllType(Class<T> type) {
+        List<T> objects = new ArrayList<T>();
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
             // dB.log(notable.toString());
             if (isType(notable.getKey(), type))
-                objects.add((dObject) notable.getValue());
+                objects.add((T) notable.getValue());
         }
 
         return objects;

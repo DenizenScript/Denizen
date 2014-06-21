@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.citizensnpcs.api.CitizensAPI;
@@ -29,24 +30,20 @@ import org.bukkit.inventory.meta.BookMeta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class dInventory implements dObject, Notable, Adjustable {
 
-    // The maximum number of slots a Bukkit inventory can have
-    final static public int maxSlots = 54;
-
     public static dInventory mirrorBukkitInventory(Inventory inventory) {
+        // Use the map to get notable inventories
+        if (InventoryScriptHelper.notableInventories.containsKey(inventory.getTitle()))
+            return InventoryScriptHelper.notableInventories.get(inventory.getTitle());
         // Iterate through offline player inventories
-        for (Map.Entry<String, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
+        for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
             if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory()))
                 return new dInventory(new ImprovedOfflinePlayer(inv.getKey()));
-        }
-        // Iterate through Notable Inventories
-        for (dObject inv : NotableManager.getAllType(dInventory.class)) {
-            if (((CraftInventory) ((dInventory) inv).inventory).getInventory().equals(((CraftInventory) inventory).getInventory()))
-                return (dInventory) inv;
         }
 
         return new dInventory(inventory);
@@ -56,15 +53,27 @@ public class dInventory implements dObject, Notable, Adjustable {
     //   PATTERNS
     /////////////////
 
-    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
+    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|enderchest|entity|location|equipment|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
     final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
+
+
+    /////////////////////
+    //   STATIC FIELDS
+    /////////////////
+
+    // The maximum number of slots a Bukkit inventory can have
+    public final static int maxSlots = 54;
+
+    // All of the inventory id types we use
+    public final static String[] idTypes = { "npc", "player", "enderchest", "entity", "location", "equipment", "generic" };
+
 
     /////////////////////
     //   NOTABLE METHODS
     /////////////////
 
     public boolean isUnique() {
-        return idType.equals("notable");
+        return getIdType().equals("notable");
     }
 
     @Note("inventory")
@@ -73,6 +82,24 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public void makeUnique(String id) {
+        String title = inventory.getTitle();
+        // You can only have 32 characters in an inventory title... So let's make sure we have at least 3 colors...
+        // which brings notable inventory title lengths down to 26... TODO: document this/fix if possible in later version
+        if (title.length() > 26) title = title.substring(0, title.charAt(25) == '§' ? 25 : 26);
+        String colors;
+        while (true) {
+            colors = Utilities.generateRandomColors(3);
+            if (!InventoryScriptHelper.notableInventories.containsKey(title + colors)) {
+                if (getInventoryType() == InventoryType.CHEST) {
+                    inventory = Bukkit.getServer().createInventory(null, inventory.getSize(), title + colors);
+                }
+                else {
+                    inventory = Bukkit.getServer().createInventory(null, inventory.getType(), title + colors);
+                }
+                InventoryScriptHelper.notableInventories.put(title + colors, this);
+                break;
+            }
+        }
         idType = "notable";
         idHolder = id;
         NotableManager.saveAs(this, id);
@@ -125,7 +152,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dInventory.class))
                 return (dInventory) NotableManager.getSavedObject(m.group(2));
 
-            if (m.group(2).toLowerCase().matches("npc|player|entity|location|equipment|generic"))
+            for (String idType : idTypes) if (m.group(2).equalsIgnoreCase(idType))
                 return new dInventory(m.group(2));
         }
 
@@ -157,6 +184,10 @@ public class dInventory implements dObject, Notable, Adjustable {
             else if (type.equals("player")) {
                 if (dPlayer.matches(holder))
                     return dPlayer.valueOf(holder).getInventory();
+            }
+            else if (type.equals("enderchest")) {
+                if (dPlayer.matches(holder))
+                    return dPlayer.valueOf(holder).getEnderChest();
             }
             else if (type.equals("entity")) {
                 if (dEntity.matches(holder))
@@ -218,19 +249,23 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public dInventory(ItemStack[] items) {
-        inventory = Bukkit.createInventory(null, (int) Math.ceil(items.length/9)*9);
+        inventory = Bukkit.createInventory(null, (int) Math.ceil(items.length / 9) * 9);
         loadIdentifiers();
     }
 
     public dInventory(EntityEquipment entityEquipment) {
-        inventory = Bukkit.createInventory((InventoryHolder) entityEquipment.getHolder(), 9);
+        inventory = Bukkit.createInventory(null, 9);
         idType = "equipment";
         loadIdentifiers();
     }
 
     public dInventory(ImprovedOfflinePlayer offlinePlayer) {
-        inventory = offlinePlayer.getInventory();
-        setIdentifiers("player", "p@" + offlinePlayer.getName());
+        this(offlinePlayer, false);
+    }
+
+    public dInventory(ImprovedOfflinePlayer offlinePlayer, boolean isEnderChest) {
+        inventory = isEnderChest ? offlinePlayer.getEnderChest() : offlinePlayer.getInventory();
+        setIdentifiers("player", "p@" + offlinePlayer.getUniqueId());
     }
 
     public dInventory(int size, String title) {
@@ -253,30 +288,10 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dInventory(String idType) {
         this.idType = idType.toLowerCase();
-    }
-
-    public dInventory(dObject object) {
-        if (object instanceof dPlayer)
-            inventory = ((dPlayer) object).getInventory().getInventory();
-        else if (object instanceof dEntity)
-            inventory = ((dEntity) object).getInventory().getInventory();
-        else if (object instanceof dLocation)
-            inventory = ((dLocation) object).getInventory().getInventory();
-        else if (object instanceof Element) {
-            Element element = (Element) object;
-            if (element.matchesEnum(InventoryType.values()))
-                inventory = Bukkit.getServer().createInventory(null,
-                        InventoryType.valueOf(((Element) object).asString().toUpperCase()));
-            else if (element.isInt()) {
-                String title = null;
-                if (inventory != null)
-                    title = inventory.getTitle();
-                inventory = Bukkit.getServer().createInventory(null, element.asInt(),
-                        title != null ? title : "Chest");
-            }
+        for (Mechanism mechanism : mechanisms) {
+            adjust(mechanism);
         }
-        if (inventory != null)
-            loadIdentifiers();
+        mechanisms.clear();
     }
 
 
@@ -305,14 +320,14 @@ public class dInventory implements dObject, Notable, Adjustable {
         this.inventory = inventory;
         loadIdentifiers();
     }
-
-    public void setInventory(Inventory inventory, InventoryHolder holder) {
+      
+    public void setInventory(Inventory inventory, dPlayer player) {
         this.inventory = inventory;
-        loadIdentifiers(holder);
+        this.idHolder = player.identify();
     }
 
     public void setTitle(String title) {
-        if (!idType.equals("generic") || title == null)
+        if (!getIdType().equals("generic") || title == null)
             return;
         else if (inventory == null) {
             inventory = Bukkit.getServer().createInventory(null, maxSlots, title);
@@ -320,13 +335,16 @@ public class dInventory implements dObject, Notable, Adjustable {
             return;
         }
         ItemStack[] contents = inventory.getContents();
-        inventory = Bukkit.createInventory(null, inventory.getSize(), title);
+        if (inventory.getType() == InventoryType.CHEST)
+            inventory = Bukkit.createInventory(null, inventory.getSize(), title);
+        else
+            inventory = Bukkit.createInventory(null, inventory.getType(), title);
         inventory.setContents(contents);
         loadIdentifiers();
     }
 
     public void setSize(int size) {
-        if (!idType.equals("generic"))
+        if (!getIdType().equals("generic"))
             return;
         else if (size <= 0 || size%9 != 0) {
             dB.echoError("InventorySize must be multiple of 9, and greater than 0.");
@@ -356,61 +374,68 @@ public class dInventory implements dObject, Notable, Adjustable {
         loadIdentifiers(inventory.getHolder());
     }
 
-    private void loadIdentifiers(InventoryHolder holder) {
-        boolean isEquipment = idType != null && idType.equals("equipment");
+    private void loadIdentifiers(final InventoryHolder holder) {
+        if (inventory == null) return;
+
+        boolean isEquipment = getIdType().equals("equipment");
 
         if (holder != null) {
             if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
                 if (!isEquipment)
                     idType = "npc";
-                idHolder = "n@" + CitizensAPI.getNPCRegistry().getNPC((Entity) holder).getId();
+                idHolder = dNPC.fromEntity((Entity) holder).identify();
                 return;
             }
             else if (holder instanceof Player) {
-                if (!isEquipment)
-                    idType = "player";
                 if (inventory.getType() == InventoryType.ENDER_CHEST)
-                    idHolder = "enderchest,p@" + ((Player) holder).getName();
-                else
-                    idHolder = "p@" + ((Player) holder).getName();
+                    idType = "enderchest";
+                else if (!isEquipment)
+                    idType = "player";
+                idHolder = new dPlayer((Player) holder).identify();
                 return;
             }
             else if (holder instanceof Entity) {
                 if (!isEquipment)
                     idType = "entity";
-                idHolder = "e@" + ((Entity) holder).getEntityId();
+                idHolder = new dEntity((Entity) holder).identify();
                 return;
             }
             else {
                 idType = "location";
-                if (getLocation() != null)
-                    idHolder = getLocation().identify();
-                else
+                try {
+                    idHolder = getLocation(holder).identify();
+                } catch (NullPointerException e) {
                     idHolder = "null";
+                }
                 return;
             }
         }
-        else if (idType != null) {
-            if (idType.equals("player")) {
-                // Iterate through offline player inventories
-                for (Map.Entry<String, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
-                    if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
-                        idHolder = "p@" + inv.getKey();
-                        return;
-                    }
-                }
-
-            }
-            else if (idType.equals("script")) {
-                // Iterate through inventory scripts
-                for (InventoryScriptContainer container : InventoryScriptHelper.inventory_scripts.values()) {
-                    if (((CraftInventory) (container.getInventoryFrom()).inventory).getInventory().equals(((CraftInventory) inventory).getInventory())) {
-                        idHolder = container.getName();
-                        return;
-                    }
+        else if (getIdType().equals("player")) {
+            // Iterate through offline player inventories
+            for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
+                if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
+                    idHolder = new dPlayer(inv.getKey()).identify();
+                    return;
                 }
             }
-            // TODO: Add notable check
+        }
+        else if (getIdType().equals("script")) {
+            // Iterate through inventory scripts
+            for (InventoryScriptContainer container : InventoryScriptHelper.inventory_scripts.values()) {
+                if (((CraftInventory) (container.getInventoryFrom()).inventory).getInventory().equals(((CraftInventory) inventory).getInventory())) {
+                    idHolder = container.getName();
+                    return;
+                }
+            }
+        }
+        else if (getIdType().equals("notable")) {
+            // Iterate through Notable Inventories
+            for (dInventory inv : NotableManager.getAllType(dInventory.class)) {
+                if (inv.getInventory().getTitle().equals(inventory.getTitle())) {
+                    idHolder = NotableManager.getSavedId(inv);
+                    return;
+                }
+            }
         }
         idType = "generic";
         idHolder = getInventory().getType().name();
@@ -423,11 +448,11 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public String getIdType() {
-        return idType;
+        return idType == null ? "" : idType;
     }
 
     public String getIdHolder() {
-        return idHolder;
+        return idHolder == null ? "" : idHolder;
     }
 
     /**
@@ -439,11 +464,11 @@ public class dInventory implements dObject, Notable, Adjustable {
      */
 
     public dLocation getLocation() {
+        return getLocation(inventory.getHolder());
+    }
 
-        if (inventory != null) {
-
-            InventoryHolder holder = inventory.getHolder();
-
+    public dLocation getLocation(InventoryHolder holder) {
+        if (inventory != null && holder != null) {
             if (holder instanceof Chest) {
                 return new dLocation(((Chest) holder).getLocation());
             }
@@ -495,7 +520,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public void setContents(dList list) {
-        int size = 0;
+        int size;
         if (inventory == null) {
             size = (int) Math.ceil(list.size() / 9)*9;
             if (size == 0) size = 9;
@@ -519,7 +544,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public boolean update() {
-        if (idType.equals("player")) {
+        if (getIdType().equals("player")) {
             dPlayer.valueOf(idHolder).getPlayerEntity().updateInventory();
             return true;
         }
@@ -986,7 +1011,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public String identify() {
         if (isUnique())
             return "in@" + NotableManager.getSavedId(this);
-        else return "in@" + (idType.equals("script") || idType.equals("notable")
+        else return "in@" + (getIdType().equals("script") || getIdType().equals("notable")
                 ? idHolder : (idType + PropertyParser.getPropertiesString(this)));
     }
 
@@ -995,7 +1020,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public String identifySimple() {
         if (isUnique())
             return "in@" + NotableManager.getSavedId(this);
-        else return "in@" + (idType.equals("script") || idType.equals("notable")
+        else return "in@" + (getIdType().equals("script") || getIdType().equals("notable")
                 ? idHolder : (idType + "[" + idHolder + ']'));
     }
 
@@ -1162,9 +1187,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns the location of this inventory's holder.
         // -->
         if (attribute.startsWith("location")) {
-            if (getLocation() != null)
-                return getLocation().getAttribute(attribute.fulfill(1));
-            else return "null";
+            dLocation location = getLocation();
+            if (location != null)
+                return location.getAttribute(attribute.fulfill(1));
+            else
+                return Element.NULL.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1238,7 +1265,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (equipment == null)
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             else
-                return getEquipment().getAttribute(attribute.fulfill(1));
+                return equipment.getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
@@ -1250,11 +1277,15 @@ public class dInventory implements dObject, Notable, Adjustable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+    private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
+
     public void applyProperty(Mechanism mechanism) {
         // TODO: Restrict what properties can be sent through, either here or within the property definitions
         // TODO: Specifically, ensure that you can't type things like
         // TODO: <in@inventory[holder=mcmonkey4eva;contents=stick]> to give yourself a stick
-        adjust(mechanism);
+
+        if (idType == null)  mechanisms.add(mechanism);
+        else adjust(mechanism);
     }
 
     @Override

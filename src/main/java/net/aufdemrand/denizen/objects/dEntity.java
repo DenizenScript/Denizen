@@ -1,11 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
-import net.aufdemrand.denizen.objects.properties.*;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.objects.properties.entity.*;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
@@ -17,22 +14,23 @@ import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_7_R3.EntityLiving;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class dEntity implements dObject, Adjustable {
 
@@ -369,6 +367,10 @@ public class dEntity implements dObject, Adjustable {
         return (entity instanceof LivingEntity);
     }
 
+    public boolean hasInventory() {
+        return getBukkitEntity() instanceof InventoryHolder;
+    }
+
     /**
      * Get the NPC corresponding to this dEntity
      *
@@ -393,7 +395,7 @@ public class dEntity implements dObject, Adjustable {
         if (npc != null)
             return new dNPC(npc);
         else if (entity != null && CitizensAPI.getNPCRegistry().isNPC(entity))
-            return new dNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+            return dNPC.fromEntity(entity);
         else return null;
     }
 
@@ -496,6 +498,10 @@ public class dEntity implements dObject, Adjustable {
         // TODO: Handle other shooter source thingy types
     }
 
+    public Inventory getBukkitInventory() {
+        return hasInventory() ? ((InventoryHolder) getLivingEntity()).getInventory() : null;
+    }
+
     /**
      * Returns this entity's dInventory.
      *
@@ -503,9 +509,7 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dInventory getInventory() {
-        if (isLivingEntity() && getLivingEntity() instanceof InventoryHolder)
-            return new dInventory((InventoryHolder) getLivingEntity());
-        else return null;
+        return hasInventory() ? new dInventory(getBukkitInventory()) : null;
     }
 
     /**

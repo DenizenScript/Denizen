@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 
 public class InventoryTitle implements Property {
@@ -31,10 +32,16 @@ public class InventoryTitle implements Property {
     }
 
     public String getTitle() {
-        if (inventory.getInventory() != null)
-            return inventory.getInventory().getTitle();
-        else
-            return null;
+        if (inventory.getInventory() != null) {
+            String title = inventory.getInventory().getTitle();
+            if (title != null && !title.startsWith("container.")) {
+                if (InventoryScriptHelper.notableInventories.containsKey(title))
+                    return title.substring(0, title.length()-6);
+                else
+                    return title;
+            }
+        }
+        return null;
     }
 
 
@@ -44,12 +51,7 @@ public class InventoryTitle implements Property {
 
     @Override
     public String getPropertyString() {
-        if (inventory.getIdType().equals("generic")
-                && inventory.getIdHolder().equals("CHEST")
-                && !getTitle().equals("Chest"))
-            return getTitle();
-        else
-            return null;
+        return getTitle();
     }
 
     @Override
@@ -71,7 +73,11 @@ public class InventoryTitle implements Property {
         // Returns the title of the inventory.
         // -->
         if (attribute.startsWith("title")) {
-            return new Element(getTitle()).getAttribute(attribute.fulfill(1));
+            String title = getTitle();
+            if (title == null)
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return new Element(title).getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -85,7 +91,7 @@ public class InventoryTitle implements Property {
         // @name title
         // @input Element
         // @description
-        // Sets the title of the inventory. (Only works for "generic" chest inventories.)
+        // Sets the title of the inventory. (Only works for "generic" inventories.)
         // @tags
         // <in@inventory.title>
         // -->

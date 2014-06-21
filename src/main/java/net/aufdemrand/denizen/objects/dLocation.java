@@ -11,17 +11,16 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.World;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -300,12 +299,16 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         return this;
     }
 
+    public boolean hasInventory() {
+        return getBlock().getState() instanceof InventoryHolder;
+    }
+
+    public Inventory getBukkitInventory() {
+        return hasInventory() ? ((InventoryHolder) getBlock().getState()).getInventory() : null;
+    }
+
     public dInventory getInventory() {
-        BlockState block = getBlock().getState();
-        if (block instanceof InventoryHolder) {
-            return new dInventory((InventoryHolder) block);
-        }
-        else return null;
+        return hasInventory() ? new dInventory(getBukkitInventory()) : null;
     }
 
     int Compare(dLocation loc1, dLocation loc2) {

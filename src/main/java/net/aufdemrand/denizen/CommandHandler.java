@@ -981,7 +981,7 @@ public class CommandHandler {
     // @Context
     // <context.sender> returns the name of the sender who triggered the reload.
     // <context.all> returns whether 'reload -a' was used.
-    // <contex.haderror> returns whether there was an error.
+    // <context.haderror> returns whether there was an error.
     //
     // -->
 

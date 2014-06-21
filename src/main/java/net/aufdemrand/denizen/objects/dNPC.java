@@ -47,6 +47,10 @@ public class dNPC implements dObject, Adjustable {
         else return new dNPC(npc);
     }
 
+    public static dNPC fromEntity(Entity entity) {
+        return mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+    }
+
     @Fetchable("n")
     public static dNPC valueOf(String string) {
         if (string == null) return null;
