@@ -2665,7 +2665,7 @@ public class CommandRegistry implements dRegistry {
         // @Stable unstable
         // @Short Creates a sign that auto-updates with information.
         // @Author Morphan1
-        // @Group entity
+        // @Group world
 
         // @Description
         // Creates a sign that auto-updates with information about a player, including their location, score, and

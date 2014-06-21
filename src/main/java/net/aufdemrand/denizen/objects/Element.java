@@ -881,7 +881,7 @@ public class Element implements dObject {
         // @group string manipulation
         // @description
         // Returns the text re-formatted according to a format script.
-        // See <@link tutorial using format scripts>.
+        // See <@link example using format scripts>.
         // -->
         if (attribute.startsWith("format")
                 && attribute.hasContext(1)) {
