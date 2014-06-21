@@ -152,6 +152,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     //    OBJECT FETCHER
     ////////////////
 
+    final static Pattern item_by_saved = Pattern.compile("(l@)(.+)");
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
      * or a dScript argument (location:)x,y,z,world. If including an Id,
@@ -169,7 +170,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         // Match @object format for saved dLocations
         Matcher m;
 
-        final Pattern item_by_saved = Pattern.compile("(l@)(.+)");
         m = item_by_saved.matcher(string);
 
         if (m.matches() && isSaved(m.group(2)))
@@ -216,19 +216,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         return null;
     }
 
+    final static Pattern location_by_saved = Pattern.compile("(l@)(.+)");
+    final static Pattern location =
+            Pattern.compile("(-?\\d+\\.?\\d*,){3,5}[\\w\\s]+",
+                    Pattern.CASE_INSENSITIVE);
 
     public static boolean matches(String string) {
         if (string == null || string.length() == 0)
             return false;
 
-        final Pattern location_by_saved = Pattern.compile("(l@)(.+)");
         Matcher m = location_by_saved.matcher(string);
         if (m.matches())
             return true;
 
-        final Pattern location =
-                Pattern.compile("(-?\\d+\\.?\\d*,){3,5}[\\w\\s]+",
-                        Pattern.CASE_INSENSITIVE);
         m = location.matcher(string);
         return m.matches();
     }
@@ -312,7 +312,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     }
 
     int Compare(dLocation loc1, dLocation loc2) {
-        if (loc1.equals(loc2))
+        if (loc1 == null || loc2 == null || loc1.equals(loc2))
             return 0;
         else {
             double dist = distanceSquared(loc1) - distanceSquared(loc2);
@@ -367,7 +367,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     }
 
     public String identifyRaw() {
-        if (getYaw() != 0.0 && getPitch() != 0.0)
+        if (getYaw() != 0.0 || getPitch() != 0.0)
             return "l@" + getX() + "," + getY()
                     + "," + getZ() + "," + getPitch() + "," + getYaw() + "," + getWorld().getName();
         else
@@ -642,7 +642,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         }
 
         // <--[tag]
-        // @attribute <l@location.with_pose[<entity>/<yaw>,<pitch>]>
+        // @attribute <l@location.with_pose[<entity>/<pitch>,<yaw>]>
         // @returns dLocation
         // @description
         // Returns the location with pitch and yaw.
@@ -895,7 +895,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                         dEntity current = new dEntity(entity);
                         if (!ent_list.isEmpty()) {
                             for (String ent : ent_list) {
-                                if (entity.getType().name().equals(ent) || current.identify().equalsIgnoreCase(ent)) {
+                                if ((entity.getType().name().equals(ent) ||
+                                        current.identify().equalsIgnoreCase(ent)) && entity.isValid()) {
                                     found.add(current);
                                     break;
                                 }
@@ -1188,6 +1189,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                 else return new Element(this.distance(toLocation))
                             .getAttribute(attribute.fulfill(1));
             }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.is_within[<cuboid>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the location is within the cuboid.
+        // -->
+        if (attribute.startsWith("is_within")
+                && attribute.hasContext(1)) {
+            dCuboid cuboid = dCuboid.valueOf(attribute.getContext(1));
+            if (cuboid != null)
+                return new Element(cuboid.isInsideCuboid(this))
+                        .getAttribute(attribute.fulfill(1));
         }
 
 

@@ -57,6 +57,7 @@ public class ScriptRegistry {
         EventManager.world_scripts.clear();
         EventManager.events.clear();
         ItemScriptHelper.item_scripts.clear();
+        ItemScriptHelper.item_scripts_by_hash_id.clear();
         InventoryScriptHelper.inventory_scripts.clear();
         // Get a set of key names in concatenated Denizen Scripts
         Set<String> scripts = yamlScripts.getKeys(false);

@@ -3,7 +3,13 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.scripts.containers.core.ProcedureScriptContainer;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -12,10 +18,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.ChatColor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -324,11 +327,12 @@ public class dList extends ArrayList<String> implements dObject {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <li@list.get_sub_items[#]>
+        // @attribute <li@list.get_sub_items[<#>]>
         // @returns dList
         // @description
         // returns a list of the specified sub items in the list, as split by the
         // forward-slash character (/).
+        // EG, .get_sub_items[1] on a list of "one/alpha|two/beta" will return "one|two".
         // -->
 
         if (attribute.startsWith("get_sub_items")) {
@@ -339,12 +343,13 @@ public class dList extends ArrayList<String> implements dObject {
 
 
             // <--[tag]
-            // @attribute <li@list.get_sub_items[#].split_by[<element>]>
+            // @attribute <li@list.get_sub_items[<#>].split_by[<element>]>
             // @returns dList
             // @description
             // returns a list of the specified sub item in the list, allowing you to specify a
             // character in which to split the sub items by. WARNING: When setting your own split
             // character, make note that it is CASE SENSITIVE.
+            // EG, .get_sub_items[1].split_by[-] on a list of "one-alpha|two-beta" will return "one|two".
             // -->
 
             String split = "/";
@@ -375,6 +380,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns Element
         // @description
         // returns the list in a cleaner format, separated by commas.
+        // EG, a list of "one|two|three" will return "one, two, three".
         // -->
         if (attribute.startsWith("ascslist")
                 || attribute.startsWith("as_cslist")) {
@@ -394,7 +400,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns Element
         // @description
         // returns the list in a human-readable format.
-        // EG: li@n@3|p@bob|potato returns 'GuardNPC, bob, and potato'
+        // EG, a list of "@n@3|p@bob|potato" will return "GuardNPC, bob, and potato".
         // -->
         if (attribute.startsWith("formatted")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
@@ -441,6 +447,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns Element(Number)
         // @description
         // returns the size of the list.
+        // EG, a list of "one|two|three" will return "3".
         // -->
         if (attribute.startsWith("size"))
             return new Element(size()).getAttribute(attribute.fulfill(1));
@@ -459,6 +466,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns Element
         // @description
         // returns each item in the list as a single 'String'.
+        // EG, a list of "one|two|three" will return "one two three".
         // -->
         if (attribute.startsWith("asstring")
                 || attribute.startsWith("as_string")) {
@@ -474,10 +482,41 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.insert[...|...].at[<#>]>
+        // @returns dList
+        // @description
+        // returns a new dList with the items specified inserted to the specified location.
+        // EG, .insert[two|three].at[2] on a list of "one|four" will return "one|two|three|four".
+        // -->
+        if (attribute.startsWith("insert") &&
+                attribute.hasContext(1)) {
+            dList items = dList.valueOf(attribute.getContext(1));
+            attribute = attribute.fulfill(1);
+            if (attribute.startsWith("at")
+                    && attribute.hasContext(1)) {
+                dList result = new dList(this);
+                int index = new Element(attribute.getContext(1)).asInt() - 1;
+                if (index < 0)
+                    index = 0;
+                if (index > result.size())
+                    index = result.size();
+                for (int i = 0; i < items.size(); i++) {
+                    result.add(index + i, items.get(i));
+                }
+                return result.getAttribute(attribute.fulfill(1));
+            }
+            else {
+                dB.echoError("The tag li@list.insert[...] requires an at[#] tag follow it!");
+                return Element.NULL.getAttribute(attribute);
+            }
+        }
+
+        // <--[tag]
         // @attribute <li@list.include[...|...]>
         // @returns dList
         // @description
         // returns a new dList including the items specified.
+        // EG, .include[three|four] on a list of "one|two" will return "one|two|three|four".
         // -->
         if (attribute.startsWith("include") &&
                 attribute.hasContext(1)) {
@@ -491,6 +530,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns dList
         // @description
         // returns a new dList excluding the items specified.
+        // EG, .exclude[two|four] on a list of "one|two|three|four" will return "one|three".
         // -->
         if (attribute.startsWith("exclude") &&
                 attribute.hasContext(1)) {
@@ -511,10 +551,24 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.reverse>
+        // @returns dList
+        // @description
+        // returns a copy of the list, with all items placed in opposite order.
+        // EG, a list of "one|two|three" will become "three|two|one".
+        // -->
+        if (attribute.startsWith("reverse")) {
+            dList list = new dList(this);
+            Collections.reverse(list);
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.deduplicate>
         // @returns dList
         // @description
         // returns a copy of the list with any duplicate items removed.
+        // EG, a list of "one|one|two|three" will become "one|two|three".
         // -->
         if (attribute.startsWith("deduplicate")) {
             dList list = new dList();
@@ -538,10 +592,11 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.get[#]>
+        // @attribute <li@list.get[<#>]>
         // @returns Element
         // @description
         // returns an element of the value specified by the supplied context.
+        // EG, .get[1] on a list of "one|two" will return "one", and .get[2] will return "two"
         // -->
         if (attribute.startsWith("get") &&
                 attribute.hasContext(1)) {
@@ -552,10 +607,11 @@ public class dList extends ArrayList<String> implements dObject {
             attribute = attribute.fulfill(1);
 
             // <--[tag]
-            // @attribute <li@list.get[#].to[#]>
+            // @attribute <li@list.get[<#>].to[<#>]>
             // @returns dList
             // @description
             // returns all elements in the range from the first index to the second.
+            // EG, .get[1].to[3] on a list of "one|two|three|four" will return "one|two|three"
             // -->
             if (attribute.startsWith("to") &&
                     attribute.hasContext(1)) {
@@ -581,6 +637,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @description
         // returns the numbered location of an element within a list,
         // or -1 if the list does not contain that item.
+        // EG, .find[two] on a list of "one|two|three" will return "2".
         // -->
         if (attribute.startsWith("find") &&
                 attribute.hasContext(1)) {
@@ -596,17 +653,105 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.first>
+        // @returns Element
+        // @description
+        // returns the first element in the list.
+        // If the list is empty, returns null instead.
+        // EG, a list of "one|two|three" will return "one".
+        // Effectively equivalent to .get[1]
+        // -->
+        if (attribute.startsWith("first")) {
+            if (size() == 0)
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return new Element(get(0)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.last>
         // @returns Element
         // @description
         // returns the last element in the list.
         // If the list is empty, returns null instead.
+        // EG, a list of "one|two|three" will return "three".
+        // Effectively equivalent to .get[9999]
         // -->
         if (attribute.startsWith("last")) {
             if (size() == 0)
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             else
                 return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.sort[<procedure>]>
+        // @returns Element
+        // @description
+        // returns a list sorted according to the return values of a procedure.
+        // The <procedure> should link a procedure script that takes two definitions
+        // each of which will be an item in the list, and returns -1, 0, or 1 based on
+        // whether the second item should be added. EG, if a procedure with definitions
+        // "one" and "two" returned 1, it would place "two" after "one". Note that this
+        // uses some complex internal sorting code that could potentially throw errors
+        // if the procedure does not return consistently - EG, if "one" and "two" returned
+        // 1, but "two" and "one" returned 1 as well - obviously, "two" can not be both
+        // before AND after "one"!
+        // Note that the script should ALWAYS return -1, 0, or 1, or glitches will happen!
+        // Note that if two inputs are exactly equal, the procedure should always return 0.
+        // -->
+        if (attribute.startsWith("sort")
+                && attribute.hasContext(1)) {
+            final ProcedureScriptContainer script = ScriptRegistry.getScriptContainerAs(attribute.getContext(1), ProcedureScriptContainer.class);
+            if (script == null) {
+                dB.echoError("'" + attribute.getContext(1) + "' is not a valid procedure script!");
+                return getAttribute(attribute.fulfill(1));
+            }
+            final ScriptEntry entry = attribute.getScriptEntry();
+            List<String> list = new ArrayList<String>(this);
+            try {
+                Collections.sort(list, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        List<ScriptEntry> entries = script.getBaseEntries(entry.getPlayer(), entry.getNPC());
+                        if (entries.isEmpty()) {
+                            return 0;
+                        }
+                        long id = DetermineCommand.getNewId();
+                        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+                        InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
+                        queue.addEntries(entries);
+                        queue.setReqId(id);
+                        int x = 1;
+                        dList definitions = new dList();
+                        definitions.add(o1);
+                        definitions.add(o2);
+                        String[] definition_names = null;
+                        try { definition_names = script.getString("definitions").split("\\|"); } catch (Exception e) { /* IGNORE */ }
+                        for (String definition : definitions) {
+                            String name = definition_names != null && definition_names.length >= x ?
+                                    definition_names[x - 1].trim() : String.valueOf(x);
+                            queue.addDefinition(name, definition);
+                            dB.echoDebug(entry, "Adding definition %" + name + "% as " + definition);
+                            x++;
+                        }
+                        queue.start();
+                        int res = 0;
+                        if (DetermineCommand.hasOutcome(id))
+                            res = new Element(DetermineCommand.getOutcome(id)).asInt();
+                        if (res < 0)
+                            return -1;
+                        else if (res > 0)
+                            return 1;
+                        else
+                            return 0;
+                    }
+                });
+            }
+            catch (Exception e) {
+                dB.echoError("list.sort[...] tag failed - procedure returned unreasonable valid - internal error: " + e.getMessage());
+            }
+            return new dList(list).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -691,7 +836,11 @@ public class dList extends ArrayList<String> implements dObject {
         // @returns Element
         // @description
         // Gets a random item in the list and returns it as an Element.
-        // Optionally, add [#] to get a list of multiple randomly chosen elements.
+        // Optionally, add [<#>] to get a list of multiple randomly chosen elements.
+        // EG, .random on a list of "one|two" could return EITHER "one" or "two" - different each time!
+        // EG, .random[2] on a list of "one|two|three" could return "one|two", "two|three", OR "one|three" - different each time!
+        // EG, .random[9999] on a list of "one|two|three" could return "one|two|three", "one|three|two", "two|one|three",
+        // "two|three|one", "three|two|one", OR "three|one|two" - different each time!
         // -->
         if (attribute.startsWith("random")) {
             if (!this.isEmpty()) {
@@ -728,6 +877,7 @@ public class dList extends ArrayList<String> implements dObject {
         // returns true of the flag is expired or does not exist, false if it
         // is not yet expired, or has no expiration.
         // -->
+        // NOTE: Defined in UtilTags.java
 
         // <--[tag]
         // @attribute <fl@flag_name.expiration>

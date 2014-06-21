@@ -24,7 +24,7 @@ import org.bukkit.block.Sign;
 
 public class SignCommand extends AbstractCommand {
 
-    private enum Type { SIGN_POST, WALL_SIGN }
+    private enum Type { AUTOMATIC, SIGN_POST, WALL_SIGN }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -33,22 +33,18 @@ public class SignCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values()))
-
-                scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
+                scriptEntry.addObject("type", arg.asElement());
 
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
-
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
-
-            else if (!scriptEntry.hasObject("text")
-                    && arg.matchesArgumentType(dList.class))
-
-                scriptEntry.addObject("text", arg.asType(dList.class));
 
             else if (!scriptEntry.hasObject("direction")
                     && arg.matchesPrefix("direction, dir"))
                 scriptEntry.addObject("direction", arg.asElement());
+
+            else if (!scriptEntry.hasObject("text"))
+                scriptEntry.addObject("text", arg.asType(dList.class));
 
             else
                 arg.reportUnhandled();
@@ -59,8 +55,11 @@ public class SignCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException("Must specify a Sign location!");
 
+        if (!scriptEntry.hasObject("text"))
+            throw new InvalidArgumentsException("Must specify sign text!");
+
         // Default to SIGN_POST type
-        scriptEntry.defaultObject("type", Type.SIGN_POST);
+        scriptEntry.defaultObject("type", new Element(Type.AUTOMATIC.name()));
     }
 
     @SuppressWarnings("unchecked")
@@ -69,23 +68,27 @@ public class SignCommand extends AbstractCommand {
 
         // Get objects
         String direction = scriptEntry.hasObject("direction") ? ((Element) scriptEntry.getObject("direction")).asString() : null;
-        Type type = (Type) scriptEntry.getObject("type");
+        Element typeElement = scriptEntry.getElement("type");
         dList text = (dList) scriptEntry.getObject("text");
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), type.name() + ", "
-                + aH.debugObj("location", location)
-                + aH.debugObj("text", text));
+        dB.report(scriptEntry, getName(), typeElement.debug()
+                                          + location.debug()
+                                          + text.debug());
 
+        Type type = Type.valueOf(typeElement.asString().toUpperCase());
         Block sign = location.getBlock();
-        sign.setType(Material.valueOf(type.name()));
+        if (type != Type.AUTOMATIC
+                || (sign.getType() != Material.WALL_SIGN
+                && sign.getType() != Material.SIGN_POST))
+            sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN: Material.SIGN_POST);
         BlockState signState = sign.getState();
 
         Utilities.setSignLines((Sign) signState, text.toArray());
         if (direction != null)
             Utilities.setSignRotation(signState, direction);
-        else
+        else if (type == Type.SIGN_POST)
             Utilities.setSignRotation(signState);
     }
 }

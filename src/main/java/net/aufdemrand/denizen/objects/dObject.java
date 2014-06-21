@@ -74,7 +74,6 @@ import net.aufdemrand.denizen.tags.Attribute;
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   i@<material_name> - fetches a new item of the specified material
 // |   i@<material_name>,<data> - fetches a new item with the specified data
-// |   i@<item_entity_id> - fetches an item that is laying on the ground in a world by its Bukkit EntityID
 // |   i@<item_script_name> - fetches a new custom item as specified by the referenced item script
 //
 // + ----- dWorld -------+
@@ -92,7 +91,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 // + ----- dCuboid ------+
 // | object notation: cu@   can reference unique objects: no      can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   cu@<position_1>|<position_2> - fetches a new cuboid with the specified locations as 'pos1' and 'pos2'
+// |   cu@<position_1>|<position_2>|... - fetches a new cuboid encompassing a region from position 1 to 2, from 2 to 3, ...
 // |   cu@<notable_cuboid_name> - fetches the cuboid that has been 'noted' with the specified ID
 //
 // + ----- dInventory ---+

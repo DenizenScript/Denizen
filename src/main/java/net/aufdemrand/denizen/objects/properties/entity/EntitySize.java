@@ -81,7 +81,6 @@ public class EntitySize implements Property {
         // Sets the size of a slime-type entity (1-120).
         // @tags
         // <e@entity.size>
-        // <e@entity.is_sizeable>
         // -->
 
         if (mechanism.matches("size") && mechanism.requireInteger()) {

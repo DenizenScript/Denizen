@@ -36,11 +36,13 @@ public class PropertyParser {
         registerProperty(EntityFirework.class, dEntity.class);
         registerProperty(EntityFramed.class, dEntity.class);
         registerProperty(EntityInfected.class, dEntity.class);
+        registerProperty(EntityItem.class, dEntity.class);
         registerProperty(EntityKnockback.class, dEntity.class);
         registerProperty(EntityPotion.class, dEntity.class);
         registerProperty(EntityPowered.class, dEntity.class);
         registerProperty(EntityProfession.class, dEntity.class);
         registerProperty(EntitySize.class, dEntity.class);
+        registerProperty(EntitySkeleton.class, dEntity.class);
         registerProperty(EntityTame.class, dEntity.class);
 
         // register core dInventory properties

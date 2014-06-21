@@ -166,7 +166,7 @@ public class ExperienceCommand extends AbstractCommand {
         switch (type) {
             case SET:
                 if(level)
-                    setLevel(player, quantity);
+                    scriptEntry.getPlayer().setLevel(quantity);
                 else if ( !silent )
                     setTotalExperience(player, quantity);
                 else
@@ -175,7 +175,7 @@ public class ExperienceCommand extends AbstractCommand {
 
             case GIVE:
                 if(level)
-                    setLevel(player, player.getLevel() + quantity);
+                    scriptEntry.getPlayer().setLevel(scriptEntry.getPlayer().getPlayerEntity().getLevel() + quantity);
                 else if ( !silent )
                     giveExperience(player, quantity);
                 else
@@ -183,8 +183,10 @@ public class ExperienceCommand extends AbstractCommand {
                 break;
 
             case TAKE:
-                if(level)
-                    setLevel(player, player.getLevel() - quantity);
+                if(level) {
+                    int value = scriptEntry.getPlayer().getPlayerEntity().getLevel() - quantity;
+                    scriptEntry.getPlayer().setLevel(value <= 0 ? 0: value);
+                }
                 else if ( !silent )
                     giveExperience(player, -quantity);
                 else

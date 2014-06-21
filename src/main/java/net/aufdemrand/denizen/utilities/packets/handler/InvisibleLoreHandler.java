@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -119,7 +120,8 @@ public class InvisibleLoreHandler {
                 ItemMeta meta = stack.getItemMeta();
                 LinkedList<String> lore = new LinkedList<String>();
                 for (String line: meta.getLore()) {
-                    if (!line.startsWith(dItem.itemscriptIdentifier)) {
+                    if (!line.startsWith(dItem.itemscriptIdentifier)
+                            && !line.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                         lore.add(line);
                     }
                 }

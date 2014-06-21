@@ -46,8 +46,10 @@ public class dMaterial implements dObject {
         LIGHT_GRAY_STAINED_GLASS_PANE, CYAN_STAINED_GLASS_PANE, PURPLE_STAINED_GLASS_PANE, BLUE_STAINED_GLASS_PANE,
         BROWN_STAINED_GLASS_PANE, GREEN_STAINED_GLASS_PANE, RED_STAINED_GLASS_PANE, BLACK_STAINED_GLASS_PANE,
         CHARCOAL, OAK_PLANKS, SPRUCE_PLANKS, BIRCH_PLANKS, JUNGLE_PLANKS, ACACIA_PLANKS, DARKOAK_PLANKS,
-        OAK_SAPLING, SPRUCE_SAPLING, BIRCH_SAPLING, JUNGLE_SAPLING, ACACIA_SAPLING, DARKOAK_SAPLING, OAK_LEAVES,
-        SPRUCE_LEAVES, BIRCH_LEAVES, JUNGLE_LEAVES, ACACIA_LEAVES, DARKOAK_LEAVES, POPPY, BLUE_ORCHID, ALLIUM,
+        OAK_SAPLING, SPRUCE_SAPLING, BIRCH_SAPLING, JUNGLE_SAPLING, ACACIA_SAPLING, DARKOAK_SAPLING,
+        OAK_LEAVES, SPRUCE_LEAVES, BIRCH_LEAVES, JUNGLE_LEAVES, ACACIA_LEAVES, DARKOAK_LEAVES,
+        PLACED_OAK_LEAVES, PLACED_SPRUCE_LEAVES, PLACED_BIRCH_LEAVES, PLACED_JUNGLE_LEAVES,
+        PLACED_ACACIA_LEAVES, PLACED_DARKOAK_LEAVES, POPPY, BLUE_ORCHID, ALLIUM,
         AZURE_BLUET, RED_TULIP, ORANGE_TULIP, WHITE_TULIP, PINK_TULIP, OXEYE_DAISY, SUNFLOWER, LILAC,
         DOUBLE_TALLGRASS, ROSE_BUSH, LARGE_FERN, PEONY, OAK_LOG, SPRUCE_LOG, BIRCH_LOG, JUNGLE_LOG,
         ACACIA_LOG, DARKOAK_LOG, CHISELED_SANDSTONE, SMOOTH_SANDSTONE, STONE_BRICK,
@@ -188,6 +190,12 @@ public class dMaterial implements dObject {
     public final static dMaterial JUNGLE_LEAVES = new dMaterial(Material.LEAVES, 3).forceIdentifyAs("JUNGLE_LEAVES");
     public final static dMaterial ACACIA_LEAVES = new dMaterial(Material.LEAVES_2, 0).forceIdentifyAs("ACACIA_LEAVES");
     public final static dMaterial DARKOAK_LEAVES = new dMaterial(Material.LEAVES_2, 1).forceIdentifyAs("DARKOAK_LEAVES");
+    public final static dMaterial PLACED_OAK_LEAVES = new dMaterial(Material.LEAVES, 4).forceIdentifyAs("PLACED_OAK_LEAVES");
+    public final static dMaterial PLACED_SPRUCE_LEAVES = new dMaterial(Material.LEAVES, 5).forceIdentifyAs("PLACED_SPRUCE_LEAVES");
+    public final static dMaterial PLACED_BIRCH_LEAVES = new dMaterial(Material.LEAVES, 6).forceIdentifyAs("PLACED_BIRCH_LEAVES");
+    public final static dMaterial PLACED_JUNGLE_LEAVES = new dMaterial(Material.LEAVES, 7).forceIdentifyAs("PLACED_JUNGLE_LEAVES");
+    public final static dMaterial PLACED_ACACIA_LEAVES = new dMaterial(Material.LEAVES_2, 4).forceIdentifyAs("PLACED_ACACIA_LEAVES");
+    public final static dMaterial PLACED_DARKOAK_LEAVES = new dMaterial(Material.LEAVES_2, 5).forceIdentifyAs("PLACED_DARKOAK_LEAVES");
 
     // Logs
     public final static dMaterial OAK_LOG = new dMaterial(Material.LOG, 0).forceIdentifyAs("OAK_LOG");
@@ -373,15 +381,14 @@ public class dMaterial implements dObject {
     // TODO: The following would be walls of useless materials, make properties for these instead of custom mats
     // Step rotations [rotation=(north/west/south/east)(up/down)] for each of the step blocks
     // Rotations for chests/furnaces/pumpkins/cocoa/etc [rotation=(north/south/east/west)] for each of those types
-    // Rotations and open/closedness for doors/gates/etc. [Unknown?]
-    // Potions [potion_effect=(<name>)(<level>)(splash?)]
-    // Leather colors [leather_color=(<dColor>)] or [leather_color=(dye_one)(dye_two)]
 
 
     // Built on startup's call to initialize_ based on the dMaterials enum and available
     // 'final static' dMaterial fields.
     // valueOf and getMaterialFrom will check this to turn 'wool,1' into 'orange_wool'
     public static Map<Material, Map<Integer, dMaterial>> material_varieties = new HashMap<Material, Map<Integer, dMaterial>>();
+
+    public static Map<String, dMaterial> all_dMaterials = new HashMap<String, dMaterial>();
 
     /**
      * Registers a dMaterial as a 'variety'. Upon construction of a dMaterial, this
@@ -403,6 +410,7 @@ public class dMaterial implements dObject {
         entry.put((int) material.data, material);
         // Return the dMaterial
         material_varieties.put(material.getMaterial(), entry);
+        all_dMaterials.put(material.realName().toUpperCase(), material);
         return material;
     }
 
@@ -492,35 +500,28 @@ public class dMaterial implements dObject {
         Matcher m = materialPattern.matcher(string);
 
         if (m.matches()) {
-            int data = -1;
+            int data = 0;
             if (m.group(2) != null) {
                 data = aH.getIntegerFrom(m.group(2));
             }
 
-            if (aH.matchesInteger(m.group(1))) {
-                return dMaterial.getMaterialFrom(Material.getMaterial(aH.getIntegerFrom(m.group(1))), data);
+            String materialName = m.group(1);
 
-            } else {
+            if (aH.matchesInteger(materialName)) {
+                return dMaterial.getMaterialFrom(Material.getMaterial(aH.getIntegerFrom(materialName)), data);
+            }
+            else {
                 // Iterate through Materials
                 for (Material material : Material.values()) {
-                    if (material.name().equalsIgnoreCase(m.group(1))) {
+                    if (material.name().equalsIgnoreCase(materialName)) {
                         return dMaterial.getMaterialFrom(material, data);
                     }
                 }
 
                 // Iterate through dMaterials
-                for (dMaterials material : dMaterials.values()) {
-                    if (material.name().equalsIgnoreCase(m.group(1))) {
-                        try {
-                            Field field = dMaterial.class.getField(material.name());
-                            field.setAccessible(true);
-                            // Should be pretty safe, unless there's an enum without a matching field.
-                            return (dMaterial) field.get(null);
-                        } catch (Exception e) {
-                            dB.echoError(e);
-                        }
-                    }
-                }
+                dMaterial mat = all_dMaterials.get(materialName.toUpperCase());
+                if (mat != null)
+                    return mat;
             }
         }
 
@@ -549,9 +550,11 @@ public class dMaterial implements dObject {
 
         if (m.matches()) {
 
+            String materialName = m.group(1);
+
             // If this argument is in an integer, return true if it does not
             // exceed the number of materials in Bukkit
-            if (aH.matchesInteger(m.group(1))) {
+            if (aH.matchesInteger(materialName)) {
                 if (aH.getIntegerFrom(arg) < Material.values().length)
                     return true;
             }
@@ -559,19 +562,16 @@ public class dMaterial implements dObject {
             // Check if this argument matches a Material or a special stored
             // dMaterial's name
             else {
-                // Iterate through Materials
+                // Iterate through Bukkit Materials
                 for (Material material : Material.values()) {
-                    if (material.name().equalsIgnoreCase(m.group(1))) {
+                    if (material.name().equalsIgnoreCase(materialName)) {
                         return true;
                     }
                 }
 
                 // Iterate through dMaterials
-                for (dMaterials material : dMaterials.values()) {
-                    if (material.name().equalsIgnoreCase(m.group(1))) {
-                        return true;
-                    }
-                }
+                if (all_dMaterials.get(materialName) != null)
+                    return true;
             }
         }
 
@@ -676,8 +676,7 @@ public class dMaterial implements dObject {
 
     @Override
     public String identify() {
-        if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase();
-        return "m@" + material.name().toLowerCase();
+        return "m@" + realName();
     }
 
     @Override
@@ -688,6 +687,11 @@ public class dMaterial implements dObject {
     @Override
     public String toString() {
         return identify();
+    }
+
+    public String realName() {
+        if (forcedIdentity != null) return forcedIdentity.toLowerCase();
+        return material.name().toLowerCase();
     }
 
     @Override

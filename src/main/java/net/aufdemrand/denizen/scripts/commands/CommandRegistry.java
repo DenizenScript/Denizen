@@ -1209,7 +1209,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ForEach
-        // @Syntax foreach [stop/<object>|...] [<commands>]
+        // @Syntax foreach [stop/next/<object>|...] [<commands>]
         // @Required 1
         // @Stable stable
         // @Short Loops through a dList, running a set of commands for each item.
@@ -1221,6 +1221,8 @@ public class CommandRegistry implements dRegistry {
         // that list entry. To call the value of the entry while in the loop, you can use %value%.
         //
         // To end a foreach loop, do - foreach stop
+        //
+        // To jump immediately to the next entry in the loop, do - foreach next
 
         // @Tags
         // %value% to get the current item in the loop
@@ -1235,13 +1237,13 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Use to iterate through entries in any tag that returns a list
         // - foreach <server.list_online_players> {
-        //       - narrate "Thanks for coming to our server! Here's a bonus $50.00!"
+        //     - narrate "Thanks for coming to our server! Here's a bonus $50.00!"
         //     - give %value% money qty:50
         //   }
 
         // -->
         registerCoreMember(ForEachCommand.class,
-                "FOREACH", "foreach [stop/<object>|...] [<commands>]", 1);
+                "FOREACH", "foreach [stop/next/<object>|...] [<commands>]", 1);
 
 
         // <--[command]
@@ -2078,7 +2080,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Repeat
-        // @Syntax repeat [stop/<amount>] [<commands>]
+        // @Syntax repeat [stop/next/<amount>] [<commands>]
         // @Required 1
         // @Stable stable
         // @Short Runs a series of braced commands several times.
@@ -2090,6 +2092,8 @@ public class CommandRegistry implements dRegistry {
         // To get the number of loops so far, you can use %value%.
         //
         // To stop a repeat loop, do - repeat stop
+        //
+        // To jump immediately to the next number in the loop, do - repeat next
 
         // @Tags
         // %value% to get the number of loops so far
@@ -2101,7 +2105,7 @@ public class CommandRegistry implements dRegistry {
         //   }
         // -->
         registerCoreMember(RepeatCommand.class,
-                "REPEAT", "repeat [stop/<amount>] [<commands>]", 1);
+                "REPEAT", "repeat [stop/next/<amount>] [<commands>]", 1);
 
 
         // <--[command]
@@ -2450,17 +2454,19 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable stable
         // @Short Modifies a sign.
-        // @Author David Cernat
+        // @Author David Cernat, mcmonkey
         // @Group world
         // @Description
         // Todo
+        // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
+        // If there is not already a sign there, defaults to a sign_post.
         // @Tags
         // Todo
         // @Usage
         // Todo
         // -->
         registerCoreMember(SignCommand.class,
-                "SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>] (direction:n/e/w/s)", 1);
+                "SIGN", "sign (type:{automatic}/sign_post/wall_sign) [\"<line>|...\"] [<location>] (direction:n/s/e/w)", 1);
 
 
         // <--[command]

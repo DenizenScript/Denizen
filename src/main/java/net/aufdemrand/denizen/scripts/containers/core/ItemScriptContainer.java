@@ -95,11 +95,13 @@ public class ItemScriptContainer extends ScriptContainer {
     dNPC npc = null;
     dPlayer player = null;
     public boolean bound = false;
+    String hash = "";
 
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
 
         ItemScriptHelper.item_scripts.put(getName(), this);
+        ItemScriptHelper.item_scripts_by_hash_id.put(ItemScriptHelper.createItemScriptID(this), this);
 
         // Set Recipe
         if (contains("RECIPE")) {
@@ -140,6 +142,14 @@ public class ItemScriptContainer extends ScriptContainer {
         }
     }
 
+    public String getHashID() {
+        return hash;
+    }
+
+    public void setHashID(String HashID) {
+        hash = HashID;
+    }
+
     public dItem getItemFrom() {
        return getItemFrom(null, null);
     }
@@ -168,7 +178,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 hideLore = Boolean.valueOf(getString("NO_ID"));
             }
             if (!hideLore)
-                lore.add(dItem.itemscriptIdentifier + getName());
+                lore.add(hash);
 
             // Set Display Name
             if (contains("DISPLAY NAME")){
@@ -201,16 +211,18 @@ public class ItemScriptContainer extends ScriptContainer {
                     try {
                         // Build enchantment context
                         int level = 1;
-                        if (enchantment.split(":").length > 1) {
-                            level = Integer.valueOf(enchantment.split(":")[1]);
-                            enchantment = enchantment.split(":")[0];
+                        String[] split = enchantment.split(":");
+                        if (split.length > 1) {
+                            level = Integer.valueOf(split[1].replace(" ", ""));
+                            enchantment = split[0].replace(" ", "");
                         }
                         // Add enchantment
                         Enchantment ench = Enchantment.getByName(enchantment.toUpperCase());
                         stack.getItemStack().addUnsafeEnchantment(ench, level);
-                    } catch (Exception e) {
-                        dB.echoError("While constructing '" + getName() + "', there has been a problem. '"
-                                + enchantment + "' is an invalid Enchantment!");
+                    }
+                    catch (Exception e) {
+                        dB.echoError("While constructing '" + getName() + "', encountered error: '"
+                                + enchantment + "' is an invalid enchantment!");
                     }
                 }
             }
