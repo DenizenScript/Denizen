@@ -1056,9 +1056,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                 int attribs = 2;
                 String search_string = attribute.getContext(2);
                 boolean strict = false;
-                if (search_string.startsWith("strict:")) {
+                if (search_string.toLowerCase().startsWith("strict:")) {
                     strict = true;
-                    search_string = search_string.replace("strict:", "");
+                    search_string = search_string.substring(7);
                 }
 
                 // <--[tag]
@@ -1070,10 +1070,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // the display name is EXACTLY the search element, otherwise the searching will only
                 // check if the search element is contained in the display name.
                 // -->
-                if (attribute.getAttribute(3).startsWith("qty") &&
-                        attribute.hasContext(3) &&
+                if (attribute.hasContext(3) &&
+                        attribute.getAttribute(3).startsWith("qty") &&
                         aH.matchesInteger(attribute.getContext(3))) {
-
                     qty = attribute.getIntContext(3);
                     attribs = 3;
                 }
@@ -1083,15 +1082,96 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (strict) {
                     for (ItemStack item : getContents()) {
                         if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                                item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string))
+                                item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string)) {
                             found_items += item.getAmount();
+                            if (found_items >= qty) break;
+                        }
                     }
                 } else {
                     for (ItemStack item : getContents()) {
                         if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                                 item.getItemMeta().getDisplayName().toLowerCase()
-                                        .contains(search_string.toLowerCase()))
+                                        .contains(search_string.toLowerCase())) {
                             found_items += item.getAmount();
+                            if (found_items >= qty) break;
+                        }
+                    }
+                }
+
+                return (found_items >= qty ? Element.TRUE.getAttribute(attribute.fulfill(attribs))
+                        : Element.FALSE.getAttribute(attribute.fulfill(attribs)));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.contains.lore[(strict:)<element>|...]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory contains an item with the specified lore.
+        // Use 'strict:' in front of the search elements to ensure all lore lines
+        // are EXACTLY the search elements, otherwise the searching will only
+        // check if the search elements are contained in the lore.
+        // -->
+        if (attribute.startsWith("contains.lore")) {
+            if (attribute.hasContext(2)) {
+                int qty = 1;
+                int attribs = 2;
+                String search_string = attribute.getContext(2);
+                boolean strict = false;
+                if (search_string.toLowerCase().startsWith("strict:")) {
+                    strict = true;
+                    search_string = search_string.substring(7);
+                }
+                dList lore = dList.valueOf(search_string);
+
+                // <--[tag]
+                // @attribute <in@inventory.contains.lore[(strict:)<element>|...].qty[<#>]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item
+                // with the specified lore. Use 'strict:' in front of the search elements
+                // to ensure all lore lines are EXACTLY the search elements, otherwise the
+                // searching will only check if the search elements are contained in the lore.
+                // -->
+                if (attribute.hasContext(3) &&
+                        attribute.getAttribute(3).startsWith("qty") &&
+                        aH.matchesInteger(attribute.getContext(3))) {
+                    qty = attribute.getIntContext(3);
+                    attribs = 3;
+                }
+
+                int found_items = 0;
+
+                if (strict) {
+                    strict_items: for (ItemStack item : getContents()) {
+                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                            List<String> item_lore = item.getItemMeta().getLore();
+                            for (int i = 0; i < item_lore.size(); i++) {
+                                if (lore.get(i).equalsIgnoreCase(item_lore.get(i))) {
+                                    found_items++;
+                                    if (found_items >= qty) break strict_items;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    items: for (ItemStack item : getContents()) {
+                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                            List<String> item_lore = item.getItemMeta().getLore();
+                            int loreCount = 0;
+                            lines: for (String line : lore) {
+                                for (String item_line : item_lore) {
+                                    if (item_line.toLowerCase().contains(line.toLowerCase())) {
+                                        loreCount++;
+                                        continue lines;
+                                    }
+                                }
+                            }
+                            if (loreCount == lore.size()) {
+                                found_items++;
+                                if (found_items >= qty) break;
+                            }
+                        }
                     }
                 }
 
@@ -1119,8 +1199,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // Returns whether the inventory contains a certain quantity of an item with the
                 // specified material.
                 // -->
-                if (attribute.getAttribute(3).startsWith("qty") &&
-                        attribute.hasContext(3) &&
+                if (attribute.hasContext(3) &&
+                        attribute.getAttribute(3).startsWith("qty") &&
                         aH.matchesInteger(attribute.getContext(3))) {
                     qty = attribute.getIntContext(3);
                     attribs = 3;
@@ -1129,8 +1209,10 @@ public class dInventory implements dObject, Notable, Adjustable {
                 int found_items = 0;
 
                 for (ItemStack item : getContents()) {
-                    if (item != null && item.getType() == material.getMaterial())
-                        found_items += item.getAmount();
+                    if (item != null && item.getType() == material.getMaterial()) {
+                        found_items++;
+                        if (found_items >= qty) break;
+                    }
                 }
 
                 return (found_items >= qty ? Element.TRUE.getAttribute(attribute.fulfill(attribs))
