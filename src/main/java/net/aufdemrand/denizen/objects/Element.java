@@ -876,6 +876,38 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.format_number>
+        // @returns Element
+        // @group string manipulation
+        // @description
+        // Returns a number reformatted for easier reading.
+        // EG, 1234567 will become 1,234,567.
+        // -->
+        if (attribute.startsWith("format_number")) {
+            try {
+                int decimal = element.indexOf('.');
+                String shortelement;
+                String afterdecimal;
+                if (decimal != -1) {
+                    shortelement = element.substring(0, decimal);
+                    afterdecimal = element.substring(decimal);
+                }
+                else {
+                    shortelement = element;
+                    afterdecimal = "";
+                }
+                String intform = Long.valueOf(shortelement.replace("%", "")).toString();
+                for (int i = intform.length() - 3; i > 0; i -= 3) {
+                    intform = intform.substring(0, i) + "," + intform.substring(i, intform.length());
+                }
+                return new Element(intform + afterdecimal).getAttribute(attribute.fulfill(1));
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+            }
+        }
+
+        // <--[tag]
         // @attribute <el@element.format[<script>]>
         // @returns Element
         // @group string manipulation
