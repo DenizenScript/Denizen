@@ -403,6 +403,17 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.as_chunk>
+        // @returns dCuboid
+        // @group conversion
+        // @description
+        // Returns the element as a chunk. Note: the value must be a valid chunk.
+        // -->
+        if (attribute.startsWith("as_chunk")
+                || attribute.startsWith("as_chunk"))
+            return HandleNull(element, dChunk.valueOf(element), "dChunk").getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <el@element.as_cuboid>
         // @returns dCuboid
         // @group conversion
@@ -897,10 +908,15 @@ public class Element implements dObject {
                     afterdecimal = "";
                 }
                 String intform = Long.valueOf(shortelement.replace("%", "")).toString();
+                String negative = "";
+                if (intform.startsWith("-")) {
+                    negative = "-";
+                    intform = intform.substring(1, intform.length());
+                }
                 for (int i = intform.length() - 3; i > 0; i -= 3) {
                     intform = intform.substring(0, i) + "," + intform.substring(i, intform.length());
                 }
-                return new Element(intform + afterdecimal).getAttribute(attribute.fulfill(1));
+                return new Element(negative + intform + afterdecimal).getAttribute(attribute.fulfill(1));
             }
             catch (Exception ex) {
                 dB.echoError(ex);
