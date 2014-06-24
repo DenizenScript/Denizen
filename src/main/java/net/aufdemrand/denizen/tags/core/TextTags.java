@@ -559,6 +559,15 @@ public class TextTags implements Listener {
             event.setReplaced(new Element("|").getAttribute(attribute.fulfill(1)));
 
             // <--[tag]
+            // @attribute <&ds>
+            // @returns Element
+            // @description
+            // Returns a dollar sign: $
+            // -->
+        else if (event.getName().equalsIgnoreCase("&ds"))
+            event.setReplaced(new Element("$").getAttribute(attribute.fulfill(1)));
+
+            // <--[tag]
             // @attribute <&lt>
             // @returns Element
             // @description
