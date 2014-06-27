@@ -261,7 +261,7 @@ public class ItemScriptHelper implements Listener {
                 // Use dItem.valueOf on the entry values to ensure
                 // correct comparison
                 dItem valueN = dItem.valueOf(entry.getValue().get(n));
-                dItem matrixN = matrix[n] == null ? new dItem(Material.AIR): new dItem(matrix[n].clone());
+                dItem matrixN = matrix.length <= n || matrix[n] == null ? new dItem(Material.AIR): new dItem(matrix[n].clone());
 
                 // Set both items to size=1 to avoid miscomparison due to quantities
                 valueN.setStackSize(1);

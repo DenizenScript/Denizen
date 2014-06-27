@@ -219,7 +219,8 @@ public class Utilities {
 
         Player closestPlayer = null;
         double closestDistance = Math.pow(range, 2);
-        List<Player> playerList = new ArrayList<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
+        // TODO: Why is this manually iterating?
+        List<Player> playerList = new ArrayList<Player>(Bukkit.getOnlinePlayers());
         Iterator<Player> it = playerList.iterator();
         while (it.hasNext()) {
             Player player = it.next();
@@ -248,7 +249,8 @@ public class Utilities {
 
         List<dPlayer> closestPlayers = new ArrayList<dPlayer>();
         double closestDistance = Math.pow(range, 2);
-        List<Player> playerList = new ArrayList<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
+        // TODO: Why is this manually iterating?
+        List<Player> playerList = new ArrayList<Player>(Bukkit.getOnlinePlayers());
         Iterator<Player> it = playerList.iterator();
         while (it.hasNext()) {
             Player player = it.next();
@@ -275,6 +277,7 @@ public class Utilities {
     public static dNPC getClosestNPC (Location location, int range) {
         dNPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
+        // TODO: Why is this manually iterating?
         Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
         while (it.hasNext()) {
             dNPC npc = it.next();
@@ -300,6 +303,7 @@ public class Utilities {
     public static dNPC getClosestNPC_ChatTrigger (Location location, int range) {
         dNPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
+        // TODO: Why is this manually iterating?
         Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
         while (it.hasNext()) {
             dNPC npc = it.next();
@@ -326,6 +330,7 @@ public class Utilities {
     public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
         maxRange = (int) Math.pow(maxRange, 2);
         Set<dNPC> closestNPCs = new HashSet<dNPC> ();
+        // TODO: Why is this manually iterating?
         Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
         while (it.hasNext ()) {
             dNPC npc = it.next ();

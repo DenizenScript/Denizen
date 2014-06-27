@@ -118,10 +118,10 @@ public class SwitchCommand extends AbstractCommand {
 
         // Try for a linked player
         CraftPlayer craftPlayer = (CraftPlayer) player;
-        if (craftPlayer == null && Bukkit.getOnlinePlayers().length > 0) {
+        if (craftPlayer == null && Bukkit.getOnlinePlayers().size() > 0) {
             // If there's none, link any player
-            if (Bukkit.getOnlinePlayers().length > 0) {
-                craftPlayer = (CraftPlayer) Bukkit.getOnlinePlayers()[0];
+            if (Bukkit.getOnlinePlayers().size() > 0) {
+                craftPlayer = (CraftPlayer) Bukkit.getOnlinePlayers().toArray()[0];
             }
             else {
                 // If there are no players, link any Human NPC
