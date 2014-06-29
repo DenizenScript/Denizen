@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -427,24 +428,58 @@ public class Denizen extends JavaPlugin {
             dB.log("Updating saves from v1 to v2...");
             ConfigurationSection section = savesConfig.getConfigurationSection("Players");
             if (section != null) {
-                for (String key: section.getKeys(false)) {
-                    dPlayer player = dPlayer.valueOf(key);
-                    if (player == null)
-                        dB.log("Warning: can't update saves for player '" + key + "' - invalid name!");
-                    else
-                        savesConfig.createSection("Players." + player.getSaveName(), savesConfig.getConfigurationSection("Players." + key).getValues(true));
-                    savesConfig.set("Players." + key, null);
+                ArrayList<String> keyList = new ArrayList<String>(section.getKeys(false));
+                // Remove UPPERCASE cooldown saves from the list - handled manually
+                for (int i = 0; i < keyList.size(); i++) {
+                    String key = keyList.get(i);
+                    if (!key.equals(key.toUpperCase()) && keyList.contains(key.toUpperCase())) {
+                        keyList.remove(key.toUpperCase());
+                    }
+                }
+                // Handle all actual player saves
+                for (int i = 0; i < keyList.size(); i++) {
+                    String key = keyList.get(i);
+                    try {
+                        dPlayer player = dPlayer.valueOf(key);
+                        if (player == null)
+                            dB.echoError("Can't update saves for player '" + key + "' - invalid name!");
+                        else {
+                            // Flags
+                            ConfigurationSection playerSection = savesConfig.getConfigurationSection("Players." + key);
+                            if (playerSection == null) {
+                                dB.echoError("Can't update saves for player '" + key + "' - broken YAML section!");
+                                continue;
+                            }
+                            Map<String, Object> keys = playerSection.getValues(true);
+                            if (!key.equals(key.toUpperCase()) && savesConfig.contains("Players." + key.toUpperCase())) {
+                                // Cooldowns
+                                keys.putAll(savesConfig.getConfigurationSection("Players." + key.toUpperCase()).getValues(true));
+                                savesConfig.set("Players." + key.toUpperCase(), null);
+
+                            }
+                            savesConfig.createSection("Players." + player.getSaveName(), keys);
+                        }
+                        savesConfig.set("Players." + key, null);
+                    }
+                    catch (Exception ex) {
+                        dB.echoError(ex);
+                    }
                 }
             }
             section = savesConfig.getConfigurationSection("Listeners");
             if (section != null) {
                 for (String key: section.getKeys(false)) {
-                    dPlayer player = dPlayer.valueOf(key);
-                    if (player == null)
-                        dB.log("Warning: can't update listeners for player '" + key + "' - invalid name!");
-                    else
-                        savesConfig.createSection("Listeners." + player.getSaveName(), savesConfig.getConfigurationSection("Listeners." + key).getValues(true));
-                    savesConfig.set("Listeners." + key, null);
+                    try {
+                        dPlayer player = dPlayer.valueOf(key);
+                        if (player == null)
+                            dB.log("Warning: can't update listeners for player '" + key + "' - invalid name!");
+                        else // Listeners
+                            savesConfig.createSection("Listeners." + player.getSaveName(), savesConfig.getConfigurationSection("Listeners." + key).getValues(true));
+                        savesConfig.set("Listeners." + key, null);
+                    }
+                    catch (Exception ex) {
+                        dB.echoError(ex);
+                    }
                 }
             }
             savesConfig.set("a_saves.version", "2");
