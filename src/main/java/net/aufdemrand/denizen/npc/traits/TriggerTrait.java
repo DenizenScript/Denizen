@@ -19,7 +19,6 @@ import net.citizensnpcs.util.Messages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;

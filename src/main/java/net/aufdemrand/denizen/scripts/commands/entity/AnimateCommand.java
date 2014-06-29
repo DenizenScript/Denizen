@@ -100,7 +100,5 @@ public class AnimateCommand extends AbstractCommand {
                 } // We tried!
             }
         }
-
-        return;
     }
 }

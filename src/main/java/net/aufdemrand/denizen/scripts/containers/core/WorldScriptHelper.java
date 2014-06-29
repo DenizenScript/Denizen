@@ -318,7 +318,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the block from dispensing.
-    // Element(Double) to set the power with which the item is shot.
+    // Element(Decimal) to set the power with which the item is shot.
     //
     // -->
     @EventHandler
@@ -759,7 +759,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the furnace from burning the item.
-    // Element(Integer) to set the burn time for this fuel.
+    // Element(Number) to set the burn time for this fuel.
     //
     // -->
     @EventHandler
@@ -796,7 +796,7 @@ public class WorldScriptHelper implements Listener {
     // <context.item> returns the dItem taken out of the furnace.
     //
     // @Determine
-    // Element(Integer) to set the amount of experience the player will get.
+    // Element(Number) to set the amount of experience the player will get.
     //
     // -->
     @EventHandler
@@ -1312,7 +1312,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the entity from being damaged.
-    // Element(Double) to set the amount of damage the entity receives.
+    // Element(Decimal) to set the amount of damage the entity receives.
     //
     // -->
     @EventHandler
@@ -1368,7 +1368,7 @@ public class WorldScriptHelper implements Listener {
             //
             // @Determine
             // "CANCELLED" to stop the entity from being killed.
-            // Element(Double) to set the amount of damage the entity receives, instead of dying.
+            // Element(Decimal) to set the amount of damage the entity receives, instead of dying.
             //
             // -->
 
@@ -1403,7 +1403,7 @@ public class WorldScriptHelper implements Listener {
             //
             // @Determine
             // "CANCELLED" to stop the entity from being damaged.
-            // Element(Double) to set the amount of damage the entity receives.
+            // Element(Decimal) to set the amount of damage the entity receives.
             //
             // -->
 
@@ -1802,7 +1802,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the entity from healing.
-    // Element(Double) to set the amount of health the entity receives.
+    // Element(Decimal) to set the amount of health the entity receives.
     //
     // -->
     @EventHandler
@@ -2283,11 +2283,11 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when an entity's food level changes.
     // @Context
     // <context.entity> returns the dEntity.
-    // <context.food> returns an Element(Integer) of the entity's new food level.
+    // <context.food> returns an Element(Number) of the entity's new food level.
     //
     // @Determine
     // "CANCELLED" to stop the entity's food level from changing.
-    // Element(Double) to set the entity's new food level.
+    // Element(Decimal) to set the entity's new food level.
     //
     // -->
     @EventHandler
@@ -2641,11 +2641,11 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a slime splits into smaller slimes.
     // @Context
     // <context.entity> returns the dEntity of the slime.
-    // <context.count> returns an Element(Integer) of the number of smaller slimes it will split into.
+    // <context.count> returns an Element(Number) of the number of smaller slimes it will split into.
     //
     // @Determine
     // "CANCELLED" to stop it from splitting.
-    // Element(Integer) to set the number of smaller slimes it will split into.
+    // Element(Number) to set the number of smaller slimes it will split into.
     //
     // -->
     @EventHandler
@@ -4422,7 +4422,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the entity from damaging the vehicle.
-    // Element(Double) to set the value of the damage received by the vehicle.
+    // Element(Decimal) to set the value of the damage received by the vehicle.
     //
     // -->
     @EventHandler

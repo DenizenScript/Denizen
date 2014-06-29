@@ -9,8 +9,6 @@ import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Collection;
-
 public class QueueTags implements Listener {
 
     public QueueTags(Denizen denizen) {
