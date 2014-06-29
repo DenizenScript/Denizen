@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.flags.FlagManager.Value;
+import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -81,18 +82,16 @@ public class FlagTags implements Listener {
 
         } else if (event.getType().toUpperCase().startsWith("P")) {
             // Separate name since subType context may specify a different (or offline) player
-            String name = null;
-            if (event.getPlayer() != null)
-                name = event.getPlayer().getName();
+            dPlayer player = event.getPlayer();
 
             // No name? No flag replacement!
-            if (name == null) return;
+            if (player == null) return;
 
-            if (denizen.flagManager().getPlayerFlag(name, flagName).get(index).isEmpty()) {
+            if (denizen.flagManager().getPlayerFlag(player, flagName).get(index).isEmpty()) {
                 if (replaceType.toString().equals("ISEXPIRED"))
                     event.setReplaced("true");
             } else {
-                FlagManager.Flag flag = denizen.flagManager().getPlayerFlag(name, flagName);
+                FlagManager.Flag flag = denizen.flagManager().getPlayerFlag(player, flagName);
                 event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
                 // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
 

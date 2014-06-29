@@ -235,14 +235,15 @@ public class ListenerRegistry implements dRegistry, Listener {
     public void playerJoin(PlayerJoinEvent event) {
 
         Denizen denizen = DenizenAPI.getCurrentInstance();
+        dPlayer player = new dPlayer(event.getPlayer());
 
         // Any saves quest listeners in progress?
-        if (!denizen.getSaves().contains("Listeners." + event.getPlayer().getName())) return;
+        if (!denizen.getSaves().contains("Listeners." + player.getSaveName())) return;
         Set<String> inProgress = denizen.getSaves().getConfigurationSection("Listeners." + event.getPlayer().getName()).getKeys(false);
         // If empty, no quest listeners to load.
         if (inProgress.isEmpty()) return;
 
-        String path = "Listeners." + event.getPlayer().getName() + ".";
+        String path = "Listeners." + player.getSaveName() + ".";
 
         // If not empty, let's do the loading process for each.
         for (String listenerId : inProgress) {
@@ -262,11 +263,11 @@ public class ListenerRegistry implements dRegistry, Listener {
     }
 
 
-    public void deconstructPlayer(dPlayer player ) {
+    public void deconstructPlayer(dPlayer player) {
         Denizen denizen = DenizenAPI.getCurrentInstance();
 
         // Clear previous MemorySection in saves
-        denizen.getSaves().set("Listeners." + player.getName(), null);
+        denizen.getSaves().set("Listeners." + player.getSaveName(), null);
 
         // If no quest listeners in progress, nothing else to do.
         if (!listeners.containsKey(player.getName())) {

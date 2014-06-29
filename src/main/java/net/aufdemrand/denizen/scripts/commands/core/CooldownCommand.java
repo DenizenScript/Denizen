@@ -75,7 +75,7 @@ public class CooldownCommand extends AbstractCommand {
         // Perform cooldown
         switch (type) {
             case PLAYER:
-                setCooldown(scriptEntry.getPlayer().getName(),
+                setCooldown(scriptEntry.getPlayer(),
                         duration,
                         script.getName(),
                         false);
@@ -94,13 +94,13 @@ public class CooldownCommand extends AbstractCommand {
     /**
      * Gets the duration of a script cool-down.
      *
-     * @param playerName
+     * @param player
      *         the Player to check, null if only checking Global.
      * @param scriptName
      *         the name of the script to check
      * @return a Duration of the time remaining
      */
-    public static Duration getCooldownDuration(String playerName, String scriptName) {
+    public static Duration getCooldownDuration(dPlayer player, String scriptName) {
 
         // Change to UPPERCASE so there's no case-sensitivity.
         scriptName = scriptName.toUpperCase();
@@ -116,20 +116,17 @@ public class CooldownCommand extends AbstractCommand {
         }
 
         // No player specified? No need to check any further...
-        if (playerName == null)
+        if (player == null)
             return duration;
 
-        // Now check for player-specific cooldowns
-        playerName = playerName.toUpperCase();
-
         // If no entry for the script, return true
-        if (!DenizenAPI._saves().contains("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))
+        if (!DenizenAPI._saves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time"))
             return duration;
 
         // If there is an entry, check against the time
         if (System.currentTimeMillis()
-                <= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time")) {
-            Duration player_dur = new Duration((double) (DenizenAPI._saves().getLong("Players." + playerName + ".Scripts."
+                <= DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
+            Duration player_dur = new Duration((double) (DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts."
                     + scriptName + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
             if (player_dur.getSeconds() > duration.getSeconds())
                 return player_dur;
@@ -144,13 +141,13 @@ public class CooldownCommand extends AbstractCommand {
      * its requirements will fail and it will not trigger. If the script is being cooled down
      * globally, this will also return false.
      *
-     * @param playerName
+     * @param player
      *         the Player to check, null if only checking Global.
      * @param scriptName
      *         the name of the script to check
      * @return true if the script is cool
      */
-    public static boolean checkCooldown(String playerName, String scriptName) {
+    public static boolean checkCooldown(dPlayer player, String scriptName) {
 
         // Change to UPPERCASE so there's no case-sensitivity.
         scriptName = scriptName.toUpperCase();
@@ -165,20 +162,17 @@ public class CooldownCommand extends AbstractCommand {
         }
 
         // No player specified? No need to check any further...
-        if (playerName == null)
+        if (player == null)
             return true;
 
-        // Now check for player-specific cooldowns
-        playerName = playerName.toUpperCase();
-
         // If no entry for the script, return true
-        if (!DenizenAPI._saves().contains("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))
+        if (!DenizenAPI._saves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time"))
             return true;
 
         // If there is an entry, check against the time
         if (System.currentTimeMillis()
-                >= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))    {
-            DenizenAPI._saves().set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time", null);
+                >= DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time"))    {
+            DenizenAPI._saves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time", null);
             return true;
         }
 
@@ -189,7 +183,7 @@ public class CooldownCommand extends AbstractCommand {
     /**
      * Sets a cooldown for a Denizen Script. Can be for a specific Player, or GLOBAL.
      *
-     * @param playerName
+     * @param player
      *         if not a global cooldown, the Player to set the cooldown for
      * @param duration
      *         the duration of the cooldown period, in seconds
@@ -198,11 +192,8 @@ public class CooldownCommand extends AbstractCommand {
      * @param global
      *         whether the script should be cooled down globally
      */
-    public static void setCooldown(String playerName, Duration duration, String scriptName, boolean global) {
-        // I hate case-sensitivity. The positive here outweighs the negative.
-        if (playerName != null) playerName = playerName.toUpperCase();
+    public static void setCooldown(dPlayer player, Duration duration, String scriptName, boolean global) {
         scriptName = scriptName.toUpperCase();
-
         // Set global cooldown
         if (global) {
             DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time",
@@ -211,7 +202,7 @@ public class CooldownCommand extends AbstractCommand {
 
             // or set Player cooldown
         }   else {
-            DenizenAPI._saves().set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time",
+            DenizenAPI._saves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time",
                     System.currentTimeMillis()
                             + (duration.getSecondsAsInt() * 1000));
         }

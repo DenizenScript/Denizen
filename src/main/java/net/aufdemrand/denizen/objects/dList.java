@@ -54,7 +54,7 @@ public class dList extends ArrayList<String> implements dObject {
 
                 } else if (m.group(2).toLowerCase().startsWith("p@")) {
                     if (FlagManager.playerHasFlag(dPlayer.valueOf(m.group(3)), m.group(4)))
-                        return new dList(flag_manager.getPlayerFlag(m.group(3), m.group(4)));
+                        return new dList(flag_manager.getPlayerFlag(dPlayer.valueOf(m.group(3)), m.group(4)));
 
                 } else if (m.group(2).toLowerCase().startsWith("n@")) {
                     if (FlagManager.npcHasFlag(dNPC.valueOf(m.group(3)), m.group(4)))

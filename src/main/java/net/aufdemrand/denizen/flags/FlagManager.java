@@ -118,7 +118,7 @@ public class FlagManager {
     public static boolean playerHasFlag(dPlayer player, String flagName) {
         if (player == null || flagName == null) return false;
         return DenizenAPI.getCurrentInstance().flagManager()
-                .getPlayerFlag(player.getName(), flagName).size() > 0;
+                .getPlayerFlag(player, flagName).size() > 0;
     }
 
     public static boolean npcHasFlag(dNPC npc, String flagName) {
@@ -159,8 +159,10 @@ public class FlagManager {
      * it will be created with blank values.
      *
      */
-    public Flag getPlayerFlag(String playerName, String flagName) {
-        return new Flag("Players." + playerName + ".Flags." + flagName.toUpperCase(), flagName, "p@" + playerName);
+    public Flag getPlayerFlag(dPlayer player, String flagName) {
+        if (player == null)
+            return new Flag("players.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "p@null");
+        return new Flag("Players." + player.getSaveName() + ".Flags." + flagName.toUpperCase(), flagName, player.identify());
     }
 
 
