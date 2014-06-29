@@ -23,7 +23,14 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class dCuboid implements dObject, Notable, Adjustable {
+public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
+
+    // Cloning
+    @Override
+    public dCuboid clone() throws CloneNotSupportedException {
+        return (dCuboid) super.clone();
+    }
+
 
 
     /////////////////////
@@ -731,6 +738,36 @@ public class dCuboid implements dObject, Notable, Adjustable {
                     member = pairs.size();
                 return pairs.get(member - 1).low.getAttribute(attribute.fulfill(1));
             }
+        }
+
+        // <--[tag]
+        // @attribute <cu@cuboid.include[<location>]>
+        // @returns dLocation
+        // @description
+        // Expands the first member of the dCuboid to contain the given location.
+        // -->
+        if (attribute.startsWith("include")
+                && attribute.hasContext(1)) {
+            try {
+                dLocation loc = dLocation.valueOf(attribute.getContext(1));
+                dCuboid cuboid = this.clone();
+                if (loc != null) {
+                    if (loc.getX() < cuboid.pairs.get(0).low.getX())
+                        cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), loc.getX(), cuboid.pairs.get(0).low.getY(), cuboid.pairs.get(0).low.getZ());
+                    if (loc.getY() < cuboid.pairs.get(0).low.getY())
+                        cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), loc.getY(), cuboid.pairs.get(0).low.getZ());
+                    if (loc.getZ() < cuboid.pairs.get(0).low.getZ())
+                        cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), cuboid.pairs.get(0).low.getY(), loc.getZ());
+                    if (loc.getX() > cuboid.pairs.get(0).high.getX())
+                        cuboid.pairs.get(0).high = new dLocation(cuboid.pairs.get(0).high.getWorld(), loc.getX(), cuboid.pairs.get(0).high.getY(), cuboid.pairs.get(0).high.getZ());
+                    if (loc.getY() > cuboid.pairs.get(0).high.getY())
+                        cuboid.pairs.get(0).high = new dLocation(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), loc.getY(), cuboid.pairs.get(0).high.getZ());
+                    if (loc.getZ() > cuboid.pairs.get(0).high.getZ())
+                        cuboid.pairs.get(0).high = new dLocation(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), cuboid.pairs.get(0).high.getY(), loc.getZ());
+                    return cuboid.getAttribute(attribute.fulfill(1));
+                }
+            }
+            catch (CloneNotSupportedException ex) { }
         }
 
         // <--[tag]

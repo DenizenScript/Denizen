@@ -186,6 +186,8 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public String getName() {
+        if (offlinePlayer == null)
+            return null;
         return offlinePlayer.getName();
     }
 
