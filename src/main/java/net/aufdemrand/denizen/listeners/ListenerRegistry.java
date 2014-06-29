@@ -243,6 +243,7 @@ public class ListenerRegistry implements dRegistry, Listener {
         // If empty, no quest listeners to load.
         if (inProgress.isEmpty()) return;
 
+        // TODO: Players.SAVENAME.Listeners?
         String path = "Listeners." + player.getSaveName() + ".";
 
         // If not empty, let's do the loading process for each.

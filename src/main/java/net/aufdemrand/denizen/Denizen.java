@@ -45,6 +45,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -397,6 +398,8 @@ public class Denizen extends JavaPlugin {
         savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
         // Reload dLocations from saves.yml
         dLocation._recallLocations();
+        // Update saves from name to UUID
+        updateSaves();
 
         if (scoreboardsConfigFile == null) {
             scoreboardsConfigFile = new File(getDataFolder(), "scoreboards.yml");
@@ -413,6 +416,40 @@ public class Denizen extends JavaPlugin {
         EntityScriptHelper.reloadEntities();
 
         Bukkit.getServer().getPluginManager().callEvent(new SavesReloadEvent());
+    }
+
+    public void updateSaves() {
+        int saves_version = 1;
+        if (savesConfig.contains("a_saves.version"))
+            saves_version = savesConfig.getInt("a_saves.version");
+
+        if (saves_version == 1) {
+            dB.log("Updating saves from v1 to v2...");
+            ConfigurationSection section = savesConfig.getConfigurationSection("Players");
+            if (section != null) {
+                for (String key: section.getKeys(false)) {
+                    dPlayer player = dPlayer.valueOf(key);
+                    if (player == null)
+                        dB.log("Warning: can't update saves for player '" + key + "' - invalid name!");
+                    else
+                        savesConfig.createSection("Players." + player.getSaveName(), savesConfig.getConfigurationSection("Players." + key).getValues(true));
+                    savesConfig.set("Players." + key, null);
+                }
+            }
+            section = savesConfig.getConfigurationSection("Listeners");
+            if (section != null) {
+                for (String key: section.getKeys(false)) {
+                    dPlayer player = dPlayer.valueOf(key);
+                    if (player == null)
+                        dB.log("Warning: can't update listeners for player '" + key + "' - invalid name!");
+                    else
+                        savesConfig.createSection("Listeners." + player.getSaveName(), savesConfig.getConfigurationSection("Listeners." + key).getValues(true));
+                    savesConfig.set("Listeners." + key, null);
+                }
+            }
+            savesConfig.set("a_saves.version", "2");
+            dB.log("Done!");
+        }
     }
 
     public FileConfiguration getSaves() {
