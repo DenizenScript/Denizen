@@ -358,8 +358,7 @@ public class FlagManager {
          *
          */
         public void set(Object obj, int index) {
-            if (checkExpired())
-                return;
+            checkExpired();
 
             // No index? Work with last item in the Flag.
             if (index < 0) index = size();
@@ -373,6 +372,7 @@ public class FlagManager {
                     // Index higher than currently exists? Add the item to the end of the list.
                 } else value.values.add((String) obj);
             }
+            valid = true;
             save();
             rebuild();
         }
@@ -384,9 +384,9 @@ public class FlagManager {
          *
          */
         public int add(Object obj) {
-            if (checkExpired())
-                return 0;
+            checkExpired();
             value.values.add((String) obj);
+            valid = true;
             save();
             rebuild();
             return size();
@@ -398,8 +398,7 @@ public class FlagManager {
          *
          */
         public int split(Object obj) {
-            if (checkExpired())
-                return 0;
+            checkExpired();
             String[] split = ((String) obj).replace("li@", "").split("\\|"); // the pipe character | needs to be escaped
 
             if (split.length > 0) {
@@ -433,8 +432,7 @@ public class FlagManager {
          *
          */
         public void remove(Object obj, int index) {
-            if (checkExpired())
-                return;
+            checkExpired();
 
             // No index? Match object and remove it.
             if (index <= 0 && obj != null) {
@@ -462,6 +460,7 @@ public class FlagManager {
                 // Else, remove specified index
             } else if (index <= size()) value.values.remove(index - 1);
 
+            valid = true;
             save();
             rebuild();
         }
@@ -476,6 +475,7 @@ public class FlagManager {
          *
          */
         public void setExpiration(Long expiration) {
+            valid = true;
             this.expiration = expiration;
             save();
         }
