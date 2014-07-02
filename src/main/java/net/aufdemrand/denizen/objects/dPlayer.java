@@ -49,6 +49,10 @@ public class dPlayer implements dObject, Adjustable {
         }
     }
 
+    public static boolean isNoted(OfflinePlayer player) {
+        return playerNames.containsValue(player.getUniqueId());
+    }
+
 
     /////////////////////
     //   OBJECT FETCHER
