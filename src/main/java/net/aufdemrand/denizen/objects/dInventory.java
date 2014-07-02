@@ -320,7 +320,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         this.inventory = inventory;
         loadIdentifiers();
     }
-      
+
     public void setInventory(Inventory inventory, dPlayer player) {
         this.inventory = inventory;
         this.idHolder = player.identify();
@@ -645,7 +645,11 @@ public class dInventory implements dObject, Notable, Adjustable {
             ItemStack item = items[i];
             if (item == null) continue;
             int amount = item.getAmount();
-            int max = item.getMaxStackSize();
+            int max;
+            if (keepMaxStackSize)
+                max = item.getMaxStackSize();
+            else
+                max = 64;
             while (true) {
                 // Do we already have a stack of it?
                 int firstPartial = firstPartial(slot, item);
