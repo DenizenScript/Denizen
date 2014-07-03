@@ -229,7 +229,7 @@ public class ScriptContainer implements Debuggable {
     }
 
     public boolean checkCooldown(dPlayer player) {
-        return CooldownCommand.checkCooldown((player != null ? player.getName() : null), name);
+        return CooldownCommand.checkCooldown(player, name);
     }
 
 

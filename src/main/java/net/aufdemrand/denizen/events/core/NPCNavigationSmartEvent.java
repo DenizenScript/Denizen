@@ -9,9 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Handler event, actually events are fired in FlagManager.java
+ * Handler event, actual events are fired in NPCTags.java
  */
-public class FlagSmartEvent implements SmartEvent, Listener {
+public class NPCNavigationSmartEvent implements SmartEvent, Listener {
 
 
     ///////////////////
@@ -26,7 +26,7 @@ public class FlagSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on ((player|npc|server) )?flag( \\w+)? (cleared|changed)", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on npc (begins|completes) navigation", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {
@@ -40,7 +40,7 @@ public class FlagSmartEvent implements SmartEvent, Listener {
     @Override
     public void _initialize() {
         active = true;
-        dB.log("Loaded Flag SmartEvent.");
+        dB.log("Loaded NPC Navigation SmartEvent.");
     }
 
 

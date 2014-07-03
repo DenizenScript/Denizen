@@ -284,7 +284,7 @@ public class dScript implements dObject {
         if (attribute.startsWith("cooldown")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : attribute.getScriptEntry().getPlayer());
-            return CooldownCommand.getCooldownDuration((player != null ? player.getName() : null), name)
+            return CooldownCommand.getCooldownDuration(player, name)
                     .getAttribute(attribute.fulfill(1));
 
         }

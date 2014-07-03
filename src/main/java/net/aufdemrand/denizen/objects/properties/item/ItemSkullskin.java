@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Material;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemSkullskin implements Property {

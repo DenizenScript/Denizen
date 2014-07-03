@@ -41,6 +41,7 @@ public class ResetCommand extends AbstractCommand {
 
             else if (arg.matchesArgumentList(dPlayer.class))
                 scriptEntry.addObject("players", arg.asType(dList.class));
+            // TODO: Reset NPCs option too!
 
             else arg.reportUnhandled();
         }
@@ -94,7 +95,7 @@ public class ResetCommand extends AbstractCommand {
                         return;
 
                     case PLAYER_COOLDOWN:
-                        CooldownCommand.setCooldown(resettable.getName(), Duration.ZERO, script.getName(), false);
+                        CooldownCommand.setCooldown(resettable, Duration.ZERO, script.getName(), false);
                         return;
 
                     case SAVES:

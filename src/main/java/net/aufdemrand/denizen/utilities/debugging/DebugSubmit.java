@@ -56,7 +56,7 @@ public class DebugSubmit extends Thread {
             // Build a list of players
             StringBuilder playerlist = new StringBuilder();
             newlineLength = 0;
-            int playerCount = Bukkit.getOnlinePlayers().length;
+            int playerCount = Bukkit.getOnlinePlayers().size();
             for (Player pla: Bukkit.getOnlinePlayers()) {
                 String temp = pla.getDisplayName().replace(ChatColor.COLOR_CHAR, (char)0x01) + ((char)0x01) + "7(" + pla.getName() + "), ";
                 playerlist.append(temp);

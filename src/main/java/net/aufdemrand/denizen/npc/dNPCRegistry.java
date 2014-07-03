@@ -146,7 +146,7 @@ public class dNPCRegistry implements Listener {
      */
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
-        // Do world script event 'On NPC Completes Navigation'
+        // Do world script event 'On NPC Despawns'
         EventManager.doEvents(Arrays.asList
                 ("npc despawns"),
                 dNPC.mirrorCitizensNPC(event.getNPC()), null, null);

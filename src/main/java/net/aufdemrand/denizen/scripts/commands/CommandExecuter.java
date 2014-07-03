@@ -41,7 +41,7 @@ public class CommandExecuter {
             while (m.find()) {
                 String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
                 if (definition == null) definition = "null";
-                m.appendReplacement(sb, definition);
+                m.appendReplacement(sb, definition.replace("$", "\\$"));
             }
             m.appendTail(sb);
             scriptEntry.setCommandName(sb.toString());
@@ -57,10 +57,14 @@ public class CommandExecuter {
             return false;
         }
 
+        if (scriptEntry.hasNPC() && scriptEntry.getNPC().getCitizen() == null)
+            scriptEntry.setNPC(null);
+
         // Debugger information
         if (scriptEntry.getPlayer() != null)
             dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/" + scriptEntry.getPlayer().getName());
-        else dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/" + scriptEntry.getNPC().getName() : ""));
+        else dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " +
+                scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/" + scriptEntry.getNPC().getName() : ""));
 
         // Don't execute() if problems arise in parseArgs()
         boolean keepGoing = true;
@@ -106,7 +110,7 @@ public class CommandExecuter {
                     while (m.find()) {
                         String definition = TagManager.EscapeOutput(scriptEntry.getResidingQueue().getDefinition(m.group(1)));
                         if (definition == null) definition = "null";
-                        m.appendReplacement(sb, definition);
+                        m.appendReplacement(sb, definition.replace("$", "\\$"));
                     }
                     m.appendTail(sb);
                     arg = aH.Argument.valueOf(sb.toString());

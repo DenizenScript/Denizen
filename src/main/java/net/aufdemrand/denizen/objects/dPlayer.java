@@ -49,6 +49,10 @@ public class dPlayer implements dObject, Adjustable {
         }
     }
 
+    public static boolean isNoted(OfflinePlayer player) {
+        return playerNames.containsValue(player.getUniqueId());
+    }
+
 
     /////////////////////
     //   OBJECT FETCHER
@@ -186,7 +190,16 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public String getName() {
+        if (offlinePlayer == null)
+            return null;
         return offlinePlayer.getName();
+    }
+
+    public String getSaveName() {
+        if (offlinePlayer == null)
+            return "00.UNKNOWN";
+        String baseID = offlinePlayer.getUniqueId().toString().toUpperCase().replace("-", "");
+        return baseID.substring(0, 2) + "." + baseID;
     }
 
     public dLocation getLocation() {
@@ -417,7 +430,7 @@ public class dPlayer implements dObject, Adjustable {
                 return new Element(0).getAttribute(attribute.fulfill(1));
             if (FlagManager.playerHasFlag(this, flag_name))
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
-                        .getPlayerFlag(getName(), flag_name))
+                        .getPlayerFlag(this, flag_name))
                         .getAttribute(attribute);
             else return Element.NULL.getAttribute(attribute);
         }
@@ -665,6 +678,15 @@ public class dPlayer implements dObject, Adjustable {
         else if (attribute.startsWith("uuid") && !isOnline())
             // This can be parsed later with more detail if the player is online, so only check for offline.
             return new Element(offlinePlayer.getUniqueId().toString()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.save_name>
+        // @returns Element
+        // @description
+        // returns the ID used to save the player in Denizen's saves.yml file.
+        // -->
+        if (attribute.startsWith("save_name"))
+            return new Element(getSaveName()).getAttribute(attribute.fulfill(1));
 
 
         /////////////////////

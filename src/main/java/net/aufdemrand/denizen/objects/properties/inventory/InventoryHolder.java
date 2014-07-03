@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 
 public class InventoryHolder implements Property {
 

@@ -56,14 +56,13 @@ public class FlaggedRequirement extends AbstractRequirement {
 
         FlagManager flagMng = DenizenAPI.getCurrentInstance().flagManager();
         FlagManager.Flag flag = null;
-        String player = context.getPlayer().getName();
 
         switch (type) {
         case NPC:
             flag = flagMng.getNPCFlag(context.getNPC().getId(), name);
             break;
         case PLAYER:
-            flag = flagMng.getPlayerFlag(player, name);
+            flag = flagMng.getPlayerFlag(context.getPlayer(), name);
             break;
         case GLOBAL:
             flag = flagMng.getGlobalFlag(name);

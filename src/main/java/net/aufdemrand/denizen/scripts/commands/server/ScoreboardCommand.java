@@ -5,7 +5,6 @@ import java.util.List;
 import net.aufdemrand.denizen.utilities.FakeOfflinePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_7_R3.CraftOfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;

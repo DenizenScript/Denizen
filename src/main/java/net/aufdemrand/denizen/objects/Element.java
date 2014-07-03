@@ -403,6 +403,17 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.as_chunk>
+        // @returns dCuboid
+        // @group conversion
+        // @description
+        // Returns the element as a chunk. Note: the value must be a valid chunk.
+        // -->
+        if (attribute.startsWith("as_chunk")
+                || attribute.startsWith("as_chunk"))
+            return HandleNull(element, dChunk.valueOf(element), "dChunk").getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <el@element.as_cuboid>
         // @returns dCuboid
         // @group conversion
@@ -876,12 +887,49 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.format_number>
+        // @returns Element
+        // @group string manipulation
+        // @description
+        // Returns a number reformatted for easier reading.
+        // EG, 1234567 will become 1,234,567.
+        // -->
+        if (attribute.startsWith("format_number")) {
+            try {
+                int decimal = element.indexOf('.');
+                String shortelement;
+                String afterdecimal;
+                if (decimal != -1) {
+                    shortelement = element.substring(0, decimal);
+                    afterdecimal = element.substring(decimal);
+                }
+                else {
+                    shortelement = element;
+                    afterdecimal = "";
+                }
+                String intform = Long.valueOf(shortelement.replace("%", "")).toString();
+                String negative = "";
+                if (intform.startsWith("-")) {
+                    negative = "-";
+                    intform = intform.substring(1, intform.length());
+                }
+                for (int i = intform.length() - 3; i > 0; i -= 3) {
+                    intform = intform.substring(0, i) + "," + intform.substring(i, intform.length());
+                }
+                return new Element(negative + intform + afterdecimal).getAttribute(attribute.fulfill(1));
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+            }
+        }
+
+        // <--[tag]
         // @attribute <el@element.format[<script>]>
         // @returns Element
         // @group string manipulation
         // @description
         // Returns the text re-formatted according to a format script.
-        // See <@link tutorial using format scripts>.
+        // See <@link example using format scripts>.
         // -->
         if (attribute.startsWith("format")
                 && attribute.hasContext(1)) {
