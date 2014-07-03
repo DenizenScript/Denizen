@@ -1175,6 +1175,85 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <in@inventory.contains[<item>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory contains an item.
+        // -->
+        if (attribute.startsWith("contains")) {
+            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
+                int qty = 1;
+                int attribs = 1;
+
+                // <--[tag]
+                // @attribute <in@inventory.contains[<item>].qty[<#>]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item.
+                // -->
+                if (attribute.getAttribute(2).startsWith("qty") &&
+                        attribute.hasContext(2) &&
+                        aH.matchesInteger(attribute.getContext(2))) {
+
+                    qty = attribute.getIntContext(2);
+                    attribs = 2;
+                }
+
+                return new Element(getInventory().containsAtLeast
+                        (dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(),
+                                attribute.getScriptEntry().getNPC()).getItemStack(), qty))
+                        .getAttribute(attribute.fulfill(attribs));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.find.material[<material>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the location of the first slot that contains the material.
+        // Returns -1 if there's no match.
+        // -->
+        if (attribute.startsWith("find.material")
+                && attribute.hasContext(2)
+                && dMaterial.matches(attribute.getContext(2))) {
+            dMaterial material = dMaterial.valueOf(attribute.getContext(2));
+            int slot = -1;
+            for (int i = 0; i < inventory.getSize(); i++) {
+                if (inventory.getItem(i) != null && inventory.getItem(i).getType() == material.getMaterial()) {
+                    slot = i + 1;
+                    break;
+                }
+            }
+            return new Element(slot).getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.find[<item>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the location of the first slot that contains the item.
+        // Returns -1 if there's no match.
+        // -->
+        if (attribute.startsWith("find")
+                && attribute.hasContext(1)
+                && dItem.matches(attribute.getContext(1))) {
+                dItem item = dItem.valueOf(attribute.getContext(1));
+            item.setAmount(1);
+            int slot = -1;
+            for (int i = 0; i < inventory.getSize(); i++) {
+                if (inventory.getItem(i) != null) {
+                    dItem compare_to = new dItem(inventory.getItem(i).clone());
+                    compare_to.setAmount(1);
+                    if (item.identify().equalsIgnoreCase(compare_to.identify())) {
+                        slot = i + 1;
+                        break;
+                    }
+                }
+            }
+            return new Element(slot).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.id_type>
         // @returns Element
         // @description
