@@ -288,7 +288,13 @@ public class ScriptEntry implements Cloneable, Debuggable {
     }
 
 
+    private boolean dontFixMe = false;
+
     public ScriptEntry setNPC(dNPC dNPC) {
+        if (dNPC == null && dontFixMe) {
+            dontFixMe = false;
+            return this;
+        }
         this.npc = dNPC;
         return this;
     }
@@ -307,6 +313,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     public ScriptEntry setPlayer(dPlayer player) {
         if (player != null && player.isOnline()
                 && CitizensAPI.getNPCRegistry().isNPC(player.getPlayerEntity())) {
+            dontFixMe = true;
             this.npc = new dNPC(CitizensAPI.getNPCRegistry().getNPC(player.getPlayerEntity()));
         }
         else

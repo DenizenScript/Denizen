@@ -153,6 +153,12 @@ public class dPlayer implements dObject, Adjustable {
         offlinePlayer = Bukkit.getOfflinePlayer(uuid);
     }
 
+    public dPlayer(Player player) {
+        this((OfflinePlayer)player);
+        if (CitizensAPI.getNPCRegistry().isNPC(player))
+            NPCPlayer = player;
+    }
+
 
     /////////////////////
     //   INSTANCE FIELDS/METHODS
@@ -160,11 +166,14 @@ public class dPlayer implements dObject, Adjustable {
 
     OfflinePlayer offlinePlayer = null;
 
+    Player NPCPlayer = null;
+
     public boolean isValid() {
         return getPlayerEntity() != null || getOfflinePlayer() != null;
     }
 
     public Player getPlayerEntity() {
+        if (NPCPlayer != null) return NPCPlayer;
         if (offlinePlayer == null) return null;
         return Bukkit.getPlayer(offlinePlayer.getUniqueId());
     }
