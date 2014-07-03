@@ -38,7 +38,9 @@ public class ItemFirework implements Property {
         dList list = new dList();
         if (item.getItemStack().getItemMeta() instanceof FireworkMeta) {
             effects = ((FireworkMeta) item.getItemStack().getItemMeta()).getEffects();
-            list.add(String.valueOf(((FireworkMeta) item.getItemStack().getItemMeta()).getPower()));
+            int power = ((FireworkMeta) item.getItemStack().getItemMeta()).getPower();
+            if (power != 0)
+            list.add(String.valueOf(power));
         }
         else {
             effects = Arrays.asList(((FireworkEffectMeta) item.getItemStack().getItemMeta()).getEffect());
@@ -77,7 +79,8 @@ public class ItemFirework implements Property {
 
     @Override
     public String getPropertyString() {
-        return getFireworkData().identify();
+        dList data = getFireworkData();
+        return data.size() > 0 ? data.identify(): null;
     }
 
     @Override
