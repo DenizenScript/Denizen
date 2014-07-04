@@ -19,6 +19,7 @@ import net.citizensnpcs.util.Messages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -180,12 +181,14 @@ public class TriggerTrait extends Trait implements Listener {
 
     public TriggerContext trigger(AbstractTrigger triggerClass, dPlayer player, Map<String, dObject> context) {
 
-        String determination = DetermineCommand.DETERMINE_NONE;
         String trigger_type = triggerClass.getName();
 
         // Check cool down, return false if not yet met
         if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(trigger_type)))
             return new TriggerContext(false);
+
+        if (context == null)
+            context = new HashMap<String, dObject>();
 
         // Check engaged
         if (EngageCommand.getEngaged(npc)) {
@@ -208,7 +211,7 @@ public class TriggerTrait extends Trait implements Listener {
                 .setCooldown(npc, player, triggerClass, getCooldownDuration(trigger_type), getCooldownType(trigger_type));
 
         // Grab the determination of the action
-        determination = dNPCRegistry.getDenizen(npc).action(trigger_type, player, context);
+        String determination = dNPCRegistry.getDenizen(npc).action(trigger_type, player, context);
 
         return new TriggerContext(determination, true);
     }
