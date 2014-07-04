@@ -45,12 +45,16 @@ public class ItemFirework implements Property {
         else {
             effects = Arrays.asList(((FireworkEffectMeta) item.getItemStack().getItemMeta()).getEffect());
         }
-        for (FireworkEffect effect: effects) {
-            Color ColOne = effect.getColors().size() > 0 ? effect.getColors().get(0): Color.BLUE;
-            Color ColTwo = effect.getFadeColors().size() > 0 ? effect.getFadeColors().get(0): ColOne;
-            list.add(effect.hasTrail() + "," + effect.hasFlicker() + "," + effect.getType().name() + "," +
-                    ColOne.getRed() + "," + ColOne.getGreen() + "," + ColOne.getBlue() + "," +
-                    ColTwo.getRed() + "," + ColTwo.getGreen() + "," + ColTwo.getBlue());
+        if (effects != null) {
+            for (FireworkEffect effect: effects) {
+                if (effect == null)
+                    continue;
+                Color ColOne = effect.getColors() != null && effect.getColors().size() > 0 ? effect.getColors().get(0): Color.BLUE;
+                Color ColTwo = effect.getFadeColors() != null && effect.getFadeColors().size() > 0 ? effect.getFadeColors().get(0): ColOne;
+                list.add(effect.hasTrail() + "," + effect.hasFlicker() + "," + effect.getType().name() + "," +
+                        ColOne.getRed() + "," + ColOne.getGreen() + "," + ColOne.getBlue() + "," +
+                        ColTwo.getRed() + "," + ColTwo.getGreen() + "," + ColTwo.getBlue());
+            }
         }
         return list;
     }
