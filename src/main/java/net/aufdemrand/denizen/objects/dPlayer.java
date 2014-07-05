@@ -1528,6 +1528,19 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name can_fly
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the player is allowed to fly.
+        // @tags
+        // <player.allowed_flight>
+        // -->
+        if (mechanism.matches("can_fly") && mechanism.requireBoolean()) {
+            getPlayerEntity().setAllowFlight(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name fly_speed
         // @input Element(Decimal)
         // @description

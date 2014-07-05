@@ -56,7 +56,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("damage", new Element(event.getDamage()));
-        
+
         dPlayer dplayer = null;
 
         if (damager.isPlayer()) {
