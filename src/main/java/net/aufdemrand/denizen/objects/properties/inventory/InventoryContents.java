@@ -31,7 +31,7 @@ public class InventoryContents implements Property {
         this.inventory = inventory;
     }
 
-    public dList getContents(boolean simple) {
+    public dList getContents(int simpleOrFull) {
         if (inventory.getInventory() == null)
             return null;
         dList contents = new dList();
@@ -39,8 +39,10 @@ public class InventoryContents implements Property {
         for (ItemStack item : inventory.getInventory().getContents()) {
             if (item != null && item.getType() != Material.AIR) {
                 containsNonAir = true;
-                if (simple)
+                if (simpleOrFull == 1)
                     contents.add(new dItem(item).identifySimple());
+                else if (simpleOrFull == 2)
+                    contents.add(new dItem(item).getFullString());
                 else
                     contents.add(new dItem(item).identify());
             }
@@ -87,7 +89,7 @@ public class InventoryContents implements Property {
     public String getPropertyString() {
         if (!inventory.getIdType().equals("generic"))
             return null;
-        dList contents = getContents(false);
+        dList contents = getContents(0);
         if (contents == null || contents.isEmpty())
             return null;
         else
@@ -124,7 +126,18 @@ public class InventoryContents implements Property {
             // Returns a list of all items in the inventory, without item properties.
             // -->
             if (attribute.startsWith("simple"))
-                return getContents(true).getAttribute(attribute.fulfill(1));
+                return getContents(1).getAttribute(attribute.fulfill(1));
+
+            // <--[tag]
+            // @attribute <in@inventory.list_contents.full>
+            // @returns dList(dItem)
+            // @group properties
+            // @mechanism dInventory.contents
+            // @description
+            // Returns a list of all items in the inventory, without with the tag item.full used.
+            // -->
+            if (attribute.startsWith("full"))
+                return getContents(2).getAttribute(attribute.fulfill(1));
 
             // <--[tag]
             // @attribute <in@inventory.list_contents.with_lore[<element>]>
@@ -157,7 +170,7 @@ public class InventoryContents implements Property {
                             .getAttribute(attribute);
             }
 
-            return getContents(false).getAttribute(attribute);
+            return getContents(0).getAttribute(attribute);
         }
 
         return null;
