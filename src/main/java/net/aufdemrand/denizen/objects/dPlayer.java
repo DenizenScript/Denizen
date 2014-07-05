@@ -1566,13 +1566,14 @@ public class dPlayer implements dObject, Adjustable {
         // @input Element
         // @description
         // Sets the game mode of the player.
-        // Valid gamemodes are survival, creative and adventure.
+        // Valid gamemodes are survival, creative, and adventure.
         // @tags
         // <p@player.gamemode>
         // <p@player.gamemode.id>
         // -->
         if (mechanism.matches("gamemode") && mechanism.requireEnum(false, GameMode.values())) {
             setGameMode(GameMode.valueOf(value.asString().toUpperCase()));
+        }
 
         // <--[mechanism]
         // @object dPlayer
