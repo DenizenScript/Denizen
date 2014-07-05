@@ -856,7 +856,7 @@ public class CommandRegistry implements dRegistry {
 
         // @Usage
         // Use to drop some loot around the player.
-        // - drop i@gold_nugget <cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2.2]>.get_spawnable_blocks.random>
+        // - drop i@gold_nugget <cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>.get_spawnable_blocks.random>
 
         // @Usage
         // Use to reward a player

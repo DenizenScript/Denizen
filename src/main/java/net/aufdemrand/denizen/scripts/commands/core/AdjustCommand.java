@@ -60,8 +60,10 @@ public class AdjustCommand extends AbstractCommand {
         for (String object: objects) {
             Class object_class = ObjectFetcher.getObjectClass(object.split("@")[0]);
 
-            if (object_class == null)
-                throw new CommandExecutionException("Unfetchable object found '" + object + '\'');
+            if (object_class == null) {
+                dB.echoError("Unfetchable object found '" + object + "'!");
+                return;
+            }
 
             dObject fetched;
 
@@ -73,8 +75,10 @@ public class AdjustCommand extends AbstractCommand {
             fetched = ObjectFetcher.getObjectFrom(object_class, object);
 
             // Make sure this object is Adjustable
-            if (!(fetched instanceof Adjustable))
-                throw new CommandExecutionException('\'' + object + "' is not adjustable.");
+            if (!(fetched instanceof Adjustable)) {
+                dB.echoError("'" + object + "' is not adjustable.");
+                return;
+            }
 
             // Do the adjustment!
             ((Adjustable) fetched).adjust(new Mechanism(mechanism, value));

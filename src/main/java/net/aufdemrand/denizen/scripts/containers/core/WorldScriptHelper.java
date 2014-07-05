@@ -19,6 +19,7 @@ import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -2887,6 +2888,8 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // player closes inventory
     // player closes <inventory>
+    // npc closes inventory
+    // npc closes <inventory>
     //
     // @Triggers when a player closes an inventory.
     // @Context
@@ -2899,14 +2902,20 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         Player player = (Player) event.getPlayer();
+        dPlayer pl = null;
+        dNPC npc = null;
+        if (CitizensAPI.getNPCRegistry().isNPC(player))
+            npc = new dNPC(CitizensAPI.getNPCRegistry().getNPC(player));
+        else
+            pl = new dPlayer(player);
         String type = event.getInventory().getType().name();
 
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
 
         EventManager.doEvents(Arrays.asList
-                ("player closes inventory",
-                        "player closes " + type),
-                null, new dPlayer(player), context);
+                ((pl != null ? "player": "npc") + " closes inventory",
+                        (pl != null ? "player": "npc") + " closes " + type),
+                npc, pl, context);
     }
 
     // <--[event]

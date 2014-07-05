@@ -36,7 +36,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     // @Triggers when the NPC is damaged by a player.
     //
     // @Context
-    // None
+    // <context.damage> returns how much damage was done.
     //
     // @Determine
     // "cancelled" to cancel the damage event.
@@ -53,6 +53,9 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
         if (damager.isProjectile() && damager.hasShooter()) {
             damager = damager.getShooter();
         }
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("damage", new Element(event.getDamage()));
 
         dPlayer dplayer = null;
 
@@ -104,8 +107,6 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                             id = entry.getKey();
                     }
             }
-            Map<String, dObject> context = new HashMap<String, dObject>();
-            context.put("damage", new Element(event.getDamage()));
 
             if (!parse(npc, dplayer, script, id, context))
                 npc.action("no damage trigger", dplayer);

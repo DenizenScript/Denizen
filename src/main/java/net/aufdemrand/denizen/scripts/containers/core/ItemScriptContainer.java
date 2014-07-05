@@ -72,10 +72,11 @@ public class ItemScriptContainer extends ScriptContainer {
     //   furnace_recipe: i@item
     //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
+    //   # NOTE: THIS IS NOT RECOMMENDED UNLESS YOU HAVE A SPECIFIC REASON TO USE IT.
     //   no_id: true/false
     //
     //   # Set to true to not allow players to drop or otherwise lose this item besides by way of script
-    //   # or plugin-related means
+    //   # or plugin-related means.
     //   bound: true/false
     //
     //   # For colorable items, such as leather armor, you can specify a valid dColor to specify the item's appearance.

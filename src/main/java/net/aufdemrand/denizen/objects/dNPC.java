@@ -961,8 +961,10 @@ public class dNPC implements dObject, Adjustable {
 
         // Pass along to dEntity mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
-            Adjustable entity = new dEntity(getEntity());
-            entity.adjust(mechanism);
+            if (isSpawned())
+                new dEntity(getEntity()).adjust(mechanism);
+            else
+                mechanism.reportInvalid();
         }
 
     }

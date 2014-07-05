@@ -1237,7 +1237,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("find")
                 && attribute.hasContext(1)
                 && dItem.matches(attribute.getContext(1))) {
-                dItem item = dItem.valueOf(attribute.getContext(1));
+                dItem item = dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(), attribute.getScriptEntry().getNPC());
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
@@ -1288,7 +1288,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
                 return new Element(count
-                        (dItem.valueOf(attribute.getContext(1)).getItemStack(), false))
+                        (dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(), attribute.getScriptEntry().getNPC()).getItemStack(), false))
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(count(null, false))
@@ -1304,7 +1304,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("stacks"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
                 return new Element(count
-                        (dItem.valueOf(attribute.getContext(1)).getItemStack(), true))
+                        (dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(), attribute.getScriptEntry().getNPC()).getItemStack(), true))
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(count(null, true))

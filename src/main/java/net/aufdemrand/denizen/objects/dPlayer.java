@@ -153,6 +153,12 @@ public class dPlayer implements dObject, Adjustable {
         offlinePlayer = Bukkit.getOfflinePlayer(uuid);
     }
 
+    public dPlayer(Player player) {
+        this((OfflinePlayer)player);
+        if (CitizensAPI.getNPCRegistry().isNPC(player))
+            NPCPlayer = player;
+    }
+
 
     /////////////////////
     //   INSTANCE FIELDS/METHODS
@@ -160,11 +166,14 @@ public class dPlayer implements dObject, Adjustable {
 
     OfflinePlayer offlinePlayer = null;
 
+    Player NPCPlayer = null;
+
     public boolean isValid() {
         return getPlayerEntity() != null || getOfflinePlayer() != null;
     }
 
     public Player getPlayerEntity() {
+        if (NPCPlayer != null) return NPCPlayer;
         if (offlinePlayer == null) return null;
         return Bukkit.getPlayer(offlinePlayer.getUniqueId());
     }
@@ -1131,6 +1140,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player is allowed to fly.
+        // @mechanism dPlayer.can_fly
         // -->
         if (attribute.startsWith("allowed_flight"))
             return new Element(getPlayerEntity().getAllowFlight())
@@ -1515,6 +1525,19 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("bed_spawn_location") && mechanism.requireObject(dLocation.class)) {
             setBedSpawnLocation(value.asType(dLocation.class));
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name can_fly
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the player is allowed to fly.
+        // @tags
+        // <player.allowed_flight>
+        // -->
+        if (mechanism.matches("can_fly") && mechanism.requireBoolean()) {
+            getPlayerEntity().setAllowFlight(value.asBoolean());
         }
 
         // <--[mechanism]
