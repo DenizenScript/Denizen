@@ -263,16 +263,17 @@ public class ItemScriptHelper implements Listener {
                 dItem valueN = dItem.valueOf(entry.getValue().get(n));
                 dItem matrixN = matrix.length <= n || matrix[n] == null ? new dItem(Material.AIR): new dItem(matrix[n].clone());
 
-                // Set both items to size=1 to avoid miscomparison due to quantities
-                valueN.setStackSize(1);
-                matrixN.setStackSize(1);
-
-                if (!valueN.identify()
-                        .equals(matrixN.identify())) {
-
-                    // If the current item does not match, continue the loop
+                // If one's an item script and the other's not, it's a fail
+                if (valueN.isItemscript() != matrixN.isItemscript())
+                    continue master;
+                // If they're both item scripts, and they are different scripts, it's a fail
+                if (valueN.isItemscript() && matrixN.isItemscript()) {
+                        if (!valueN.getScriptName().equalsIgnoreCase(matrixN.getScriptName()))
                     continue master;
                 }
+                // If they're both not item scripts, and the materials are different, it's a fail
+                else if (!valueN.getMaterial().matchesMaterialData(matrixN.getMaterial().getMaterialData()))
+                    continue master;
             }
 
             // If all the items match, return the special recipe's dItem key
