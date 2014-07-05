@@ -5,10 +5,9 @@ import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ItemEnchantments implements Property {
 
@@ -34,6 +33,8 @@ public class ItemEnchantments implements Property {
 
         if (attribute == null) return "null";
 
+        Set<Map.Entry<Enchantment, Integer>> enchantments = GetEnchantments();
+
         // <--[tag]
         // @attribute <i@item.is_enchanted>
         // @returns Element(Boolean)
@@ -43,7 +44,7 @@ public class ItemEnchantments implements Property {
         // Returns whether the item has any enchantments.
         // -->
         if (attribute.startsWith("is_enchanted")) {
-            return new Element(item.getItemStack().getEnchantments().size() > 0)
+            return new Element(enchantments.size() > 0)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -57,9 +58,9 @@ public class ItemEnchantments implements Property {
         // In the format of ENCHANTMENT,LEVEL - EG: DAMAGE_ALL,3
         // -->
         if (attribute.startsWith("enchantments.with_levels")) {
-            if (item.getItemStack().getEnchantments().size() > 0) {
+            if (enchantments.size() > 0) {
                 List<String> enchants = new ArrayList<String>();
-                for (Map.Entry<Enchantment, Integer> enchantment : item.getItemStack().getEnchantments().entrySet())
+                for (Map.Entry<Enchantment, Integer> enchantment : enchantments)
                     enchants.add(enchantment.getKey().getName() + "," + enchantment.getValue());
                 return new dList(enchants)
                         .getAttribute(attribute.fulfill(2));
@@ -75,9 +76,9 @@ public class ItemEnchantments implements Property {
         // Returns a list of enchantments on the item, showing only the level.
         // -->
         if (attribute.startsWith("enchantments.levels")) {
-            if (item.getItemStack().getEnchantments().size() > 0) {
+            if (enchantments.size() > 0) {
                 List<String> enchants = new ArrayList<String>();
-                for (Map.Entry<Enchantment, Integer> enchantment : item.getItemStack().getEnchantments().entrySet())
+                for (Map.Entry<Enchantment, Integer> enchantment : enchantments)
                     enchants.add(String.valueOf(enchantment.getValue()));
                 return new dList(enchants)
                         .getAttribute(attribute.fulfill(2));
@@ -94,8 +95,8 @@ public class ItemEnchantments implements Property {
         // -->
         if (attribute.startsWith("enchantments.level")
                 && attribute.hasContext(2)) {
-            if (item.getItemStack().getEnchantments().size() > 0) {
-                for (Map.Entry<Enchantment, Integer> enchantment : item.getItemStack().getEnchantments().entrySet()) {
+            if (enchantments.size() > 0) {
+                for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     if (enchantment.getKey().getName().equalsIgnoreCase(attribute.getContext(2)))
                         return new Element(enchantment.getValue())
                                 .getAttribute(attribute.fulfill(2));
@@ -114,9 +115,9 @@ public class ItemEnchantments implements Property {
         // Returns a list of enchantments on the item.
         // -->
         if (attribute.startsWith("enchantments")) {
-            if (item.getItemStack().getEnchantments().size() > 0) {
+            if (enchantments.size() > 0) {
                 List<String> enchants = new ArrayList<String>();
-                for (Map.Entry<Enchantment, Integer> enchantment : item.getItemStack().getEnchantments().entrySet())
+                for (Map.Entry<Enchantment, Integer> enchantment : enchantments)
                     enchants.add(enchantment.getKey().getName());
                 return new dList(enchants)
                         .getAttribute(attribute.fulfill(1));
@@ -126,12 +127,21 @@ public class ItemEnchantments implements Property {
         return null;
     }
 
+    public Set<Map.Entry<Enchantment, Integer>> GetEnchantments() {
+        if (item.getItemStack().getEnchantments().size() > 0)
+            return item.getItemStack().getEnchantments().entrySet();
+        else if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof EnchantmentStorageMeta)
+            return ((EnchantmentStorageMeta) item.getItemStack().getItemMeta()).getStoredEnchants().entrySet();
+        return new HashSet<Map.Entry<Enchantment, Integer>>();
+    }
+
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().getEnchantments().size() > 0) {
+        Set<Map.Entry<Enchantment, Integer>> enchants = GetEnchantments();
+        if (enchants.size() > 0) {
             StringBuilder returnable = new StringBuilder();
-            for (Map.Entry<Enchantment, Integer> enchantment : item.getItemStack().getEnchantments().entrySet()) {
+            for (Map.Entry<Enchantment, Integer> enchantment : enchants) {
                 returnable.append(enchantment.getKey().getName()).append(",").append(enchantment.getValue()).append("|");
             }
             return returnable.substring(0, returnable.length() - 1);
@@ -171,8 +181,12 @@ public class ItemEnchantments implements Property {
                     else {
                         try {
                             Enchantment ench = Enchantment.getByName(data[0].toUpperCase());
-                            if (ench != null)
-                                item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
+                            if (ench != null) {
+                                if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof EnchantmentStorageMeta)
+                                    ((EnchantmentStorageMeta) item.getItemStack().getItemMeta()).addStoredEnchant(ench, Integer.valueOf(data[1]), true);
+                                else
+                                    item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
+                            }
                             else
                                 dB.echoError("Unknown enchantment '" + data[0] + "'");
                         }

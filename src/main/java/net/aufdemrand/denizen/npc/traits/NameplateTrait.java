@@ -148,6 +148,7 @@ public class NameplateTrait extends Trait implements Listener {
     }
 
     public void refreshTag(NPC npc) {
+        // TODO: Modify this trait to just wrap "/npc name" - no need for protocol magic!
         if( Depends.protocolManager == null || !npc.isSpawned() ) return;
 
         int maxDistance = Bukkit.getServer().getViewDistance() * 16;

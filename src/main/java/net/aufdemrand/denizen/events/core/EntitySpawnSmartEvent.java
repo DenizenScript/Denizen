@@ -46,15 +46,6 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
                     registerable = false;
                 }
 
-                // Check second group for valid reason
-                if (m.group(2) != null) {
-                    if (CreatureSpawnEvent.SpawnReason.valueOf(m.group(2).toUpperCase()) == null) {
-                        dB.echoError("Possible issue with '" + event + "' world event in script(s) " + EventManager.events.get(event)
-                                + ". Specified reason is not valid.");
-                        registerable = false;
-                    }
-                }
-
                 // If registerable, we'll set should_register to true, but keep iterating through the matches
                 // to check them for errors, as caught above.
                 if (registerable) should_register = true;

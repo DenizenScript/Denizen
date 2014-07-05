@@ -89,7 +89,6 @@ public class EntityFirework implements Property {
         // @tags
         // <e@entity.firework_item>
         // -->
-
         if (mechanism.matches("firework_item") && mechanism.requireObject(dItem.class)) {
             dItem item = mechanism.getValue().asType(dItem.class);
             if (item != null && item.getItemStack().getItemMeta() instanceof FireworkMeta) {
@@ -98,6 +97,19 @@ public class EntityFirework implements Property {
             else {
                 dB.echoError("'" + mechanism.getValue().asString() + "' is not a valid firework item.");
             }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name detonate
+        // @input dItem
+        // @description
+        // If the entity is a firework, detonates it.
+        // @tags
+        // <e@entity.firework_item>
+        // -->
+        if (mechanism.matches("detonate")) {
+            ((Firework)firework.getBukkitEntity()).detonate();
         }
     }
 }

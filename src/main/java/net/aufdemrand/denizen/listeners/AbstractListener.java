@@ -72,7 +72,7 @@ public abstract class AbstractListener {
      *
      */
     public Object get(String key) {
-        return denizen.getSaves().get("Listeners." + player.getName() + "." + id + "." + key);
+        return denizen.getSaves().get("Listeners." + player.getSaveName() + "." + id + "." + key);
     }
 
     public String getListenerId() {
@@ -153,11 +153,11 @@ public abstract class AbstractListener {
     public abstract String report();
 
     public void save() {
-        denizen.getSaves().set("Listeners." + player.getName() + "." + id
+        denizen.getSaves().set("Listeners." + player.getSaveName() + "." + id
                 + ".Listener Type", type);
-        denizen.getSaves().set("Listeners." + player.getName() + "." + id
+        denizen.getSaves().set("Listeners." + player.getSaveName() + "." + id
                 + ".Finish Script", scriptName.toString());
-        if (npc != null) denizen.getSaves().set("Listeners." + player.getName() + "."
+        if (npc != null) denizen.getSaves().set("Listeners." + player.getSaveName() + "."
                 + id + ".Linked NPCID", npc.getId());
 
         onSave();
@@ -165,9 +165,9 @@ public abstract class AbstractListener {
         try {
             if (!savable.isEmpty())
                 for (Entry<String, Object> entry : savable.entrySet())
-                    denizen.getSaves().set("Listeners." + player.getName() + "." + id + "." + entry.getKey(), entry.getValue());
+                    denizen.getSaves().set("Listeners." + player.getSaveName() + "." + id + "." + entry.getKey(), entry.getValue());
         } catch (Exception e) {
-            dB.echoError("Problem saving listener '" + id + "' for " + player.getName() + "!");
+            dB.echoError("Problem saving listener '" + id + "' for " + player.getSaveName() + "!");
         }
 
         deconstructed();

@@ -194,7 +194,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             flag = denizen.flagManager().getGlobalFlag(name.asString());
 
         else if (flag_target instanceof dPlayer)
-            flag = denizen.flagManager().getPlayerFlag(((dPlayer) flag_target).getName(), name.asString());
+            flag = denizen.flagManager().getPlayerFlag((dPlayer) flag_target, name.asString());
 
         else if (flag_target instanceof dNPC)
             flag = denizen.flagManager().getNPCFlag(((dNPC) flag_target).getId(), name.asString());

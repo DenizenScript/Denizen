@@ -62,6 +62,10 @@ public class GiveCommand  extends AbstractCommand {
                         && arg.matches("engrave"))
                 scriptEntry.addObject("engrave", Element.TRUE);
 
+            else if (!scriptEntry.hasObject("unlimit_stack_size")
+                    && arg.matches("unlimit_stack_size"))
+                scriptEntry.addObject("unlimit_stack_size", Element.TRUE);
+
             else if (!scriptEntry.hasObject("items")
                         && !scriptEntry.hasObject("type")
                         && arg.matchesArgumentList(dItem.class))
@@ -81,6 +85,7 @@ public class GiveCommand  extends AbstractCommand {
 
         scriptEntry.defaultObject("type", Type.ITEM)
                 .defaultObject("engrave", Element.FALSE)
+                .defaultObject("unlimit_stack_size", Element.FALSE)
                 .defaultObject("qty", new Element(1))
                 .defaultObject("slot", new Element(1));
 
@@ -101,6 +106,7 @@ public class GiveCommand  extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Element engrave = scriptEntry.getElement("engrave");
+        Element unlimit_stack_size = scriptEntry.getElement("unlimit_stack_size");
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
         Element qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
@@ -117,6 +123,7 @@ public class GiveCommand  extends AbstractCommand {
                         + (inventory != null ? inventory.debug(): "")
                         + aH.debugObj("Quantity", qty.asDouble())
                         + engrave.debug()
+                        + unlimit_stack_size.debug()
                         + (items != null ? aH.debugObj("Items", items) : "")
                         + slot.debug());
 
@@ -134,17 +141,19 @@ public class GiveCommand  extends AbstractCommand {
                 break;
 
             case ITEM:
+                boolean set_quantity = scriptEntry.hasObject("set_quantity");
+                boolean limited = !unlimit_stack_size.asBoolean();
                 for (dItem item : items) {
                     ItemStack is = item.getItemStack();
                     if (is.getType() == Material.AIR) {
                         dB.echoError("Cannot give air!");
                         continue;
                     }
-                    if (scriptEntry.hasObject("set_quantity"))
+                    if (set_quantity)
                         is.setAmount(qty.asInt());
                     if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
 
-                    List<ItemStack> leftovers = inventory.addWithLeftovers(slot.asInt()-1, true, is);
+                    List<ItemStack> leftovers = inventory.addWithLeftovers(slot.asInt()-1, limited, is);
 
                     if (!leftovers.isEmpty()) {
                         dB.echoDebug (scriptEntry, "The inventory didn't have enough space, the rest of the items have been placed on the floor.");

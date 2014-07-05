@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.events.core.NPCNavigationSmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -67,6 +68,15 @@ public class NPCTags implements Listener {
 
     public static Map<Integer, dLocation> previousLocations = new HashMap<Integer, dLocation>();
 
+    // <--[event]
+    // @Events
+    // npc completes navigation
+    //
+    // @Warning This event may fire very rapidly.
+    //
+    // @Triggers when an NPC finishes navigating.
+    // -->
+
     // <--[action]
     // @Actions
     // complete navigation
@@ -82,9 +92,10 @@ public class NPCTags implements Listener {
     public void navComplete(NavigationCompleteEvent event) {
 
         // Do world script event 'On NPC Completes Navigation'
-        EventManager.doEvents(Arrays.asList
-                ("npc completes navigation"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
+        if (NPCNavigationSmartEvent.IsActive())
+            EventManager.doEvents(Arrays.asList
+                    ("npc completes navigation"),
+                    dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
 
         // Do the assignment script action
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
@@ -92,6 +103,15 @@ public class NPCTags implements Listener {
         npc.action("complete navigation", null);
 
     }
+
+    // <--[event]
+    // @Events
+    // npc begins navigation
+    //
+    // @Warning This event may fire very rapidly.
+    //
+    // @Triggers when an NPC begins navigating.
+    // -->
 
     // <--[action]
     // @Actions
@@ -107,9 +127,10 @@ public class NPCTags implements Listener {
     @EventHandler
     public void navBegin(NavigationBeginEvent event) {
         // Do world script event 'On NPC Completes Navigation'
-        EventManager.doEvents(Arrays.asList
-                ("npc begins navigation"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
+        if (NPCNavigationSmartEvent.IsActive())
+            EventManager.doEvents(Arrays.asList
+                    ("npc begins navigation"),
+                    dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
