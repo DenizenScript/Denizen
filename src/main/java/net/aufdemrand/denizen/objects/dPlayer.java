@@ -1140,6 +1140,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player is allowed to fly.
+        // @mechanism dPlayer.can_fly
         // -->
         if (attribute.startsWith("allowed_flight"))
             return new Element(getPlayerEntity().getAllowFlight())
