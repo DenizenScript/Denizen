@@ -271,6 +271,13 @@ public class dPlayer implements dObject, Adjustable {
             getNBTEditor().setFlySpeed(speed);
     }
 
+    public void setGameMode(GameMode mode) {
+        if (isOnline())
+            getPlayerEntity().setGameMode(mode);
+        else
+            getNBTEditor().setGameMode(mode);
+    }
+
 
     /////////////////////
     //   dObject Methods
@@ -1552,6 +1559,20 @@ public class dPlayer implements dObject, Adjustable {
         if (mechanism.matches("fly_speed") && mechanism.requireFloat()) {
             setFlySpeed(value.asFloat());
         }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name gamemode
+        // @input Element
+        // @description
+        // Sets the game mode of the player.
+        // Valid gamemodes are survival, creative and adventure.
+        // @tags
+        // <p@player.gamemode>
+        // <p@player.gamemode.id>
+        // -->
+        if (mechanism.matches("gamemode") && mechanism.requireEnum(false, GameMode.values())) {
+            setGameMode(GameMode.valueOf(value.asString().toUpperCase()));
 
         // <--[mechanism]
         // @object dPlayer
