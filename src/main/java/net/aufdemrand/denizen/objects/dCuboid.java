@@ -69,13 +69,13 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // Match location formats
 
         // Split values
-        String[] positions = string.replace("cu@", "").split("\\|");
+        dList positions = dList.valueOf(string.replace("cu@", ""));
 
         // If there's a | and the first two points look like locations, assume it's a valid location-list constructor.
-        if (positions.length > 1
-                && dLocation.matches(positions[0])
-                && dLocation.matches(positions[1])) {
-            if (positions.length % 2 != 0) {
+        if (positions.size() > 1
+                && dLocation.matches(positions.get(0))
+                && dLocation.matches(positions.get(1))) {
+            if (positions.size() % 2 != 0) {
                 dB.echoError("valueOf dCuboid returning null (Uneven number of locations): '" + string + "'.");
                 return null;
             }
@@ -84,9 +84,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             dCuboid toReturn = new dCuboid();
 
             // Add to the cuboid
-            for (int i = 0; i < positions.length; i += 2) {
-                dLocation pos_1 = dLocation.valueOf(positions[i]);
-                dLocation pos_2 = dLocation.valueOf(positions[i + 1]);
+            for (int i = 0; i < positions.size(); i += 2) {
+                dLocation pos_1 = dLocation.valueOf(positions.get(i));
+                dLocation pos_2 = dLocation.valueOf(positions.get(i + 1));
 
                 // Must be valid locations
                 if (pos_1 == null || pos_2 == null) {

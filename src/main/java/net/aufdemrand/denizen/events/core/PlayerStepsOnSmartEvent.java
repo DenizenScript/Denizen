@@ -29,7 +29,7 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on player steps on (m@)?\\w+( in \\w+)?", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on player steps on (m@)?\\w+( in (cu@)?\\w+)?", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {
@@ -67,7 +67,7 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
     //
     // @Warning This event may fire very rapidly.
     //
-    // @Regex on player steps on (m@)?\w+( in \w+)?
+    // @Regex on player steps on (m@)?\w+( in (cu@)?\w+)?
     //
     // @Triggers when a player steps onto a material.
     // @Context
