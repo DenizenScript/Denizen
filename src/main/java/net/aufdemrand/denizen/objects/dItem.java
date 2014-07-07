@@ -524,6 +524,10 @@ public class dItem implements dObject, Notable, Adjustable {
         return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identify();
     }
 
+    public String getFullString() {
+        return "i@" + getMaterial().name() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
+    }
+
 
     @Override
     public String toString() {
@@ -737,6 +741,16 @@ public class dItem implements dObject, Notable, Adjustable {
             return new Element(JSON.substring(176, JSON.length() - 154))
                     .getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <i@item.full>
+        // @returns dMaterial
+        // @group conversion
+        // @description
+        // Returns a full reusable item identification for this item, with extra generally useless data.
+        // -->
+        if (attribute.startsWith("full"))
+            return new Element(getFullString()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <i@item.scriptname>

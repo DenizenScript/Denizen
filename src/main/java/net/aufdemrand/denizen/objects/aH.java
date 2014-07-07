@@ -251,7 +251,7 @@ public class aH {
 
             dList list = new dList(this.value.replace("li@", ""));
 
-            return list.containsObjectsFrom(dClass);
+            return list.containsObjectsFrom(dClass) || list.isEmpty();
         }
 
 
