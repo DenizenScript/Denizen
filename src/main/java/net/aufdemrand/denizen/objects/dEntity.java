@@ -2133,8 +2133,12 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.can_breed>
         // -->
-        if (mechanism.matches("breed") && mechanism.requireBoolean())
-            ((CraftAnimals)getLivingEntity()).getHandle().f((EntityHuman)null);
+        if (mechanism.matches("breed") && mechanism.requireBoolean()) {
+            if (value.asBoolean())
+                ((CraftAnimals)getLivingEntity()).getHandle().f((EntityHuman)null);
+            else
+                ((CraftAnimals)getLivingEntity()).getHandle().cf();
+        }
 
         // <--[mechanism]
         // @object dEntity
