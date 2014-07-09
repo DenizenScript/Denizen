@@ -20,17 +20,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.craftbukkit.v1_7_R3.inventory.CraftInventory;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +48,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     //   PATTERNS
     /////////////////
 
-    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|enderchest|entity|location|equipment|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
+    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|enderchest|entity|location|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
     final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
 
 
@@ -65,7 +60,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public final static int maxSlots = 54;
 
     // All of the inventory id types we use
-    public final static String[] idTypes = { "npc", "player", "enderchest", "entity", "location", "equipment", "generic" };
+    public final static String[] idTypes = { "npc", "player", "enderchest", "entity", "location", "generic" };
 
 
     /////////////////////
@@ -197,9 +192,6 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (dLocation.matches(holder))
                     return dLocation.valueOf(holder).getInventory();
             }
-            else if (type.equals("equipment")) {
-                return dEntity.valueOf(holder).getEquipment();
-            }
 
             // If the dInventory is invalid, alert the user and return null
             dB.echoError("Value of dInventory returning null. Invalid " +
@@ -250,12 +242,6 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dInventory(ItemStack[] items) {
         inventory = Bukkit.createInventory(null, (int) Math.ceil(items.length / 9) * 9);
-        loadIdentifiers();
-    }
-
-    public dInventory(EntityEquipment entityEquipment) {
-        inventory = Bukkit.createInventory(null, 9);
-        idType = "equipment";
         loadIdentifiers();
     }
 
@@ -377,26 +363,22 @@ public class dInventory implements dObject, Notable, Adjustable {
     private void loadIdentifiers(final InventoryHolder holder) {
         if (inventory == null) return;
 
-        boolean isEquipment = getIdType().equals("equipment");
-
         if (holder != null) {
             if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
-                if (!isEquipment)
-                    idType = "npc";
+                idType = "npc";
                 idHolder = dNPC.fromEntity((Entity) holder).identify();
                 return;
             }
             else if (holder instanceof Player) {
                 if (inventory.getType() == InventoryType.ENDER_CHEST)
                     idType = "enderchest";
-                else if (!isEquipment)
+                else
                     idType = "player";
                 idHolder = new dPlayer((Player) holder).identify();
                 return;
             }
             else if (holder instanceof Entity) {
-                if (!isEquipment)
-                    idType = "entity";
+                idType = "entity";
                 idHolder = new dEntity((Entity) holder).identify();
                 return;
             }
@@ -493,14 +475,15 @@ public class dInventory implements dObject, Notable, Adjustable {
         else return new ItemStack[0];
     }
 
-    public dInventory getEquipment() {
+    public ItemStack[] getEquipment() {
+        ItemStack[] equipment = null;
         if (inventory instanceof PlayerInventory) {
-            return new dInventory(((Player) inventory.getHolder()).getEquipment());
+            equipment = ((PlayerInventory) inventory).getArmorContents();
         }
         else if (inventory instanceof HorseInventory) {
-            return new dInventory(((Horse) inventory.getHolder()).getEquipment());
+            equipment = new ItemStack[]{((HorseInventory) inventory).getSaddle(), ((HorseInventory) inventory).getArmor()};
         }
-        return null;
+        return equipment;
     }
 
     public InventoryType getInventoryType() {
@@ -1426,11 +1409,14 @@ public class dInventory implements dObject, Notable, Adjustable {
         // equipment (Generally, if it's not alive), returns null.
         // -->
         if (attribute.startsWith("equipment")) {
-            dInventory equipment = getEquipment();
+            dList equipment = new dList();
+            ItemStack[] equipmentArray = getEquipment();
             if (equipment == null)
                 return Element.NULL.getAttribute(attribute.fulfill(1));
-            else
-                return equipment.getAttribute(attribute.fulfill(1));
+            for (ItemStack item : equipmentArray) {
+                equipment.add(new dItem(item).identify());
+            }
+            return equipment.getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
