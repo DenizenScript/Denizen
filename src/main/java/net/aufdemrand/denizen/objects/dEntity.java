@@ -1657,6 +1657,17 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <e@entity.can_breed>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns whether the animal entity is capable of mating with another of its kind.
+        // -->
+        if (attribute.startsWith("can_breed"))
+            return new Element(((Ageable)getLivingEntity()).canBreed())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <e@entity.is_empty>
         // @returns Element(Boolean)
         // @group attributes
@@ -2087,6 +2098,18 @@ public class dEntity implements dObject, Adjustable {
                 dB.echoError("Entity is not alive!");
             }
         }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name can_breed
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity is capable of mating with another of its kind.
+        // @tags
+        // <e@entity.can_breed>
+        // -->
+        if (mechanism.matches("can_breed") && mechanism.requireBoolean())
+            ((Ageable)getLivingEntity()).setBreed(true);
 
         // <--[mechanism]
         // @object dEntity
