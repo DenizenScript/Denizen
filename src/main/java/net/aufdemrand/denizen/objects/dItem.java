@@ -744,7 +744,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <i@item.full>
-        // @returns dMaterial
+        // @returns Element
         // @group conversion
         // @description
         // Returns a full reusable item identification for this item, with extra generally useless data.
