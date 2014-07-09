@@ -13,9 +13,11 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_7_R3.EntityHuman;
 import net.minecraft.server.v1_7_R3.EntityLiving;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftAnimals;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
@@ -1657,6 +1659,28 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <e@entity.can_breed>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns whether the animal entity is capable of mating with another of its kind.
+        // -->
+        if (attribute.startsWith("can_breed"))
+            return new Element(((Ageable)getLivingEntity()).canBreed())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.is_breeding>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns whether the animal entity is trying to with another of its kind.
+        // -->
+        if (attribute.startsWith("is_breeding"))
+            return new Element(((CraftAnimals)getLivingEntity()).getHandle().ce())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <e@entity.is_empty>
         // @returns Element(Boolean)
         // @group attributes
@@ -2086,6 +2110,34 @@ public class dEntity implements dObject, Adjustable {
             else {
                 dB.echoError("Entity is not alive!");
             }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name can_breed
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity is capable of mating with another of its kind.
+        // @tags
+        // <e@entity.can_breed>
+        // -->
+        if (mechanism.matches("can_breed") && mechanism.requireBoolean())
+            ((Ageable)getLivingEntity()).setBreed(true);
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name breed
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity is trying to mate with another of its kind.
+        // @tags
+        // <e@entity.can_breed>
+        // -->
+        if (mechanism.matches("breed") && mechanism.requireBoolean()) {
+            if (value.asBoolean())
+                ((CraftAnimals)getLivingEntity()).getHandle().f((EntityHuman)null);
+            else
+                ((CraftAnimals)getLivingEntity()).getHandle().cf();
         }
 
         // <--[mechanism]

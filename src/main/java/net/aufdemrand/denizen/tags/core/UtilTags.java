@@ -680,6 +680,18 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <util.player_is_valid[<player name>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether a player exists under the specified name.
+        // -->
+        else if (type.equalsIgnoreCase("PLAYER_IS_VALID")
+                && event.hasTypeContext()) {
+            event.setReplaced(new Element(dPlayer.playerNameIsValid(event.getTypeContext()))
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <util.npc_is_valid[<npc>]>
         // @returns Element(Boolean)
         // @description
