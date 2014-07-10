@@ -731,7 +731,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <el@element.and>
+        // @attribute <el@element.and[<element>]>
         // @returns Element(Boolean)
         // @group string checking
         // @description
@@ -744,7 +744,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <el@element.or>
+        // @attribute <el@element.or[<element>]>
         // @returns Element(Boolean)
         // @group string checking
         // @description
@@ -757,15 +757,28 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <el@element.xor>
+        // @attribute <el@element.xor[<element>]>
         // @returns Element(Boolean)
         // @group string checking
         // @description
-        // Returns whether the element and the second element are true and false.
+        // Returns whether the element and the second element are true and false (exclusive or).
         // -->
         if (attribute.startsWith("xor")
                 && attribute.hasContext(1)) {
             return new Element(element.equalsIgnoreCase("true") != attribute.getContext(1).equalsIgnoreCase("true"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.equals_with_case[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the two elements exactly match, counting casing.
+        // -->
+        if (attribute.startsWith("equals_with_case")
+                && attribute.hasContext(1)) {
+            return new Element(element.equals(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
 
