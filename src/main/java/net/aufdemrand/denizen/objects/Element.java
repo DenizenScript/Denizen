@@ -731,6 +731,45 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.and>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether both the element and the second element are true.
+        // -->
+        if (attribute.startsWith("and")
+                && attribute.hasContext(1)) {
+            return new Element(element.equalsIgnoreCase("true") && attribute.getContext(1).equalsIgnoreCase("true"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.or>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether either the element or the second element are true.
+        // -->
+        if (attribute.startsWith("or")
+                && attribute.hasContext(1)) {
+            return new Element(element.equalsIgnoreCase("true") || attribute.getContext(1).equalsIgnoreCase("true"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.xor>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element and the second element are true and false.
+        // -->
+        if (attribute.startsWith("xor")
+                && attribute.hasContext(1)) {
+            return new Element(element.equalsIgnoreCase("true") != attribute.getContext(1).equalsIgnoreCase("true"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <el@element.starts_with[<string>]>
         // @returns Element(Boolean)
         // @group string checking
