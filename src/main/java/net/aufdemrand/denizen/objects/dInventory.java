@@ -475,7 +475,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         else return new ItemStack[0];
     }
 
-    public ItemStack[] getEquipment() {
+    public dList getEquipment() {
         ItemStack[] equipment = null;
         if (inventory instanceof PlayerInventory) {
             equipment = ((PlayerInventory) inventory).getArmorContents();
@@ -483,7 +483,13 @@ public class dInventory implements dObject, Notable, Adjustable {
         else if (inventory instanceof HorseInventory) {
             equipment = new ItemStack[]{((HorseInventory) inventory).getSaddle(), ((HorseInventory) inventory).getArmor()};
         }
-        return equipment;
+        if (equipment == null)
+            return null;
+        dList equipmentList = new dList();
+        for (ItemStack item : equipment) {
+            equipmentList.add(new dItem(item).identify());
+        }
+        return equipmentList;
     }
 
     public InventoryType getInventoryType() {
@@ -1403,20 +1409,16 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <in@inventory.equipment>
-        // @returns dInventory(Equipment)
+        // @returns dList
         // @description
-        // Returns the equipment of an inventory. If the inventory has no
-        // equipment (Generally, if it's not alive), returns null.
+        // Returns the equipment of an inventory.
         // -->
         if (attribute.startsWith("equipment")) {
-            dList equipment = new dList();
-            ItemStack[] equipmentArray = getEquipment();
+            dList equipment = getEquipment();
             if (equipment == null)
                 return Element.NULL.getAttribute(attribute.fulfill(1));
-            for (ItemStack item : equipmentArray) {
-                equipment.add(new dItem(item).identify());
-            }
-            return equipment.getAttribute(attribute.fulfill(1));
+            else
+                return equipment.getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
