@@ -718,6 +718,19 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.not>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns the opposite of the element
+        // IE, true returns false and false returns true.
+        // -->
+        if (attribute.startsWith("not")) {
+            return new Element(!element.equalsIgnoreCase("true"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <el@element.starts_with[<string>]>
         // @returns Element(Boolean)
         // @group string checking

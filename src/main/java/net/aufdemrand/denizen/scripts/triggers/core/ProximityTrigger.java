@@ -151,13 +151,14 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     // None
     //
     // -->
+    int taskID = -1;
     @Override
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
 
         final ProximityTrigger trigger = this;
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
             @Override
             public void run() {
 
@@ -307,6 +308,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     }, 5, 5);
     }
 
+    @Override
+    public void onDisable() {
+        Bukkit.getScheduler().cancelTask(taskID);
+    }
 
     /**
      * Checks if the Player in Proximity is close enough to be calculated.
