@@ -10,7 +10,7 @@ import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R3.entity.CraftWolf;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftWolf;
 import org.bukkit.entity.Wolf;
 
 public class ParticlesTrait extends Trait {
