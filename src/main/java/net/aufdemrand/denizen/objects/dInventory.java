@@ -1049,7 +1049,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 int attribs = 2;
                 String search_string = attribute.getContext(2);
                 boolean strict = false;
-                if (search_string.toLowerCase().startsWith("strict:")) {
+                if (search_string.toLowerCase().startsWith("strict:") && search_string.length() > 7) {
                     strict = true;
                     search_string = search_string.substring(7);
                 }
@@ -1063,8 +1063,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // the display name is EXACTLY the search element, otherwise the searching will only
                 // check if the search element is contained in the display name.
                 // -->
-                if (attribute.hasContext(3) &&
-                        attribute.getAttribute(3).startsWith("qty") &&
+                if (attribute.getAttribute(3).startsWith("qty") &&
+                        attribute.hasContext(3) &&
                         aH.matchesInteger(attribute.getContext(3))) {
                     qty = attribute.getIntContext(3);
                     attribs = 3;
@@ -1126,8 +1126,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // to ensure all lore lines are EXACTLY the search elements, otherwise the
                 // searching will only check if the search elements are contained in the lore.
                 // -->
-                if (attribute.hasContext(3) &&
-                        attribute.getAttribute(3).startsWith("qty") &&
+                if (attribute.getAttribute(3).startsWith("qty") &&
+                        attribute.hasContext(3) &&
                         aH.matchesInteger(attribute.getContext(3))) {
                     qty = attribute.getIntContext(3);
                     attribs = 3;
@@ -1139,11 +1139,15 @@ public class dInventory implements dObject, Notable, Adjustable {
                     strict_items: for (ItemStack item : getContents()) {
                         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
                             List<String> item_lore = item.getItemMeta().getLore();
+                            if (lore.size() != item_lore.size()) continue;
                             for (int i = 0; i < item_lore.size(); i++) {
                                 if (lore.get(i).equalsIgnoreCase(item_lore.get(i))) {
-                                    found_items++;
-                                    if (found_items >= qty) break strict_items;
+                                    if (i == lore.size()) {
+                                        found_items += item.getAmount();
+                                        if (found_items >= qty) break strict_items;
+                                    }
                                 }
+                                else continue strict_items;
                             }
                         }
                     }
@@ -1161,7 +1165,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                                 }
                             }
                             if (loreCount == lore.size()) {
-                                found_items++;
+                                found_items += item.getAmount();
                                 if (found_items >= qty) break;
                             }
                         }
@@ -1192,8 +1196,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // Returns whether the inventory contains a certain quantity of an item with the
                 // specified material.
                 // -->
-                if (attribute.hasContext(3) &&
-                        attribute.getAttribute(3).startsWith("qty") &&
+                if (attribute.getAttribute(3).startsWith("qty") &&
+                        attribute.hasContext(3) &&
                         aH.matchesInteger(attribute.getContext(3))) {
                     qty = attribute.getIntContext(3);
                     attribs = 3;
@@ -1203,7 +1207,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
                 for (ItemStack item : getContents()) {
                     if (item != null && item.getType() == material.getMaterial()) {
-                        found_items++;
+                        found_items += item.getAmount();
                         if (found_items >= qty) break;
                     }
                 }
