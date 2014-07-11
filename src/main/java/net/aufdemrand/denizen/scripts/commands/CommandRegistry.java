@@ -2529,6 +2529,26 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
+        // @Name Statistic
+        // @Syntax statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>)
+        // @Required 2
+        // @Stable stable
+        // @Short Changes the specified statistic value for a player.
+        // @Author Morphan1
+        // @Group player
+        // @Description
+        // Todo
+        // @Tags
+        // <p@player.statistic[<statistic>]>
+        // <p@player.statistic[<statistic>].qualifier[<material>/<entity>]>
+        // @Usage
+        // Todo
+        // -->
+        registerCoreMember(StatisticCommand.class,
+                "STATISTIC", "statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>) (players:<player>|...)", 2);
+
+
+        // <--[command]
         // @Name Strike
         // @Syntax strike (no_damage) [<location>]
         // @Required 1

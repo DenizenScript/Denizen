@@ -17,6 +17,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -244,6 +245,60 @@ public class dPlayer implements dObject, Adjustable {
     public World getWorld() {
         if (isOnline()) return getPlayerEntity().getWorld();
         else return null;
+    }
+
+    public void decrementStatistic(Statistic statistic, int amount) {
+        if (isOnline()) getPlayerEntity().decrementStatistic(statistic, amount);
+        else {}// TODO: write to JSON?
+    }
+
+    public void decrementStatistic(Statistic statistic, EntityType entity, int amount) {
+        if (isOnline() && statistic.getType() == Statistic.Type.ENTITY)
+            getPlayerEntity().decrementStatistic(statistic, entity, amount);
+        else {}// TODO: write to JSON?
+    }
+
+    public void decrementStatistic(Statistic statistic, Material material, int amount) {
+        if (isOnline() && (statistic.getType() == Statistic.Type.BLOCK
+                || statistic.getType() == Statistic.Type.ITEM))
+            getPlayerEntity().decrementStatistic(statistic, material, amount);
+        else {}// TODO: write to JSON?
+    }
+
+    public void incrementStatistic(Statistic statistic, int amount) {
+        if (isOnline()) getPlayerEntity().incrementStatistic(statistic, amount);
+        else {}// TODO: write to JSON?
+    }
+
+    public void incrementStatistic(Statistic statistic, EntityType entity, int amount) {
+        if (isOnline() && statistic.getType() == Statistic.Type.ENTITY)
+            getPlayerEntity().incrementStatistic(statistic, entity, amount);
+        else {}// TODO: write to JSON?
+    }
+
+    public void incrementStatistic(Statistic statistic, Material material, int amount) {
+        if (isOnline() && (statistic.getType() == Statistic.Type.BLOCK
+                || statistic.getType() == Statistic.Type.ITEM))
+            getPlayerEntity().incrementStatistic(statistic, material, amount);
+        else {}// TODO: write to JSON?
+    }
+
+    public void setStatistic(Statistic statistic, int amount) {
+        if (isOnline()) getPlayerEntity().setStatistic(statistic, amount);
+        else {}// TODO: write to JSON?
+    }
+
+    public void setStatistic(Statistic statistic, EntityType entity, int amount) {
+        if (isOnline() && statistic.getType() == Statistic.Type.ENTITY)
+            getPlayerEntity().setStatistic(statistic, entity, amount);
+        else {}// TODO: write to JSON?
+    }
+
+    public void setStatistic(Statistic statistic, Material material, int amount) {
+        if (isOnline() && (statistic.getType() == Statistic.Type.BLOCK
+                || statistic.getType() == Statistic.Type.ITEM))
+            getPlayerEntity().setStatistic(statistic, material, amount);
+        else {}// TODO: write to JSON?
     }
 
     public boolean isOnline() {
@@ -1296,6 +1351,39 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("is_sprinting"))
             return new Element(getPlayerEntity().isSprinting())
                     .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.statistic[<statistic>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the player's current value for the specified statistic.
+        // -->
+        if (attribute.startsWith("statistic")) {
+            Statistic statistic = Statistic.valueOf(attribute.getContext(1).toUpperCase());
+
+            // <--[tag]
+            // @attribute <p@player.statistic[<statistic>].qualifier[<material>/<entity>]>
+            // @returns Element(Number)
+            // @description
+            // Returns the player's current value for the specified statistic, with the
+            // specified qualifier, which can be either an entity or material.
+            // -->
+            if (attribute.getAttribute(2).startsWith("qualifier")) {
+                if (statistic == null) return Element.NULL.getAttribute(attribute.fulfill(2));
+                dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2));
+                if (obj instanceof dMaterial)
+                    return new Element(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
+                            .getAttribute(attribute.fulfill(2));
+                else if (obj instanceof dEntity)
+                    return new Element(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getEntityType()))
+                            .getAttribute(attribute.fulfill(2));
+                else
+                    return Element.NULL.getAttribute(attribute.fulfill(2));
+            }
+
+            if (statistic == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            return new Element(getPlayerEntity().getStatistic(statistic)).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <p@player.time_asleep>
