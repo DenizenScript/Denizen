@@ -194,6 +194,11 @@ public class Settings {
                 .getString("Commands.Engage.Timeout", "150s");
     }
 
+    public static int WhileMaxLoops() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getInt("Commands.While.max-loops", 10000);
+    }
+
     /*
 
     # Whether the Chat Trigger should use an asynchronous Bukkit

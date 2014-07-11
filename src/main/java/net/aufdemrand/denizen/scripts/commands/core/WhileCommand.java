@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -91,7 +92,7 @@ public class WhileCommand extends BracedCommand {
         // Report to dB
         dB.report(scriptEntry, getName(), value.debug());
 
-        int loops = 100000;
+        int loops = Settings.WhileMaxLoops();
 
         for (int incr = 0; incr < loops; incr++) {
             if (scriptEntry.getResidingQueue().getWasCleared())

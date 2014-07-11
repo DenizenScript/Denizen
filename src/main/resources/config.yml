@@ -21,6 +21,7 @@ Scripts:
 
 # The default options for new Denizen NPCs
 
+# Whether to spawn NPCs with given traits, and what settings to have by default
 Traits:
   Health:
     Enabled: false
@@ -30,6 +31,7 @@ Traits:
     Animated death:
       Enabled: false
 
+# Whether triggers are on by default, and their individual settings
 Triggers:
   Chat:
     Enabled: true
@@ -61,9 +63,13 @@ Triggers:
 
 Commands:
   Engage:
+    # the default timeout for engage, if not specifically set otherwise
     Timeout: 150s
+  while:
+    # how many times the WHILE command can loop before it gives up
+    max-loops: 10000
 
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 5
+  Version: 6
