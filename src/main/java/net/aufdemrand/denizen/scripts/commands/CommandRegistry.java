@@ -2758,6 +2758,35 @@ public class CommandRegistry implements dRegistry {
                 "WEATHER", "weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)", 1);
 
         // <--[command]
+        // @Name While
+        // @Syntax while [stop/next/<comparison tag>] [<commands>]
+        // @Required 1
+        // @Stable stable
+        // @Short Runs a series of braced commands until the tag returns false.
+        // @Author mcmonkey
+        // @Group core
+
+        // @Description
+        // TODO
+
+        // @Tags
+        // %loop_index% to get the number of loops so far
+
+        // @Usage
+        // Use loop through a command several times
+        // - define value 1
+        // - while <def[value].is[OR_LESS].than[5]> {
+        //     - announce "Loop %loop_index% value %value%"
+        //     - define value <def[value].add[1]>
+        //   }
+        // @Usage
+        // TODO
+        // -->
+        registerCoreMember(WhileCommand.class,
+                "WHILE", "while [stop/next/<comparison tag>] [<commands>]", 1);
+
+
+        // <--[command]
         // @Name Yaml
         // @Syntax yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
         // @Required 2

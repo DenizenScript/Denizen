@@ -42,6 +42,20 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     // "cancelled" to cancel the damage event.
     //
     // -->
+    // <--[action]
+    // @Actions
+    // damaged
+    //
+    // @Triggers when the NPC is damaged by an entity.
+    //
+    // @Context
+    // <context.damage> returns how much damage was done.
+    // <context.damager> returns the entity that did the damage.
+    //
+    // @Determine
+    // "cancelled" to cancel the damage event.
+    //
+    // -->
     @EventHandler
     public void damageTrigger(EntityDamageByEntityEvent event) {
 
@@ -59,17 +73,21 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 
         dPlayer dplayer = null;
 
-        if (damager.isPlayer()) {
-            dplayer = damager.getDenizenPlayer();
-        }
-        else return;
-
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
             if (npc == null)
                 return;
             if (npc.getCitizen() == null)
                 return;
+
+            context.put("damager", damager);
+
+            npc.action("damaged", null, context);
+
+            if (damager.isPlayer()) {
+                dplayer = damager.getDenizenPlayer();
+            }
+            else return;
 
             if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
             if (!npc.getTriggerTrait().isEnabled(name)) return;

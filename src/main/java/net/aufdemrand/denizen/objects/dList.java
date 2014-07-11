@@ -376,13 +376,14 @@ public class dList extends ArrayList<String> implements dObject {
 
 
         // <--[tag]
-        // @attribute <li@list.as_cslist>
+        // @attribute <li@list.comma_separated>
         // @returns Element
         // @description
         // returns the list in a cleaner format, separated by commas.
         // EG, a list of "one|two|three" will return "one, two, three".
         // -->
-        if (attribute.startsWith("ascslist")
+        if (attribute.startsWith("comma_separated")
+                || attribute.startsWith("ascslist")
                 || attribute.startsWith("as_cslist")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
             StringBuilder dScriptArg = new StringBuilder();
@@ -392,6 +393,42 @@ public class dList extends ArrayList<String> implements dObject {
                 dScriptArg.append(", ");
             }
             return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.space_separated>
+        // @returns Element
+        // @description
+        // returns the list in a cleaner format, separated by spaces.
+        // EG, a list of "one|two|three" will return "one two three".
+        // -->
+        if (attribute.startsWith("space_separated")) {
+            if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
+            StringBuilder dScriptArg = new StringBuilder();
+            for (String item : this) {
+                dScriptArg.append(item);
+                // Insert a space after each item
+                dScriptArg.append(" ");
+            }
+            return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 1))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.unseparated>
+        // @returns Element
+        // @description
+        // returns the list in a less clean format, separated by nothing.
+        // EG, a list of "one|two|three" will return "onetwothree".
+        // -->
+        if (attribute.startsWith("unseparated")) {
+            if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
+            StringBuilder dScriptArg = new StringBuilder();
+            for (String item : this) {
+                dScriptArg.append(item);
+            }
+            return new Element(dScriptArg.toString())
                     .getAttribute(attribute.fulfill(1));
         }
 

@@ -440,23 +440,25 @@ public class Denizen extends JavaPlugin {
                 for (int i = 0; i < keyList.size(); i++) {
                     String key = keyList.get(i);
                     try {
+                        // Flags
+                        ConfigurationSection playerSection = savesConfig.getConfigurationSection("Players." + key);
+                        if (playerSection == null) {
+                            dB.echoError("Can't update saves for player '" + key + "' - broken YAML section!");
+                            continue;
+                        }
+                        Map<String, Object> keys = playerSection.getValues(true);
+                        if (!key.equals(key.toUpperCase()) && savesConfig.contains("Players." + key.toUpperCase())) {
+                            // Cooldowns
+                            keys.putAll(savesConfig.getConfigurationSection("Players." + key.toUpperCase()).getValues(true));
+                            savesConfig.set("Players." + key.toUpperCase(), null);
+                        }
                         dPlayer player = dPlayer.valueOf(key);
-                        if (player == null)
+                        if (player == null) {
                             dB.echoError("Can't update saves for player '" + key + "' - invalid name!");
+                            savesConfig.createSection("PlayersBACKUP." + key, keys);
+                            // TODO: READ FROM BACKUP AT LOG IN
+                        }
                         else {
-                            // Flags
-                            ConfigurationSection playerSection = savesConfig.getConfigurationSection("Players." + key);
-                            if (playerSection == null) {
-                                dB.echoError("Can't update saves for player '" + key + "' - broken YAML section!");
-                                continue;
-                            }
-                            Map<String, Object> keys = playerSection.getValues(true);
-                            if (!key.equals(key.toUpperCase()) && savesConfig.contains("Players." + key.toUpperCase())) {
-                                // Cooldowns
-                                keys.putAll(savesConfig.getConfigurationSection("Players." + key.toUpperCase()).getValues(true));
-                                savesConfig.set("Players." + key.toUpperCase(), null);
-
-                            }
                             savesConfig.createSection("Players." + player.getSaveName(), keys);
                         }
                         savesConfig.set("Players." + key, null);

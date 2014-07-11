@@ -188,6 +188,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                     if (!script.checkSpecificTriggerScriptRequirementsFor(ChatTrigger.class,
                             denizenPlayer, npc, entry.getKey())) continue;
                     String keyword = TagManager.tag(denizenPlayer, npc, matcher.group().replace("/", ""));
+                    String[] split = keyword.split("\\\\\\+REPLACE\\:", 2);
+                    String replace = null;
+                    if (split.length == 2) {
+                        keyword = split[0];
+                        replace = split[1];
+                    }
                     // Check if the trigger is REGEX, but only if we don't have a REGEX
                     // match already (thus using alphabetical priority for triggers)
                     if(regexId == null && isKeywordRegex(keyword)) {
@@ -200,6 +206,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             regexMessage = triggerText.replace(matcher.group(), m.group());
                             dB.log("entry value: " + triggerText + "  keyword: " + keyword + "  m.group: " + m.group() + "  matcher.group: " + matcher.group());
                             context.put("keyword", new Element(m.group()));
+                            if (replace != null)
+                                regexMessage = replace;
                         }
                     }
                     else if (isKeywordStrict(keyword)) {
@@ -209,6 +217,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             id = entry.getKey();
                             replacementText = triggerText.replace("/", "");
                             matched = true;
+                            if (replace != null)
+                                replacementText = replace;
                         }
                     }
                     else if (message.toUpperCase().contains(keyword.toUpperCase()))
@@ -217,6 +227,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         id = entry.getKey();
                         replacementText = triggerText.replace("/", "");
                         matched = true;
+                        if (replace != null)
+                            replacementText = replace;
                     }
                 }
                 if (matched) break;

@@ -668,7 +668,7 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <i@item.material.formatted>
+        // @attribute <i@item.formatted>
         // @returns Element
         // @group formatting
         // @description
@@ -676,30 +676,33 @@ public class dItem implements dObject, Notable, Adjustable {
         // Correctly uses singular and plural forms of item names, among other things.
         // -->
         if (attribute.startsWith("material.formatted")) {
+            attribute.fulfill(1);
+        }
 
+        if (attribute.startsWith("formatted")) {
             String id = item.getType().name().toLowerCase().replace('_', ' ');
 
             if (id.equals("air"))
                 return new Element("nothing")
-                        .getAttribute(attribute.fulfill(2));
+                        .getAttribute(attribute.fulfill(1));
 
             if (id.equals("ice") || id.equals("dirt"))
                 return new Element(id)
-                        .getAttribute(attribute.fulfill(2));
+                        .getAttribute(attribute.fulfill(1));
 
             if (getItemStack().getAmount() > 1) {
                 if (id.equals("cactus"))
                     return new Element("cactuses")
-                            .getAttribute(attribute.fulfill(2));
+                            .getAttribute(attribute.fulfill(1));
                 if (id.endsWith("y"))
                     return new Element(id.substring(0, id.length() - 1) + "ies")
-                            .getAttribute(attribute.fulfill(2));  // ex: lily -> lilies
+                            .getAttribute(attribute.fulfill(1));  // ex: lily -> lilies
                 if (id.endsWith("s"))
                     return new Element(id)
-                            .getAttribute(attribute.fulfill(2));  // ex: shears -> shears
+                            .getAttribute(attribute.fulfill(1));  // ex: shears -> shears
                 // else
                 return new Element(id + "s")
-                        .getAttribute(attribute.fulfill(2)); // iron sword -> iron swords
+                        .getAttribute(attribute.fulfill(1)); // iron sword -> iron swords
 
             }   else {
                 if (id.equals("cactus")) return new Element("a cactus").getAttribute(attribute.fulfill(2));
@@ -707,10 +710,10 @@ public class dItem implements dObject, Notable, Adjustable {
                 if (id.startsWith("a") || id.startsWith("e") || id.startsWith("i")
                         || id.startsWith("o") || id.startsWith("u"))
                     return new Element("an " + id)
-                            .getAttribute(attribute.fulfill(2));// ex: emerald -> an emerald
+                            .getAttribute(attribute.fulfill(1));// ex: emerald -> an emerald
                 // else
                 return new Element("a " + id)
-                        .getAttribute(attribute.fulfill(2));// ex: diamond -> a diamond
+                        .getAttribute(attribute.fulfill(1));// ex: diamond -> a diamond
             }
         }
 

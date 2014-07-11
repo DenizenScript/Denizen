@@ -894,12 +894,13 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("permission")
                 || attribute.startsWith("has_permission")) {
+
+            String permission = attribute.getContext(1);
+
             if (Depends.permissions == null) {
                 dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return null;
             }
-
-            String permission = attribute.getContext(1);
 
             // <--[tag]
             // @attribute <p@player.has_permission[permission.node].global>
@@ -932,7 +933,7 @@ public class dPlayer implements dObject, Adjustable {
 
             // Permission in current world
             else if (isOnline())
-                return new Element(Depends.permissions.has(getPlayerEntity(), permission))
+                return new Element(getPlayerEntity().hasPermission(permission))
                         .getAttribute(attribute.fulfill(1));
         }
 

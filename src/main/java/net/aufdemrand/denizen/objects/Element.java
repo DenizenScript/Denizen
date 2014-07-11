@@ -718,6 +718,71 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.not>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns the opposite of the element
+        // IE, true returns false and false returns true.
+        // -->
+        if (attribute.startsWith("not")) {
+            return new Element(!element.equalsIgnoreCase("true"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.and[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether both the element and the second element are true.
+        // -->
+        if (attribute.startsWith("and")
+                && attribute.hasContext(1)) {
+            return new Element(element.equalsIgnoreCase("true") && attribute.getContext(1).equalsIgnoreCase("true"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.or[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether either the element or the second element are true.
+        // -->
+        if (attribute.startsWith("or")
+                && attribute.hasContext(1)) {
+            return new Element(element.equalsIgnoreCase("true") || attribute.getContext(1).equalsIgnoreCase("true"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.xor[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element and the second element are true and false (exclusive or).
+        // -->
+        if (attribute.startsWith("xor")
+                && attribute.hasContext(1)) {
+            return new Element(element.equalsIgnoreCase("true") != attribute.getContext(1).equalsIgnoreCase("true"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.equals_with_case[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the two elements exactly match, counting casing.
+        // -->
+        if (attribute.startsWith("equals_with_case")
+                && attribute.hasContext(1)) {
+            return new Element(element.equals(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <el@element.starts_with[<string>]>
         // @returns Element(Boolean)
         // @group string checking
