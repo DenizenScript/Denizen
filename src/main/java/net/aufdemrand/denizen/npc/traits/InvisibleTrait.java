@@ -4,6 +4,8 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.trait.Toggleable;
 
+import net.citizensnpcs.util.NMS;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
@@ -44,8 +46,14 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
 
 
     private void setInvisible() {
-        if (npc.isSpawned() && npc.getEntity() instanceof LivingEntity)
+        if (npc.isSpawned() && npc.getEntity() instanceof LivingEntity) {
+            // Apply NPC Playerlist if necessary
+            if (npc.getEntity().getType() == EntityType.PLAYER) {
+                npc.data().setPersistent("removefromplayerlist", false);
+                NMS.addOrRemoveFromPlayerList(npc.getEntity(), false);
+            }
             invis.apply((LivingEntity)npc.getEntity());
+        }
     }
 
 
