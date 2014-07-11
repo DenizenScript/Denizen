@@ -1409,7 +1409,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <in@inventory.equipment>
-        // @returns dList
+        // @returns dList(dItem)
         // @description
         // Returns the equipment of an inventory.
         // -->
@@ -1419,6 +1419,40 @@ public class dInventory implements dObject, Notable, Adjustable {
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             else
                 return equipment.getAttribute(attribute.fulfill(1));
+        }
+
+        if (inventory instanceof CraftingInventory) {
+            CraftingInventory craftingInventory = (CraftingInventory) inventory;
+
+            // <--[tag]
+            // @attribute <in@inventory.matrix>
+            // @returns dList(dItem)
+            // @description
+            // Returns the dItems currently in a crafting inventory's matrix.
+            // -->
+            if (attribute.startsWith("matrix")) {
+                dList recipeList = new dList();
+                for (ItemStack item : craftingInventory.getMatrix()) {
+                    if (item != null)
+                        recipeList.add(new dItem(item).identify());
+                    else
+                        recipeList.add(new dItem(Material.AIR).identify());
+                }
+                return recipeList.getAttribute(attribute.fulfill(1));
+            }
+
+            // <--[tag]
+            // @attribute <in@inventory.result>
+            // @returns dItem
+            // @description
+            // Returns the dItem currently in the result section of a crafting inventory.
+            // -->
+            if (attribute.startsWith("result")) {
+                if (craftingInventory.getResult() != null)
+                    return new dItem(craftingInventory.getResult()).getAttribute(attribute.fulfill(1));
+                else
+                    return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
         }
 
         // Iterate through this object's properties' attributes
