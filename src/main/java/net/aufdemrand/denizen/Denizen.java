@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.interfaces.dExternal;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
+import net.aufdemrand.denizen.npc.speech.DenizenChat;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -270,6 +271,9 @@ public class Denizen extends JavaPlugin {
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SneakingTrait.class).withName("sneaking"));
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MobproxTrait.class).withName("mobprox"));
+
+            // Register Speech AI
+            CitizensAPI.getSpeechFactory().register(DenizenChat.class, "denizen_chat");
 
             // If Program AB, used for reading Artificial Intelligence Markup Language
             // 2.0, is included as a dependency at Denizen/lib/Ab.jar, register the

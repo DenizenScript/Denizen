@@ -514,16 +514,13 @@ public class dEntity implements dObject, Adjustable {
     }
 
     /**
-     * Returns this entity's equipment (i.e. armor contents)
-     * as a 4-slot dInventory
+     * Returns this entity's equipment
      *
-     * @return  the entity's dInventory
+     * @return  the entity's equipment
      */
 
-    public dInventory getEquipment() {
-        if (isLivingEntity())
-            return new dInventory(getLivingEntity().getEquipment());
-        else return null;
+    public dList getEquipment() {
+        return getInventory().getEquipment();
     }
 
     /**
@@ -1340,15 +1337,12 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <e@entity.equipment>
-        // @returns dInventory
+        // @returns dList
         // @group inventory
         // @description
         // returns a dInventory containing the entity's equipment.
         // -->
         else if (attribute.startsWith("equipment")) {
-            // The only way to return correct size for dInventory
-            // created from equipment is to use a CRAFTING type
-            // that has the expected 4 slots
             return getEquipment().getAttribute(attribute.fulfill(1));
         }
 

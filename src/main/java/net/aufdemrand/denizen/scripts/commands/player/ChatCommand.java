@@ -2,12 +2,14 @@ package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.npc.speech.DenizenSpeechController;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
+import org.bukkit.entity.Entity;
 
 /**
  * <p>Uses the Citizens SpeechController to 'chat', the default VocalChord for
@@ -61,7 +63,7 @@ public class ChatCommand extends AbstractCommand {
             }
 
             else if (arg.matches("no_target"))
-                scriptEntry.addObject("targets", Element.FALSE);
+                scriptEntry.addObject("targets", new dList());
 
                 // Default talker is the attached NPC, if none specified otherwise.
             else if (arg.matchesPrefix("talker, talkers")) {
@@ -79,7 +81,7 @@ public class ChatCommand extends AbstractCommand {
 
         // Add default recipient as the attached Player if no recipients set otherwise
         if (!scriptEntry.hasObject("targets") && scriptEntry.hasPlayer() && !specified_targets)
-            scriptEntry.defaultObject("targets", scriptEntry.getPlayer());
+            scriptEntry.defaultObject("targets", new dList(scriptEntry.getPlayer().identify()));
 
         // Add default talker as the attached NPC if no recipients set otherwise
         if (!scriptEntry.hasObject("talkers") && scriptEntry.hasNPC() && !specified_talker)
@@ -100,8 +102,8 @@ public class ChatCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dList talkers = (dList) scriptEntry.getdObject("talkers");
-        dObject targets = scriptEntry.getdObject("targets");
+        dList talkers = scriptEntry.getdObjectAs("talkers", dList.class);
+        dList targets = scriptEntry.getdObjectAs("targets", dList.class);
         Element message = scriptEntry.getElement("message");
 
         dB.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug());
@@ -109,38 +111,22 @@ public class ChatCommand extends AbstractCommand {
         // Create new speech context
         SpeechContext context = new SpeechContext(TagManager.CleanOutputFully(message.asString()));
 
-        if (!targets.equals(Element.FALSE)) {
-
-            if (targets instanceof dPlayer) {
-                dPlayer player = (dPlayer) targets;
-                if (player.isOnline())
-                    context.addRecipient(player.getPlayerEntity());
-
-            } else {
-                dList target_list = (dList) targets;
-                for (dObject obj : target_list.filter(dEntity.class)) {
-                    dEntity ent = (dEntity) obj;
-                    if (ent.isLivingEntity())
-                        context.addRecipient(ent.getLivingEntity());
-                }
+        if (!targets.isEmpty()) {
+            for (dEntity ent : targets.filter(dEntity.class)) {
+                context.addRecipient(ent.getBukkitEntity());
             }
         }
 
-        for (String talker : talkers) {
+        for (dEntity talker : talkers.filter(dEntity.class)) {
 
-            if (dNPC.matches(talker)) {
-                dNPC npc = dNPC.valueOf(talker);
-                context.setTalker(npc.getEntity());
-                if (npc.isSpawned())
-                    npc.getCitizen().getDefaultSpeechController().speak(context, "chat");
-                else dB.echoDebug(scriptEntry, "NPC Talker is not spawned! Cannot talk.");
-
-            } else if (dPlayer.matches(talker)) {
-
-              // TODO
-
+            Entity entity = talker.getBukkitEntity();
+            if (entity != null) {
+                context.setTalker(entity);
+                new DenizenSpeechController(entity).speak(context);
             }
-
+            else {
+                dB.echoDebug(scriptEntry, "Chat Talker is not spawned! Cannot talk.");
+            }
 
         }
 

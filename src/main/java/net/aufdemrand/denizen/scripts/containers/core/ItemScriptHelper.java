@@ -1,20 +1,18 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptBuilder;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
-import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -24,7 +22,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,59 +34,6 @@ public class ItemScriptHelper implements Listener {
     public ItemScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-
-    /////////////////////
-    //   EVENT HANDLER
-    /////////////////
-
-    public static String doEvents(String scriptName,
-            List<String> eventNames, dNPC npc, Player player, Map<String, dObject> context) {
-
-        String determination = "none";
-
-        ItemScriptContainer script = item_scripts.get(scriptName);
-
-        if (script == null) return determination;
-
-        for (String eventName : eventNames) {
-
-            if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
-
-            List<ScriptEntry> entries = script.getEntries
-                    (player != null ? new dPlayer(player) : null,
-                     npc, "events.on " + eventName);
-            if (entries.isEmpty()) continue;
-
-            dB.report(script, "Event",
-                    aH.debugObj("Type", "On " + eventName)
-                    + script.getAsScriptArg().debug()
-                    + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
-                    + (player != null ? aH.debugObj("Player", player.getName()) : "")
-                    + (context != null ? aH.debugObj("Context", context.toString()) : ""));
-
-            dB.echoDebug(script, dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
-
-            if (context != null) {
-                for (Map.Entry<String, dObject> entry : context.entrySet()) {
-                    ScriptBuilder.addObjectToEntries(entries, entry.getKey(), entry.getValue());
-                }
-            }
-
-            // Create new ID -- this is what we will look for when determining an outcome
-            long id = DetermineCommand.getNewId();
-
-            // Add the reqId to each of the entries
-            ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
-            InstantQueue.getQueue(null).addEntries(entries).setReqId(id).start();
-
-            if (DetermineCommand.hasOutcome(id))
-                determination =  DetermineCommand.getOutcome(id);
-
-        }
-
-        return determination;
     }
 
     // Remove all recipes stored by Denizen
@@ -225,13 +169,27 @@ public class ItemScriptHelper implements Listener {
                 if (result != null) {
                     Map<String, dObject> context = new HashMap<String, dObject>();
                     context.put("inventory", new dInventory(inventory));
+                    context.put("item", result);
 
-                    if (result.isItemscript()) {
-                        String determination = doEvents(result.getScriptName(), Arrays.asList
-                                ("craft"), null, player, context);
+                    dList recipeList = new dList();
+                    for (ItemStack item : inventory.getMatrix()) {
+                        if (item != null)
+                            recipeList.add(new dItem(item).identify());
+                        else
+                            recipeList.add(new dItem(Material.AIR).identify());
+                    }
+                    context.put("recipe", recipeList);
 
-                        if (determination.toUpperCase().startsWith("CANCELLED"))
-                            return;
+                    String determination = EventManager.doEvents(Arrays.asList
+                            ("item crafted",
+                                    result.identifySimple() + " crafted",
+                                    result.identifyMaterial() + " crafted"),
+                            null, new dPlayer(player), context);
+
+                    if (determination.toUpperCase().startsWith("CANCELLED"))
+                        return;
+                    else if (dItem.matches(determination)) {
+                        result = dItem.valueOf(determination);
                     }
 
                     // If this was a valid match, set the crafting's result
@@ -333,7 +291,7 @@ public class ItemScriptHelper implements Listener {
                 ItemStack resultStack = result.getItemStack().clone();
 
                 // Set the itemstack's amount
-                resultStack.setAmount(lowestAmount);
+                resultStack.setAmount(lowestAmount * resultStack.getAmount());
 
                 // Set the crafting's result
                 inventory.setResult(resultStack);
@@ -423,20 +381,6 @@ public class ItemScriptHelper implements Listener {
         if (isBound(event.getItemDrop().getItemStack())) {
             event.setCancelled(true);
             event.getPlayer().updateInventory();
-        }
-    }
-
-    @EventHandler
-    public void dropItem(PlayerDropItemEvent event) {
-        // Run a script on drop of an item script
-        ItemScriptContainer container = getItemScriptContainer(event.getItemDrop().getItemStack());
-        if (container != null) {
-            Map<String, dObject> context = new HashMap<String, dObject>();
-            context.put("location", new dLocation(event.getItemDrop().getLocation()));
-            String determination = doEvents(container.getName(),
-                    Arrays.asList("drop"), null, event.getPlayer(), context);
-            if (determination.toUpperCase().startsWith("CANCELLED"))
-                event.setCancelled(true);
         }
     }
 

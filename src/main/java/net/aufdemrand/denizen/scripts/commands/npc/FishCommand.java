@@ -3,74 +3,73 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.FishingTrait;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.npc.NPC;
-
-import org.bukkit.Location;
 
 public class FishCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        Location location = null;
-        Boolean stopping = false;
-        Boolean catchFish = false;
-        int catchPercent = 65;
 
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesLocation(arg)) {
-                location = aH.getLocationFrom(arg);
-                dB.echoDebug(scriptEntry, "...location set");
-            } else if (aH.matchesArg("CATCHFISH", arg)) {
-                catchFish = true;
-                dB.echoDebug(scriptEntry, "...npc will catch fish");
-            } else if (aH.matchesArg("STOP", arg)) {
-                stopping = true;
-                dB.echoDebug(scriptEntry, "...stopping");
-            } else if (aH.matchesValueArg("CATCHPERCENT, PERCENT", arg, ArgumentType.Integer)) {
-                catchPercent = aH.getIntegerFrom(arg);
-                dB.echoDebug(scriptEntry, "...set catch percent: " + catchPercent);
-            } else throw new InvalidArgumentsException("Unknown argument '" + arg + "'");
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
+            if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class))
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
+
+            else if (!scriptEntry.hasObject("catch")
+                    && arg.matchesPrefix("catch")
+                    && arg.matchesEnum(FishingTrait.CatchType.values()))
+                scriptEntry.addObject("catch", arg.asElement());
+
+            else if (!scriptEntry.hasObject("stop")
+                    && arg.matches("stop"))
+                scriptEntry.addObject("stop", Element.TRUE);
+
+            else if (!scriptEntry.hasObject("percent")
+                    && arg.matchesPrefix("catchpercent", "percent", "chance", "c")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                scriptEntry.addObject("percent", arg.asElement());
+
         }
 
-        scriptEntry.addObject("location", location)
-            .addObject("stopping", stopping)
-            .addObject("catchFish", catchFish)
-            .addObject("catchPercent", catchPercent);
+        if (!scriptEntry.hasObject("location"))
+            throw new InvalidArgumentsException("Must specify a valid location!");
 
-        if (!scriptEntry.hasNPC())
-            throw new InvalidArgumentsException("This command requires a linked NPC!");
+        scriptEntry.defaultObject("catch", new Element("NONE"))
+                .defaultObject("stop", Element.FALSE)
+                .defaultObject("percent", new Element(65));
+
+        if (!scriptEntry.hasNPC() || !scriptEntry.getNPC().isSpawned())
+            throw new InvalidArgumentsException("This command requires a linked and spawned NPC!");
+
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        Boolean stopping = (Boolean) scriptEntry.getObject("stopping");
-        Boolean catchFish = (Boolean) scriptEntry.getObject("catchFish");
-        int catchPercent = (Integer) scriptEntry.getObject("catchPercent");
-        NPC npc = scriptEntry.getNPC().getCitizen();
-        FishingTrait trait = new FishingTrait();
 
-        if (!npc.hasTrait(FishingTrait.class))
-            npc.addTrait(FishingTrait.class);
+        dLocation location = scriptEntry.getdObjectAs("location", dLocation.class);
+        Element katch = scriptEntry.getElement("catch");
+        Element stop = scriptEntry.getElement("stop");
+        Element percent = scriptEntry.getElement("percent");
 
-        if (stopping) {
+        FishingTrait trait = scriptEntry.getNPC().getFishingTrait();
+
+        dB.report(scriptEntry, getName(), location.debug() + katch.debug() + percent.debug() + stop.debug());
+
+        if (stop.asBoolean()) {
             trait.stopFishing();
             return;
         }
 
-        Location location = (Location) scriptEntry.getObject("location");
-        if (location == null) {
-            dB.echoError("...no location specified!");
-            return;
-        }
-
+        trait.setCatchPercent(percent.asInt());
+        trait.setCatchType(FishingTrait.CatchType.valueOf(katch.asString().toUpperCase()));
         trait.startFishing(location);
-        trait.setCatchPercent(catchPercent);
-        if (catchFish) trait.setCatchFish(true);
 
     }
 }

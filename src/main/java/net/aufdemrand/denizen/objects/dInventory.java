@@ -25,10 +25,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +48,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     //   PATTERNS
     /////////////////
 
-    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|enderchest|entity|location|equipment|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
+    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|enderchest|entity|location|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
     final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
 
 
@@ -63,7 +60,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public final static int maxSlots = 54;
 
     // All of the inventory id types we use
-    public final static String[] idTypes = { "npc", "player", "enderchest", "entity", "location", "equipment", "generic" };
+    public final static String[] idTypes = { "npc", "player", "enderchest", "entity", "location", "generic" };
 
 
     /////////////////////
@@ -195,9 +192,6 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (dLocation.matches(holder))
                     return dLocation.valueOf(holder).getInventory();
             }
-            else if (type.equals("equipment")) {
-                return dEntity.valueOf(holder).getEquipment();
-            }
 
             // If the dInventory is invalid, alert the user and return null
             dB.echoError("Value of dInventory returning null. Invalid " +
@@ -248,12 +242,6 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dInventory(ItemStack[] items) {
         inventory = Bukkit.createInventory(null, (int) Math.ceil(items.length / 9) * 9);
-        loadIdentifiers();
-    }
-
-    public dInventory(EntityEquipment entityEquipment) {
-        inventory = Bukkit.createInventory(null, 9);
-        idType = "equipment";
         loadIdentifiers();
     }
 
@@ -375,26 +363,22 @@ public class dInventory implements dObject, Notable, Adjustable {
     private void loadIdentifiers(final InventoryHolder holder) {
         if (inventory == null) return;
 
-        boolean isEquipment = getIdType().equals("equipment");
-
         if (holder != null) {
             if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
-                if (!isEquipment)
-                    idType = "npc";
+                idType = "npc";
                 idHolder = dNPC.fromEntity((Entity) holder).identify();
                 return;
             }
             else if (holder instanceof Player) {
                 if (inventory.getType() == InventoryType.ENDER_CHEST)
                     idType = "enderchest";
-                else if (!isEquipment)
+                else
                     idType = "player";
                 idHolder = new dPlayer((Player) holder).identify();
                 return;
             }
             else if (holder instanceof Entity) {
-                if (!isEquipment)
-                    idType = "entity";
+                idType = "entity";
                 idHolder = new dEntity((Entity) holder).identify();
                 return;
             }
@@ -491,14 +475,21 @@ public class dInventory implements dObject, Notable, Adjustable {
         else return new ItemStack[0];
     }
 
-    public dInventory getEquipment() {
+    public dList getEquipment() {
+        ItemStack[] equipment = null;
         if (inventory instanceof PlayerInventory) {
-            return new dInventory(((Player) inventory.getHolder()).getEquipment());
+            equipment = ((PlayerInventory) inventory).getArmorContents();
         }
         else if (inventory instanceof HorseInventory) {
-            return new dInventory(((Horse) inventory.getHolder()).getEquipment());
+            equipment = new ItemStack[]{((HorseInventory) inventory).getSaddle(), ((HorseInventory) inventory).getArmor()};
         }
-        return null;
+        if (equipment == null)
+            return null;
+        dList equipmentList = new dList();
+        for (ItemStack item : equipment) {
+            equipmentList.add(new dItem(item).identify());
+        }
+        return equipmentList;
     }
 
     public InventoryType getInventoryType() {
@@ -1058,9 +1049,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                 int attribs = 2;
                 String search_string = attribute.getContext(2);
                 boolean strict = false;
-                if (search_string.startsWith("strict:")) {
+                if (search_string.toLowerCase().startsWith("strict:") && search_string.length() > 7) {
                     strict = true;
-                    search_string = search_string.replace("strict:", "");
+                    search_string = search_string.substring(7);
                 }
 
                 // <--[tag]
@@ -1075,7 +1066,6 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (attribute.getAttribute(3).startsWith("qty") &&
                         attribute.hasContext(3) &&
                         aH.matchesInteger(attribute.getContext(3))) {
-
                     qty = attribute.getIntContext(3);
                     attribs = 3;
                 }
@@ -1085,15 +1075,100 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (strict) {
                     for (ItemStack item : getContents()) {
                         if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                                item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string))
+                                item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string)) {
                             found_items += item.getAmount();
+                            if (found_items >= qty) break;
+                        }
                     }
                 } else {
                     for (ItemStack item : getContents()) {
                         if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                                 item.getItemMeta().getDisplayName().toLowerCase()
-                                        .contains(search_string.toLowerCase()))
+                                        .contains(search_string.toLowerCase())) {
                             found_items += item.getAmount();
+                            if (found_items >= qty) break;
+                        }
+                    }
+                }
+
+                return (found_items >= qty ? Element.TRUE.getAttribute(attribute.fulfill(attribs))
+                        : Element.FALSE.getAttribute(attribute.fulfill(attribs)));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.contains.lore[(strict:)<element>|...]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory contains an item with the specified lore.
+        // Use 'strict:' in front of the search elements to ensure all lore lines
+        // are EXACTLY the search elements, otherwise the searching will only
+        // check if the search elements are contained in the lore.
+        // -->
+        if (attribute.startsWith("contains.lore")) {
+            if (attribute.hasContext(2)) {
+                int qty = 1;
+                int attribs = 2;
+                String search_string = attribute.getContext(2);
+                boolean strict = false;
+                if (search_string.toLowerCase().startsWith("strict:")) {
+                    strict = true;
+                    search_string = search_string.substring(7);
+                }
+                dList lore = dList.valueOf(search_string);
+
+                // <--[tag]
+                // @attribute <in@inventory.contains.lore[(strict:)<element>|...].qty[<#>]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of an item
+                // with the specified lore. Use 'strict:' in front of the search elements
+                // to ensure all lore lines are EXACTLY the search elements, otherwise the
+                // searching will only check if the search elements are contained in the lore.
+                // -->
+                if (attribute.getAttribute(3).startsWith("qty") &&
+                        attribute.hasContext(3) &&
+                        aH.matchesInteger(attribute.getContext(3))) {
+                    qty = attribute.getIntContext(3);
+                    attribs = 3;
+                }
+
+                int found_items = 0;
+
+                if (strict) {
+                    strict_items: for (ItemStack item : getContents()) {
+                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                            List<String> item_lore = item.getItemMeta().getLore();
+                            if (lore.size() != item_lore.size()) continue;
+                            for (int i = 0; i < item_lore.size(); i++) {
+                                if (lore.get(i).equalsIgnoreCase(item_lore.get(i))) {
+                                    if (i == lore.size()) {
+                                        found_items += item.getAmount();
+                                        if (found_items >= qty) break strict_items;
+                                    }
+                                }
+                                else continue strict_items;
+                            }
+                        }
+                    }
+                } else {
+                    items: for (ItemStack item : getContents()) {
+                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                            List<String> item_lore = item.getItemMeta().getLore();
+                            int loreCount = 0;
+                            lines: for (String line : lore) {
+                                for (String item_line : item_lore) {
+                                    if (item_line.toLowerCase().contains(line.toLowerCase())) {
+                                        loreCount++;
+                                        continue lines;
+                                    }
+                                }
+                            }
+                            if (loreCount == lore.size()) {
+                                found_items += item.getAmount();
+                                if (found_items >= qty) break;
+                            }
+                        }
                     }
                 }
 
@@ -1131,8 +1206,10 @@ public class dInventory implements dObject, Notable, Adjustable {
                 int found_items = 0;
 
                 for (ItemStack item : getContents()) {
-                    if (item != null && item.getType() == material.getMaterial())
+                    if (item != null && item.getType() == material.getMaterial()) {
                         found_items += item.getAmount();
+                        if (found_items >= qty) break;
+                    }
                 }
 
                 return (found_items >= qty ? Element.TRUE.getAttribute(attribute.fulfill(attribs))
@@ -1336,17 +1413,50 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <in@inventory.equipment>
-        // @returns dInventory(Equipment)
+        // @returns dList(dItem)
         // @description
-        // Returns the equipment of an inventory. If the inventory has no
-        // equipment (Generally, if it's not alive), returns null.
+        // Returns the equipment of an inventory.
         // -->
         if (attribute.startsWith("equipment")) {
-            dInventory equipment = getEquipment();
+            dList equipment = getEquipment();
             if (equipment == null)
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             else
                 return equipment.getAttribute(attribute.fulfill(1));
+        }
+
+        if (inventory instanceof CraftingInventory) {
+            CraftingInventory craftingInventory = (CraftingInventory) inventory;
+
+            // <--[tag]
+            // @attribute <in@inventory.matrix>
+            // @returns dList(dItem)
+            // @description
+            // Returns the dItems currently in a crafting inventory's matrix.
+            // -->
+            if (attribute.startsWith("matrix")) {
+                dList recipeList = new dList();
+                for (ItemStack item : craftingInventory.getMatrix()) {
+                    if (item != null)
+                        recipeList.add(new dItem(item).identify());
+                    else
+                        recipeList.add(new dItem(Material.AIR).identify());
+                }
+                return recipeList.getAttribute(attribute.fulfill(1));
+            }
+
+            // <--[tag]
+            // @attribute <in@inventory.result>
+            // @returns dItem
+            // @description
+            // Returns the dItem currently in the result section of a crafting inventory.
+            // -->
+            if (attribute.startsWith("result")) {
+                if (craftingInventory.getResult() != null)
+                    return new dItem(craftingInventory.getResult()).getAttribute(attribute.fulfill(1));
+                else
+                    return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
         }
 
         // Iterate through this object's properties' attributes
