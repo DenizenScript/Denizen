@@ -183,7 +183,7 @@ public class ItemScriptHelper implements Listener {
                     String determination = EventManager.doEvents(Arrays.asList
                             ("item crafted",
                                     result.identifySimple() + " crafted",
-                                    result.identifyMaterial() + "crafted"),
+                                    result.identifyMaterial() + " crafted"),
                             null, new dPlayer(player), context);
 
                     if (determination.toUpperCase().startsWith("CANCELLED"))
