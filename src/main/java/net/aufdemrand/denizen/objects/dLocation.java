@@ -1325,55 +1325,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                     .getAttribute(attribute.fulfill(1));
 
 
-        /////////////////////
-        //   WORLDGUARD ATTRIBUTES
-        /////////////////
-
-        // <--[tag]
-        // @attribute <l@location.in_region[<name>|...]>
-        // @returns Element(Boolean)
-        // @description
-        // If a region name or list of names is specified, returns whether the
-        // location is in one of the listed regions, otherwise returns whether
-        // the location is in any region.
-        // -->
-        if (attribute.startsWith("in_region")) {
-            if (Depends.worldGuard == null) {
-                dB.echoError("Cannot check region! WorldGuard is not loaded!");
-                return null;
-            }
-
-            // Check if the location is in the specified region
-            if (attribute.hasContext(1)) {
-                dList region_list = dList.valueOf(attribute.getContext(1));
-                for(String region: region_list)
-                    if(WorldGuardUtilities.inRegion(this, region))
-                        return Element.TRUE.getAttribute(attribute.fulfill(1));
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
-            }
-
-            // Check if the location is in any region
-            else {
-                return new Element(WorldGuardUtilities.inRegion(this))
-                        .getAttribute(attribute.fulfill(1));
-            }
-        }
-
-        // <--[tag]
-        // @attribute <l@location.regions>
-        // @returns dList
-        // @description
-        // Returns a list of regions that the location is in.
-        // -->
-        if (attribute.startsWith("regions")) {
-            if (Depends.worldGuard == null) {
-                dB.echoError("Cannot check region! WorldGuard is not loaded!");
-                return null;
-            }
-            return new dList(WorldGuardUtilities.getRegions(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
