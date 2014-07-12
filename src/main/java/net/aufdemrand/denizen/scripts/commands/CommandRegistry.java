@@ -1111,11 +1111,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Fish
-        // @Syntax fish (catchfish) (stop) (<location>) (catchpercent:<#>)
+        // @Syntax fish [<location>] (catch:{NONE}/DEFAULT/JUNK/TREASURE/FISH) (stop) (chance:<#>)
         // @Required 1
-        // @Stable Todo
-        // @Short Causes an NPC to begin fishing
-        // @Author Jeebiss
+        // @Stable stable
+        // @Short Causes an NPC to begin fishing around a specified location.
+        // @Author Jeebiss, Morphan1
         // @Group npc
         // @Description
         // Todo
@@ -1125,7 +1125,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(FishCommand.class,
-                "FISH", "fish (catchfish) (stop) (<location>) (catchpercent:<#>)", 1);
+                "FISH", "fish [<location>] (catch:{NONE}/DEFAULT/JUNK/TREASURE/FISH) (stop) (chance:<#>)", 1);
 
 
         // <--[command]
@@ -2526,6 +2526,26 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(StandCommand.class,
                 "STAND", "stand", 0);
+
+
+        // <--[command]
+        // @Name Statistic
+        // @Syntax statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>)
+        // @Required 2
+        // @Stable stable
+        // @Short Changes the specified statistic value for a player.
+        // @Author Morphan1
+        // @Group player
+        // @Description
+        // Todo
+        // @Tags
+        // <p@player.statistic[<statistic>]>
+        // <p@player.statistic[<statistic>].qualifier[<material>/<entity>]>
+        // @Usage
+        // Todo
+        // -->
+        registerCoreMember(StatisticCommand.class,
+                "STATISTIC", "statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>) (players:<player>|...)", 2);
 
 
         // <--[command]

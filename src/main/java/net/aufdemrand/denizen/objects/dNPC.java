@@ -233,33 +233,45 @@ public class dNPC implements dObject, Adjustable {
     }
 
     public AssignmentTrait getAssignmentTrait() {
-        if (!getCitizen().hasTrait(AssignmentTrait.class))
-            getCitizen().addTrait(AssignmentTrait.class);
-        return getCitizen().getTrait(AssignmentTrait.class);
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(AssignmentTrait.class))
+            npc.addTrait(AssignmentTrait.class);
+        return npc.getTrait(AssignmentTrait.class);
     }
 
     public NicknameTrait getNicknameTrait() {
-        if (!getCitizen().hasTrait(NicknameTrait.class))
-            getCitizen().addTrait(NicknameTrait.class);
-        return getCitizen().getTrait(NicknameTrait.class);
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(NicknameTrait.class))
+            npc.addTrait(NicknameTrait.class);
+        return npc.getTrait(NicknameTrait.class);
+    }
+    
+    public FishingTrait getFishingTrait() {
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(FishingTrait.class))
+            npc.addTrait(FishingTrait.class);
+        return npc.getTrait(FishingTrait.class);
     }
 
     public HealthTrait getHealthTrait() {
-        if (!getCitizen().hasTrait(HealthTrait.class))
-            getCitizen().addTrait(HealthTrait.class);
-        return getCitizen().getTrait(HealthTrait.class);
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(HealthTrait.class))
+            npc.addTrait(HealthTrait.class);
+        return npc.getTrait(HealthTrait.class);
     }
 
     public LookClose getLookCloseTrait() {
-        if (!getCitizen().hasTrait(LookClose.class))
-            getCitizen().addTrait(LookClose.class);
-        return getCitizen().getTrait(LookClose.class);
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(LookClose.class))
+            npc.addTrait(LookClose.class);
+        return npc.getTrait(LookClose.class);
     }
 
     public TriggerTrait getTriggerTrait() {
-        if (!getCitizen().hasTrait(TriggerTrait.class))
-            getCitizen().addTrait(TriggerTrait.class);
-        return getCitizen().getTrait(TriggerTrait.class);
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(TriggerTrait.class))
+            npc.addTrait(TriggerTrait.class);
+        return npc.getTrait(TriggerTrait.class);
     }
 
     public String action(String actionName, dPlayer player, Map<String, dObject> context) {
