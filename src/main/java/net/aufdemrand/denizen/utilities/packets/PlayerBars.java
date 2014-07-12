@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 // NMS/CB imports start
-import net.minecraft.server.v1_7_R3.EntityPlayer;
-import net.minecraft.server.v1_7_R3.Packet;
-import net.minecraft.server.v1_7_R3.PacketPlayOutExperience;
-import net.minecraft.server.v1_7_R3.PacketPlayOutUpdateHealth;
-import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
+import net.minecraft.server.v1_7_R4.EntityPlayer;
+import net.minecraft.server.v1_7_R4.Packet;
+import net.minecraft.server.v1_7_R4.PacketPlayOutExperience;
+import net.minecraft.server.v1_7_R4.PacketPlayOutUpdateHealth;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 // NMS/CB imports end
 
 import org.bukkit.entity.Player;

@@ -28,10 +28,10 @@ import net.citizensnpcs.trait.Poses;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
 
-import net.minecraft.server.v1_7_R3.EntityLiving;
+import net.minecraft.server.v1_7_R4.EntityLiving;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
