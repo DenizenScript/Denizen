@@ -179,7 +179,7 @@ public class ScoreboardHelper {
                 // scores, so iterate through all of the scoreboard's
                 // players, check if they have a score for this
                 // objective, and save it if they do
-                for (OfflinePlayer player : scoreboardEntry.getValue().getPlayers()) {
+                for (String player : scoreboardEntry.getValue().getEntries()) {
 
                     int score = obj.getScore(player).getScore();
 
@@ -188,7 +188,7 @@ public class ScoreboardHelper {
                     // of 0
                     if (score != 0) {
                         DenizenAPI.getCurrentInstance().getScoreboards()
-                            .set(objPath + ".Scores." + player.getName(), score);
+                            .set(objPath + ".Scores." + player, score);
                     }
                 }
             }

@@ -11,12 +11,12 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_7_R3.Block;
+import net.minecraft.server.v1_7_R4.Block;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -140,7 +140,7 @@ public class SwitchCommand extends AbstractCommand {
 
             try {
 
-                Block.e(interactLocation.getBlock().getType().getId())
+                Block.getById(interactLocation.getBlock().getType().getId())
                     .interact(((CraftWorld)world).getHandle(),
                               interactLocation.getBlockX(),
                               interactLocation.getBlockY(),
