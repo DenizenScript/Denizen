@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import com.sk89q.worldedit.CuboidClipboard;
@@ -332,6 +333,23 @@ public class SchematicCommand extends AbstractCommand implements Listener {
         // -->
         if (attribute.startsWith("blocks")) {
             event.setReplaced(new Element(cc.getHeight() * cc.getWidth() * cc.getLength())
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <schematic[<name>].cuboid[<origin location>]>
+        // @returns dCuboid
+        // @description
+        // Returns a cuboid of where the schematic would be if it was pasted at an origin.
+        // -->
+        if (attribute.startsWith("cuboid") && attribute.hasContext(1)) {
+            dLocation origin = dLocation.valueOf(attribute.getContext(1));
+            Location schemSize = new Location(origin.getWorld(), cc.getWidth(), cc.getHeight(), cc.getLength());
+            Location offset = new Location(origin.getWorld(), cc.getOffset().getX(), cc.getOffset().getY(), cc.getOffset().getZ());
+            Location min = new Location(origin.getWorld(), origin.getX() + offset.getX(), origin.getY() + offset.getY(), origin.getZ() + offset.getZ());
+            Location max = new Location(origin.getWorld(), min.getX() + schemSize.getX(), min.getY() + schemSize.getY(), min.getZ() + schemSize.getZ());
+            event.setReplaced(new dCuboid(min, max)
                     .getAttribute(attribute.fulfill(1)));
             return;
         }
