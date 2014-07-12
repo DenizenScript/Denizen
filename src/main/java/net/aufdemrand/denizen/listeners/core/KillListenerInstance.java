@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 import net.citizensnpcs.api.CitizensAPI;
 
@@ -172,8 +171,9 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         if (event.getEntity().getKiller() != player.getPlayerEntity()) return;
 
         // If REGION argument specified, check. If not in region, don't count kill!
-        if (region != null)
-            if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
+        if (region != null) {
+            //if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
+        }
 
         // Same with the CUBOID argument...
         if (cuboid != null)

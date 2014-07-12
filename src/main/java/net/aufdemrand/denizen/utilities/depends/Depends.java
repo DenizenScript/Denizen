@@ -1,8 +1,5 @@
 package net.aufdemrand.denizen.utilities.depends;
 
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import net.aufdemrand.denizen.scripts.commands.world.SchematicCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -13,14 +10,8 @@ import net.milkbowl.vault.permission.Permission;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Depends {
-
-    public static WorldGuardPlugin worldGuard = null;
-    public static WorldEditPlugin worldEdit = null;
 
     public static Citizens citizens = null;
 
@@ -37,8 +28,6 @@ public class Depends {
         setupEconomy();
         setupPermissions();
         setupChat();
-        setupWorldGuard();
-        setupWorldEdit();
         setupCitizens();
         setupProtocolManager();
     }
@@ -94,25 +83,6 @@ public class Depends {
         permissions = rsp.getProvider();
         } catch (Exception e) { }
         return permissions != null;
-    }
-
-    private boolean setupWorldGuard() {
-        if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") == null) {
-            return false;
-        }
-        worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-        return worldGuard != null;
-    }
-
-    private boolean setupWorldEdit() {
-        if (Bukkit.getServer().getPluginManager().getPlugin("WorldEdit") == null) {
-            return false;
-        }
-        worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-        if (worldEdit != null) {
-            SchematicCommand.schematics = new ConcurrentHashMap<String, CuboidClipboard>();
-        }
-        return worldEdit != null;
     }
 
     private boolean setupCitizens() {

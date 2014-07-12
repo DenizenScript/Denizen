@@ -8,8 +8,6 @@ import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

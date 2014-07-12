@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -143,8 +142,9 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         if (event.getPlayer() != player.getPlayerEntity()) return;
 
         //Check if region is specified, and if so, is the player in it.
-        if (region != null)
-            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        if (region != null) {
+            //if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        }
 
         // Same with the CUBOID argument...
         if (cuboid != null)
@@ -188,8 +188,9 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         if (event.getPlayer() != player.getPlayerEntity()) return;
 
         //Check if region is specified, and if so, is the player in it.
-        if (region != null)
-            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        if (region != null) {
+            //if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        }
 
         // Same with the CUBOID argument...
         if (cuboid != null)
@@ -235,8 +236,9 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         if (event.getPlayer() != player.getPlayerEntity()) return;
 
         //Check if region is specified, and if so, is the player in it.
-        if (region != null)
-            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        if (region != null) {
+            //if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        }
 
         // Same with the CUBOID argument...
         if (cuboid != null)
@@ -277,8 +279,9 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         if (event.getPlayer() != player.getPlayerEntity()) return;
 
         //Check if region is specified, and if so, is the player in it.
-        if (region != null)
-            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        if (region != null) {
+            //if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        }
 
         // Same with the CUBOID argument...
         if (cuboid != null)

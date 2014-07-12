@@ -17,7 +17,6 @@ import net.aufdemrand.denizen.listeners.core.ItemDropListenerType.ItemDropType;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 public class ItemDropListenerInstance extends AbstractListener implements Listener {
 
@@ -199,9 +198,9 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         }
         dB.log("...within range");
         if (region != null) {
-            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+            //if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         }
-        dB.log("...within region");
+        dB.log("...within region (deprecated)");
 
         dB.log("...trying to drop item");
         if (Utilities.getRandom().nextInt(101) < dropRate) {
@@ -226,9 +225,9 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         }
         dB.log("...within range");
         if (region != null) {
-            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+            //if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         }
-        dB.log("...within region");
+        dB.log("...within region(deprecated)");
 
         if (Utilities.getRandom().nextInt(101) < dropRate) {
             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
@@ -251,9 +250,9 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         }
         dB.log("...within range");
         if (region != null) {
-            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+            //if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         }
-        dB.log("...within region");
+        dB.log("...within region(deprecated)");
 
         if (Utilities.getRandom().nextInt(101) < dropRate) {
             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);

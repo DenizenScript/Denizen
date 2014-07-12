@@ -2037,13 +2037,14 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Remove
-        // @Syntax remove [<entity>|...] (region:<name>)
+        // @Syntax remove [<entity>|...]
         // @Required 1
         // @Stable Todo
         // @Short Despawns a list of entities, fully removing any NPCs.
         // @Author David Cernat
         // @Group entity
         // @Description
+        // TODO: CUBOID OPTION
         // Todo
         // @Tags
         // <e@entity.is_spawned>
@@ -2051,7 +2052,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(RemoveCommand.class,
-                "REMOVE", "remove [<entity>|...] (<world>) (region:<name>)", 1);
+                "REMOVE", "remove [<entity>|...] (<world>)", 1);
 
 
         // <--[command]
@@ -2185,52 +2186,6 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(RuntaskCommand.class,
                 "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
 
-
-        // <--[command]
-        // @Name Schematic
-        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (noair)
-        // @Required 2
-        // @Stable unstable
-        // @Short Creates, loads, pastes, and saves WorldEdit schematics.
-        // @Author mcmonkey
-        // @Group world
-        // @Description
-        // Todo
-        // @Tags
-        // <schematic[<name>].height>
-        // <schematic[<name>].length>
-        // <schematic[<name>].width>
-        // <schematic[<name>].block[<location>]>
-        // <schematic[<name>].origin>
-        // <schematic[<name>].offset>
-        // <schematic[<name>].blocks>
-        // @Usage
-        // Use to create a new schematic from a cuboid and an origin location
-        // - schematic create name:MySchematic cu@<player.location.sub[5,5,5]>|<player.location.add[5,5,5]> <player.location>
-        //
-        // @Usage
-        // Use to load a schematic
-        // - schematic load name:MySchematic
-        //
-        // @Usage
-        // Use to unload a schematic
-        // - schematic unload name:MySchematic
-        //
-        // @Usage
-        // Use to rotate a loaded schematic
-        // - schematic rotate name:MySchematic angle:90
-        //
-        // @Usage
-        // Use to paste a loaded schematic
-        // - schematic paste name:MySchematic <player.location> noair
-        //
-        // @Usage
-        // Use to save a created schematic
-        // - schematic save name:MySchematic
-        // -->
-        if (Depends.worldEdit != null) // Temporary work-around...
-        registerCoreMember(SchematicCommand.class,
-                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (noair)", 2);
 
         // <--[command]
         // @Name Scoreboard
