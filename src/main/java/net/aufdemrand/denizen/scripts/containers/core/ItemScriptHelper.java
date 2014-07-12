@@ -64,7 +64,12 @@ public class ItemScriptHelper implements Listener {
     public static String ItemScriptHashID = ChatColor.RED.toString() + ChatColor.BLUE + ChatColor.BLACK;
 
     public static String createItemScriptID(ItemScriptContainer container) {
-        String script = container.getName().toUpperCase();
+        String colors = createItemScriptID(container.getName());
+        container.setHashID(colors);
+        return colors;
+    }
+    public static String createItemScriptID(String name) {
+        String script = name.toUpperCase();
         StringBuilder colors = new StringBuilder();
         colors.append(ItemScriptHashID);
         try {
@@ -80,7 +85,6 @@ public class ItemScriptHelper implements Listener {
             dB.echoError(ex);
             colors.append(ChatColor.BLUE);
         }
-        container.setHashID(colors.toString());
         return colors.toString();
     }
 

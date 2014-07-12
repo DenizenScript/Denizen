@@ -101,7 +101,7 @@ public class ItemLore implements Property {
                     output.append(EscapeTags.Escape(itemLore)).append("|");
                 }
             }
-            return (output.length() == 0) ? "": output.substring(0, output.length() - 1);
+            return (output.length() == 0) ? null: output.substring(0, output.length() - 1);
         }
         else {
             return null;
@@ -130,6 +130,8 @@ public class ItemLore implements Property {
         if (mechanism.matches("lore")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             dList lore = mechanism.getValue().asType(dList.class);
+            if (item.isItemscript())
+                lore.add(ItemScriptHelper.createItemScriptID(item.getScriptName()));
             for (int i = 0; i < lore.size(); i++) {
                 lore.set(i, EscapeTags.unEscape(lore.get(i)));
             }
