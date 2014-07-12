@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
+import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.astar.pathfinder.FlyingBlockExaminer;
 import net.citizensnpcs.api.astar.pathfinder.MinecraftBlockExaminer;
 import net.citizensnpcs.api.event.DespawnReason;
@@ -245,7 +246,7 @@ public class dNPC implements dObject, Adjustable {
             npc.addTrait(NicknameTrait.class);
         return npc.getTrait(NicknameTrait.class);
     }
-    
+
     public FishingTrait getFishingTrait() {
         NPC npc = getCitizen();
         if (!npc.hasTrait(FishingTrait.class))
@@ -617,6 +618,17 @@ public class dNPC implements dObject, Adjustable {
                     : Element.NULL.getAttribute(attribute.fulfill(2)));
 
         // <--[tag]
+        // @attribute <n@npc.teleport_on_stuck>
+        // @returns dLocation
+        // @mechanism dNPC.teleport_on_stuck
+        // @description
+        // returns whether the NPC teleports when it is stuck.
+        // -->
+        if (attribute.startsWith("teleport_on_stuck"))
+            return new Element(getNavigator().getDefaultParameters().stuckAction() == TeleportStuckAction.INSTANCE)
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <n@npc.has_script>
         // @returns Element(Boolean)
         // @description
@@ -949,6 +961,22 @@ public class dNPC implements dObject, Adjustable {
                 getNavigator().getLocalParameters().examiner(new PathBlockExaminer(this, null));
             }
 
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name teleport_on_stuck
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the NPC teleports when it is stuck.
+        // @tags
+        // <n@npc.teleport_on_stuck>
+        // -->
+        if (mechanism.matches("teleport_on_stuck") && mechanism.requireBoolean()) {
+            if (value.asBoolean())
+                getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+            else
+                getNavigator().getDefaultParameters().stuckAction(null);
         }
 
         // <--[mechanism]
