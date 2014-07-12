@@ -475,7 +475,7 @@ public class CommandHandler {
      */
     @Command(
             aliases = { "npc" }, usage = "fish (--location x,y,z,world) (--anchor anchor_name) (-c)",
-            desc = "Makes the NPC fish, casting at the given location.", flags = "c, f", modifiers = { "fish" },
+            desc = "Makes the NPC fish, casting at the given location.", flags = "c", modifiers = { "fish" },
             min = 1, max = 3, permission = "denizen.npc.fish")
     @Requirements(selected = true, ownership = true)
     public void startFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
@@ -491,9 +491,10 @@ public class CommandHandler {
             trait.startFishing(args.getSenderTargetBlockLocation());
         }
 
-        if (args.hasFlag('f')) {
-            trait.setCatchFish(true);
-        }
+        // TODO: Make command use new CatchTypes
+        //if (args.hasFlag('f')) {
+        //    trait.setCatchFish(true);
+        //}
 
         if (args.hasValueFlag("percent")) {
             trait.setCatchPercent(args.getFlagInteger("percent"));

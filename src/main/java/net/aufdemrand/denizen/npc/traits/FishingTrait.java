@@ -1,17 +1,12 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import java.util.ArrayList;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
-import net.minecraft.server.v1_7_R3.EntityFishingHook;
-import net.minecraft.server.v1_7_R3.EntityHuman;
-import net.minecraft.server.v1_7_R3.EntityItem;
-import net.minecraft.server.v1_7_R3.WorldServer;
-
+import net.minecraft.server.v1_7_R3.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
@@ -19,12 +14,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class FishingTrait extends Trait {
+
+    private static final List junkResults = Arrays.asList(new PossibleFishingResult[]{(new PossibleFishingResult(new ItemStack(Items.LEATHER_BOOTS), 10)).a(0.9F), new PossibleFishingResult(new ItemStack(Items.LEATHER), 10), new PossibleFishingResult(new ItemStack(Items.BONE), 10), new PossibleFishingResult(new ItemStack(Items.POTION), 10), new PossibleFishingResult(new ItemStack(Items.STRING), 5), (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 2)).a(0.9F), new PossibleFishingResult(new ItemStack(Items.BOWL), 10), new PossibleFishingResult(new ItemStack(Items.STICK), 5), new PossibleFishingResult(new ItemStack(Items.INK_SACK, 10, 0), 1), new PossibleFishingResult(new ItemStack(Blocks.TRIPWIRE_SOURCE), 10), new PossibleFishingResult(new ItemStack(Items.ROTTEN_FLESH), 10)});
+    private static final List treasureResults = Arrays.asList(new PossibleFishingResult[] { new PossibleFishingResult(new ItemStack(Blocks.WATER_LILY), 1), new PossibleFishingResult(new ItemStack(Items.NAME_TAG), 1), new PossibleFishingResult(new ItemStack(Items.SADDLE), 1), (new PossibleFishingResult(new ItemStack(Items.BOW), 1)).a(0.25F).a(), (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 1)).a(0.25F).a(), (new PossibleFishingResult(new ItemStack(Items.BOOK), 1)).a()});
+    private static final List fishResults = Arrays.asList(new PossibleFishingResult[] { new PossibleFishingResult(new ItemStack(Items.RAW_FISH, 1, EnumFish.COD.a()), 60), new PossibleFishingResult(new ItemStack(Items.RAW_FISH, 1, EnumFish.SALMON.a()), 25), new PossibleFishingResult(new ItemStack(Items.RAW_FISH, 1, EnumFish.CLOWNFISH.a()), 2), new PossibleFishingResult(new ItemStack(Items.RAW_FISH, 1, EnumFish.PUFFERFISH.a()), 13)});
+
+    public static enum CatchType { NONE, DEFAULT, JUNK, TREASURE, FISH }
 
     @Persist("fishing")
     private boolean fishing = false;
-    @Persist("catch fish")
-    private boolean catchFish = false;
+    @Persist("catch type")
+    private CatchType catchType = CatchType.NONE;
 
     @Persist("fishing spot")
     private Location fishingLocation = null;
@@ -44,14 +49,14 @@ public class FishingTrait extends Trait {
 
     @Override
     public void run() {
+        if (!fishing) return;
         reelCount++;
         castCount++;
-
         if(fish != null)
             if(fish.getBukkitEntity().getLocation().distance(npc.getBukkitEntity().getLocation())<3) {
                 try{
                     fish.getBukkitEntity().remove();
-                } catch(Exception e) { }
+                } catch(Exception e) {}
             }
 
         if(reelCount == 400) {
@@ -111,9 +116,9 @@ public class FishingTrait extends Trait {
      */
     public void stopFishing() {
         DenizenAPI.getDenizenNPC(npc).action("stop fishing", null);
-
         reel();
-
+        reelCount = 100;
+        castCount = 0;
         fishingLocation = null;
         fishing = false;
     }
@@ -203,15 +208,13 @@ public class FishingTrait extends Trait {
 
         try{
             fishHook.getBukkitEntity().remove();
-        } catch(Exception e){ }
+        } catch(Exception e){}
 
-        if (chance>catchPercent && fishHook != null && catchFish) {
+        if (chance > catchPercent && fishHook != null && catchType != CatchType.NONE) {
             try{
                 fish.getBukkitEntity().remove();
-            } catch(Exception e) { }
-            // TODO: Repair this! (Update Fishing Trait to use new Fishing system)
-            /*
-            fish = new EntityItem(nmsworld, fishHook.locX, fishHook.locY, fishHook.locZ, new ItemStack(Item.RAW_FISH));
+            } catch(Exception e) {}
+            fish = new EntityItem(nmsworld, fishHook.locX, fishHook.locY, fishHook.locZ, getFishingResult());
             double d5 = npc.getBukkitEntity().getLocation().getX() - fishHook.locX;
             double d6 = npc.getBukkitEntity().getLocation().getY() - fishHook.locY;
             double d7 = npc.getBukkitEntity().getLocation().getZ() - fishHook.locZ;
@@ -222,11 +225,56 @@ public class FishingTrait extends Trait {
             fish.motY = d6 * d9 + (double) MathHelper.sqrt(d8) * 0.08D;
             fish.motZ = d7 * d9;
             nmsworld.addEntity(fish);
-            */
             DenizenAPI.getDenizenNPC(npc).action("catch fish", null);
         }
 
         PlayerAnimation.ARM_SWING.play((Player) npc.getBukkitEntity());
+    }
+
+    public ItemStack getFishingResult() {
+        if (catchType == CatchType.DEFAULT) {
+            float f = nmsworld.random.nextFloat();
+            int i = EnchantmentManager.getLuckEnchantmentLevel(fishHook.owner);
+            int j = EnchantmentManager.getLureEnchantmentLevel(fishHook.owner);
+            float f1 = 0.1F - (float) i * 0.025F - (float) j * 0.01F;
+            float f2 = 0.05F + (float) i * 0.01F - (float) j * 0.01F;
+
+            f1 = MathHelper.a(f1, 0.0F, 1.0F);
+            f2 = MathHelper.a(f2, 0.0F, 1.0F);
+            if (f < f1)
+                return catchRandomJunk();
+            else {
+                f -= f1;
+                if (f < f2)
+                    return catchRandomTreasure();
+                else
+                    return catchRandomFish();
+            }
+        }
+        else if (catchType == CatchType.JUNK)
+            return catchRandomJunk();
+        else if (catchType == CatchType.TREASURE)
+            return catchRandomTreasure();
+        else if (catchType == CatchType.FISH)
+            return catchRandomFish();
+        else
+            return null;
+    }
+
+    private ItemStack catchRandomJunk() {
+        fishHook.owner.a(StatisticList.A, 1);
+        return ((PossibleFishingResult) WeightedRandom.a(Utilities.getRandom(), junkResults)).a(Utilities.getRandom());
+    }
+
+    private ItemStack catchRandomTreasure() {
+        fishHook.owner.a(StatisticList.B, 1);
+        return ((PossibleFishingResult) WeightedRandom.a(Utilities.getRandom(), treasureResults)).a(Utilities.getRandom());
+    }
+
+    private ItemStack catchRandomFish() {
+        //float f3 = f - f2;
+        fishHook.owner.a(StatisticList.z, 1);
+        return ((PossibleFishingResult) WeightedRandom.a(Utilities.getRandom(), fishResults)).a(Utilities.getRandom());
     }
 
     /**
@@ -282,8 +330,8 @@ public class FishingTrait extends Trait {
         return victor.multiply(0);
     }
 
-    public void setCatchFish(Boolean catchFish) {
-        this.catchFish = catchFish;
+    public void setCatchType(CatchType catchType) {
+        this.catchType = catchType;
     }
 
     public void setCatchPercent(int catchPercent) {
