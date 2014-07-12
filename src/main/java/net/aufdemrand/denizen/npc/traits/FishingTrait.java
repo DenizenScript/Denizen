@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
-import net.minecraft.server.v1_7_R3.*;
+import net.minecraft.server.v1_7_R4.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
