@@ -479,6 +479,26 @@ public class dNPC implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <n@npc.list_flags[<search>]>
+        // @returns dList
+        // @description
+        // Returns a list of an NPC's flag names, with an optional search for
+        // names containing a certain pattern.
+        // -->
+        if (attribute.startsWith("list_flags")) {
+            dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listNPCFlags(getId()));
+            dList searchFlags = null;
+            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
+                searchFlags = new dList();
+                for (String flag : allFlags)
+                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
+                        searchFlags.add(flag);
+            }
+            return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
+                    : searchFlags.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <n@npc.constant[<constant_name>]>
         // @returns Element
         // @description

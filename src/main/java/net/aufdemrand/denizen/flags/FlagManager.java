@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.events.core.FlagSmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 
@@ -163,6 +164,30 @@ public class FlagManager {
         if (player == null)
             return new Flag("players.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "p@null");
         return new Flag("Players." + player.getSaveName() + ".Flags." + flagName.toUpperCase(), flagName, player.identify());
+    }
+
+    /**
+     * Returns a list of flag names currently attached to an NPC.
+     */
+    public Set<String> listNPCFlags(int npcid) {
+        ConfigurationSection section = denizen.getSaves().getConfigurationSection("NPCs." + npcid + ".Flags");
+        return section != null ? section.getValues(true).keySet() : null;
+    }
+
+    /**
+     * Returns a list of flag names currently attached to the server.
+     */
+    public Set<String> listGlobalFlags() {
+        ConfigurationSection section = denizen.getSaves().getConfigurationSection("Global.Flags");
+        return section != null ? section.getValues(true).keySet() : null;
+    }
+
+    /**
+     * Returns a list of flag names currently attached to a player.
+     */
+    public Set<String> listPlayerFlags(dPlayer player) {
+        ConfigurationSection section = denizen.getSaves().getConfigurationSection("Players." + player.getSaveName() + ".Flags");
+        return section!= null ? section.getValues(true).keySet() : null;
     }
 
 
