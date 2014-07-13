@@ -834,8 +834,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_made_of")) {
             dMaterial compared = dMaterial.valueOf(attribute.getContext(1));
             if (compared == null) return Element.FALSE.getAttribute(attribute.fulfill(1));
-            else return new Element(material.name().equalsIgnoreCase(compared.forcedIdentity != null
-                    ? compared.forcedIdentity : compared.getMaterial().name()))
+            else return new Element(material == compared.getMaterial())
                     .getAttribute(attribute.fulfill(1));
         }
 
