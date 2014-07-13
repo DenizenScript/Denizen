@@ -246,9 +246,6 @@ public class Denizen extends JavaPlugin {
                         "and restarting the server.");
             }
 
-            // Load the saves.yml into memory
-            reloadSaves();
-
             // Create the command script handler for listener
             ws_helper = new WorldScriptHelper();
             ItemScriptHelper is_helper = new ItemScriptHelper();
@@ -325,6 +322,9 @@ public class Denizen extends JavaPlugin {
 
             // Reload notables from notables.yml into memory
             notableManager.reloadNotables();
+
+            // Load the saves.yml into memory
+            reloadSaves();
         }
         catch (Exception e) {
             dB.echoError(e);
