@@ -49,15 +49,17 @@ public class FishingTrait extends Trait {
 
     @Override
     public void run() {
-        if (!fishing) return;
         reelCount++;
         castCount++;
-        if(fish != null)
-            if(fish.getBukkitEntity().getLocation().distance(npc.getBukkitEntity().getLocation())<3) {
-                try{
+        if(fish != null) {
+            if (fish.getBukkitEntity().getLocation().distance(npc.getBukkitEntity().getLocation()) < 3) {
+                try {
                     fish.getBukkitEntity().remove();
-                } catch(Exception e) {}
+                } catch (Exception e) {
+                }
             }
+        }
+        if (!fishing) return;
 
         if(reelCount == 400) {
             reel();
@@ -210,7 +212,7 @@ public class FishingTrait extends Trait {
             fishHook.getBukkitEntity().remove();
         } catch(Exception e){}
 
-        if (chance > catchPercent && fishHook != null && catchType != CatchType.NONE) {
+        if (catchPercent > chance && fishHook != null && catchType != CatchType.NONE) {
             try{
                 fish.getBukkitEntity().remove();
             } catch(Exception e) {}

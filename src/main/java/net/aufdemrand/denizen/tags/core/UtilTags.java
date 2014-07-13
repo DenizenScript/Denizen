@@ -144,6 +144,26 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.list_flags[<search>]>
+        // @returns dList
+        // @description
+        // Returns a list of the server's flag names, with an optional search for
+        // names containing a certain pattern.
+        // -->
+        if (attribute.startsWith("list_flags")) {
+            dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listGlobalFlags());
+            dList searchFlags = null;
+            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
+                searchFlags = new dList();
+                for (String flag : allFlags)
+                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
+                        searchFlags.add(flag);
+            }
+            event.setReplaced(searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
+                    : searchFlags.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.current_time_millis>
         // @returns Element(Number)
         // @description
