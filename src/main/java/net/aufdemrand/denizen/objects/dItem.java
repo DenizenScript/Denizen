@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.objects.notable.Notable;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.notable.*;
+import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -542,16 +542,16 @@ public class dItem implements dObject, Notable, Adjustable {
 
 
     @Override
-    public Object getSaveObject() {
-        // TODO: Use identify() instead?
-        return "i@" + item.getType().name().toUpperCase();
+    @Note("Items")
+    public String getSaveObject() {
+        return getFullString();
     }
 
 
     @Override
-    public void makeUnique(String id) {
-        NotableManager.saveAs(this, id);
-    }
+    public void makeUnique(String id) { NotableManager.saveAs(this, id); }
+
+    public void load() {}
 
 
     @Override

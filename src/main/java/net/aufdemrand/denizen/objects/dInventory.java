@@ -71,10 +71,8 @@ public class dInventory implements dObject, Notable, Adjustable {
         return getIdType().equals("notable");
     }
 
-    @Note("inventory")
-    public String getSaveObject() {
-        return idHolder;
-    }
+    @Note("Inventories")
+    public String getSaveObject() { return "in@" + idType + PropertyParser.getPropertiesString(this); }
 
     public void makeUnique(String id) {
         String title = inventory.getTitle();
@@ -95,14 +93,15 @@ public class dInventory implements dObject, Notable, Adjustable {
                 break;
             }
         }
-        idType = "notable";
-        idHolder = id;
         NotableManager.saveAs(this, id);
+    }
+
+    public void load() {
+        InventoryScriptHelper.notableInventories.put(inventory.getTitle(), this);
     }
 
     public void forget() {
         NotableManager.remove(idHolder);
-        loadIdentifiers();
     }
 
     //////////////////

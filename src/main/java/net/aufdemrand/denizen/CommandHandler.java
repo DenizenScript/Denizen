@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
@@ -862,6 +863,7 @@ public class CommandHandler {
     public void save(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
         DenizenAPI.getCurrentInstance().saveSaves();
+        DenizenAPI.getCurrentInstance().notableManager().saveNotables();
 
         Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml saved to disk from memory.");
     }
@@ -952,7 +954,7 @@ public class CommandHandler {
     /*
      * DENIZEN RELOAD
      */
-    @Command ( aliases = { "denizen" }, usage = "reload (saves|config|scripts|externals) (-a)",
+    @Command ( aliases = { "denizen" }, usage = "reload (saves|notables|config|scripts|externals) (-a)",
             desc = "Reloads various Denizen files from disk to memory.", modifiers = { "reload" },
             min = 1, max = 3, permission = "denizen.basic", flags = "a" )
     public void reload(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
@@ -961,11 +963,12 @@ public class CommandHandler {
         // Get reload type
         if (args.hasFlag('a')) {
             denizen.reloadSaves();
+            denizen.notableManager().reloadNotables();
             denizen.reloadConfig();
             denizen.runtimeCompiler.reload();
             ScriptHelper.resetError();
             ScriptHelper.reloadScripts();
-            Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml, Denizen/config.yml, Denizen/scripts/..., and Denizen/externals/... reloaded from disk to memory.");
+            Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml, Denizen/notables.yml, Denizen/config.yml, Denizen/scripts/..., and Denizen/externals/... reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
                 Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
             }
@@ -984,7 +987,11 @@ public class CommandHandler {
                 denizen.reloadSaves();
                 Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml reloaded from disk to memory.");
                 return;
-            } else if (args.getString(1).equalsIgnoreCase("config")) {
+            } else if (args.getString(1).equalsIgnoreCase("notables")) {
+                denizen.notableManager().reloadNotables();
+                Messaging.send(sender, ChatColor.GREEN + "Denizen/notables.yml reloaded from disk to memory.");
+                return;
+            } else if(args.getString(1).equalsIgnoreCase("config")) {
                 denizen.reloadConfig();
                 Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
                 return;
@@ -1012,7 +1019,7 @@ public class CommandHandler {
         }
 
         Messaging.send(sender, "");
-        Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, CONFIG, SCRIPTS, EXTERNALS");
+        Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTABLES, CONFIG, SCRIPTS, EXTERNALS");
         Messaging.send(sender, "<b>Example: /denizen reload scripts");
         Messaging.send(sender, "<f>Use '-a' to reload all parts.");
         Messaging.send(sender, "");
@@ -1083,17 +1090,17 @@ public class CommandHandler {
             min = 2, max = 20, permission = "denizen.notable.basic")
     public void addnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
-        new dLocation(((Player) sender).getLocation()).rememberAs(args.getString(1));
+        NotableManager.saveAs(new dLocation(((Player) sender).getLocation()), args.getString(1));
         Messaging.send(sender, "Created new notable called " + (args.getString(1)));
     }
 
     @Command(
             aliases = { "notable" }, usage = "list",
-            desc = "Lists all notables", modifiers = { "list" },
+            desc = "Lists all notable locations", modifiers = { "list" },
             min = 1, max = 1, permission = "denizen.notable.basic")
     public void listnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
-        Messaging.send(sender, dLocation.uniqueObjects.toString());
+        Messaging.send(sender, NotableManager.getAllType(dLocation.class).toString());
     }
 
 }
