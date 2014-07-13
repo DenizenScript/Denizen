@@ -1111,7 +1111,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Fish
-        // @Syntax fish [<location>] (catch:{NONE}/DEFAULT/JUNK/TREASURE/FISH) (stop) (chance:<#>)
+        // @Syntax fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)
         // @Required 1
         // @Stable stable
         // @Short Causes an NPC to begin fishing around a specified location.
@@ -1125,7 +1125,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(FishCommand.class,
-                "FISH", "fish [<location>] (catch:{NONE}/DEFAULT/JUNK/TREASURE/FISH) (stop) (chance:<#>)", 1);
+                "FISH", "fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)", 1);
 
 
         // <--[command]
