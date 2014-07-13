@@ -26,8 +26,8 @@ public class CreateCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Avoid duplication of objects
                 dEntity ent = arg.asType(dEntity.class);
-                if (!ent.isGeneric())
-                    throw new InvalidArgumentsException("Entity supplied must be generic!");
+                if (!ent.isGeneric() && !ent.isNPC())
+                    throw new InvalidArgumentsException("Entity supplied must be generic or an NPC!");
                 scriptEntry.addObject("entity_type", ent);
             }
 
@@ -59,9 +59,17 @@ public class CreateCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), name.debug() + type.debug() + (loc != null ? loc.debug() : "")
                 + (traits != null ? traits.debug() : ""));
 
+        dNPC created;
+        if (!type.isGeneric() && type.isNPC()) {
+            created = new dNPC(type.getNPC().clone());
+            created.getCitizen().setName(name.asString());
+        }
+        else {
+            created = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry()
+                    .createNPC(type.getEntityType(), name.asString()));
+        }
+
         // Add the created NPC into the script entry so it can be utilized if need be.
-        dNPC created = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry()
-                .createNPC(type.getEntityType(), name.asString()));
         scriptEntry.addObject("created_npc", created);
 
         if (loc != null)

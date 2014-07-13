@@ -638,7 +638,8 @@ public class CommandRegistry implements dRegistry {
         // @Author aufdemrand
         // @Group npc
         // @Description
-        // Todo
+        // TODO
+        // Specify an NPC to copy the NPC.
         // @Tags
         // <server.list_npcs>
         // <entry[saveName].created_npc> returns the NPC that was created.
