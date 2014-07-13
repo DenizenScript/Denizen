@@ -21,6 +21,7 @@ import net.citizensnpcs.api.astar.pathfinder.MinecraftBlockExaminer;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
@@ -237,6 +238,13 @@ public class dNPC implements dObject, Adjustable {
         if (!npc.hasTrait(AssignmentTrait.class))
             npc.addTrait(AssignmentTrait.class);
         return npc.getTrait(AssignmentTrait.class);
+    }
+
+    public Equipment getEquipmentTrait() {
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(Equipment.class))
+            npc.addTrait(Equipment.class);
+        return npc.getTrait(Equipment.class);
     }
 
     public NicknameTrait getNicknameTrait() {
@@ -476,6 +484,26 @@ public class dNPC implements dObject, Adjustable {
                         .getNPCFlag(getId(), flag_name))
                         .getAttribute(attribute);
             else return Element.NULL.getAttribute(attribute);
+        }
+
+        // <--[tag]
+        // @attribute <n@npc.list_flags[<search>]>
+        // @returns dList
+        // @description
+        // Returns a list of an NPC's flag names, with an optional search for
+        // names containing a certain pattern.
+        // -->
+        if (attribute.startsWith("list_flags")) {
+            dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listNPCFlags(getId()));
+            dList searchFlags = null;
+            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
+                searchFlags = new dList();
+                for (String flag : allFlags)
+                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
+                        searchFlags.add(flag);
+            }
+            return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
+                    : searchFlags.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

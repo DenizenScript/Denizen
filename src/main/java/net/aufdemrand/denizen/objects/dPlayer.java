@@ -519,6 +519,26 @@ public class dPlayer implements dObject, Adjustable {
             return new Element(FlagManager.playerHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <p@player.list_flags[<search>]>
+        // @returns dList
+        // @description
+        // Returns a list of a player's flag names, with an optional search for
+        // names containing a certain pattern.
+        // -->
+        if (attribute.startsWith("list_flags")) {
+            dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listPlayerFlags(this));
+            dList searchFlags = null;
+            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
+                searchFlags = new dList();
+                for (String flag : allFlags)
+                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
+                        searchFlags.add(flag);
+            }
+            return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
+                    : searchFlags.getAttribute(attribute.fulfill(1));
+        }
+
 
         if (attribute.startsWith("current_step")) {
             String outcome = "null";

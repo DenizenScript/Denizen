@@ -1,22 +1,18 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import net.aufdemrand.denizen.exceptions.CommandExecutionException;
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.trait.trait.Equipment;
+import org.bukkit.entity.LivingEntity;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.bukkit.entity.LivingEntity;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.trait.trait.Equipment;
 
 /**
  * Equip entities with items and armor.
@@ -104,12 +100,11 @@ public class EquipCommand extends AbstractCommand {
             }
             else if (entity.isNPC()) {
 
-                NPC npc = entity.getNPC();
+                dNPC npc = entity.getDenizenNPC();
 
                 if (npc != null) {
 
-                    if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);
-                    Equipment trait = npc.getTrait(Equipment.class);
+                    Equipment trait = npc.getEquipmentTrait();
 
                     if (equipment.get("hand")  != null) trait.set(0, equipment.get("hand").getItemStack());
                     if (equipment.get("head")  != null) trait.set(1, equipment.get("head").getItemStack());

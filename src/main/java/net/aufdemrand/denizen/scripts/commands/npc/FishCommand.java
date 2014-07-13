@@ -10,6 +10,8 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class FishCommand extends AbstractCommand {
 
@@ -38,7 +40,7 @@ public class FishCommand extends AbstractCommand {
 
         }
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("stop"))
             throw new InvalidArgumentsException("Must specify a valid location!");
 
         scriptEntry.defaultObject("catch", new Element("NONE"))
@@ -58,7 +60,8 @@ public class FishCommand extends AbstractCommand {
         Element stop = scriptEntry.getElement("stop");
         Element percent = scriptEntry.getElement("percent");
 
-        FishingTrait trait = scriptEntry.getNPC().getFishingTrait();
+        dNPC npc = scriptEntry.getNPC();
+        FishingTrait trait = npc.getFishingTrait();
 
         dB.report(scriptEntry, getName(), location.debug() + katch.debug() + percent.debug() + stop.debug());
 
@@ -66,6 +69,8 @@ public class FishCommand extends AbstractCommand {
             trait.stopFishing();
             return;
         }
+
+        npc.getEquipmentTrait().set(0, new ItemStack(Material.FISHING_ROD));
 
         trait.setCatchPercent(percent.asInt());
         trait.setCatchType(FishingTrait.CatchType.valueOf(katch.asString().toUpperCase()));

@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.objects;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +20,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -704,7 +707,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @attribute <cu@cuboid.max[<index>]>
         // @returns dLocation
         // @description
-        // Returns the lowest-numbered corner location. If a single-member dCuboid, no
+        // Returns the highest-numbered corner location. If a single-member dCuboid, no
         // index is required. If wanting the max of a specific member, just specify an index.
         // -->
         if (attribute.startsWith("max")) {
@@ -807,7 +810,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         if (attribute.startsWith("list_entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
-            for (Entity ent: getWorld().getEntities()) {
+            for (Entity ent : getWorld().getEntities()) {
                 if (ent.isValid() && isInsideCuboid(ent.getLocation()))
                     entities.add(new dEntity(ent));
             }
@@ -822,14 +825,67 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // -->
         if (attribute.startsWith("list_living_entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
-            for (Entity ent: getWorld().getLivingEntities()) {
+            for (Entity ent : getWorld().getLivingEntities()) {
                 if (ent.isValid() && isInsideCuboid(ent.getLocation()))
                     entities.add(new dEntity(ent));
             }
             return new dList(entities).getAttribute(attribute.fulfill(1));
         }
 
-        // TODO: list_chunks, list_chunks.partial
+        // <--[tag]
+        // @attribute <cu@cuboid.list_chunks>
+        // @returns dList(dChunk)
+        // @description
+        // Gets a list of all chunks entirely within the dCuboid.
+        // -->
+        if (attribute.startsWith("list_chunks")) {
+            Set<Chunk> chunks = new HashSet<Chunk>();
+            for (LocationPair pair : pairs) {
+                int minY = pair.low.getBlockY();
+                Chunk minChunk = pair.low.getChunk();
+                if (isInsideCuboid(new Location(getWorld(), minChunk.getX()*16, minY, minChunk.getZ()*16)))
+                    chunks.add(minChunk);
+                Chunk maxChunk = pair.high.getChunk();
+                if (isInsideCuboid(new Location(getWorld(), maxChunk.getX()*16+15, minY, maxChunk.getZ()*16+15)))
+                    chunks.add(maxChunk);
+                dB.log("min:" + minChunk.getX() + "," + minChunk.getZ());
+                dB.log("max:" + maxChunk.getX() + "," + maxChunk.getZ());
+                for(int x = minChunk.getX()+1; x <= maxChunk.getX()-1; x++) {
+                    for(int z = minChunk.getZ()+1; z <= maxChunk.getZ()-1; z++) {
+                        chunks.add(getWorld().getChunkAt(x, z));
+                    }
+                }
+            }
+            dList list = new dList();
+            for (Chunk chunk : chunks)
+                list.add(new dChunk(chunk).identify());
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <cu@cuboid.list_partial_chunks>
+        // @returns dList(dChunk)
+        // @description
+        // Gets a list of all chunks partially or entirely within the dCuboid.
+        // -->
+        if (attribute.startsWith("list_partial_chunks")) {
+            Set<Chunk> chunks = new HashSet<Chunk>();
+            for (LocationPair pair : pairs) {
+                Chunk minChunk = pair.low.getChunk();
+                Chunk maxChunk = pair.high.getChunk();
+                dB.log("min:" + minChunk.getX() + "," + minChunk.getZ());
+                dB.log("max:" + maxChunk.getX() + "," + maxChunk.getZ());
+                for (int x = minChunk.getX(); x <= maxChunk.getX(); x++) {
+                    for (int z = minChunk.getZ(); z <= maxChunk.getZ(); z++) {
+                        chunks.add(getWorld().getChunkAt(x, z));
+                    }
+                }
+            }
+            dList list = new dList();
+            for (Chunk chunk : chunks)
+                list.add(new dChunk(chunk).identify());
+            return list.getAttribute(attribute.fulfill(1));
+        }
 
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
