@@ -53,13 +53,15 @@ public class ScriptEntry implements Cloneable, Debuggable {
     private ScriptQueue queue = null;
 
     // ScriptEntry Context
-    private final Map<String, Object> objects = new HashMap<String, Object>();
+    private Map<String, Object> objects = new HashMap<String, Object>();
 
 
     // Allow cloning of the scriptEntry. Can be useful in 'loops', etc.
     @Override
     public ScriptEntry clone() throws CloneNotSupportedException {
-        return (ScriptEntry) super.clone();
+        ScriptEntry se = (ScriptEntry) super.clone();
+        se.objects = new HashMap<String, Object>();
+        return se;
     }
 
 
