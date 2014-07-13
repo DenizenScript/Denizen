@@ -323,16 +323,28 @@ public class Denizen extends JavaPlugin {
             // Initialize Property Parser
             propertyParser = new PropertyParser();
 
-            ScriptHelper.reloadScripts();
-
-            dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
-
-            // Fire the 'on Server Start' world event
-            ws_helper.serverStartEvent();
         }
         catch (Exception e) {
             dB.echoError(e);
         }
+
+        // Run everything else on the first server tick
+        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ScriptHelper.reloadScripts();
+
+                    dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+
+                    // Fire the 'on Server Start' world event
+                    ws_helper.serverStartEvent();
+                }
+                catch (Exception e) {
+                    dB.echoError(e);
+                }
+            }
+        }, 1);
     }
 
 
