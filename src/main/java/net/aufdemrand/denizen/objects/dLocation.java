@@ -306,7 +306,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     public String identifySimple() {
         if (isUnique())
             return "l@" + getSaved(this);
-        else return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
+        else if (getWorld() != null)
+            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ();
+        else
+            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
                 + "," + getWorld().getName();
     }
 

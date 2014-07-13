@@ -325,13 +325,6 @@ public class Denizen extends JavaPlugin {
 
             // Reload notables from notables.yml into memory
             notableManager.reloadNotables();
-
-            ScriptHelper.reloadScripts();
-
-            dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
-
-            // Fire the 'on Server Start' world event
-            ws_helper.serverStartEvent();
         }
         catch (Exception e) {
             dB.echoError(e);
