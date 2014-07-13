@@ -1795,10 +1795,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Note
-        // @Syntax note [<Notable dObject>] [as:<name>]
+        // @Syntax note [<Notable dObject>] [as:<name>] (remove)
         // @Required 2
         // @Stable unstable
-        // @Short Adds a new notable object.
+        // @Short Adds or removes a notable object.
         // @Author aufdemrand
         // @Group core
         // @Description
@@ -1809,7 +1809,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(NoteCommand.class,
-                "NOTE", "note [<Notable dObject>] [as:<name>]", 2);
+                "NOTE", "note [<Notable dObject>] [as:<name>] (remove)", 2);
 
 
         // <--[command]

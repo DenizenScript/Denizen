@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -22,13 +23,18 @@ public class NoteCommand extends AbstractCommand {
             else if (ObjectFetcher.canFetch(arg.getValue().split("@")[0]))
                 scriptEntry.addObject("object", arg.getValue());
 
+            else if (arg.matches("remove"))
+                scriptEntry.addObject("remove", Element.TRUE);
+
             else arg.reportUnhandled();
         }
 
         if (!scriptEntry.hasObject("id"))
             throw new InvalidArgumentsException("Must specify an id");
-        if (!scriptEntry.hasObject("object"))
+        if (!scriptEntry.hasObject("object") && !scriptEntry.hasObject("remove"))
             throw new InvalidArgumentsException("Must specify a fetchable-object to note.");
+        if (!scriptEntry.hasObject("remove"))
+            scriptEntry.addObject("remove", Element.FALSE);
 
     }
 
@@ -37,8 +43,15 @@ public class NoteCommand extends AbstractCommand {
 
         String object = (String) scriptEntry.getObject("object");
         Element id = scriptEntry.getElement("id");
+        Element remove = scriptEntry.getElement("remove");
 
-        dB.report(scriptEntry, getName(), aH.debugObj("object", object) + id.debug());
+        dB.report(scriptEntry, getName(), aH.debugObj("object", object) + id.debug() + remove.debug());
+
+        if (remove.asBoolean()) {
+            if (NotableManager.isSaved(id.asString()))
+                NotableManager.remove(id.asString());
+            return;
+        }
 
         String object_type = object.split("@")[0].toLowerCase();
         Class object_class = ObjectFetcher.getObjectClass(object_type);
