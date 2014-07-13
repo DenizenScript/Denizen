@@ -196,7 +196,7 @@ public class IfCommand extends AbstractCommand {
                         // If we find an "else if", act like we entered a set of
                         // brackets, so we treat the if's commands as arguments
                         // and don't add them to our current else commands
-                        if (arg.matches("if") && elseOutcome.size() == 0) {
+                        if (arg.matches("if") && elseOutcome.size() == 0 && bracketsEntered < 1) {
                             bracketsEntered++;
                         }
 
