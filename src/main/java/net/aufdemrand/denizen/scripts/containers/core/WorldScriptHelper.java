@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.objects.aH.PrimitiveType;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -4159,7 +4160,7 @@ public class WorldScriptHelper implements Listener {
     public void playerMove(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
-        String name = dLocation.getSaved(event.getTo());
+        String name = NotableManager.getSavedId(new dLocation(event.getTo()));
 
         if (name != null) {
             Map<String, dObject> context = new HashMap<String, dObject>();
