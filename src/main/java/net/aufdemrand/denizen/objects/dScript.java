@@ -66,7 +66,7 @@ public class dScript implements dObject {
     // -->
 
 
-    final public static Pattern CONTAINER_PATTERN = Pattern.compile("(s@|)(.+)",
+    final public static Pattern CONTAINER_PATTERN = Pattern.compile("(s@)?(.+)",
             Pattern.CASE_INSENSITIVE);
 
     /**
