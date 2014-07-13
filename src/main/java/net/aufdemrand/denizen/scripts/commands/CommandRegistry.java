@@ -638,7 +638,8 @@ public class CommandRegistry implements dRegistry {
         // @Author aufdemrand
         // @Group npc
         // @Description
-        // Todo
+        // TODO
+        // Specify an NPC to copy the NPC.
         // @Tags
         // <server.list_npcs>
         // <entry[saveName].created_npc> returns the NPC that was created.
@@ -1753,25 +1754,6 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ModifyBlockCommand.class,
                 "MODIFYBLOCK", "modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)", 2);
-
-
-        // <--[command]
-        // @Name Nameplate
-        // @Syntax nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib
-        // @Required 1
-        // @Stable unstable
-        // @Short Changes something's nameplate, requires ProtocolLib (Unstable and broken!)
-        // @Author spaceemotion
-        // @Group entity
-        // @Description
-        // Todo
-        // @Tags
-        // Todo
-        // @Usage
-        // Todo
-        // -->
-        registerCoreMember(NameplateCommand.class,
-                "NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
 
 
         // <--[command]

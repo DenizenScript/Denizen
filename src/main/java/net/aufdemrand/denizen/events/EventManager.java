@@ -356,8 +356,11 @@ public class EventManager implements Listener {
         registerSmartEvent(new AsyncChatSmartEvent());
         registerSmartEvent(new BiomeEnterExitSmartEvent());
         registerSmartEvent(new BlockFallsSmartEvent());
+        registerSmartEvent(new BlockPhysicsSmartEvent());
         registerSmartEvent(new ChunkLoadSmartEvent());
         registerSmartEvent(new CuboidEnterExitSmartEvent());
+        registerSmartEvent(new EntityDamageSmartEvent());
+        registerSmartEvent(new EntityDeathSmartEvent());
         registerSmartEvent(new EntityInteractSmartEvent());
         registerSmartEvent(new EntitySpawnSmartEvent());
         registerSmartEvent(new FlagSmartEvent());

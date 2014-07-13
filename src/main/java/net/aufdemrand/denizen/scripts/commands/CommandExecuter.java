@@ -48,7 +48,7 @@ public class CommandExecuter {
         }
 
         // Get the command instance ready for the execution of the scriptEntry
-        AbstractCommand command = plugin.getCommandRegistry().get(scriptEntry.getCommandName());
+        AbstractCommand command = scriptEntry.getCommand();
 
         if (command == null) {
             dB.echoDebug(scriptEntry, DebugElement.Header, "Executing command: " + scriptEntry.getCommandName());

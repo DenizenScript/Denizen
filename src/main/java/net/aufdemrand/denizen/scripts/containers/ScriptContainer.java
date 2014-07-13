@@ -5,15 +5,19 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptEntrySet;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ScriptContainer implements Debuggable {
 
@@ -216,17 +220,32 @@ public class ScriptContainer implements Debuggable {
     }
 
     public List<ScriptEntry> getBaseEntries(dPlayer player, dNPC npc) {
-        return getEntries(player, npc, null);
+        return getEntries(player, npc, "script");
     }
 
     public List<ScriptEntry> getEntries(dPlayer player, dNPC npc, String path) {
-        List<ScriptEntry> list = new ArrayList<ScriptEntry>();
         if (path == null) path = "script";
-        List<String> stringEntries = contents.getStringList(path.toUpperCase());
-        if (stringEntries == null || stringEntries.size() == 0) return list;
-        list = ScriptBuilder.buildScriptEntries(stringEntries, this, player, npc);
-        return list;
+        ScriptEntrySet set = getSetFor(path.toUpperCase());
+        if (set == null)
+            return new ArrayList<ScriptEntry>();
+        set.setPlayerAndNPC(player, npc);
+        return set.getEntries();
     }
+
+    ScriptEntrySet getSetFor(String path) {
+        ScriptEntrySet got = scriptsMap.get(path);
+        if (got != null) {
+            return got.Duplicate();
+        }
+        List<String> stringEntries = contents.getStringList(path);
+        if (stringEntries == null || stringEntries.size() == 0) return null;
+        List<ScriptEntry> entries = ScriptBuilder.buildScriptEntries(stringEntries, this, null, null);
+        got = new ScriptEntrySet(entries);
+        scriptsMap.put(path, got);
+        return got.Duplicate();
+    }
+
+    private Map<String, ScriptEntrySet> scriptsMap = new HashMap<String, ScriptEntrySet>();
 
     public boolean checkCooldown(dPlayer player) {
         return CooldownCommand.checkCooldown(player, name);

@@ -48,13 +48,6 @@ public class ScriptBuilder {
 
         for (String entry : contents) {
 
-            // TODO: REMOVE THIS CHUNK OF CODE -- no longer needed.
-            // // ENGAGE NOW functionality engages the NPC at the soonest possible point.
-            //
-            // if (thisItem.toUpperCase().contains("ENGAGE")
-            //        && thisItem.toUpperCase().contains("NOW")) {
-            //    plugin.getCommandRegistry().get(EngageCommand.class).setEngaged(npc.getCitizen(), true);
-            // }
 
             String[] scriptEntry = new String[2];
             String[] splitEntry = entry.split(" ", 2);
