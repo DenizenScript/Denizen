@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
@@ -89,9 +88,10 @@ public class RemoveCommand extends AbstractCommand {
             if (!entity.isGeneric()) {
 
                 if (region != null) {
-                    conditionsMet = WorldGuardUtilities.inRegion
+                    dB.echoError("Region support is deprecated!");
+                    /*conditionsMet = WorldGuardUtilities.inRegion
                                     (entity.getBukkitEntity().getLocation(),
-                                    region.asString());
+                                    region.asString());*/
                 }
 
                 if (conditionsMet) {
@@ -124,9 +124,10 @@ public class RemoveCommand extends AbstractCommand {
                     if (entity.getEntityType().equals(worldEntity.getType())) {
 
                         if (region != null) {
-                            conditionsMet = WorldGuardUtilities.inRegion
+                            dB.echoError("Region support is deprecated!");
+                            /*conditionsMet = WorldGuardUtilities.inRegion
                                             (worldEntity.getLocation(),
-                                            region.asString());
+                                            region.asString());*/
                         }
 
                         if (conditionsMet) {

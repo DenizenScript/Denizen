@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -81,8 +80,9 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             && event.getWhoClicked() == player.getPlayerEntity()) {
 
             // If REGION argument specified, check. If not in region, don't count kill!
-            if (region != null)
-                if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
+            if (region != null) {
+                //if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
+            }
 
             // Same with the CUBOID argument...
             if (cuboid != null)
@@ -142,8 +142,9 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
         if (event.getPlayer() != player.getPlayerEntity()) return;
 
         // If REGION argument specified, check. If not in region, don't count kill!
-        if (region != null)
-            if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
+        if (region != null) {
+           //if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
+        }
 
         // Same with the CUBOID argument...
         if (cuboid != null)

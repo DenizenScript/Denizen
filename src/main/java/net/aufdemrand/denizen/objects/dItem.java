@@ -525,7 +525,7 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public String getFullString() {
-        return "i@" + getMaterial().name() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
+        return "i@" + (isItemscript() ? getScriptName(): getMaterial().name()) + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
     }
 
 
