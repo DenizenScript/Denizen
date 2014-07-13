@@ -180,7 +180,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         // Split values
         String[] split = string.replace("l@", "").split(",");
 
-        if (split.length == 4)
+        if (split.length == 3)
+            // If 4 values, standard dScript location format
+            // x,y,z,world
+            try {
+                return new dLocation(null,
+                        Double.valueOf(split[0]),
+                        Double.valueOf(split[1]),
+                        Double.valueOf(split[2]));
+            } catch(Exception e) {
+                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                return null;
+            }
+
+        else if (split.length == 4)
             // If 4 values, standard dScript location format
             // x,y,z,world
             try {
@@ -189,6 +202,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                         Double.valueOf(split[1]),
                         Double.valueOf(split[2]));
             } catch(Exception e) {
+                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 return null;
             }
 
@@ -206,6 +220,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
                     Float.valueOf(split[4]));
 
             } catch(Exception e) {
+                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 return null;
             }
 
@@ -360,17 +375,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     public String identifySimple() {
         if (isSaved(this))
             return getSaved(this);
-        else return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
+        else if (getWorld() != null)
+            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ();
+        else
+            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
                 + "," + getWorld().getName();
     }
 
     public String identifyRaw() {
         if (getYaw() != 0.0 || getPitch() != 0.0)
             return "l@" + getX() + "," + getY()
-                    + "," + getZ() + "," + getPitch() + "," + getYaw() + "," + getWorld().getName();
+                    + "," + getZ() + "," + getPitch() + "," + getYaw() + (getWorld() != null ? "," + getWorld().getName(): "");
         else
             return "l@" + getX() + "," + getY()
-                    + "," + getZ() + "," + getWorld().getName();
+                    + "," + getZ() + (getWorld() != null ? "," + getWorld().getName(): "");
     }
 
     @Override
