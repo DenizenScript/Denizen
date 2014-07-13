@@ -2447,6 +2447,41 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
+        // @Name SQL
+        // @Syntax sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (<username>) (<password>)
+        // @Required 1
+        // @Stable unstable
+        // @Short Interacts with a MySQL server.
+        // @Author mcmonkey
+        // @Group core
+        // @Description
+        // Todo
+        // @Tags
+        // <entry[saveName].result> returns a dList of all rows from a query command.
+        // @Usage
+        // Use to connect to an SQL server.
+        // - sql id:name connect:localhost:3306/test username:space password:space
+        // @Usage
+        // Use to update an SQL server.
+        // - sql id:name "update:CREATE table things(id int,column_name1 varchar(255),column_name2 varchar(255));"
+        // @Usage
+        // Use to update an SQL server.
+        // - sql id:name "update:INSERT INTO things VALUES (3, 'hello', 'space');"
+        // @Usage
+        // Use to query an SQL server.
+        // - sql sql id:name "query:SELECT id,column_name1,column_name2 FROM things;"
+        // @Usage
+        // Use to query an SQL server.
+        // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things WHERE id=3;"
+        // @Usage
+        // Use to disconnect from an SQL server.
+        // - sql disconnect id:name
+        // -->
+        registerCoreMember(SQLCommand.class,
+                "SQL", "sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (<username>) (<password>)", 2);
+
+
+        // <--[command]
         // @Name Stand
         // @Syntax stand
         // @Required 0
