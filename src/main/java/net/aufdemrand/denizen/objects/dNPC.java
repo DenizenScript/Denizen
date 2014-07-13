@@ -21,6 +21,7 @@ import net.citizensnpcs.api.astar.pathfinder.MinecraftBlockExaminer;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
@@ -237,6 +238,13 @@ public class dNPC implements dObject, Adjustable {
         if (!npc.hasTrait(AssignmentTrait.class))
             npc.addTrait(AssignmentTrait.class);
         return npc.getTrait(AssignmentTrait.class);
+    }
+
+    public Equipment getEquipmentTrait() {
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(Equipment.class))
+            npc.addTrait(Equipment.class);
+        return npc.getTrait(Equipment.class);
     }
 
     public NicknameTrait getNicknameTrait() {
