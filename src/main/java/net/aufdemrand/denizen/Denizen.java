@@ -200,6 +200,13 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
+            getCommandRegistry().registerCoreMembers();
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+
+        try {
             // Register script-container types
             ScriptRegistry._registerCoreTypes();
 
@@ -289,7 +296,6 @@ public class Denizen extends JavaPlugin {
 
         // Register Core Members in the Denizen Registries
         try {
-            getCommandRegistry().registerCoreMembers();
             getTriggerRegistry().registerCoreMembers();
             getRequirementRegistry().registerCoreMembers();
             getListenerRegistry().registerCoreMembers();

@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
@@ -35,6 +36,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
     // The name of the command that will be executed
     private String command;
+    private AbstractCommand actualCommand;
 
     // Command Arguments
     private List<String> args;
@@ -102,6 +104,10 @@ public class ScriptEntry implements Cloneable, Debuggable {
                     dB.echoError("The command '" + this.command + "' cannot be waited for!");
                 }
             }
+            actualCommand = DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command);
+        }
+        else {
+            actualCommand = null;
         }
 
         // Store the args. The CommandExecuter will fill these out.
@@ -200,6 +206,10 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
     public String getCommandName() {
         return command;
+    }
+
+    public AbstractCommand getCommand() {
+        return actualCommand;
     }
 
 
