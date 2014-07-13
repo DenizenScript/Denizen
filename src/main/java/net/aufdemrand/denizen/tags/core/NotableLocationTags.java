@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -31,11 +32,11 @@ public class NotableLocationTags implements Listener {
 
         else if (event.hasNameContext()) id = event.getNameContext();
 
-        if (dLocation.isSaved(id)) {
+        if (NotableManager.isType(id, dLocation.class)) {
             dB.echoError("Notable tag '" + event.raw_tag + "': id was not found.");
         }
 
-        dLocation location = dLocation.getSaved(id);
+        dLocation location = (dLocation) NotableManager.getSavedObject(id);
 
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
         attribute.fulfill(1);

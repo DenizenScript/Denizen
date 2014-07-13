@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.objects.notable;
 
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -22,15 +24,10 @@ import java.util.logging.Logger;
 public class NotableManager {
 
     public NotableManager() {
-        try { _initialize(); } catch (IOException e) {
-
-
-
-        } catch (ClassNotFoundException e) {
-
-
-
-        }
+        registerWithNotableManager(dCuboid.class);
+        registerWithNotableManager(dInventory.class);
+        registerWithNotableManager(dItem.class);
+        registerWithNotableManager(dLocation.class);
     }
 
 
@@ -111,10 +108,23 @@ public class NotableManager {
      */
     private static void _recallNotables() {
 
+        notableObjects.clear();
+        typeTracker.clear();
+        reverseObjects.clear();
+
         // Find each type of notable
-        for (String keys : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(false)) {
+        for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(false)) {
 
+            Class<? extends dObject> clazz = reverse_objects.get(key);
 
+            ConfigurationSection section = DenizenAPI.getCurrentInstance().notableManager().getNotables()
+                    .getConfigurationSection(key);
+
+            for (String notable : section.getKeys(false)) {
+                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notable));
+                obj.load();
+                saveAs(obj, notable);
+            }
 
         }
 
@@ -128,18 +138,24 @@ public class NotableManager {
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
 
             // If the object is serializable, save that info... fetching the objects back
-            // will require this information
+            // will require this information TODO: make this do something?..
             if (notable.getValue().getSaveObject() instanceof ConfigurationSerializable)
                 DenizenAPI.getCurrentInstance().notableManager().getNotables()
-                        .set(((dObject) notable.getValue()).getObjectType().toLowerCase() + "." + "_serializable", true);
+                        .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
 
             DenizenAPI.getCurrentInstance().notableManager().getNotables()
-                    .set(((dObject) notable.getValue()).getObjectType().toLowerCase() + "." + notable.getKey().toLowerCase(),
-                            notable.getValue());
+                    .set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase(),
+                            notable.getValue().getSaveObject());
         }
 
     }
 
+    private static <T extends Notable> Class<T> getClass(Notable notable) {
+        for (Class clazz : objects.keySet())
+            if (clazz.isInstance(notable))
+                return clazz;
+        return null;
+    }
 
     /*
      * Reloads, retrieves and saves notable information from/to 'notables.yml'.
@@ -185,23 +201,15 @@ public class NotableManager {
 
 
     private static Map<Class, String> objects = new HashMap<Class, String>();
-
-    public static void _initialize() throws IOException, ClassNotFoundException {
-        objects.clear();
-
-        for (Class dClass : notable_objects)
-            for (Method method : dClass.getMethods())
-                if (method.isAnnotationPresent(net.aufdemrand.denizen.objects.notable.Note.class)) {
-                    String[] identifiers = method.getAnnotation(net.aufdemrand.denizen.objects.notable.Note.class).value().split(",");
-                    for (String identifer : identifiers)
-                        objects.put(dClass, identifer.trim().toLowerCase());
-                }
-    }
-
-    private static ArrayList<Class> notable_objects = new ArrayList<Class>();
+    private static Map<String, Class> reverse_objects = new HashMap<String, Class>();
 
     public static void registerWithNotableManager(Class notable) {
-        notable_objects.add(notable);
+        for (Method method : notable.getMethods())
+            if (method.isAnnotationPresent(Note.class)) {
+                String note = method.getAnnotation(Note.class).value();
+                objects.put(notable, note);
+                reverse_objects.put(note, notable);
+            }
     }
 
     public static boolean canFetch(Class notable) {
@@ -210,7 +218,7 @@ public class NotableManager {
 
     public static String getClassId(Class notable) {
         if (canFetch(notable))
-            return objects.get(notable).toLowerCase();
+            return objects.get(notable);
         else
             return null;
     }

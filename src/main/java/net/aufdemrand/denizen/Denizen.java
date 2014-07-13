@@ -325,6 +325,9 @@ public class Denizen extends JavaPlugin {
             // Initialize Property Parser
             propertyParser = new PropertyParser();
 
+            // Reload notables from notables.yml into memory
+            notableManager.reloadNotables();
+
             ScriptHelper.reloadScripts();
 
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
@@ -345,8 +348,8 @@ public class Denizen extends JavaPlugin {
     public void onDisable() {
         if(!startedSuccessful) return;
 
-        // Save locations
-        dLocation._saveLocations();
+        // Save notables
+        notableManager.saveNotables();
 
         // Save scoreboards
         ScoreboardHelper._saveScoreboards();
@@ -401,8 +404,10 @@ public class Denizen extends JavaPlugin {
             savesConfigFile = new File(getDataFolder(), "saves.yml");
         }
         savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
-        // Reload dLocations from saves.yml
+
+        // Reload dLocations from saves.yml, load them into NotableManager // TODO: probably remove this
         dLocation._recallLocations();
+
         // Update saves from name to UUID
         updateSaves();
 
@@ -518,8 +523,8 @@ public class Denizen extends JavaPlugin {
         if (savesConfig == null || savesConfigFile == null) {
             return;
         }
-        // Save dLocations to saves.yml
-        dLocation._saveLocations();
+        // Save notables
+        notableManager.saveNotables();
         // Save scoreboards to scoreboards.yml
         ScoreboardHelper._saveScoreboards();
         // Save entities to entities.yml

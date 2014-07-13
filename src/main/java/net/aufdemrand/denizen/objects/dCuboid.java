@@ -518,7 +518,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
 
     @Override
-    @Note("cuboid")
+    @Note("Cuboids")
     public String getSaveObject() {
         StringBuilder sb = new StringBuilder();
 
@@ -540,6 +540,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         NotableManager.saveAs(this, id);
     }
 
+    public void load() {}
 
     @Override
     public void forget() {

@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -35,114 +37,51 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
     //   STATIC METHODS
     /////////////////
 
-    public static Map<String, dLocation> uniqueObjects = new HashMap<String, dLocation>();
-
-    public static boolean isSaved(String id) {
-        return uniqueObjects.containsKey(id.toUpperCase());
+    public void makeUnique(String id) {
+        NotableManager.saveAs(this, id);
     }
 
-    public static boolean isSaved(dLocation location) {
-        for (Map.Entry<String, dLocation> i : uniqueObjects.entrySet()) {
-            if (i.getValue().getBlockX() != location.getBlockX()) continue;
-            if (i.getValue().getBlockY() != location.getBlockY()) continue;
-            if (i.getValue().getBlockZ() != location.getBlockZ()) continue;
-            if (!i.getValue().getWorld().getName().equals(location.getWorld().getName())) continue;
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean isSaved(Location location) {
-        for (Map.Entry<String, dLocation> i : uniqueObjects.entrySet())
-            if (i.getValue() == location) return true;
-        // TODO: This appears to do the same thing twice.
-        // TODO: Possibly compare X/Y/Z/world, rather than instance reference?
-
-        return uniqueObjects.containsValue(location);
-    }
-
-    public static dLocation getSaved(String id) {
-        if (uniqueObjects.containsKey(id.toUpperCase()))
-            return new dLocation(uniqueObjects.get(id.toUpperCase()));
-        else return null;
+    @Note("Locations")
+    public String getSaveObject() {
+        return (getBlockX() + 0.5)
+                + "," + getBlockY()
+                + "," + (getBlockZ() + 0.5)
+                + "," + getYaw()
+                + "," + getPitch()
+                + "," + getWorld().getName();
     }
 
     public static String getSaved(dLocation location) {
-        for (Map.Entry<String, dLocation> i : uniqueObjects.entrySet()) {
-            if (i.getValue().getBlockX() != location.getBlockX()) continue;
-            if (i.getValue().getBlockY() != location.getBlockY()) continue;
-            if (i.getValue().getBlockZ() != location.getBlockZ()) continue;
-            if (!i.getValue().getWorld().getName().equals(location.getWorld().getName())) continue;
-            return "l@" + i.getKey();
+        for (dLocation saved : NotableManager.getAllType(dLocation.class)) {
+            if (saved.getBlockX() != location.getBlockX()) continue;
+            if (saved.getBlockY() != location.getBlockY()) continue;
+            if (saved.getBlockZ() != location.getBlockZ()) continue;
+            if (!saved.getWorld().getName().equals(location.getWorld().getName())) continue;
+            return NotableManager.getSavedId(saved);
         }
         return null;
     }
 
-    public static String getSaved(Location location) {
-        dLocation dLoc = new dLocation(location);
-        return getSaved(dLoc);
-    }
-
-    public static void saveAs(dLocation location, String id) {
-        if (location == null) return;
-        uniqueObjects.put(id.toUpperCase(), location);
-    }
-
-    public void makeUnique(String id) {
-        saveAs(this, id);
-    }
-
-    // TODO
-    public Object getSaveObject() {
-        return null;
-    }
+    public void load() {}
 
     public void forget() {
-        remove(getSaved(this));
-    }
-
-    public static void remove(String id) {
-        uniqueObjects.remove(id.toUpperCase());
+        NotableManager.remove(this);
     }
 
     /*
      * Called on server startup or /denizen reload locations. Should probably not be called manually.
      */
     public static void _recallLocations() {
-
-
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
-        uniqueObjects.clear();
         for (String location : loclist) {
             Matcher m = notablePattern.matcher(location);
             if (m.matches()) {
                 String id = m.group(1);
                 dLocation loc = valueOf(m.group(2));
-                uniqueObjects.put(id, loc);
+                NotableManager.saveAs(loc, id);
             }
         }
-    }
-
-    /*
-     * Called by Denizen internally on a server shutdown or /denizen save. Should probably
-     * not be called manually.
-     */
-    public static void _saveLocations() {
-        List<String> loclist = new ArrayList<String>();
-        for (Map.Entry<String, dLocation> entry : uniqueObjects.entrySet()) {
-            // Save locations in the horizontal centers of blocks
-        if (entry == null || entry.getValue() == null || entry.getValue().getWorld() == null)
-            continue;
-            loclist.add(entry.getKey() + ";"
-                    + (entry.getValue().getBlockX() + 0.5)
-                    + "," + entry.getValue().getBlockY()
-                    + "," + (entry.getValue().getBlockZ() + 0.5)
-                    + "," + entry.getValue().getYaw()
-                    + "," + entry.getValue().getPitch()
-                    + "," + entry.getValue().getWorld().getName());
-        }
-
-        DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
+        DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", null);
     }
 
 
@@ -170,8 +109,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
 
         m = item_by_saved.matcher(string);
 
-        if (m.matches() && isSaved(m.group(2)))
-            return getSaved(m.group(2));
+        if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dLocation.class))
+            return (dLocation) NotableManager.getSavedObject(m.group(2));
+
 
 
         ////////
@@ -288,14 +228,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
 
     // TODO: Why does this and the above exist?
     @Override
-    public void setYaw(float yaw) {
-        super.setYaw(yaw);
-    }
-
-    public dLocation rememberAs(String id) {
-        dLocation.saveAs(this, id);
-        return this;
-    }
+    public void setYaw(float yaw) { super.setYaw(yaw); }
 
     public boolean hasInventory() {
         return getBlock().getState() instanceof InventoryHolder;
@@ -340,26 +273,24 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
 
     @Override
     public String debug() {
-        return (isSaved(this) ? "<G>" + prefix + "='<A>" + identify() + "(<Y>" + identifyRaw()+ "<A>)<G>'  "
+        return (isUnique() ? "<G>" + prefix + "='<A>" + identify() + "(<Y>" + identifyRaw()+ "<A>)<G>'  "
                 : "<G>" + prefix + "='<Y>" + identify() + "<G>'  ");
     }
 
     @Override
-    public boolean isUnique() {
-        return isSaved(this);
-    }
+    public boolean isUnique() { return getSaved(this) != null; }
 
     @Override
     public String identify() {
-        if (!raw && isSaved(this))
-            return getSaved(this);
+        if (!raw && isUnique())
+            return "l@" + getSaved(this);
         else return identifyRaw();
     }
 
     @Override
     public String identifySimple() {
-        if (isSaved(this))
-            return getSaved(this);
+        if (isUnique())
+            return "l@" + getSaved(this);
         else return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
                 + "," + getWorld().getName();
     }
