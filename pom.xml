@@ -38,14 +38,6 @@
             <id>comphenix-repo</id>
             <url>http://repo.comphenix.net/content/groups/public</url>
         </repository>
-        <repository>
-            <id>spout-repo</id>
-            <url>http://nexus.spout.org/content/groups/public/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
     </repositories>
 
     <!-- Dependencies -->
@@ -112,11 +104,6 @@
             <groupId>org.json</groupId>
             <artifactId>org.json</artifactId>
             <version>chargebee-1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>2.7.0</version>
         </dependency>
     </dependencies>
 

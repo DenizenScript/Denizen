@@ -1756,25 +1756,6 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
-        // @Name Nameplate
-        // @Syntax nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib
-        // @Required 1
-        // @Stable unstable
-        // @Short Changes something's nameplate, requires ProtocolLib (Unstable and broken!)
-        // @Author spaceemotion
-        // @Group entity
-        // @Description
-        // Todo
-        // @Tags
-        // Todo
-        // @Usage
-        // Todo
-        // -->
-        registerCoreMember(NameplateCommand.class,
-                "NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
-
-
-        // <--[command]
         // @Name Narrate
         // @Syntax narrate ["<text>"] (targets:<player>|...) (format:<name>)
         // @Required 1

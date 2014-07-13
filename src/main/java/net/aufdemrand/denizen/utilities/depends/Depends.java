@@ -8,8 +8,6 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 
 public class Depends {
 
@@ -21,15 +19,12 @@ public class Depends {
 
     public static boolean hasProgramAB = false;
 
-    public static ProtocolManager protocolManager = null;
-
     public void initialize() {
         hasProgramAB = checkProgramAB();
         setupEconomy();
         setupPermissions();
         setupChat();
         setupCitizens();
-        setupProtocolManager();
     }
 
     // Check if Program AB, used for reading Artificial Intelligence Markup
@@ -40,14 +35,6 @@ public class Depends {
         catch( ClassNotFoundException e ) { return false; }
 
         return true;
-    }
-
-    private boolean setupProtocolManager() {
-        if (Bukkit.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
-           protocolManager = ProtocolLibrary.getProtocolManager();
-        }
-
-        return protocolManager != null;
     }
 
     private boolean setupEconomy() {

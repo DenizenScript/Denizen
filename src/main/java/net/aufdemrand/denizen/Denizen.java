@@ -36,7 +36,6 @@ import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -262,7 +261,6 @@ public class Denizen extends JavaPlugin {
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NicknameTrait.class).withName("nickname"));
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HealthTrait.class).withName("health"));
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NameplateTrait.class).withName("nameplate"));
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HungerTrait.class).withName("hunger"));
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SittingTrait.class).withName("sitting"));
             CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(FishingTrait.class).withName("fishing"));
@@ -280,12 +278,6 @@ public class Denizen extends JavaPlugin {
             // ChatbotTrait
             if (Depends.hasProgramAB)
                 CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ChatbotTrait.class).withName("chatbot"));
-
-            // Create instance of PacketHelper if ProtocolLib has been hooked
-            if(Depends.protocolManager != null) {
-                new PacketHelper(this);
-                dB.echoApproval("ProtocolLib hooked, traits and commands with custom packages can be used!");
-            }
 
             // Compile and load Denizen externals
             runtimeCompiler = new RuntimeCompiler(this);
