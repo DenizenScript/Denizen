@@ -97,9 +97,7 @@ public class dInventory implements dObject, Cloneable, Notable, Adjustable {
             }
         }
         try {
-            dInventory inv = this.clone();
-            inv.loadIdentifiers();
-            NotableManager.saveAs(inv, id);
+            NotableManager.saveAs(this.clone(), id);
             setIdentifiers("notable", id);
         } catch (CloneNotSupportedException e) {
             dB.echoError(e);
