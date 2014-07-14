@@ -156,6 +156,18 @@ public class Denizen extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
+            net.minecraft.server.v1_7_R4.Block.getById(0);
+        }
+        catch (NoClassDefFoundError e) {
+            getLogger().warning("-------------------------------------");
+            getLogger().warning("This Denizen version is not compatible with this CraftBukkit version! Deactivating Denizen!");
+            getLogger().warning("-------------------------------------");
+            getServer().getPluginManager().disablePlugin(this);
+            startedSuccessful = false;
+            return;
+        }
+
+        try {
             // Activate dependencies
             depends.initialize();
 
