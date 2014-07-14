@@ -72,7 +72,12 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     @Note("Inventories")
-    public String getSaveObject() { return "in@" + idType + PropertyParser.getPropertiesString(this); }
+    public String getSaveObject() {
+        gettingSaveObj = true;
+        String ret = "in@" + idType + PropertyParser.getPropertiesString(this);
+        gettingSaveObj = false;
+        return ret;
+    }
 
     public void makeUnique(String id) {
         String title = inventory.getTitle();
@@ -226,6 +231,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     String idType = null;
     String idHolder = null;
     String notableName = null;
+    boolean gettingSaveObj = false;
 
     public dInventory(Inventory inventory) {
         this.inventory = inventory;
@@ -438,6 +444,8 @@ public class dInventory implements dObject, Notable, Adjustable {
     public String getIdHolder() {
         return idHolder == null ? "" : idHolder;
     }
+
+    public boolean isGettingSaveObj() { return gettingSaveObj; }
 
     /**
      * Return the dLocation of this inventory's
