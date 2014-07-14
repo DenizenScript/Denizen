@@ -68,7 +68,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     /////////////////
 
     public boolean isUnique() {
-        return getIdType().equals("notable");
+        return notableName != null;
     }
 
     @Note("Inventories")
@@ -93,15 +93,17 @@ public class dInventory implements dObject, Notable, Adjustable {
                 break;
             }
         }
+        notableName = id;
         NotableManager.saveAs(this, id);
     }
 
     public void load() {
         InventoryScriptHelper.notableInventories.put(inventory.getTitle(), this);
+        notableName = NotableManager.getSavedId(this);
     }
 
     public void forget() {
-        NotableManager.remove(idHolder);
+        NotableManager.remove(notableName);
     }
 
     //////////////////
@@ -223,6 +225,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     String idType = null;
     String idHolder = null;
+    String notableName = null;
 
     public dInventory(Inventory inventory) {
         this.inventory = inventory;
@@ -413,7 +416,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // Iterate through Notable Inventories
             for (dInventory inv : NotableManager.getAllType(dInventory.class)) {
                 if (inv.getInventory().getTitle().equals(inventory.getTitle())) {
-                    idHolder = NotableManager.getSavedId(inv);
+                    notableName = NotableManager.getSavedId(inv);
                     return;
                 }
             }
@@ -1002,9 +1005,8 @@ public class dInventory implements dObject, Notable, Adjustable {
     @Override
     public String identify() {
         if (isUnique())
-            return "in@" + NotableManager.getSavedId(this);
-        else return "in@" + (getIdType().equals("script") || getIdType().equals("notable")
-                ? idHolder : (idType + PropertyParser.getPropertiesString(this)));
+            return "in@" + notableName;
+        else return "in@" + (getIdType().equals("script") ? idHolder : (idType + PropertyParser.getPropertiesString(this)));
     }
 
 
