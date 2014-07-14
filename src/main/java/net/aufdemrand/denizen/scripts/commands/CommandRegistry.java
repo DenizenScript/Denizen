@@ -2448,14 +2448,20 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name SQL
-        // @Syntax sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (<username>) (<password>)
+        // @Syntax sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (username:<username>) (password:<password>)
         // @Required 1
         // @Stable unstable
         // @Short Interacts with a MySQL server.
         // @Author mcmonkey
         // @Group core
         // @Description
-        // Todo
+        // This command is used to interact with a MySQL server. It can update the database or query it for information.
+        // The general usage order is connect -> update/query -> disconnect.
+        // It is not required that you disconnect right after using, and in fact encouraged that you keep a connection open where possible.
+        // When connecting, the server format is IP:Port/Database, EG 'localhost:3306/test'.
+        // Note that when using tag, it is recommended you escape unusual inputs to avoid SQL injection.
+        // The SQL command is merely a wrapper for SQL queries, and further usage details should be gathered from an official
+        // MySQL query reference rather than from Denizen command help.
         // @Tags
         // <entry[saveName].result> returns a dList of all rows from a query command.
         // @Usage
@@ -2469,16 +2475,18 @@ public class CommandRegistry implements dRegistry {
         // - sql id:name "update:INSERT INTO things VALUES (3, 'hello', 'space');"
         // @Usage
         // Use to query an SQL server.
-        // - sql sql id:name "query:SELECT id,column_name1,column_name2 FROM things;"
+        // - sql sql id:name "query:SELECT id,column_name1,column_name2 FROM things;" save:saveName
+        // - narrate <entry[saveName].result>
         // @Usage
         // Use to query an SQL server.
-        // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things WHERE id=3;"
+        // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things WHERE id=3;" save:saveName2
+        // - narrate <entry[saveName2].result>
         // @Usage
         // Use to disconnect from an SQL server.
         // - sql disconnect id:name
         // -->
         registerCoreMember(SQLCommand.class,
-                "SQL", "sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (<username>) (<password>)", 2);
+                "SQL", "sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (username:<username>) (password:<password>)", 2);
 
 
         // <--[command]
