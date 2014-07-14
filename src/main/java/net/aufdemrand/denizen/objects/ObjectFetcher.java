@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 
 /**
  *
@@ -30,13 +31,20 @@ public class ObjectFetcher {
             return;
 
         Map<String, Class> adding = new HashMap<String, Class>();
-        for (Class dClass : fetchable_objects)
-            for (Method method : dClass.getMethods())
+        for (Class dClass : fetchable_objects) {
+            try {
+                Method method = dClass.getMethod("valueOf", String.class);
                 if (method.isAnnotationPresent(Fetchable.class)) {
                     String[] identifiers = method.getAnnotation(Fetchable.class).value().split(",");
-                    for (String identifer : identifiers)
-                        adding.put(identifer.trim().toLowerCase(), dClass);
+                    for (String identifier : identifiers)
+                        adding.put(identifier.trim().toLowerCase(), dClass);
                 }
+            }
+            catch (Throwable e) {
+                dB.echoError("Failed to initialize an object type(" + dClass.getSimpleName() + "): ");
+                dB.echoError(e);
+            }
+        }
 
         objects.putAll(adding);
         dB.echoApproval("Added objects to the ObjectFetcher " + adding.keySet().toString());
@@ -54,7 +62,8 @@ public class ObjectFetcher {
         registerWithObjectFetcher(dList.class);      // li@/fl@
         registerWithObjectFetcher(dLocation.class);  // l@
         registerWithObjectFetcher(dMaterial.class);  // m@
-        registerWithObjectFetcher(dNPC.class);       // n@
+        if (Depends.citizens != null)
+            registerWithObjectFetcher(dNPC.class);   // n@
         registerWithObjectFetcher(dPlayer.class);    // p@
         registerWithObjectFetcher(dScript.class);    // s@
         registerWithObjectFetcher(dWorld.class);     // w@
@@ -70,10 +79,16 @@ public class ObjectFetcher {
 
     private static ArrayList<Class> fetchable_objects = new ArrayList<Class>();
 
-    public static void registerWithObjectFetcher(Class dObject) throws NoSuchMethodException {
-        fetchable_objects.add(dObject);
-        matches.put(dObject, dObject.getMethod("matches", String.class));
-        valueof.put(dObject, dObject.getMethod("valueOf", String.class));
+    public static void registerWithObjectFetcher(Class dObject) {
+        try {
+            fetchable_objects.add(dObject);
+            matches.put(dObject, dObject.getMethod("matches", String.class));
+            valueof.put(dObject, dObject.getMethod("valueOf", String.class));
+        }
+        catch (Throwable e) {
+            dB.echoError("Failed to register an object type (" + dObject.getSimpleName() + "): ");
+            dB.echoError(e);
+        }
     }
 
     public static boolean canFetch(String id) {

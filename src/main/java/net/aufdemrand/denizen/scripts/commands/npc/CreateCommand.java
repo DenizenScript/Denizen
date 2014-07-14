@@ -61,7 +61,7 @@ public class CreateCommand extends AbstractCommand {
 
         dNPC created;
         if (!type.isGeneric() && type.isNPC()) {
-            created = new dNPC(type.getNPC().clone());
+            created = new dNPC(type.getDenizenNPC().getCitizen().clone());
             created.getCitizen().setName(name.asString());
         }
         else {

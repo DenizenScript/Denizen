@@ -10,9 +10,8 @@ import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_7_R4.EntityHuman;
 import net.minecraft.server.v1_7_R4.EntityLiving;
 import org.bukkit.*;
@@ -106,7 +105,7 @@ public class dEntity implements dObject, Adjustable {
                 dNPC npc = dNPC.valueOf(string);
 
                 if (npc != null)
-                    return new dEntity(npc.getCitizen());
+                    return new dEntity(npc);
                 else dB.echoError("NPC '" + string
                         + "' does not exist!");
             }
@@ -235,8 +234,8 @@ public class dEntity implements dObject, Adjustable {
             EntityScript = EntityScriptHelper.getEntityScript(entity);
             this.uuid = entity.getUniqueId();
             this.entity_type = entity.getType();
-            if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
-                this.npc = CitizensAPI.getNPCRegistry().getNPC(entity);
+            if (Depends.citizens != null && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                this.npc = new dNPC(net.citizensnpcs.api.CitizensAPI.getNPCRegistry().getNPC(entity));
             }
         } else dB.echoError("Entity referenced is null!");
     }
@@ -270,7 +269,10 @@ public class dEntity implements dObject, Adjustable {
         } else dB.echoError("Entity_type referenced is null!");
     }
 
-    public dEntity(NPC npc) {
+    public dEntity(dNPC npc) {
+        if (Depends.citizens == null) {
+            return;
+        }
         if (npc != null) {
             this.npc = npc;
 
@@ -293,7 +295,7 @@ public class dEntity implements dObject, Adjustable {
     private String data1 = null;
     private String data2 = null;
     private DespawnedEntity despawned_entity = null;
-    private NPC npc = null;
+    private dNPC npc = null;
     private UUID uuid = null;
     private String EntityScript = null;
 
@@ -331,7 +333,9 @@ public class dEntity implements dObject, Adjustable {
 
         if (entity == null) return null;
 
-        if (isNPC()) return new dNPC(getNPC());
+        if (isNPC()) {
+            return getDenizenNPC();
+        }
         else if (isPlayer()) return new dPlayer(getPlayer());
         else return this;
     }
@@ -373,29 +377,17 @@ public class dEntity implements dObject, Adjustable {
     }
 
     /**
-     * Get the NPC corresponding to this dEntity
-     *
-     * @return  The NPC
-     */
-
-    public NPC getNPC() {
-        if (npc != null)
-            return npc;
-        else if (entity != null && CitizensAPI.getNPCRegistry().isNPC(entity))
-            return CitizensAPI.getNPCRegistry().getNPC(entity);
-        else return null;
-    }
-
-    /**
      * Get the dNPC corresponding to this dEntity
      *
      * @return  The dNPC
      */
 
     public dNPC getDenizenNPC() {
+        if (Depends.citizens == null)
+            return null;
         if (npc != null)
-            return new dNPC(npc);
-        else if (entity != null && CitizensAPI.getNPCRegistry().isNPC(entity))
+            return npc;
+        else if (entity != null && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity))
             return dNPC.fromEntity(entity);
         else return null;
     }
@@ -407,8 +399,10 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public boolean isNPC() {
+        if (Depends.citizens == null)
+            return false;
         if (npc != null) return true;
-        else if (entity != null && CitizensAPI.getNPCRegistry().isNPC(entity)) return true;
+        else if (entity != null && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity)) return true;
         else return false;
     }
 
@@ -614,12 +608,12 @@ public class dEntity implements dObject, Adjustable {
         // If the entity is already spawned, teleport it.
 
         if (isNPC()) {
-            if (getNPC().isSpawned())
-                getNPC().teleport(location, TeleportCause.PLUGIN);
+            if (getDenizenNPC().getCitizen().isSpawned())
+                getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
             else {
-                getNPC().spawn(location);
-                entity = getNPC().getEntity();
-                uuid = getNPC().getEntity().getUniqueId();
+                getDenizenNPC().getCitizen().spawn(location);
+                entity = getDenizenNPC().getCitizen().getEntity();
+                uuid = getDenizenNPC().getCitizen().getEntity().getUniqueId();
             }
         }
         else if (entity != null && isUnique()) entity.teleport(location);
@@ -645,11 +639,16 @@ public class dEntity implements dObject, Adjustable {
                     org.bukkit.entity.Entity ent = null;
 
                     if (entity_type.name().matches("PLAYER")) {
-
-                        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
-                        npc.spawn(location);
-                        entity = npc.getEntity();
-                        uuid = entity.getUniqueId();
+                        if (Depends.citizens == null) {
+                            dB.echoError("Cannot spawn entity of type PLAYER!");
+                            return;
+                        }
+                        else {
+                            dNPC npc = new dNPC(net.citizensnpcs.api.CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1));
+                            npc.getCitizen().spawn(location);
+                            entity = npc.getEntity();
+                            uuid = entity.getUniqueId();
+                        }
                     }
                     else if (entity_type.name().matches("FALLING_BLOCK")) {
 
@@ -828,7 +827,7 @@ public class dEntity implements dObject, Adjustable {
 
     public void teleport(Location location) {
         if (isNPC())
-            getNPC().teleport(location, TeleportCause.PLUGIN);
+            getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
         else
             entity.teleport(location);
     }
@@ -1258,7 +1257,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("name")) {
             if (isNPC())
-                return new Element(getNPC().getName())
+                return new Element(getDenizenNPC().getCitizen().getName())
                         .getAttribute(attribute.fulfill(1));
             if (entity instanceof Player)
                 return new Element(((Player) entity).getName())
@@ -2073,8 +2072,8 @@ public class dEntity implements dObject, Adjustable {
         // TODO: Maybe a property?
         if (mechanism.matches("max_health") && mechanism.requireInteger()) {
             if (isNPC()) {
-                if (getNPC().hasTrait(HealthTrait.class))
-                    getNPC().getTrait(HealthTrait.class).setMaxhealth(mechanism.getValue().asInt());
+                if (getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
+                    getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(mechanism.getValue().asInt());
                 else
                     dB.echoError("NPC doesn't have health trait!");
             }
@@ -2127,11 +2126,14 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.can_breed>
         // -->
-        if (mechanism.matches("breed") && mechanism.requireBoolean()) {
-            if (value.asBoolean())
-                ((CraftAnimals)getLivingEntity()).getHandle().f((EntityHuman)null);
-            else
-                ((CraftAnimals)getLivingEntity()).getHandle().cf();
+        if (mechanism.matches("breed")) {
+            dList list = dList.valueOf(value.asString());
+            if (list.size() > 1) {
+                if (list.get(0).equalsIgnoreCase("true"))
+                    ((CraftAnimals)getLivingEntity()).getHandle().f((EntityHuman) null);
+                else
+                    ((CraftAnimals)getLivingEntity()).getHandle().cf();
+            }
         }
 
         // <--[mechanism]

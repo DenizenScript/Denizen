@@ -70,7 +70,7 @@ public class InvisibleCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), state.debug() + target.debug());
 
         if (target.isNPC()) {
-            NPC npc = target.getNPC();
+            NPC npc = target.getDenizenNPC().getCitizen();
             if (!npc.hasTrait(InvisibleTrait.class))
                 npc.addTrait(InvisibleTrait.class);
             InvisibleTrait trait = npc.getTrait(InvisibleTrait.class);

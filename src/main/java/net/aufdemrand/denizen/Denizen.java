@@ -172,11 +172,11 @@ public class Denizen extends JavaPlugin {
             depends.initialize();
 
             if(Depends.citizens == null || !Depends.citizens.isEnabled()) {
-                getLogger().warning("Citizens does not seem to be activated! Deactivating Denizen!");
-                getServer().getPluginManager().disablePlugin(this);
-                return;
-            } else startedSuccessful = true;
-
+                getLogger().warning("Citizens does not seem to be activated! Denizen will have greatly reduced functionality!");
+                //getServer().getPluginManager().disablePlugin(this);
+                //return;
+            }
+            startedSuccessful = true;
             versionTag = this.getDescription().getVersion();
 
             // Startup procedure
@@ -197,10 +197,13 @@ public class Denizen extends JavaPlugin {
             dNPCRegistry = new dNPCRegistry(this);
 
             // Register commandHandler with Citizens2
-            commandHandler = new CommandHandler(Depends.citizens);
+            if (Depends.citizens != null)
+                commandHandler = new CommandHandler(Depends.citizens);
 
             // Register CommandHandler with Citizens
-            Depends.citizens.registerCommandClass(CommandHandler.class);
+            if (Depends.citizens != null)
+                Depends.citizens.registerCommandClass(CommandHandler.class);
+            // TODO: Else handle manually
 
             // Track all player names for quick dPlayer matching
             for (OfflinePlayer player: Bukkit.getOfflinePlayers()) {
@@ -269,25 +272,27 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
-            // Register traits
-            // TODO: should this be a separate function?
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PushableTrait.class).withName("pushable"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(AssignmentTrait.class).withName("assignment"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NicknameTrait.class).withName("nickname"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HealthTrait.class).withName("health"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HungerTrait.class).withName("hunger"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SittingTrait.class).withName("sitting"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(FishingTrait.class).withName("fishing"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleeping"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ParticlesTrait.class).withName("particles"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SneakingTrait.class).withName("sneaking"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MobproxTrait.class).withName("mobprox"));
+            if (Depends.citizens != null) {
+                // Register traits
+                // TODO: should this be a separate function?
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PushableTrait.class).withName("pushable"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(AssignmentTrait.class).withName("assignment"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NicknameTrait.class).withName("nickname"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HealthTrait.class).withName("health"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HungerTrait.class).withName("hunger"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SittingTrait.class).withName("sitting"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(FishingTrait.class).withName("fishing"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleeping"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ParticlesTrait.class).withName("particles"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SneakingTrait.class).withName("sneaking"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MobproxTrait.class).withName("mobprox"));
 
-            // Register Speech AI
-            CitizensAPI.getSpeechFactory().register(DenizenChat.class, "denizen_chat");
+                // Register Speech AI
+                CitizensAPI.getSpeechFactory().register(DenizenChat.class, "denizen_chat");
+            }
 
             // If Program AB, used for reading Artificial Intelligence Markup Language
             // 2.0, is included as a dependency at Denizen/lib/Ab.jar, register the
@@ -575,8 +580,9 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
-        if (citizens == null)
+        if (Depends.citizens != null && citizens == null)
             citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
+        // TODO: ^ ???
 
         // <--[language]
         // @name /ex command
@@ -621,17 +627,22 @@ public class Denizen extends JavaPlugin {
 
             entries.add(entry);
             InstantQueue queue = InstantQueue.getQueue(null);
-            NPC npc = citizens.getNPCSelector().getSelected(sender);
+            dNPC npc = null;
+            if (Depends.citizens != null)
+                npc = new dNPC(citizens.getNPCSelector().getSelected(sender));
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                    (sender instanceof Player)?dPlayer.mirrorBukkitPlayer((Player) sender):null,
-                    npc != null ? new dNPC(npc) : null);
+                    (sender instanceof Player)?dPlayer.mirrorBukkitPlayer((Player) sender):null, npc);
 
             queue.addEntries(scriptEntries);
             queue.start();
             return true;
         }
 
-        return citizens.onCommand(sender, cmd, cmdName, args);
+        if (Depends.citizens != null)
+            return citizens.onCommand(sender, cmd, cmdName, args);
+
+        return false;
+        // TODO: Handle /denizen, etc.
     }
 
 }

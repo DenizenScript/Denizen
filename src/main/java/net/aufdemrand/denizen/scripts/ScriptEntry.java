@@ -21,6 +21,7 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.CitizensAPI;
 
 
@@ -323,7 +324,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
 
     public ScriptEntry setPlayer(dPlayer player) {
-        if (player != null && player.isOnline()
+        if (player != null && player.isOnline() && Depends.citizens != null
                 && CitizensAPI.getNPCRegistry().isNPC(player.getPlayerEntity())) {
             dontFixMe = true;
             this.npc = new dNPC(CitizensAPI.getNPCRegistry().getNPC(player.getPlayerEntity()));
