@@ -29,7 +29,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dInventory implements dObject, Notable, Adjustable {
+public class dInventory implements dObject, Cloneable, Notable, Adjustable {
+
+    @Override
+    public dInventory clone() throws CloneNotSupportedException { return (dInventory) super.clone(); }
 
     public static dInventory mirrorBukkitInventory(Inventory inventory) {
         // Use the map to get notable inventories
@@ -93,7 +96,14 @@ public class dInventory implements dObject, Notable, Adjustable {
                 break;
             }
         }
-        NotableManager.saveAs(this, id);
+        try {
+            dInventory inv = this.clone();
+            inv.loadIdentifiers();
+            NotableManager.saveAs(inv, id);
+            setIdentifiers("notable", id);
+        } catch (CloneNotSupportedException e) {
+            dB.echoError(e);
+        }
     }
 
     public void load() {
