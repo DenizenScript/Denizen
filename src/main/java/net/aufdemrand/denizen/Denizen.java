@@ -34,6 +34,9 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.command.CommandManager;
+import net.aufdemrand.denizen.utilities.command.Injector;
+import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.Citizens;
@@ -60,11 +63,9 @@ public class Denizen extends JavaPlugin {
     private boolean startedSuccessful = false;
 
 
-    private CommandHandler commandHandler;
+    private CommandManager commandManager;
 
-    public CommandHandler getCommandHandler() {
-        return commandHandler;
-    }
+    public CommandManager getCommandManager() { return commandManager; }
 
 
     /*
@@ -196,14 +197,15 @@ public class Denizen extends JavaPlugin {
             // Create the dNPC Registry
             dNPCRegistry = new dNPCRegistry(this);
 
-            // Register commandHandler with Citizens2
-            if (Depends.citizens != null)
-                commandHandler = new CommandHandler(Depends.citizens);
+            // Create our CommandManager to handle '/denizen' commands
+            commandManager = new CommandManager();
+            commandManager.setInjector(new Injector(this));
+            commandManager.register(DenizenCommandHandler.class);
 
-            // Register CommandHandler with Citizens
-            if (Depends.citizens != null)
-                Depends.citizens.registerCommandClass(CommandHandler.class);
-            // TODO: Else handle manually
+            // If Citizens is enabled, let it handle '/npc' commands
+            if (Depends.citizens != null) {
+                Depends.citizens.registerCommandClass(NPCCommandHandler.class);
+            }
 
             // Track all player names for quick dPlayer matching
             for (OfflinePlayer player: Bukkit.getOfflinePlayers()) {
@@ -572,17 +574,8 @@ public class Denizen extends JavaPlugin {
         }
     }
 
-
-    /*
-     * Use Citizens' Command API to handle commands
-     */
-    Citizens citizens;
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
-        if (Depends.citizens != null && citizens == null)
-            citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
-        // TODO: ^ ???
 
         // <--[language]
         // @name /ex command
@@ -628,8 +621,8 @@ public class Denizen extends JavaPlugin {
             entries.add(entry);
             InstantQueue queue = InstantQueue.getQueue(null);
             dNPC npc = null;
-            if (Depends.citizens != null && citizens.getNPCSelector().getSelected(sender) != null)
-                npc = new dNPC(citizens.getNPCSelector().getSelected(sender));
+            if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null)
+                npc = new dNPC(Depends.citizens.getNPCSelector().getSelected(sender));
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
                     (sender instanceof Player)?dPlayer.mirrorBukkitPlayer((Player) sender):null, npc);
 
@@ -638,11 +631,26 @@ public class Denizen extends JavaPlugin {
             return true;
         }
 
-        if (Depends.citizens != null)
-            return citizens.onCommand(sender, cmd, cmdName, args);
+        //if (Depends.citizens != null)
+        //    return citizens.onCommand(sender, cmd, cmdName, args);
+        String modifier = args.length > 0 ? args[0] : "";
+        if (!commandManager.hasCommand(cmd, modifier) && !modifier.isEmpty()) {
+            return suggestClosestModifier(sender, cmd.getName(), modifier);
+        }
 
+        Object[] methodArgs = { sender };
+        return commandManager.executeSafe(cmd, args, sender, methodArgs);
+
+    }
+
+    private boolean suggestClosestModifier(CommandSender sender, String command, String modifier) {
+        String closest = commandManager.getClosestCommandModifier(command, modifier);
+        if (!closest.isEmpty()) {
+            Messaging.send(sender, "<7>Unknown command. Did you mean:");
+            Messaging.send(sender, " /" + command + " " + closest);
+            return true;
+        }
         return false;
-        // TODO: Handle /denizen, etc.
     }
 
 }
