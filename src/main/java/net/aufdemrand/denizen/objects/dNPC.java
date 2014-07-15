@@ -125,6 +125,9 @@ public class dNPC implements dObject, Adjustable {
     }
 
     public NPC getCitizen() {
+        if (npcid == -1) {
+            return null;
+        }
         NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
         if (npc == null)
             dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC. " +

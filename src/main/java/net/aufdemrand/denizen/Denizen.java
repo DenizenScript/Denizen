@@ -628,7 +628,7 @@ public class Denizen extends JavaPlugin {
             entries.add(entry);
             InstantQueue queue = InstantQueue.getQueue(null);
             dNPC npc = null;
-            if (Depends.citizens != null)
+            if (Depends.citizens != null && citizens.getNPCSelector().getSelected(sender) != null)
                 npc = new dNPC(citizens.getNPCSelector().getSelected(sender));
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
                     (sender instanceof Player)?dPlayer.mirrorBukkitPlayer((Player) sender):null, npc);
