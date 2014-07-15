@@ -804,7 +804,7 @@ public class dNPC implements dObject, Adjustable {
         }
 
         return (getEntity() != null
-                ? new dEntity(getCitizen()).getAttribute(attribute)
+                ? new dEntity(this).getAttribute(attribute)
                 : new Element(identify()).getAttribute(attribute));
 
     }

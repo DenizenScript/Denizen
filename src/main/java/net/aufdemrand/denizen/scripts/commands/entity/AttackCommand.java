@@ -87,7 +87,7 @@ public class AttackCommand extends AbstractCommand {
 
         for (dEntity entity : entities) {
             if (entity.isNPC()) {
-                Navigator nav = entity.getNPC().getNavigator();
+                Navigator nav = entity.getDenizenNPC().getCitizen().getNavigator();
 
                 if (cancel.equals(false)) {
                     nav.setTarget(target.getBukkitEntity(), true);

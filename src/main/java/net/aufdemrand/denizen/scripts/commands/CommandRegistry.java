@@ -250,7 +250,8 @@ public class CommandRegistry implements dRegistry {
         // specify an entity and an animation.
 
         // Player animations require a Player-type entity or NPC. Available player animations include:
-        // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING
+        // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
+        // START_USE_ITEM, STOP_USE_ITEM, EAT_FOOD
 
         // All entities, regardless of type, can utilize the 'hurt' animation. Additionally, wolf entities
         // and NPCs can also use: WOLF_SMOKE, WOLF_HEARTS, and WOLF_SHAKE. Sheep entities and NPCs also have
@@ -268,8 +269,9 @@ public class CommandRegistry implements dRegistry {
         // - animate '<n@aufdemrand's wolf>' animation:wolf_shake
 
         // -->
-        registerCoreMember(AnimateCommand.class,
-                "ANIMATE", "animate [<entity>|...] [animation:<name>]", 2);
+        if (Depends.citizens != null)
+            registerCoreMember(AnimateCommand.class,
+                    "ANIMATE", "animate [<entity>|...] [animation:<name>]", 2);
 
 
         // <--[command]
@@ -348,8 +350,9 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Todo
         // -->
-        registerCoreMember(AssignmentCommand.class,
-                "ASSIGNMENT", "assignment [set/remove] (script:<name>)", 1);
+        if (Depends.citizens != null)
+            registerCoreMember(AssignmentCommand.class,
+                    "ASSIGNMENT", "assignment [set/remove] (script:<name>)", 1);
 
 
         // <--[command]
@@ -411,8 +414,9 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Todo
         // -->
-        registerCoreMember(BreakCommand.class,
-                "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
+        if (Depends.citizens != null)
+            registerCoreMember(BreakCommand.class,
+                    "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
 
 
         // <--[command]
@@ -527,8 +531,9 @@ public class CommandRegistry implements dRegistry {
         // - chat targets:<npc.flag[talk_targets].as_list> "Welcome, initiate!"
 
         // -->
-        registerCoreMember(ChatCommand.class,
-                "CHAT", "chat [\"<text>\"] (no_target/targets:<entity>|...)", 1);
+        if (Depends.citizens != null)
+            registerCoreMember(ChatCommand.class,
+                    "CHAT", "chat [\"<text>\"] (no_target/targets:<entity>|...)", 1);
 
 
         // <--[command]
@@ -650,8 +655,9 @@ public class CommandRegistry implements dRegistry {
         // Use to create an NPC and spawn it immediately.
         // - create spider Joe <player.location>
         // -->
-        registerCoreMember(CreateCommand.class,
-                "CREATE", "create [<entity>] [<name>] (<location>)", 1);
+        if (Depends.citizens != null)
+            registerCoreMember(CreateCommand.class,
+                    "CREATE", "create [<entity>] [<name>] (<location>)", 1);
 
 
         // <--[command]
@@ -749,8 +755,9 @@ public class CommandRegistry implements dRegistry {
         // Use to despawn several NPCs.
         // - despawn <npc>|<player.selected_npc>|n@32
         // -->
-        registerCoreMember(DespawnCommand.class,
-                "DESPAWN", "despawn (<npc>)", 0);
+        if (Depends.citizens != null)
+            registerCoreMember(DespawnCommand.class,
+                    "DESPAWN", "despawn (<npc>)", 0);
 
 
         // <--[command]
@@ -811,8 +818,9 @@ public class CommandRegistry implements dRegistry {
         // - disengage
         //
         // -->
-        registerCoreMember(DisengageCommand.class,
-                "DISENGAGE", "disengage (npc:<npc>)", 0);
+        if (Depends.citizens != null)
+            registerCoreMember(DisengageCommand.class,
+                    "DISENGAGE", "disengage (npc:<npc>)", 0);
 
 
         // <--[command]
@@ -918,8 +926,9 @@ public class CommandRegistry implements dRegistry {
         // - flag player finished_quests:->:super_quest
         //
         // -->
-        registerCoreMember(EngageCommand.class,
-                "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
+        if (Depends.citizens != null)
+            registerCoreMember(EngageCommand.class,
+                    "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
 
 
         // <--[command]
@@ -1204,8 +1213,9 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Todo
         // -->
-        registerCoreMember(FollowCommand.class,
-                "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
+        if (Depends.citizens != null)
+            registerCoreMember(FollowCommand.class,
+                    "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
 
 
         // <--[command]
@@ -1661,8 +1671,9 @@ public class CommandRegistry implements dRegistry {
         // Change up the range and make the NPC more realistic
         // - lookclose true range:10 realistic
         // -->
-        registerCoreMember(LookcloseCommand.class,
-                "LOOKCLOSE", "lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)", 0);
+        if (Depends.citizens != null)
+            registerCoreMember(LookcloseCommand.class,
+                    "LOOKCLOSE", "lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)", 0);
 
 
         // <--[command]
@@ -1837,8 +1848,9 @@ public class CommandRegistry implements dRegistry {
         // - pause navigation
         // - resume navigation
         // -->
-        registerCoreMember(PauseCommand.class,
-                "PAUSE, RESUME", "pause [waypoints/activity] (<duration>)", 1);
+        if (Depends.citizens != null)
+            registerCoreMember(PauseCommand.class,
+                    "PAUSE, RESUME", "pause [waypoints/activity] (<duration>)", 1);
 
 
         // <--[command]
@@ -1933,8 +1945,9 @@ public class CommandRegistry implements dRegistry {
         // Remove a pose from an NPC.
         // - pose remove id:MyPose1
         // -->
-        registerCoreMember(PoseCommand.class,
-                "POSE", "pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)", 1);
+        if (Depends.citizens != null)
+            registerCoreMember(PoseCommand.class,
+                    "POSE", "pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)", 1);
 
 
         // <--[command]
@@ -2057,8 +2070,9 @@ public class CommandRegistry implements dRegistry {
         // Use to rename a different NPC.
         // - rename Bob npc:n@32
         // -->
-        registerCoreMember(RenameCommand.class,
-                "RENAME", "rename [<name>]", 1);
+        if (Depends.citizens != null)
+            registerCoreMember(RenameCommand.class,
+                    "RENAME", "rename [<name>]", 1);
 
 
         // <--[command]
@@ -2448,14 +2462,20 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name SQL
-        // @Syntax sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (<username>) (<password>)
+        // @Syntax sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (username:<username>) (password:<password>)
         // @Required 1
         // @Stable unstable
         // @Short Interacts with a MySQL server.
         // @Author mcmonkey
         // @Group core
         // @Description
-        // Todo
+        // This command is used to interact with a MySQL server. It can update the database or query it for information.
+        // The general usage order is connect -> update/query -> disconnect.
+        // It is not required that you disconnect right after using, and in fact encouraged that you keep a connection open where possible.
+        // When connecting, the server format is IP:Port/Database, EG 'localhost:3306/test'.
+        // Note that when using tag, it is recommended you escape unusual inputs to avoid SQL injection.
+        // The SQL command is merely a wrapper for SQL queries, and further usage details should be gathered from an official
+        // MySQL query reference rather than from Denizen command help.
         // @Tags
         // <entry[saveName].result> returns a dList of all rows from a query command.
         // @Usage
@@ -2469,16 +2489,18 @@ public class CommandRegistry implements dRegistry {
         // - sql id:name "update:INSERT INTO things VALUES (3, 'hello', 'space');"
         // @Usage
         // Use to query an SQL server.
-        // - sql sql id:name "query:SELECT id,column_name1,column_name2 FROM things;"
+        // - sql sql id:name "query:SELECT id,column_name1,column_name2 FROM things;" save:saveName
+        // - narrate <entry[saveName].result>
         // @Usage
         // Use to query an SQL server.
-        // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things WHERE id=3;"
+        // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things WHERE id=3;" save:saveName2
+        // - narrate <entry[saveName2].result>
         // @Usage
         // Use to disconnect from an SQL server.
         // - sql disconnect id:name
         // -->
         registerCoreMember(SQLCommand.class,
-                "SQL", "sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (<username>) (<password>)", 2);
+                "SQL", "sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (username:<username>) (password:<password>)", 2);
 
 
         // <--[command]
@@ -2496,8 +2518,9 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Todo
         // -->
-        registerCoreMember(StandCommand.class,
-                "STAND", "stand", 0);
+        if (Depends.citizens != null)
+            registerCoreMember(StandCommand.class,
+                    "STAND", "stand", 0);
 
 
         // <--[command]
@@ -2628,8 +2651,9 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Todo
         // -->
-        registerCoreMember(TraitCommand.class,
-                "TRAIT", "trait (state:true/false/{toggle}) [<trait>]", 1);
+        if (Depends.citizens != null)
+            registerCoreMember(TraitCommand.class,
+                    "TRAIT", "trait (state:true/false/{toggle}) [<trait>]", 1);
 
 
         // <--[command]
@@ -2689,8 +2713,9 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Todo
         // -->
-        registerCoreMember(VulnerableCommand.class,
-                "VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
+        if (Depends.citizens != null)
+            registerCoreMember(VulnerableCommand.class,
+                    "VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
 
         // <--[command]
         // @Name Wait
@@ -2728,8 +2753,9 @@ public class CommandRegistry implements dRegistry {
         // @Usage
         // Todo
         // -->
-        registerCoreMember(WalkCommand.class,
-                "WALK, WALKTO", "walk (<npc>|...) [<location>] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
+        if (Depends.citizens != null)
+            registerCoreMember(WalkCommand.class,
+                    "WALK, WALKTO", "walk (<npc>|...) [<location>] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
 
         // <--[command]
         // @Name Weather
@@ -2844,7 +2870,7 @@ public class CommandRegistry implements dRegistry {
 
             try {
                 cmd.newInstance().activate().as(name).withOptions(hint, args);
-            } catch(Exception e) {
+            } catch(Throwable e) {
                 dB.echoError("Could not register command " + name + ": " + e.getMessage());
                 dB.echoError(e);
             }

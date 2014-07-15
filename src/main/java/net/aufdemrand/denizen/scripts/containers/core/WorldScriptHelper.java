@@ -18,6 +18,7 @@ import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.Position;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -2562,7 +2563,7 @@ public class WorldScriptHelper implements Listener {
         Player player = (Player) event.getPlayer();
         dPlayer pl = null;
         dNPC npc = null;
-        if (CitizensAPI.getNPCRegistry().isNPC(player))
+        if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(player))
             npc = new dNPC(CitizensAPI.getNPCRegistry().getNPC(player));
         else
             pl = new dPlayer(player);

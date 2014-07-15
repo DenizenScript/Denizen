@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
@@ -37,7 +38,8 @@ public class dNPCRegistry implements Listener {
 
     public dNPCRegistry(Denizen denizen) {
         plugin = denizen;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        if (Depends.citizens != null)
+            plugin.getServer().getPluginManager().registerEvents(this, plugin);
         actionHandler = new ActionHandler(plugin);
     }
 

@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
@@ -45,7 +46,7 @@ public class InventoryHolder implements Property {
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
         if (holder != null) {
-            if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
+            if (holder instanceof Entity && Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
                 return dNPC.fromEntity((Entity) holder);
             }
             else if (holder instanceof Player) {
