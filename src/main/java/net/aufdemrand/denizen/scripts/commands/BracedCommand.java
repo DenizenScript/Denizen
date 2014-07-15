@@ -1,9 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
@@ -28,28 +25,46 @@ public abstract class BracedCommand extends AbstractCommand {
      *
      * @throws InvalidArgumentsException
      */
-    public LinkedHashMap<String, ArrayList<ScriptEntry>> getBracedCommands(ScriptEntry scriptEntry, int startArg) throws InvalidArgumentsException {
+    public LinkedHashMap<String, ArrayList<ScriptEntry>> getBracedCommands(ScriptEntry scriptEntry, int startArg) {
+
+        // And a place to store all the final braces...
+        LinkedHashMap<String, ArrayList<ScriptEntry>> bracedSections = new LinkedHashMap<String, ArrayList<ScriptEntry>>();
+
+        LinkedHashMap<String, ArrayList<ScriptEntry>> entryBracedSet = scriptEntry.getBracedSet();
+        if (entryBracedSet != null) {
+            try {
+                for (Map.Entry<String, ArrayList<ScriptEntry>> entry: entryBracedSet.entrySet()) {
+                    ArrayList array = new ArrayList(entry.getValue().size());
+                    for (ScriptEntry sEntry: entry.getValue()) {
+                        array.add(sEntry.clone().setPlayer(scriptEntry.getPlayer()).setNPC(scriptEntry.getNPC()));
+                    }
+                    bracedSections.put(entry.getKey(), array);
+                }
+                return bracedSections;
+            }
+            catch (CloneNotSupportedException e) {
+                dB.echoError(e);
+            }
+        }
 
         // We need a place to store the commands being built at...
         TreeMap<Integer, ArrayList<String>> commandList = new TreeMap<Integer, ArrayList<String>>();
-        // And a place to store all the final braces...
-        LinkedHashMap<String, ArrayList<ScriptEntry>> bracedSections = new LinkedHashMap<String, ArrayList<ScriptEntry>>();
 
         int bracesEntered = 0;
         boolean newCommand = true;
         boolean waitingForDash = false;
 
         // Inject the scriptEntry into the front of the queue, otherwise it doesn't exist
-        scriptEntry.getResidingQueue().injectEntry(scriptEntry, 0);
+        //scriptEntry.getResidingQueue().injectEntry(scriptEntry, 0);
         // Send info to debug
         if (hyperdebug) dB.echoDebug(scriptEntry, "Starting getBracedCommands...");
 
         // If the specified amount of possible entries is less than the queue size, print that instead
-        if (hyperdebug) dB.echoDebug(scriptEntry, "...with queue size: " + scriptEntry.getResidingQueue().getQueueSize());
+        //if (hyperdebug) dB.echoDebug(scriptEntry, "...with queue size: " + scriptEntry.getResidingQueue().getQueueSize());
         if (hyperdebug) dB.echoDebug(scriptEntry, "...with first command name: " + scriptEntry.getCommandName());
         if (hyperdebug) dB.echoDebug(scriptEntry, "...with first command arguments: " + scriptEntry.getArguments());
 
-        ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(0);
+        ScriptEntry entry = scriptEntry;//scriptEntry.getResidingQueue().getEntry(0);
         if (hyperdebug) dB.echoDebug(scriptEntry, "Entry found: " + entry.getCommandName());
 
         // Loop through the arguments of each entry
@@ -146,7 +161,8 @@ public abstract class BracedCommand extends AbstractCommand {
             }
         }
 
-        scriptEntry.getResidingQueue().removeEntry(0);
+        //scriptEntry.getResidingQueue().removeEntry(0);
+        scriptEntry.setBracedSet(bracedSections);
         return bracedSections;
 
     }

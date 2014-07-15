@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
@@ -26,7 +27,8 @@ import java.util.Map;
 public class NPCTags implements Listener {
 
     public NPCTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        if (Depends.citizens != null)
+            denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
     @EventHandler

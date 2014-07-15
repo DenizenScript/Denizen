@@ -80,19 +80,19 @@ public class HealthCommand extends AbstractCommand {
         for (dEntity target: targets) {
             if (target.isNPC()) {
                 if (action.asString().equalsIgnoreCase("true"))
-                    target.getNPC().addTrait(HealthTrait.class);
+                    target.getDenizenNPC().getCitizen().addTrait(HealthTrait.class);
                 else if (action.asString().equalsIgnoreCase("false"))
-                    target.getNPC().removeTrait(HealthTrait.class);
-                else if (target.getNPC().hasTrait(HealthTrait.class))
-                    target.getNPC().removeTrait(HealthTrait.class);
+                    target.getDenizenNPC().getCitizen().removeTrait(HealthTrait.class);
+                else if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
+                    target.getDenizenNPC().getCitizen().removeTrait(HealthTrait.class);
                 else
-                    target.getNPC().addTrait(HealthTrait.class);
+                    target.getDenizenNPC().getCitizen().addTrait(HealthTrait.class);
             }
 
             if (qty != null) {
                 if (target.isNPC()) {
-                    if (target.getNPC().hasTrait(HealthTrait.class))
-                        target.getNPC().getTrait(HealthTrait.class).setMaxhealth(qty.asInt());
+                    if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
+                        target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(qty.asInt());
                     else
                         dB.echoError("NPC doesn't have health trait!");
                 }

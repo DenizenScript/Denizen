@@ -73,7 +73,12 @@ public class Depends {
     }
 
     private boolean setupCitizens() {
+        if (Bukkit.getServer().getPluginManager().getPlugin("Citizens") == null) {
+            return false;
+        }
+        try {
         citizens = (Citizens) Bukkit.getServer().getPluginManager().getPlugin("Citizens");
+        } catch (Exception e) { }
         return citizens != null;
     }
 

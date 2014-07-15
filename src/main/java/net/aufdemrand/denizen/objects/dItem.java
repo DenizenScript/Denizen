@@ -46,6 +46,7 @@ public class dItem implements dObject, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    @Fetchable("i")
     public static dItem valueOf(String string) {
         return valueOf(string, null, null);
     }
@@ -61,7 +62,6 @@ public class dItem implements dObject, Notable, Adjustable {
      * @return  an Item, or null if incorrectly formatted
      *
      */
-    @Fetchable("i")
     public static dItem valueOf(String string, dPlayer player, dNPC npc) {
         if (string == null) return null;
 

@@ -15,6 +15,11 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ForEachCommand extends BracedCommand {
 
+    @Override
+    public void onEnable() {
+        setBraced();
+    }
+
     // - foreach li@p@Vegeta|p@MuhammedAli|n@123 {
     //   - announce "Hello, <%value%.name>!"
     //   }

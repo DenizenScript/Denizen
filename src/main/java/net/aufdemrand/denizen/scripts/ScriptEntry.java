@@ -1,10 +1,6 @@
 package net.aufdemrand.denizen.scripts;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
@@ -15,12 +11,14 @@ import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.CitizensAPI;
 
 
@@ -51,6 +49,16 @@ public class ScriptEntry implements Cloneable, Debuggable {
     private dNPC npc = null;
     private dScript script = null;
     private ScriptQueue queue = null;
+
+    private LinkedHashMap<String, ArrayList<ScriptEntry>> bracedSet = null;
+
+    public LinkedHashMap<String, ArrayList<ScriptEntry>> getBracedSet() {
+        return bracedSet;
+    }
+
+    public void setBracedSet(LinkedHashMap<String, ArrayList<ScriptEntry>> set) {
+        bracedSet = set;
+    }
 
     // ScriptEntry Context
     private Map<String, Object> objects = new HashMap<String, Object>();
@@ -137,6 +145,10 @@ public class ScriptEntry implements Cloneable, Debuggable {
                     break argLoop;
                 }
             }
+        }
+
+        if (actualCommand != null && actualCommand.isBraced() && actualCommand instanceof BracedCommand) {
+            ((BracedCommand) actualCommand).getBracedCommands(this, 1);
         }
     }
 
@@ -323,7 +335,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
 
     public ScriptEntry setPlayer(dPlayer player) {
-        if (player != null && player.isOnline()
+        if (player != null && player.isOnline() && Depends.citizens != null
                 && CitizensAPI.getNPCRegistry().isNPC(player.getPlayerEntity())) {
             dontFixMe = true;
             this.npc = new dNPC(CitizensAPI.getNPCRegistry().getNPC(player.getPlayerEntity()));

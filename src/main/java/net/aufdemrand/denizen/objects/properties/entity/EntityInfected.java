@@ -47,7 +47,7 @@ public class EntityInfected implements Property {
 
         if (bool) {
             if (infected.isNPC()) {
-                NPC infected_npc = infected.getNPC();
+                NPC infected_npc = infected.getDenizenNPC().getCitizen();
                 infected_npc.setBukkitEntityType(EntityType.ZOMBIE);
                 if (!infected_npc.getTrait(ZombieModifier.class).toggleVillager())
                     infected_npc.getTrait(ZombieModifier.class).toggleVillager();

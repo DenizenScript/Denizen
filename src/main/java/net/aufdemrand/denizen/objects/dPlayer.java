@@ -156,7 +156,7 @@ public class dPlayer implements dObject, Adjustable {
 
     public dPlayer(Player player) {
         this((OfflinePlayer)player);
-        if (CitizensAPI.getNPCRegistry().isNPC(player))
+        if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(player))
             NPCPlayer = player;
     }
 

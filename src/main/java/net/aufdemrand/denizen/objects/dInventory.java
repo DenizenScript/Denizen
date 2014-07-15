@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
@@ -363,7 +364,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (inventory == null) return;
 
         if (holder != null) {
-            if (holder instanceof Entity && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
+            if (holder instanceof Entity && Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
                 idType = "npc";
                 idHolder = dNPC.fromEntity((Entity) holder).identify();
                 return;
