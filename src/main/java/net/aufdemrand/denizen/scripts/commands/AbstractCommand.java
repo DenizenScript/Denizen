@@ -27,6 +27,16 @@ public abstract class AbstractCommand implements RegistrationableInstance {
         }
     }
 
+    private boolean braced = false;
+
+    public void setBraced() {
+        braced = true;
+    }
+
+    public boolean isBraced() {
+        return braced;
+    }
+
     public Denizen denizen;
 
     protected String name;
