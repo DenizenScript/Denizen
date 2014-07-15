@@ -266,6 +266,18 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         }
     }
 
+    @Override
+    public int hashCode() {
+        return getBlockX() + getBlockY() + getBlockZ();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (!(o instanceof dLocation)) return false;
+        return getBlock().getLocation().equals(((dLocation) o).getBlock().getLocation());
+    }
+
 
 
     String prefix = "Location";

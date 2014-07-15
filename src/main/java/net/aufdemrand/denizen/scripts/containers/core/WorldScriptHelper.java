@@ -3757,7 +3757,7 @@ public class WorldScriptHelper implements Listener {
     public void playerMove(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
-        String name = NotableManager.getSavedId(new dLocation(event.getTo()));
+        String name = NotableManager.getSavedId(new dLocation(event.getTo().getBlock().getLocation()));
 
         if (name != null) {
             Map<String, dObject> context = new HashMap<String, dObject>();
