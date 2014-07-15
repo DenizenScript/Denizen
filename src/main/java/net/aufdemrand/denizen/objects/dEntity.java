@@ -1373,7 +1373,7 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("can_see")) {
             if (attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
                 dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
-                if (toEntity.isSpawned())
+                if (toEntity != null && toEntity.isSpawned())
                     return new Element(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
             }
         }
