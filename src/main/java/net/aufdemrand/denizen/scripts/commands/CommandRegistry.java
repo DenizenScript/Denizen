@@ -250,7 +250,8 @@ public class CommandRegistry implements dRegistry {
         // specify an entity and an animation.
 
         // Player animations require a Player-type entity or NPC. Available player animations include:
-        // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING
+        // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
+        // START_USE_ITEM, STOP_USE_ITEM, EAT_FOOD
 
         // All entities, regardless of type, can utilize the 'hurt' animation. Additionally, wolf entities
         // and NPCs can also use: WOLF_SMOKE, WOLF_HEARTS, and WOLF_SHAKE. Sheep entities and NPCs also have

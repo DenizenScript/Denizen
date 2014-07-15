@@ -64,6 +64,7 @@ public class PropertyParser {
         registerProperty(ItemPotion.class, dItem.class);
         registerProperty(ItemQuantity.class, dItem.class);
         registerProperty(ItemSkullskin.class, dItem.class);
+        registerProperty(ItemSpawnEgg.class, dItem.class);
 
     }
 
