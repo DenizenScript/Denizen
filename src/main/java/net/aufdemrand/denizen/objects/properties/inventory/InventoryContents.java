@@ -87,7 +87,7 @@ public class InventoryContents implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!inventory.getIdType().equals("generic"))
+        if (!inventory.isGettingSaveObj() && !inventory.getIdType().equals("generic"))
             return null;
         dList contents = getContents(0);
         if (contents == null || contents.isEmpty())
@@ -192,7 +192,7 @@ public class InventoryContents implements Property {
         // <in@inventory.list_contents.with_lore[<lore>]>
         // <in@inventory.list_contents.with_lore[<lore>].simple>
         // -->
-        if (mechanism.matches("contents") && inventory.getIdType().equals("generic")) {
+        if (mechanism.matches("contents") && (inventory.isUnique() || inventory.getIdType().equals("generic"))) {
             inventory.setContents(mechanism.getValue().asType(dList.class));
         }
 

@@ -35,7 +35,7 @@ public class InventoryTitle implements Property {
         if (inventory.getInventory() != null) {
             String title = inventory.getInventory().getTitle();
             if (title != null && !title.startsWith("container.")) {
-                if (InventoryScriptHelper.notableInventories.containsKey(title))
+                if (!inventory.isGettingSaveObj() && InventoryScriptHelper.notableInventories.containsKey(title))
                     return title.substring(0, title.length()-6);
                 else
                     return title;
