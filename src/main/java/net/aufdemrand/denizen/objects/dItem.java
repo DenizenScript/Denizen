@@ -680,7 +680,7 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         if (attribute.startsWith("formatted")) {
-            String id = item.getType().name().toLowerCase().replace('_', ' ');
+            String id = getMaterial().realName().toLowerCase().replace('_', ' ');
 
             if (id.equals("air"))
                 return new Element("nothing")
