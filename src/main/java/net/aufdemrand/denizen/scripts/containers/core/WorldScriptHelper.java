@@ -279,12 +279,6 @@ public class WorldScriptHelper implements Listener {
         events.add("player damages block");
         events.add("player damages " + material.identifySimple());
 
-        // Trim events not used
-        events = EventManager.trimEvents(events);
-
-        // Return if no events left to parse
-        if (events.size() == 0) return;
-
         // Add in add'l context
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -622,12 +616,6 @@ public class WorldScriptHelper implements Listener {
         events.add("player places block");
         events.add("player places " + material.identifySimple());
         events.add("player places " + item.identifySimple());
-
-        // Trim events not used
-        events = EventManager.trimEvents(events);
-
-        // Return if no events left to parse
-        if (events.size() == 0) return;
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
@@ -1120,12 +1108,6 @@ public class WorldScriptHelper implements Listener {
             events.add(entity.identifyType() + " breaks " + hanging.identifyType());
             events.add(entity.identifyType() + " breaks " + hanging.identifyType() + " because " + cause);
         }
-
-        // Trim events not used
-        events = EventManager.trimEvents(events);
-
-        // Return if no events left to parse
-        if (events.size() == 0) return;
 
         // Add context
         context.put("hanging", hanging);
@@ -2623,10 +2605,6 @@ public class WorldScriptHelper implements Listener {
                     item.identifyMaterial() + " in " + type);
         }
 
-        events = EventManager.trimEvents(events);
-
-        if (events.size() == 0 ) return;
-
         context.put("item", item);
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
 
@@ -3149,11 +3127,6 @@ public class WorldScriptHelper implements Listener {
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
 
-        events = EventManager.trimEvents(events);
-
-        if (events.size() == 0)
-            return;
-
         List<String> args = Arrays.asList(aH.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
         List<String> parsed_args = Arrays.asList(aH.buildArgs(event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
 
@@ -3533,10 +3506,6 @@ public class WorldScriptHelper implements Listener {
         }
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
-
-        events = EventManager.trimEvents(events);
-
-        if (events.size() == 0) return;
 
         determination = EventManager.doEvents(events, npc, new dPlayer(event.getPlayer()), context, true);
 
@@ -4020,12 +3989,9 @@ public class WorldScriptHelper implements Listener {
         String message = event.getCommand();
         String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
 
-        List<String> events = EventManager.trimEvents(Arrays.asList
+        List<String> events = Arrays.asList
                 ("command",
-                        command + " command"));
-
-        if (events.size() == 0)
-            return;
+                        command + " command");
 
         List<String> args = Arrays.asList(aH.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
         List<String> parsed_args = Arrays.asList(aH.buildArgs(event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
