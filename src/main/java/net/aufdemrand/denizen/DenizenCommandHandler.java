@@ -444,5 +444,3 @@ public class DenizenCommandHandler {
     }
 
 }
-
-
