@@ -87,6 +87,10 @@ public class HurtCommand extends AbstractCommand {
 
         double amount = amountElement.asDouble();
         for (dEntity entity : entities) {
+            if (entity.getLivingEntity() == null) {
+                dB.echoDebug(scriptEntry, entity + " is not a living entity!");
+                continue;
+            }
             if (source == null)
                 entity.getLivingEntity().damage(amount);
             else
