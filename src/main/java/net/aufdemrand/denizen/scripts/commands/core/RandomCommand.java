@@ -67,11 +67,11 @@ public class RandomCommand extends BracedCommand {
 
     }
 
+    private int previous = 0;
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
-        // TODO: ADD REPORT!
 
         int possibilities = 0;
         ScriptQueue queue = scriptEntry.getResidingQueue();
@@ -86,6 +86,10 @@ public class RandomCommand extends BracedCommand {
         }
 
         int selected = Utilities.getRandom().nextInt(possibilities);
+        // Try to not duplicate
+        if (selected == previous)
+            selected = Utilities.getRandom().nextInt(possibilities);
+        previous = selected;
 
         dB.report(scriptEntry, getName(), aH.debugObj("possibilities", possibilities) + aH.debugObj("choice", selected + 1));
 

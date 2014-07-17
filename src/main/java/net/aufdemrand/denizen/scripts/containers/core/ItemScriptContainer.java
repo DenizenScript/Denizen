@@ -138,7 +138,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 dB.echoError("Invalid item '" + getString("FURNACE_RECIPE") + "'");
                 return;
             }
-            FurnaceRecipe recipe = new FurnaceRecipe(getItemFrom().getItemStack(), furnace_item.getMaterial().getMaterial());
+            FurnaceRecipe recipe = new FurnaceRecipe(getItemFrom().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
             Bukkit.getServer().addRecipe(recipe);
         }
     }

@@ -898,6 +898,19 @@ public class dNPC implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dNPC
+        // @name owner
+        // @input Element
+        // @description
+        // Sets the owner of the NPC.
+        // @tags
+        // <n@npc.owner>
+        // -->
+        if (mechanism.matches("owner")) {
+            getCitizen().getTrait(Owner.class).setOwner(value.asString());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
         // @name spawn
         // @input dLocation
         // @description
