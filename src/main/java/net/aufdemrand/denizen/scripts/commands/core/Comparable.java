@@ -337,6 +337,12 @@ public class Comparable {
                 if (comparedto.equalsIgnoreCase("location"))
                     outcome = dLocation.matches(comparable);
 
+                else if (comparedto.equalsIgnoreCase("material"))
+                    outcome = dMaterial.matches(comparable);
+
+                else if (comparedto.equalsIgnoreCase("script"))
+                    outcome = dScript.matches(comparable);
+
                 else if (comparedto.equalsIgnoreCase("entity"))
                     outcome = dEntity.matches(comparable);
 
@@ -361,8 +367,8 @@ public class Comparable {
                 else if (comparedto.equalsIgnoreCase("item"))
                     outcome = dItem.matches(comparable);
 
-                else if (comparedto.equalsIgnoreCase("pose"))
-                    outcome = true; // TODO: outcome = aH.matchesPose(comparable);
+                //else if (comparedto.equalsIgnoreCase("pose"))
+                //    outcome = true; // TODO: outcome = aH.matchesPose(comparable);
 
                 else if (comparedto.equalsIgnoreCase("duration"))
                     outcome = Duration.matches(comparable);
