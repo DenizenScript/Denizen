@@ -8,20 +8,20 @@ import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.Material;
 
-public class ItemSpawnEgg implements Property {
+public class ItemMap implements Property {
 
     public static boolean describes(dObject item) {
         return item instanceof dItem
-                && (((dItem) item).getItemStack().getType() == Material.MONSTER_EGG);
+                && (((dItem) item).getItemStack().getType() == Material.MAP);
     }
 
-    public static ItemSpawnEgg getFrom(dObject _item) {
+    public static ItemMap getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemSpawnEgg((dItem)_item);
+        else return new ItemMap((dItem)_item);
     }
 
 
-    private ItemSpawnEgg(dItem _item) {
+    private ItemMap(dItem _item) {
         item = _item;
     }
 
@@ -33,14 +33,14 @@ public class ItemSpawnEgg implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <i@item.spawn_egg_entity>
+        // @attribute <i@item.map>
         // @returns Element(Number)
         // @group properties
-        // @mechanism dItem.spawn_egg
+        // @mechanism dItem.map
         // @description
-        // Returns the spawn egg number of the item.
+        // Returns the ID number of the map item's map.
         // -->
-        if (attribute.startsWith("spawn_egg_entity")) {
+        if (attribute.startsWith("map")) {
             return new Element(item.getItemStack().getDurability())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -56,7 +56,7 @@ public class ItemSpawnEgg implements Property {
 
     @Override
     public String getPropertyId() {
-        return "spawn_egg";
+        return "map";
     }
 
     @Override
@@ -64,15 +64,15 @@ public class ItemSpawnEgg implements Property {
 
         // <--[mechanism]
         // @object dItem
-        // @name spawn_egg
+        // @name map
         // @input Element(Number)
         // @description
-        // Sets what mob a spawn egg holds.
+        // Changes what map ID number a map item uses.
         // @tags
-        // <i@item.spawn_egg_entity>
+        // <i@item.map>
         // -->
 
-        if (mechanism.matches("spawn_egg")) {
+        if (mechanism.matches("map")) {
             item.getItemStack().setDurability((short)(mechanism.getValue().asInt()));
         }
     }
