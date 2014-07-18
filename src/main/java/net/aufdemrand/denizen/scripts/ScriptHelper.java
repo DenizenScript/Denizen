@@ -4,13 +4,14 @@ import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.minecraft.util.org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -86,6 +87,26 @@ public class ScriptHelper {
         }
     }
 
+    private static String ClearComments(String input) {
+        StringBuilder result = new StringBuilder(input.length());
+        String[] lines = input.replace("\t", "    ").replace("\r", "").split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            if (!lines[i].trim().startsWith("#")) {
+                result.append(lines[i]).append("\n");
+            }
+            else {
+                result.append("\n");
+            }
+        }
+        result.append("\n");
+        return result.toString();
+    }
+
+    private static YamlConfiguration loadConfig(InputStream resource) throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(resource, writer);
+        return YamlConfiguration.loadConfiguration(new StringReader(ClearComments(writer.toString())));
+    }
 
     private static String _concatenateCoreScripts() {
 
@@ -115,8 +136,7 @@ public class ScriptHelper {
 
                 YamlConfiguration yaml;
                 dB.log("Processing 'util.dscript'... ");
-                yaml = YamlConfiguration.loadConfiguration(DenizenAPI.getCurrentInstance()
-                        .getResource("util.dscript"));
+                yaml = loadConfig(DenizenAPI.getCurrentInstance().getResource("util.dscript"));
                 HandleListing(yaml, scriptNames);
                 sb.append(yaml.saveToString() + "\r\n");
 
@@ -130,12 +150,12 @@ public class ScriptHelper {
                     }
                 }
 
-                for (File f : files){
+                for (File f : files) {
                     String fileName = f.getAbsolutePath().substring(file.getAbsolutePath().length());
                     dB.log("Processing '" + fileName + "'... ");
 
                     try {
-                        yaml = YamlConfiguration.loadConfiguration(f);
+                        yaml = loadConfig(new FileInputStream(f));
                         String saved = yaml.saveToString();
                         if (yaml != null && saved.length() > 0) {
                             HandleListing(yaml, scriptNames);
