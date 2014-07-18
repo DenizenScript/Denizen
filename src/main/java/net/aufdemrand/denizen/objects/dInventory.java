@@ -1250,38 +1250,6 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains[<item>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the inventory contains an item.
-        // -->
-        if (attribute.startsWith("contains")) {
-            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-                int qty = 1;
-                int attribs = 1;
-
-                // <--[tag]
-                // @attribute <in@inventory.contains[<item>].qty[<#>]>
-                // @returns Element(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of an item.
-                // -->
-                if (attribute.getAttribute(2).startsWith("qty") &&
-                        attribute.hasContext(2) &&
-                        aH.matchesInteger(attribute.getContext(2))) {
-
-                    qty = attribute.getIntContext(2);
-                    attribs = 2;
-                }
-
-                return new Element(getInventory().containsAtLeast
-                        (dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(),
-                                attribute.getScriptEntry().getNPC()).getItemStack(), qty))
-                        .getAttribute(attribute.fulfill(attribs));
-            }
-        }
-
-        // <--[tag]
         // @attribute <in@inventory.find.material[<material>]>
         // @returns Element(Number)
         // @description

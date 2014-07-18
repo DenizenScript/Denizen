@@ -122,8 +122,13 @@ public class NotableManager {
 
             for (String notable : section.getKeys(false)) {
                 Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notable));
-                obj.load();
-                saveAs(obj, notable);
+                if (obj != null) {
+                    obj.load();
+                    saveAs(obj, notable);
+                }
+                else {
+                    dB.echoError("Notable '" + section.getString(notable) + "' failed to load!");
+                }
             }
 
         }

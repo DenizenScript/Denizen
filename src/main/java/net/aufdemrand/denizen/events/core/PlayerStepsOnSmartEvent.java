@@ -63,6 +63,7 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
 
     // <--[event]
     // @Events
+    // player steps on block (in <notable cuboid>)
     // player steps on <material> (in <notable cuboid>)
     //
     // @Warning This event may fire very rapidly.
@@ -97,11 +98,13 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
             context.put("location", block);
             context.put("previous_location", new dLocation(event.getFrom()));
             context.put("new_location", new dLocation(event.getTo()));
+            events.add("player steps on block");
             events.add("player steps on " + mat.identifySimple());
             // Add all relevant cuboids
             List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(block);
             dList cuboid_context = new dList();
             for (dCuboid cuboid : cuboids) {
+                events.add("player steps on block in " + cuboid.identifySimple());
                 events.add("player steps on " + mat.identifySimple() + " in " + cuboid.identifySimple());
             }
             // Add in cuboids context, with either the cuboids or an empty list
