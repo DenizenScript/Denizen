@@ -358,6 +358,7 @@ public class EventManager implements Listener {
         registerSmartEvent(new BlockFallsSmartEvent());
         registerSmartEvent(new BlockPhysicsSmartEvent());
         registerSmartEvent(new ChunkLoadSmartEvent());
+        registerSmartEvent(new CommandSmartEvent());
         registerSmartEvent(new CuboidEnterExitSmartEvent());
         registerSmartEvent(new EntityDamageSmartEvent());
         registerSmartEvent(new EntityDeathSmartEvent());
