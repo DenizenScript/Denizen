@@ -520,19 +520,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     @Override
     @Note("Cuboids")
     public String getSaveObject() {
-        StringBuilder sb = new StringBuilder();
-
-        for (LocationPair pair : pairs) {
-            sb.append(pair.low.getBlockX() + ',' + pair.low.getBlockY()
-                    + "," + pair.low.getBlockZ() + ',' + pair.low.getWorld().getName()
-                    + '|'
-                    + pair.high.getBlockX() + ',' + pair.high.getBlockY()
-                    + ',' + pair.high.getBlockZ() + ',' + pair.high.getWorld().getName()
-                    + '|');
-        }
-        // TODO: Maybe just use identify()?
-
-        return sb.toString().substring(0, sb.toString().length() - 1);
+        return identifyFull().substring(3);
     }
 
     @Override
@@ -591,17 +579,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return "cu@" + NotableManager.getSavedId(this);
 
         else {
-            StringBuilder sb = new StringBuilder();
-            sb.append("cu@");
-
-            for (LocationPair pair : pairs) {
-                sb.append(pair.low.getBlockX()).append(',').append(pair.low.getBlockY())
-                        .append(',').append(pair.low.getBlockZ()).append(',').append(pair.low.getWorld().getName())
-                        .append('|').append(pair.high.getBlockX()).append(',').append(pair.high.getBlockY())
-                        .append(',').append(pair.high.getBlockZ()).append(',').append(pair.high.getWorld().getName()).append('|');
-            }
-
-            return sb.toString().substring(0, sb.toString().length() - 1);
+            return identifyFull();
         }
     }
 
@@ -609,6 +587,20 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     @Override
     public String identifySimple() {
         return identify();
+    }
+
+    public String identifyFull() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("cu@");
+
+        for (LocationPair pair : pairs) {
+            sb.append(pair.low.getBlockX()).append(',').append(pair.low.getBlockY())
+                    .append(',').append(pair.low.getBlockZ()).append(',').append(pair.low.getWorld().getName())
+                    .append('|').append(pair.high.getBlockX()).append(',').append(pair.high.getBlockY())
+                    .append(',').append(pair.high.getBlockZ()).append(',').append(pair.high.getWorld().getName()).append('|');
+        }
+
+        return sb.toString().substring(0, sb.toString().length() - 1);
     }
 
 

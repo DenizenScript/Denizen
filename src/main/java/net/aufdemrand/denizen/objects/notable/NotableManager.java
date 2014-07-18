@@ -103,7 +103,7 @@ public class NotableManager {
 
 
 
-    /*
+    /**
      * Called on '/denizen reload notables'.
      */
     private static void _recallNotables() {
@@ -135,7 +135,7 @@ public class NotableManager {
 
     }
 
-    /*
+    /**
      * Called on by '/denizen save'.
      */
     private static void _saveNotables() {
@@ -144,9 +144,9 @@ public class NotableManager {
 
             // If the object is serializable, save that info... fetching the objects back
             // will require this information TODO: make this do something?..
-            if (notable.getValue().getSaveObject() instanceof ConfigurationSerializable)
-                DenizenAPI.getCurrentInstance().notableManager().getNotables()
-                        .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
+      //      if (notable.getValue().getSaveObject() instanceof ConfigurationSerializable)
+      //          DenizenAPI.getCurrentInstance().notableManager().getNotables()
+      //                  .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
 
             DenizenAPI.getCurrentInstance().notableManager().getNotables()
                     .set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase(),
@@ -162,13 +162,12 @@ public class NotableManager {
         return null;
     }
 
-    /*
-     * Reloads, retrieves and saves notable information from/to 'notables.yml'.
-     */
-
     private FileConfiguration notablesSave = null;
     private File notablesFile = null;
 
+    /**
+     * Reloads, retrieves and saves notable information from/to 'notables.yml'.
+     */
     public void reloadNotables() {
         if (notablesFile == null) {
             notablesFile = new File(DenizenAPI.getCurrentInstance().getDataFolder(), "notables.yml");
