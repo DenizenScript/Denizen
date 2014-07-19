@@ -245,7 +245,7 @@ public class TextTags implements Listener {
     // -->
 
     // <--[tag]
-    // @attribute <dark_red>
+    // @attribute <dark_blue>
     // @returns Element
     // @description
     // Returns the ChatColor that makes the following characters Dark Blue.

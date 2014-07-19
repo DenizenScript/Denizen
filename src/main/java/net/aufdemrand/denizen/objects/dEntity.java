@@ -1767,7 +1767,8 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the cause of the last damage taken by the entity.
         // -->
-        if (attribute.startsWith("last_damage.cause"))
+        if (attribute.startsWith("last_damage.cause")
+                && entity.getLastDamageCause() != null)
             return new Element(entity.getLastDamageCause().getCause().name())
                     .getAttribute(attribute.fulfill(2));
 
