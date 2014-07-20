@@ -1788,7 +1788,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Note
-        // @Syntax note [<Notable dObject>] [as:<name>] (remove)
+        // @Syntax note [<Notable dObject>/remove] [as:<name>]
         // @Required 2
         // @Stable unstable
         // @Short Adds or removes a notable object.
@@ -1799,10 +1799,14 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // Todo
         // @Usage
-        // Todo
+        // Use to add a notable cuboid.
+        // - note cu@1,2,3,world|4,5,6,world as:mycuboid
+        // @Usage
+        // Use to remove a notable cuboid.
+        // - note remove as:mycuboid
         // -->
         registerCoreMember(NoteCommand.class,
-                "NOTE", "note [<Notable dObject>] [as:<name>] (remove)", 2);
+                "NOTE", "note [<Notable dObject>/remove] [as:<name>]", 2);
 
 
         // <--[command]
