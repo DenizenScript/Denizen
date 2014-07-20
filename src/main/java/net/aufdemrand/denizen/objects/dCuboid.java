@@ -594,6 +594,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         sb.append("cu@");
 
         for (LocationPair pair : pairs) {
+            if (pair.low.getWorld() == null || pair.high.getWorld() == null) {
+                dB.echoError("Null world for cuboid, returning invalid identity!");
+                return "cu@null";
+            }
             sb.append(pair.low.getBlockX()).append(',').append(pair.low.getBlockY())
                     .append(',').append(pair.low.getBlockZ()).append(',').append(pair.low.getWorld().getName())
                     .append('|').append(pair.high.getBlockX()).append(',').append(pair.high.getBlockY())
