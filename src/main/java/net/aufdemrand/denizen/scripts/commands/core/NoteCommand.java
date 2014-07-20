@@ -48,8 +48,13 @@ public class NoteCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), aH.debugObj("object", object) + id.debug() + remove.debug());
 
         if (remove.asBoolean()) {
-            if (NotableManager.isSaved(id.asString()))
+            if (NotableManager.isSaved(id.asString())) {
                 NotableManager.remove(id.asString());
+                dB.echoDebug(scriptEntry, id.asString() + " removed");
+            }
+            else {
+                dB.echoDebug(scriptEntry, id.asString() + " is not saved");
+            }
             return;
         }
 

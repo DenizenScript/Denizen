@@ -140,6 +140,11 @@ public class NotableManager {
      */
     private static void _saveNotables() {
 
+        FileConfiguration notables = DenizenAPI.getCurrentInstance().notableManager().getNotables();
+        for (String key: notables.getKeys(false)) {
+            notables.set(key, null);
+        }
+
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
 
             // If the object is serializable, save that info... fetching the objects back
@@ -148,9 +153,8 @@ public class NotableManager {
       //          DenizenAPI.getCurrentInstance().notableManager().getNotables()
       //                  .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
 
-            DenizenAPI.getCurrentInstance().notableManager().getNotables()
-                    .set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase(),
-                            notable.getValue().getSaveObject());
+            notables.set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase(),
+                    notable.getValue().getSaveObject());
         }
 
     }
