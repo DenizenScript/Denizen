@@ -1012,6 +1012,21 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.to_list>
+        // @returns dList
+        // @group string manipulation
+        // @description
+        // Returns a dList of each letter in the element.
+        // -->
+        if (attribute.startsWith("to_list")) {
+            dList list = new dList();
+            for (int i = 0; i < element.length(); i++) {
+                list.add(String.valueOf(element.charAt(i)));
+            }
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <el@element.strip_color>
         // @returns Element
         // @group string manipulation

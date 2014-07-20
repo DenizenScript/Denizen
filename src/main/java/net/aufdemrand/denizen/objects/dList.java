@@ -682,11 +682,30 @@ public class dList extends ArrayList<String> implements dObject {
                 if (get(i).equalsIgnoreCase(attribute.getContext(1)))
                     return new Element(i + 1).getAttribute(attribute.fulfill(1));
             }
+            // TODO: Why does this loop twice?
             for (int i = 0; i < size(); i++) {
                 if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
                     return new Element(i + 1).getAttribute(attribute.fulfill(1));
             }
             return new Element(-1).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.count[<element>]>
+        // @returns Element(Number)
+        // @description
+        // returns how many times in the sub-list occurs.
+        // EG, a list of "one|two|two|three" .count[two] returns 2.
+        // -->
+        if (attribute.startsWith("count") &&
+                attribute.hasContext(1)) {
+            String element = attribute.getContext(1);
+            int count = 0;
+            for (int i = 0; i < size(); i++) {
+                if (get(i).equalsIgnoreCase(element))
+                    count++;
+            }
+            return new Element(count).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

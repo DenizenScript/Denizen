@@ -109,6 +109,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    @Fetchable("in")
     public static dInventory valueOf(String string) {
         return valueOf(string, null, null);
     }
@@ -124,7 +125,6 @@ public class dInventory implements dObject, Notable, Adjustable {
      *          the specified inventory is invalid, this is null.
      *
      */
-    @Fetchable("in")
     public static dInventory valueOf(String string, dPlayer player, dNPC npc) {
 
         if (string == null) return null;

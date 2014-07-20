@@ -68,6 +68,8 @@ public class RandomCommand extends BracedCommand {
     }
 
     private int previous = 0;
+    private int previous2 = 0;
+    private int previous3 = 0;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -87,8 +89,12 @@ public class RandomCommand extends BracedCommand {
 
         int selected = Utilities.getRandom().nextInt(possibilities);
         // Try to not duplicate
-        if (selected == previous)
+        if (selected == previous || selected == previous2 || selected == previous3)
             selected = Utilities.getRandom().nextInt(possibilities);
+        if (selected == previous || selected == previous2 || selected == previous3)
+            selected = Utilities.getRandom().nextInt(possibilities);
+        previous3 = previous2;
+        previous2 = previous;
         previous = selected;
 
         dB.report(scriptEntry, getName(), aH.debugObj("possibilities", possibilities) + aH.debugObj("choice", selected + 1));
