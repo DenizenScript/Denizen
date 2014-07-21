@@ -861,6 +861,21 @@ public class dMaterial implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <m@material.full>
+        // @returns Element
+        // @description
+        // Returns the material's full identification.
+        // -->
+        if (attribute.startsWith("full")) {
+            if (hasData())
+                return new Element(identify() + "," + getData())
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new Element(identify())
+                        .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <m@material.data>
         // @returns Element(Number)
         // @description
