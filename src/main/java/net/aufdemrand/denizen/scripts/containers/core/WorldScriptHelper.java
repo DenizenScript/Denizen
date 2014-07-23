@@ -647,7 +647,7 @@ public class WorldScriptHelper implements Listener {
     public void blockSpread(BlockSpreadEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        dMaterial material = dMaterial.getMaterialFrom(event.getSource().getType(), event.getSource().getData());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
