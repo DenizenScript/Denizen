@@ -982,7 +982,9 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // time changes (in <world>)
     // <0-23>:00 in <world>
+    // <0-24000>t in <world>
     // time <0-23> in <world>
+    // time <0-24000>t in <world>
     //
     // @Triggers when the current time changes in a world (once per mine-hour).
     // @Context
@@ -1011,6 +1013,10 @@ public class WorldScriptHelper implements Listener {
                                 "time changes in " + currentWorld.identifySimple(),
                                 String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(),
                                 "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
+                        null, null, context, true);
+                EventManager.doEvents(Arrays.asList
+                        (world.getTime() + "t in " + currentWorld.identifySimple(),
+                                "time " + world.getTime() + "t in " + currentWorld.identifySimple()),
                         null, null, context, true);
 
                 current_time.put(currentWorld.identifySimple(), hour);
