@@ -29,7 +29,7 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on (e@)?\\w+ (damaged by|damages|killed by|kills) \\w+", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on (e@)?\\w+ (damaged by|damages|killed by|kills|damaged|killed)( \\w+)?", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {
