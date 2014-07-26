@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -51,7 +52,7 @@ public class CommandSmartEvent implements SmartEvent, Listener {
                 dList split = dList.valueOf(cmd);
                 for (String str: split) {
                     cmds.add(new CommandHandlerData(str.toLowerCase(), cmd));
-                    dB.log("Added " + str.toLowerCase() + " for " + cmd);
+                    // TODO: Register command via magic of some form
                 }
                 pass = true;
             }
@@ -76,6 +77,7 @@ public class CommandSmartEvent implements SmartEvent, Listener {
         // Unregister events or any other temporary links your event created in _intialize()
         PlayerCommandPreprocessEvent.getHandlerList().unregister(this);
         ServerCommandEvent.getHandlerList().unregister(this);
+        // TODO: unregister commands
     }
 
 

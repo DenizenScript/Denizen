@@ -104,11 +104,7 @@ public class EventManager implements Listener {
             // If it should initialize, run _initialize!
             if (smartEvent.shouldInitialize(events.keySet()))
                 smartEvent._initialize();
-
         }
-
-        // TODO: Register any custom commands found with Bukkit
-
     }
 
 

@@ -46,7 +46,7 @@ public class InteractScriptHelper {
         if (assignedScripts.isEmpty()) return null;
 
         // Alert the dBugger -- trying to find a good interact script!
-        dB.log(dB.DebugElement.Header, "Getting interact script: " + npc.getName() + "/" + player.getName());
+        dB.log(dB.DebugElement.Header, "Getting interact script: n@" + npc.getName() + "/p@" + player.getName());
 
         //
         // Get scripts that meet requirements and add them to interactableScripts.
@@ -191,22 +191,14 @@ public class InteractScriptHelper {
     public static String getCurrentStep(dPlayer player, String scriptName) {
         if (scriptName == null) return null;
         // Probe 'saves.yml' for the current step
-        if (DenizenAPI._saves().contains("Players." + player.getName()
+        if (DenizenAPI._saves().contains("Players." + player.getSaveName()
                         + "." + "Scripts." + scriptName.toUpperCase()
                         + "." + "Current Step")) {
-            // TODO: Remove debug
-            // dB.echoDebug("<Y>+> " + ChatColor.WHITE + "Current step for " + player.getName() + "/" + scriptName + " is " +
-            //         DenizenAPI._saves().getString("Players." + player.getName()
-            //                 + "." + "Scripts." + scriptName.toUpperCase()
-            //                 + "." + "Current Step"));
-            return DenizenAPI._saves().getString("Players." + player.getName()
+            return DenizenAPI._saves().getString("Players." + player.getSaveName()
                             + "." + "Scripts." + scriptName.toUpperCase()
                             + "." + "Current Step").toUpperCase();
         }
         // No saved step found, so we'll just use the default
-        // TODO: Remove debug
-        // dB.echoDebug("<Y>+> " + ChatColor.WHITE + "Current step for " + player.getName() + "/" + scriptName + " is " +
-        //      ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName());
         return ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName().toUpperCase();
     }
 
