@@ -222,9 +222,17 @@ public class dB {
             ex.printStackTrace();
             if (dB.record) {
                 String prefix = ConsoleSender.dateFormat.format(new Date()) + " [SEVERE] ";
-                dB.Recording.append(URLEncoder.encode(prefix + ex.toString() + "\n"));
-                for (StackTraceElement ste: ex.getStackTrace()) {
-                    dB.Recording.append(URLEncoder.encode(prefix + ste.toString() + "\n"));
+                boolean first = true;
+                while (ex != null) {
+                    dB.Recording.append(URLEncoder.encode(prefix + (first ? "": "Caused by: ") + ex.toString() + "\n"));
+                    for (StackTraceElement ste: ex.getStackTrace()) {
+                        dB.Recording.append(URLEncoder.encode(prefix + ste.toString() + "\n"));
+                    }
+                    if (ex.getCause() == ex) {
+                        return;
+                    }
+                    ex = ex.getCause();
+                    first = false;
                 }
             }
         }

@@ -1644,7 +1644,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name LookClose
-        // @Syntax lookclose lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)
+        // @Syntax lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)
         // @Required 0
         // @Stable stable
         // @Short Interacts with a NPCs 'lookclose' trait as provided by Citizens2.

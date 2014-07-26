@@ -501,12 +501,18 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // Returns a dList of all the keys at the path.
         // -->
         if (attribute.startsWith("list_keys")) {
-            ConfigurationSection section = getYaml(id).getConfigurationSection(path);
-            if (section == null) {
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
-                return;
+            Set<String> keys;
+            if (path != null && path.length() > 0) {
+                ConfigurationSection section = getYaml(id).getConfigurationSection(path);
+                if (section == null) {
+                    event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
+                    return;
+                }
+                keys = section.getKeys(false);
             }
-            Set<String> keys = section.getKeys(false);
+            else {
+                keys = getYaml(id).getKeys(false);
+            }
             if (keys == null) {
                 event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                 return;
