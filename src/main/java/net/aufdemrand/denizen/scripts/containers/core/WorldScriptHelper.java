@@ -982,9 +982,7 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // time changes (in <world>)
     // <0-23>:00 in <world>
-    // <0-24000>t in <world>
     // time <0-23> in <world>
-    // time <0-24000>t in <world>
     //
     // @Triggers when the current time changes in a world (once per mine-hour).
     // @Context
@@ -1013,10 +1011,6 @@ public class WorldScriptHelper implements Listener {
                                 "time changes in " + currentWorld.identifySimple(),
                                 String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(),
                                 "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
-                        null, null, context, true);
-                EventManager.doEvents(Arrays.asList
-                        (world.getTime() + "t in " + currentWorld.identifySimple(),
-                                "time " + world.getTime() + "t in " + currentWorld.identifySimple()),
                         null, null, context, true);
 
                 current_time.put(currentWorld.identifySimple(), hour);
@@ -2425,6 +2419,7 @@ public class WorldScriptHelper implements Listener {
     // <context.click> returns an Element with the name of the click type.
     // <context.slot_type> returns an Element with the name of the slot type that was clicked.
     // <context.slot> returns an Element with the number of the slot that was clicked.
+    // <context.raw_slot> returns an Element with the raw number of the slot that was clicked.
     // <context.is_shift_click> returns true if 'shift' was used while clicking.
     // <context.action> returns the inventory_action. See <@link language Inventory Actions>.
     //
@@ -2521,7 +2516,8 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("click", new Element(click));
         context.put("slot_type", new Element(slotType));
-        context.put("slot", new Element(event.getSlot()+1));
+        context.put("slot", new Element(event.getSlot() + 1));
+        context.put("raw_slot", new Element(event.getRawSlot() + 1));
         context.put("is_shift_click", new Element(event.isShiftClick()));
         context.put("action", new Element(event.getAction().name()));
 
