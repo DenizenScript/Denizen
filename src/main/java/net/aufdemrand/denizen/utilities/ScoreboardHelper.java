@@ -1,22 +1,17 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.google.common.base.Splitter;
 import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.objects.dPlayer;
 
+import net.aufdemrand.denizen.scripts.commands.server.ScoreboardCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.*;
 
 /**
  * Creates, saves and loads scoreboards
@@ -47,7 +42,7 @@ public class ScoreboardHelper {
 
         // Clear every viewer's set scoreboard
         for (Map.Entry<String, String> entry : viewerMap.entrySet()) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getKey());
+            OfflinePlayer player = ScoreboardCommand.getOfflinePlayer(entry.getKey());
             if (player.isOnline()) {
                 player.getPlayer().setScoreboard(emptyBoard);
             }
@@ -120,7 +115,7 @@ public class ScoreboardHelper {
                     // Iterate through scores and add them to this objective
                     for (String scoreName : scoreSection.getKeys(false)) {
                         int scoreInt = scoreSection.getInt(scoreName);
-                        addScore(o, Bukkit.getOfflinePlayer(scoreName), scoreInt);
+                        addScore(o, ScoreboardCommand.getOfflinePlayer(scoreName), scoreInt);
                     }
                 }
             }
@@ -182,6 +177,8 @@ public class ScoreboardHelper {
                 for (String player : scoreboardEntry.getValue().getEntries()) {
 
                     int score = obj.getScore(player).getScore();
+                    Team team = scoreboardEntry.getValue().getTeam(player);
+                    player = team.getPrefix() + player + team.getSuffix();
 
                     // If a player has no score for this objective,
                     // getScore() will return 0, so ignore scores
@@ -213,7 +210,15 @@ public class ScoreboardHelper {
      *
      */
     public static void addScore(Objective o, OfflinePlayer player, int score) {
-        Score sc = o.getScore(player);
+        Score sc;
+        if (player.getName().length() <= 16) {
+            sc = o.getScore(player.getName());
+        }
+        else {
+            Map.Entry<Team, String> teamData = createTeam(o.getScoreboard(), player.getName());
+            sc = o.getScore(teamData.getValue());
+            teamData.getKey().addPlayer(ScoreboardCommand.getOfflinePlayer(teamData.getValue()));
+        }
 
         // If the score is 0, it won't normally be displayed at first,
         // so force it to be displayed by using setScore() like below on it
@@ -243,23 +248,34 @@ public class ScoreboardHelper {
         // Go through every score for this (real or fake) player
         // and put it in scoreMap if it doesn't belong to the
         // objective we want to remove the score from
-        for (Score sc : board.getScores(player)) {
+        for (Score sc : board.getScores(player.getName())) {
             if (!sc.getObjective().equals(o)) {
                 scoreMap.put(sc.getObjective().getName(), sc.getScore());
             }
         }
 
         // Remove all the scores for this (real or fake) player
-        board.resetScores(player);
+        board.resetScores(player.getName());
 
         // Go through scoreMap and add back all the scores we saved
         // for this (real or fake) player
         for (Map.Entry<String, Integer> entry : scoreMap.entrySet()) {
             board.getObjective(entry.getKey())
-                 .getScore(player).setScore(entry.getValue());
+                 .getScore(player.getName()).setScore(entry.getValue());
         }
     }
 
+    private static Map.Entry<Team, String> createTeam(Scoreboard scoreboard, String text) {
+        if (text.length() <= 16)
+            return new HashMap.SimpleEntry<Team, String>(null, text);
+        Team team = scoreboard.registerNewTeam("text-" + scoreboard.getTeams().size());
+        Iterator<String> iterator = Splitter.fixedLength(16).split(text).iterator();
+        team.setPrefix(iterator.next());
+        String result = iterator.next();
+        if (text.length() > 32)
+            team.setSuffix(iterator.next());
+        return new HashMap.SimpleEntry<Team, String>(team, result);
+    }
 
     /////////////////////
     //   SCOREBOARD METHODS
@@ -366,6 +382,6 @@ public class ScoreboardHelper {
      *
      */
     public static void removePlayer(String id, OfflinePlayer player) {
-        scoreboardMap.get(id.toUpperCase()).resetScores(player);
+        scoreboardMap.get(id.toUpperCase()).resetScores(player.getName());
     }
 }

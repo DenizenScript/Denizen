@@ -88,7 +88,7 @@ public class ScoreboardCommand extends AbstractCommand {
         scriptEntry.defaultObject("displayslot", new Element("sidebar"));
     }
 
-    OfflinePlayer getOfflinePlayer(String name) {
+    public static OfflinePlayer getOfflinePlayer(String name) {
         if (dPlayer.playerNameIsValid(name))
             return Bukkit.getOfflinePlayer(name);
         else
@@ -190,6 +190,9 @@ public class ScoreboardCommand extends AbstractCommand {
                     // for clarifications
                     for (String line : lines) {
                         line = line.replaceAll("[pP]@", "");
+                        if (line.length() > 48) {
+                            line = line.substring(0, 48);
+                        }
                         ScoreboardHelper.addScore(obj, getOfflinePlayer(line), score.asInt());
                     }
                 }
