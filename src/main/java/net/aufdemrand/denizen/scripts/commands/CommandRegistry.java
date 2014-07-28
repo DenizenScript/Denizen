@@ -2159,7 +2159,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <entry[saveName].created_queue>
         // @Usage
         // Todo
         // -->
