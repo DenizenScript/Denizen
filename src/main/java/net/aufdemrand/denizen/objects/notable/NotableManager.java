@@ -153,6 +153,9 @@ public class NotableManager {
       //          DenizenAPI.getCurrentInstance().notableManager().getNotables()
       //                  .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
 
+            if (notable.getValue() instanceof dInventory) {
+                continue;
+            }
             notables.set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase(),
                     notable.getValue().getSaveObject());
         }
