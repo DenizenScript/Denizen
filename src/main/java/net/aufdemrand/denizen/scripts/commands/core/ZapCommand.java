@@ -122,9 +122,9 @@ public class ZapCommand extends AbstractCommand implements Listener{
         // If the durationsMap already contains an entry for this player/script combination,
         // cancel the task since it's probably not desired to change back anymore if another
         // ZAP for this script is taking place.
-        if (durations.containsKey(scriptEntry.getPlayer().getName() + "," + script.getName()))
+        if (durations.containsKey(scriptEntry.getPlayer().getSaveName() + "," + script.getName()))
             try {
-                denizen.getServer().getScheduler().cancelTask(durations.get(scriptEntry.getPlayer().getName() + "," + script.getName()));
+                denizen.getServer().getScheduler().cancelTask(durations.get(scriptEntry.getPlayer().getSaveName() + "," + script.getName()));
             } catch (Exception e) { }
 
         // One last thing... check for duration.
@@ -144,14 +144,14 @@ public class ZapCommand extends AbstractCommand implements Listener{
 
             // Set delayed task and put id in a map
             dB.log("Setting delayed task 'RESET ZAP' for '" + script.identify() + "'");
-            durations.put(scriptEntry.getPlayer().getName() + "," + script.getName(),
+            durations.put(scriptEntry.getPlayer().getSaveName() + "," + script.getName(),
                     denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
                             new Runnable() {
                                 @Override
                                 public void run() {
                                     dB.log("Running delayed task 'RESET ZAP' for '" + script.identify() + "'");
                                     try {
-                                        durations.remove(scriptEntry.getPlayer().getName() + "," + script.getName().toUpperCase());
+                                        durations.remove(scriptEntry.getPlayer().getSaveName() + "," + script.getName().toUpperCase());
                                         execute(scriptEntry);
                                     } catch (CommandExecutionException e) {
                                         dB.echoError("Could not run delayed task!");
@@ -165,7 +165,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         // FINALLY! ZAP! Change the step in Saves... your step is now ZAPPED!
         // Fun fact: ZAP is named in homage of ZZT-OOPs ZAP command. Google it.
         //
-        denizen.getSaves().set("Players." + scriptEntry.getPlayer().getName()
+        denizen.getSaves().set("Players." + scriptEntry.getPlayer().getSaveName()
                 + ".Scripts." + script.getName().toUpperCase() + "." + "Current Step", step);
     }
 

@@ -18,8 +18,10 @@ import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.BrewingStand;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.Furnace;
 import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftInventory;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -456,6 +458,12 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
             else if (holder instanceof DoubleChest) {
                 return new dLocation(((DoubleChest) holder).getLocation());
+            }
+            else if (holder instanceof BrewingStand) {
+                return new dLocation(((BrewingStand) holder).getLocation());
+            }
+            else if (holder instanceof Furnace) {
+                return new dLocation(((Furnace) holder).getLocation());
             }
             else if (holder instanceof Entity) {
                 Entity entity = (Entity) holder;

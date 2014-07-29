@@ -690,10 +690,35 @@ public class Element implements dObject {
         // @description
         // Returns whether the element matches a regex input.
         // -->
-        // TODO: .group[#] and such
         if (attribute.startsWith("matches")
-                && attribute.hasContext(1))
+                && attribute.hasContext(1)) {
             return new Element(element.matches(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.regex[<regex>].group[<group>]>
+        // @returns Element
+        // @group string checking
+        // @description
+        // Returns the specific group from a regex match.
+        // Specify group 0 for the whole match.
+        // For example, <el@val[hello5world].regex[.*(\d).*].group[1]> returns '5'.
+        // -->
+        if (attribute.startsWith("regex")
+                && attribute.hasContext(1)
+                && attribute.hasContext(2)) {
+            String regex = attribute.getContext(1);
+            Matcher m = Pattern.compile(regex).matcher(element);
+            if (!m.matches()) {
+                return Element.NULL.getAttribute(attribute.fulfill(2));
+            }
+            int group = new Element(attribute.getContext(2)).asInt();
+            if (group < 0)
+                group = 0;
+            if (group > m.groupCount())
+                group = m.groupCount();
+            return new Element(m.group(group)).getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
         // @attribute <el@element.last_color>

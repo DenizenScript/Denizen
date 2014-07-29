@@ -230,6 +230,9 @@ public class RunCommand extends AbstractCommand implements Holdable {
             });
         }
 
+        // Save the queue for script referencing
+        scriptEntry.addObject("created_queue", queue);
+
         // OK, GO!
         queue.start();
     }
