@@ -24,7 +24,7 @@
     <repositories>
         <repository>
             <id>vault-repo</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
+            <url>http://nexus.theyeticave.net/content/repositories/public/</url>
         </repository>
         <repository>
             <id>bukkit-repo</id>
