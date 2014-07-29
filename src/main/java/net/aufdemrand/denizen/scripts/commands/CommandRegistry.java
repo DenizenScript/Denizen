@@ -1402,7 +1402,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name If
         // @Syntax if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)
-        // @Required 2
+        // @Required 1
         // @Stable stable
         // @Short Compares values, and runs one script if they match, or a different script if they don't match.
         // @Author aufdemrand, David Cernat

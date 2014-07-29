@@ -93,7 +93,7 @@ public class ScriptHelper {
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i].trim();
             if (!line.startsWith("#")) {
-                if ((line.startsWith("}") || line.startsWith("{")) && !line.endsWith(":"))
+                if ((line.startsWith("}") || line.startsWith("{") || line.startsWith("else")) && !line.endsWith(":"))
                 {
                     result.append(' ').append(lines[i]).append("\n");
                 }
