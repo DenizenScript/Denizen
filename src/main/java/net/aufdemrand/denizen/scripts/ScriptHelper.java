@@ -91,8 +91,16 @@ public class ScriptHelper {
         StringBuilder result = new StringBuilder(input.length());
         String[] lines = input.replace("\t", "    ").replace("\r", "").split("\n");
         for (int i = 0; i < lines.length; i++) {
-            if (!lines[i].trim().startsWith("#")) {
-                result.append(lines[i]).append("\n");
+            String line = lines[i].trim();
+            if (!line.startsWith("#")) {
+                if ((line.startsWith("}") || line.startsWith("{")) && !line.endsWith(":"))
+                {
+                    result.append(' ').append(lines[i]).append("\n");
+                }
+                else
+                {
+                    result.append(lines[i]).append("\n");
+                }
             }
             else {
                 result.append("\n");
