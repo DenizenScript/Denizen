@@ -122,8 +122,7 @@ public class WhileCommand extends BracedCommand {
                     break;
                 }
             }
-            if (hasnext)
-            {
+            if (hasnext) {
                 while (scriptEntry.getResidingQueue().getQueueSize() > 0) {
                     ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(0);
                     List<String> args = entry.getOriginalArguments();
@@ -133,8 +132,7 @@ public class WhileCommand extends BracedCommand {
                     scriptEntry.getResidingQueue().removeEntry(0);
                 }
             }
-            else
-            {
+            else {
                 dB.echoError("Cannot stop while: not in one!");
             }
             return;
@@ -155,7 +153,8 @@ public class WhileCommand extends BracedCommand {
                     ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner(), 1).get("WHILE");
                     ScriptEntry callbackEntry = null;
                     try {
-                        callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" }, scriptEntry.getScript().getContainer());
+                        callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
+                                (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
                     }
                     catch (ScriptEntryCreationException e) {
                         dB.echoError(e);
@@ -198,7 +197,8 @@ public class WhileCommand extends BracedCommand {
             scriptEntry.setData(datum);
             ScriptEntry callbackEntry = null;
             try {
-                callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" }, scriptEntry.getScript().getContainer());
+                callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
+                        (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
             }
             catch (ScriptEntryCreationException e) {
                 dB.echoError(e);

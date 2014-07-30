@@ -41,6 +41,7 @@ public class CommandExecuter {
             while (m.find()) {
                 String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
                 if (definition == null) definition = "null";
+                dB.echoDebug(scriptEntry, "Filled definition %" + m.group(1) + "% with '" + definition + "'.");
                 m.appendReplacement(sb, definition.replace("$", "\\$"));
             }
             m.appendTail(sb);
@@ -49,6 +50,9 @@ public class CommandExecuter {
 
         // Get the command instance ready for the execution of the scriptEntry
         AbstractCommand command = scriptEntry.getCommand();
+        if (command == null) {
+            command = DenizenAPI.getCurrentInstance().getCommandRegistry().get(scriptEntry.getCommandName());
+        }
 
         if (command == null) {
             dB.echoDebug(scriptEntry, DebugElement.Header, "Executing command: " + scriptEntry.getCommandName());
@@ -113,6 +117,7 @@ public class CommandExecuter {
                     while (m.find()) {
                         String definition = TagManager.EscapeOutput(scriptEntry.getResidingQueue().getDefinition(m.group(1)));
                         if (definition == null) definition = "null";
+                        dB.echoDebug(scriptEntry, "Filled definition %" + m.group(1) + "% with '" + definition + "'.");
                         m.appendReplacement(sb, definition.replace("$", "\\$"));
                     }
                     m.appendTail(sb);

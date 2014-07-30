@@ -124,8 +124,7 @@ public class ForEachCommand extends BracedCommand {
                     break;
                 }
             }
-            if (hasnext)
-            {
+            if (hasnext) {
                 while (scriptEntry.getResidingQueue().getQueueSize() > 0) {
                     ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(0);
                     List<String> args = entry.getOriginalArguments();
@@ -135,8 +134,7 @@ public class ForEachCommand extends BracedCommand {
                     scriptEntry.getResidingQueue().removeEntry(0);
                 }
             }
-            else
-            {
+            else {
                 dB.echoError("Cannot stop while: not in one!");
             }
             return;
@@ -154,7 +152,8 @@ public class ForEachCommand extends BracedCommand {
                     ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner(), 1).get("FOREACH");
                     ScriptEntry callbackEntry = null;
                     try {
-                        callbackEntry = new ScriptEntry("FOREACH", new String[] { "\0CALLBACK" }, scriptEntry.getScript().getContainer());
+                        callbackEntry = new ScriptEntry("FOREACH", new String[] { "\0CALLBACK" },
+                                (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
                     }
                     catch (ScriptEntryCreationException e) {
                         dB.echoError(e);
@@ -187,8 +186,7 @@ public class ForEachCommand extends BracedCommand {
             dB.report(scriptEntry, getName(), list.debug());
 
             int target = list.size();
-            if (target <= 0)
-            {
+            if (target <= 0) {
                 dB.echoDebug(scriptEntry, "Empty list, not looping...");
                 return;
             }
@@ -198,7 +196,8 @@ public class ForEachCommand extends BracedCommand {
             scriptEntry.setData(datum);
             ScriptEntry callbackEntry = null;
             try {
-                callbackEntry = new ScriptEntry("FOREACH", new String[] { "\0CALLBACK" }, scriptEntry.getScript().getContainer());
+                callbackEntry = new ScriptEntry("FOREACH", new String[] { "\0CALLBACK" },
+                        (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
             }
             catch (ScriptEntryCreationException e) {
                 dB.echoError(e);
