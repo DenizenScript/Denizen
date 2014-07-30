@@ -148,7 +148,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
         }
 
         if (actualCommand != null && actualCommand.isBraced() && actualCommand instanceof BracedCommand) {
-            ((BracedCommand) actualCommand).getBracedCommands(this, 1);
+            BracedCommand.getBracedCommands(this, 1);
         }
     }
 
@@ -237,6 +237,25 @@ public class ScriptEntry implements Cloneable, Debuggable {
         this.command = commandName;
     }
 
+    private ScriptEntry owner = null;
+
+    public void setOwner(ScriptEntry owner) {
+        this.owner = owner;
+    }
+
+    public ScriptEntry getOwner() {
+        return owner;
+    }
+
+    private Object data;
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object result) {
+        this.data = result;
+    }
 
 
     //////////////////

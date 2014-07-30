@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
@@ -386,6 +387,34 @@ public abstract class ScriptQueue implements Debuggable, dObject {
 
 
     /**
+     * Converts any queue type to a timed queue.
+     *
+     * @param delay how long to delay initially.
+     * @return the newly created queue.
+     */
+    public ScriptQueue forceToTimed(Duration delay) {
+        stop();
+        TimedQueue newQueue = TimedQueue.getQueue(id);
+        for (ScriptEntry entry: getEntries()) {
+            entry.setInstant(true);
+        }
+        newQueue.addEntries(getEntries());
+        for (Map.Entry<String, String> def: getAllDefinitions().entrySet()) {
+            newQueue.addDefinition(def.getKey(), def.getValue());
+        }
+        for (Map.Entry<String, dObject> entry: getAllContext().entrySet()) {
+            newQueue.addContext(entry.getKey(), entry.getValue());
+        }
+        newQueue.setLastEntryExecuted(getLastEntryExecuted());
+        clear();
+        if (delay != null)
+            newQueue.delayFor(delay);
+        newQueue.start();
+        return newQueue;
+    }
+
+
+    /**
      * Called when the script queue is started.
      *
      */
@@ -538,7 +567,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // 2) Cancel the corresponding task_id
         else {
             _queues.remove(id);
-            dB.echoDebug(this, "Completing queue '" + id + "'.");
+            dB.echoDebug(this, "Re-completing queue '" + id + "'.");
             if (callback != null)
                 callback.run();
             is_started = false;
@@ -596,6 +625,11 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     public ScriptQueue addEntries(List<ScriptEntry> entries) {
         script_entries.addAll(entries);
         return this;
+    }
+
+
+    public List<ScriptEntry> getEntries() {
+        return script_entries;
     }
 
 

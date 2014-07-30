@@ -555,6 +555,9 @@ public class dEntity implements dObject, Adjustable {
         if (!isGeneric() && isLivingEntity()) {
             return new dLocation(getLivingEntity().getEyeLocation());
         }
+        else if (!isGeneric()) {
+            return new dLocation(getBukkitEntity().getLocation());
+        }
 
         return null;
     }
@@ -1993,6 +1996,7 @@ public class dEntity implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Sets whether the entity can pick up items.
+        // The entity must be living.
         // @tags
         // <e@entity.can_pickup_items>
         // -->
@@ -2005,6 +2009,7 @@ public class dEntity implements dObject, Adjustable {
         // @input Element
         // @description
         // Sets the custom name of the entity.
+        // The entity must be living.
         // @tags
         // <e@entity.custom_name>
         // -->
@@ -2017,6 +2022,7 @@ public class dEntity implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Sets whether the custom name is visible.
+        // The entity must be living.
         // @tags
         // <e@entity.custom_name.visible>
         // -->
@@ -2053,6 +2059,7 @@ public class dEntity implements dObject, Adjustable {
         // @input dEntity
         // @description
         // Sets the entity holding this entity by leash.
+        // The entity must be living.
         // @tags
         // <e@entity.is_leashed>
         // <e@entity.get_leash_holder>
@@ -2066,6 +2073,7 @@ public class dEntity implements dObject, Adjustable {
         // @input Number
         // @description
         // Sets the maximum health the entity may have.
+        // The entity must be living.
         // @tags
         // <e@entity.health>
         // <e@entity.health.max>
@@ -2092,6 +2100,7 @@ public class dEntity implements dObject, Adjustable {
         // @input Number(Decimal)
         // @description
         // Sets the amount of health the entity has.
+        // The entity must be living.
         // @tags
         // <e@entity.health>
         // <e@entity.health.max>
@@ -2112,6 +2121,7 @@ public class dEntity implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Sets whether the entity is capable of mating with another of its kind.
+        // The entity must be living and 'ageable'.
         // @tags
         // <e@entity.can_breed>
         // -->
@@ -2124,6 +2134,7 @@ public class dEntity implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Sets whether the entity is trying to mate with another of its kind.
+        // The entity must be living and an animal.
         // @tags
         // <e@entity.can_breed>
         // -->
@@ -2168,6 +2179,7 @@ public class dEntity implements dObject, Adjustable {
         // @input Element(Number)
         // @description
         // Sets how much air the entity has remaining before it drowns.
+        // The entity must be living.
         // @tags
         // <e@entity.oxygen>
         // <e@entity.oxygen.max>
@@ -2181,6 +2193,7 @@ public class dEntity implements dObject, Adjustable {
         // @input None
         // @description
         // Removes all potion effects from the entity.
+        // The entity must be living.
         // @tags
         // <e@entity.has_effect[<effect>]>
         // -->
@@ -2194,6 +2207,7 @@ public class dEntity implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Sets whether the entity should be removed entirely when despawned.
+        // The entity must be living.
         // @tags
         // <e@entity.remove_when_far>
         // -->

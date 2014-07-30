@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -15,6 +16,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class WhileCommand extends BracedCommand {
+
+    private class WhileData {
+        public int index;
+        public String value;
+    }
 
     @Override
     public void onEnable() {
@@ -44,6 +50,12 @@ public class WhileCommand extends BracedCommand {
                 break;
             }
 
+            else if (!scriptEntry.hasObject("callback")
+                    && arg.matches("\0CALLBACK")) {
+                scriptEntry.addObject("callback", Element.TRUE);
+                break;
+            }
+
             else if (!scriptEntry.hasObject("value")) {
                 scriptEntry.addObject("value", new Element(original.raw_value).setPrefix("comparison_value"));
                 break;
@@ -55,7 +67,7 @@ public class WhileCommand extends BracedCommand {
             }
         }
 
-        if (!scriptEntry.hasObject("value") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next"))
+        if (!scriptEntry.hasObject("value") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback"))
             throw new InvalidArgumentsException("Must specify a comparison value or 'stop' or 'next'!");
 
         scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
@@ -68,67 +80,136 @@ public class WhileCommand extends BracedCommand {
 
         Element stop = scriptEntry.getElement("stop");
         Element next = scriptEntry.getElement("next");
+        Element callback = scriptEntry.getElement("callback");
 
         if (stop != null && stop.asBoolean()) {
             // Report to dB
             dB.report(scriptEntry, getName(), stop.debug());
-            scriptEntry.getResidingQueue().BreakLoop("WHILE");
+            boolean hasnext = false;
+            for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
+                ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
+                List<String> args = entry.getOriginalArguments();
+                if (entry.getCommandName().equalsIgnoreCase("while") && args.size() > 0 && args.get(0).equalsIgnoreCase("\0CALLBACK")) {
+                    hasnext = true;
+                    break;
+                }
+            }
+            if (hasnext) {
+                while (scriptEntry.getResidingQueue().getQueueSize() > 0) {
+                    ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(0);
+                    List<String> args = entry.getOriginalArguments();
+                    if (entry.getCommandName().equalsIgnoreCase("while") && args.size() > 0 && args.get(0).equalsIgnoreCase("\0CALLBACK")) {
+                        scriptEntry.getResidingQueue().removeEntry(0);
+                        break;
+                    }
+                    scriptEntry.getResidingQueue().removeEntry(0);
+                }
+            }
+            else {
+                dB.echoError("Cannot stop while: not in one!");
+            }
             return;
         }
         else if (next != null && next.asBoolean()) {
             // Report to dB
             dB.report(scriptEntry, getName(), next.debug());
-            scriptEntry.getResidingQueue().BreakLoop("WHILE/NEXT");
+            boolean hasnext = false;
+            for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
+                ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
+                List<String> args = entry.getOriginalArguments();
+                if (entry.getCommandName().equalsIgnoreCase("while") && args.size() > 0 && args.get(0).equalsIgnoreCase("\0CALLBACK")) {
+                    hasnext = true;
+                    break;
+                }
+            }
+            if (hasnext) {
+                while (scriptEntry.getResidingQueue().getQueueSize() > 0) {
+                    ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(0);
+                    List<String> args = entry.getOriginalArguments();
+                    if (entry.getCommandName().equalsIgnoreCase("while") && args.size() > 0 && args.get(0).equalsIgnoreCase("\0CALLBACK")) {
+                        break;
+                    }
+                    scriptEntry.getResidingQueue().removeEntry(0);
+                }
+            }
+            else {
+                dB.echoError("Cannot stop while: not in one!");
+            }
             return;
         }
-
-        // Get objects
-        Element value = scriptEntry.getElement("value");
-        ArrayList<ScriptEntry> bracedCommandsList =
-                ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("WHILE");
-
-        if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
-            dB.echoError("Empty braces!");
-            return;
+        else if (callback != null && callback.asBoolean()) {
+            if (scriptEntry.getOwner() != null && (scriptEntry.getOwner().getCommandName().equalsIgnoreCase("while") ||
+                    scriptEntry.getOwner().getBracedSet() == null || scriptEntry.getOwner().getBracedSet().size() == 0 ||
+                    scriptEntry.getBracedSet().get("WHILE").get(scriptEntry.getBracedSet().get("WHILE").size() - 1) != scriptEntry)) {
+                WhileData data = (WhileData)scriptEntry.getOwner().getData();
+                data.index++;
+                int max = Settings.WhileMaxLoops();
+                if (data.index > max && max != 0)
+                    return;
+                if (TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(),
+                        data.value, false, scriptEntry).equalsIgnoreCase("true")) {
+                    dB.echoDebug(scriptEntry, dB.DebugElement.Header, "While loop " + data.index);
+                    scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
+                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner(), 1).get("WHILE");
+                    ScriptEntry callbackEntry = null;
+                    try {
+                        callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
+                                (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                    }
+                    catch (ScriptEntryCreationException e) {
+                        dB.echoError(e);
+                    }
+                    callbackEntry.setOwner(scriptEntry.getOwner());
+                    bracedCommands.add(callbackEntry);
+                    for (int i = 0; i < bracedCommands.size(); i++) {
+                        bracedCommands.get(i).setInstant(true);
+                    }
+                    scriptEntry.getResidingQueue().injectEntries(bracedCommands, 0);
+                }
+            }
+            else {
+                dB.echoError("While CALLBACK invalid: not a real callback!");
+            }
         }
 
-        ScriptEntry[] bracedCommands = bracedCommandsList.toArray(new ScriptEntry[bracedCommandsList.size()]);
+        else {
 
-        // Report to dB
-        dB.report(scriptEntry, getName(), value.debug());
+            // Get objects
+            Element value = scriptEntry.getElement("value");
+            ArrayList<ScriptEntry> bracedCommandsList =
+                    ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("WHILE");
 
-        int loops = Settings.WhileMaxLoops();
-
-        for (int incr = 0; incr < loops; incr++) {
-            if (scriptEntry.getResidingQueue().getWasCleared())
+            if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
+                dB.echoError("Empty braces!");
                 return;
+            }
+
+            // Report to dB
+            dB.report(scriptEntry, getName(), value.debug());
 
             if (!TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(),
                     value.asString(), false, scriptEntry).equalsIgnoreCase("true"))
                 return;
 
-            ArrayList<ScriptEntry> newEntries = new ArrayList<ScriptEntry>();
-
-            for (ScriptEntry entry: bracedCommands) {
-                try {
-                    ScriptEntry toAdd = entry.clone();
-                    toAdd.getObjects().clear();
-                    toAdd.addObject("reqId", scriptEntry.getObject("reqId"));
-                    toAdd.setFinished(true);
-                    newEntries.add(toAdd);
-                }
-                catch (Throwable e) {
-                    dB.echoError(e);
-                }
+            WhileData datum = new WhileData();
+            datum.index = 1;
+            datum.value = value.asString();
+            scriptEntry.setData(datum);
+            ScriptEntry callbackEntry = null;
+            try {
+                callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
+                        (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
             }
-
-            // Set the %value% and inject entries
-            scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(incr + 1));
-
-            // Run everything instantly
-            String result = scriptEntry.getResidingQueue().runNow(newEntries, "WHILE");
-            if (result != null && !result.endsWith("/NEXT"))
-                return;
+            catch (ScriptEntryCreationException e) {
+                dB.echoError(e);
+            }
+            callbackEntry.setOwner(scriptEntry);
+            bracedCommandsList.add(callbackEntry);
+            scriptEntry.getResidingQueue().addDefinition("loop_index", "1");
+            for (int i = 0; i < bracedCommandsList.size(); i++) {
+                bracedCommandsList.get(i).setInstant(true);
+            }
+            scriptEntry.getResidingQueue().injectEntries(bracedCommandsList, 0);
         }
     }
 }

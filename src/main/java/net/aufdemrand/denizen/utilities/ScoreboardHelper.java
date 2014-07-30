@@ -178,7 +178,7 @@ public class ScoreboardHelper {
 
                     int score = obj.getScore(player).getScore();
                     Team team = scoreboardEntry.getValue().getTeam(player);
-                    player = team.getPrefix() + player + team.getSuffix();
+                    player = (team != null && team.getPrefix() != null ? team.getPrefix(): "") + player + (team != null && team.getSuffix() != null ? team.getSuffix(): "");
 
                     // If a player has no score for this objective,
                     // getScore() will return 0, so ignore scores

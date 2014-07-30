@@ -27,7 +27,9 @@ public class ScriptEngine {
         if (scriptQueue.getLastEntryExecuted() != null
                 && scriptQueue.getLastEntryExecuted().shouldWaitFor()) {
             if (!(scriptQueue instanceof Delayable)) {
-                dB.echoError("Cannot wait in an instant queue!");
+                dB.echoDebug(scriptQueue.getLastEntryExecuted(), "Forcing queue " + scriptQueue.id + " into a timed queue...");
+                scriptQueue.forceToTimed(null);
+                return true;
             }
             else {
                 return true;

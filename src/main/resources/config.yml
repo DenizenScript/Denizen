@@ -67,6 +67,7 @@ Commands:
     Timeout: 150s
   while:
     # how many times the WHILE command can loop before it gives up
+    # Set to 0 for infinite
     max-loops: 10000
 
 # The version of this configuration file, used to check if your
