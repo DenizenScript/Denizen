@@ -2,13 +2,17 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.queues.core.Delayable;
+import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.Map;
 
 /**
  *
@@ -53,8 +57,24 @@ public class WaitCommand extends AbstractCommand {
         // Tell the queue to delay
         if (queue instanceof Delayable)
                ((Delayable) queue).delayFor(delay);
-
-        else dB.echoError("This type of queue is not able to be delayed!");
+        else {
+            dB.echoDebug(scriptEntry, "Forcing queue " + queue.id + " into a timed queue...");
+            scriptEntry.setInstant(false);
+            queue.stop();
+            TimedQueue newQueue = TimedQueue.getQueue(queue.id);
+            newQueue.delayFor(delay);
+            for (ScriptEntry entry: queue.getEntries()) {
+                entry.setInstant(true);
+            }
+            newQueue.addEntries(queue.getEntries());
+            for (Map.Entry<String, String> def: queue.getAllDefinitions().entrySet()) {
+                newQueue.addDefinition(def.getKey(), def.getValue());
+            }
+            for (Map.Entry<String, dObject> entry: queue.getAllContext().entrySet()) {
+                newQueue.addContext(entry.getKey(), entry.getValue());
+            }
+            newQueue.start();
+        }
     }
 
 }

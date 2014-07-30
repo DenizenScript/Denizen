@@ -538,7 +538,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // 2) Cancel the corresponding task_id
         else {
             _queues.remove(id);
-            dB.echoDebug(this, "Completing queue '" + id + "'.");
+            dB.echoDebug(this, "Re-completing queue '" + id + "'.");
             if (callback != null)
                 callback.run();
             is_started = false;
@@ -596,6 +596,11 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     public ScriptQueue addEntries(List<ScriptEntry> entries) {
         script_entries.addAll(entries);
         return this;
+    }
+
+
+    public List<ScriptEntry> getEntries() {
+        return script_entries;
     }
 
 
