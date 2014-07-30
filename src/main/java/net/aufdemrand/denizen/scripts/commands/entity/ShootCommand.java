@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -38,10 +39,10 @@ import org.bukkit.util.Vector;
 /**
  * Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a surface.
  *
- * @author David Cernat
+ * @author David Cernat, mcmonkey
  */
 
-public class ShootCommand extends AbstractCommand implements Listener {
+public class ShootCommand extends AbstractCommand implements Listener, Holdable {
 
     Map<UUID, dEntity> arrows = new HashMap<UUID, dEntity>();
 
@@ -321,32 +322,36 @@ public class ShootCommand extends AbstractCommand implements Listener {
 
                     this.cancel();
 
-                    // Build a queue out of the targeted script
-                    List<ScriptEntry> entries = script.getContainer().getBaseEntries
-                            (scriptEntry.getPlayer(),
-                             scriptEntry.getNPC());
-                    ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
+                    if (script != null) {
+                        // Build a queue out of the targeted script
+                        List<ScriptEntry> entries = script.getContainer().getBaseEntries
+                                (scriptEntry.getPlayer(),
+                                        scriptEntry.getNPC());
+                        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
 
-                    // Add relevant definitions
-                    queue.addDefinition("location", lastLocation.identify());
-                    queue.addDefinition("shot_entities", entityList.toString());
-                    queue.addDefinition("last_entity", lastEntity.identify());
+                        // Add relevant definitions
+                        queue.addDefinition("location", lastLocation.identify());
+                        queue.addDefinition("shot_entities", entityList.toString());
+                        queue.addDefinition("last_entity", lastEntity.identify());
 
-                    // Handle hit_entities definition
-                    dList hitEntities = new dList();
-                    for (dEntity entity: entities) {
-                        if (arrows.containsKey(entity.getUUID())) {
-                            dEntity hit = arrows.get(entity.getUUID());
-                            arrows.remove(entity.getUUID());
-                            if (hit != null) {
-                                hitEntities.add(hit.identify());
+                        // Handle hit_entities definition
+                        dList hitEntities = new dList();
+                        for (dEntity entity: entities) {
+                            if (arrows.containsKey(entity.getUUID())) {
+                                dEntity hit = arrows.get(entity.getUUID());
+                                arrows.remove(entity.getUUID());
+                                if (hit != null) {
+                                    hitEntities.add(hit.identify());
+                                }
                             }
                         }
-                    }
-                    queue.addDefinition("hit_entities", hitEntities.identify());
+                        queue.addDefinition("hit_entities", hitEntities.identify());
 
-                    // Start it!
-                    queue.start();
+                        // Start it!
+                        queue.start();
+                    }
+
+                    scriptEntry.setFinished(true);
                 }
                 else {
                     // Record it's position in case the entity dies
@@ -356,10 +361,7 @@ public class ShootCommand extends AbstractCommand implements Listener {
             }
         };
 
-        // Run the task above if a script argument was specified
-        if (script != null) {
-            task.runTaskTimer(denizen, 0, 2);
-        }
+        task.runTaskTimer(denizen, 0, 2);
     }
 
     @EventHandler
