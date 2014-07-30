@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
@@ -32,7 +31,6 @@ import org.bukkit.event.enchantment.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.hanging.*;
 import org.bukkit.event.inventory.*;
-import org.bukkit.event.server.*;
 import org.bukkit.event.vehicle.*;
 import org.bukkit.event.weather.*;
 import org.bukkit.event.world.*;

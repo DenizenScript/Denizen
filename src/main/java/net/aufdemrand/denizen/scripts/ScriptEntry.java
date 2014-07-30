@@ -148,7 +148,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
         }
 
         if (actualCommand != null && actualCommand.isBraced() && actualCommand instanceof BracedCommand) {
-            ((BracedCommand) actualCommand).getBracedCommands(this, 1);
+            BracedCommand.getBracedCommands(this, 1);
         }
     }
 

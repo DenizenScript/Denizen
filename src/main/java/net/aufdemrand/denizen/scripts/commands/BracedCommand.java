@@ -22,8 +22,6 @@ public abstract class BracedCommand extends AbstractCommand {
      *          The argument to start at.
      * @return
      *          The list of ScriptEntries to be executed in the command.
-     *
-     * @throws InvalidArgumentsException
      */
     public static LinkedHashMap<String, ArrayList<ScriptEntry>> getBracedCommands(ScriptEntry scriptEntry, int startArg) {
 

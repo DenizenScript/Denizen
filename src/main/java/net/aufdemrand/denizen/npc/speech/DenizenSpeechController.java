@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.npc.speech;
 
-import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.ai.speech.SpeechController;

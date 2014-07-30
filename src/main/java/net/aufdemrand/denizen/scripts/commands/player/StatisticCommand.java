@@ -14,7 +14,7 @@ import java.util.List;
 
 public class StatisticCommand extends AbstractCommand {
 
-    private enum Action { ADD, TAKE, SET };
+    private enum Action { ADD, TAKE, SET }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
