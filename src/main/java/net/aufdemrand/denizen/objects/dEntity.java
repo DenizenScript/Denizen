@@ -372,9 +372,7 @@ public class dEntity implements dObject, Adjustable {
         return (entity instanceof LivingEntity);
     }
 
-    public boolean hasInventory() {
-        return getBukkitEntity() instanceof InventoryHolder;
-    }
+    public boolean hasInventory() { return getBukkitEntity() instanceof InventoryHolder || isNPC(); }
 
     /**
      * Get the dNPC corresponding to this dEntity
@@ -494,7 +492,11 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public Inventory getBukkitInventory() {
-        return hasInventory() ? ((InventoryHolder) getLivingEntity()).getInventory() : null;
+        if (hasInventory()) {
+            if (!isNPC())
+                return ((InventoryHolder) getBukkitEntity()).getInventory();
+        }
+        return null;
     }
 
     /**
@@ -504,7 +506,8 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dInventory getInventory() {
-        return hasInventory() ? new dInventory(getBukkitInventory()) : null;
+        return hasInventory() ? isNPC() ? getDenizenNPC().getDenizenInventory()
+                : new dInventory(getBukkitInventory()) : null;
     }
 
     /**

@@ -2,8 +2,8 @@ package net.aufdemrand.denizen.npc;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -11,9 +11,14 @@ import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.trait.Equipment;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class dNPCRegistry implements Listener {
 
     public static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<Integer, dNPC>(8, 0.9f, 1);
+    public static Map<Integer, Inventory> npcInventories = new ConcurrentHashMap<Integer, Inventory>(8, 0.9f, 1);
 
     public static dNPCRegistry getCurrentInstance() {
         return DenizenAPI.getCurrentInstance().getNPCRegistry();
@@ -60,7 +66,11 @@ public class dNPCRegistry implements Listener {
     private static void _registerNPC(NPC npc) {
         if (npc == null) return;
         if (!denizenNPCs.containsKey(npc.getId())) {
-            denizenNPCs.put(npc.getId(), new dNPC(npc));
+            dNPC denizenNPC = new dNPC(npc);
+            denizenNPCs.put(npc.getId(), denizenNPC);
+            Inventory npcInventory = Bukkit.getServer().createInventory(denizenNPC, InventoryType.PLAYER);
+            npcInventory.setContents(denizenNPC.getInventoryTrait().getContents());
+            npcInventories.put(npc.getId(), npcInventory);
         }
         // dB.log("Constructing NPC " + getDenizen(npc).toString());
     }
@@ -79,6 +89,21 @@ public class dNPCRegistry implements Listener {
         if (!denizenNPCs.containsKey(npc.getId()))
             _registerNPC(npc);
         return denizenNPCs.get(npc.getId());
+    }
+
+    /**
+     * Returns a dInventory object from the Inventory trait of a valid NPC.
+     *
+     * @param npc the Citizens NPC
+     *
+     * @return the NPC's dInventory
+     *
+     */
+    public static Inventory getInventory(NPC npc) {
+        if (npc == null) return null;
+        if (!npcInventories.containsKey(npc.getId()))
+            _registerNPC(npc);
+        return npcInventories.get(npc.getId());
     }
 
     /**
@@ -148,12 +173,12 @@ public class dNPCRegistry implements Listener {
      */
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
-        // Do world script event 'On NPC Despawns'
-        EventManager.doEvents(Arrays.asList
-                ("npc despawns"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
+        dNPC npc = getDenizen(event.getNPC());
 
-        getDenizen(event.getNPC()).action("despawn", null);
+        // Do world script event 'On NPC Despawns'
+        EventManager.doEvents(Arrays.asList("npc despawns"), npc, null, null);
+
+        npc.action("despawn", null);
     }
 
 
@@ -173,12 +198,27 @@ public class dNPCRegistry implements Listener {
      */
     @EventHandler
     public void onRemove(NPCRemoveEvent event) {
-        getDenizen(event.getNPC()).action("remove", null);
-        if (_isRegistered(event.getNPC()))
-            denizenNPCs.remove(event.getNPC().getId());
-        dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + event.getNPC().getName() + "/" + event.getNPC().getId());
+        NPC npc = event.getNPC();
+        getDenizen(npc).action("remove", null);
+        if (_isRegistered(npc)) {
+            denizenNPCs.remove(npc.getId());
+            npcInventories.remove(npc.getId());
+        }
+        dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + npc.getName() + "/" + npc.getId());
         // TODO: Delete flags / etc.
     }
 
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+        if (inventory.getHolder() instanceof dNPC) {
+            dNPC npc = (dNPC) inventory.getHolder();
+            npc.getInventory().setContents(inventory.getContents());
+            Equipment equipment = npc.getEquipmentTrait();
+            for (int i = 0; i < 5; i++)
+                equipment.set(i, inventory.getItem(i));
+        }
+    }
 
 }
