@@ -17,6 +17,7 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
@@ -29,7 +30,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author David Cernat
  */
 
-public class RotateCommand extends AbstractCommand {
+public class RotateCommand extends AbstractCommand implements Holdable {
 
     public static Set<UUID> rotatingEntities = new HashSet<UUID>();
 
@@ -144,6 +145,7 @@ public class RotateCommand extends AbstractCommand {
             public void run() {
 
                 if (entities.isEmpty()) {
+                    scriptEntry.setFinished(true);
                     this.cancel();
                 }
 
@@ -170,7 +172,10 @@ public class RotateCommand extends AbstractCommand {
 
                     ticks = (int) (ticks + frequency.getTicks());
                 }
-                else this.cancel();
+                else {
+                    scriptEntry.setFinished(true);
+                    this.cancel();
+                }
             }
         };
         task.runTaskTimer(denizen, 0, frequency.getTicks());
