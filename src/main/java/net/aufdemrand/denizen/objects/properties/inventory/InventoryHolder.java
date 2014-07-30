@@ -46,8 +46,8 @@ public class InventoryHolder implements Property {
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
         if (holder != null) {
-            if (holder instanceof Entity && Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
-                return dNPC.fromEntity((Entity) holder);
+            if (holder instanceof dNPC) {
+                return (dNPC) holder;
             }
             else if (holder instanceof Player) {
                 return new dPlayer((Player) holder);
@@ -73,6 +73,10 @@ public class InventoryHolder implements Property {
             inventory.setInventory(player.getBukkitEnderChest(), player);
         else
             inventory.setInventory(player.getBukkitInventory(), player);
+    }
+
+    public void setHolder(dNPC npc) {
+        inventory.setInventory(npc.getInventory());
     }
 
     public void setHolder(dEntity entity) {
@@ -152,6 +156,7 @@ public class InventoryHolder implements Property {
         if (mechanism.matches("holder")) {
             Element value = mechanism.getValue();
             if (value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
+            else if (value.matchesType(dNPC.class)) setHolder(value.asType(dNPC.class));
             else if (value.matchesType(dEntity.class)) setHolder(value.asType(dEntity.class));
             else if (value.matchesType(dLocation.class)) setHolder(value.asType(dLocation.class));
             else if (value.matchesEnum(InventoryType.values())) setHolder(value);

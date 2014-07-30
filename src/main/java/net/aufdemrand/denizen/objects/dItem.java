@@ -551,8 +551,6 @@ public class dItem implements dObject, Notable, Adjustable {
     @Override
     public void makeUnique(String id) { NotableManager.saveAs(this, id); }
 
-    public void load() {}
-
 
     @Override
     public void forget() {

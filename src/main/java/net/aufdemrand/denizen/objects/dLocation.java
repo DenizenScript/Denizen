@@ -62,8 +62,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         return null;
     }
 
-    public void load() {}
-
     public void forget() {
         NotableManager.remove(this);
     }

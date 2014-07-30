@@ -87,7 +87,7 @@ public class InventoryContents implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!inventory.getIdType().equals("generic"))
+        if (!inventory.getIdType().equals("generic") && !inventory.isUnique())
             return null;
         dList contents = getContents(0);
         if (contents == null || contents.isEmpty())
