@@ -13,9 +13,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
-import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BrewingStand;
@@ -23,12 +21,16 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftInventory;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,7 +77,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     @Note("Inventories")
-    public String getSaveObject() { return "in@" + idType + PropertyParser.getPropertiesString(this); }
+    public String getSaveObject() { return identify(); }
 
     public void makeUnique(String id) {
         String title = inventory.getTitle();
@@ -96,11 +98,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                 break;
             }
         }
+        idType = "notable";
+        idHolder = id;
         NotableManager.saveAs(this, id);
-    }
-
-    public void load() {
-        InventoryScriptHelper.notableInventories.put(inventory.getTitle(), this);
     }
 
     public void forget() {
@@ -176,7 +176,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
             else if (type.equals("npc")) {
                 if (dNPC.matches(holder))
-                    return dNPC.valueOf(holder).getDenizenEntity().getInventory();
+                    return dNPC.valueOf(holder).getDenizenInventory();
             }
             else if (type.equals("player")) {
                 if (dPlayer.matches(holder))
@@ -243,7 +243,8 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public dInventory(ItemStack[] items) {
-        inventory = Bukkit.createInventory(null, (int) Math.ceil(items.length / 9) * 9);
+        inventory = Bukkit.getServer().createInventory(null, (int) Math.ceil(items.length / 9) * 9);
+        setContents(items);
         loadIdentifiers();
     }
 
@@ -324,9 +325,9 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         ItemStack[] contents = inventory.getContents();
         if (inventory.getType() == InventoryType.CHEST)
-            inventory = Bukkit.createInventory(null, inventory.getSize(), title);
+            inventory = Bukkit.getServer().createInventory(null, inventory.getSize(), title);
         else
-            inventory = Bukkit.createInventory(null, inventory.getType(), title);
+            inventory = Bukkit.getServer().createInventory(null, inventory.getType(), title);
         inventory.setContents(contents);
         loadIdentifiers();
     }
@@ -366,9 +367,9 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (inventory == null) return;
 
         if (holder != null) {
-            if (holder instanceof Entity && Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
+            if (holder instanceof dNPC) {
                 idType = "npc";
-                idHolder = dNPC.fromEntity((Entity) holder).identify();
+                idHolder = ((dNPC) holder).identify();
                 return;
             }
             else if (holder instanceof Player) {
@@ -466,12 +467,13 @@ public class dInventory implements dObject, Notable, Adjustable {
                 return new dLocation(((Furnace) holder).getLocation());
             }
             else if (holder instanceof Entity) {
-                Entity entity = (Entity) holder;
-                if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
-                    if (entity.getLocation() == null)
-                        return new dLocation(CitizensAPI.getNPCRegistry().getNPC(entity).getStoredLocation());
-                }
                 return new dLocation(((Entity) holder).getLocation());
+            }
+            else if (holder instanceof dNPC) {
+                dNPC npc = (dNPC) holder;
+                if (npc.getLocation() == null)
+                    return new dLocation(((dNPC) holder).getCitizen().getStoredLocation());
+                return npc.getLocation();
             }
         }
 
@@ -521,7 +523,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (inventory == null) {
             size = (int) Math.ceil(list.size() / 9)*9;
             if (size == 0) size = 9;
-            inventory = Bukkit.createInventory(null, size);
+            inventory = Bukkit.getServer().createInventory(null, size);
             loadIdentifiers();
         }
         else
@@ -1463,6 +1465,41 @@ public class dInventory implements dObject, Notable, Adjustable {
             property.adjust(mechanism);
             if (mechanism.fulfilled())
                 break;
+        }
+
+        if (inventory instanceof CraftingInventory) {
+            CraftingInventory craftingInventory = (CraftingInventory) inventory;
+
+            // <--[mechanism]
+            // @object dInventory
+            // @name matrix
+            // @input dList(dItem)
+            // @description
+            // Sets the items in the matrix slots of this crafting inventory.
+            // @tags
+            // <in@inventory.matrix>
+            // -->
+            if (mechanism.matches("matrix") && mechanism.requireObject(dList.class)) {
+                List<dItem> items = mechanism.getValue().asType(dList.class).filter(dItem.class);
+                ItemStack[] itemStacks = new ItemStack[9];
+                for (int i = 0; i < 9 && i < items.size(); i++) {
+                    itemStacks[i] = items.get(i).getItemStack();
+                }
+                craftingInventory.setMatrix(itemStacks);
+            }
+
+            // <--[mechanism]
+            // @object dInventory
+            // @name result
+            // @input dItem
+            // @description
+            // Sets the item in the result slot of this crafting inventory.
+            // @tags
+            // <in@inventory.result>
+            // -->
+            if (mechanism.matches("result") && mechanism.requireObject(dItem.class)) {
+                craftingInventory.setResult(mechanism.getValue().asType(dItem.class).getItemStack());
+            }
         }
 
         if (!mechanism.fulfilled())
