@@ -163,7 +163,8 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
     public void checkHeld(NavigationEvent e) {
         // Check each held entry -- the scriptExecuter is waiting on
         // the entry to be marked 'waited for'.
-        for (ScriptEntry entry : held) {
+        for (int i = 0; i < held.size(); i++) {
+            ScriptEntry entry = held.get(i);
 
             // Get all NPCs associated with the entry. They must all
             // finish navigation before the entry can be let go
@@ -176,6 +177,8 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                 // Check if tally is empty.
                 if (tally.isEmpty()) {
                     entry.setFinished(true);
+                    held.remove(i);
+                    i--;
                     break;
                 }
             }

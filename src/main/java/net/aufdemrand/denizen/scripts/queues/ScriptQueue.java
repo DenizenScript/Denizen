@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.Debuggable;
@@ -383,6 +384,34 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     ///////////////////
     // Public 'functional' methods
     //////////////////
+
+
+    /**
+     * Converts any queue type to a timed queue.
+     *
+     * @param delay how long to delay initially.
+     * @return the newly created queue.
+     */
+    public ScriptQueue forceToTimed(Duration delay) {
+        stop();
+        TimedQueue newQueue = TimedQueue.getQueue(id);
+        for (ScriptEntry entry: getEntries()) {
+            entry.setInstant(true);
+        }
+        newQueue.addEntries(getEntries());
+        for (Map.Entry<String, String> def: getAllDefinitions().entrySet()) {
+            newQueue.addDefinition(def.getKey(), def.getValue());
+        }
+        for (Map.Entry<String, dObject> entry: getAllContext().entrySet()) {
+            newQueue.addContext(entry.getKey(), entry.getValue());
+        }
+        newQueue.setLastEntryExecuted(getLastEntryExecuted());
+        clear();
+        if (delay != null)
+            newQueue.delayFor(delay);
+        newQueue.start();
+        return newQueue;
+    }
 
 
     /**
