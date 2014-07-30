@@ -2,9 +2,11 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -12,6 +14,11 @@ import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class RepeatCommand extends BracedCommand {
+
+    private class RepeatData {
+        public int index;
+        public int target;
+    }
 
     @Override
     public void onEnable() {
@@ -42,14 +49,19 @@ public class RepeatCommand extends BracedCommand {
                 break;
             }
 
+            else if (!scriptEntry.hasObject("callback")
+                    && arg.matches("\0CALLBACK")) {
+                scriptEntry.addObject("callback", Element.TRUE);
+                break;
+            }
+
             else {
                 arg.reportUnhandled();
                 break;
             }
-
         }
 
-        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next"))
+        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback"))
             throw new InvalidArgumentsException("Must specify a quantity or 'stop' or 'next'!");
 
         scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
@@ -62,63 +74,134 @@ public class RepeatCommand extends BracedCommand {
 
         Element stop = scriptEntry.getElement("stop");
         Element next = scriptEntry.getElement("next");
+        Element callback = scriptEntry.getElement("callback");
+        Element quantity = scriptEntry.getElement("qty");
 
         if (stop != null && stop.asBoolean()) {
             // Report to dB
             dB.report(scriptEntry, getName(), stop.debug());
-            scriptEntry.getResidingQueue().BreakLoop("REPEAT");
+            boolean hasnext = false;
+            for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
+                ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
+                List<String> args = entry.getOriginalArguments();
+                if (entry.getCommandName().equalsIgnoreCase("repeat") && args.size() > 0 && args.get(0).equalsIgnoreCase("\0CALLBACK")) {
+                    hasnext = true;
+                    break;
+                }
+            }
+            if (hasnext) {
+                while (scriptEntry.getResidingQueue().getQueueSize() > 0) {
+                    ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(0);
+                    List<String> args = entry.getOriginalArguments();
+                    if (entry.getCommandName().equalsIgnoreCase("repeat") && args.size() > 0 && args.get(0).equalsIgnoreCase("\0CALLBACK")) {
+                        scriptEntry.getResidingQueue().removeEntry(0);
+                        break;
+                    }
+                    scriptEntry.getResidingQueue().removeEntry(0);
+                }
+            }
+            else {
+                dB.echoError("Cannot stop while: not in one!");
+            }
             return;
         }
         else if (next != null && next.asBoolean()) {
             // Report to dB
             dB.report(scriptEntry, getName(), next.debug());
-            scriptEntry.getResidingQueue().BreakLoop("REPEAT/NEXT");
-            return;
-        }
-
-        // Get objects
-        Element qty = scriptEntry.getElement("qty");
-        ArrayList<ScriptEntry> bracedCommandsList =
-                ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("REPEAT");
-
-        if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
-            dB.echoError("Empty braces!");
-            return;
-        }
-
-        ScriptEntry[] bracedCommands = bracedCommandsList.toArray(new ScriptEntry[bracedCommandsList.size()]);
-
-        // Report to dB
-        dB.report(scriptEntry, getName(), qty.debug());
-
-        int loops = qty.asInt();
-
-        for (int incr = 0; incr < loops; incr++) {
-            if (scriptEntry.getResidingQueue().getWasCleared())
-                return;
-
-            ArrayList<ScriptEntry> newEntries = new ArrayList<ScriptEntry>();
-
-            for (ScriptEntry entry: bracedCommands) {
-                try {
-                    ScriptEntry toAdd = entry.clone();
-                    toAdd.getObjects().clear();
-                    toAdd.addObject("reqId", scriptEntry.getObject("reqId"));
-                    toAdd.setFinished(true);
-                    newEntries.add(toAdd);
-                }
-                catch (Throwable e) {
-                    dB.echoError(e);
+            boolean hasnext = false;
+            for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
+                ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
+                List<String> args = entry.getOriginalArguments();
+                if (entry.getCommandName().equalsIgnoreCase("repeat") && args.size() > 0 && args.get(0).equalsIgnoreCase("\0CALLBACK")) {
+                    hasnext = true;
+                    break;
                 }
             }
+            if (hasnext)
+            {
+                while (scriptEntry.getResidingQueue().getQueueSize() > 0) {
+                    ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(0);
+                    List<String> args = entry.getOriginalArguments();
+                    if (entry.getCommandName().equalsIgnoreCase("repeat") && args.size() > 0 && args.get(0).equalsIgnoreCase("\0CALLBACK")) {
+                        break;
+                    }
+                    scriptEntry.getResidingQueue().removeEntry(0);
+                }
+            }
+            else
+            {
+                dB.echoError("Cannot stop while: not in one!");
+            }
+            return;
+        }
+        else if (callback != null && callback.asBoolean()) {
+            if (scriptEntry.getOwner() != null && (scriptEntry.getOwner().getCommandName().equalsIgnoreCase("repeat") ||
+                    scriptEntry.getOwner().getBracedSet() == null || scriptEntry.getOwner().getBracedSet().size() == 0 ||
+                    scriptEntry.getBracedSet().get("REPEAT").get(scriptEntry.getBracedSet().get("REPEAT").size() - 1) != scriptEntry)) {
+                RepeatData data = (RepeatData)scriptEntry.getOwner().getData();
+                data.index++;
+                if (data.index <= data.target) {
+                    dB.echoDebug(scriptEntry, dB.DebugElement.Header, "Repeat loop " + data.index);
+                    scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(data.index));
+                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner(), 1).get("REPEAT");
+                    ScriptEntry callbackEntry = null;
+                    try {
+                        callbackEntry = new ScriptEntry("REPEAT", new String[] { "\0CALLBACK" }, scriptEntry.getScript().getContainer());
+                    }
+                    catch (ScriptEntryCreationException e) {
+                        dB.echoError(e);
+                    }
+                    callbackEntry.setOwner(scriptEntry.getOwner());
+                    bracedCommands.add(callbackEntry);
+                    for (int i = 0; i < bracedCommands.size(); i++) {
+                        bracedCommands.get(i).setInstant(true);
+                    }
+                    scriptEntry.getResidingQueue().injectEntries(bracedCommands, 0);
+                }
+            }
+            else {
+                dB.echoError("Repeat CALLBACK invalid: not a real callback!");
+            }
+        }
 
-            // Set the %value% and inject entries
-            scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(incr + 1));
+        else {
 
-            // Run everything instantly
-            String result = scriptEntry.getResidingQueue().runNow(newEntries, "REPEAT");
-            if (result != null && !result.endsWith("/NEXT"))
+            // Get objects
+            ArrayList<ScriptEntry> bracedCommandsList =
+                    ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("REPEAT");
+
+            if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
+                dB.echoError("Empty braces!");
                 return;
+            }
+
+            // Report to dB
+            dB.report(scriptEntry, getName(), quantity.debug());
+
+            int target = quantity.asInt();
+            if (target <= 0)
+            {
+                dB.echoDebug(scriptEntry, "Zero count, not looping...");
+                return;
+            }
+            RepeatData datum = new RepeatData();
+            datum.target = target;
+            datum.index = 1;
+            scriptEntry.setData(datum);
+            ScriptEntry callbackEntry = null;
+            try {
+                callbackEntry = new ScriptEntry("REPEAT", new String[] { "\0CALLBACK" }, scriptEntry.getScript().getContainer());
+            }
+            catch (ScriptEntryCreationException e) {
+                dB.echoError(e);
+            }
+            callbackEntry.setOwner(scriptEntry);
+            bracedCommandsList.add(callbackEntry);
+            scriptEntry.getResidingQueue().addDefinition("value", "1");
+            for (int i = 0; i < bracedCommandsList.size(); i++) {
+                bracedCommandsList.get(i).setInstant(true);
+            }
+            scriptEntry.getResidingQueue().injectEntries(bracedCommandsList, 0);
         }
     }
 }

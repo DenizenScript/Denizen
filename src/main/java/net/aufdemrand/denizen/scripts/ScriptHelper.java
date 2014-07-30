@@ -95,11 +95,11 @@ public class ScriptHelper {
             if (!line.startsWith("#")) {
                 if ((line.startsWith("}") || line.startsWith("{") || line.startsWith("else")) && !line.endsWith(":"))
                 {
-                    result.append(' ').append(lines[i]).append("\n");
+                    result.append(' ').append(lines[i].replace('\0', ' ')).append("\n");
                 }
                 else
                 {
-                    result.append(lines[i]).append("\n");
+                    result.append(lines[i].replace('\0', ' ')).append("\n");
                 }
             }
             else {

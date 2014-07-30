@@ -61,10 +61,13 @@ public class CommandExecuter {
             scriptEntry.setNPC(null);
 
         // Debugger information
-        if (scriptEntry.getPlayer() != null)
-            dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" + scriptEntry.getPlayer().getName());
-        else dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " +
-                scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/n@" + scriptEntry.getNPC().getName() : ""));
+        if (scriptEntry.getOriginalArguments().size() == 0 || !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
+            if (scriptEntry.getPlayer() != null)
+                dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" + scriptEntry.getPlayer().getName());
+            else
+                dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " +
+                    scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/n@" + scriptEntry.getNPC().getName() : ""));
+        }
 
         // Don't execute() if problems arise in parseArgs()
         boolean keepGoing = true;

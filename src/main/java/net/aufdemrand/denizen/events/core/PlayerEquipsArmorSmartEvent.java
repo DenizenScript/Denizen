@@ -91,6 +91,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
     @EventHandler
     public void inventoryCloseEvent(InventoryCloseEvent event) {
 
+        // TODO: Handle clicks in-inventory instead of the close event?
         if (event.getInventory().getHolder() instanceof Player) {
             PlayerInventory inv = (PlayerInventory) event.getInventory().getHolder().getInventory();
             ItemStack[] armor_contents = inv.getArmorContents();
@@ -146,7 +147,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
                     player.getInventory().setItem(replaceSlot, item);
                 }
             }
-        }.runTaskLater(DenizenAPI.getCurrentInstance(), 0);
+        }.runTaskLater(DenizenAPI.getCurrentInstance(), 0); // TODO: is 0 a reasonable delay here?
 
     }
 

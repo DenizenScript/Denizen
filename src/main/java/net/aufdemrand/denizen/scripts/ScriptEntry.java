@@ -237,6 +237,25 @@ public class ScriptEntry implements Cloneable, Debuggable {
         this.command = commandName;
     }
 
+    private ScriptEntry owner = null;
+
+    public void setOwner(ScriptEntry owner) {
+        this.owner = owner;
+    }
+
+    public ScriptEntry getOwner() {
+        return owner;
+    }
+
+    private Object data;
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object result) {
+        this.data = result;
+    }
 
 
     //////////////////

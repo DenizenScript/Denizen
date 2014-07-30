@@ -10,7 +10,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public abstract class BracedCommand extends AbstractCommand {
 
-    public final boolean hyperdebug = false;
+    public static final boolean hyperdebug = false;
 
     /**
      * Gets the commands inside the braces of this ScriptEntry.
@@ -25,7 +25,7 @@ public abstract class BracedCommand extends AbstractCommand {
      *
      * @throws InvalidArgumentsException
      */
-    public LinkedHashMap<String, ArrayList<ScriptEntry>> getBracedCommands(ScriptEntry scriptEntry, int startArg) {
+    public static LinkedHashMap<String, ArrayList<ScriptEntry>> getBracedCommands(ScriptEntry scriptEntry, int startArg) {
 
         // And a place to store all the final braces...
         LinkedHashMap<String, ArrayList<ScriptEntry>> bracedSections = new LinkedHashMap<String, ArrayList<ScriptEntry>>();
