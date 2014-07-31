@@ -2234,13 +2234,7 @@ public class dEntity implements dObject, Adjustable {
                 break;
         }
 
-
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
-
     }
-
-
-
-
 }

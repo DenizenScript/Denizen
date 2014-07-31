@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dLocation extends org.bukkit.Location implements dObject, Notable {
+public class dLocation extends org.bukkit.Location implements dObject, Notable, Adjustable {
 
     // This pattern correctly reads both 0.9 and 0.8 notables
     final static Pattern notablePattern =
@@ -467,6 +467,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
 
         // <--[tag]
         // @attribute <l@location.spawner_type>
+        // @mechanism dLocation.spawner_type
         // @returns dEntity
         // @description
         // Returns the type of entity spawned by a mob spawner.
@@ -1308,4 +1309,30 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+    public void applyProperty(Mechanism mechanism) {
+        dB.echoError("Cannot apply properties to an location!");
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        Element value = mechanism.getValue();
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name spawner_type
+        // @input dEntity
+        // @description
+        // Sets the entity that a mob spawner will spawn.
+        // @tags
+        // <l@location.spawner_type>
+        // -->
+        if (mechanism.matches("spawner_type") && mechanism.requireObject(dEntity.class)
+                && getBlock().getState() instanceof CreatureSpawner) {
+            ((CreatureSpawner) getBlock().getState()).setSpawnedType(value.asType(dEntity.class).getEntityType());
+        }
+
+        if (!mechanism.fulfilled())
+            mechanism.reportInvalid();
+    }
 }

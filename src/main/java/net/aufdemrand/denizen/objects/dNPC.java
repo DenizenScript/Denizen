@@ -1047,7 +1047,5 @@ public class dNPC implements dObject, Adjustable {
             else
                 mechanism.reportInvalid();
         }
-
     }
-
 }
