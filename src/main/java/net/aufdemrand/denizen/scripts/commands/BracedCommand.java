@@ -23,7 +23,7 @@ public abstract class BracedCommand extends AbstractCommand {
      * @return
      *          The list of ScriptEntries to be executed in the command.
      */
-    public static LinkedHashMap<String, ArrayList<ScriptEntry>> getBracedCommands(ScriptEntry scriptEntry, int startArg) {
+    public static LinkedHashMap<String, ArrayList<ScriptEntry>> getBracedCommands(ScriptEntry scriptEntry) {
 
         // And a place to store all the final braces...
         LinkedHashMap<String, ArrayList<ScriptEntry>> bracedSections = new LinkedHashMap<String, ArrayList<ScriptEntry>>();
@@ -70,6 +70,15 @@ public abstract class BracedCommand extends AbstractCommand {
 
         // Set the variable to use for naming braced command lists; the first should be the command name
         String bracesName = scriptEntry.getCommandName();
+
+        int startArg = 0;
+        for (int i = 0; i < argList.size(); i++) {
+            aH.Argument arg = argList.get(i);
+            if (arg.asElement().asString().equals("{")) {
+                startArg = i;
+                break;
+            }
+        }
 
         for (int i = startArg; i < argList.size(); i++) {
             aH.Argument arg = argList.get(i);

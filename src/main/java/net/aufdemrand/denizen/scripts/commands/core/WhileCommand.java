@@ -70,7 +70,7 @@ public class WhileCommand extends BracedCommand {
         if (!scriptEntry.hasObject("value") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback"))
             throw new InvalidArgumentsException("Must specify a comparison value or 'stop' or 'next'!");
 
-        scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
+        scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
 
     }
 
@@ -150,7 +150,7 @@ public class WhileCommand extends BracedCommand {
                         data.value, false, scriptEntry).equalsIgnoreCase("true")) {
                     dB.echoDebug(scriptEntry, dB.DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
-                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner(), 1).get("WHILE");
+                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("WHILE");
                     ScriptEntry callbackEntry = null;
                     try {
                         callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
