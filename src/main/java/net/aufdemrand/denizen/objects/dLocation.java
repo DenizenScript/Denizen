@@ -1303,6 +1303,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
         // <--[mechanism]
         // @object dLocation
+        // @name block_type
+        // @input dMaterial
+        // @description
+        // Sets the type of the block.
+        // @tags
+        // <l@location.material>
+        // -->
+        if (mechanism.matches("block_type") && mechanism.requireObject(dMaterial.class)) {
+            dMaterial mat = value.asType(dMaterial.class);
+            byte data = mat.hasData() ? mat.getData(): 0;
+            getBlock().setTypeIdAndData(mat.getMaterial().getId(), data, false);
+        }
+
+        // <--[mechanism]
+        // @object dLocation
         // @name spawner_type
         // @input dEntity
         // @description
