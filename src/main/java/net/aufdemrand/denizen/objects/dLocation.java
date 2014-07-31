@@ -434,24 +434,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             return new Element((getBlock().getData() & 0x8) > 0).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <l@location.sign_contents.escaped>
-        // @returns dList
-        // @description
-        // Returns a list of lines on a sign, pre-escaped to prevent issues.
-        // See <@link language Property Escaping>
-        // -->
-        //  TODO: Mech for this...
-        if (attribute.startsWith("sign_contents.escaped")) {
-            if (getBlock().getState() instanceof Sign) {
-                dList toReturn = new dList();
-                for (String line: ((Sign) getBlock().getState()).getLines())
-                    toReturn.add(EscapeTags.Escape(line));
-                return toReturn.getAttribute(attribute.fulfill(2));
-            }
-            else return "null";
-        }
-
-        // <--[tag]
         // @attribute <l@location.sign_contents>
         // @returns dList
         // @description
