@@ -53,7 +53,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     //   PATTERNS
     /////////////////
 
-    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|enderchest|entity|location|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
+    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|enderchest|workbench|entity|location|generic)\\[(.+?)\\]", Pattern.CASE_INSENSITIVE);
     final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
 
 
@@ -65,7 +65,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public final static int maxSlots = 54;
 
     // All of the inventory id types we use
-    public final static String[] idTypes = { "npc", "player", "enderchest", "entity", "location", "generic" };
+    public final static String[] idTypes = { "npc", "player", "enderchest", "workbench", "entity", "location", "generic" };
 
 
     /////////////////////
@@ -181,6 +181,10 @@ public class dInventory implements dObject, Notable, Adjustable {
             else if (type.equals("player")) {
                 if (dPlayer.matches(holder))
                     return dPlayer.valueOf(holder).getInventory();
+            }
+            else if (type.equals("workbench")) {
+                if (dPlayer.matches(holder))
+                    return dPlayer.valueOf(holder).getWorkbench();
             }
             else if (type.equals("enderchest")) {
                 if (dPlayer.matches(holder))
@@ -375,6 +379,8 @@ public class dInventory implements dObject, Notable, Adjustable {
             else if (holder instanceof Player) {
                 if (inventory.getType() == InventoryType.ENDER_CHEST)
                     idType = "enderchest";
+                else if (inventory.getType() == InventoryType.WORKBENCH)
+                    idType = "workbench";
                 else
                     idType = "player";
                 idHolder = new dPlayer((Player) holder).identify();
@@ -1486,6 +1492,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                     itemStacks[i] = items.get(i).getItemStack();
                 }
                 craftingInventory.setMatrix(itemStacks);
+                ((Player) inventory.getHolder()).updateInventory();
             }
 
             // <--[mechanism]
@@ -1499,6 +1506,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // -->
             if (mechanism.matches("result") && mechanism.requireObject(dItem.class)) {
                 craftingInventory.setResult(mechanism.getValue().asType(dItem.class).getItemStack());
+                ((Player) inventory.getHolder()).updateInventory();
             }
         }
 

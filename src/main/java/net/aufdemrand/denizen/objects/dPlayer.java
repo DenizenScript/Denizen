@@ -20,6 +20,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.BlockIterator;
@@ -230,6 +232,21 @@ public class dPlayer implements dObject, Adjustable {
     public dInventory getInventory() {
         if (isOnline()) return new dInventory(getPlayerEntity().getInventory());
         else return new dInventory(getNBTEditor());
+    }
+
+    public CraftingInventory getBukkitWorkbench() {
+        if (isOnline()) {
+            if (getPlayerEntity().getOpenInventory().getType() != InventoryType.WORKBENCH
+                    && getPlayerEntity().getOpenInventory().getType() != InventoryType.CRAFTING)
+                getPlayerEntity().openWorkbench(null, true);
+            return (CraftingInventory) getPlayerEntity().getOpenInventory().getTopInventory();
+        }
+        else return null;
+    }
+
+    public dInventory getWorkbench() {
+        if (isOnline()) return new dInventory(getBukkitWorkbench(), getPlayerEntity());
+        else return null;
     }
 
     public Inventory getBukkitEnderChest() {

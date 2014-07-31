@@ -1,15 +1,13 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.tags.Attribute;
-import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.event.inventory.InventoryType;
 
 public class InventoryHolder implements Property {
@@ -71,6 +69,8 @@ public class InventoryHolder implements Property {
     public void setHolder(dPlayer player) {
         if (inventory.getIdType().equals("enderchest"))
             inventory.setInventory(player.getBukkitEnderChest(), player);
+        else if (inventory.getIdType().equals("workbench"))
+            inventory.setInventory(player.getBukkitWorkbench(), player);
         else
             inventory.setInventory(player.getBukkitInventory(), player);
     }
