@@ -436,6 +436,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <--[tag]
         // @attribute <l@location.sign_contents>
         // @returns dList
+        // @mechanism dLocation.sign_contents
         // @description
         // Returns a list of lines on a sign.
         // -->
@@ -1312,6 +1313,33 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("spawner_type") && mechanism.requireObject(dEntity.class)
                 && getBlock().getState() instanceof CreatureSpawner) {
             ((CreatureSpawner) getBlock().getState()).setSpawnedType(value.asType(dEntity.class).getEntityType());
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name sign_contents
+        // @input dList
+        // @description
+        // Sets the contents of a sign block.
+        // Note that this takes an escaped list.
+        // See <@link language property escaping>.
+        // @tags
+        // <l@location.sign_contents>
+        // -->
+        if (mechanism.matches("sign_contents") && getBlock().getState() instanceof Sign) {
+            Sign state = (Sign)getBlock().getState();
+            for (int i = 0; i < 4; i++)
+                state.setLine(i, "");
+            dList list = value.asType(dList.class);
+            if (list.size() > 4) {
+                dB.echoError("Sign can only hold four lines!");
+            }
+            else {
+                for (int i = 0; i < list.size(); i++) {
+                    state.setLine(i, EscapeTags.unEscape(list.get(i)));
+                }
+            }
+            state.update();
         }
 
         if (!mechanism.fulfilled())
