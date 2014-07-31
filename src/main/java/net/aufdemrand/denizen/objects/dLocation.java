@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -459,6 +460,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         if (attribute.startsWith("sign_contents")) {
             if (getBlock().getState() instanceof Sign) {
                 return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else return "null";
+        }
+
+        // <--[tag]
+        // @attribute <l@location.spawner_type>
+        // @returns dEntity
+        // @description
+        // Returns the type of entity spawned by a mob spawner.
+        // -->
+        if (attribute.startsWith("spawner_type")) {
+            if (getBlock().getState() instanceof CreatureSpawner) {
+                return new dEntity(((CreatureSpawner) getBlock().getState()).getSpawnedType())
                         .getAttribute(attribute.fulfill(1));
             }
             else return "null";
