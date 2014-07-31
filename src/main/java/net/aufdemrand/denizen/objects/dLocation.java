@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -1205,6 +1206,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
         // <--[tag]
         // @attribute <l@location.biome>
+        // @mechanism dLocation.biome
         // @returns Element
         // @description
         // Returns the biome name at the location.
@@ -1314,6 +1316,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             dMaterial mat = value.asType(dMaterial.class);
             byte data = mat.hasData() ? mat.getData(): 0;
             getBlock().setTypeIdAndData(mat.getMaterial().getId(), data, false);
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name biome
+        // @input Element
+        // @description
+        // Sets the biome of the block.
+        // @tags
+        // <l@location.biome>
+        // -->
+        if (mechanism.matches("biome") && mechanism.requireEnum(false, Biome.values())) {
+            getBlock().setBiome(Biome.valueOf(value.asString().toUpperCase()));
         }
 
         // <--[mechanism]
