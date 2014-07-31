@@ -40,7 +40,7 @@ public class Settings {
 
     public static boolean ShowExHelp() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Debug.ex command help", true);
+                .getBoolean("Debug.Ex command help", true);
     }
 
     /*
@@ -196,7 +196,37 @@ public class Settings {
 
     public static int WhileMaxLoops() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Commands.While.max-loops", 10000);
+                .getInt("Commands.While.Max loops", 10000);
+    }
+
+    public static String ChatMultipleTargetsFormat() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getString("Commands.Chat.Options.Multiple targets format", "%target%, %target%, %target%, and others");
+    }
+
+    public static double ChatBystandersRange() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getDouble("Commands.Chat.Options.Range for bystanders", 5.0);
+    }
+
+    public static String ChatNoTargetFormat() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getString("Commands.Chat.Formats.No target", "[<def[talker].name>]: %message%");
+    }
+
+    public static String ChatToTargetFormat() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getString("Commands.Chat.Formats.To target", "[<def[talker].name>] -> You: %message%");
+    }
+
+    public static String ChatWithTargetToBystandersFormat() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getString("Commands.Chat.Formats.With target to bystanders", "[<def[talker].name>] -> <def[target].name>: %message%");
+    }
+
+    public static String ChatWithTargetsToBystandersFormat() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getString("Commands.Chat.Formats.With targets to bystanders", "[<def[talker].name>] -> [%targets%]: %message%");
     }
 
     /*

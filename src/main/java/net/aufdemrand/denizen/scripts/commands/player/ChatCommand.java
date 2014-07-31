@@ -1,14 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.npc.speech.DenizenSpeechContext;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechController;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.ai.speech.SpeechContext;
+import net.citizensnpcs.Settings.Setting;
 import org.bukkit.entity.Entity;
 
 /**
@@ -72,6 +77,12 @@ public class ChatCommand extends AbstractCommand {
                 specified_talker = true;
 
             }
+
+            else if (arg.matchesPrefix("range", "r")) {
+                if (arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    scriptEntry.addObject("range", arg.asElement());
+            }
+
             else if (!scriptEntry.hasObject("message"))
                 scriptEntry.addObject("message", new Element(arg.raw_value));
 
@@ -97,6 +108,8 @@ public class ChatCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("message"))
             throw new InvalidArgumentsException("Must specify a message!");
 
+        scriptEntry.defaultObject("range", new Element(Settings.ChatBystandersRange()));
+
     }
 
     @Override
@@ -105,11 +118,13 @@ public class ChatCommand extends AbstractCommand {
         dList talkers = scriptEntry.getdObjectAs("talkers", dList.class);
         dList targets = scriptEntry.getdObjectAs("targets", dList.class);
         Element message = scriptEntry.getElement("message");
+        Element chatRange = scriptEntry.getElement("range");
 
-        dB.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug());
+        dB.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug() + chatRange.debug());
 
         // Create new speech context
-        SpeechContext context = new SpeechContext(TagManager.CleanOutputFully(message.asString()));
+        DenizenSpeechContext context = new DenizenSpeechContext(TagManager.CleanOutputFully(message.asString()),
+                scriptEntry, chatRange.asDouble());
 
         if (!targets.isEmpty()) {
             for (dEntity ent : targets.filter(dEntity.class)) {

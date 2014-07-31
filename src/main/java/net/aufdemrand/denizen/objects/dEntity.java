@@ -510,6 +510,19 @@ public class dEntity implements dObject, Adjustable {
                 : new dInventory(getBukkitInventory()) : null;
     }
 
+    public String getName() {
+        if (isNPC())
+            return getDenizenNPC().getCitizen().getName();
+        if (entity instanceof Player)
+            return ((Player) entity).getName();
+        if (isLivingEntity()) {
+            String customName = getLivingEntity().getCustomName();
+            if (customName != null)
+                return customName;
+        }
+        return entity.getType().getName();
+    }
+
     /**
      * Returns this entity's equipment
      *
@@ -1262,14 +1275,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the name of the entity.
         // -->
         if (attribute.startsWith("name")) {
-            if (isNPC())
-                return new Element(getDenizenNPC().getCitizen().getName())
-                        .getAttribute(attribute.fulfill(1));
-            if (entity instanceof Player)
-                return new Element(((Player) entity).getName())
-                        .getAttribute(attribute.fulfill(1));
-            return new Element(entity.getType().getName())
-                    .getAttribute(attribute.fulfill(1));
+            return new Element(getName()).getAttribute(attribute.fulfill(1));
         }
 
 
