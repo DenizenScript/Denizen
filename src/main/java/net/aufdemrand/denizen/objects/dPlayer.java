@@ -1832,6 +1832,28 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name show_entity
+        // @input dEntity
+        // @description
+        // Shows the player an entity. (Must be a player or player NPC).
+        // -->
+        if (mechanism.matches("show_entity") && mechanism.requireObject(dEntity.class)) {
+            getPlayerEntity().showPlayer((Player)value.asType(dEntity.class).getLivingEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name hide_entity
+        // @input dEntity
+        // @description
+        // Hides an entity from the player. (Must be a player or player NPC).
+        // -->
+        if (mechanism.matches("hide_entity") && mechanism.requireObject(dEntity.class)) {
+            getPlayerEntity().hidePlayer((Player)value.asType(dEntity.class).getLivingEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name show_boss_bar
         // @input (Element(Number)|)Element
         // @description
