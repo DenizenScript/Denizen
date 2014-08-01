@@ -1,52 +1,39 @@
 package net.aufdemrand.denizen.utilities.packets;
 
-// NMS/CB imports start
-import net.minecraft.server.v1_7_R4.EntityPlayer;
-import net.minecraft.server.v1_7_R4.Packet;
 import net.minecraft.server.v1_7_R4.PacketPlayOutExperience;
 import net.minecraft.server.v1_7_R4.PacketPlayOutUpdateHealth;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
-// NMS/CB imports end
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 public class PlayerBars {
 
-    public static void sendPacket(Player player, Packet packet) {
-        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
-        entityPlayer.playerConnection.sendPacket(packet);
-    }
+    private static final Field xp_current, xp_total, xp_level;
+    private static final Field health_health, health_food, health_saturation;
 
-    public static Field getField(Class<?> cl, String field_name) {
-        try {
-            Field field = cl.getDeclaredField(field_name);
-            return field;
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-        return null;
+    static {
+        Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutExperience.class);
+        xp_current = fields.get("a");
+        xp_total = fields.get("b");
+        xp_level = fields.get("c");
+
+        fields = PacketHelper.registerFields(PacketPlayOutUpdateHealth.class);
+        health_health = fields.get("a");
+        health_food = fields.get("b");
+        health_saturation = fields.get("c");
     }
 
     public static PacketPlayOutExperience getExperiencePacket(float exp, int level) {
         PacketPlayOutExperience experiencePacket = new PacketPlayOutExperience();
         try {
-            Field a = getField(experiencePacket.getClass(), "a"); // Current experience (between 0 and 1)
-            a.setAccessible(true);
-            a.set(experiencePacket, exp);
-            // Field b = getField(experiencePacket.getClass(), "b"); // Total experience
-            // b.setAccessible(true);
-            // b.set(experiencePacket, totalExp);
-            Field c = getField(experiencePacket.getClass(), "c"); // Experience level
-            c.setAccessible(true);
-            c.set(experiencePacket, level);
-        } catch (IllegalArgumentException e1) {
-            e1.printStackTrace();
-        } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
+            xp_current.set(experiencePacket, exp);
+            // xp_total.set(experiencePacket, totalExp);
+            xp_level.set(experiencePacket, level);
+        } catch (Exception e) {
+            dB.echoError(e);
         }
         return experiencePacket;
     }
@@ -54,43 +41,35 @@ public class PlayerBars {
     public static PacketPlayOutUpdateHealth getHealthPacket(float health, int food, float food_saturation) {
         PacketPlayOutUpdateHealth healthPacket = new PacketPlayOutUpdateHealth();
         try {
-            Field a = getField(healthPacket.getClass(), "a"); // Health (0-20)
-            a.setAccessible(true);
-            a.set(healthPacket, health);
-            Field b = getField(healthPacket.getClass(), "b"); // Food (0-20)
-            b.setAccessible(true);
-            b.set(healthPacket, food);
-            Field c = getField(healthPacket.getClass(), "c"); // Food saturation (0.0-5.0)
-            c.setAccessible(true);
-            c.set(healthPacket, food_saturation);
+            health_health.set(healthPacket, health);
+            health_food.set(healthPacket, food);
+            health_saturation.set(healthPacket, food_saturation);
 
-        } catch (IllegalArgumentException e1) {
-            e1.printStackTrace();
-        } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
+        } catch (Exception e) {
+            dB.echoError(e);
         }
         return healthPacket;
     }
 
     public static void showHealth(Player player, float health, int food, float food_saturation) {
         PacketPlayOutUpdateHealth healthPacket = getHealthPacket(health, food, food_saturation);
-        sendPacket(player, healthPacket);
+        PacketHelper.sendPacket(player, healthPacket);
     }
 
     public static void showExperience(Player player, float experience, int level) {
         PacketPlayOutExperience experiencePacket = getExperiencePacket(experience, level);
-        sendPacket(player, experiencePacket);
+        PacketHelper.sendPacket(player, experiencePacket);
     }
 
     public static void resetExperience(Player player) {
         PacketPlayOutExperience experiencePacket = getExperiencePacket(player.getExp(), player.getLevel());
-        sendPacket(player, experiencePacket);
+        PacketHelper.sendPacket(player, experiencePacket);
     }
 
     public static void resetHealth(Player player) {
         PacketPlayOutUpdateHealth healthPacket = getHealthPacket((float) player.getHealth(),
                 player.getFoodLevel(), player.getSaturation());
-        sendPacket(player, healthPacket);
+        PacketHelper.sendPacket(player, healthPacket);
     }
 
 }

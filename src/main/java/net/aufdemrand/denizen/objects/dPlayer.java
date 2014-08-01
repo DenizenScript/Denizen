@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
+import net.aufdemrand.denizen.utilities.packets.EntityEquipment;
 import net.aufdemrand.denizen.utilities.packets.PlayerBars;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
@@ -327,6 +328,13 @@ public class dPlayer implements dObject, Adjustable {
             getPlayerEntity().setBedSpawnLocation(location);
         else
             getNBTEditor().setBedSpawnLocation(location, getNBTEditor().isSpawnForced());
+    }
+
+    public void setLocation(Location location) {
+        if (isOnline())
+            getPlayerEntity().teleport(location);
+        else
+            getNBTEditor().setLocation(location);
     }
 
     public void setLevel(int level) {
@@ -1786,6 +1794,20 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name location
+        // @input dLocation
+        // @description
+        // If the player is online, teleports the player to a given location.
+        // Otherwise, sets the player's next spawn location.
+        // @tags
+        // <player.location>
+        // -->
+        if (mechanism.matches("location") && mechanism.requireObject(dLocation.class)) {
+            setLocation(value.asType(dLocation.class));
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name time
         // @input Element(Number)
         // @description
@@ -1948,6 +1970,48 @@ public class dPlayer implements dObject, Adjustable {
             }
             else {
                 PlayerBars.resetHealth(getPlayerEntity());
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name fake_equipment
+        // @input dEntity(|Element|dItem)
+        // @description
+        // Shows the player fake equipment on the specified living entity, which has
+        // no real non-visual effects, in the form Entity|Slot|Item, where the slot
+        // can be one of the following: HAND, BOOTS, LEGS, CHEST, HEAD
+        // Optionally, exclude the slot and item to stop showing the fake equipment,
+        // if any, on the specified entity.
+        // - adjust <player> fake_equipment:e@123|chest|i@diamond_chestplate
+        // - adjust <player> fake_equipment:<player>|head|i@jack_o_lantern
+        // -->
+        if (mechanism.matches("fake_equipment")) {
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
+                if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
+                    if (split.length > 1 && new Element(split[1]).matchesEnum(EntityEquipment.EquipmentSlots.values())) {
+                        if (split.length > 2 && new Element(split[2]).matchesType(dItem.class)) {
+                            EntityEquipment.showEquipment(getPlayerEntity(),
+                                    new Element(split[0]).asType(dEntity.class).getLivingEntity(),
+                                    EntityEquipment.EquipmentSlots.valueOf(new Element(split[1]).asString().toUpperCase()),
+                                    new Element(split[2]).asType(dItem.class).getItemStack());
+                        }
+                        else if (split.length > 2) {
+                            dB.echoError("'" + split[2] + "' is not a valid dItem!");
+                        }
+                    }
+                    else if (split.length > 1) {
+                        dB.echoError("'" + split[1] + "' is not a valid slot; must be HAND, BOOTS, LEGS, CHEST, or HEAD!");
+                    }
+                    else {
+                        EntityEquipment.resetEquipment(getPlayerEntity(),
+                                new Element(split[0]).asType(dEntity.class).getLivingEntity());
+                    }
+                }
+                else {
+                    dB.echoError("'" + split[0] + "' is not a valid dEntity!");
+                }
             }
         }
 

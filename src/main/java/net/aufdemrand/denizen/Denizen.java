@@ -56,7 +56,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Denizen extends JavaPlugin {
-    public final static int configVersion = 5;
+    public final static int configVersion = 7;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
