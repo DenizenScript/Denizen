@@ -42,7 +42,7 @@ public class RandomCommand extends BracedCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matches("{")) {
-                scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 0));
+                scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
                 break;
             }
 

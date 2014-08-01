@@ -17,5 +17,4 @@ public class RequirementsProcessor implements CommandAnnotationProcessor {
             throws CommandException {
         // TODO: add Denizen-based requirements/remove this system
     }
-
 }

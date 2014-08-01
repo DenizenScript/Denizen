@@ -474,8 +474,6 @@ public class dMaterial implements dObject {
         return new dMaterial(material, data);
     }
 
-
-
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -905,5 +903,4 @@ public class dMaterial implements dObject {
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
-
 }

@@ -30,7 +30,7 @@ public class OxygenCommand extends AbstractCommand {
                     type = Type.valueOf(aH.getStringFrom(arg));
                     dB.echoDebug(scriptEntry, "Set type to " + type.name());
                 } catch(Exception e) {
-                    dB.echoError("Invalid type: " + e.getMessage());
+                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid type: " + e.getMessage());
                 }
             }
             else if(aH.matchesValueArg("mode", arg, aH.ArgumentType.String)) {
@@ -38,7 +38,7 @@ public class OxygenCommand extends AbstractCommand {
                     mode = Mode.valueOf(aH.getStringFrom(arg));
                     dB.echoDebug(scriptEntry, "Set mode to " + mode.name());
                 } catch(Exception e) {
-                    dB.echoError("Invalid mode: " + e.getMessage());
+                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid mode: " + e.getMessage());
                 }
             }
             else if(aH.matchesQuantity(arg) || aH.matchesQuantity("amt")) {
@@ -92,5 +92,4 @@ public class OxygenCommand extends AbstractCommand {
             }
         }
     }
-
 }

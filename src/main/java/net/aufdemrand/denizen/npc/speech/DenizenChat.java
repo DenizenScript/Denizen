@@ -125,5 +125,4 @@ public class DenizenChat implements VocalChord {
             }
         }
     }
-
 }

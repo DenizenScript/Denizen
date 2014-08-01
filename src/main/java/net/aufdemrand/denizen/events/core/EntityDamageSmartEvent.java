@@ -55,8 +55,6 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
         EntityDamageEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

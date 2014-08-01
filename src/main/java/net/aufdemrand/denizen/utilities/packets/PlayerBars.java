@@ -92,5 +92,4 @@ public class PlayerBars {
                 player.getFoodLevel(), player.getSaturation());
         sendPacket(player, healthPacket);
     }
-
 }

@@ -493,8 +493,6 @@ public class Duration implements dObject {
             }
         }
 
-
-
         /////////////////////
         //   DEBUG ATTRIBUTES
         /////////////////
@@ -570,6 +568,4 @@ public class Duration implements dObject {
 
         return new Element(identify()).getAttribute(attribute);
     }
-
-
 }

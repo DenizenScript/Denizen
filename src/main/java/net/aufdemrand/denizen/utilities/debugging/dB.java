@@ -2,16 +2,16 @@ package net.aufdemrand.denizen.utilities.debugging;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import net.aufdemrand.denizen.Settings;
 
+import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -90,8 +90,6 @@ public class dB {
     public static enum DebugElement {
         Header, Footer, Spacer
     }
-
-
 
     ////////////
     //  Public debugging methods, toggleable by checking extra criteria as implemented
@@ -193,13 +191,16 @@ public class dB {
         echoDebug(null, de, message);
     }
 
-
-
     /////////////
     // Other public debugging methods (Always show when debugger is enabled)
     ///////
 
 
+    /**
+     * Shows an approval message (always shows, regardless of script debug mode, excluding debug fully off - use sparingly)
+     * Prefixed with "OKAY! "
+     * @param message the message to debug
+     */
     public static void echoApproval(String message) {
         if (!showDebug) return;
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! "
@@ -207,16 +208,76 @@ public class dB {
     }
 
 
+    // <--[event]
+    // @Events
+    // script generates error
+    //
+    // @Triggers when a script generates an error.
+    // @Context
+    // <context.message> returns the error message.
+    // <context.queue> returns the queue that caused the exception, if any.
+    //
+    // @Determine
+    // "CANCELLED" to stop the error from showing in the console.
+    // -->
     public static void echoError(String message) {
+        echoError(null, message);
+    }
+
+    public static void echoError(ScriptQueue source, String message) {
+        if (ThrowErrorEvent) {
+            ThrowErrorEvent = false;
+            Map<String, dObject> context = new HashMap<String, dObject>();
+            context.put("message", new Element(message));
+            context.put("queue", source);
+            String Determination = EventManager.doEvents(Arrays.asList("script generates error"), null, null, context);
+            ThrowErrorEvent = true;
+            if (Determination.equalsIgnoreCase("CANCELLED"))
+                return;
+        }
         if (!showDebug) return;
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! "
                 + ChatColor.WHITE + trimMessage(message));
     }
 
+    private static boolean ThrowErrorEvent = true;
+
+    // <--[event]
+    // @Events
+    // server generates exception
+    //
+    // @Triggers when an exception occurs on the server.
+    // @Context
+    // <context.message> returns the Exception message.
+    // <context.type> returns the type of the error. (EG, NullPointerException).
+    // <context.queue> returns the queue that caused the exception, if any.
+    //
+    // @Determine
+    // "CANCELLED" to stop the exception from showing in the console.
+    // -->
     public static void echoError(Throwable ex) {
+        echoError(null, ex);
+    }
+
+    public static void echoError(ScriptQueue source, Throwable ex) {
+        if (ThrowErrorEvent) {
+            ThrowErrorEvent = false;
+            Map<String, dObject> context = new HashMap<String, dObject>();
+            Throwable thrown = ex;
+            if (ex.getCause() != null) {
+                thrown = ex.getCause();
+            }
+            context.put("message", new Element(thrown.getMessage()));
+            context.put("type", new Element(thrown.getClass().getSimpleName()));
+            context.put("queue", source);
+            String Determination = EventManager.doEvents(Arrays.asList("server generates exception"), null, null, context);
+            ThrowErrorEvent = true;
+            if (Determination.equalsIgnoreCase("CANCELLED"))
+                return;
+        }
         if (!showDebug) return;
         if (!showStackTraces) {
-            dB.echoError("Exception! Enable '/denizen debug -s' for the nitty-gritty.");
+            dB.echoError(source, "Exception! Enable '/denizen debug -s' for the nitty-gritty.");
         }
         else {
             ex.printStackTrace();
@@ -372,5 +433,4 @@ public class dB {
             commandSender.sendMessage(showColor ? result : ChatColor.stripColor(result));
         }
     }
-
 }

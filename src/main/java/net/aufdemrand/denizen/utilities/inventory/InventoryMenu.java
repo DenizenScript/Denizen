@@ -109,5 +109,4 @@ public class InventoryMenu implements InventoryHolder {
     public String toString() {
         return getClass().getSimpleName() + "{title=" + title + "; size=" + size + "}";
     }
-
 }

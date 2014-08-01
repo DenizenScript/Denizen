@@ -52,5 +52,4 @@ public class RenameCommand extends AbstractCommand {
             npc.spawn(prev);
 
     }
-
 }

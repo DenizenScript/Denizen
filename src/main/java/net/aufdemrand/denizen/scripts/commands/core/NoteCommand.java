@@ -62,7 +62,7 @@ public class NoteCommand extends AbstractCommand {
         Class object_class = ObjectFetcher.getObjectClass(object_type);
 
         if (object_class == null) {
-            dB.echoError("Invalid object type! Could not fetch '" + object_type + "'!");
+            dB.echoError(scriptEntry.getResidingQueue(), "Invalid object type! Could not fetch '" + object_type + "'!");
             return;
         }
 
@@ -70,7 +70,7 @@ public class NoteCommand extends AbstractCommand {
         try {
 
             if (!ObjectFetcher.checkMatch(object_class, object)) {
-                dB.echoError("'" + object
+                dB.echoError(scriptEntry.getResidingQueue(), "'" + object
                         + "' is an invalid " + object_class.getSimpleName() + ".");
                 return;
             }
@@ -81,13 +81,10 @@ public class NoteCommand extends AbstractCommand {
                 ((Notable) arg).makeUnique(id.asString());
 
         } catch (Exception e) {
-            dB.echoError("Uh oh! Report this to the Denizen developers! Err: NoteCommandObjectReflection");
-            dB.echoError(e);
+            dB.echoError(scriptEntry.getResidingQueue(), "Uh oh! Report this to the Denizen developers! Err: NoteCommandObjectReflection");
+            dB.echoError(scriptEntry.getResidingQueue(), e);
         }
 
 
     }
-
-
-
 }

@@ -26,5 +26,4 @@ public interface Notable {
      * Function to do something when the notable is loaded in (for example, on a server restart)
      */
     public void load();
-
 }

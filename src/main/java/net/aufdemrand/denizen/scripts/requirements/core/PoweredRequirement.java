@@ -38,5 +38,4 @@ public class PoweredRequirement extends AbstractRequirement{
 
         return outcome;
     }
-
 }

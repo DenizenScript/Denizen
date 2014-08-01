@@ -245,5 +245,4 @@ public class InteractScriptContainer extends ScriptContainer {
         return contains("STEPS." + step + "." + triggerName + " TRIGGER"
                 + (id == null ? "" : "." + id.toUpperCase()) + "." + option.toUpperCase());
     }
-
 }

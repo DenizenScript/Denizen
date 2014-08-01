@@ -10,5 +10,4 @@ public class PlayerListenerScriptContainer extends ScriptContainer {
     }
 
     // WIP
-
 }

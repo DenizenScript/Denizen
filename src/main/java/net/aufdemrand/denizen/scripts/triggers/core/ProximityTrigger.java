@@ -395,5 +395,4 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         }
         npcs.remove(npc.getId());
     }
-
 }

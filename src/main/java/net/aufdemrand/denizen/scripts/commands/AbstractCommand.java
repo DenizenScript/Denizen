@@ -147,5 +147,4 @@ public abstract class AbstractCommand implements RegistrationableInstance {
         this.commandOptions = new CommandOptions(usageHint, numberOfRequiredArgs);
         return commandOptions;
     }
-
 }

@@ -49,5 +49,4 @@ public class DefineCommand extends AbstractCommand implements Listener {
                 (String) scriptEntry.getObject("definition"),
                 (String) scriptEntry.getObject("value"));
     }
-
 }

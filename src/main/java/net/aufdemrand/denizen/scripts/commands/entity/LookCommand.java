@@ -92,6 +92,5 @@ public class LookCommand extends AbstractCommand {
             task.runTaskTimer(denizen, 0, 2);
         }
     }
-
 }
 

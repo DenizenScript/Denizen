@@ -160,7 +160,7 @@ public class TakeCommand extends AbstractCommand{
                 if(Depends.economy != null) {
                     Depends.economy.withdrawPlayer(scriptEntry.getPlayer().getName(), qty.asDouble());
                 } else {
-                    dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                    dB.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
                 break;
 
@@ -177,7 +177,7 @@ public class TakeCommand extends AbstractCommand{
                             inventory.removeBook(is);
                     }
                     else if (!inventory.getInventory().removeItem(is).isEmpty())
-                        dB.echoError("Inventory does not contain at least " + qty.asInt() + " of " + item.identify() +
+                        dB.echoError(scriptEntry.getResidingQueue(), "Inventory does not contain at least " + qty.asInt() + " of " + item.identify() +
                                 "... Taking as much as possible...");
                 }
                 break;
@@ -185,7 +185,7 @@ public class TakeCommand extends AbstractCommand{
             case BYDISPLAY:
                 int found_items = 0;
                 if (displayname == null) {
-                    dB.echoError("Must specify a displayname!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a displayname!");
                     return;
                 }
                 for (ItemStack it : inventory.getContents()) {

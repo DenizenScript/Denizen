@@ -46,5 +46,4 @@ public class AssignmentScriptContainer extends ScriptContainer {
     public AssignmentScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
-
 }

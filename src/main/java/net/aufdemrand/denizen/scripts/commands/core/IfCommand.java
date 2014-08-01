@@ -310,5 +310,4 @@ public class IfCommand extends AbstractCommand {
         // Inject the entries to the queue to be run
         scriptEntry.getResidingQueue().injectEntries(entries, 0);
     }
-
 }

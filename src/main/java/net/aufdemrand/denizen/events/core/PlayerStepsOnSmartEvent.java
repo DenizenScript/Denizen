@@ -55,8 +55,6 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
         PlayerMoveEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

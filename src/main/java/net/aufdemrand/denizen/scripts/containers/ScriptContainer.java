@@ -250,8 +250,6 @@ public class ScriptContainer implements Debuggable {
         return CooldownCommand.checkCooldown(player, name);
     }
 
-
-
     /////////////
     // DEBUGGABLE
     /////////

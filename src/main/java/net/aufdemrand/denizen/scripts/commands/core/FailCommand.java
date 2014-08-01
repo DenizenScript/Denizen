@@ -107,5 +107,4 @@ public class FailCommand extends AbstractCommand {
         return DenizenAPI.getCurrentInstance().getSaves()
                 .getInt("Players." + playerName + "." + scriptName.toUpperCase() + "." + "Failed", 0);
     }
-
 }

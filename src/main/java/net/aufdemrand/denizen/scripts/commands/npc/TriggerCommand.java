@@ -103,5 +103,4 @@ public class TriggerCommand extends AbstractCommand {
         if (cooldown != null && cooldown.getSeconds() > 0)
             trait.setLocalCooldown(trigger.asString(), cooldown.getSeconds());
     }
-
 }

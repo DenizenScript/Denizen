@@ -150,6 +150,4 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
         }.runTaskLater(DenizenAPI.getCurrentInstance(), 0); // TODO: is 0 a reasonable delay here?
 
     }
-
-
 }

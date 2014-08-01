@@ -37,5 +37,4 @@ public interface SmartEvent {
      * intitialize().
      */
     public void breakDown();
-
 }

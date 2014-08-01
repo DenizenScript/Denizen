@@ -76,7 +76,6 @@ public class PlayerTags implements Listener {
 
         event.setReplaced(p.getAttribute(attribute.fulfill(1)));
     }
-
 }
 
 

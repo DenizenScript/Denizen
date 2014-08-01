@@ -120,7 +120,6 @@ public class AnnounceCommand extends AbstractCommand {
             Bukkit.getServer().getConsoleSender().sendMessage(message);
         }
     }
-
 }
 
 

@@ -15,6 +15,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -26,7 +28,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dLocation extends org.bukkit.Location implements dObject, Notable {
+public class dLocation extends org.bukkit.Location implements dObject, Notable, Adjustable {
 
     // This pattern correctly reads both 0.9 and 0.8 notables
     final static Pattern notablePattern =
@@ -111,8 +113,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
 
         if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dLocation.class))
             return (dLocation) NotableManager.getSavedObject(m.group(2));
-
-
 
         ////////
         // Match location formats
@@ -278,8 +278,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         return getBlock().getLocation().equals(((dLocation) o).getBlock().getLocation());
     }
 
-
-
     String prefix = "Location";
 
     @Override
@@ -433,32 +431,30 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
             return new Element((getBlock().getData() & 0x8) > 0).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <l@location.sign_contents.escaped>
-        // @returns dList
-        // @description
-        // Returns a list of lines on a sign, pre-escaped to prevent issues.
-        // See <@link language Property Escaping>
-        // -->
-        //  TODO: Mech for this...
-        if (attribute.startsWith("sign_contents.escaped")) {
-            if (getBlock().getState() instanceof Sign) {
-                dList toReturn = new dList();
-                for (String line: ((Sign) getBlock().getState()).getLines())
-                    toReturn.add(EscapeTags.Escape(line));
-                return toReturn.getAttribute(attribute.fulfill(2));
-            }
-            else return "null";
-        }
-
-        // <--[tag]
         // @attribute <l@location.sign_contents>
         // @returns dList
+        // @mechanism dLocation.sign_contents
         // @description
         // Returns a list of lines on a sign.
         // -->
         if (attribute.startsWith("sign_contents")) {
             if (getBlock().getState() instanceof Sign) {
                 return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else return "null";
+        }
+
+        // <--[tag]
+        // @attribute <l@location.spawner_type>
+        // @mechanism dLocation.spawner_type
+        // @returns dEntity
+        // @description
+        // Returns the type of entity spawned by a mob spawner.
+        // -->
+        if (attribute.startsWith("spawner_type")) {
+            if (getBlock().getState() instanceof CreatureSpawner) {
+                return new dEntity(((CreatureSpawner) getBlock().getState()).getSpawnedType())
                         .getAttribute(attribute.fulfill(1));
             }
             else return "null";
@@ -1206,6 +1202,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
 
         // <--[tag]
         // @attribute <l@location.biome>
+        // @mechanism dLocation.biome
         // @returns Element
         // @description
         // Returns the biome name at the location.
@@ -1293,4 +1290,85 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable {
         return new Element(identify()).getAttribute(attribute);
     }
 
+    public void applyProperty(Mechanism mechanism) {
+        dB.echoError("Cannot apply properties to an location!");
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        Element value = mechanism.getValue();
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name block_type
+        // @input dMaterial
+        // @description
+        // Sets the type of the block.
+        // @tags
+        // <l@location.material>
+        // -->
+        if (mechanism.matches("block_type") && mechanism.requireObject(dMaterial.class)) {
+            dMaterial mat = value.asType(dMaterial.class);
+            byte data = mat.hasData() ? mat.getData(): 0;
+            getBlock().setTypeIdAndData(mat.getMaterial().getId(), data, false);
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name biome
+        // @input Element
+        // @description
+        // Sets the biome of the block.
+        // @tags
+        // <l@location.biome>
+        // -->
+        if (mechanism.matches("biome") && mechanism.requireEnum(false, Biome.values())) {
+            getBlock().setBiome(Biome.valueOf(value.asString().toUpperCase()));
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name spawner_type
+        // @input dEntity
+        // @description
+        // Sets the entity that a mob spawner will spawn.
+        // @tags
+        // <l@location.spawner_type>
+        // -->
+        if (mechanism.matches("spawner_type") && mechanism.requireObject(dEntity.class)
+                && getBlock().getState() instanceof CreatureSpawner) {
+            ((CreatureSpawner) getBlock().getState()).setSpawnedType(value.asType(dEntity.class).getEntityType());
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name sign_contents
+        // @input dList
+        // @description
+        // Sets the contents of a sign block.
+        // Note that this takes an escaped list.
+        // See <@link language property escaping>.
+        // @tags
+        // <l@location.sign_contents>
+        // -->
+        if (mechanism.matches("sign_contents") && getBlock().getState() instanceof Sign) {
+            Sign state = (Sign)getBlock().getState();
+            for (int i = 0; i < 4; i++)
+                state.setLine(i, "");
+            dList list = value.asType(dList.class);
+            if (list.size() > 4) {
+                dB.echoError("Sign can only hold four lines!");
+            }
+            else {
+                for (int i = 0; i < list.size(); i++) {
+                    state.setLine(i, EscapeTags.unEscape(list.get(i)));
+                }
+            }
+            state.update();
+        }
+
+        if (!mechanism.fulfilled())
+            mechanism.reportInvalid();
+    }
 }

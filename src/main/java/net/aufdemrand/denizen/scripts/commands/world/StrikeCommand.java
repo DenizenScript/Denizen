@@ -55,5 +55,4 @@ public class StrikeCommand extends AbstractCommand {
         else
             location.getWorld().strikeLightningEffect(location);
     }
-
 }

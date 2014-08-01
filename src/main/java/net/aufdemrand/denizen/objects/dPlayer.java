@@ -1197,8 +1197,6 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
-
-
         /////////////////////
         //   LOCATION ATTRIBUTES
         /////////////////
@@ -1828,6 +1826,28 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
             getPlayerEntity().setWalkSpeed(value.asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name show_entity
+        // @input dEntity
+        // @description
+        // Shows the player an entity. (Must be a player or player NPC).
+        // -->
+        if (mechanism.matches("show_entity") && mechanism.requireObject(dEntity.class)) {
+            getPlayerEntity().showPlayer((Player)value.asType(dEntity.class).getLivingEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name hide_entity
+        // @input dEntity
+        // @description
+        // Hides an entity from the player. (Must be a player or player NPC).
+        // -->
+        if (mechanism.matches("hide_entity") && mechanism.requireObject(dEntity.class)) {
+            getPlayerEntity().hidePlayer((Player)value.asType(dEntity.class).getLivingEntity());
         }
 
         // <--[mechanism]

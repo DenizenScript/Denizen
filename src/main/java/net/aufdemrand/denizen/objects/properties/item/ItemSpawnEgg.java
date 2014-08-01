@@ -12,7 +12,8 @@ public class ItemSpawnEgg implements Property {
 
     public static boolean describes(dObject item) {
         return item instanceof dItem
-                && (((dItem) item).getItemStack().getType() == Material.MONSTER_EGG);
+                && (((dItem) item).getItemStack().getType() == Material.MONSTER_EGG
+                || ((dItem) item).getItemStack().getType() == Material.MOB_SPAWNER);
     }
 
     public static ItemSpawnEgg getFrom(dObject _item) {
@@ -39,6 +40,7 @@ public class ItemSpawnEgg implements Property {
         // @mechanism dItem.spawn_egg
         // @description
         // Returns the spawn egg number of the item.
+        // Also works for mob spawners.
         // -->
         if (attribute.startsWith("spawn_egg_entity")) {
             return new Element(item.getItemStack().getDurability())
@@ -68,6 +70,7 @@ public class ItemSpawnEgg implements Property {
         // @input Element(Number)
         // @description
         // Sets what mob a spawn egg holds.
+        // Also works for mob spawners.
         // @tags
         // <i@item.spawn_egg_entity>
         // -->

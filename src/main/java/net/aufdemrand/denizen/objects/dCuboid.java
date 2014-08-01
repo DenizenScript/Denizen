@@ -34,8 +34,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         return (dCuboid) super.clone();
     }
 
-
-
     /////////////////////
     //   STATIC METHODS
     /////////////////
@@ -504,8 +502,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         return pairs.get(index).low;
     }
 
-
-
     ///////////////////
     // Notable
     ///////////////////
@@ -534,8 +530,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public void forget() {
         NotableManager.remove(this);
     }
-
-
 
     /////////////////////
     // dObject
@@ -612,8 +606,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public String toString() {
         return identify();
     }
-
-
 
     /////////////////////
     // dObject Attributes

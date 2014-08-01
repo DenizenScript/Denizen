@@ -257,5 +257,4 @@ public interface dObject {
      * @return  a string result of the fetched attribute
      */
     public String getAttribute(Attribute attribute);
-
 }

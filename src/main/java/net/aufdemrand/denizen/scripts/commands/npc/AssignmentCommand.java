@@ -76,5 +76,4 @@ public class AssignmentCommand extends AbstractCommand {
             scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)
                     .removeAssignment(scriptEntry.getPlayer());
     }
-
 }

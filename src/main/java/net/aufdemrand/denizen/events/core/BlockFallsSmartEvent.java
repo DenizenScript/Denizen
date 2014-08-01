@@ -58,8 +58,6 @@ public class BlockFallsSmartEvent implements SmartEvent, Listener {
         EntityChangeBlockEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////
@@ -96,6 +94,4 @@ public class BlockFallsSmartEvent implements SmartEvent, Listener {
                 event.setCancelled(true);
         }
     }
-
-
 }

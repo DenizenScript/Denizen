@@ -42,5 +42,4 @@ public class DisengageCommand extends AbstractCommand {
         // Set Disengaged
         EngageCommand.setEngaged(scriptEntry.getNPC().getCitizen(), false);
     }
-
 }

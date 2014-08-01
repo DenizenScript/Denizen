@@ -60,5 +60,4 @@ public class EventCommand extends AbstractCommand {
         String Determination = EventManager.doEvents(events, scriptEntry.getNPC(), scriptEntry.getPlayer(), context_map, true);
         scriptEntry.addObject("determination", new Element(Determination));
     }
-
 }

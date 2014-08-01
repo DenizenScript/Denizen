@@ -100,8 +100,6 @@ public class NotableManager {
         return objects;
     }
 
-
-
     /**
      * Called on '/denizen reload notables'.
      */
@@ -203,8 +201,6 @@ public class NotableManager {
         }
     }
 
-
-
     ///////////////////
     // Note Annotation Handler
     ///////////////////
@@ -232,5 +228,4 @@ public class NotableManager {
         else
             return null;
     }
-
 }

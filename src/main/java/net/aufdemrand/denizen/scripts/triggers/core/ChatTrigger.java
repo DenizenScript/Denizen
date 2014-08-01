@@ -361,5 +361,4 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         }
 
     }
-
 }

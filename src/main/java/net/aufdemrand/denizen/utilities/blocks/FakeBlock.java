@@ -35,6 +35,5 @@ public class FakeBlock {
                 }, duration.getTicks());
         }
     }
-
 }
 

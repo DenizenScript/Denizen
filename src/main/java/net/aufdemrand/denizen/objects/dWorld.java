@@ -820,5 +820,4 @@ public class dWorld implements dObject, Adjustable {
             mechanism.reportInvalid();
 
     }
-
 }

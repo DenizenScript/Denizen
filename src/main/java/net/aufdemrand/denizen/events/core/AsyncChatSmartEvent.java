@@ -70,8 +70,6 @@ public class AsyncChatSmartEvent implements SmartEvent, Listener {
         AsyncPlayerChatEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

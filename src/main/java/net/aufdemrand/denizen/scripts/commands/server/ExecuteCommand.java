@@ -92,8 +92,8 @@ public class ExecuteCommand extends AbstractCommand {
                             pcpe.getMessage().startsWith("/") ? pcpe.getMessage().substring(1): pcpe.getMessage());
             }
             catch (Throwable e) {
-                dB.echoError("Exception while executing command as player.");
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as player.");
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
             return;
 
@@ -108,19 +108,19 @@ public class ExecuteCommand extends AbstractCommand {
                             pcpe.getMessage().startsWith("/") ? pcpe.getMessage().substring(1): pcpe.getMessage());
             }
             catch (Throwable e) {
-                dB.echoError("Exception while executing command as OP.");
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as OP.");
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
             if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(false);
             return;
 
         case AS_NPC:
             if (!scriptEntry.getNPC().isSpawned()) {
-                dB.echoError("Cannot EXECUTE AS_NPC unless the NPC is Spawned.");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Spawned.");
                 return;
             }
             if (scriptEntry.getNPC().getEntity().getType() != EntityType.PLAYER) {
-                dB.echoError("Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
                 return;
             }
             ((Player) scriptEntry.getNPC().getEntity()).setOp(true);
@@ -128,8 +128,8 @@ public class ExecuteCommand extends AbstractCommand {
                 ((Player) scriptEntry.getNPC().getEntity()).performCommand(command);
             }
             catch (Throwable e) {
-                dB.echoError("Exception while executing command as NPC-OP.");
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as NPC-OP.");
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
             ((Player) scriptEntry.getNPC().getEntity()).setOp(false);
             return;
@@ -142,5 +142,4 @@ public class ExecuteCommand extends AbstractCommand {
             scriptEntry.addObject("output", new dList(dcs.getOutput()));
         }
     }
-
 }

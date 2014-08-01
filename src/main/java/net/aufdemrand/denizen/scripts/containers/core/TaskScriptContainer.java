@@ -98,6 +98,4 @@ public class TaskScriptContainer extends ScriptContainer {
         queue.start();
         return queue;
     }
-
-
 }

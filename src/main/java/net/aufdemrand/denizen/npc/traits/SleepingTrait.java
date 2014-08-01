@@ -114,5 +114,4 @@ public class SleepingTrait extends Trait {
     public SleepingTrait() {
         super("sleeping");
     }
-
 }

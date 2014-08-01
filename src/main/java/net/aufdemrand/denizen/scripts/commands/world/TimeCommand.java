@@ -82,5 +82,4 @@ public class TimeCommand extends AbstractCommand {
             scriptEntry.getPlayer().getPlayerEntity().setPlayerTime(value.getTicks(), true);
         }
     }
-
 }

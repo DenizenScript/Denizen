@@ -4,8 +4,6 @@ import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.event.EventHandler;
 
-
-
 // <--[language]
 // @name Trait
 // @group NPC Traits
@@ -13,8 +11,6 @@ import org.bukkit.event.EventHandler;
 // Traits are abilities and functions that are specific to NPCs. The trait system is
 // implemented by Citizens2, but heavily utilized for NPC features throughout Denizen.
 // -->
-
-
 
 
 public class _templateTrait extends Trait {
@@ -37,6 +33,4 @@ public class _templateTrait extends Trait {
 
         }
     }
-
-
 }

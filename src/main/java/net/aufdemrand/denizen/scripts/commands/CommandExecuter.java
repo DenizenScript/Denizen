@@ -56,7 +56,7 @@ public class CommandExecuter {
 
         if (command == null) {
             dB.echoDebug(scriptEntry, DebugElement.Header, "Executing command: " + scriptEntry.getCommandName());
-            dB.echoError(scriptEntry.getCommandName() + " is an invalid dCommand! Are you sure it loaded?");
+            dB.echoError(scriptEntry.getResidingQueue(), scriptEntry.getCommandName() + " is an invalid dCommand! Are you sure it loaded?");
             dB.echoDebug(scriptEntry, DebugElement.Footer);
             return false;
         }
@@ -65,7 +65,9 @@ public class CommandExecuter {
             scriptEntry.setNPC(null);
 
         // Debugger information
-        if (scriptEntry.getOriginalArguments().size() == 0 || !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
+        if (scriptEntry.getOriginalArguments() == null ||
+                scriptEntry.getOriginalArguments().size() == 0 ||
+                !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
             if (scriptEntry.getPlayer() != null)
                 dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" + scriptEntry.getPlayer().getName());
             else
@@ -136,7 +138,7 @@ public class CommandExecuter {
                     String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false, scriptEntry);
                     dPlayer player = dPlayer.valueOf(value);
                     if (player == null || !player.isValid()) {
-                        dB.echoError(value + " is an invalid player!");
+                        dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
                         return false;
                     }
                     scriptEntry.setPlayer(player);
@@ -148,7 +150,7 @@ public class CommandExecuter {
                     String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false, scriptEntry);
                     dNPC npc = dNPC.valueOf(value);
                     if (npc == null || !npc.isValid()) {
-                        dB.echoError(value + " is an invalid NPC!");
+                        dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
                         return false;
                     }
                     scriptEntry.setNPC(npc);
@@ -178,7 +180,7 @@ public class CommandExecuter {
 
             keepGoing = false;
             // Give usage hint if InvalidArgumentsException was called.
-            dB.echoError("Woah! Invalid arguments were specified!");
+            dB.echoError(scriptEntry.getResidingQueue(), "Woah! Invalid arguments were specified!");
             if (e.getMessage() != null && e.getMessage().length() > 0)
                 dB.log(ChatColor.YELLOW + "+> MESSAGE follows: " + ChatColor.WHITE + "'" + e.getMessage() + "'");
             dB.log("Usage: " + command.getUsageHint());
@@ -188,8 +190,8 @@ public class CommandExecuter {
         } catch (Exception e) {
 
             keepGoing = false;
-            dB.echoError("Woah! An exception has been called with this command!");
-            dB.echoError(e);
+            dB.echoError(scriptEntry.getResidingQueue(), "Woah! An exception has been called with this command!");
+            dB.echoError(scriptEntry.getResidingQueue(), e);
             dB.echoDebug(scriptEntry, DebugElement.Footer);
             scriptEntry.setFinished(true);
 
@@ -200,8 +202,8 @@ public class CommandExecuter {
                     // Run the execute method in the command
                     command.execute(scriptEntry);
                 } catch (Exception e) {
-                    dB.echoError("Woah!! An exception has been called with this command!");
-                    dB.echoError(e);
+                    dB.echoError(scriptEntry.getResidingQueue(), "Woah!! An exception has been called with this command!");
+                    dB.echoError(scriptEntry.getResidingQueue(), e);
                     scriptEntry.setFinished(true);
                 }
 
@@ -209,5 +211,4 @@ public class CommandExecuter {
 
         return true;
     }
-
 }

@@ -26,5 +26,4 @@ public class Colorizer {
             colors += color.getChar();
         COLOR_MATCHER = Pattern.compile("\\<([COLORS])\\>".replace("COLORS", colors), Pattern.CASE_INSENSITIVE);
     }
-
 }

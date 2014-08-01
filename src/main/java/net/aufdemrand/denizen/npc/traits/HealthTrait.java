@@ -338,6 +338,4 @@ public class HealthTrait extends Trait implements Listener {
 //            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE, 1, (short) 14)).setPickupDelay(Integer.MAX_VALUE);
 //        }
 //    }
-
-
 }

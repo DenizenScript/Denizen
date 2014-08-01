@@ -71,5 +71,4 @@ public class SneakingTrait extends Trait implements Listener  {
     public SneakingTrait() {
         super("sneaking");
     }
-
 }

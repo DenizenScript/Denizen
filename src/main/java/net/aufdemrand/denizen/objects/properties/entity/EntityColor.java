@@ -160,6 +160,5 @@ public class EntityColor implements Property {
 
         }
     }
-
 }
 

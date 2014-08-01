@@ -12,5 +12,4 @@ public interface Property {
     public String getAttribute(Attribute attribute);
 
     public void adjust(Mechanism mechanism);
-
 }

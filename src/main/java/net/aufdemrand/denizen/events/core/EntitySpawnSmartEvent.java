@@ -72,8 +72,6 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
         CreatureSpawnEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

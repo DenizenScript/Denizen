@@ -16,5 +16,4 @@ public interface Adjustable {
      * @param mechanism the mechanism to gather change information from
      */
     public void applyProperty(Mechanism mechanism);
-
 }

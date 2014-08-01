@@ -211,7 +211,4 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         else if (flag.StillValid() && flag.expiration().getMillis() != 0L) flag.setExpiration(0L);
     }
-
-
-
 }

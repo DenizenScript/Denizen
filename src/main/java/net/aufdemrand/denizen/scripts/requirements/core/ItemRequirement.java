@@ -37,5 +37,4 @@ public class ItemRequirement extends AbstractRequirement {
             return false;
         }
     }
-
 }

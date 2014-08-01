@@ -116,8 +116,6 @@ public class Denizen extends JavaPlugin {
         return propertyParser;
     }
 
-
-
     /*
      * Denizen Managers
      */
@@ -650,7 +648,6 @@ public class Denizen extends JavaPlugin {
         }
         return false;
     }
-
 }
 
 

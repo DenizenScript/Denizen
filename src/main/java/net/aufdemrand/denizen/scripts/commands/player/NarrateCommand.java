@@ -94,5 +94,4 @@ public class NarrateCommand extends AbstractCommand {
                 dB.echoError("Narrated to non-existent or offline player!");
         }
     }
-
 }

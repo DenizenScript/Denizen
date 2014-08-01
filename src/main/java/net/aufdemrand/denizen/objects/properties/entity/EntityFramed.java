@@ -152,5 +152,4 @@ public class EntityFramed implements Property {
         }
 
     }
-
 }

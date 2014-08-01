@@ -293,5 +293,4 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         for (Viewer viewer : viewers.values())
             viewer.save();
     }
-
 }

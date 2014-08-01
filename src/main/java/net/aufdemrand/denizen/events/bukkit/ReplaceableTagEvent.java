@@ -280,6 +280,4 @@ public class ReplaceableTagEvent extends Event {
     public Attribute getAttributes() {
         return core_attributes;
     }
-
-
 }

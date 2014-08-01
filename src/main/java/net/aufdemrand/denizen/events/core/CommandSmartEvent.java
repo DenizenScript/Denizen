@@ -79,8 +79,6 @@ public class CommandSmartEvent implements SmartEvent, Listener {
         // TODO: unregister commands
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

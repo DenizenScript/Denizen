@@ -38,7 +38,7 @@ public class SitCommand extends AbstractCommand {
         if (scriptEntry.getNPC().getEntityType() != EntityType.PLAYER
                 && scriptEntry.getNPC().getEntityType() != EntityType.OCELOT
                 && scriptEntry.getNPC().getEntityType() != EntityType.WOLF) {
-            dB.echoError("...only Player, ocelot, or wolf type NPCs can sit!");
+            dB.echoError(scriptEntry.getResidingQueue(), "...only Player, ocelot, or wolf type NPCs can sit!");
             return;
         }
 
@@ -58,7 +58,7 @@ public class SitCommand extends AbstractCommand {
             }
 
             if (trait.isSitting()) {
-                dB.echoError("...NPC is already sitting");
+                dB.echoError(scriptEntry.getResidingQueue(), "...NPC is already sitting");
                 return;
             }
 
@@ -69,5 +69,4 @@ public class SitCommand extends AbstractCommand {
             }
         }
     }
-
 }

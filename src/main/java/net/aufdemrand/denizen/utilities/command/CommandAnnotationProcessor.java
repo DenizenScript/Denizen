@@ -25,5 +25,4 @@ public interface CommandAnnotationProcessor {
      */
     void process(CommandSender sender, CommandContext context, Annotation instance, Object[] args)
             throws CommandException;
-
 }

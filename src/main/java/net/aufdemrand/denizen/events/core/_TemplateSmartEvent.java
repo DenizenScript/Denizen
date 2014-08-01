@@ -71,8 +71,6 @@ public class _TemplateSmartEvent implements SmartEvent, Listener {
         PlayerMoveEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////
@@ -89,6 +87,4 @@ public class _TemplateSmartEvent implements SmartEvent, Listener {
         String determination = EventManager.doEvents(Arrays.asList("x or y or z"), null /* NPC */, new dPlayer(event.getPlayer()), context);
         // Parse the determination and edit the event accordingly here
     }
-
-
 }

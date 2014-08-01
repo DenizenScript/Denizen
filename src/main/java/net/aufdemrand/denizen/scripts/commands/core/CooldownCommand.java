@@ -207,5 +207,4 @@ public class CooldownCommand extends AbstractCommand {
                             + (duration.getSecondsAsInt() * 1000));
         }
     }
-
 }

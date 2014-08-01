@@ -212,5 +212,4 @@ public class ScriptHelper {
         matcher.appendTail(sb);
         return sb.toString();
     }
-
 }

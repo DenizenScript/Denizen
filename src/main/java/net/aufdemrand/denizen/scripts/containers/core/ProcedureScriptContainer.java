@@ -8,5 +8,4 @@ public class ProcedureScriptContainer extends ScriptContainer {
     public ProcedureScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
-
 }

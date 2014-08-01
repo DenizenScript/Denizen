@@ -57,8 +57,6 @@ public class EntityDeathSmartEvent implements SmartEvent, Listener {
         EntityDeathEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

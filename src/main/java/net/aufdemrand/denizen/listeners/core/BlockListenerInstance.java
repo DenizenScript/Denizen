@@ -343,5 +343,4 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
             event.setReplaced(blockList);
         }
     }
-
 }
