@@ -154,6 +154,7 @@ public class ForEachCommand extends BracedCommand {
                     try {
                         callbackEntry = new ScriptEntry("FOREACH", new String[] { "\0CALLBACK" },
                                 (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                        callbackEntry.copyFrom(scriptEntry);
                     }
                     catch (ScriptEntryCreationException e) {
                         dB.echoError(e);
@@ -198,6 +199,7 @@ public class ForEachCommand extends BracedCommand {
             try {
                 callbackEntry = new ScriptEntry("FOREACH", new String[] { "\0CALLBACK" },
                         (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                callbackEntry.copyFrom(scriptEntry);
             }
             catch (ScriptEntryCreationException e) {
                 dB.echoError(e);

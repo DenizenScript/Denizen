@@ -146,6 +146,7 @@ public class RepeatCommand extends BracedCommand {
                     try {
                         callbackEntry = new ScriptEntry("REPEAT", new String[] { "\0CALLBACK" },
                                 (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                        callbackEntry.copyFrom(scriptEntry);
                     }
                     catch (ScriptEntryCreationException e) {
                         dB.echoError(e);
@@ -191,6 +192,7 @@ public class RepeatCommand extends BracedCommand {
             try {
                 callbackEntry = new ScriptEntry("REPEAT", new String[] { "\0CALLBACK" },
                         (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                callbackEntry.copyFrom(scriptEntry);
             }
             catch (ScriptEntryCreationException e) {
                 dB.echoError(e);

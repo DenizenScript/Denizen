@@ -257,6 +257,12 @@ public class ScriptEntry implements Cloneable, Debuggable {
         this.data = result;
     }
 
+    public void copyFrom(ScriptEntry entry) {
+        setPlayer(entry.getPlayer());
+        setNPC(entry.getNPC());
+        setSendingQueue(entry.getResidingQueue());
+    }
+
 
     //////////////////
     // SCRIPTENTRY CONTEXT
