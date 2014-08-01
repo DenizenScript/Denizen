@@ -209,4 +209,17 @@ public class dNPCRegistry implements Listener {
         dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + npc.getName() + "/" + npc.getId());
         // TODO: Delete flags / etc.
     }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+        if (inventory.getHolder() instanceof dNPC) {
+            dNPC npc = (dNPC) inventory.getHolder();
+            npc.getInventory().setContents(inventory.getContents());
+            Equipment equipment = npc.getEquipmentTrait();
+            for (int i = 0; i < 5; i++)
+                equipment.set(i, inventory.getItem(i));
+        }
+    }
+
 }
