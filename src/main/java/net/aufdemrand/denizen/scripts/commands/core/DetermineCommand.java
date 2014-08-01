@@ -85,8 +85,6 @@ public class DetermineCommand extends AbstractCommand {
     }
 
 
-
-
     //
     // Command Singleton
     //
@@ -133,7 +131,7 @@ public class DetermineCommand extends AbstractCommand {
 
         // Useful for debug
         if (uniqueId == null) {
-            dB.echoError("Cannot use determine in this queue!");
+            dB.echoError(scriptEntry.getResidingQueue(), "Cannot use determine in this queue!");
             return;
         }
 
@@ -144,6 +142,4 @@ public class DetermineCommand extends AbstractCommand {
             // Stop the queue by clearing the remainder of it.
             scriptEntry.getResidingQueue().clear();
     }
-
-
 }

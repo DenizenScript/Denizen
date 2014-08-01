@@ -13,6 +13,4 @@ public class InvalidArgumentsException extends Exception {
     public String getMessage() {
         return message;
     }
-
-
 }

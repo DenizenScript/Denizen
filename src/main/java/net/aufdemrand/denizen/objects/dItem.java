@@ -40,8 +40,6 @@ public class dItem implements dObject, Notable, Adjustable {
 
     final public static String itemscriptIdentifier = "§0id:";
 
-
-
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -195,8 +193,6 @@ public class dItem implements dObject, Notable, Adjustable {
         return false;
     }
 
-
-
     ///////////////
     //   Constructors
     /////////////
@@ -231,8 +227,6 @@ public class dItem implements dObject, Notable, Adjustable {
     public dItem(Item item) {
         this(item.getItemStack());
     }
-
-
 
     /////////////////////
     //   INSTANCE FIELDS/METHODS
@@ -814,5 +808,4 @@ public class dItem implements dObject, Notable, Adjustable {
             mechanism.reportInvalid();
 
     }
-
 }

@@ -53,8 +53,6 @@ public class EventManager implements Listener {
     // Map for keeping track of registered smart_events
     public static Set<SmartEvent> smart_events = new HashSet<SmartEvent>();
 
-
-
     //////////////////
     // PERFORMANCE
     ///////////
@@ -190,8 +188,6 @@ public class EventManager implements Listener {
         return events.containsKey("ON " + original.toUpperCase());
     }
 
-
-
     ///////////////////
     //  COMPATIBILITY
     //////////////
@@ -267,8 +263,6 @@ public class EventManager implements Listener {
             return original;
     }
 
-
-
     ///////////////////
     //  MECHANICS
     ///////////////
@@ -340,8 +334,6 @@ public class EventManager implements Listener {
         return determination;
     }
 
-
-
     ////////////////////
     //  REGISTRATION
     //////////////
@@ -376,8 +368,6 @@ public class EventManager implements Listener {
         if (event != null)
             smart_events.add(event);
     }
-
-
 }
 
 

@@ -81,5 +81,4 @@ public class Depends {
         } catch (Exception e) { }
         return citizens != null;
     }
-
 }

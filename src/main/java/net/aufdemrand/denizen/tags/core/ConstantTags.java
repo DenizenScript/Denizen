@@ -51,6 +51,4 @@ public class ConstantTags implements Listener {
         }
 
     }
-
-
 }

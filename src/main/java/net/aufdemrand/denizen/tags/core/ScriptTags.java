@@ -47,5 +47,4 @@ public class ScriptTags implements Listener {
         event.setReplaced(script.getAttribute(attribute.fulfill(1)));
 
     }
-
 }

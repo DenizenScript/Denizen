@@ -8,5 +8,4 @@ public class KillListenerType extends AbstractListenerType {
     public void onEnable() {
         // Nothing to do here.
     }
-
 }

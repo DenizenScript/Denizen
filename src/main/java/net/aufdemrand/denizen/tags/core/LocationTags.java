@@ -43,5 +43,4 @@ public class LocationTags implements Listener {
         event.setReplaced(loc.getAttribute(attribute.fulfill(1)));
 
     }
-
 }

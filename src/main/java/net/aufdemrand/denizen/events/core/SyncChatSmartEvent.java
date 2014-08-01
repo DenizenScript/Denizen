@@ -66,8 +66,6 @@ public class SyncChatSmartEvent implements SmartEvent, Listener {
         PlayerChatEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

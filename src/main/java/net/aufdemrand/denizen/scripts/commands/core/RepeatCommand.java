@@ -64,7 +64,7 @@ public class RepeatCommand extends BracedCommand {
         if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback"))
             throw new InvalidArgumentsException("Must specify a quantity or 'stop' or 'next'!");
 
-        scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
+        scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
 
     }
 
@@ -141,11 +141,12 @@ public class RepeatCommand extends BracedCommand {
                 if (data.index <= data.target) {
                     dB.echoDebug(scriptEntry, dB.DebugElement.Header, "Repeat loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(data.index));
-                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner(), 1).get("REPEAT");
+                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("REPEAT");
                     ScriptEntry callbackEntry = null;
                     try {
                         callbackEntry = new ScriptEntry("REPEAT", new String[] { "\0CALLBACK" },
                                 (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                        callbackEntry.copyFrom(scriptEntry);
                     }
                     catch (ScriptEntryCreationException e) {
                         dB.echoError(e);
@@ -191,6 +192,7 @@ public class RepeatCommand extends BracedCommand {
             try {
                 callbackEntry = new ScriptEntry("REPEAT", new String[] { "\0CALLBACK" },
                         (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                callbackEntry.copyFrom(scriptEntry);
             }
             catch (ScriptEntryCreationException e) {
                 dB.echoError(e);

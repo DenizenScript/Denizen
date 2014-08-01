@@ -190,5 +190,4 @@ public class InventoryScriptContainer extends ScriptContainer {
         return inventory;
 
     }
-
 }

@@ -163,5 +163,4 @@ public class InventoryHolder implements Property {
         }
 
     }
-
 }

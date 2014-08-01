@@ -86,5 +86,4 @@ public class FlaggedRequirement extends AbstractRequirement {
 
         return outcome;
     }
-
 }

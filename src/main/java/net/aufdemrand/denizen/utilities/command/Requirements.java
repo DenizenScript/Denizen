@@ -7,5 +7,4 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Requirements {
 
     // TODO: add Denizen-based requirements/remove this system
-
 }

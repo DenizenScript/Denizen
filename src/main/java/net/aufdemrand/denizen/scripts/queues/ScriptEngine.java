@@ -56,8 +56,8 @@ public class ScriptEngine {
             }
             // Absolutely NO errors beyond this point!
             catch (Throwable e) {
-                dB.echoError("Woah! An exception has been called with this command!");
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), "Woah! An exception has been called with this command!");
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
             // Set as last entry executed
             scriptQueue.setLastEntryExecuted(scriptEntry);
@@ -103,5 +103,4 @@ public class ScriptEngine {
     public CommandExecuter getScriptExecuter() {
         return commandExecuter;
     }
-
 }

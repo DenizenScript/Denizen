@@ -58,8 +58,6 @@ public class EntityInteractSmartEvent implements SmartEvent, Listener {
         EntityInteractEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

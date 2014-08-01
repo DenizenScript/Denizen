@@ -96,7 +96,7 @@ public class EquipCommand extends AbstractCommand {
         for (dEntity entity : entities) {
 
             if (entity.isGeneric()) {
-                dB.echoError("Cannot equip generic entity " + entity.identify() + "!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot equip generic entity " + entity.identify() + "!");
             }
             else if (entity.isNPC()) {
 
@@ -129,5 +129,4 @@ public class EquipCommand extends AbstractCommand {
             }
         }
     }
-
 }

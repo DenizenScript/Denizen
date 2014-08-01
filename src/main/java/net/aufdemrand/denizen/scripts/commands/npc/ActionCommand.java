@@ -77,5 +77,4 @@ public class ActionCommand extends AbstractCommand {
             }
         }
     }
-
 }

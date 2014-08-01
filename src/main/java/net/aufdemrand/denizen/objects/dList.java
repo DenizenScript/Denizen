@@ -261,8 +261,6 @@ public class dList extends ArrayList<String> implements dObject {
     }
 
 
-
-
     //////////////////////////////
     //    DSCRIPT ARGUMENT METHODS
     /////////////////////////
@@ -966,7 +964,4 @@ public class dList extends ArrayList<String> implements dObject {
                 ? new Element(flag.getLast().asString()).getAttribute(attribute)
                 : new Element(identify()).getAttribute(attribute));
     }
-
-
-
 }

@@ -442,5 +442,4 @@ public class DenizenCommandHandler {
 
         Messaging.send(sender, NotableManager.getAllType(dLocation.class).toString());
     }
-
 }

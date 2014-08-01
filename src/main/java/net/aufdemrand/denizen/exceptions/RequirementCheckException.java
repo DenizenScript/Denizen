@@ -7,5 +7,4 @@ public class RequirementCheckException extends Exception {
     public RequirementCheckException(String msg) {
         super(msg);
     }
-
 }

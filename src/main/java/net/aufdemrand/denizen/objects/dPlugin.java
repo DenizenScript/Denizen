@@ -184,5 +184,4 @@ public class dPlugin implements dObject {
         return new Element(identify()).getAttribute(attribute);
 
     }
-
 }

@@ -36,5 +36,4 @@ public class TimeRequirement extends AbstractRequirement{
 
         return outcome;
     }
-
 }

@@ -35,7 +35,7 @@ public class StandCommand extends AbstractCommand{
         }
 
         if (!trait.isSitting()) {
-            dB.echoError("...NPC is already standing, removing trait");
+            dB.echoError(scriptEntry.getResidingQueue(), "...NPC is already standing, removing trait");
             npc.removeTrait(SittingTrait.class);
             return;
         }
@@ -44,5 +44,4 @@ public class StandCommand extends AbstractCommand{
         npc.removeTrait(SittingTrait.class);
 
     }
-
 }

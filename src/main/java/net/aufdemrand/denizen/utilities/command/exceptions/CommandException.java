@@ -13,5 +13,4 @@ public class CommandException extends Exception {
     public CommandException(Throwable t) {
         super(t);
     }
-
 }

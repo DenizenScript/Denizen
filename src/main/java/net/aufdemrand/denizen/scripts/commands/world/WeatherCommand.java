@@ -110,5 +110,4 @@ public class WeatherCommand extends AbstractCommand {
                 break;
         }
     }
-
 }

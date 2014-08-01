@@ -49,8 +49,6 @@ public class dScript implements dObject {
     //
     // -->
 
-
-
     ///////////////
     // Object Fetcher
     /////////////
@@ -101,8 +99,6 @@ public class dScript implements dObject {
         return false;
     }
 
-
-
     //////////////////
     // Constructor
     ////////////////
@@ -120,8 +116,6 @@ public class dScript implements dObject {
             valid = true;
         }
     }
-
-
 
     ///////////////////////
     // Instance fields and methods
@@ -144,8 +138,6 @@ public class dScript implements dObject {
     public boolean isValid() {
         return valid;
     }
-
-
 
     /**
      * Gets the type of the ScriptContainer, as defined by the TYPE: key.
@@ -177,8 +169,6 @@ public class dScript implements dObject {
     public ScriptContainer getContainer() {
         return container;
     }
-
-
 
     ///////////////
     // dObject Methods
@@ -224,8 +214,6 @@ public class dScript implements dObject {
     public boolean isUnique() {
         return true;
     }
-
-
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -389,6 +377,4 @@ public class dScript implements dObject {
 
         return new Element(identify()).getAttribute(attribute);
     }
-
-
 }

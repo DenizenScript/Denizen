@@ -111,7 +111,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
                     waitfor = true;
                 }
                 else {
-                    dB.echoError("The command '" + this.command + "' cannot be waited for!");
+                    dB.echoError(null, "The command '" + this.command + "' cannot be waited for!");
                 }
             }
             actualCommand = DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command);
@@ -148,7 +148,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
         }
 
         if (actualCommand != null && actualCommand.isBraced() && actualCommand instanceof BracedCommand) {
-            BracedCommand.getBracedCommands(this, 1);
+            BracedCommand.getBracedCommands(this);
         }
     }
 
@@ -199,8 +199,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
     public List<String> getArguments() {
         return args;
     }
-
-
 
     ////////////
     // INSTANCE METHODS
@@ -257,6 +255,12 @@ public class ScriptEntry implements Cloneable, Debuggable {
         this.data = result;
     }
 
+    public void copyFrom(ScriptEntry entry) {
+        setPlayer(entry.getPlayer());
+        setNPC(entry.getNPC());
+        setSendingQueue(entry.getResidingQueue());
+    }
+
 
     //////////////////
     // SCRIPTENTRY CONTEXT
@@ -309,8 +313,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
     public boolean hasObject(String key) {
         return objects.containsKey(key.toLowerCase());
     }
-
-
 
     /////////////
     // CORE LINKED OBJECTS
@@ -385,8 +387,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         queue = scriptQueue;
     }
 
-
-
     //////////////
     // TimedQueue FEATURES
     /////////
@@ -412,8 +412,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         return this;
     }
 
-
-
     ////////////
     // COMPATIBILITY
     //////////
@@ -427,8 +425,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         tracked_objects.add(key.toLowerCase());
         return this;
     }
-
-
 
     /////////////
     // DEBUGGABLE

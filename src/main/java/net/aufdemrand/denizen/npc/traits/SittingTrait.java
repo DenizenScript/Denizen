@@ -146,5 +146,4 @@ public class SittingTrait extends Trait implements Listener  {
     public SittingTrait() {
         super("sitting");
     }
-
 }

@@ -61,7 +61,7 @@ public class PauseCommand extends AbstractCommand {
 
             }
             else
-                dB.echoError("Unknown argument '" + arg + "'");
+                dB.echoError(scriptEntry.getResidingQueue(), "Unknown argument '" + arg + "'");
         }
     }
 
@@ -75,8 +75,8 @@ public class PauseCommand extends AbstractCommand {
             if (durations.containsKey(dNPC.getCitizen().getId() + pauseType.name())) {
                 try { denizen.getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name())); }
                 catch (Exception e) {
-                    dB.echoError("There was an error pausing that!");
-                    dB.echoError(e);
+                    dB.echoError(scriptEntry.getResidingQueue(), "There was an error pausing that!");
+                    dB.echoError(scriptEntry.getResidingQueue(), e);
                 }
 
             }

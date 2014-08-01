@@ -107,5 +107,4 @@ public class PermissionCommand extends AbstractCommand {
             }
         }
     }
-
 }

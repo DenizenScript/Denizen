@@ -11,5 +11,4 @@ public class ItemDropListenerType extends AbstractListenerType {
         // TODO Auto-generated method stub
 
     }
-
 }

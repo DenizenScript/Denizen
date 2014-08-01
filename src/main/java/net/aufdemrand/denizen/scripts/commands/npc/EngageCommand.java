@@ -120,5 +120,4 @@ public class EngageCommand extends AbstractCommand {
     public static void setEngaged(NPC npc, int duration) {
         currentlyEngaged.put(npc, System.currentTimeMillis() + duration * 1000 );
     }
-
 }

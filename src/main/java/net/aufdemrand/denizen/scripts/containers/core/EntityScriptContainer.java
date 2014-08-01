@@ -68,5 +68,4 @@ public class EntityScriptContainer extends ScriptContainer {
         return entity;
 
     }
-
 }

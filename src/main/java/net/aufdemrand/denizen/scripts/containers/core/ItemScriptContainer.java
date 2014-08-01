@@ -259,5 +259,4 @@ public class ItemScriptContainer extends ScriptContainer {
     public void setPlayer(dPlayer player) {
         this.player = player;
     }
-
 }

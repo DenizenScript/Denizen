@@ -96,7 +96,7 @@ public class AnchorCommand extends AbstractCommand {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
                 if (n == null)
-                    dB.echoError("Invalid anchor name '" + id.asString() + "'");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 else
                     npc.getEntity().teleport(n.getLocation());
             }
@@ -107,9 +107,9 @@ public class AnchorCommand extends AbstractCommand {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
                 if (n == null)
-                    dB.echoError("Invalid anchor name '" + id.asString() + "'");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 else if (range == null)
-                    dB.echoError("Must specify a range!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a range!");
                 else
                     npc.getNavigator().setTarget(
                         Utilities.getWalkableLocationNear(n.getLocation(), range.asInt()));
@@ -121,7 +121,7 @@ public class AnchorCommand extends AbstractCommand {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
                 if (n == null)
-                    dB.echoError("Invalid anchor name '" + id.asString() + "'");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 else
                     npc.getNavigator().setTarget(n.getLocation());
             }
@@ -132,7 +132,7 @@ public class AnchorCommand extends AbstractCommand {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
                 if (n == null)
-                    dB.echoError("Invalid anchor name '" + id.asString() + "'");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
                 else
                     npc.getCitizen().getTrait(Anchors.class).removeAnchor(n);
             }

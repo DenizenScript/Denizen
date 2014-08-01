@@ -78,5 +78,4 @@ public enum Gravity {
     public double getGravity() {
         return gravity;
     }
-
 }

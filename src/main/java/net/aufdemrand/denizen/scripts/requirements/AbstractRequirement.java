@@ -93,5 +93,4 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
         this.requirementOptions = new RequirementOptions(usageHint, numberOfRequiredArgs);
         return this;
     }
-
 }

@@ -521,5 +521,4 @@ public class CommandManager {
     }
 
     private static final String COMMAND_FORMAT = "<7>/<c>%s%s <7>- <e>%s";
-
 }

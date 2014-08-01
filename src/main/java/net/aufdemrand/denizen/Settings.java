@@ -338,5 +338,4 @@ public class Settings {
                 .getString("Scripts.World.Events.On time changes.Frequency of check", "250t"));
 
     }
-
 }

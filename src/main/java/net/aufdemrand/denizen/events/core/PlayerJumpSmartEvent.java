@@ -54,8 +54,6 @@ public class PlayerJumpSmartEvent implements SmartEvent, Listener {
         PlayerMoveEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////
@@ -83,6 +81,4 @@ public class PlayerJumpSmartEvent implements SmartEvent, Listener {
             EventManager.doEvents(Arrays.asList("player jumps"), null, new dPlayer(event.getPlayer()), context);
         }
     }
-
-
 }

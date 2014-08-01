@@ -18,5 +18,4 @@ public class RainyRequirement extends AbstractRequirement {
 
         return world.hasStorm() && !world.isThundering();
     }
-
 }

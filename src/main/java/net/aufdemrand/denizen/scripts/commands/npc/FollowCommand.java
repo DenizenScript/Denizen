@@ -73,5 +73,4 @@ public class FollowCommand extends AbstractCommand {
                 .setTarget(target.getBukkitEntity(), false);
 
     }
-
 }

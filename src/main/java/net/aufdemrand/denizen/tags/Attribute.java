@@ -57,8 +57,6 @@ public class Attribute {
         return matches;
     }
 
-
-
     public static String RETURN_NULL = "null";
 
     public List<String> attributes;
@@ -159,5 +157,4 @@ public class Attribute {
         if (attributes.size() < num) return "";
         else return attributes.get(num - 1);
     }
-
 }

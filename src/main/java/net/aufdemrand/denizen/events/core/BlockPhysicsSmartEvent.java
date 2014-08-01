@@ -54,8 +54,6 @@ public class BlockPhysicsSmartEvent implements SmartEvent, Listener {
         BlockPhysicsEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

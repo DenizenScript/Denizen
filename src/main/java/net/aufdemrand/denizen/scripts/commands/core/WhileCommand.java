@@ -20,6 +20,8 @@ public class WhileCommand extends BracedCommand {
     private class WhileData {
         public int index;
         public String value;
+        public long LastChecked;
+        int instaTicks;
     }
 
     @Override
@@ -70,7 +72,7 @@ public class WhileCommand extends BracedCommand {
         if (!scriptEntry.hasObject("value") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback"))
             throw new InvalidArgumentsException("Must specify a comparison value or 'stop' or 'next'!");
 
-        scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
+        scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
 
     }
 
@@ -106,7 +108,7 @@ public class WhileCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot stop while: not in one!");
             }
             return;
         }
@@ -133,7 +135,7 @@ public class WhileCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot stop while: not in one!");
             }
             return;
         }
@@ -143,21 +145,26 @@ public class WhileCommand extends BracedCommand {
                     scriptEntry.getBracedSet().get("WHILE").get(scriptEntry.getBracedSet().get("WHILE").size() - 1) != scriptEntry)) {
                 WhileData data = (WhileData)scriptEntry.getOwner().getData();
                 data.index++;
-                int max = Settings.WhileMaxLoops();
-                if (data.index > max && max != 0)
-                    return;
+                if (System.currentTimeMillis() - data.LastChecked < 50) {
+                    data.instaTicks++;
+                    int max = Settings.WhileMaxLoops();
+                    if (data.instaTicks > max && max != 0)
+                        return;
+                }
+                data.LastChecked = System.currentTimeMillis();
                 if (TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(),
                         data.value, false, scriptEntry).equalsIgnoreCase("true")) {
                     dB.echoDebug(scriptEntry, dB.DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
-                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner(), 1).get("WHILE");
+                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("WHILE");
                     ScriptEntry callbackEntry = null;
                     try {
                         callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
                                 (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                        callbackEntry.copyFrom(scriptEntry);
                     }
                     catch (ScriptEntryCreationException e) {
-                        dB.echoError(e);
+                        dB.echoError(scriptEntry.getResidingQueue(), e);
                     }
                     callbackEntry.setOwner(scriptEntry.getOwner());
                     bracedCommands.add(callbackEntry);
@@ -168,7 +175,7 @@ public class WhileCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("While CALLBACK invalid: not a real callback!");
+                dB.echoError(scriptEntry.getResidingQueue(), "While CALLBACK invalid: not a real callback!");
             }
         }
 
@@ -180,7 +187,7 @@ public class WhileCommand extends BracedCommand {
                     ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("WHILE");
 
             if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
-                dB.echoError("Empty braces!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Empty braces!");
                 return;
             }
 
@@ -194,14 +201,17 @@ public class WhileCommand extends BracedCommand {
             WhileData datum = new WhileData();
             datum.index = 1;
             datum.value = value.asString();
+            datum.LastChecked = System.currentTimeMillis();
+            datum.instaTicks = 1;
             scriptEntry.setData(datum);
             ScriptEntry callbackEntry = null;
             try {
                 callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
                         (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                callbackEntry.copyFrom(scriptEntry);
             }
             catch (ScriptEntryCreationException e) {
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
             callbackEntry.setOwner(scriptEntry);
             bracedCommandsList.add(callbackEntry);

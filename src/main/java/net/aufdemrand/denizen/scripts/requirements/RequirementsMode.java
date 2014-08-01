@@ -48,5 +48,4 @@ public class RequirementsMode {
         this.mode = mode;
         this.modeInt = num;
     }
-
 }

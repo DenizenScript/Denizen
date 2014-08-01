@@ -45,5 +45,4 @@ public class InventoryScriptHelper implements Listener {
             offlineEnderChests.remove(uuid);
         }
     }
-
 }

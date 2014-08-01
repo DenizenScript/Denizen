@@ -285,8 +285,6 @@ public class Comparable {
 
     }
 
-
-
     private void compare_as_strings() {
 
         outcome = false;
@@ -413,5 +411,4 @@ public class Comparable {
                 + "(" + ChatColor.AQUA + comparedto + ChatColor.WHITE + ")' ")
                 + ChatColor.YELLOW + "--> OUTCOME='" + outcome + "'";
     }
-
 }

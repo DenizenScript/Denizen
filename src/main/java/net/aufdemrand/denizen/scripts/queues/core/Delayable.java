@@ -12,5 +12,4 @@ public interface Delayable {
     public void delayFor(Duration duration);
 
     public boolean isDelayed();
-
 }

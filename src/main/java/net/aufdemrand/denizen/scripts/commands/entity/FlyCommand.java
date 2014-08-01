@@ -273,5 +273,4 @@ public class FlyCommand extends AbstractCommand {
 
            task.runTaskTimer(denizen, 0, 3);
     }
-
 }

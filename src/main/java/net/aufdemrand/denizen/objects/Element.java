@@ -907,7 +907,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <el@element.replace[<string>]>
+        // @attribute <el@element.replace[((first)regex:)<string>]>
         // @returns Element
         // @group string manipulation
         // @description
@@ -915,11 +915,13 @@ public class Element implements dObject {
         // -->
 
         // <--[tag]
-        // @attribute <el@element.replace[<string>].with[<string>]>
+        // @attribute <el@element.replace[((first)regex:)<string>].with[<string>]>
         // @returns Element
         // @group string manipulation
         // @description
         // Returns the element with all instances of a string replaced with another.
+        // Specify regex: at the start of the replace string to use Regex replacement.
+        // Specify firstregex: at the start of the replace string to Regex 'replaceFirst'
         // -->
         if (attribute.startsWith("replace")
                 && attribute.hasContext(1)) {
@@ -936,12 +938,19 @@ public class Element implements dObject {
                 }
             }
 
-            return new Element(element.replace(replace, replacement))
+            if (replace.startsWith("regex:"))
+                return new Element(element.replaceAll(replace.substring("regex:".length()), replacement))
+                        .getAttribute(attribute);
+            if (replace.startsWith("firstregex:"))
+                return new Element(element.replaceFirst(replace.substring("firstregex:".length()), replacement))
+                        .getAttribute(attribute);
+            else
+                return new Element(element.replace(replace, replacement))
                         .getAttribute(attribute);
         }
 
         // <--[tag]
-        // @attribute <el@element.split[<string>].limit[<#>]>
+        // @attribute <el@element.split[(regex:)<string>].limit[<#>]>
         // @returns dList
         // @group string manipulation
         // @description
@@ -960,7 +969,7 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <el@element.split[<string>]>
+        // @attribute <el@element.split[(regex:)<string>]>
         // @returns dList
         // @group string manipulation
         // @description
@@ -1545,5 +1554,4 @@ public class Element implements dObject {
             return element;
         }
     }
-
 }

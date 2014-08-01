@@ -247,5 +247,4 @@ public class TriggerTrait extends Trait implements Listener {
         }
 
     }
-
 }

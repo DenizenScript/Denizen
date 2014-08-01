@@ -101,7 +101,7 @@ public class HeadCommand extends AbstractCommand {
                     entity.getLivingEntity().getEquipment().setHelmet(item);
 
                 else
-                    dB.echoError(entity.identify() + " is not a living entity!");
+                    dB.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not a living entity!");
 
             }
         }

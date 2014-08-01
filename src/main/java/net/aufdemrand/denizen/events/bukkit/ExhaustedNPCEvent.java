@@ -39,5 +39,4 @@ public class ExhaustedNPCEvent extends NPCEvent implements Cancellable {
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
-
 }

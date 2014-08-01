@@ -15,8 +15,6 @@ import org.bukkit.WorldType;
 
 public class CreateWorldCommand extends AbstractCommand {
 
-
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -74,6 +72,4 @@ public class CreateWorldCommand extends AbstractCommand {
             dB.echoDebug(scriptEntry, "World is null! :(");
 
     }
-
-
 }

@@ -109,8 +109,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         return _queues.containsKey(id.toUpperCase());
     }
 
-
-
     /////////////////////
     // Public instance fields
     /////////////////////
@@ -187,8 +185,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // Increment the stats
         total_queues++;
     }
-
-
 
     /////////////////////
     // Public instance setters and getters
@@ -378,8 +374,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     public void delayUntil(long delayTime) {
         this.delay_time = delayTime;
     }
-
-
 
     ///////////////////
     // Public 'functional' methods
@@ -575,8 +569,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         }
     }
 
-
-
     ////////////////////
     // Internal methods and fields
     ////////////////////
@@ -760,6 +752,11 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     }
 
     @Override
+    public String toString() {
+        return identify();
+    }
+
+    @Override
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return null;
 
@@ -851,13 +848,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 return ObjectFetcher.pickObjectFor(DetermineCommand.readOutcome(reqId)).getAttribute(attribute.fulfill(1));
         }
 
-
-
         return new Element(identify()).getAttribute(attribute);
     }
-
-
-
-
-
 }

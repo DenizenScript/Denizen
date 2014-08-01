@@ -287,8 +287,6 @@ public class dInventory implements dObject, Notable, Adjustable {
         mechanisms.clear();
     }
 
-
-
     /////////////////////
     //   INSTANCE FIELDS/METHODS
     /////////////////
@@ -983,8 +981,6 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (inventory != null) inventory.clear();
     }
 
-
-
     ////////////////////////
     //  dObject Methods
     /////////////////////
@@ -1038,8 +1034,6 @@ public class dInventory implements dObject, Notable, Adjustable {
     public String toString() {
         return identify();
     }
-
-
 
     ////////////////////////
     //  Attributes
@@ -1514,5 +1508,4 @@ public class dInventory implements dObject, Notable, Adjustable {
             mechanism.reportInvalid();
 
     }
-
 }

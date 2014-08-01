@@ -189,5 +189,4 @@ public class ParticlesTrait extends Trait {
     public void setDense (Boolean dense) {
         this.dense = dense;
     }
-
 }

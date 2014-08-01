@@ -133,5 +133,4 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
-
 }

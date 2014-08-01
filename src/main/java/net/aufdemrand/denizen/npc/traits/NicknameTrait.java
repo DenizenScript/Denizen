@@ -83,5 +83,4 @@ public class NicknameTrait extends Trait implements Listener {
     public boolean hasNickname() {
         return (nickname != null);
     }
-
 }

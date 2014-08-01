@@ -49,8 +49,6 @@ public class FlagSmartEvent implements SmartEvent, Listener {
         active = false;
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////
@@ -59,5 +57,4 @@ public class FlagSmartEvent implements SmartEvent, Listener {
     public static boolean IsActive() {
         return active;
     }
-
 }

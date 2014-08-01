@@ -59,8 +59,6 @@ public class ListPingSmartEvent implements SmartEvent, Listener {
         ServerListPingEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////
@@ -100,6 +98,4 @@ public class ListPingSmartEvent implements SmartEvent, Listener {
                 event.setMotd(determination);
         }
     }
-
-
 }

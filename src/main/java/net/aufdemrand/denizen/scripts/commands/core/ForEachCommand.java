@@ -57,7 +57,7 @@ public class ForEachCommand extends BracedCommand {
             else if (!scriptEntry.hasObject("list")
                     && arg.matchesArgumentType(dList.class)) {
                 scriptEntry.addObject("list", dList.valueOf(arg.raw_value));
-                scriptEntry.addObject("braces", getBracedCommands(scriptEntry, 1));
+                scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
                 break;
             }
 
@@ -108,7 +108,7 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot stop while: not in one!");
             }
             return;
         }
@@ -135,7 +135,7 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot stop while: not in one!");
             }
             return;
         }
@@ -149,14 +149,15 @@ public class ForEachCommand extends BracedCommand {
                     dB.echoDebug(scriptEntry, dB.DebugElement.Header, "Foreach loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
                     scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(data.list.get(data.index - 1)));
-                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner(), 1).get("FOREACH");
+                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("FOREACH");
                     ScriptEntry callbackEntry = null;
                     try {
                         callbackEntry = new ScriptEntry("FOREACH", new String[] { "\0CALLBACK" },
                                 (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                        callbackEntry.copyFrom(scriptEntry);
                     }
                     catch (ScriptEntryCreationException e) {
-                        dB.echoError(e);
+                        dB.echoError(scriptEntry.getResidingQueue(), e);
                     }
                     callbackEntry.setOwner(scriptEntry.getOwner());
                     bracedCommands.add(callbackEntry);
@@ -167,7 +168,7 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Foreach CALLBACK invalid: not a real callback!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Foreach CALLBACK invalid: not a real callback!");
             }
         }
 
@@ -178,7 +179,7 @@ public class ForEachCommand extends BracedCommand {
                     ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("FOREACH");
 
             if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
-                dB.echoError("Empty braces!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Empty braces!");
                 return;
             }
 
@@ -198,9 +199,10 @@ public class ForEachCommand extends BracedCommand {
             try {
                 callbackEntry = new ScriptEntry("FOREACH", new String[] { "\0CALLBACK" },
                         (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                callbackEntry.copyFrom(scriptEntry);
             }
             catch (ScriptEntryCreationException e) {
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
             callbackEntry.setOwner(scriptEntry);
             bracedCommandsList.add(callbackEntry);

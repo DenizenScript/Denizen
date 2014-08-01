@@ -1054,7 +1054,5 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             else
                 mechanism.reportInvalid();
         }
-
     }
-
 }

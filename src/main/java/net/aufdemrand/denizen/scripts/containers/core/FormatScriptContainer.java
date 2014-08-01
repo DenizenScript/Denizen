@@ -83,5 +83,4 @@ public class FormatScriptContainer extends ScriptContainer {
         String text = getFormat().replace("<text>", textToReplace);
         return TagManager.tag(player, npc, text);
     }
-
 }

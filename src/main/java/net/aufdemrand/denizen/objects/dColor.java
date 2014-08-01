@@ -273,5 +273,4 @@ public class dColor implements dObject {
         float[] base = java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
         return new int[] { (int)(base[0] * 255), (int)(base[1] * 255), (int)(base[2] * 255)};
     }
-
 }

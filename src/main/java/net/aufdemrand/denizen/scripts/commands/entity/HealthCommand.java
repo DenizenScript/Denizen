@@ -72,7 +72,7 @@ public class HealthCommand extends AbstractCommand {
                                           aH.debugObj("target", targets.toString()));
 
         if (qty == null && action == null)
-            dB.echoError("Null quantity!");
+            dB.echoError(scriptEntry.getResidingQueue(), "Null quantity!");
 
         if (action == null)
             action = Element.TRUE;
@@ -94,13 +94,13 @@ public class HealthCommand extends AbstractCommand {
                     if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
                         target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(qty.asInt());
                     else
-                        dB.echoError("NPC doesn't have health trait!");
+                        dB.echoError(scriptEntry.getResidingQueue(), "NPC doesn't have health trait!");
                 }
                 else if (target.isLivingEntity()) {
                     target.getLivingEntity().setMaxHealth(qty.asDouble());
                 }
                 else {
-                    dB.echoError("Entity '" + target.identify() + "'is not alive!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Entity '" + target.identify() + "'is not alive!");
                 }
             }
         }

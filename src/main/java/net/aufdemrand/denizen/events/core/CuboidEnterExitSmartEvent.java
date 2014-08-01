@@ -76,8 +76,6 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
         PlayerMoveEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

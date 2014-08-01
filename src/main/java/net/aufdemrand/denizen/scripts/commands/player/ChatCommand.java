@@ -146,5 +146,4 @@ public class ChatCommand extends AbstractCommand {
         }
 
     }
-
 }

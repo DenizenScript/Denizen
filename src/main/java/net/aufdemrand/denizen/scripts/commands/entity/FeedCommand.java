@@ -83,7 +83,7 @@ public class FeedCommand extends AbstractCommand {
 
         if (npc != null) {
             if (!npc.getCitizen().hasTrait(HungerTrait.class)) {
-                dB.echoError("This NPC does not have the HungerTrait enabled! Use /trait hunger");
+                dB.echoError(scriptEntry.getResidingQueue(), "This NPC does not have the HungerTrait enabled! Use /trait hunger");
                 return;
             }
             npc.getCitizen().getTrait(HungerTrait.class).feed(amount.asInt());
@@ -94,7 +94,7 @@ public class FeedCommand extends AbstractCommand {
             player.getPlayerEntity().setFoodLevel(player.getPlayerEntity().getFoodLevel() + amount.asInt());
         }
         else {
-            dB.echoError("No target?"); // Mostly just here to quiet code analyzers.
+            dB.echoError(scriptEntry.getResidingQueue(), "No target?"); // Mostly just here to quiet code analyzers.
         }
     }
 }

@@ -95,7 +95,7 @@ public class MidiCommand extends AbstractCommand {
         File file = !cancel ? new File(scriptEntry.getElement("file").asString()) : null;
 
         if (!cancel && !file.exists()) {
-            dB.echoError("Invalid file " + scriptEntry.getElement("file").asString());
+            dB.echoError(scriptEntry.getResidingQueue(), "Invalid file " + scriptEntry.getElement("file").asString());
             return;
         }
 

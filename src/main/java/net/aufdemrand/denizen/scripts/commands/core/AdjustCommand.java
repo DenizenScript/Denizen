@@ -94,7 +94,4 @@ public class AdjustCommand extends AbstractCommand {
         scriptEntry.addObject("result_list", result);
 
     }
-
-
-
 }

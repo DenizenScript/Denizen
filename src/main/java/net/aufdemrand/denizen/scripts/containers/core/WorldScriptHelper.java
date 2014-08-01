@@ -1016,8 +1016,6 @@ public class WorldScriptHelper implements Listener {
         }
     }
 
-
-
     /////////////////////
     //   HANGING EVENTS
     /////////////////
@@ -1148,8 +1146,6 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
-
-
 
     /////////////////////
     //   ENTITY EVENTS
@@ -2145,6 +2141,33 @@ public class WorldScriptHelper implements Listener {
         }
 
         EventManager.doEvents(events, npc, player, context, true);
+    }
+
+    // <--[event]
+    // @Events
+    // projectile launched
+    // <entity> launched
+    //
+    // @Triggers when a projectile is launched.
+    // @Context
+    // <context.entity> returns the projectile.
+    //
+    // @Determine
+    // "CANCELLED" to stop it from being launched.
+    //
+    // -->
+    @EventHandler
+    public void projectileLaunch(ProjectileLaunchEvent event) {
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        List<String> events = new ArrayList<String>();
+        dEntity projectile = new dEntity(event.getEntity());
+        context.put("entity", projectile);
+        events.add("projectile launched");
+        events.add(projectile.identifySimple() + " launched");
+        events.add(projectile.identifyType() + " launched");
+        String Determination = EventManager.doEvents(events, null, null, context, true);;
+        if (Determination.equalsIgnoreCase("CANCELLED"))
+            event.setCancelled(true);
     }
 
     // <--[event]

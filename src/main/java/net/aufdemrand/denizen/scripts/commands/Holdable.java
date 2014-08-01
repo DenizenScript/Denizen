@@ -8,5 +8,4 @@ package net.aufdemrand.denizen.scripts.commands;
 public interface Holdable {
 
     // Just so we know! We don't want to wait for commands that can't be 'held up'.
-
 }

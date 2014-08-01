@@ -44,8 +44,6 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         return scriptQueue;
     }
 
-
-
     /////////////////////
     // Private instance fields and constructors
     /////////////////////
@@ -88,8 +86,6 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         super(id);
         ticks = timing.getTicks();
     }
-
-
 
     /////////////////////
     // Public instance setters and getters
@@ -198,5 +194,4 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         return super.getAttribute(attribute);
 
     }
-
 }

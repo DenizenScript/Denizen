@@ -106,7 +106,7 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
         for (dNPC npc: npcs) {
             if (!npc.isSpawned()) {
-                dB.echoError("NPC " + npc.identify() + " is not spawned!");
+                dB.echoError(scriptEntry.getResidingQueue(), "NPC " + npc.identify() + " is not spawned!");
                 continue;
             }
             if (auto_range != null
@@ -190,6 +190,4 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
-
-
 }

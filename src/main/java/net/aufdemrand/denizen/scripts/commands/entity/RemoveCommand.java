@@ -88,7 +88,7 @@ public class RemoveCommand extends AbstractCommand {
             if (!entity.isGeneric()) {
 
                 if (region != null) {
-                    dB.echoError("Region support is deprecated!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Region support is deprecated!");
                     /*conditionsMet = WorldGuardUtilities.inRegion
                                     (entity.getBukkitEntity().getLocation(),
                                     region.asString());*/
@@ -124,7 +124,7 @@ public class RemoveCommand extends AbstractCommand {
                     if (entity.getEntityType().equals(worldEntity.getType())) {
 
                         if (region != null) {
-                            dB.echoError("Region support is deprecated!");
+                            dB.echoError(scriptEntry.getResidingQueue(), "Region support is deprecated!");
                             /*conditionsMet = WorldGuardUtilities.inRegion
                                             (worldEntity.getLocation(),
                                             region.asString());*/

@@ -18,8 +18,6 @@ import net.citizensnpcs.trait.LookClose;
 
 public class LookcloseCommand extends AbstractCommand {
 
-
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -74,5 +72,4 @@ public class LookcloseCommand extends AbstractCommand {
         }
 
     }
-
 }

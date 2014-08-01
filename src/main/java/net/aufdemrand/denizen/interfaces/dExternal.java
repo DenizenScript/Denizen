@@ -13,5 +13,4 @@ public interface dExternal {
      *
      */
     public void unload();
-
 }
