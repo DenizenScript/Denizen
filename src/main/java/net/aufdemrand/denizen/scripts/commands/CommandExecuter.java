@@ -65,7 +65,9 @@ public class CommandExecuter {
             scriptEntry.setNPC(null);
 
         // Debugger information
-        if (scriptEntry.getOriginalArguments().size() == 0 || !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
+        if (scriptEntry.getOriginalArguments() == null ||
+                scriptEntry.getOriginalArguments().size() == 0 ||
+                !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
             if (scriptEntry.getPlayer() != null)
                 dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" + scriptEntry.getPlayer().getName());
             else

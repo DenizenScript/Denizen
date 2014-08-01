@@ -211,7 +211,27 @@ public class dB {
     }
 
 
+    // <--[event]
+    // @Events
+    // script generates error
+    //
+    // @Triggers when a script generates an error.
+    // @Context
+    // <context.message> returns the error message.
+    //
+    // @Determine
+    // "CANCELLED" to stop the error from showing in the console.
+    // -->
     public static void echoError(String message) {
+        if (ThrowErrorEvent) {
+            ThrowErrorEvent = false;
+            Map<String, dObject> context = new HashMap<String, dObject>();
+            context.put("message", new Element(message));
+            String Determination = EventManager.doEvents(Arrays.asList("script generates error"), null, null, context);
+            ThrowErrorEvent = true;
+            if (Determination.equalsIgnoreCase("CANCELLED"))
+                return;
+        }
         if (!showDebug) return;
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! "
                 + ChatColor.WHITE + trimMessage(message));
@@ -223,15 +243,13 @@ public class dB {
     // @Events
     // server generates exception
     //
-    // @Triggers when a player enters or exits a notable cuboid.
+    // @Triggers when an exception occurs on the server.
     // @Context
     // <context.message> returns the Exception message.
     // <context.type> returns the type of the error. (EG, NullPointerException).
     //
     // @Determine
     // "CANCELLED" to stop the exception from showing in the console.
-    //
-    //
     // -->
     public static void echoError(Throwable ex) {
         if (ThrowErrorEvent) {
