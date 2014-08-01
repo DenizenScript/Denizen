@@ -69,7 +69,9 @@ public class dNPCRegistry implements Listener {
             dNPC denizenNPC = new dNPC(npc);
             denizenNPCs.put(npc.getId(), denizenNPC);
             Inventory npcInventory = Bukkit.getServer().createInventory(denizenNPC, InventoryType.PLAYER);
-            npcInventory.setContents(denizenNPC.getInventoryTrait().getContents());
+            if (!npc.hasTrait(net.citizensnpcs.api.trait.trait.Inventory.class))
+                npc.addTrait(net.citizensnpcs.api.trait.trait.Inventory.class);
+            npcInventory.setContents(npc.getTrait(net.citizensnpcs.api.trait.trait.Inventory.class).getContents());
             npcInventories.put(npc.getId(), npcInventory);
         }
         // dB.log("Constructing NPC " + getDenizen(npc).toString());

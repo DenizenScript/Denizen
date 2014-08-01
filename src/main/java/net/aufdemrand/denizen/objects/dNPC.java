@@ -276,13 +276,6 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         return npc.getTrait(HealthTrait.class);
     }
 
-    public net.citizensnpcs.api.trait.trait.Inventory getInventoryTrait() {
-        NPC npc = getCitizen();
-        if (!npc.hasTrait(net.citizensnpcs.api.trait.trait.Inventory.class))
-            npc.addTrait(net.citizensnpcs.api.trait.trait.Inventory.class);
-        return npc.getTrait(net.citizensnpcs.api.trait.trait.Inventory.class);
-    }
-
     public LookClose getLookCloseTrait() {
         NPC npc = getCitizen();
         if (!npc.hasTrait(LookClose.class))
