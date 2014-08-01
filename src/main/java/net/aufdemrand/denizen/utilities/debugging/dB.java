@@ -2,15 +2,14 @@ package net.aufdemrand.denizen.utilities.debugging;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import net.aufdemrand.denizen.Settings;
 
+import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.Bukkit;
@@ -200,6 +199,11 @@ public class dB {
     ///////
 
 
+    /**
+     * Shows an approval message (always shows, regardless of script debug mode, excluding debug fully off - use sparingly)
+     * Prefixed with "OKAY! "
+     * @param message the message to debug
+     */
     public static void echoApproval(String message) {
         if (!showDebug) return;
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! "
@@ -213,7 +217,37 @@ public class dB {
                 + ChatColor.WHITE + trimMessage(message));
     }
 
+    private static boolean ThrowErrorEvent = true;
+
+    // <--[event]
+    // @Events
+    // server generates exception
+    //
+    // @Triggers when a player enters or exits a notable cuboid.
+    // @Context
+    // <context.message> returns the Exception message.
+    // <context.type> returns the type of the error. (EG, NullPointerException).
+    //
+    // @Determine
+    // "CANCELLED" to stop the exception from showing in the console.
+    //
+    //
+    // -->
     public static void echoError(Throwable ex) {
+        if (ThrowErrorEvent) {
+            ThrowErrorEvent = false;
+            Map<String, dObject> context = new HashMap<String, dObject>();
+            Throwable thrown = ex;
+            if (ex.getCause() != null) {
+                thrown = ex.getCause();
+            }
+            context.put("message", new Element(thrown.getMessage()));
+            context.put("type", new Element(thrown.getClass().getSimpleName()));
+            String Determination = EventManager.doEvents(Arrays.asList("server generates exception"), null, null, context);
+            ThrowErrorEvent = true;
+            if (Determination.equalsIgnoreCase("CANCELLED"))
+                return;
+        }
         if (!showDebug) return;
         if (!showStackTraces) {
             dB.echoError("Exception! Enable '/denizen debug -s' for the nitty-gritty.");
