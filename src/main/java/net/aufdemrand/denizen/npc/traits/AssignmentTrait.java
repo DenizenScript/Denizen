@@ -244,6 +244,4 @@ public class AssignmentTrait extends Trait {
 
         // All done!
     }
-
-
 }

@@ -71,5 +71,4 @@ public interface dRegistry {
      *
      */
     public void disableCoreMembers();
-
 }

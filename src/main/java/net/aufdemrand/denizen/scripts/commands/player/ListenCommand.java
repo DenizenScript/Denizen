@@ -150,7 +150,4 @@ public class ListenCommand extends AbstractCommand {
                 break;
         }
     }
-
-
-
 }

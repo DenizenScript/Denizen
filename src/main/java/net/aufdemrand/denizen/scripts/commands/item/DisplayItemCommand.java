@@ -83,6 +83,4 @@ public class DisplayItemCommand extends AbstractCommand {
                     }
                 }, duration.getTicks());
     }
-
-
 }

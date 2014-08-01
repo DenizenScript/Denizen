@@ -61,8 +61,6 @@ public class BiomeEnterExitSmartEvent implements SmartEvent, Listener {
         PlayerMoveEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

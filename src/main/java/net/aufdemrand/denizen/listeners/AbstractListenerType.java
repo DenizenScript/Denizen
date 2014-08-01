@@ -61,8 +61,6 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
         this.instanceClass = listenerInstanceClass;
         return null;
     }
-
-
 }
 
 

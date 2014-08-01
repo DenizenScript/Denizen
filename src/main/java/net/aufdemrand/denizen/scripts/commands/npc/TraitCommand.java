@@ -87,5 +87,4 @@ public class TraitCommand extends AbstractCommand {
         }
 
     }
-
 }

@@ -281,8 +281,6 @@ public class aH {
         }
     }
 
-
-
     /////////////////
     // Static Methods
     ///////////////
@@ -333,10 +331,6 @@ public class aH {
 
         return matchList.toArray(new String[matchList.size()]);
     }
-
-
-
-
 
     /**
      * To be used with the dBuggers' .report to provide debug output for
@@ -711,6 +705,4 @@ public class aH {
     }
 
     final static Pattern matchesScriptPtrn = Pattern.compile("script:(.+)", Pattern.CASE_INSENSITIVE);
-
-
 }

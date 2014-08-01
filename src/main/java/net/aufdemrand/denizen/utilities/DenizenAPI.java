@@ -63,6 +63,4 @@ public class DenizenAPI {
     public static FileConfiguration _saves() {
         return getCurrentInstance().getSaves();
     }
-
-
 }

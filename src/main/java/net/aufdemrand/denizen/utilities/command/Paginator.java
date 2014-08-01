@@ -43,5 +43,4 @@ public class Paginator {
     }
 
     private static final int LINES_PER_PAGE = 9;
-
 }

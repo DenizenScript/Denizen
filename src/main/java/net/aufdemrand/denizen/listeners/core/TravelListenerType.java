@@ -8,5 +8,4 @@ public class TravelListenerType extends AbstractListenerType {
     public void onEnable() {
         // nothing to do here
     }
-
 }

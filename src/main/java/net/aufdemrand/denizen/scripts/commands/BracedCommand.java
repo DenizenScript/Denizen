@@ -170,5 +170,4 @@ public abstract class BracedCommand extends AbstractCommand {
         return bracedSections;
 
     }
-
 }

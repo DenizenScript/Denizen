@@ -73,5 +73,4 @@ public class ScriptBuilder {
 
         return scriptCommands;
     }
-
 }

@@ -7,5 +7,4 @@ public class ScriptEntryCreationException extends Exception {
     public ScriptEntryCreationException(String msg) {
         super(msg);
     }
-
 }

@@ -85,8 +85,6 @@ public class DetermineCommand extends AbstractCommand {
     }
 
 
-
-
     //
     // Command Singleton
     //
@@ -144,6 +142,4 @@ public class DetermineCommand extends AbstractCommand {
             // Stop the queue by clearing the remainder of it.
             scriptEntry.getResidingQueue().clear();
     }
-
-
 }

@@ -44,5 +44,4 @@ public class StandCommand extends AbstractCommand{
         npc.removeTrait(SittingTrait.class);
 
     }
-
 }

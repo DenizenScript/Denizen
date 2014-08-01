@@ -228,5 +228,4 @@ public class HungerTrait extends Trait implements Listener {
         }
         return location.distance(this.location);
     }
-
 }

@@ -631,5 +631,4 @@ public class TextTags implements Listener {
             event.setReplaced(String.valueOf((char)Integer.parseInt(attribute.getContext(1), 16)));
 
     }
-
 }

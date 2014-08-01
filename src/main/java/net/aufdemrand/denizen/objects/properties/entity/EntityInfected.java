@@ -127,5 +127,4 @@ public class EntityInfected implements Property {
     public void adjust(Mechanism mechanism) {
         // TODO
     }
-
 }

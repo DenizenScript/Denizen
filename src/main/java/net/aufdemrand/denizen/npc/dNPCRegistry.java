@@ -179,6 +179,4 @@ public class dNPCRegistry implements Listener {
         dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + event.getNPC().getName() + "/" + event.getNPC().getId());
         // TODO: Delete flags / etc.
     }
-
-
 }

@@ -657,5 +657,4 @@ public class NPCCommandHandler {
                     " is now the chatbot " + args.getString(1));
         }
     }
-
 }

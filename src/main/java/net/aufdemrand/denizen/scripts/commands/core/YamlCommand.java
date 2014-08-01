@@ -526,5 +526,4 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
 
     }
-
 }

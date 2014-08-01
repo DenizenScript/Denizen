@@ -67,5 +67,4 @@ public class _templateCommand extends AbstractCommand {
         // CODE
         // HERE :)
     }
-
 }

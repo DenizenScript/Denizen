@@ -39,5 +39,4 @@ public class MapOfEnchantments extends HashMap<Enchantment, Integer> {
         return dScriptList.substring(0, dScriptList.length() - 1);
 
     }
-
 }

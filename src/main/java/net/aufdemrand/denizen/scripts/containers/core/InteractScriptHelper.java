@@ -226,6 +226,5 @@ public class InteractScriptHelper {
             return name;
         }
     }
-
 }
 

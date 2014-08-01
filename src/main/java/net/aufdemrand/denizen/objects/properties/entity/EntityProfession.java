@@ -104,5 +104,4 @@ public class EntityProfession implements Property {
             setProfession(Villager.Profession.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }
-
 }

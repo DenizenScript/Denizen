@@ -87,5 +87,4 @@ public class CreateCommand extends AbstractCommand {
             created.adjust(mechanism);
         }
     }
-
 }

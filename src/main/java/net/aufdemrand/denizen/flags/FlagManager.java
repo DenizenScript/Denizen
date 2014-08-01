@@ -884,8 +884,6 @@ public class FlagManager {
             return values.size();
         }
 
-
-
         /**
          * Returns an instance of the appropriate Object, as detected by this method.
          * Should check if instanceof Integer, Double, Boolean, List, or String.
@@ -950,5 +948,4 @@ public class FlagManager {
             return values.size();
         }
     }
-
 }

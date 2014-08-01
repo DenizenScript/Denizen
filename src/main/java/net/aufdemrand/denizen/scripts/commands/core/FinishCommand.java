@@ -91,7 +91,6 @@ public class FinishCommand extends AbstractCommand {
     public static int getScriptCompletes(String playerName, String scriptName) {
         return DenizenAPI.getCurrentInstance().getSaves().getInt("Players." + playerName + "." + scriptName.toUpperCase() + "." + "Completed", 0);
     }
-
 }
 
 

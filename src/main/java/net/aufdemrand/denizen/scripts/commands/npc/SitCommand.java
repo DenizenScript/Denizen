@@ -69,5 +69,4 @@ public class SitCommand extends AbstractCommand {
             }
         }
     }
-
 }

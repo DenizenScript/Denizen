@@ -85,8 +85,6 @@ public class QueueTags implements Listener {
         event.setReplaced(event.getScriptEntry().getResidingQueue()
                 .getAttribute(attribute));
     }
-
-
 }
 
 

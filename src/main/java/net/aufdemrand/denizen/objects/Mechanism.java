@@ -133,5 +133,4 @@ public class Mechanism {
     public void reportInvalid() {
         dB.echoError("Invalid mechanism specified: " + raw_mechanism);
     }
-
 }

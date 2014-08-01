@@ -129,5 +129,4 @@ public class EquipCommand extends AbstractCommand {
             }
         }
     }
-
 }

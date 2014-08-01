@@ -387,5 +387,4 @@ public class ItemScriptHelper implements Listener {
             event.getPlayer().updateInventory();
         }
     }
-
 }

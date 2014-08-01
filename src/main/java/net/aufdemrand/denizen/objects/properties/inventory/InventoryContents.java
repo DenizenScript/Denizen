@@ -197,5 +197,4 @@ public class InventoryContents implements Property {
         }
 
     }
-
 }

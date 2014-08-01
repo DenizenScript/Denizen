@@ -138,5 +138,4 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 chunkDelays.remove(chunkString);
         }
     }
-
 }

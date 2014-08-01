@@ -62,5 +62,4 @@ public class DebugLog extends Logger {
             return out;
         }
     }
-
 }

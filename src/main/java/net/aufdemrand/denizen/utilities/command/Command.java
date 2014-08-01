@@ -60,5 +60,4 @@ public @interface Command {
      * command processing.
      */
     String usage() default "";
-
 }

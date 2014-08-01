@@ -1016,8 +1016,6 @@ public class WorldScriptHelper implements Listener {
         }
     }
 
-
-
     /////////////////////
     //   HANGING EVENTS
     /////////////////
@@ -1148,8 +1146,6 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
-
-
 
     /////////////////////
     //   ENTITY EVENTS

@@ -207,5 +207,4 @@ public class PushableTrait extends Trait implements Listener {
             pushed = true;
         }
     }
-
 }

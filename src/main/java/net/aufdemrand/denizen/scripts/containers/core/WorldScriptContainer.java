@@ -10,7 +10,4 @@ public class WorldScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
         EventManager.world_scripts.put(getName(), this);
     }
-
-
-
 }

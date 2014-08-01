@@ -61,8 +61,6 @@ public class VehicleCollisionSmartEvent implements SmartEvent, Listener {
         VehicleEntityCollisionEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////

@@ -47,5 +47,4 @@ public class ChatbotTrait extends Trait {
         bot = new Bot(botname, path);
         chatSession = new Chat(bot);
     }
-
 }

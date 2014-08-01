@@ -61,5 +61,4 @@ public class WaitCommand extends AbstractCommand {
             queue.forceToTimed(delay);
         }
     }
-
 }

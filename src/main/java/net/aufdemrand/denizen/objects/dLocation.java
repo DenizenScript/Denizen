@@ -114,8 +114,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dLocation.class))
             return (dLocation) NotableManager.getSavedObject(m.group(2));
 
-
-
         ////////
         // Match location formats
 
@@ -279,8 +277,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (!(o instanceof dLocation)) return false;
         return getBlock().getLocation().equals(((dLocation) o).getBlock().getLocation());
     }
-
-
 
     String prefix = "Location";
 

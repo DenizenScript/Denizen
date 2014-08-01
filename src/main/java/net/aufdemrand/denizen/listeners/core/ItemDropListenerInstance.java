@@ -268,5 +268,4 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
             finish();
         }
     }
-
 }

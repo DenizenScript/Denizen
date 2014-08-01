@@ -68,8 +68,6 @@ public class DefinitionTags implements Listener {
         event.setReplaced(ObjectFetcher.pickObjectFor(def)
                 .getAttribute(atttribute));
     }
-
-
 }
 
 

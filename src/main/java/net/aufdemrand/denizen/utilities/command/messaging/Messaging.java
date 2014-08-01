@@ -53,5 +53,4 @@ public class Messaging {
     private static String HIGHLIGHT_COLOUR = ChatColor.YELLOW.toString();
 
     private static String MESSAGE_COLOUR = ChatColor.GREEN.toString();
-
 }

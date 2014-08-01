@@ -92,5 +92,4 @@ public class BookScriptContainer extends ScriptContainer {
         book.getItemStack().setItemMeta(bookInfo);
         return book;
     }
-
 }

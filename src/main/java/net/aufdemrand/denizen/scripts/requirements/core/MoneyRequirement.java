@@ -36,5 +36,4 @@ public class MoneyRequirement extends AbstractRequirement{
 
         return outcome;
     }
-
 }

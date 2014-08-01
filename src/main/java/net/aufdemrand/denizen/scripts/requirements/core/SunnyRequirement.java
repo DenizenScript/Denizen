@@ -12,5 +12,4 @@ public class SunnyRequirement extends AbstractRequirement {
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
         return !context.getPlayer().getPlayerEntity().getWorld().hasStorm();
     }
-
 }

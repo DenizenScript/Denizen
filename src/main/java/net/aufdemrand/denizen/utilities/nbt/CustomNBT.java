@@ -126,8 +126,6 @@ public class CustomNBT {
         // Return contents of the tag
         return tag.getString(key);
     }
-
-
 }
 
 

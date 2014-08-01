@@ -339,5 +339,4 @@ public class FishingTrait extends Trait {
     public void setCatchPercent(int catchPercent) {
         this.catchPercent = catchPercent;
     }
-
 }

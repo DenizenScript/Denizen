@@ -91,8 +91,6 @@ public class dB {
         Header, Footer, Spacer
     }
 
-
-
     ////////////
     //  Public debugging methods, toggleable by checking extra criteria as implemented
     //  by the Debuggable interface, which usually checks a ScriptContainer's 'debug' node
@@ -192,8 +190,6 @@ public class dB {
     public static void echoDebug(DebugElement de, String message) {
         echoDebug(null, de, message);
     }
-
-
 
     /////////////
     // Other public debugging methods (Always show when debugger is enabled)
@@ -437,5 +433,4 @@ public class dB {
             commandSender.sendMessage(showColor ? result : ChatColor.stripColor(result));
         }
     }
-
 }

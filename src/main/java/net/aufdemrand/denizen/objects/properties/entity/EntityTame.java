@@ -147,6 +147,5 @@ public class EntityTame implements Property {
         }
 
     }
-
 }
 

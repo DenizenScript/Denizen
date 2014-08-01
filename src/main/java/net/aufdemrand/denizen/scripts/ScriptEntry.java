@@ -200,8 +200,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         return args;
     }
 
-
-
     ////////////
     // INSTANCE METHODS
     //////////
@@ -316,8 +314,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         return objects.containsKey(key.toLowerCase());
     }
 
-
-
     /////////////
     // CORE LINKED OBJECTS
     ///////
@@ -391,8 +387,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         queue = scriptQueue;
     }
 
-
-
     //////////////
     // TimedQueue FEATURES
     /////////
@@ -418,8 +412,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         return this;
     }
 
-
-
     ////////////
     // COMPATIBILITY
     //////////
@@ -433,8 +425,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         tracked_objects.add(key.toLowerCase());
         return this;
     }
-
-
 
     /////////////
     // DEBUGGABLE

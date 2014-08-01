@@ -190,6 +190,4 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
-
-
 }

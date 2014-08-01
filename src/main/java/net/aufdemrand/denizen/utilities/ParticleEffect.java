@@ -293,6 +293,4 @@ public enum ParticleEffect {
             throw new IllegalArgumentException("Effect radius must be less than or equal to the maximum range of 100 blocks");
         sendPacket(getPlayersInRange(loc, range), createBlockDustPacket(id, data, loc, offsetX, offsetY, offsetZ, speed, amount));
     }
-
-
 }

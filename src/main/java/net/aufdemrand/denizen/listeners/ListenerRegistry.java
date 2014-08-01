@@ -227,10 +227,6 @@ public class ListenerRegistry implements dRegistry, Listener {
         return types;
     }
 
-
-
-
-
     @EventHandler
     public void playerJoin(PlayerJoinEvent event) {
 
@@ -290,9 +286,4 @@ public class ListenerRegistry implements dRegistry, Listener {
     public void playerQuit(PlayerQuitEvent event) {
         deconstructPlayer(dPlayer.mirrorBukkitPlayer(event.getPlayer()));
     }
-
-
-
-
-
 }

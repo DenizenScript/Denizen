@@ -108,5 +108,4 @@ public class LogCommand extends AbstractCommand {
 
         log.close();
     }
-
 }

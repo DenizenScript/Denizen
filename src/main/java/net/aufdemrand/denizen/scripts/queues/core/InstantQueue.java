@@ -87,5 +87,4 @@ public class InstantQueue extends ScriptQueue {
         return super.getAttribute(attribute);
 
     }
-
 }

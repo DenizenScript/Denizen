@@ -141,5 +141,4 @@ public class MobproxTrait extends Trait {
             ftimer.set("4");
         }
     }
-
 }

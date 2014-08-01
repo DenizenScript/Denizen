@@ -57,8 +57,6 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
         ChunkLoadEvent.getHandlerList().unregister(this);
     }
 
-
-
     //////////////
     //  MECHANICS
     ///////////
@@ -86,6 +84,4 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
                 "chunk loads for the first time in " + world.identify()), null, null, context, true);
         // TODO: Find way to cancel this?... may not be reasonably possible.
     }
-
-
 }

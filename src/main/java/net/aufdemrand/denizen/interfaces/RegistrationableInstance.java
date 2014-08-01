@@ -18,5 +18,4 @@ public interface RegistrationableInstance {
     public void onEnable();
 
     public void onDisable();
-
 }

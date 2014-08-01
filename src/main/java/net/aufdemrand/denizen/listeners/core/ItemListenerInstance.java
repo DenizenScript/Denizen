@@ -219,5 +219,4 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
         InventoryClickEvent.getHandlerList().unregister(this);
         PlayerFishEvent.getHandlerList().unregister(this);
     }
-
 }

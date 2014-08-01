@@ -168,5 +168,4 @@ public class ZapCommand extends AbstractCommand implements Listener{
         denizen.getSaves().set("Players." + scriptEntry.getPlayer().getSaveName()
                 + ".Scripts." + script.getName().toUpperCase() + "." + "Current Step", step);
     }
-
 }

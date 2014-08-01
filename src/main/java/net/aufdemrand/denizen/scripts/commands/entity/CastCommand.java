@@ -142,5 +142,4 @@ public class CastCommand extends AbstractCommand{
                 dB.echoError(scriptEntry.getResidingQueue(), "Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
         }
     }
-
 }

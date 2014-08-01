@@ -925,8 +925,6 @@ public class dEntity implements dObject, Adjustable {
         }
     }
 
-
-
     public int comparesTo(dEntity entity) {
         // Never matches a null
         if (entity == null) return 0;
@@ -1895,8 +1893,6 @@ public class dEntity implements dObject, Adjustable {
             return new Element(isProjectile())
                     .getAttribute(attribute.fulfill(1));
         }
-
-
 
         /////////////////////
         //   PROPERTY ATTRIBUTES

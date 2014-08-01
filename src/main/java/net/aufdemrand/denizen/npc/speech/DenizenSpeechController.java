@@ -34,5 +34,4 @@ public class DenizenSpeechController implements SpeechController {
         }
         CitizensAPI.getSpeechFactory().getVocalChord(vocalChordName).talk(context);
     }
-
 }

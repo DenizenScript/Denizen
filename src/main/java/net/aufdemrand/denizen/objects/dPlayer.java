@@ -1197,8 +1197,6 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
-
-
         /////////////////////
         //   LOCATION ATTRIBUTES
         /////////////////
