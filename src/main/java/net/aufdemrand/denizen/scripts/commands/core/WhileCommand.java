@@ -20,6 +20,8 @@ public class WhileCommand extends BracedCommand {
     private class WhileData {
         public int index;
         public String value;
+        public long LastChecked;
+        int instaTicks;
     }
 
     @Override
@@ -143,9 +145,13 @@ public class WhileCommand extends BracedCommand {
                     scriptEntry.getBracedSet().get("WHILE").get(scriptEntry.getBracedSet().get("WHILE").size() - 1) != scriptEntry)) {
                 WhileData data = (WhileData)scriptEntry.getOwner().getData();
                 data.index++;
-                int max = Settings.WhileMaxLoops();
-                if (data.index > max && max != 0)
-                    return;
+                if (System.currentTimeMillis() - data.LastChecked < 50) {
+                    data.instaTicks++;
+                    int max = Settings.WhileMaxLoops();
+                    if (data.instaTicks > max && max != 0)
+                        return;
+                }
+                data.LastChecked = System.currentTimeMillis();
                 if (TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(),
                         data.value, false, scriptEntry).equalsIgnoreCase("true")) {
                     dB.echoDebug(scriptEntry, dB.DebugElement.Header, "While loop " + data.index);
@@ -195,6 +201,8 @@ public class WhileCommand extends BracedCommand {
             WhileData datum = new WhileData();
             datum.index = 1;
             datum.value = value.asString();
+            datum.LastChecked = System.currentTimeMillis();
+            datum.instaTicks = 1;
             scriptEntry.setData(datum);
             ScriptEntry callbackEntry = null;
             try {
