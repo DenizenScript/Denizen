@@ -139,7 +139,7 @@ public class CastCommand extends AbstractCommand{
             if (remove) continue;
             PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier);
             if (!potion.apply(entity.getLivingEntity()))
-                dB.echoError("Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
+                dB.echoError(scriptEntry.getResidingQueue(), "Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
         }
     }
 

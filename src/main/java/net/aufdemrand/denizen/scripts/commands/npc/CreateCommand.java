@@ -80,7 +80,7 @@ public class CreateCommand extends AbstractCommand {
                 if (trait != null)
                     created.getCitizen().addTrait(trait);
                 else
-                    dB.echoError("Could not add trait to NPC: " + trait_name);
+                    dB.echoError(scriptEntry.getResidingQueue(), "Could not add trait to NPC: " + trait_name);
             }
         }
         for (Mechanism mechanism: type.getWaitingMechanisms()) {

@@ -154,8 +154,8 @@ public class ZapCommand extends AbstractCommand implements Listener{
                                         durations.remove(scriptEntry.getPlayer().getSaveName() + "," + script.getName().toUpperCase());
                                         execute(scriptEntry);
                                     } catch (CommandExecutionException e) {
-                                        dB.echoError("Could not run delayed task!");
-                                        dB.echoError(e);
+                                        dB.echoError(scriptEntry.getResidingQueue(), "Could not run delayed task!");
+                                        dB.echoError(scriptEntry.getResidingQueue(), e);
                                     }
                                 }
                             }, delay));

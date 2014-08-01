@@ -94,7 +94,7 @@ public class ListenCommand extends AbstractCommand {
                         .getListenersFor(scriptEntry.getPlayer()) != null
                         && denizen.getListenerRegistry().getListenersFor(scriptEntry.getPlayer())
                         .containsKey(id.asString().toLowerCase())) {
-                    dB.echoError("Cancelled creation of NEW listener! Listener ID '" + id.asString() + "' already exists!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Cancelled creation of NEW listener! Listener ID '" + id.asString() + "' already exists!");
                     break;
                 }
 
@@ -113,12 +113,12 @@ public class ListenCommand extends AbstractCommand {
 
                     // Why? Maybe a wrong listener type...
                     if (denizen.getListenerRegistry().get(type.asString()) == null)
-                        dB.echoError("Invalid listener type!");
+                        dB.echoError(scriptEntry.getResidingQueue(), "Invalid listener type!");
 
                     // Just print the stacktrace if anything else, so we can debug other possible
                     // problems.
                     else
-                        dB.echoError(e);
+                        dB.echoError(scriptEntry.getResidingQueue(), e);
 
                     // Deconstruct the listener in case it was partially created while erroring out.
                     try { denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id.asString()).cancel(); }

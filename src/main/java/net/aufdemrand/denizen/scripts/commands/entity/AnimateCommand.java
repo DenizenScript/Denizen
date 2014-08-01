@@ -96,7 +96,7 @@ public class AnimateCommand extends AbstractCommand {
                     } else entity.getBukkitEntity().playEffect(effect);
 
                 } catch (Exception e) {
-                    dB.echoError("Error playing that animation!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Error playing that animation!");
                 } // We tried!
             }
         }

@@ -108,7 +108,7 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot stop while: not in one!");
             }
             return;
         }
@@ -135,7 +135,7 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot stop while: not in one!");
             }
             return;
         }
@@ -157,7 +157,7 @@ public class ForEachCommand extends BracedCommand {
                         callbackEntry.copyFrom(scriptEntry);
                     }
                     catch (ScriptEntryCreationException e) {
-                        dB.echoError(e);
+                        dB.echoError(scriptEntry.getResidingQueue(), e);
                     }
                     callbackEntry.setOwner(scriptEntry.getOwner());
                     bracedCommands.add(callbackEntry);
@@ -168,7 +168,7 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Foreach CALLBACK invalid: not a real callback!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Foreach CALLBACK invalid: not a real callback!");
             }
         }
 
@@ -179,7 +179,7 @@ public class ForEachCommand extends BracedCommand {
                     ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("FOREACH");
 
             if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
-                dB.echoError("Empty braces!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Empty braces!");
                 return;
             }
 
@@ -202,7 +202,7 @@ public class ForEachCommand extends BracedCommand {
                 callbackEntry.copyFrom(scriptEntry);
             }
             catch (ScriptEntryCreationException e) {
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
             callbackEntry.setOwner(scriptEntry);
             bracedCommandsList.add(callbackEntry);

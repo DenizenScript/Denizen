@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -218,15 +219,21 @@ public class dB {
     // @Triggers when a script generates an error.
     // @Context
     // <context.message> returns the error message.
+    // <context.queue> returns the queue that caused the exception, if any.
     //
     // @Determine
     // "CANCELLED" to stop the error from showing in the console.
     // -->
     public static void echoError(String message) {
+        echoError(null, message);
+    }
+
+    public static void echoError(ScriptQueue source, String message) {
         if (ThrowErrorEvent) {
             ThrowErrorEvent = false;
             Map<String, dObject> context = new HashMap<String, dObject>();
             context.put("message", new Element(message));
+            context.put("queue", source);
             String Determination = EventManager.doEvents(Arrays.asList("script generates error"), null, null, context);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
@@ -247,11 +254,16 @@ public class dB {
     // @Context
     // <context.message> returns the Exception message.
     // <context.type> returns the type of the error. (EG, NullPointerException).
+    // <context.queue> returns the queue that caused the exception, if any.
     //
     // @Determine
     // "CANCELLED" to stop the exception from showing in the console.
     // -->
     public static void echoError(Throwable ex) {
+        echoError(null, ex);
+    }
+
+    public static void echoError(ScriptQueue source, Throwable ex) {
         if (ThrowErrorEvent) {
             ThrowErrorEvent = false;
             Map<String, dObject> context = new HashMap<String, dObject>();
@@ -261,6 +273,7 @@ public class dB {
             }
             context.put("message", new Element(thrown.getMessage()));
             context.put("type", new Element(thrown.getClass().getSimpleName()));
+            context.put("queue", source);
             String Determination = EventManager.doEvents(Arrays.asList("server generates exception"), null, null, context);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
@@ -268,7 +281,7 @@ public class dB {
         }
         if (!showDebug) return;
         if (!showStackTraces) {
-            dB.echoError("Exception! Enable '/denizen debug -s' for the nitty-gritty.");
+            dB.echoError(source, "Exception! Enable '/denizen debug -s' for the nitty-gritty.");
         }
         else {
             ex.printStackTrace();

@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands;
 
 import java.util.*;
 
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -18,8 +17,6 @@ public abstract class BracedCommand extends AbstractCommand {
      * @param scriptEntry
      *          The ScriptEntry to get the braced commands from.
      *
-     * @param startArg
-     *          The argument to start at.
      * @return
      *          The list of ScriptEntries to be executed in the command.
      */
@@ -41,7 +38,7 @@ public abstract class BracedCommand extends AbstractCommand {
                 return bracedSections;
             }
             catch (CloneNotSupportedException e) {
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
         }
 
@@ -105,14 +102,14 @@ public abstract class BracedCommand extends AbstractCommand {
                 }
                 else {
                     if (bracedSections.containsKey(bracesName)) {
-                        dB.echoError("You may not have braced commands with the same arguments.");
+                        dB.echoError(scriptEntry.getResidingQueue(), "You may not have braced commands with the same arguments.");
                         break;
                     }
                     ArrayList<ScriptEntry> bracesSection = new ArrayList<ScriptEntry>();
                     for (ArrayList<String> command : commandList.values()) {
                         try {
                             if (command.isEmpty()) {
-                                if (hyperdebug) dB.echoError("Empty command?");
+                                if (hyperdebug) dB.echoError(scriptEntry.getResidingQueue(), "Empty command?");
                                 continue;
                             }
                             String cmd = command.get(0);
@@ -127,7 +124,7 @@ public abstract class BracedCommand extends AbstractCommand {
                             bracesSection.get(bracesSection.size() - 1).setNPC(scriptEntry.getNPC());
                             if (hyperdebug) dB.echoDebug(scriptEntry, "Command added: " + cmd + ", with " + String.valueOf(args.length) + " arguments");
                         } catch (ScriptEntryCreationException e) {
-                            if (hyperdebug) dB.echoError(e.getMessage());
+                            if (hyperdebug) dB.echoError(scriptEntry.getResidingQueue(), e.getMessage());
                         }
                     }
                     if (hyperdebug) dB.echoDebug(scriptEntry, "Adding section " + bracesName);
@@ -159,7 +156,7 @@ public abstract class BracedCommand extends AbstractCommand {
             // Continue building the current command
             else {
                 if (waitingForDash) {
-                    dB.echoError("Malformed braced section! Missing a - symbol!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Malformed braced section! Missing a - symbol!");
                     break;
                 }
                 newCommand = false;

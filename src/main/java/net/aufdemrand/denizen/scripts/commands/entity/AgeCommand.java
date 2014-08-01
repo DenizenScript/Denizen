@@ -150,7 +150,7 @@ public class AgeCommand extends AbstractCommand {
                 }
 
                 else
-                    dB.echoError(entity.identify() + " is not ageable!");
+                    dB.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not ageable!");
 
             }
         }

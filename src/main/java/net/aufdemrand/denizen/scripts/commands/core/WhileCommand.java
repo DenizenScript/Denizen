@@ -106,7 +106,7 @@ public class WhileCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot stop while: not in one!");
             }
             return;
         }
@@ -133,7 +133,7 @@ public class WhileCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Cannot stop while: not in one!");
             }
             return;
         }
@@ -158,7 +158,7 @@ public class WhileCommand extends BracedCommand {
                         callbackEntry.copyFrom(scriptEntry);
                     }
                     catch (ScriptEntryCreationException e) {
-                        dB.echoError(e);
+                        dB.echoError(scriptEntry.getResidingQueue(), e);
                     }
                     callbackEntry.setOwner(scriptEntry.getOwner());
                     bracedCommands.add(callbackEntry);
@@ -169,7 +169,7 @@ public class WhileCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("While CALLBACK invalid: not a real callback!");
+                dB.echoError(scriptEntry.getResidingQueue(), "While CALLBACK invalid: not a real callback!");
             }
         }
 
@@ -181,7 +181,7 @@ public class WhileCommand extends BracedCommand {
                     ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("WHILE");
 
             if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
-                dB.echoError("Empty braces!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Empty braces!");
                 return;
             }
 
@@ -203,7 +203,7 @@ public class WhileCommand extends BracedCommand {
                 callbackEntry.copyFrom(scriptEntry);
             }
             catch (ScriptEntryCreationException e) {
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
             callbackEntry.setOwner(scriptEntry);
             bracedCommandsList.add(callbackEntry);

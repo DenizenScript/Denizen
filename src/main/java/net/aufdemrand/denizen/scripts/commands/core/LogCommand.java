@@ -73,8 +73,8 @@ public class LogCommand extends AbstractCommand {
                 fw.close();
             }
             catch (IOException e) {
-                dB.echoError("Error logging to file...");
-                dB.echoError(e);
+                dB.echoError(scriptEntry.getResidingQueue(), "Error logging to file...");
+                dB.echoError(scriptEntry.getResidingQueue(), e);
             }
             return;
         }
