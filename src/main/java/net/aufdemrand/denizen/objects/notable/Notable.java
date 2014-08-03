@@ -21,5 +21,5 @@ public interface Notable {
     public void makeUnique(String id);
 
     public void forget();
-    
+
 }
