@@ -47,6 +47,7 @@ public class TagManager implements Listener {
         new TextTags(denizen);
         new EscapeTags(denizen);
         new DefinitionTags(denizen);
+        new ParseTags(denizen);
 
         // For compatibility
         new AnchorTags(denizen);
