@@ -214,12 +214,12 @@ public class AssignmentTrait extends Trait {
     public void onHit(EntityDamageByEntityEvent event) {
 
         // Check if the damager is this NPC
-        if (event.getDamager() != npc.getBukkitEntity()) {
+        if (event.getDamager() != npc.getEntity()) {
 
             // If the damager is not this NPC, the damager could still be a
             // projectile shot by this NPC, in which case we want to continue
             if (event.getDamager() instanceof Projectile) {
-                if (((Projectile) event.getDamager()).getShooter() != npc.getBukkitEntity()) return;
+                if (((Projectile) event.getDamager()).getShooter() != npc.getEntity()) return;
             }
 
             else return;
