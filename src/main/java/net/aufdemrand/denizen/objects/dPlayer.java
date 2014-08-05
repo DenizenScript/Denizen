@@ -220,6 +220,20 @@ public class dPlayer implements dObject, Adjustable {
         else return new dLocation(getNBTEditor().getLocation());
     }
 
+    public int getRemainingAir() {
+        if (isOnline())
+            return getPlayerEntity().getRemainingAir();
+        else
+            return getNBTEditor().getRemainingAir();
+    }
+
+    public int getMaximumAir() {
+        if (isOnline())
+            return getPlayerEntity().getMaximumAir();
+        else
+            return 300;
+    }
+
     public dLocation getEyeLocation() {
         if (isOnline()) return new dLocation(getPlayerEntity().getEyeLocation());
         else return null;
@@ -335,6 +349,20 @@ public class dPlayer implements dObject, Adjustable {
             getPlayerEntity().teleport(location);
         else
             getNBTEditor().setLocation(location);
+    }
+
+    public void setMaximumAir(int air) {
+        if (isOnline())
+            getPlayerEntity().setMaximumAir(air);
+        else
+            dB.echoError("Cannot set the maximum air of an offline player!");
+    }
+
+    public void setRemainingAir(int air) {
+        if (isOnline())
+            getPlayerEntity().setRemainingAir(air);
+        else
+            getNBTEditor().setRemainingAir(air);
     }
 
     public void setLevel(int level) {
@@ -877,6 +905,13 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("health.scale"))
             return new Element(getPlayerEntity().getHealthScale())
                     .getAttribute(attribute.fulfill(2));
+
+        // Handle dEntity oxygen tags here to allow getting them when the player is offline
+        if (attribute.startsWith("oxygen.max"))
+            return new Duration((long) getMaximumAir()).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("oxygen"))
+            return new Duration((long) getRemainingAir()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <p@player.is_banned>

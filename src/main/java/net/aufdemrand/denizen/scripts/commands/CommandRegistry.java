@@ -1285,7 +1285,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Group
-        // @Syntax group [add/remove] [<group>] (world:<name>)
+        // @Syntax group [add/remove] [<group>] (<world>)
         // @Required 2
         // @Stable Todo
         // @Short Adds a player to or removes a player from a permissions group.
@@ -1301,7 +1301,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(GroupCommand.class,
-                "GROUP", "group [add/remove] [<group>] (world:<name>)", 2);
+                "GROUP", "group [add/remove] [<group>] (<world>)", 2);
 
 
         // <--[command]
@@ -1811,7 +1811,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Oxygen
-        // @Syntax oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]
+        // @Syntax oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)
         // @Required 1
         // @Stable unstable
         // @Short Gives or takes breath from the player.
@@ -1826,7 +1826,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(OxygenCommand.class,
-                "OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
+                "OXYGEN", "oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)", 1);
 
 
         // <--[command]
@@ -1899,7 +1899,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Permission
-        // @Syntax permission [add/remove] [permission] (player:<name>) (group:<name>) (world:<name>)
+        // @Syntax permission [add/remove] [permission] (group:<name>) (<world>)
         // @Required 2
         // @Stable unstable
         // @Short Gives or takes a permission node to/from the player or group.
@@ -1915,7 +1915,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(PermissionCommand.class,
-                "PERMISSION", "permission [add/remove] [permission] (player:<name>) (group:<name>) (world:<name>)", 2);
+                "PERMISSION", "permission [add/remove] [permission] (group:<name>) (<world>)", 2);
 
 
         // <--[command]

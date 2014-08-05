@@ -2,14 +2,14 @@ package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 public class GroupCommand extends AbstractCommand {
 
@@ -17,58 +17,65 @@ public class GroupCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        // Initialize fields
-        Action action = null;
-        String group = null;
-        String world = null;
 
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesArg("ADD, REMOVE", arg)) {
-                action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
-            } else if (aH.matchesValueArg("WORLD", arg, ArgumentType.String)) {
-                world = aH.getStringFrom(arg);
-            } else group = arg;
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
+            if (!scriptEntry.hasObject("action")
+                    && arg.matchesEnum(Action.values())) {
+                scriptEntry.addObject("action", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("world")
+                    && arg.matchesArgumentType(dWorld.class)) {
+                scriptEntry.addObject("world", new Element(arg.asType(dWorld.class).getName()));
+            }
+
+            else if (!scriptEntry.hasObject("group")) {
+                scriptEntry.addObject("group", arg.asElement());
+            }
+
         }
 
-        // Add objects that need to be passed to execute() to the scriptEntry
-        scriptEntry.addObject("action", action)
-                    .addObject("group", group)
-                    .addObject("world", world);
+        if (!scriptEntry.hasPlayer() || !scriptEntry.getPlayer().isValid())
+            throw new InvalidArgumentsException("Must have player context!");
+
+        if (!scriptEntry.hasObject("action"))
+            throw new InvalidArgumentsException("Must specify valid action!");
+
+        if (!scriptEntry.hasObject("group"))
+            throw new InvalidArgumentsException("Must specify a group name!");
+
+        scriptEntry.defaultObject("world", Element.NULL);
+
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        // Fetch objects
-        Action action = (Action) scriptEntry.getObject("action");
-        String group = String.valueOf(scriptEntry.getObject("group"));
-        String world = String.valueOf(scriptEntry.getObject("world"));
-        Player player = scriptEntry.getPlayer().getPlayerEntity();
+
+        Element action = scriptEntry.getElement("action");
+        Element world = scriptEntry.getElement("world");
+        Element group = scriptEntry.getElement("group");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("Action", action.toString())
-                        + aH.debugObj("Player", player.getName())
-                        + aH.debugObj("Group", group)
-                        + aH.debugObj("World", world));
+        dB.report(scriptEntry, getName(), action.debug() + world.debug() + group.debug());
 
-        switch (action) {
-        case ADD:
-            if(Depends.permissions.playerInGroup(world, player.getName(), group)) {
-                dB.echoDebug(scriptEntry, "Player " + player.getName() + " is already in group " + group);
-            }
-            else {
-                Depends.permissions.playerAddGroup(world, player.getName(), group);
-                dB.echoDebug(scriptEntry, "Added " + player.getName() + " to group " + group);
-            }
-            return;
-        case REMOVE:
-            if(!Depends.permissions.playerInGroup(world, player.getName(), group)) {
-                dB.echoDebug(scriptEntry, "Player " + player.getName() + " is not in group " + group);
-            }
-            else {
-                Depends.permissions.playerRemoveGroup(world, player.getName(), group);
-                dB.echoDebug(scriptEntry, "Removed " + player.getName() + " from group " + group);
-            }
+        OfflinePlayer player = scriptEntry.getPlayer().getOfflinePlayer();
+        boolean inGroup = Depends.permissions.playerInGroup(world.asString(), player, group.asString());
+
+        switch (Action.valueOf(action.asString().toUpperCase())) {
+            case ADD:
+                if (inGroup)
+                    dB.echoDebug(scriptEntry, "Player " + player.getName() + " is already in group " + group);
+                else
+                    Depends.permissions.playerAddGroup(world.asString(), player, group.asString());
+                return;
+            case REMOVE:
+                if (!inGroup)
+                    dB.echoDebug(scriptEntry, "Player " + player.getName() + " is not in group " + group);
+                else
+                    Depends.permissions.playerRemoveGroup(world.asString(), player, group.asString());
+                return;
         }
+
     }
 }

@@ -2,11 +2,12 @@ package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.entity.Player;
 
 
 public class OxygenCommand extends AbstractCommand {
@@ -16,80 +17,78 @@ public class OxygenCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        if(scriptEntry.getArguments().size() < 1) {
-            throw new InvalidArgumentsException("Must specify amount/quantity.");
+
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
+            if (!scriptEntry.hasObject("type")
+                    && arg.matchesPrefix("type", "t")
+                    && arg.matchesEnum(Type.values())) {
+                scriptEntry.addObject("type", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("mode")
+                    && arg.matchesPrefix("mode", "m")
+                    && arg.matchesEnum(Mode.values())) {
+                scriptEntry.addObject("mode", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("amount")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("amount", arg.asElement());
+            }
+
         }
 
-        Mode mode = Mode.SET;
-        Type type = Type.REMAINING;
-        int amount = 0;
+        if (!scriptEntry.hasPlayer() || !scriptEntry.getPlayer().isValid())
+            throw new InvalidArgumentsException("Must have player context!");
 
-        for (String arg : scriptEntry.getArguments()) {
-            if(aH.matchesValueArg("type", arg, aH.ArgumentType.String)) {
-                try {
-                    type = Type.valueOf(aH.getStringFrom(arg));
-                    dB.echoDebug(scriptEntry, "Set type to " + type.name());
-                } catch(Exception e) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid type: " + e.getMessage());
-                }
-            }
-            else if(aH.matchesValueArg("mode", arg, aH.ArgumentType.String)) {
-               try {
-                    mode = Mode.valueOf(aH.getStringFrom(arg));
-                    dB.echoDebug(scriptEntry, "Set mode to " + mode.name());
-                } catch(Exception e) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid mode: " + e.getMessage());
-                }
-            }
-            else if(aH.matchesQuantity(arg) || aH.matchesQuantity("amt")) {
-                amount = aH.getIntegerFrom(arg);
+        if (!scriptEntry.hasObject("amount"))
+            throw new InvalidArgumentsException("Must specify a valid amount!");
 
-                dB.echoDebug(scriptEntry, "Amount set to " + amount);
-            }
-        }
+        scriptEntry.defaultObject("type", new Element("REMAINING")).defaultObject("mode", new Element("SET"));
 
-        scriptEntry.addObject("mode", mode);
-        scriptEntry.addObject("type", type);
-        scriptEntry.addObject("amount", amount);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        Player player = scriptEntry.getPlayer().getPlayerEntity();
-        Mode mode = (Mode) scriptEntry.getObject("mode");
-        Type type = (Type) scriptEntry.getObject("type");
-        int amount = (Integer) scriptEntry.getObject("amount");
 
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("Type", type.name()) + aH.debugObj("Mode", mode.name())
-                        + aH.debugObj("Amount", amount));
+        Element type = scriptEntry.getElement("type");
+        Element mode = scriptEntry.getElement("mode");
+        Element amount = scriptEntry.getElement("amount");
 
-        if(type == Type.MAXIMUM) {
-            switch(mode) {
-                case SET:
-                    player.setMaximumAir(amount);
-                    break;
+        dB.report(scriptEntry, getName(), type.debug() + mode.debug() + amount.debug());
 
-                case ADD:
-                    player.setMaximumAir(player.getRemainingAir() + amount);
-                    break;
+        dPlayer player = scriptEntry.getPlayer();
 
-                case REMOVE:
-                    player.setMaximumAir(player.getRemainingAir() - amount);
-            }
-        } else {
-            switch(mode) {
-                case SET:
-                    player.setRemainingAir(amount);
-                    break;
+        switch (Type.valueOf(type.asString().toUpperCase())) {
+            case MAXIMUM:
+                switch(Mode.valueOf(type.asString().toUpperCase())) {
+                    case SET:
+                        player.setMaximumAir(amount.asInt());
+                        break;
+                    case ADD:
+                        player.setMaximumAir(player.getMaximumAir() + amount.asInt());
+                        break;
+                    case REMOVE:
+                        player.setMaximumAir(player.getMaximumAir() - amount.asInt());
+                        break;
+                }
+                return;
+            case REMAINING:
+                switch(Mode.valueOf(type.asString().toUpperCase())) {
+                    case SET:
+                        player.setRemainingAir(amount.asInt());
+                        break;
 
-                case ADD:
-                    player.setRemainingAir(player.getRemainingAir() + amount);
-                    break;
+                    case ADD:
+                        player.setRemainingAir(player.getRemainingAir() + amount.asInt());
+                        break;
 
-                case REMOVE:
-                    player.setRemainingAir(player.getRemainingAir() - amount);
-            }
+                    case REMOVE:
+                        player.setRemainingAir(player.getRemainingAir() - amount.asInt());
+                        break;
+                }
+                return;
         }
     }
 }
