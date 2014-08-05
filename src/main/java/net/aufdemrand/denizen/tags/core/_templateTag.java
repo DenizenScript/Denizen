@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dList;
@@ -74,7 +75,7 @@ public class _templateTag implements Listener {
         // and return a dList dObject object to fulfill any additional attributes of the tag.
         if (type.equalsIgnoreCase("for")) {
             // Check if type_context is a valid player...
-            if (aH.getPlayerFrom(type_context) == null) {
+            if (dPlayer.matches(type_context)) {
                 dB.echoDebug(event.getScriptEntry(), "This tag requires a player! Has this player logged off? Aborting replacement...");
                 return;
             }
