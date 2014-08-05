@@ -486,7 +486,7 @@ public class CommandRegistry implements dRegistry {
         // TODO: Should the chat command be in the NPC group instead?
         // <--[command]
         // @Name Chat
-        // @Syntax chat ["<text>"] (no_target/targets:<entity>|...) (talkers:<npc>|...)
+        // @Syntax chat ["<text>"] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Causes a NPC/NPCs to send a chat message to nearby players.
@@ -494,13 +494,13 @@ public class CommandRegistry implements dRegistry {
         // @Group player
 
         // @Description
-        // Chat uses a NPCs SpeechController provided by Citizens2, typically inside 'interact' or 'task'
+        // Chat uses an NPCs DenizenSpeechController provided by Denizen, typically inside 'interact' or 'task'
         // script-containers. Typically there is already player and NPC context inside a queue that is using
         // the 'chat' command. In this case, only a text string is required. Alternatively, target entities
-        // can be specified to have the NPC chat to a different target/targets, or specify 'no_target' to
-        // not send the message to any specific player.
+        // can be specified to have any Entity chat to a different target/targets, or specify 'no_target' to
+        // not send the message to any specific target.
         //
-        // Chat from a NPC is formatted by the settings present in Citizens' config.yml. Players being chatted
+        // Chat from a NPC is formatted by the settings present in Denizen's config.yml. Players being chatted
         // to see a slightly different message than surrounding players. By default, a 'chat' will allow other
         // players nearby to also see the conversation. For example:
         // <code>
@@ -512,7 +512,7 @@ public class CommandRegistry implements dRegistry {
         //
         // If sending messages to the Player without any surrounding entities hearing the message is desirable,
         // it is often times recommended to instead use the 'narrate' command. Alternatively, on a server-wide scale,
-        // the configuration node for the 'max range' can be set to 0, however this is discouraged.
+        // the configuration node for the 'range' can be set to 0, however this is discouraged.
 
         // @Tags
         // None
@@ -533,7 +533,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         if (Depends.citizens != null)
             registerCoreMember(ChatCommand.class,
-                    "CHAT", "chat [\"<text>\"] (no_target/targets:<entity>|...)", 1);
+                    "CHAT", "chat [\"<text>\"] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)", 1);
 
 
         // <--[command]
@@ -1285,7 +1285,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Group
-        // @Syntax group [add/remove] [<group>] (world:<name>)
+        // @Syntax group [add/remove] [<group>] (<world>)
         // @Required 2
         // @Stable Todo
         // @Short Adds a player to or removes a player from a permissions group.
@@ -1301,7 +1301,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(GroupCommand.class,
-                "GROUP", "group [add/remove] [<group>] (world:<name>)", 2);
+                "GROUP", "group [add/remove] [<group>] (<world>)", 2);
 
 
         // <--[command]
@@ -1811,7 +1811,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Oxygen
-        // @Syntax oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]
+        // @Syntax oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)
         // @Required 1
         // @Stable unstable
         // @Short Gives or takes breath from the player.
@@ -1826,7 +1826,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(OxygenCommand.class,
-                "OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
+                "OXYGEN", "oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)", 1);
 
 
         // <--[command]
@@ -1899,7 +1899,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Permission
-        // @Syntax permission [add/remove] [permission] (player:<name>) (group:<name>) (world:<name>)
+        // @Syntax permission [add/remove] [permission] (group:<name>) (<world>)
         // @Required 2
         // @Stable unstable
         // @Short Gives or takes a permission node to/from the player or group.
@@ -1915,7 +1915,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(PermissionCommand.class,
-                "PERMISSION", "permission [add/remove] [permission] (player:<name>) (group:<name>) (world:<name>)", 2);
+                "PERMISSION", "permission [add/remove] [permission] (group:<name>) (<world>)", 2);
 
 
         // <--[command]

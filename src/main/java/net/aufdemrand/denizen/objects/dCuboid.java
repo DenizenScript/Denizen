@@ -520,11 +520,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     @Override
-    public void makeUnique(String id) {
-        NotableManager.saveAs(this, id);
-    }
-
-    public void load() {}
+    public void makeUnique(String id) { NotableManager.saveAs(this, id); }
 
     @Override
     public void forget() {

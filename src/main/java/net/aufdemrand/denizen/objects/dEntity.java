@@ -372,9 +372,7 @@ public class dEntity implements dObject, Adjustable {
         return (entity instanceof LivingEntity);
     }
 
-    public boolean hasInventory() {
-        return getBukkitEntity() instanceof InventoryHolder;
-    }
+    public boolean hasInventory() { return getBukkitEntity() instanceof InventoryHolder || isNPC(); }
 
     /**
      * Get the dNPC corresponding to this dEntity
@@ -494,7 +492,11 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public Inventory getBukkitInventory() {
-        return hasInventory() ? ((InventoryHolder) getLivingEntity()).getInventory() : null;
+        if (hasInventory()) {
+            if (!isNPC())
+                return ((InventoryHolder) getBukkitEntity()).getInventory();
+        }
+        return null;
     }
 
     /**
@@ -504,7 +506,21 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dInventory getInventory() {
-        return hasInventory() ? new dInventory(getBukkitInventory()) : null;
+        return hasInventory() ? isNPC() ? getDenizenNPC().getDenizenInventory()
+                : new dInventory(getBukkitInventory()) : null;
+    }
+
+    public String getName() {
+        if (isNPC())
+            return getDenizenNPC().getCitizen().getName();
+        if (entity instanceof Player)
+            return ((Player) entity).getName();
+        if (isLivingEntity()) {
+            String customName = getLivingEntity().getCustomName();
+            if (customName != null)
+                return customName;
+        }
+        return entity.getType().getName();
     }
 
     /**
@@ -1257,14 +1273,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the name of the entity.
         // -->
         if (attribute.startsWith("name")) {
-            if (isNPC())
-                return new Element(getDenizenNPC().getCitizen().getName())
-                        .getAttribute(attribute.fulfill(1));
-            if (entity instanceof Player)
-                return new Element(((Player) entity).getName())
-                        .getAttribute(attribute.fulfill(1));
-            return new Element(entity.getType().getName())
-                    .getAttribute(attribute.fulfill(1));
+            return new Element(getName()).getAttribute(attribute.fulfill(1));
         }
 
 

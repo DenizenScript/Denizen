@@ -110,7 +110,7 @@ public class NotableManager {
         reverseObjects.clear();
 
         // Find each type of notable
-        for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(false)) {
+        for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(true)) {
 
             Class<? extends dObject> clazz = reverse_objects.get(key);
 
@@ -120,8 +120,7 @@ public class NotableManager {
             for (String notable : section.getKeys(false)) {
                 Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notable));
                 if (obj != null) {
-                    obj.load();
-                    saveAs(obj, notable);
+                    obj.makeUnique(notable);
                 }
                 else {
                     dB.echoError("Notable '" + section.getString(notable) + "' failed to load!");

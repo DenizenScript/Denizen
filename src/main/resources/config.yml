@@ -2,7 +2,7 @@
 # server console
 Debug:
   Show: true
-  ex command help: true
+  Ex command help: true
   Console width: 60
 
 Scripts:
@@ -65,12 +65,23 @@ Commands:
   Engage:
     # the default timeout for engage, if not specifically set otherwise
     Timeout: 150s
-  while:
+  While:
     # how many times the WHILE command can loop before it gives up
     # Set to 0 for infinite
-    max-loops: 10000
+    Max loops: 10000
+  Chat:
+    # settings for the Chat command, these override Citizens2 settings
+    Options:
+      Multiple targets format: "%target%, %target%, %target%, and others"
+      # set to -1 to disable bystanders overhearing, or 0 for all players on the server to hear
+      Range for bystanders: 5.0
+    Formats:
+      No target: "[<def[talker].name>]: <def[message]>"
+      To target: "[<def[talker].name>] -> You: <def[message]>"
+      With target to bystanders: "[<def[talker].name>] -> <def[target].name>: <def[message]>"
+      With targets to bystanders: "[<def[talker].name>] -> [<def[targets]>]: <def[message]>"
 
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 6
+  Version: 7
