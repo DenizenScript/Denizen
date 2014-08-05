@@ -1,14 +1,21 @@
 package net.aufdemrand.denizen.npc.speech;
 
-import net.citizensnpcs.Settings.Setting;
+import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.ai.speech.Talkable;
 import net.citizensnpcs.api.ai.speech.VocalChord;
-import net.citizensnpcs.api.util.Messaging;
 import net.citizensnpcs.npc.ai.speech.TalkableEntity;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DenizenChat implements VocalChord {
@@ -21,91 +28,108 @@ public class DenizenChat implements VocalChord {
     }
 
     @Override
-    public void talk(SpeechContext context) {
+    public void talk(SpeechContext speechContext) {
+        if (!(speechContext instanceof DenizenSpeechContext)) return;
+
+        DenizenSpeechContext context = (DenizenSpeechContext) speechContext;
+
         Talkable talker = context.getTalker();
         if (talker == null) return;
 
-        // Chat to the world using Citizens settings
-        // TODO: Add Denizen chat format settings to replace this stuff
+        ScriptEntry entry = context.getScriptEntry();
+        ScriptQueue queue = entry.getResidingQueue();
+
+        String defTalker = null;
+        if (queue.hasDefinition("talker"))
+            defTalker = queue.getDefinition("talker");
+        queue.addDefinition("talker", new dEntity(talker.getEntity()).identify());
+
+        String defMessage = null;
+        if (queue.hasDefinition("message"))
+            defMessage = queue.getDefinition("message");
+        queue.addDefinition("message", context.getMessage());
+
+        // Chat to the world using Denizen chat settings
         if (!context.hasRecipients()) {
-            String text = Setting.CHAT_FORMAT.asString().replace("<npc>", talker.getName())
-                    .replace("<text>", context.getMessage());
+            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.ChatNoTargetFormat(), false, entry);
             talkToBystanders(talker, text, context);
-            return;
         }
 
-        // Assumed recipients at this point
+        // Single recipient
         else if (context.size() <= 1) {
-            String text = Setting.CHAT_FORMAT_TO_TARGET.asString().replace("<npc>", talker.getName())
-                    .replace("<text>", context.getMessage());
-            String targetName = "";
-            // For each recipient
+            // Send chat to target
+            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.ChatToTargetFormat(), false, entry);
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
-                targetName = entity.getName();
             }
             // Check if bystanders hear targeted chat
-            if (!Setting.CHAT_BYSTANDERS_HEAR_TARGETED_CHAT.asBoolean())
-                return;
-            // Format message with config setting and send to bystanders
-            String bystanderText = Setting.CHAT_FORMAT_TO_BYSTANDERS.asString().replace("<npc>", talker.getName())
-                    .replace("<target>", targetName).replace("<text>", context.getMessage());
-            talkToBystanders(talker, bystanderText, context);
-            return;
+            if (context.isBystandersEnabled()) {
+                String defTarget = null;
+                if (queue.hasDefinition("target"))
+                    defTarget = queue.getDefinition("target");
+                queue.addDefinition("target", new dEntity(context.iterator().next().getEntity()).identify());
+                String bystanderText = TagManager.tag(entry.getPlayer(), entry.getNPC(),
+                        Settings.ChatWithTargetToBystandersFormat(), false, entry);
+                talkToBystanders(talker, bystanderText, context);
+                if (defTarget != null)
+                    queue.addDefinition("target", defTarget);
+            }
         }
 
         // Multiple recipients
         else {
-            String text = Setting.CHAT_FORMAT_TO_TARGET.asString().replace("<npc>", talker.getName())
-                    .replace("<text>", context.getMessage());
-            List<String> targetNames = new ArrayList<String>();
-            // Talk to each recipient
+            // Send chat to targets
+            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.ChatToTargetFormat(), false, entry);
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
-                targetNames.add(entity.getName());
             }
-
-            if (!Setting.CHAT_BYSTANDERS_HEAR_TARGETED_CHAT.asBoolean())
-                return;
-            String targets = "";
-            int max = Setting.CHAT_MAX_NUMBER_OF_TARGETS.asInt();
-            String[] format = Setting.CHAT_MULTIPLE_TARGETS_FORMAT.asString().split("\\|");
-            if (format.length != 4)
-                Messaging.severe("npc.chat.options.multiple-targets-format invalid!");
-            if (max == 1) {
-                targets = format[0].replace("<target>", targetNames.get(0)) + format[3];
-            } else if (max == 2 || targetNames.size() == 2) {
-                if (targetNames.size() == 2) {
-                    targets = format[0].replace("<target>", targetNames.get(0))
-                            + format[2].replace("<target>", targetNames.get(1));
-                } else
-                    targets = format[0].replace("<target>", targetNames.get(0))
-                            + format[1].replace("<target>", targetNames.get(1)) + format[3];
-            } else if (max >= 3) {
-                targets = format[0].replace("<target>", targetNames.get(0));
-
-                int x = 1;
-                for (x = 1; x < max - 1; x++) {
-                    if (targetNames.size() - 1 == x)
+            if (context.isBystandersEnabled()) {
+                String[] format = Settings.ChatMultipleTargetsFormat().split("%target%");
+                if (format.length <= 1)
+                    dB.echoError("Invalid 'Commands.Chat.Options.Multiple targets format' in config.yml! Must have at least 1 %target%");
+                StringBuilder parsed = new StringBuilder();
+                Iterator<Talkable> iter = context.iterator();
+                int i = 0;
+                while (iter.hasNext()) {
+                    if (i == format.length) {
+                        parsed.append(format[i]);
                         break;
-                    targets = targets + format[1].replace("<npc>", targetNames.get(x));
+                    }
+                    parsed.append(format[i]).append(new dEntity(iter.next().getEntity()).getName());
+                    i++;
                 }
-                if (targetNames.size() == max) {
-                    targets = targets + format[2].replace("<npc>", targetNames.get(x));
-                } else
-                    targets = targets + format[3];
-            }
+                String targets = TagManager.tag(entry.getPlayer(), entry.getNPC(), parsed.toString(), false, entry);
 
-            String bystanderText = Setting.CHAT_FORMAT_WITH_TARGETS_TO_BYSTANDERS.asString()
-                    .replace("<npc>", talker.getName()).replace("<targets>", targets)
-                    .replace("<text>", context.getMessage());
-            talkToBystanders(talker, bystanderText, context);
+                String defTargets = null;
+                if (queue.hasDefinition("targets"))
+                    defTargets = queue.getDefinition("targets");
+                queue.addDefinition("targets", targets);
+
+                String bystanderText = TagManager.tag(entry.getPlayer(), entry.getNPC(),
+                        Settings.ChatWithTargetsToBystandersFormat(), false, entry);
+                talkToBystanders(talker, bystanderText, context);
+
+                if (defTargets != null)
+                    queue.addDefinition("targets", defTargets);
+            }
         }
+
+        if (defMessage != null)
+            queue.addDefinition("message", defMessage);
+        if (defTalker != null)
+            queue.addDefinition("talker", defTalker);
     }
 
-    private void talkToBystanders(Talkable talkable, String text, SpeechContext context) {
-        List<Entity> bystanderEntities = talkable.getEntity().getNearbyEntities(Setting.CHAT_RANGE.asDouble(),
-                Setting.CHAT_RANGE.asDouble(), Setting.CHAT_RANGE.asDouble());
+    private void talkToBystanders(Talkable talkable, String text, DenizenSpeechContext context) {
+        double range = context.getChatRange();
+        List<Entity> bystanderEntities = new ArrayList<Entity>();
+        if (range == 0D) {
+            for (Player player : Bukkit.getServer().getOnlinePlayers())
+                bystanderEntities.add(player);
+        }
+        else {
+            bystanderEntities = talkable.getEntity().getNearbyEntities(range, range, range);
+        }
         for (Entity bystander : bystanderEntities) {
             boolean shouldTalk = true;
             // Exclude targeted recipients
@@ -117,7 +141,6 @@ public class DenizenChat implements VocalChord {
                     }
                 }
             }
-
             // Found a nearby LivingEntity, make it Talkable and
             // talkNear it if 'should_talk'
             if (shouldTalk) {

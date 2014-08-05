@@ -34,10 +34,10 @@ public class InventoryTitle implements Property {
     public String getTitle() {
         if (inventory.getInventory() != null) {
             String title = inventory.getInventory().getTitle();
-            if (title != null && !title.startsWith("container.")) {
-                if (InventoryScriptHelper.notableInventories.containsKey(title))
+            if (title != null) {
+                if (inventory.isUnique())
                     return title.substring(0, title.length()-6);
-                else
+                else if (inventory.getIdType().equals("npc") && !title.startsWith("container."))
                     return title;
             }
         }

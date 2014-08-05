@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
+import net.aufdemrand.denizen.utilities.packets.EntityEquipment;
 import net.aufdemrand.denizen.utilities.packets.PlayerBars;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
@@ -20,6 +21,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.BlockIterator;
@@ -217,6 +220,20 @@ public class dPlayer implements dObject, Adjustable {
         else return new dLocation(getNBTEditor().getLocation());
     }
 
+    public int getRemainingAir() {
+        if (isOnline())
+            return getPlayerEntity().getRemainingAir();
+        else
+            return getNBTEditor().getRemainingAir();
+    }
+
+    public int getMaximumAir() {
+        if (isOnline())
+            return getPlayerEntity().getMaximumAir();
+        else
+            return 300;
+    }
+
     public dLocation getEyeLocation() {
         if (isOnline()) return new dLocation(getPlayerEntity().getEyeLocation());
         else return null;
@@ -230,6 +247,21 @@ public class dPlayer implements dObject, Adjustable {
     public dInventory getInventory() {
         if (isOnline()) return new dInventory(getPlayerEntity().getInventory());
         else return new dInventory(getNBTEditor());
+    }
+
+    public CraftingInventory getBukkitWorkbench() {
+        if (isOnline()) {
+            if (getPlayerEntity().getOpenInventory().getType() != InventoryType.WORKBENCH
+                    && getPlayerEntity().getOpenInventory().getType() != InventoryType.CRAFTING)
+                getPlayerEntity().openWorkbench(null, true);
+            return (CraftingInventory) getPlayerEntity().getOpenInventory().getTopInventory();
+        }
+        else return null;
+    }
+
+    public dInventory getWorkbench() {
+        if (isOnline()) return new dInventory(getBukkitWorkbench(), getPlayerEntity());
+        else return null;
     }
 
     public Inventory getBukkitEnderChest() {
@@ -310,6 +342,27 @@ public class dPlayer implements dObject, Adjustable {
             getPlayerEntity().setBedSpawnLocation(location);
         else
             getNBTEditor().setBedSpawnLocation(location, getNBTEditor().isSpawnForced());
+    }
+
+    public void setLocation(Location location) {
+        if (isOnline())
+            getPlayerEntity().teleport(location);
+        else
+            getNBTEditor().setLocation(location);
+    }
+
+    public void setMaximumAir(int air) {
+        if (isOnline())
+            getPlayerEntity().setMaximumAir(air);
+        else
+            dB.echoError("Cannot set the maximum air of an offline player!");
+    }
+
+    public void setRemainingAir(int air) {
+        if (isOnline())
+            getPlayerEntity().setRemainingAir(air);
+        else
+            getNBTEditor().setRemainingAir(air);
     }
 
     public void setLevel(int level) {
@@ -852,6 +905,13 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("health.scale"))
             return new Element(getPlayerEntity().getHealthScale())
                     .getAttribute(attribute.fulfill(2));
+
+        // Handle dEntity oxygen tags here to allow getting them when the player is offline
+        if (attribute.startsWith("oxygen.max"))
+            return new Duration((long) getMaximumAir()).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("oxygen"))
+            return new Duration((long) getRemainingAir()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <p@player.is_banned>
@@ -1767,6 +1827,20 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name location
+        // @input dLocation
+        // @description
+        // If the player is online, teleports the player to a given location.
+        // Otherwise, sets the player's next spawn location.
+        // @tags
+        // <player.location>
+        // -->
+        if (mechanism.matches("location") && mechanism.requireObject(dLocation.class)) {
+            setLocation(value.asType(dLocation.class));
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name time
         // @input Element(Number)
         // @description
@@ -1951,6 +2025,48 @@ public class dPlayer implements dObject, Adjustable {
             }
             else {
                 PlayerBars.resetHealth(getPlayerEntity());
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name fake_equipment
+        // @input dEntity(|Element|dItem)
+        // @description
+        // Shows the player fake equipment on the specified living entity, which has
+        // no real non-visual effects, in the form Entity|Slot|Item, where the slot
+        // can be one of the following: HAND, BOOTS, LEGS, CHEST, HEAD
+        // Optionally, exclude the slot and item to stop showing the fake equipment,
+        // if any, on the specified entity.
+        // - adjust <player> fake_equipment:e@123|chest|i@diamond_chestplate
+        // - adjust <player> fake_equipment:<player>|head|i@jack_o_lantern
+        // -->
+        if (mechanism.matches("fake_equipment")) {
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
+                if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
+                    if (split.length > 1 && new Element(split[1]).matchesEnum(EntityEquipment.EquipmentSlots.values())) {
+                        if (split.length > 2 && new Element(split[2]).matchesType(dItem.class)) {
+                            EntityEquipment.showEquipment(getPlayerEntity(),
+                                    new Element(split[0]).asType(dEntity.class).getLivingEntity(),
+                                    EntityEquipment.EquipmentSlots.valueOf(new Element(split[1]).asString().toUpperCase()),
+                                    new Element(split[2]).asType(dItem.class).getItemStack());
+                        }
+                        else if (split.length > 2) {
+                            dB.echoError("'" + split[2] + "' is not a valid dItem!");
+                        }
+                    }
+                    else if (split.length > 1) {
+                        dB.echoError("'" + split[1] + "' is not a valid slot; must be HAND, BOOTS, LEGS, CHEST, or HEAD!");
+                    }
+                    else {
+                        EntityEquipment.resetEquipment(getPlayerEntity(),
+                                new Element(split[0]).asType(dEntity.class).getLivingEntity());
+                    }
+                }
+                else {
+                    dB.echoError("'" + split[0] + "' is not a valid dEntity!");
+                }
             }
         }
 

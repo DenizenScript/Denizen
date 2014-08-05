@@ -37,12 +37,14 @@ import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class dNPC implements dObject, Adjustable {
+public class dNPC implements dObject, Adjustable, InventoryHolder {
 
     public static dNPC mirrorCitizensNPC(NPC npc) {
         if (dNPCRegistry.denizenNPCs.containsKey(npc.getId())) return dNPCRegistry.denizenNPCs.get(npc.getId());
@@ -167,6 +169,11 @@ public class dNPC implements dObject, Adjustable {
             return null;
         }
     }
+
+    @Override
+    public Inventory getInventory() { return dNPCRegistry.getInventory(getCitizen()); }
+
+    public dInventory getDenizenInventory() { return new dInventory(getInventory()); }
 
     public EntityType getEntityType() {
         return getCitizen().getEntity().getType();
@@ -596,7 +603,7 @@ public class dNPC implements dObject, Adjustable {
         // Returns the dInventory of the NPC.
         // -->
         if (attribute.startsWith("inventory"))
-            return getDenizenEntity().getInventory().getAttribute(attribute.fulfill(1));
+            return getDenizenInventory().getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <n@npc.is_spawned>

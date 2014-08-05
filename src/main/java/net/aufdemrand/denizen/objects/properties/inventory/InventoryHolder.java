@@ -1,15 +1,13 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.tags.Attribute;
-import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.event.inventory.InventoryType;
 
 public class InventoryHolder implements Property {
@@ -46,8 +44,8 @@ public class InventoryHolder implements Property {
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
         if (holder != null) {
-            if (holder instanceof Entity && Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC((Entity) holder)) {
-                return dNPC.fromEntity((Entity) holder);
+            if (holder instanceof dNPC) {
+                return (dNPC) holder;
             }
             else if (holder instanceof Player) {
                 return new dPlayer((Player) holder);
@@ -71,8 +69,14 @@ public class InventoryHolder implements Property {
     public void setHolder(dPlayer player) {
         if (inventory.getIdType().equals("enderchest"))
             inventory.setInventory(player.getBukkitEnderChest(), player);
+        else if (inventory.getIdType().equals("workbench"))
+            inventory.setInventory(player.getBukkitWorkbench(), player);
         else
             inventory.setInventory(player.getBukkitInventory(), player);
+    }
+
+    public void setHolder(dNPC npc) {
+        inventory.setInventory(npc.getInventory());
     }
 
     public void setHolder(dEntity entity) {
@@ -152,6 +156,7 @@ public class InventoryHolder implements Property {
         if (mechanism.matches("holder")) {
             Element value = mechanism.getValue();
             if (value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
+            else if (value.matchesType(dNPC.class)) setHolder(value.asType(dNPC.class));
             else if (value.matchesType(dEntity.class)) setHolder(value.asType(dEntity.class));
             else if (value.matchesType(dLocation.class)) setHolder(value.asType(dLocation.class));
             else if (value.matchesEnum(InventoryType.values())) setHolder(value);

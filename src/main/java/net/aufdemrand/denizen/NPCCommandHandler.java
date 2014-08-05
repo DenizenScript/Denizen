@@ -1,11 +1,9 @@
 package net.aufdemrand.denizen;
 
-import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -15,6 +13,7 @@ import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.Anchors;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -334,10 +333,14 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, "Usage: /npc sit --location x,y,z,world");
                 return;
             }
-            trait.sit(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+            trait.sit(dLocation.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
         } else if (args.hasValueFlag("anchor")) {
-            DenizenAPI.getCurrentInstance().tagManager();
-            trait.sit(aH.getLocationFrom(TagManager.tag(null, dNPCRegistry.getDenizen(npc), ("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+            if (npc.hasTrait(Anchors.class)) {
+                Anchors anchors = npc.getTrait(Anchors.class);
+                if (anchors.getAnchor(args.getFlag("anchor")) != null)
+                    trait.sit(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+            }
+            Messaging.sendError(sender, "The NPC does not have the specified anchor!");
         } else {
             trait.sit();
         }
@@ -398,10 +401,14 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, "Usage: /npc sit --location x,y,z,world");
                 return;
             }
-            trait.toSleep(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+            trait.toSleep(dLocation.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
         } else if (args.hasValueFlag("anchor")) {
-            DenizenAPI.getCurrentInstance().tagManager();
-            trait.toSleep(aH.getLocationFrom(TagManager.tag(null, dNPCRegistry.getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+            if (npc.hasTrait(Anchors.class)) {
+                Anchors anchors = npc.getTrait(Anchors.class);
+                if (anchors.getAnchor(args.getFlag("anchor")) != null)
+                    trait.toSleep(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+            }
+            Messaging.sendError(sender, "The NPC does not have the specified anchor!");
         } else {
             trait.toSleep();
         }
@@ -466,10 +473,14 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, "Usage: /npc fish --location x,y,z,world");
                 return;
             }
-            trait.startFishing(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+            trait.startFishing(dLocation.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
         } else if (args.hasValueFlag("anchor")) {
-            DenizenAPI.getCurrentInstance().tagManager();
-            trait.startFishing(aH.getLocationFrom(TagManager.tag(null, dNPCRegistry.getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+            if (npc.hasTrait(Anchors.class)) {
+                Anchors anchors = npc.getTrait(Anchors.class);
+                if (anchors.getAnchor(args.getFlag("anchor")) != null)
+                    trait.startFishing(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+            }
+            Messaging.sendError(sender, "The NPC does not have the specified anchor!");
         } else {
             trait.startFishing();
         }

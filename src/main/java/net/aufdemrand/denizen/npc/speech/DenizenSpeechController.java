@@ -17,9 +17,28 @@ public class DenizenSpeechController implements SpeechController {
         isNPC = CitizensAPI.getNPCRegistry().isNPC(entity);
     }
 
+    /**
+     * Makes the talker speak, based on the context given, with the DenizenChat vocal chord.
+     *
+     * @param context the context
+     */
+    public void speak(DenizenSpeechContext context) {
+        context.setTalker(entity);
+        if (isNPC) {
+            NPCSpeechEvent event = new NPCSpeechEvent(context, "denizen_chat");
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if (event.isCancelled())
+                return;
+        }
+        ((DenizenChat) CitizensAPI.getSpeechFactory().getVocalChord("denizen_chat")).talk(context);
+    }
+
     @Override
     public void speak(SpeechContext context) {
-        speak(context, "denizen_chat");
+        if (context instanceof DenizenSpeechContext)
+            speak((DenizenSpeechContext) context);
+        else
+            speak(context, "chat");
     }
 
     @Override
