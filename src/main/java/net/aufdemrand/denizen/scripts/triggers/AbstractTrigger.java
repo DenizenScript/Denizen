@@ -94,7 +94,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id);
         if (entries.isEmpty()) return false;
 
-        dB.echoDebug(script, DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());
+        dB.echoDebug(script, DebugElement.Header, "Parsing " + name + " trigger: n@" + npc.getName() + "/p@" + player.getName());
         // Create Queue
         TimedQueue queue = TimedQueue.getQueue(ScriptQueue._getNextId());
         // Add all entries to set it up
