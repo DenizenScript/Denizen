@@ -419,6 +419,21 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         }
 
         // <--[tag]
+        // @attribute <n@npc.has_trigger[<trigger>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the NPC has a specified trigger.
+        // -->
+        if (attribute.startsWith("has_trigger")
+                && attribute.hasContext(1)) {
+            if (!getCitizen().hasTrait(TriggerTrait.class))
+                return Element.FALSE.getAttribute(attribute.fulfill(1));
+            TriggerTrait trait = getCitizen().getTrait(TriggerTrait.class);
+            return new Element(trait.hasTrigger(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <n@npc.anchor.list>
         // @returns dList
         // @description

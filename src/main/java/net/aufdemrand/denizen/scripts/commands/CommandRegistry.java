@@ -2671,7 +2671,7 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // Todo
         // @Tags
-        // Todo
+        // <n@npc.has_trigger[<trigger>]>
         // @Usage
         // Todo
         // -->
