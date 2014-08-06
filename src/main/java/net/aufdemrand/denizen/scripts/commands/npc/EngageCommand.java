@@ -33,41 +33,36 @@ public class EngageCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        // Inialize require fields
-        Duration duration = null;
 
         // Check for NPC
-        if (scriptEntry.getNPC() == null)
+        if (!scriptEntry.hasNPC())
             throw new InvalidArgumentsException("This command requires a linked NPC!");
 
         // Parse arguments
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesInteger(arg) || aH.matchesDuration(arg)) {
-                duration = aH.getDurationFrom(arg);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            } else if (aH.matchesArg("NOW", arg)) {
-                // Catch 'NOW' argument... it's already been parsed.
+            if (!scriptEntry.hasObject("duration")
+                    && arg.matchesArgumentType(Duration.class)) {
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
-            } else throw new InvalidArgumentsException("Unknown argument '" + arg + "'");
+            else if (arg.matches("now")) {
+                // TODO: figure out why this is here
+            }
+
         }
 
-        // If no duration set, assume 15 seconds.
-        if (duration == null)
-            duration = new Duration(15d);
+        scriptEntry.defaultObject("duration", new Duration(0));
 
-        // Stash objects
-        scriptEntry.addObject("duration", duration);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        // Get objects
-        Duration duration = (Duration) scriptEntry.getObject("duration");
+
+        Duration duration = scriptEntry.getdObjectAs("duration", Duration.class);
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("NPC", scriptEntry.getNPC().toString())
-                        + duration.debug());
+        dB.report(scriptEntry, getName(), duration.debug());
 
         if (duration.getSecondsAsInt() > 0)
             setEngaged(scriptEntry.getNPC().getCitizen(), duration.getSecondsAsInt());

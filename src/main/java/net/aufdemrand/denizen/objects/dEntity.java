@@ -112,7 +112,7 @@ public class dEntity implements dObject, Adjustable {
 
             // Player entity
             else if (entityGroup.matches("P@")) {
-                LivingEntity returnable = aH.getPlayerFrom(m.group(2)).getPlayerEntity();
+                LivingEntity returnable = dPlayer.valueOf(m.group(2)).getPlayerEntity();
 
                 if (returnable != null) return new dEntity(returnable);
                 else dB.echoError("Invalid Player! '" + m.group(2)
