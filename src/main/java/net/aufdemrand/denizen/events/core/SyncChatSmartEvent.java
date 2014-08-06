@@ -6,6 +6,8 @@ import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -79,26 +81,37 @@ public class SyncChatSmartEvent implements SmartEvent, Listener {
     // @Triggers when a player chats.
     // @Context
     // <context.message> returns the player's message as an Element.
+    // <context.format> returns the chat message's format.
     //
     // @Determine
     // "CANCELLED" to stop the player from chatting.
     // Element(String) to change the message.
+    // "FORMAT:" to set the format script the message should use.
     //
     // -->
     @EventHandler
     public void playerChat(final PlayerChatEvent event) {
 
-
         final Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getMessage()));
+        context.put("format", new Element(event.getMessage()));
 
-        String determination = EventManager.doEvents(Arrays.asList("player chats"),
-                null, new dPlayer(event.getPlayer()), context);
+        dPlayer player = new dPlayer(event.getPlayer());
+
+        String determination = EventManager.doEvents(Arrays.asList("player chats"), null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+        else if (determination.toUpperCase().startsWith("FORMAT:")) {
+            String name = determination.substring(7);
+            FormatScriptContainer format = ScriptRegistry.getScriptContainer(name);
+            if (format == null) dB.echoError("Could not find format script matching '" + name + '\'');
+            else event.setFormat(format.getFormattedText(event.getMessage(), null, player));
+        }
         else if (!determination.equals("none")) {
             event.setMessage(determination);
         }
+
     }
+
 }
