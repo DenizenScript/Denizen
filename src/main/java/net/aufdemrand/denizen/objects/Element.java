@@ -1032,7 +1032,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("format")
                 && attribute.hasContext(1)) {
-            FormatScriptContainer format = ScriptRegistry.getScriptContainerAs(attribute.getContext(1), FormatScriptContainer.class);
+            FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getContext(1));
             if (format == null) {
                 dB.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
                 return Element.NULL.getAttribute(attribute.fulfill(1));

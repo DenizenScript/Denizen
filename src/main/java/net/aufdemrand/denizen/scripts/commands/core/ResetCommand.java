@@ -63,10 +63,10 @@ public class ResetCommand extends AbstractCommand {
         dList players;
         if (player instanceof dPlayer)
             players = new dList(player.identify());
-        else players = (dList) scriptEntry.getdObject("players");
+        else players = scriptEntry.getdObject("players");
 
-        Element type = (Element) scriptEntry.getdObject("type");
-        dScript script = (dScript) scriptEntry.getObject("script");
+        Element type = scriptEntry.getElement("type");
+        dScript script = scriptEntry.getdObject("script");
 
         dB.report(scriptEntry, getName(),
                 (players != null ? players.debug() : "")

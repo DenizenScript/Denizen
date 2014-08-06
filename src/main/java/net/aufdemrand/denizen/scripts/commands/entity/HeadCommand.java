@@ -65,7 +65,7 @@ public class HeadCommand extends AbstractCommand {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         Element skin = scriptEntry.getElement("skin");
-        dMaterial material = scriptEntry.getdObjectAs("material", dMaterial.class);
+        dMaterial material = scriptEntry.getdObject("material");
 
         // Report to dB
         dB.report(scriptEntry, getName(),

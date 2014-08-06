@@ -154,7 +154,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
                         + (scriptEntry.hasObject("id") ? scriptEntry.getdObject("id").debug() : ""));
 
         // Get the script
-        dScript script = (dScript) scriptEntry.getObject("script");
+        dScript script = scriptEntry.getdObject("script");
 
         // Get the entries
         List<ScriptEntry> entries;

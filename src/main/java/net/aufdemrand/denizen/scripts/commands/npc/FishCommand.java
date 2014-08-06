@@ -55,7 +55,7 @@ public class FishCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dLocation location = scriptEntry.getdObjectAs("location", dLocation.class);
+        dLocation location = scriptEntry.getdObject("location");
         Element katch = scriptEntry.getElement("catch");
         Element stop = scriptEntry.getElement("stop");
         Element percent = scriptEntry.getElement("percent");

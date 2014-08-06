@@ -40,8 +40,7 @@ public class ContextTags implements Listener {
         if (!ScriptRegistry.containsScript(event.getScriptEntry().getScript().getName(),
                 TaskScriptContainer.class)) return;
 
-        TaskScriptContainer script = ScriptRegistry.getScriptContainerAs(
-                event.getScriptEntry().getScript().getName(), TaskScriptContainer.class);
+        TaskScriptContainer script = ScriptRegistry.getScriptContainer(event.getScriptEntry().getScript().getName());
 
         ScriptEntry entry = event.getScriptEntry();
 

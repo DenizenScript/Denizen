@@ -115,8 +115,8 @@ public class ChatCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dList talkers = scriptEntry.getdObjectAs("talkers", dList.class);
-        dList targets = scriptEntry.getdObjectAs("targets", dList.class);
+        dList talkers = scriptEntry.getdObject("talkers");
+        dList targets = scriptEntry.getdObject("targets");
         Element message = scriptEntry.getElement("message");
         Element chatRange = scriptEntry.getElement("range");
 

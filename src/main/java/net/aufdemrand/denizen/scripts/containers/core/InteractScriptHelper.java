@@ -84,7 +84,7 @@ public class InteractScriptHelper {
             // Start requirement checking
             //
             try {
-                InteractScriptContainer interactScript = ScriptRegistry.getScriptContainerAs(name, InteractScriptContainer.class);
+                InteractScriptContainer interactScript = ScriptRegistry.getScriptContainer(name);
 
                 if (interactScript != null) {
                     // Check requirements of the script
@@ -125,7 +125,7 @@ public class InteractScriptHelper {
             String script = interactableScripts.get(0).getName();
             dB.echoApproval("Highest scoring script is " + script + ".");
             dB.log(dB.DebugElement.Footer, "");
-            return ScriptRegistry.getScriptContainerAs(script.replace("^", ""), InteractScriptContainer.class);
+            return ScriptRegistry.getScriptContainer(script.replace("^", ""));
         }
 
         // Or, if list is empty.. no scripts meet requirements!
@@ -142,7 +142,7 @@ public class InteractScriptHelper {
         for (int a = interactableScripts.size() - 1; a >= 0; a--) {
 
             InteractScriptContainer interactScript = ScriptRegistry
-                    .getScriptContainerAs(interactableScripts.get(a).name.replace("^", ""), InteractScriptContainer.class);
+                    .getScriptContainer(interactableScripts.get(a).name.replace("^", ""));
 
             dB.log("Checking script '" + interactableScripts.get(a).getName() + "'.");
 

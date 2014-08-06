@@ -120,9 +120,9 @@ public class ScriptRegistry {
         return null;
     }
 
-    public static ScriptContainer getScriptContainer(String name) {
+    public static <T extends ScriptContainer> T getScriptContainer(String name) {
         if (scriptContainers.containsKey(name.toUpperCase()))
-            return (ScriptContainer) scriptContainers.get(name.toUpperCase());
+            return (T) scriptContainers.get(name.toUpperCase());
 
         else return null;
     }

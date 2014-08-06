@@ -145,7 +145,7 @@ public class InjectCommand extends AbstractCommand {
                         + (scriptEntry.hasObject("local") ? scriptEntry.getElement("local").debug() : ""));
 
         // Get the script
-        dScript script = (dScript) scriptEntry.getObject("script");
+        dScript script = scriptEntry.getdObject("script");
 
         // Get the entries
         List<ScriptEntry> entries;

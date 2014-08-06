@@ -37,7 +37,7 @@ public class NarrateCommand extends AbstractCommand {
                     && arg.matchesPrefix("format, f")) {
                 FormatScriptContainer format = null;
                 String formatStr = arg.getValue();
-                format = ScriptRegistry.getScriptContainerAs(formatStr, FormatScriptContainer.class);
+                format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) dB.echoError("Could not find format script matching '" + formatStr + '\'');
                 scriptEntry.addObject("format", format);
             }
