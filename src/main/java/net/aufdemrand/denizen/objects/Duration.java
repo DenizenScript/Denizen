@@ -58,9 +58,9 @@ public class Duration implements dObject {
     // Use regex pattern matching to easily determine if a string
     // value is a valid Duration.
     final static Pattern match =
-            Pattern.compile("(?:d@)?(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|w|)" +
+            Pattern.compile("(?:d@)?(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|w)?" +
                     // Optional 'high-range' for random durations.
-                    "(?:(?:-\\d+.\\d+|.\\d+|\\d+)(?:t|m|s|h|d|w|))?",
+                    "(?:(?:-\\d+.\\d+|.\\d+|\\d+)(?:t|m|s|h|d|w)?)?",
                     Pattern.CASE_INSENSITIVE);
 
 
