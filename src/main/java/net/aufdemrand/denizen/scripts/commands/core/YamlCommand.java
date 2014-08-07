@@ -442,6 +442,18 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
 
         // <--[tag]
+        // @attribute <yaml[<id>].is_list[<path>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the specified path results in a list.
+        // -->
+        if (attribute.startsWith("is_list")) {
+            event.setReplaced(new Element(getYaml(id).isList(path))
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <yaml[<id>].read[<path>]>
         // @returns Element
         // @description
@@ -463,21 +475,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     event.setReplaced(Element.NULL.getAttribute(attribute));
                     return;
                 }
-                // <--[tag]
-                // @attribute <yaml[<id>].read[<path>].as_list.escaped>
-                // @returns dList
-                // @description
-                // Returns the values of the key at the path as a pre-escaped dList.
-                // -->
-                if (attribute.startsWith("escaped")) {
-                    dList dlist = new dList();
-                    for (String str: list) {
-                        dlist.add(EscapeTags.Escape(str));
-                    }
-                    event.setReplaced(dlist.getAttribute(attribute.fulfill(1)));
-                }
-                else
-                    event.setReplaced(new dList(list).getAttribute(attribute));
+                event.setReplaced(new dList(list).getAttribute(attribute));
                 return;
             }
 
