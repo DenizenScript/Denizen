@@ -869,11 +869,32 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
-        // @attribute <el@element.after[<string>]>
+        // @attribute <el@element.after_last[<text>]>
         // @returns Element
         // @group string manipulation
         // @description
-        // Returns the portion of an element after a specified string. ie. <el@helloWorld.after[hello]> returns 'World'.
+        // Returns the portion of an element after the last occurrence of a specified string.
+        // EG, abcabc .after[b] returns c.
+        // -->
+        if (attribute.startsWith("after_last")
+                && attribute.hasContext(1)) {
+            String delimiter = attribute.getContext(1);
+            if (element.contains(delimiter))
+                return new Element(element.substring
+                        (element.lastIndexOf(delimiter) + delimiter.length()))
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new Element("")
+                        .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.after[<text>]>
+        // @returns Element
+        // @group string manipulation
+        // @description
+        // Returns the portion of an element after the first occurrence of a specified string.
+        // EG, HelloWorld .after[Hello] returns World.
         // -->
         if (attribute.startsWith("after")
                 && attribute.hasContext(1)) {
