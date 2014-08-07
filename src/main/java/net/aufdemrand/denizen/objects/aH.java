@@ -585,6 +585,14 @@ public class aH {
         return dLocation.valueOf(arg);
     }
 
+    public static long getLongFrom(String arg) {
+        try {
+            return Long.valueOf(getStringFrom(arg));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     @Deprecated
     public static dScript getScriptFrom(String arg) {
         arg = arg.toLowerCase().replace("script:", "");
