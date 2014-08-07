@@ -458,37 +458,34 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // @returns Element
         // @description
         // Returns the value of the key at the path.
+        // If the key is a list, returns a dList instead.
         // -->
         if (attribute.startsWith("read")) {
             attribute.fulfill(1);
 
-            // <--[tag]
-            // @attribute <yaml[<id>].read[<path>].as_list>
-            // @returns dList
-            // @description
-            // Returns the values of the key at the path as a dList.
-            // -->
-            if (attribute.startsWith("as_list")) {
-                attribute.fulfill(1);
-                List<String> list = getYaml(id).getStringList(path);
-                if (list == null) {
+            if (getYaml(id).isList(path)) {
+                List<String> value = getYaml(id).getStringList(path);
+                if (value == null) {
+                    // If value is null, the key at the specified path didn't exist.
                     event.setReplaced(Element.NULL.getAttribute(attribute));
                     return;
                 }
-                event.setReplaced(new dList(list).getAttribute(attribute));
-                return;
-            }
-
-            String value = getYaml(id).getString(path);
-            if (value == null) {
-                // If value is null, the key at the specified path didn't exist.
-                event.setReplaced(Element.NULL.getAttribute(attribute));
-                return;
-
+                else {
+                    event.setReplaced(new dList(value).getAttribute(attribute));
+                    return;
+                }
             }
             else {
-                event.setReplaced(new Element(value).getAttribute(attribute));
-                return;
+                String value = getYaml(id).getString(path);
+                if (value == null) {
+                    // If value is null, the key at the specified path didn't exist.
+                    event.setReplaced(Element.NULL.getAttribute(attribute));
+                    return;
+                }
+                else {
+                    event.setReplaced(new Element(value).getAttribute(attribute));
+                    return;
+                }
             }
         }
 
