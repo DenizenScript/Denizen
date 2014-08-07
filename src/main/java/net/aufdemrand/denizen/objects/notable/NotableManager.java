@@ -117,13 +117,16 @@ public class NotableManager {
             ConfigurationSection section = DenizenAPI.getCurrentInstance().notableManager().getNotables()
                     .getConfigurationSection(key);
 
+            if (section == null)
+                continue;
+
             for (String notable : section.getKeys(false)) {
                 Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notable));
                 if (obj != null) {
-                    obj.makeUnique(notable);
+                    obj.makeUnique(notable.replace("DOT", "."));
                 }
                 else {
-                    dB.echoError("Notable '" + section.getString(notable) + "' failed to load!");
+                    dB.echoError("Notable '" + section.getString(notable).replace("DOT", ".") + "' failed to load!");
                 }
             }
 
@@ -152,7 +155,7 @@ public class NotableManager {
             if (notable.getValue() instanceof dInventory) {
                 continue;
             }
-            notables.set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase(),
+            notables.set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase().replace(".", "DOT"),
                     notable.getValue().getSaveObject());
         }
 

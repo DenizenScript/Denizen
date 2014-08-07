@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -215,7 +216,8 @@ public class dB {
     // @Triggers when a script generates an error.
     // @Context
     // <context.message> returns the error message.
-    // <context.queue> returns the queue that caused the exception, if any.
+    // <context.queue> returns the queue that caused the error, if any.
+    // <context.script> returns the script that caused the error, if any.
     //
     // @Determine
     // "CANCELLED" to stop the error from showing in the console.
@@ -225,18 +227,29 @@ public class dB {
     }
 
     public static void echoError(ScriptQueue source, String message) {
+        dScript script = null;
+        if (source != null && source.getEntries().size() > 0 && source.getEntries().get(0).getScript() != null) {
+            script = source.getEntries().get(0).getScript();
+        }
+        else if (source != null && source.getLastEntryExecuted() != null && source.getLastEntryExecuted().getScript() != null) {
+            script = source.getLastEntryExecuted().getScript();
+        }
         if (ThrowErrorEvent) {
             ThrowErrorEvent = false;
             Map<String, dObject> context = new HashMap<String, dObject>();
             context.put("message", new Element(message));
-            context.put("queue", source);
+            if (source != null)
+                context.put("queue", source);
+            if (script != null)
+                context.put("script", script);
             String Determination = EventManager.doEvents(Arrays.asList("script generates error"), null, null, context);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
                 return;
         }
         if (!showDebug) return;
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! "
+        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
+                (script != null ? " in script '" + script.getName() + "'": "") + "! "
                 + ChatColor.WHITE + trimMessage(message));
     }
 
@@ -280,6 +293,7 @@ public class dB {
             dB.echoError(source, "Exception! Enable '/denizen debug -s' for the nitty-gritty.");
         }
         else {
+            dB.echoError(source, "Internal exception was thrown!");
             ex.printStackTrace();
             if (dB.record) {
                 String prefix = ConsoleSender.dateFormat.format(new Date()) + " [SEVERE] ";

@@ -178,6 +178,7 @@ public class ScoreboardHelper {
 
                     int score = obj.getScore(player).getScore();
                     Team team = scoreboardEntry.getValue().getTeam(player);
+                    // TODO: Properly save and load teams
                     player = (team != null && team.getPrefix() != null ? team.getPrefix(): "") + player + (team != null && team.getSuffix() != null ? team.getSuffix(): "");
 
                     // If a player has no score for this objective,
@@ -248,7 +249,9 @@ public class ScoreboardHelper {
         // Go through every score for this (real or fake) player
         // and put it in scoreMap if it doesn't belong to the
         // objective we want to remove the score from
-        for (Score sc : board.getScores(player.getName())) {
+        String name = createTeam(board, player.getName()).getValue();
+        // TODO: Properly remove when teams are involved
+        for (Score sc : board.getScores(name)) {
             if (!sc.getObjective().equals(o)) {
                 scoreMap.put(sc.getObjective().getName(), sc.getScore());
             }

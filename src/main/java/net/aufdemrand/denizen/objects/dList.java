@@ -830,6 +830,12 @@ public class dList extends ArrayList<String> implements dObject {
             return escaped.getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <li@list.contains>
+        // @returns Element(Boolean)
+        // @description
+        // returns whether the list contains a given element.
+        // -->
         if (attribute.startsWith("contains")) {
             if (attribute.hasContext(1)) {
                 boolean state = false;
