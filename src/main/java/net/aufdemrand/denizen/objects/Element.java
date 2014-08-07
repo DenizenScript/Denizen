@@ -888,11 +888,32 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <el@element.before[<string>]>
+        // @attribute <el@element.before_last[<text>]>
         // @returns Element
         // @group string manipulation
         // @description
-        // Returns the portion of an element before a specified string.
+        // Returns the portion of an element before the last occurrence of a specified string.
+        // EG, abcabc .before[b] returns abca.
+        // -->
+        if (attribute.startsWith("before_last")
+                && attribute.hasContext(1)) {
+            String delimiter = attribute.getContext(1);
+            if (element.contains(delimiter))
+                return new Element(element.substring
+                        (0, element.lastIndexOf(delimiter)))
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new Element(element)
+                        .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.before[<text>]>
+        // @returns Element
+        // @group string manipulation
+        // @description
+        // Returns the portion of an element before the first occurrence of specified string.
+        // EG, abcd .before[c] returns ab.
         // -->
         if (attribute.startsWith("before")
                 && attribute.hasContext(1)) {
