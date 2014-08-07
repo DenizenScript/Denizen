@@ -495,6 +495,37 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
 
         // <--[tag]
+        // @attribute <yaml[<id>].list_deep_keys[<path>]>
+        // @returns dList
+        // @description
+        // Returns a dList of all the keys at the path and all subpaths.
+        // -->
+        if (attribute.startsWith("list_deep_keys")) {
+            Set<String> keys;
+            if (path != null && path.length() > 0) {
+                ConfigurationSection section = getYaml(id).getConfigurationSection(path);
+                if (section == null) {
+                    event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
+                    return;
+                }
+                keys = section.getKeys(true);
+            }
+            else {
+                keys = getYaml(id).getKeys(true);
+            }
+            if (keys == null) {
+                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
+                return;
+
+            } else {
+                ArrayList<String> list = new ArrayList<String>();
+                list.addAll(keys);
+                event.setReplaced(new dList(list).getAttribute(attribute.fulfill(1)));
+                return;
+            }
+        }
+
+        // <--[tag]
         // @attribute <yaml[<id>].list_keys[<path>]>
         // @returns dList
         // @description

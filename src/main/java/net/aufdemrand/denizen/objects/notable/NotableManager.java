@@ -117,6 +117,9 @@ public class NotableManager {
             ConfigurationSection section = DenizenAPI.getCurrentInstance().notableManager().getNotables()
                     .getConfigurationSection(key);
 
+            if (section == null)
+                continue;
+
             for (String notable : section.getKeys(false)) {
                 Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notable));
                 if (obj != null) {
