@@ -377,10 +377,7 @@ public class dItem implements dObject, Notable, Adjustable {
      */
     public boolean isArmor() {
         int type = item.getTypeId();
-        if (type >= 298 && type <= 317) {
-            return true;
-        }
-        return false;
+        return type >= 298 && type <= 317;
     }
 
     /**

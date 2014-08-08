@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("deprecation")
 public class ChatTrigger extends AbstractTrigger implements Listener {
 
-    final static Pattern triggerPattern = Pattern.compile("\\/([^/]*)\\/");
+    final static Pattern triggerPattern = Pattern.compile("/([^/]*)/");
 
     @Override
     public void onEnable() {
@@ -188,7 +188,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                     if (!script.checkSpecificTriggerScriptRequirementsFor(ChatTrigger.class,
                             denizenPlayer, npc, entry.getKey())) continue;
                     String keyword = TagManager.tag(denizenPlayer, npc, matcher.group().replace("/", ""));
-                    String[] split = keyword.split("\\\\\\+REPLACE\\:", 2);
+                    String[] split = keyword.split("\\\\\\+REPLACE:", 2);
                     String replace = null;
                     if (split.length == 2) {
                         keyword = split[0];

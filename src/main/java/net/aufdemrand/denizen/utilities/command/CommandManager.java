@@ -273,7 +273,7 @@ public class CommandManager {
     }
 
     private String getUsage(String[] args, Command cmd) {
-        return new StringBuilder("/").append(args[0] + " ").append(cmd.usage()).toString();
+        return "/" + args[0] + " " + cmd.usage();
     }
 
     /**
@@ -299,10 +299,7 @@ public class CommandManager {
     // Returns whether a player has access to a command.
     private boolean hasPermission(Method method, CommandSender sender) {
         Command cmd = method.getAnnotation(Command.class);
-        if (cmd.permission().isEmpty() || hasPermission(sender, cmd.permission()) || hasPermission(sender, "admin"))
-            return true;
-
-        return false;
+        return cmd.permission().isEmpty() || hasPermission(sender, cmd.permission()) || hasPermission(sender, "admin");
     }
 
     /**

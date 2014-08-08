@@ -47,7 +47,7 @@ public class DebugLog extends Logger {
         public String format(LogRecord rec) {
             Throwable exception = rec.getThrown();
 
-            String out = this.date.format(Long.valueOf(rec.getMillis()));
+            String out = this.date.format(rec.getMillis());
 
             out += "[" + rec.getLevel().getName().toUpperCase() + "] ";
             out += rec.getMessage() + '\n';

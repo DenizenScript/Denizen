@@ -1158,7 +1158,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                         }
                     }
                 } else {
-                    items: for (ItemStack item : getContents()) {
+                    for (ItemStack item : getContents()) {
                         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
                             List<String> item_lore = item.getItemMeta().getLore();
                             int loreCount = 0;

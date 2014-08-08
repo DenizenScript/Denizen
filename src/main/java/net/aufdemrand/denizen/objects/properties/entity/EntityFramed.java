@@ -12,8 +12,7 @@ public class EntityFramed implements Property {
 
     // TODO: Possibly merge class with EntityItem?
     public static boolean describes(dObject entity) {
-        if (!(entity instanceof dEntity)) return false;
-        return ((dEntity) entity).getEntityType() == EntityType.ITEM_FRAME;
+        return entity instanceof dEntity && ((dEntity) entity).getEntityType() == EntityType.ITEM_FRAME;
     }
 
     public static EntityFramed getFrom(dObject entity) {

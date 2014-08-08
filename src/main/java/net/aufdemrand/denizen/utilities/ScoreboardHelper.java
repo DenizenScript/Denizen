@@ -305,8 +305,7 @@ public class ScoreboardHelper {
      *
      */
     public static Scoreboard createScoreboard() {
-        Scoreboard board = manager.getNewScoreboard();
-        return board;
+        return manager.getNewScoreboard();
     }
 
     /**
@@ -372,8 +371,7 @@ public class ScoreboardHelper {
      *
      */
     public static boolean hasScoreboard(String id) {
-        if (scoreboardMap.containsKey(id.toUpperCase())) return true;
-        else return false;
+        return scoreboardMap.containsKey(id.toUpperCase());
     }
 
     /**

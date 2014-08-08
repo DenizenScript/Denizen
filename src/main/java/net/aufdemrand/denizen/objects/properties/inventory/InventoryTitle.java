@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 
 public class InventoryTitle implements Property {

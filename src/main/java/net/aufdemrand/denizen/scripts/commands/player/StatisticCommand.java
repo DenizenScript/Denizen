@@ -10,8 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 
-import java.util.List;
-
 public class StatisticCommand extends AbstractCommand {
 
     private enum Action { ADD, TAKE, SET }

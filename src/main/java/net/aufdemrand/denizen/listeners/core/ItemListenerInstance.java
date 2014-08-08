@@ -99,7 +99,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
                 //if item isn't a required item, then return
                 if (!items.contains(item.getType().name().toLowerCase())
-                    && !items.contains(item.getTypeId()) && !items.contains("*"))
+                    && !items.contains(String.valueOf(item.getTypeId())) && !items.contains("*"))
                     return;
 
                 if (event.isShiftClick()) {

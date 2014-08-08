@@ -187,7 +187,7 @@ public class ObjectFetcher {
         // (EG, 'bob' could be a player or NPC's name)
         // Only use specific objects for input with @ notation
         if (value.contains("@")) {
-            String type = value.split("\\@", 2)[0];
+            String type = value.split("@", 2)[0];
             // Of course, ensure the @ notation is valid first
             if (canFetch(type)) {
                 Class toFetch = getObjectClass(type);

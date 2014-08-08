@@ -2165,7 +2165,7 @@ public class WorldScriptHelper implements Listener {
         events.add("projectile launched");
         events.add(projectile.identifySimple() + " launched");
         events.add(projectile.identifyType() + " launched");
-        String Determination = EventManager.doEvents(events, null, null, context, true);;
+        String Determination = EventManager.doEvents(events, null, null, context, true);
         if (Determination.equalsIgnoreCase("CANCELLED"))
             event.setCancelled(true);
     }

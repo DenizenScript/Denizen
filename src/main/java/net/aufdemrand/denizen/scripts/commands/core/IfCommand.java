@@ -257,7 +257,7 @@ public class IfCommand extends AbstractCommand {
         boolean do_then;
 
         if (comparables.size() > 1) {
-                do_then = (ormet > 0) || (andcount == andmet && comparables.get(0).outcome == true);
+                do_then = (ormet > 0) || (andcount == andmet && comparables.get(0).outcome);
         } else
             do_then = comparables.get(0).outcome;
 
