@@ -103,8 +103,7 @@ public class dPlayer implements dObject, Adjustable {
         // Match as a player name
         if (playerNames.containsKey(string.toLowerCase())) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(string.toLowerCase()));
-            if (player.hasPlayedBefore())
-                return new dPlayer(player);
+            return new dPlayer(player);
         }
 
         if (announce)
