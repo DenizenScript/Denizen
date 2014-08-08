@@ -167,6 +167,16 @@ public class Element implements dObject {
         }
     }
 
+    public long asLong() {
+        try {
+            return Long.valueOf(element.replaceAll("(%)|(\\.\\d+)", ""));
+        }
+        catch (NumberFormatException ex) {
+            dB.echoError("'" + element + "' is not a valid integer!");
+            return 0;
+        }
+    }
+
     public boolean asBoolean() {
         return Boolean.valueOf(element.replaceAll("el@", ""));
     }
@@ -1276,6 +1286,25 @@ public class Element implements dObject {
             return new Element(Math.abs(asDouble()))
                     .getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <el@element.add_int[<#>]>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the element plus a number, using integer math.
+        // -->
+        if (attribute.startsWith("add_int")
+                && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(asLong() + aH.getLongFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // TODO: Mul/div/sub _int
 
         // <--[tag]
         // @attribute <el@element.add[<#>]>
