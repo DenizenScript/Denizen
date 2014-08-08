@@ -46,8 +46,8 @@ public class PropertyParser {
         registerProperty(EntityTame.class, dEntity.class);
 
         // register core dInventory properties
+        registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
         registerProperty(InventoryContents.class, dInventory.class);
-        registerProperty(InventoryHolder.class, dInventory.class);
         registerProperty(InventorySize.class, dInventory.class);
         registerProperty(InventoryTitle.class, dInventory.class);
 

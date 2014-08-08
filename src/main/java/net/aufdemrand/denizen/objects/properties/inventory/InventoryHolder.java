@@ -155,11 +155,11 @@ public class InventoryHolder implements Property {
         // -->
         if (mechanism.matches("holder")) {
             Element value = mechanism.getValue();
-            if (value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
+            if (value.matchesEnum(InventoryType.values())) setHolder(value);
+            else if(value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
             else if (value.matchesType(dNPC.class)) setHolder(value.asType(dNPC.class));
             else if (value.matchesType(dEntity.class)) setHolder(value.asType(dEntity.class));
             else if (value.matchesType(dLocation.class)) setHolder(value.asType(dLocation.class));
-            else if (value.matchesEnum(InventoryType.values())) setHolder(value);
         }
 
     }

@@ -110,7 +110,7 @@ public class NotableManager {
         reverseObjects.clear();
 
         // Find each type of notable
-        for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(true)) {
+        for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(false)) {
 
             Class<? extends dObject> clazz = reverse_objects.get(key);
 
@@ -152,9 +152,6 @@ public class NotableManager {
       //          DenizenAPI.getCurrentInstance().notableManager().getNotables()
       //                  .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
 
-            if (notable.getValue() instanceof dInventory) {
-                continue;
-            }
             notables.set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase().replace(".", "DOT"),
                     notable.getValue().getSaveObject());
         }
