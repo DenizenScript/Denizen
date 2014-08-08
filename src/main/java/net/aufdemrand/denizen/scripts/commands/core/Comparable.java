@@ -74,7 +74,7 @@ public class Comparable {
 
         // If a Number
         if (aH.matchesInteger(arg))
-            comparable = aH.getIntegerFrom(arg);
+            comparable = aH.getLongFrom(arg);
         else if (aH.matchesDouble(arg))
             comparable = aH.getDoubleFrom(arg);
 
@@ -104,9 +104,9 @@ public class Comparable {
             comparedto = arg;
 
             // Comparable is a Number, return Double
-        else if (comparable instanceof Double || comparable instanceof Integer) {
+        else if (comparable instanceof Double || comparable instanceof Long) {
             if (aH.matchesInteger(arg))
-                comparedto = aH.getIntegerFrom(arg);
+                comparedto = aH.getLongFrom(arg);
             else if (aH.matchesDouble(arg))
                 comparedto = aH.getDoubleFrom(arg);
             else {
@@ -151,8 +151,8 @@ public class Comparable {
             compare_as_list();
         }
 
-        else if (comparable instanceof Double || comparable instanceof Integer) {
-            if (comparedto instanceof Double || comparedto instanceof Integer) {
+        else if (comparable instanceof Double || comparable instanceof Long) {
+            if (comparedto instanceof Double || comparedto instanceof Long) {
                 compare_as_numbers();
             }
         }
@@ -180,12 +180,12 @@ public class Comparable {
         if (this.comparable instanceof Double)
             comparable = (Double) this.comparable;
         else
-            comparable = ((Integer) this.comparable).doubleValue();
+            comparable = ((Long) this.comparable).doubleValue();
         Double comparedto;
         if (this.comparedto instanceof Double)
             comparedto = (Double) this.comparedto;
         else
-            comparedto = ((Integer) this.comparedto).doubleValue();
+            comparedto = ((Long) this.comparedto).doubleValue();
 
         switch(operator) {
 
@@ -226,9 +226,9 @@ public class Comparable {
                     compared_mat = dMaterial.valueOf((String)comparedto);
                 }
                 for (String string : comparable) {
-                    if (comparedto instanceof Integer) {
+                    if (comparedto instanceof Long) {
                         if (aH.matchesInteger(string)
-                                && aH.getIntegerFrom(string) == (Integer) comparedto) {
+                                && aH.getLongFrom(string) == (Long) comparedto) {
                             outcome = true;
                             break;
                         }
@@ -386,11 +386,11 @@ public class Comparable {
 
                 else if (comparedto.equalsIgnoreCase("even integer")
                         || comparedto.equalsIgnoreCase("even number"))
-                    outcome = aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 0;
+                    outcome = aH.matchesInteger(comparable) && (aH.getLongFrom(comparable) % 2) == 0;
 
                 else if (comparedto.equalsIgnoreCase("odd integer")
                         || comparedto.equalsIgnoreCase("odd number"))
-                    outcome = aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 1;
+                    outcome = aH.matchesInteger(comparable) && (aH.getLongFrom(comparable) % 2) == 1;
 
                 else if (comparedto.equalsIgnoreCase("boolean"))
                     outcome = (comparable.equalsIgnoreCase("true") || comparable.equalsIgnoreCase("false"));
