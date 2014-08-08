@@ -110,7 +110,7 @@ public class NotableManager {
         reverseObjects.clear();
 
         // Find each type of notable
-        for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(true)) {
+        for (String key : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(false)) {
 
             Class<? extends dObject> clazz = reverse_objects.get(key);
 
