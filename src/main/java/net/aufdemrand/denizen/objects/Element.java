@@ -1304,7 +1304,56 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // TODO: Mul/div/sub _int
+        // <--[tag]
+        // @attribute <el@element.div[<#>]>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the element divided by a number.
+        // -->
+        if (attribute.startsWith("div_int")
+                && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(asLong() / aH.getLongFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.mul_int[<#>]>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the element multiplied by a number.
+        // -->
+        if (attribute.startsWith("mul_int")
+                && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(asLong() * aH.getLongFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.sub_int[<#>]>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the element minus a number.
+        // -->
+        if (attribute.startsWith("sub_int")
+                && attribute.hasContext(1)) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(asLong() - aH.getLongFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.add[<#>]>
@@ -1375,22 +1424,6 @@ public class Element implements dObject {
         }
 
         // <--[tag]
-        // @attribute <el@element.sqrt>
-        // @returns Element(Decimal)
-        // @group math
-        // @description
-        // Returns the square root of the element.
-        // -->
-        if (attribute.startsWith("sqrt")) {
-            if (!isDouble()) {
-                dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
-            }
-            return new Element(Math.sqrt(asDouble()))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <el@element.sub[<#>]>
         // @returns Element(Decimal)
         // @group math
@@ -1404,6 +1437,22 @@ public class Element implements dObject {
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             }
             return new Element(asDouble() - aH.getDoubleFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.sqrt>
+        // @returns Element(Decimal)
+        // @group math
+        // @description
+        // Returns the square root of the element.
+        // -->
+        if (attribute.startsWith("sqrt")) {
+            if (!isDouble()) {
+                dB.echoError("Element '" + element + "' is not a valid decimal number!");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            return new Element(Math.sqrt(asDouble()))
                     .getAttribute(attribute.fulfill(1));
         }
 
