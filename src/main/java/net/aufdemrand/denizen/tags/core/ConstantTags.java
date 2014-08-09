@@ -29,6 +29,8 @@ public class ConstantTags implements Listener {
             return;
         }
 
+        dB.echoError(event.getAttributes().getScriptEntry().getResidingQueue(), "constant: tags are deprecated! Use <npc.constant[]>!");
+
         NPC npc = null;
         if (event.getType() != null && event.getType().matches("\\d+"))
             npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
