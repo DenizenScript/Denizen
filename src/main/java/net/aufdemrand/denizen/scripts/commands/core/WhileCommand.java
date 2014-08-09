@@ -170,6 +170,7 @@ public class WhileCommand extends BracedCommand {
                     bracedCommands.add(callbackEntry);
                     for (int i = 0; i < bracedCommands.size(); i++) {
                         bracedCommands.get(i).setInstant(true);
+                        bracedCommands.get(i).addObject("reqId", scriptEntry.getObject("reqId"));
                     }
                     scriptEntry.getResidingQueue().injectEntries(bracedCommands, 0);
                 }
@@ -218,6 +219,7 @@ public class WhileCommand extends BracedCommand {
             scriptEntry.getResidingQueue().addDefinition("loop_index", "1");
             for (int i = 0; i < bracedCommandsList.size(); i++) {
                 bracedCommandsList.get(i).setInstant(true);
+                bracedCommandsList.get(i).addObject("reqId", scriptEntry.getObject("reqId"));
             }
             scriptEntry.getResidingQueue().injectEntries(bracedCommandsList, 0);
         }
