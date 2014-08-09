@@ -22,6 +22,7 @@ public class NotableLocationTags implements Listener {
 
         if (!event.matches("NOTABLE")) return;
 
+        dB.echoError(event.getAttributes().getScriptEntry().getResidingQueue(), "notable: tags are deprecated! Use <l@NotableName>!");
         String tag = event.raw_tag;
 
         String id = null;

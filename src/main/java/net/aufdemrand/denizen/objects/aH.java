@@ -568,6 +568,14 @@ public class aH {
         }
     }
 
+    public static long getLongFrom(String arg) {
+        try {
+            return Long.valueOf(getStringFrom(arg));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     @Deprecated
     public static dItem getItemFrom(String arg) {
         arg = arg.toLowerCase().replace("item:", "");

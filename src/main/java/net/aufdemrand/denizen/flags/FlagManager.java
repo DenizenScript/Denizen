@@ -602,6 +602,26 @@ public class FlagManager {
             return (flagOwner.equalsIgnoreCase("SERVER") ? "fl@" + flagName : "fl[" + flagOwner + "]@" + flagName);
         }
 
+        // <--[event]
+        // @Events
+        // flag expires
+        // player flag expires
+        // player flag <flagname> expires
+        // npc flag expires
+        // npc flag <flagname> expires
+        // server flag expires
+        // server flag <flagname> expires
+        //
+        // @Warning This event will fire rapidly and not exactly when you might expect it to fire.
+        //
+        // @Triggers when a flag expires
+        // @Context
+        // <context.owner> returns an Element of the flag owner's object.
+        // <context.name> returns an Element of the flag name.
+        // <context.type> returns an Element of the flag type.
+        // <context.old_value> returns an Element of the flag's previous value.
+        //
+        // -->
         /**
          * Removes flag if expiration is found to be up. This is called when an action
          * is done on the flag, such as get() or put(). If expired, the flag will be
@@ -612,11 +632,51 @@ public class FlagManager {
             rebuild();
             if (denizen.getSaves().contains(flagPath + "-expiration"))
                 if (expiration > 1 && expiration < System.currentTimeMillis()) {
+                    String OldOwner = flagOwner;
+                    String OldName = flagName;
+                    dObject OldValue = value.size() > 1
+                            ? new dList(denizen.getSaves().getStringList(flagPath))
+                            : value.size() == 1 ? new Element(value.get(0).asString()): Element.valueOf("null");
                     denizen.getSaves().set(flagPath + "-expiration", null);
                     denizen.getSaves().set(flagPath, null);
                     valid = false;
                     rebuild();
                     //dB.log('\'' + flagName + "' has expired! " + flagPath);
+                    if (FlagSmartEvent.IsActive()) {
+                        List<String> world_script_events = new ArrayList<String>();
+
+                        Map<String, dObject> context = new HashMap<String, dObject>();
+                        dPlayer player = null;
+                        if (dPlayer.matches(OldOwner))
+                            player = dPlayer.valueOf(OldOwner);
+                        dNPC npc = null;
+                        if (dNPC.matches(OldOwner))
+                            npc = dNPC.valueOf(OldOwner);
+
+                        String type;
+
+                        if (player != null) {
+                            type = "player";
+                        }
+                        else if (npc != null) {
+                            type = "npc";
+                        }
+                        else {
+                            type = "server";
+                        }
+                        world_script_events.add(type + " flag expires");
+                        world_script_events.add(type + " flag " + OldName + " expires");
+
+                        context.put("owner", Element.valueOf(OldOwner));
+                        context.put("name", Element.valueOf(OldName));
+                        context.put("type", Element.valueOf(type));
+                        context.put("old_value", OldValue);
+
+                        world_script_events.add("flag expires");
+
+                        EventManager.doEvents(world_script_events,
+                                npc, player, context);
+                    }
                     return true;
                 }
             return false;
