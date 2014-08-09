@@ -334,12 +334,6 @@ public class Denizen extends JavaPlugin {
 
             // Initialize Property Parser
             propertyParser = new PropertyParser();
-
-            // Reload notables from notables.yml into memory
-            notableManager.reloadNotables();
-
-            // Load the saves.yml into memory
-            reloadSaves();
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -351,6 +345,12 @@ public class Denizen extends JavaPlugin {
             public void run() {
                 try {
                     ScriptHelper.reloadScripts();
+
+                    // Reload notables from notables.yml into memory
+                    notableManager.reloadNotables();
+
+                    // Load the saves.yml into memory
+                    reloadSaves();
 
                     dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
