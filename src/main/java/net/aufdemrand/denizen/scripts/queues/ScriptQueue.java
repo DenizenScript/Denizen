@@ -834,6 +834,29 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         }
 
         // <--[tag]
+        // @attribute <q@queue.npc>
+        // @returns dNPC
+        // @description
+        // Returns the dNPC linked to a queue.
+        // -->
+        if (attribute.startsWith("npc")) {
+            dNPC npc = null;
+            if (getLastEntryExecuted() != null) {
+                npc = getLastEntryExecuted().getNPC();
+            }
+            else if (script_entries.size() > 0) {
+                npc = script_entries.get(0).getNPC();
+            }
+            else {
+                dB.echoError(this, "Can't determine a linked NPC.");
+            }
+            if (npc == null)
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            else
+                return npc.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <q@queue.determination>
         // @returns dObject
         // @description
