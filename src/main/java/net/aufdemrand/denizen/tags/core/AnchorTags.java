@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Anchors;
@@ -18,9 +19,10 @@ public class AnchorTags implements Listener {
     }
 
     @EventHandler
-    public void constantTags(ReplaceableTagEvent event) {
+    public void anchorTags(ReplaceableTagEvent event) {
         if (!event.matches("ANCHOR")) return;
 
+        dB.echoError(event.getAttributes().getScriptEntry().getResidingQueue(), "anchor: tags are deprecated! Use <npc.anchor[]>!");
         NPC npc = null;
         if (event.getType() != null
                 && event.getType().matches("\\d+"))
