@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 
 public class InventoryTitle implements Property {
@@ -34,10 +33,10 @@ public class InventoryTitle implements Property {
     public String getTitle() {
         if (inventory.getInventory() != null) {
             String title = inventory.getInventory().getTitle();
-            if (title != null) {
+            if (title != null && !title.startsWith("container.")) {
                 if (inventory.isUnique())
                     return title.substring(0, title.length()-6);
-                else if (inventory.getIdType().equals("npc") && !title.startsWith("container."))
+                else if (!title.startsWith("container."))
                     return title;
             }
         }
@@ -73,11 +72,7 @@ public class InventoryTitle implements Property {
         // Returns the title of the inventory.
         // -->
         if (attribute.startsWith("title")) {
-            String title = getTitle();
-            if (title == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
-            else
-                return new Element(title).getAttribute(attribute.fulfill(1));
+            return new Element(getTitle()).getAttribute(attribute.fulfill(1));
         }
 
         return null;

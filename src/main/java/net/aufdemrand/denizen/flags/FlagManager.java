@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.core.FlagSmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;

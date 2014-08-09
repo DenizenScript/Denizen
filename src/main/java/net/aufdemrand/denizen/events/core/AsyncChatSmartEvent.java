@@ -6,6 +6,8 @@ import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
@@ -80,12 +82,15 @@ public class AsyncChatSmartEvent implements SmartEvent, Listener {
 
         final Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getMessage()));
+        context.put("format", new Element(event.getMessage()));
+
+        final dPlayer player = new dPlayer(event.getPlayer());
 
         Callable<String> call = new Callable<String>() {
             @Override
             public String call() {
                 return EventManager.doEvents(Arrays.asList("player chats"),
-                        null, new dPlayer(event.getPlayer()), context);
+                        null, player, context);
             }
         };
         String determination = null;
@@ -104,6 +109,12 @@ public class AsyncChatSmartEvent implements SmartEvent, Listener {
             return;
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+        else if (determination.toUpperCase().startsWith("FORMAT:")) {
+            String name = determination.substring(7);
+            FormatScriptContainer format = ScriptRegistry.getScriptContainer(name);
+            if (format == null) dB.echoError("Could not find format script matching '" + name + '\'');
+            else event.setFormat(format.getFormattedText(event.getMessage(), null, player));
+        }
         else if (!determination.equals("none")) {
             event.setMessage(determination);
         }

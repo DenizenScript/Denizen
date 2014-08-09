@@ -61,16 +61,15 @@ public class AssignmentCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
+        dScript script = scriptEntry.getdObject("script");
+
         // Report to dB
-        dB.report(scriptEntry, getName(), scriptEntry.getNPC().debug()
-                + scriptEntry.reportObject("action")
-                + scriptEntry.reportObject("script"));
+        dB.report(scriptEntry, getName(), scriptEntry.reportObject("action") + script.debug());
 
         // Perform desired action
         if (scriptEntry.getObject("action").equals(Action.SET))
             scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)
-                    .setAssignment(scriptEntry.getdObjectAs("script", dScript.class).getName(),
-                            scriptEntry.getPlayer());
+                    .setAssignment(script.getName(), scriptEntry.getPlayer());
 
         else if (scriptEntry.getObject("action").equals(Action.REMOVE))
             scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)

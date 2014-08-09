@@ -42,7 +42,7 @@ public class SneakingTrait extends Trait implements Listener  {
             return;
         }
 
-        eh.getDataWatcher().watch(0, Byte.valueOf((byte) 0x02));
+        eh.getDataWatcher().watch(0, (byte) 0x02);
 
         sneaking = true;
     }
@@ -54,7 +54,7 @@ public class SneakingTrait extends Trait implements Listener  {
         // Notated in SittingTrait
         DenizenAPI.getDenizenNPC(npc).action("stand", null);
 
-        eh.getDataWatcher().watch(0, Byte.valueOf((byte) 0x00));
+        eh.getDataWatcher().watch(0, (byte) 0x00);
 
         sneaking = false;
     }

@@ -87,9 +87,7 @@ public class EntityAge implements Property {
     }
 
     public boolean getLock() {
-        if (ageable.getBukkitEntity().getType() == EntityType.ZOMBIE)
-            return true;
-        else return ((Ageable) ageable.getBukkitEntity()).getAgeLock();
+        return ageable.getBukkitEntity().getType() == EntityType.ZOMBIE || ((Ageable) ageable.getBukkitEntity()).getAgeLock();
     }
 
 

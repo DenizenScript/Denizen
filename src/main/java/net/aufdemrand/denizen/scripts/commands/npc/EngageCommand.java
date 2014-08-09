@@ -59,7 +59,7 @@ public class EngageCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        Duration duration = scriptEntry.getdObjectAs("duration", Duration.class);
+        Duration duration = scriptEntry.getdObject("duration");
 
         // Report to dB
         dB.report(scriptEntry, getName(), duration.debug());

@@ -56,7 +56,7 @@ public class SittingTrait extends Trait implements Listener  {
             return;
         }
 
-        eh.getDataWatcher().watch(0, Byte.valueOf((byte) 0x04));
+        eh.getDataWatcher().watch(0, (byte) 0x04);
 
         sitting = true;
         chairLocation = npc.getBukkitEntity().getLocation();
@@ -81,7 +81,7 @@ public class SittingTrait extends Trait implements Listener  {
         eh.getBukkitEntity().teleport(location.add(0.5, 0, 0.5));
         dB.log("...NPC moved to chair");
 
-        eh.getDataWatcher().watch(0, Byte.valueOf((byte) 0x04));
+        eh.getDataWatcher().watch(0, (byte) 0x04);
 
         sitting = true;
         chairLocation = location;
@@ -104,7 +104,7 @@ public class SittingTrait extends Trait implements Listener  {
         DenizenAPI.getDenizenNPC(npc).action("stand", null);
 
 
-        eh.getDataWatcher().watch(0, Byte.valueOf((byte) 0x00));
+        eh.getDataWatcher().watch(0, (byte) 0x00);
 
         chairLocation = null;
         sitting = false;

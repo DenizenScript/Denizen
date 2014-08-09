@@ -746,7 +746,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("sort")
                 && attribute.hasContext(1)) {
-            final ProcedureScriptContainer script = ScriptRegistry.getScriptContainerAs(attribute.getContext(1), ProcedureScriptContainer.class);
+            final ProcedureScriptContainer script = ScriptRegistry.getScriptContainer(attribute.getContext(1));
             if (script == null) {
                 dB.echoError("'" + attribute.getContext(1) + "' is not a valid procedure script!");
                 return getAttribute(attribute.fulfill(1));

@@ -10,8 +10,6 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.queues.core.Delayable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import java.util.Map;
-
 /**
  *
  * @author aufdemrand

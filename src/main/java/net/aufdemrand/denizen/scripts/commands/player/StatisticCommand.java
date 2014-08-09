@@ -10,8 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 
-import java.util.List;
-
 public class StatisticCommand extends AbstractCommand {
 
     private enum Action { ADD, TAKE, SET }
@@ -82,15 +80,13 @@ public class StatisticCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Element action = scriptEntry.getElement("action");
-        List<dPlayer> players = scriptEntry.getdObjectAs("players", dList.class).filter(dPlayer.class);
+        dList players = scriptEntry.getdObject("players");
         Element statistic = scriptEntry.getElement("statistic");
         Element amount = scriptEntry.getElement("amount");
-        dMaterial material = scriptEntry.hasObject("material")
-                ? scriptEntry.getdObjectAs("material", dMaterial.class) : null;
-        dEntity entity = scriptEntry.hasObject("entity")
-                ? scriptEntry.getdObjectAs("entity", dEntity.class) : null;
+        dMaterial material = scriptEntry.getdObject("material");
+        dEntity entity = scriptEntry.getdObject("entity");
 
-        dB.report(scriptEntry, getName(), action.debug() + statistic.debug() + amount.debug()
+        dB.report(scriptEntry, getName(), action.debug() + statistic.debug() + amount.debug() + players.debug()
                 + (material != null ? material.debug() : entity != null ? entity.debug() : ""));
 
         Action act = Action.valueOf(action.asString().toUpperCase());
@@ -103,15 +99,15 @@ public class StatisticCommand extends AbstractCommand {
                 Material mat = material.getMaterial();
                 switch (act) {
                     case ADD:
-                        for (dPlayer player : players)
+                        for (dPlayer player : players.filter(dPlayer.class))
                             player.incrementStatistic(stat, mat, amt);
                         break;
                     case TAKE:
-                        for (dPlayer player : players)
+                        for (dPlayer player : players.filter(dPlayer.class))
                             player.decrementStatistic(stat, mat, amt);
                         break;
                     case SET:
-                        for (dPlayer player : players)
+                        for (dPlayer player : players.filter(dPlayer.class))
                             player.setStatistic(stat, mat, amt);
                         break;
                 }
@@ -121,15 +117,15 @@ public class StatisticCommand extends AbstractCommand {
                 EntityType ent = entity.getEntityType();
                 switch (act) {
                     case ADD:
-                        for (dPlayer player : players)
+                        for (dPlayer player : players.filter(dPlayer.class))
                             player.incrementStatistic(stat, ent, amt);
                         break;
                     case TAKE:
-                        for (dPlayer player : players)
+                        for (dPlayer player : players.filter(dPlayer.class))
                             player.decrementStatistic(stat, ent, amt);
                         break;
                     case SET:
-                        for (dPlayer player : players)
+                        for (dPlayer player : players.filter(dPlayer.class))
                             player.setStatistic(stat, ent, amt);
                         break;
                 }

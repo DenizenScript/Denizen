@@ -190,7 +190,6 @@ public class SQLCommand extends AbstractCommand {
         Properties connectionProps = new Properties();
         connectionProps.put("user", userName);
         connectionProps.put("password", password);
-        Connection conn = DriverManager.getConnection("jdbc:mysql://" + server, connectionProps);
-        return conn;
+        return DriverManager.getConnection("jdbc:mysql://" + server, connectionProps);
     }
 }

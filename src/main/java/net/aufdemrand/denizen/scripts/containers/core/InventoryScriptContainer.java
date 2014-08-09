@@ -79,17 +79,14 @@ public class InventoryScriptContainer extends ScriptContainer {
 
     public int getSize() {
         InventoryType invType = getInventoryType();
-        int size = aH.getIntegerFrom(getString("SIZE", String.valueOf(invType.getDefaultSize())));
-
-        return size;
+        return aH.getIntegerFrom(getString("SIZE", String.valueOf(invType.getDefaultSize())));
     }
 
     public InventoryType getInventoryType() {
-        String typeStr = getString("inventory", "chest");
+        String typeStr = getString("inventory", "CHEST");
 
         try {
-            InventoryType type = InventoryType.valueOf(typeStr.toUpperCase());
-            return type;
+            return InventoryType.valueOf(typeStr.toUpperCase());
         }
         catch(Exception e) {
             return InventoryType.CHEST;

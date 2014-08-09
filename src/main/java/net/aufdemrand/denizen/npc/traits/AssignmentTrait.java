@@ -92,7 +92,7 @@ public class AssignmentTrait extends Trait {
      */
     public AssignmentScriptContainer getAssignment() {
         if (hasAssignment() && ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class))
-            return ScriptRegistry.getScriptContainerAs(assignment, AssignmentScriptContainer.class);
+            return ScriptRegistry.getScriptContainer(assignment);
         else return null;
     }
 
@@ -131,8 +131,7 @@ public class AssignmentTrait extends Trait {
 
     public void describe(CommandSender sender, int page) throws CommandException {
 
-        AssignmentScriptContainer assignmentScript = ScriptRegistry
-                .getScriptContainerAs(assignment, AssignmentScriptContainer.class);
+        AssignmentScriptContainer assignmentScript = ScriptRegistry.getScriptContainer(assignment);
 
         Paginator paginator = new Paginator().header("Assignment");
         paginator.addLine("<e>Current assignment: " + (hasAssignment() ? this.assignment : "None.") + "");

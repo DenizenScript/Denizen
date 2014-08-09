@@ -73,14 +73,18 @@ public class dInventory implements dObject, Notable, Adjustable {
     /////////////////
 
     public boolean isUnique() {
-        return getIdType().equals("notable");
+        return NotableManager.isSaved(this);
     }
 
     @Note("Inventories")
-    public String getSaveObject() { return identify(); }
+    public String getSaveObject() {
+       return "in@" + idType + PropertyParser.getPropertiesString(this);
+    }
 
     public void makeUnique(String id) {
         String title = inventory.getTitle();
+        if (title == null || title.startsWith("container."))
+            title = inventory.getType().getDefaultTitle();
         // You can only have 32 characters in an inventory title... So let's make sure we have at least 3 colors...
         // which brings notable inventory title lengths down to 26... TODO: document this/fix if possible in later version
         if (title.length() > 26) title = title.substring(0, title.charAt(25) == '§' ? 25 : 26);
@@ -88,18 +92,19 @@ public class dInventory implements dObject, Notable, Adjustable {
         while (true) {
             colors = Utilities.generateRandomColors(3);
             if (!InventoryScriptHelper.notableInventories.containsKey(title + colors)) {
+                ItemStack[] contents = inventory.getContents();
                 if (getInventoryType() == InventoryType.CHEST) {
                     inventory = Bukkit.getServer().createInventory(null, inventory.getSize(), title + colors);
                 }
                 else {
                     inventory = Bukkit.getServer().createInventory(null, inventory.getType(), title + colors);
                 }
+                inventory.setContents(contents);
                 InventoryScriptHelper.notableInventories.put(title + colors, this);
                 break;
             }
         }
-        idType = "notable";
-        idHolder = id;
+        loadIdentifiers();
         NotableManager.saveAs(this, id);
     }
 
@@ -413,15 +418,6 @@ public class dInventory implements dObject, Notable, Adjustable {
             for (InventoryScriptContainer container : InventoryScriptHelper.inventory_scripts.values()) {
                 if (((CraftInventory) (container.getInventoryFrom()).inventory).getInventory().equals(((CraftInventory) inventory).getInventory())) {
                     idHolder = container.getName();
-                    return;
-                }
-            }
-        }
-        else if (getIdType().equals("notable")) {
-            // Iterate through Notable Inventories
-            for (dInventory inv : NotableManager.getAllType(dInventory.class)) {
-                if (inv.getInventory().getTitle().equals(inventory.getTitle())) {
-                    idHolder = NotableManager.getSavedId(inv);
                     return;
                 }
             }
@@ -1016,8 +1012,8 @@ public class dInventory implements dObject, Notable, Adjustable {
     public String identify() {
         if (isUnique())
             return "in@" + NotableManager.getSavedId(this);
-        else return "in@" + (getIdType().equals("script") || getIdType().equals("notable")
-                ? idHolder : (idType + PropertyParser.getPropertiesString(this)));
+        else return "in@" + (getIdType().equals("script") ? idHolder
+                : (idType + PropertyParser.getPropertiesString(this)));
     }
 
 
@@ -1162,7 +1158,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                         }
                     }
                 } else {
-                    items: for (ItemStack item : getContents()) {
+                    for (ItemStack item : getContents()) {
                         if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
                             List<String> item_lore = item.getItemMeta().getLore();
                             int loreCount = 0;

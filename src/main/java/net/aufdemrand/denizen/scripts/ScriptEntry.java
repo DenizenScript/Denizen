@@ -277,19 +277,19 @@ public class ScriptEntry implements Cloneable, Debuggable {
         } catch (Exception e) { return null; }
     }
 
-
-    public dObject getdObject(String key) {
+    public <T extends dObject> T getdObject(String key) {
         try {
             // If an ENUM, return as an Element
             Object gotten = objects.get(key.toLowerCase());
             if (gotten instanceof Enum)
-                return new Element(((Enum) gotten).name());
+                return (T) new Element(((Enum) gotten).name());
             // Otherwise, just return the stored dObject
-            return (dObject) gotten;
+            return (T) gotten;
             // If not a dObject, return null
         } catch (Exception e) { return null; }
     }
 
+    @Deprecated
     public <T extends dObject> T getdObjectAs(String key, Class<T> type) {
         try {
             // If an ENUM, return as an Element

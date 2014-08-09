@@ -146,12 +146,12 @@ public class ScriptHelper {
                 dB.log("Processing 'util.dscript'... ");
                 yaml = loadConfig(DenizenAPI.getCurrentInstance().getResource("util.dscript"));
                 HandleListing(yaml, scriptNames);
-                sb.append(yaml.saveToString() + "\r\n");
+                sb.append(yaml.saveToString()).append("\r\n");
 
                 dB.log("Processing outside scripts... ");
                 for (FileConfiguration outsideConfig : ScriptRegistry.outside_scripts) {
                     try {
-                        sb.append(outsideConfig.saveToString() + "\r\n");
+                        sb.append(outsideConfig.saveToString()).append("\r\n");
                     } catch (Exception e) {
                         dB.echoError("Woah! Error parsing outside scripts!");
                         hadError = true;
@@ -167,7 +167,7 @@ public class ScriptHelper {
                         String saved = yaml.saveToString();
                         if (yaml != null && saved.length() > 0) {
                             HandleListing(yaml, scriptNames);
-                            sb.append(saved + "\r\n");
+                            sb.append(saved).append("\r\n");
                         }
                         else {
                             dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. No internal error - is the file empty?");

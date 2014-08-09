@@ -65,8 +65,13 @@ public class AnnounceCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("format")
-                    && arg.matchesPrefix("format"))
-                scriptEntry.addObject("format", ScriptRegistry.getScriptContainerAs(arg.getValue(), FormatScriptContainer.class));
+                    && arg.matchesPrefix("format")) {
+                FormatScriptContainer format = null;
+                String formatStr = arg.getValue();
+                format = ScriptRegistry.getScriptContainer(formatStr);
+                if (format == null) dB.echoError("Could not find format script matching '" + formatStr + '\'');
+                scriptEntry.addObject("format", format);
+            }
 
             else if (!scriptEntry.hasObject("text"))
                 scriptEntry.addObject("text", new Element(arg.raw_value));

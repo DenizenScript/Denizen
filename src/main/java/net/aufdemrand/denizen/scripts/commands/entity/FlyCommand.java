@@ -171,7 +171,7 @@ public class FlyCommand extends AbstractCommand {
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("origin", origin) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("speed", speed) +
@@ -180,7 +180,7 @@ public class FlyCommand extends AbstractCommand {
                                          : aH.debugObj("destinations", destinations.toString())));
 
         // Mount or dismount all of the entities
-        if (cancel == false) {
+        if (!cancel) {
 
             // Go through all the entities, spawning/teleporting them
             for (dEntity entity : entities) {

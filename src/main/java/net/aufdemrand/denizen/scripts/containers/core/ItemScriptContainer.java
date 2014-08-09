@@ -238,7 +238,7 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set Book
             if (contains("BOOK")) {
                 BookScriptContainer book = ScriptRegistry
-                        .getScriptContainerAs(getString("BOOK").replace("s@", ""), BookScriptContainer.class);
+                        .getScriptContainer(getString("BOOK").replace("s@", ""));
 
                 stack = book.writeBookTo(stack, player, npc);
             }

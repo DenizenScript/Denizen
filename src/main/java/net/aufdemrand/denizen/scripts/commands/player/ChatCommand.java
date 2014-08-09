@@ -5,15 +5,11 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechContext;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechController;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.Settings.Setting;
 import org.bukkit.entity.Entity;
 
 /**
@@ -115,8 +111,8 @@ public class ChatCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dList talkers = scriptEntry.getdObjectAs("talkers", dList.class);
-        dList targets = scriptEntry.getdObjectAs("targets", dList.class);
+        dList talkers = scriptEntry.getdObject("talkers");
+        dList targets = scriptEntry.getdObject("targets");
         Element message = scriptEntry.getElement("message");
         Element chatRange = scriptEntry.getElement("range");
 

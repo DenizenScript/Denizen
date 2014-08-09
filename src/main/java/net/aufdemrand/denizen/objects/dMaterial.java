@@ -585,15 +585,9 @@ public class dMaterial implements dObject {
     @Override
     public boolean equals(Object object) {
         if (object instanceof dMaterial)
-            if (((dMaterial) object).identify().equals(this.identify()))
-                return true;
-            else return false;
-
-        if (valueOf(object.toString()) != null
-                && valueOf(object.toString()).identify().equals(this.identify()))
-            return true;
-
-        return false;
+            return ((dMaterial) object).identify().equals(this.identify());
+        else
+            return valueOf(object.toString()) != null && valueOf(object.toString()).identify().equals(this.identify());
     }
 
 
