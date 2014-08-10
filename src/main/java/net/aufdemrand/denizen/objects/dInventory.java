@@ -104,6 +104,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 break;
             }
         }
+        idType = null;
+        idHolder = null;
         loadIdentifiers();
         NotableManager.saveAs(this, id);
     }
