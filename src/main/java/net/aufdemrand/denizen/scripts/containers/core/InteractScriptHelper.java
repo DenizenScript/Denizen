@@ -124,6 +124,7 @@ public class InteractScriptHelper {
         if (interactableScripts.size() == 1) {
             String script = interactableScripts.get(0).getName();
             dB.echoApproval("Highest scoring script is " + script + ".");
+            dB.log("Current step for this script is: " + getCurrentStep(player, script));
             dB.log(dB.DebugElement.Footer, "");
             return ScriptRegistry.getScriptContainer(script.replace("^", ""));
         }
@@ -156,6 +157,7 @@ public class InteractScriptHelper {
                 if (interactScript.containsTriggerInStep(getCurrentStep(player, interactScript.getName()), trigger)) {
                     dB.log("...found trigger!");
                     dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
+                    dB.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
                     dB.log(dB.DebugElement.Footer, "");
                     return interactScript;
                 }
