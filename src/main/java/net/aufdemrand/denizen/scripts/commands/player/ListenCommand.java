@@ -98,6 +98,12 @@ public class ListenCommand extends AbstractCommand {
                     break;
                 }
 
+                // Also make sure there is a valid script input
+                if (finish_script == null) {
+                    dB.echoError("Must specify a valid script!");
+                    break;
+                }
+
                 try {
                     denizen.getListenerRegistry().get(type.asString())
                             .createInstance(scriptEntry.getPlayer(), id.asString())

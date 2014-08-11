@@ -102,7 +102,7 @@ public class EntityFirework implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name detonate
-        // @input dItem
+        // @input None
         // @description
         // If the entity is a firework, detonates it.
         // @tags
