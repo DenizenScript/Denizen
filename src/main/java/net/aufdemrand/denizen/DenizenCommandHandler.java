@@ -318,12 +318,12 @@ public class DenizenCommandHandler {
 
         // Get reload type
         if (args.hasFlag('a')) {
-            denizen.reloadSaves();
-            denizen.notableManager().reloadNotables();
             denizen.reloadConfig();
             denizen.runtimeCompiler.reload();
             ScriptHelper.resetError();
             ScriptHelper.reloadScripts();
+            denizen.notableManager().reloadNotables();
+            denizen.reloadSaves();
             Messaging.send(sender, "Denizen/saves.yml, Denizen/notables.yml, Denizen/config.yml, Denizen/scripts/..., and Denizen/externals/... reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
                 Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");

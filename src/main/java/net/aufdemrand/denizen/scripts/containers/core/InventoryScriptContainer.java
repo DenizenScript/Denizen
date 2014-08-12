@@ -105,8 +105,8 @@ public class InventoryScriptContainer extends ScriptContainer {
 
         try {
             if (contains("INVENTORY")) {
-                if (InventoryType.valueOf(getString("INVENTORY")) != null) {
-                    inventory = new dInventory(InventoryType.valueOf(getString("INVENTORY")));
+                if (InventoryType.valueOf(getString("INVENTORY").toUpperCase()) != null) {
+                    inventory = new dInventory(InventoryType.valueOf(getString("INVENTORY").toUpperCase()));
                     inventory.setIdentifiers("script", getName());
                 }
                 else {
