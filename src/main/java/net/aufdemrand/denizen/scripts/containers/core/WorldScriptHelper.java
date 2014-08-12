@@ -2427,6 +2427,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // player clicks in inventory
     // player (<click type>) clicks (<item>) (in <inventory>) (with <item>)
     // player (<click type>) clicks (<material>) (in <inventory>) (with <item>)
     // player (<click type>) clicks (<item>) (in <inventory>) (with <material>)
@@ -3238,6 +3239,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // player clicks block
     // player (<click type>) clicks (<material>) (with <item>) (in <notable cuboid>)
     // player (<click type>) clicks block (with <item>)
     // player stands on <pressure plate>
