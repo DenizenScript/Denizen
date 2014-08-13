@@ -669,7 +669,7 @@ public class dList extends ArrayList<String> implements dObject {
             else {
                 String item;
                 item = get(index - 1);
-                return new Element(item).getAttribute(attribute);
+                return ObjectFetcher.pickObjectFor(item).getAttribute(attribute);
             }
         }
 
