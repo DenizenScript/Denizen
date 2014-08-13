@@ -1735,6 +1735,7 @@ public class WorldScriptHelper implements Listener {
     // <context.destination> returns the dLocation the entity teleported to.
     //
     // @Determine
+    // dLocation to change the location the entity teleports to.
     // "CANCELLED" to stop the entity from teleporting.
     //
     // -->
@@ -1761,6 +1762,9 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+        else if (dLocation.matches(determination))
+            event.setTo(dLocation.valueOf(determination));
+
     }
 
     // Shares meta with EntityTeleportEvent
@@ -1787,6 +1791,9 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+        else if (dLocation.matches(determination))
+            event.setTo(dLocation.valueOf(determination));
+
     }
 
     // <--[event]
