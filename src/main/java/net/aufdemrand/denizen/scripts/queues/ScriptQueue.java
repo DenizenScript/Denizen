@@ -399,6 +399,9 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         for (Map.Entry<String, dObject> entry: getAllContext().entrySet()) {
             newQueue.addContext(entry.getKey(), entry.getValue());
         }
+        for (Map.Entry<String, ScriptEntry> entry: held_entries.entrySet()) {
+            newQueue.holdScriptEntry(entry.getKey(), entry.getValue());
+        }
         newQueue.setLastEntryExecuted(getLastEntryExecuted());
         clear();
         if (delay != null)
