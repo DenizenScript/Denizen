@@ -18,6 +18,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 
+import javax.annotation.RegEx;
+
 // <--[language]
 // @name Element
 // @group Object System
@@ -997,7 +999,7 @@ public class Element implements dObject {
                 return new Element(element.replaceFirst(replace.substring("firstregex:".length()), replacement))
                         .getAttribute(attribute);
             else
-                return new Element(element.replace(replace, replacement))
+                return new Element(element.replaceAll("(?i)" + Pattern.quote(replace), replacement))
                         .getAttribute(attribute);
         }
 
