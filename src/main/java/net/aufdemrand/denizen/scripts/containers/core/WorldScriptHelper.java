@@ -934,7 +934,7 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
 
         else if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
-            dList lines = new dList(determination);
+            dList lines = dList.valueOf(determination);
             for (int i = 0; i < 4 && i < lines.size(); i++) {
                 event.setLine(i, EscapeTags.unEscape(lines.get(i)));
             }

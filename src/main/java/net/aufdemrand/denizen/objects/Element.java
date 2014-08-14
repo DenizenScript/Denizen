@@ -18,8 +18,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 
-import javax.annotation.RegEx;
-
 // <--[language]
 // @name Element
 // @group Object System
