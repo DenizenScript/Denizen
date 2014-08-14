@@ -648,7 +648,6 @@ public class aH {
     public static boolean matchesItem(String arg) {
         if (arg.length() > 5 && arg.toUpperCase().startsWith("ITEM:"))
             return true;
-        // TODO: Other matches____ do some actual checks.
         return false;
     }
 
@@ -656,7 +655,6 @@ public class aH {
     public static boolean matchesContext(String arg) {
         if (arg.toUpperCase().startsWith("CONTEXT:") ||
                 arg.toUpperCase().startsWith("DEFINE:")) return true;
-        // TODO: Other matches____ do some actual checks, should this?.
         return false;
     }
 
