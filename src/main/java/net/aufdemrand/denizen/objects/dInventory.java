@@ -37,6 +37,10 @@ import java.util.regex.Pattern;
 public class dInventory implements dObject, Notable, Adjustable {
 
     public static dInventory mirrorBukkitInventory(Inventory inventory) {
+        // Scripts have priority over notables
+        if (InventoryScriptHelper.tempInventoryScripts.containsKey(inventory))
+            return new dInventory(inventory).setIdentifiers("script",
+                    InventoryScriptHelper.tempInventoryScripts.get(inventory));
         // Use the map to get notable inventories
         if (InventoryScriptHelper.notableInventories.containsKey(inventory.getTitle()))
             return InventoryScriptHelper.notableInventories.get(inventory.getTitle());
