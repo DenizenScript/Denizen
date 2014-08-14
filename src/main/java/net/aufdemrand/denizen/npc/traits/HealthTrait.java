@@ -307,7 +307,7 @@ public class HealthTrait extends Trait implements Listener {
 
         die();
 
-        if (respawn) {
+        if (respawn && (Duration.valueOf(respawnDelay).getTicks() > 0)) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         public void run() {
