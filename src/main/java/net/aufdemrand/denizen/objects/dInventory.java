@@ -1447,10 +1447,6 @@ public class dInventory implements dObject, Notable, Adjustable {
     private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
 
     public void applyProperty(Mechanism mechanism) {
-        // TODO: Restrict what properties can be sent through, either here or within the property definitions
-        // TODO: Specifically, ensure that you can't type things like
-        // TODO: <in@inventory[holder=mcmonkey4eva;contents=stick]> to give yourself a stick
-
         if (idType == null)  mechanisms.add(mechanism);
         else if (idType.equals("generic") || mechanism.matches("holder")) adjust(mechanism);
         else dB.echoError("Cannot apply properties to non-generic inventory!");
