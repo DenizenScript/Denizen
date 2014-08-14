@@ -3034,7 +3034,10 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player changes world (from <world>) to (<world>)
+    // player changes world
+    // player changes world from <world>
+    // player changes world to <world>
+    // player changes world from <world> to <world>
     //
     // @Triggers when a player moves to a different world.
     // @Context
