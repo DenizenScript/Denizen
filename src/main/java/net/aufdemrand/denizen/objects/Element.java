@@ -1016,7 +1016,7 @@ public class Element implements dObject {
                 return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1], limit)))
                         .getAttribute(attribute.fulfill(1));
             else
-                return new dList(Arrays.asList(StringUtils.split(element, split_string, limit)))
+                return new dList(Arrays.asList(element.split("(?i)" + Pattern.quote(split_string), limit)))
                         .getAttribute(attribute.fulfill(1));
         }
 
@@ -1033,7 +1033,7 @@ public class Element implements dObject {
                 return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1])))
                         .getAttribute(attribute.fulfill(1));
             else
-                return new dList(Arrays.asList(StringUtils.split(element, split_string)))
+                return new dList(Arrays.asList(element.split("(?i)" + Pattern.quote(split_string))))
                         .getAttribute(attribute.fulfill(1));
         }
 
