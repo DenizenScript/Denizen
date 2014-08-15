@@ -691,7 +691,7 @@ public class Element implements dObject {
         // Returns whether the element ends with a specified string.
         // -->
         if (attribute.startsWith("ends_with") || attribute.startsWith("endswith"))
-            return new Element(element.endsWith(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
+            return new Element(element.toLowerCase().endsWith(attribute.getContext(1).toLowerCase())).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.matches[<regex>]>
@@ -825,7 +825,7 @@ public class Element implements dObject {
         // Returns whether the element starts with a specified string.
         // -->
         if (attribute.startsWith("starts_with") || attribute.startsWith("startswith"))
-            return new Element(element.startsWith(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
+            return new Element(element.toLowerCase().startsWith(attribute.getContext(1).toLowerCase())).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.index_of[<string>]>
@@ -837,7 +837,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("index_of")
                 && attribute.hasContext(1)) {
-            return new Element(element.indexOf(attribute.getContext(1)) + 1)
+            return new Element(element.toLowerCase().indexOf(attribute.getContext(1).toLowerCase()) + 1)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -851,7 +851,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("last_index_of")
                 && attribute.hasContext(1)) {
-            return new Element(element.lastIndexOf(attribute.getContext(1)) + 1)
+            return new Element(element.toLowerCase().lastIndexOf(attribute.getContext(1).toLowerCase()) + 1)
                     .getAttribute(attribute.fulfill(1));
         }
 
