@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -109,7 +110,11 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                     String entry_value = TagManager.tag(player, npc, entry.getValue());
                     // Check if the item specified in the specified id's 'trigger:' key
                     // matches the item that the player is holding.
-                    if (dItem.valueOf(entry_value).comparesTo(player.getPlayerEntity().getItemInHand()) >= 0
+                    dItem item = dItem.valueOf(entry_value);
+                    if (item == null) {
+                        dB.echoError("Invalid click trigger in script '" + script.getName() + "' (null trigger item)!");
+                    }
+                    if (item != null && item.comparesTo(player.getPlayerEntity().getItemInHand()) >= 0
                             && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
                             player, npc, entry.getKey()))
                         id = entry.getKey();
