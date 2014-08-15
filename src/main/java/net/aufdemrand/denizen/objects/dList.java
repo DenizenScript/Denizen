@@ -635,7 +635,7 @@ public class dList extends ArrayList<String> implements dObject {
 
         // <--[tag]
         // @attribute <li@list.get[<#>]>
-        // @returns Element
+        // @returns dObject
         // @description
         // returns an element of the value specified by the supplied context.
         // EG, .get[1] on a list of "one|two" will return "one", and .get[2] will return "two"

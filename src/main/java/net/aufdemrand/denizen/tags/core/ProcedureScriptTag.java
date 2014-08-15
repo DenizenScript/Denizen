@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.objects.ObjectFetcher;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
@@ -9,6 +10,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -104,7 +106,7 @@ public class ProcedureScriptTag implements Listener {
 
         // <--[tag]
         // @attribute <proc[ProcedureScript].Context[<element>|...]>
-        // @returns Element
+        // @returns dObject
         // @description
         // Returns the 'determine' result of a procedure script with the given context.
         // See <@link example Using Procedure Scripts>.
@@ -112,12 +114,15 @@ public class ProcedureScriptTag implements Listener {
 
         // <--[tag]
         // @attribute <proc[ProcedureScript]>
-        // @returns Element
+        // @returns dObject
         // @description
         // Returns the 'determine' result of a procedure script.
         // See <@link example Using Procedure Scripts>.
         // -->
         if (!event.matches("proc, pr")) return;
+
+        Attribute attr = event.getAttributes();
+        int attribs = 1;
 
         dScript script = null;
         String path = null;
@@ -165,6 +170,7 @@ public class ProcedureScriptTag implements Listener {
         if (event.hasType() &&
                 event.getType().equalsIgnoreCase("context") &&
                 event.hasTypeContext()) {
+            attribs = 2;
             int x = 1;
             dList definitions = new dList(event.getTypeContext());
             String[] definition_names = null;
@@ -184,7 +190,8 @@ public class ProcedureScriptTag implements Listener {
         queue.start();
 
         if (DetermineCommand.hasOutcome(id)) {
-            event.setReplaced(DetermineCommand.getOutcome(id));
+            event.setReplaced(ObjectFetcher.pickObjectFor(DetermineCommand.getOutcome(id))
+                    .getAttribute(attr.fulfill(attribs)));
         }
     }
 }
