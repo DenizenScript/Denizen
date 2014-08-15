@@ -190,6 +190,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
                 }
 
         // Check if the object has been filled. If not, throw new Invalid Arguments Exception.
+        // TODO: Should this be here? Most checks are done separately.
         if (!hasObject(key)) throw new InvalidArgumentsException("Missing '" + key + "' argument!");
         else
             return this;

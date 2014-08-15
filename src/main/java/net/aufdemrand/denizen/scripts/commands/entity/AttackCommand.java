@@ -53,8 +53,8 @@ public class AttackCommand extends AbstractCommand {
         }
 
         // Use the player as the target if one is not specified
-        scriptEntry.defaultObject("target",
-                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null);
+        if (!scriptEntry.hasObject("target"))
+            scriptEntry.addObject("target", scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity(): null);
 
         // Use the NPC as the attacking entity if one is not specified
         scriptEntry.defaultObject("entities",
