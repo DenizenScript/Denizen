@@ -997,7 +997,7 @@ public class Element implements dObject {
                 return new Element(element.replaceFirst(replace.substring("firstregex:".length()), replacement))
                         .getAttribute(attribute);
             else
-                return new Element(element.replace(replace, replacement))
+                return new Element(element.replaceAll("(?i)" + Pattern.quote(replace), replacement))
                         .getAttribute(attribute);
         }
 

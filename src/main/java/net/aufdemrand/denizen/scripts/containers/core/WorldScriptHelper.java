@@ -885,8 +885,6 @@ public class WorldScriptHelper implements Listener {
     // <context.location> returns the dLocation of the sign.
     // <context.new> returns the new sign text as a dList.
     // <context.old> returns the old sign text as a dList.
-    // <context.new_escaped> returns the new sign text as a dList, pre-escaped to prevent issues.
-    // <context.old_escaped> returns the old sign text as a dList, pre-escaped to prevent issues.
     // <context.material> returns the dMaterial of the sign.
     //
     // @Determine
@@ -914,11 +912,11 @@ public class WorldScriptHelper implements Listener {
         for (String str: sign.getLines()) {
             old_escaped.add(EscapeTags.Escape(str));
         }
-        context.put("old_escaped", old_escaped);
+        context.put("old_escaped", old_escaped); // Deprecated
 
         dList new_escaped = new dList();
         for (String str: event.getLines()) {
-            new_escaped.add(EscapeTags.Escape(str));
+            new_escaped.add(EscapeTags.Escape(str)); // Deprecated
         }
         context.put("new_escaped", new_escaped);
 
@@ -934,7 +932,7 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
 
         else if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
-            dList lines = new dList(determination);
+            dList lines = dList.valueOf(determination);
             for (int i = 0; i < 4 && i < lines.size(); i++) {
                 event.setLine(i, EscapeTags.unEscape(lines.get(i)));
             }

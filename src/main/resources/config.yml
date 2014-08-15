@@ -10,7 +10,7 @@ Scripts:
     Events:
       On player chats:
         # Whether to use the dangerous 'async' chat event (not recommended!)
-        Use asynchronous event: false
+        Use asynchronous event: true
       On time changes:
         Frequency of check: 250t
   Queue speed: 0.5s
@@ -35,7 +35,7 @@ Traits:
 Triggers:
   Chat:
     Enabled: true
-    Use asynchronous event: false
+    Use asynchronous event: true
     Cooldown: 2s
     Range: 3
     Overhearing range: 4

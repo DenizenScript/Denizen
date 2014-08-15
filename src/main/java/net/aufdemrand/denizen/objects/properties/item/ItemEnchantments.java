@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
@@ -182,8 +183,11 @@ public class ItemEnchantments implements Property {
                         try {
                             Enchantment ench = Enchantment.getByName(data[0].toUpperCase());
                             if (ench != null) {
-                                if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof EnchantmentStorageMeta)
-                                    ((EnchantmentStorageMeta) item.getItemStack().getItemMeta()).addStoredEnchant(ench, Integer.valueOf(data[1]), true);
+                                if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+                                    EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemStack().getItemMeta();
+                                    meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
+                                    item.getItemStack().setItemMeta(meta);
+                                }
                                 else
                                     item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
                             }
