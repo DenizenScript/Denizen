@@ -4,6 +4,8 @@ import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_7_R4.CraftChunk;
 import org.bukkit.entity.Entity;
@@ -12,7 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class dChunk extends CraftChunk implements dObject, Adjustable {
+public class dChunk implements dObject, Adjustable {
 
     //////////////////
     //    OBJECT FETCHER
@@ -61,6 +63,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         else return false;
     }
 
+    CraftChunk chunk = null;
 
     /**
      * dChunk can be constructed with a CraftChunk
@@ -68,8 +71,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
      * @param chunk The chunk to use.
      */
     public dChunk(CraftChunk chunk) {
-        // TODO: Store chunk as a variable, don't extend it!
-        super(chunk.getHandle());
+        this.chunk = chunk;
     }
 
     public dChunk(Chunk chunk) {
@@ -82,7 +84,23 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
      * @param location The location of the chunk.
      */
     public dChunk(Location location) {
-        super (((CraftChunk) location.getChunk()).getHandle());
+        this((CraftChunk) location.getChunk());
+    }
+
+    public int getX() {
+        return chunk.getX();
+    }
+
+    public int getZ() {
+        return chunk.getZ();
+    }
+
+    public World getWorld() {
+        return chunk.getWorld();
+    }
+
+    public ChunkSnapshot getSnapshot() {
+        return chunk.getChunkSnapshot();
     }
 
     String prefix = "Chunk";
@@ -139,7 +157,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // returns true if the chunk is currently loaded into memory.
         // -->
         if (attribute.startsWith("is_loaded"))
-            return new Element(this.isLoaded()).getAttribute(attribute.fulfill(1));
+            return new Element(chunk.isLoaded()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <ch@chunk.x>
@@ -148,7 +166,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // returns the x coordinate of the chunk.
         // -->
         if (attribute.startsWith("x"))
-            return new Element(this.getX()).getAttribute(attribute.fulfill(1));
+            return new Element(getX()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <ch@chunk.z>
@@ -157,7 +175,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // returns the z coordinate of the chunk.
         // -->
         if (attribute.startsWith("z"))
-            return new Element(this.getZ()).getAttribute(attribute.fulfill(1));
+            return new Element(getZ()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <ch@chunk.world>
@@ -176,7 +194,8 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("cuboid")) {
             return new dCuboid(new Location(getWorld(), getX() * 16, 0, getZ() * 16),
-                    new Location(getWorld(), getX() * 16 + 15, 255, getZ() * 16 + 15)).getAttribute(attribute.fulfill(1));
+                    new Location(getWorld(), getX() * 16 + 15, 255, getZ() * 16 + 15))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -187,7 +206,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("entities")) {
             dList entities = new dList();
-            for (Entity ent : this.getEntities())
+            for (Entity ent : chunk.getEntities())
                 entities.add(new dEntity(ent).identify());
 
             return entities.getAttribute(attribute.fulfill(1));
@@ -202,7 +221,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("living_entities")) {
             dList entities = new dList();
-            for (Entity ent : this.getEntities())
+            for (Entity ent : chunk.getEntities())
                 if (ent instanceof LivingEntity)
                     entities.add(new dEntity(ent).identify());
 
@@ -217,8 +236,8 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("players")) {
             dList entities = new dList();
-            for (Entity ent : this.getEntities())
-                if (ent instanceof Player)
+            for (Entity ent : chunk.getEntities())
+                if (ent instanceof Player && (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(ent)))
                     entities.add(new dPlayer((Player) ent).identify());
 
             return entities.getAttribute(attribute.fulfill(1));
@@ -231,8 +250,8 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // returns a list of the height of each block in the chunk.
         // -->
         if (attribute.startsWith("height_map")) {
-            List<String> height_map = new ArrayList<String>(this.getHandle().heightMap.length);
-            for (int i : this.getHandle().heightMap)
+            List<String> height_map = new ArrayList<String>(chunk.getHandle().heightMap.length);
+            for (int i : chunk.getHandle().heightMap)
                 height_map.add(String.valueOf(i));
             return new dList(height_map).getAttribute(attribute.fulfill(1));
         }
@@ -245,8 +264,8 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("average_height")) {
             int sum = 0;
-            for (int i : this.getHandle().heightMap) sum += i;
-            return new Element(((double) sum)/getHandle().heightMap.length).getAttribute(attribute.fulfill(1));
+            for (int i : chunk.getHandle().heightMap) sum += i;
+            return new Element(((double) sum)/chunk.getHandle().heightMap.length).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -260,8 +279,8 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         if (attribute.startsWith("is_flat")) {
             int tolerance = attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)) ?
                     Integer.valueOf(attribute.getContext(1)) : 2;
-            int x = this.getHandle().heightMap[0];
-            for (int i : this.getHandle().heightMap)
+            int x = chunk.getHandle().heightMap[0];
+            for (int i : chunk.getHandle().heightMap)
                 if (Math.abs(x - i) > tolerance)
                     return Element.FALSE.getAttribute(attribute.fulfill(1));
 
@@ -278,7 +297,8 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
             dList surface_blocks = new dList();
             for (int x = 0; x < 16; x++)
                 for (int z = 0; z < 16; z++)
-                    surface_blocks.add(new dLocation(getBlock(x, getChunkSnapshot().getHighestBlockYAt(x, z) - 1, z).getLocation()).identify());
+                    surface_blocks.add(new dLocation(chunk.getBlock(x, getSnapshot().getHighestBlockYAt(x, z) - 1, z)
+                            .getLocation()).identify());
 
             return surface_blocks.getAttribute(attribute.fulfill(1));
         }
@@ -310,7 +330,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("unload")) {
-            unload(true);
+            chunk.unload(true);
         }
 
         // <--[mechanism]
@@ -323,7 +343,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("unload_safely")) {
-            unload(true, true);
+            chunk.unload(true, true);
         }
 
         // <--[mechanism]
@@ -336,7 +356,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("unload_without_saving")) {
-            unload(false);
+            chunk.unload(false);
         }
 
         // <--[mechanism]
@@ -349,7 +369,7 @@ public class dChunk extends CraftChunk implements dObject, Adjustable {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("load")) {
-            load(true);
+            chunk.load(true);
         }
 
         // <--[mechanism]

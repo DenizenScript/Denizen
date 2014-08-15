@@ -57,15 +57,16 @@ public class EntityInfected implements Property {
             // This is kind of messy, and can be improved upon.
             // TODO: Improve upon.
             else if (infected.getBukkitEntity() instanceof Villager) {
+                Villager villager = (Villager) infected.getBukkitEntity();
                 // Make a new entity
-                Entity infect = infected.getLocation().getWorld().spawnEntity(infected.getLocation(), EntityType.ZOMBIE);
-                ((Zombie) infect).setVillager(true);
+                Zombie infect = (Zombie) villager.getLocation().getWorld().spawnEntity(infected.getLocation(), EntityType.ZOMBIE);
+                infect.setVillager(true);
                 // Set health
-                ((Zombie) infect).setHealth(((Villager) infected.getBukkitEntity()).getHealth());
+                infect.setHealth(villager.getHealth());
                 // Set equipment
-                ((Zombie) infect).getEquipment().setArmorContents(((Villager) infected.getBukkitEntity()).getEquipment().getArmorContents());
+                infect.getEquipment().setArmorContents(villager.getEquipment().getArmorContents());
                 // Remove the Villager
-                infected.getBukkitEntity().remove();
+                villager.remove();
                 // Set the dEntity to the new entity
                 infected.setEntity(infect);
             }

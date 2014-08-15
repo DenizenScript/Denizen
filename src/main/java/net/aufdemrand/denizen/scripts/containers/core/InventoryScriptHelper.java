@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
@@ -20,6 +21,7 @@ public class InventoryScriptHelper implements Listener {
     public static Map<UUID, PlayerInventory> offlineInventories = new HashMap<UUID, PlayerInventory>();
     public static Map<UUID, Inventory> offlineEnderChests = new HashMap<UUID, Inventory>();
     public static Map<String, dInventory> notableInventories = new HashMap<String, dInventory>();
+    public static Map<Inventory, String> tempInventoryScripts = new HashMap<Inventory, String>();
 
     public InventoryScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
@@ -45,4 +47,12 @@ public class InventoryScriptHelper implements Listener {
             offlineEnderChests.remove(uuid);
         }
     }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        Inventory inventory = event.getInventory();
+        if (tempInventoryScripts.containsKey(inventory) && inventory.getViewers().isEmpty())
+            tempInventoryScripts.remove(inventory);
+    }
+
 }

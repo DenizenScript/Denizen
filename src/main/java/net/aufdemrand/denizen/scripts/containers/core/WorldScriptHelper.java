@@ -1733,6 +1733,7 @@ public class WorldScriptHelper implements Listener {
     // <context.destination> returns the dLocation the entity teleported to.
     //
     // @Determine
+    // dLocation to change the location the entity teleports to.
     // "CANCELLED" to stop the entity from teleporting.
     //
     // -->
@@ -1759,6 +1760,9 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+        else if (dLocation.matches(determination))
+            event.setTo(dLocation.valueOf(determination));
+
     }
 
     // Shares meta with EntityTeleportEvent
@@ -1785,6 +1789,9 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+        else if (dLocation.matches(determination))
+            event.setTo(dLocation.valueOf(determination));
+
     }
 
     // <--[event]
@@ -2425,10 +2432,11 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player (<click type>) clicks (<item>) (in <inventory>) (with <item>)
-    // player (<click type>) clicks (<material>) (in <inventory>) (with <item>)
-    // player (<click type>) clicks (<item>) (in <inventory>) (with <material>)
-    // player (<click type>) clicks (<material>) (in <inventory>) (with <material>)
+    // player clicks in inventory
+    // player (<click type>) clicks (<item>) (in <inventory type>) (with <item>)
+    // player (<click type>) clicks (<material>) (in <inventory type>) (with <item>)
+    // player (<click type>) clicks (<item>) (in <inventory type>) (with <material>)
+    // player (<click type>) clicks (<material>) (in <inventory type>) (with <material>)
     //
     // @Triggers when a player clicks in an inventory.
     // @Context
@@ -2549,9 +2557,9 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player closes inventory
-    // player closes <inventory>
+    // player closes <inventory type>
     // npc closes inventory
-    // npc closes <inventory>
+    // npc closes <inventory type>
     //
     // @Triggers when a player closes an inventory.
     // @Context
@@ -2583,7 +2591,7 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player drags in inventory
-    // player drags (<item>) (in <inventory>)
+    // player drags (<item>) (in <inventory type>)
     //
     // @Triggers when a player drags in an inventory.
     // @Context
@@ -2637,8 +2645,8 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // item moves from inventory (to <inventory>)
-    // item moves from <inventory> (to <inventory>)
+    // item moves from inventory (to <inventory type>)
+    // item moves from <inventory type> (to <inventory type>)
     //
     // @Triggers when an entity or block moves an item from one inventory to another.
     // @Context
@@ -2687,7 +2695,7 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player opens inventory
-    // player opens <inventory>
+    // player opens <inventory type>
     //
     // @Triggers when a player opens an inventory.
     // @Context
@@ -2720,8 +2728,8 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // inventory picks up item
     // inventory picks up <item>
-    // <inventory> picks up item
-    // <inventory> picks up <item>
+    // <inventory type> picks up item
+    // <inventory type> picks up <item>
     //
     // @Triggers when a hopper or hopper minecart picks up an item.
     // @Context
@@ -3024,7 +3032,10 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player changes world (from <world>) to (<world>)
+    // player changes world
+    // player changes world from <world>
+    // player changes world to <world>
+    // player changes world from <world> to <world>
     //
     // @Triggers when a player moves to a different world.
     // @Context
@@ -3236,6 +3247,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // player clicks block
     // player (<click type>) clicks (<material>) (with <item>) (in <notable cuboid>)
     // player (<click type>) clicks block (with <item>)
     // player stands on <pressure plate>

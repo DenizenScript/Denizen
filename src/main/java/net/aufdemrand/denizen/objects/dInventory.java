@@ -37,6 +37,10 @@ import java.util.regex.Pattern;
 public class dInventory implements dObject, Notable, Adjustable {
 
     public static dInventory mirrorBukkitInventory(Inventory inventory) {
+        // Scripts have priority over notables
+        if (InventoryScriptHelper.tempInventoryScripts.containsKey(inventory))
+            return new dInventory(inventory).setIdentifiers("script",
+                    InventoryScriptHelper.tempInventoryScripts.get(inventory));
         // Use the map to get notable inventories
         if (InventoryScriptHelper.notableInventories.containsKey(inventory.getTitle()))
             return InventoryScriptHelper.notableInventories.get(inventory.getTitle());
@@ -1447,12 +1451,9 @@ public class dInventory implements dObject, Notable, Adjustable {
     private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
 
     public void applyProperty(Mechanism mechanism) {
-        // TODO: Restrict what properties can be sent through, either here or within the property definitions
-        // TODO: Specifically, ensure that you can't type things like
-        // TODO: <in@inventory[holder=mcmonkey4eva;contents=stick]> to give yourself a stick
-
         if (idType == null)  mechanisms.add(mechanism);
-        else adjust(mechanism);
+        else if (idType.equals("generic") || mechanism.matches("holder")) adjust(mechanism);
+        else dB.echoError("Cannot apply properties to non-generic inventory!");
     }
 
     @Override
