@@ -184,6 +184,9 @@ public class InventoryScriptContainer extends ScriptContainer {
             inventory = null;
         }
 
+        if (inventory != null)
+            InventoryScriptHelper.tempInventoryScripts.put(inventory.getInventory(), getName());
+
         return inventory;
 
     }

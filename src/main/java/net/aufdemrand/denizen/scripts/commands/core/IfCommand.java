@@ -5,6 +5,7 @@ import java.util.*;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -55,62 +56,64 @@ public class IfCommand extends AbstractCommand {
         List<aH.Argument> Arguments = aH.interpret(scriptEntry.getArguments());
 
         for (int i = 0; i < Arguments.size(); i++) {
-            aH.Argument arg = Arguments.get(i);
+            String arg = Arguments.get(i).raw_value;
             aH.Argument originalArg = OriginalArguments.get(i);
             if (buildingComparables) {
 
                 // Set logic to NEGATIVE
                 if (arg.startsWith("!")) {
                     comparables.get(comparables.size() - 1).setNegativeLogic();
-                    if (arg.getValue().length() == 1) continue;
-                    if (arg.startsWith("!=")) arg.replaceValue("==");
-                    else arg.replaceValue(arg.getValue().substring(1));
+                    if (arg.length() == 1) continue;
+                    if (arg.startsWith("!=")) arg = "==";
+                    else arg = arg.substring(1);
                 }
 
                 // Replace symbol-operators/bridges with ENUM value for matching
-                if (arg.getValue().equals("==")) arg.replaceValue("EQUALS");
-                else if (arg.getValue().equals(">=")) arg.replaceValue("OR_MORE");
-                else if (arg.getValue().equals("<=")) arg.replaceValue("OR_LESS");
-                else if (arg.getValue().equals("<")) arg.replaceValue("LESS");
-                else if (arg.getValue().equals(">")) arg.replaceValue("MORE");
-                else if (arg.getValue().equals("||")) arg.replaceValue("OR");
-                else if (arg.getValue().equals("&&")) arg.replaceValue("AND");
+                if (arg.equals("==")) arg = "EQUALS";
+                else if (arg.equals(">=")) arg = "OR_MORE";
+                else if (arg.equals("<=")) arg = "OR_LESS";
+                else if (arg.equals("<")) arg = "LESS";
+                else if (arg.equals(">")) arg = "MORE";
+                else if (arg.equals("||")) arg = "OR";
+                else if (arg.equals("&&")) arg = "AND";
+
+                Element elArg = new Element(arg);
 
                 // Set bridge
-                if (arg.matchesEnum(Comparable.Bridge.values())) {
+                if (elArg.matchesEnum(Comparable.Bridge.values())) {
                     // new Comparable to add to the list
                     comparables.add(new Comparable());
                     comparables.get(comparables.size() - 1).bridge =
-                            Comparable.Bridge.valueOf(arg.getValue().toUpperCase());
+                            Comparable.Bridge.valueOf(arg.toUpperCase());
                 }
 
                 // Set operator (Optional, default is EQUALS)
-                else if (arg.matchesEnum(Comparable.Operator.values())) {
+                else if (elArg.matchesEnum(Comparable.Operator.values())) {
                     comparables.get(comparables.size() - 1).operator =
-                            Comparable.Operator.valueOf(arg.getValue().toUpperCase());
+                            Comparable.Operator.valueOf(arg.toUpperCase());
                     usedOperator = true;
                 }
 
                 // Set comparable
                 else if (comparables.get(comparables.size() - 1).comparable == null) {
                     // If using MATCHES operator, keep as string.
-                    comparables.get(comparables.size() - 1).setComparable(arg.getValue());
+                    comparables.get(comparables.size() - 1).setComparable(arg);
                 }
 
-                else if (!usedOperator && arg.matches("{")) {
+                else if (!usedOperator && arg.equals("{")) {
                     buildingComparables = false;
                 }
 
                 // Check if filling comparables are done by checking the command registry for valid commands.
                 // If using an operator though, skip on to compared-to!
                 else if (!usedOperator && denizen.getCommandRegistry()
-                        .get(arg.getValue().replace("^", "")) != null) {
+                        .get(arg.replace("^", "")) != null) {
                     buildingComparables = false;
                 }
 
                 // Set compared-to
                 else {
-                    comparables.get(comparables.size() - 1).setComparedto(arg.getValue());
+                    comparables.get(comparables.size() - 1).setComparedto(arg);
                     usedOperator = false;
                 }
             }
@@ -120,7 +123,7 @@ public class IfCommand extends AbstractCommand {
                 // Read "-" as meaning we are moving to a new command, unless we
                 // are inside nested brackets (i.e. bracketsEntered of at least 2)
                 // in which case we just treat what follows as arguments
-                if (arg.matches("-") && bracketsEntered < 2) {
+                if (arg.equals("-") && bracketsEntered < 2) {
                     newCommand = true;
                 }
 
@@ -128,14 +131,14 @@ public class IfCommand extends AbstractCommand {
 
                     // Move to else commands if we read an "else" and we're not
                     // currently going through nested arguments
-                    if (arg.matches("else") && bracketsEntered == 0) {
+                    if (arg.equalsIgnoreCase("else") && bracketsEntered == 0) {
                         insideElse = true;
                     }
 
                     // If we find a bracket, and we're already inside
                     // nested brackets, add the bracket to the current
                     // command's arguments
-                    else if (arg.matches("{")) {
+                    else if (arg.equals("{")) {
                         bracketsEntered++;
 
                         if (bracketsEntered > 1) {
@@ -143,7 +146,7 @@ public class IfCommand extends AbstractCommand {
                         }
                     }
 
-                    else if (arg.matches("}")) {
+                    else if (arg.equals("}")) {
                         bracketsEntered--;
 
                         if (bracketsEntered > 0) {
@@ -170,7 +173,7 @@ public class IfCommand extends AbstractCommand {
                     // If we find a bracket, and we're already inside
                     // nested brackets, add the bracket to the current
                     // command's arguments
-                    if (arg.matches("{")) {
+                    if (arg.equals("{")) {
                         bracketsEntered++;
 
                         if (bracketsEntered > 1) {
@@ -178,7 +181,7 @@ public class IfCommand extends AbstractCommand {
                         }
                     }
 
-                    else if (arg.matches("}")) {
+                    else if (arg.equals("}")) {
                         bracketsEntered--;
 
                         if (bracketsEntered > 0) {
@@ -196,7 +199,7 @@ public class IfCommand extends AbstractCommand {
                         // If we find an "else if", act like we entered a set of
                         // brackets, so we treat the if's commands as arguments
                         // and don't add them to our current else commands
-                        if (arg.matches("if") && elseOutcome.size() == 0 && bracketsEntered < 1) {
+                        if (arg.equalsIgnoreCase("if") && elseOutcome.size() == 0 && bracketsEntered < 1) {
                             bracketsEntered++;
                         }
 
