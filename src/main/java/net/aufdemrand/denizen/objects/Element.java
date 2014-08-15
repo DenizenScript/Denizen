@@ -891,7 +891,7 @@ public class Element implements dObject {
             String delimiter = attribute.getContext(1);
             if (element.contains(delimiter))
                 return new Element(element.substring
-                        (element.lastIndexOf(delimiter) + delimiter.length()))
+                        (element.toLowerCase().lastIndexOf(delimiter.toLowerCase()) + delimiter.length()))
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element("")
@@ -911,7 +911,7 @@ public class Element implements dObject {
             String delimiter = attribute.getContext(1);
             if (element.contains(delimiter))
                 return new Element(element.substring
-                    (element.indexOf(delimiter) + delimiter.length()))
+                    (element.toLowerCase().indexOf(delimiter.toLowerCase()) + delimiter.length()))
                     .getAttribute(attribute.fulfill(1));
             else
                 return new Element("")
@@ -931,7 +931,7 @@ public class Element implements dObject {
             String delimiter = attribute.getContext(1);
             if (element.contains(delimiter))
                 return new Element(element.substring
-                        (0, element.lastIndexOf(delimiter)))
+                        (0, element.toLowerCase().lastIndexOf(delimiter.toLowerCase())))
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(element)
@@ -951,7 +951,7 @@ public class Element implements dObject {
             String delimiter = attribute.getContext(1);
             if (element.contains(delimiter))
                 return new Element(element.substring
-                    (0, element.indexOf(delimiter)))
+                    (0, element.toLowerCase().indexOf(delimiter.toLowerCase())))
                     .getAttribute(attribute.fulfill(1));
             else
                 return new Element(element)
