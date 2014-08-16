@@ -1074,6 +1074,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.normalize>
+        // @returns dLocation
+        // @description
+        // Returns a 1-length vector in the same direction as this vector location.
+        // -->
+        if (attribute.startsWith("normalize")) {
+            double len = Math.sqrt(Math.pow(getX(), 2) + Math.pow(getY(), 2) + Math.pow(getZ(), 2));
+            if (len == 0)
+                return this.getAttribute(attribute.fulfill(1));
+            else
+                return new dLocation(this.clone().multiply(1D / len))
+                        .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.vector_length>
         // @returns Element(Decimal)
         // @description
