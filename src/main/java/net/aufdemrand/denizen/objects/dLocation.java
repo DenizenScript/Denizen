@@ -168,9 +168,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     }
 
     final static Pattern location_by_saved = Pattern.compile("(l@)(.+)");
-    final static Pattern location =
-            Pattern.compile("(-?\\d+\\.?\\d*,?){3,5}[\\w\\s]*",
-                    Pattern.CASE_INSENSITIVE);
 
     public static boolean matches(String string) {
         if (string == null || string.length() == 0)
@@ -180,8 +177,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (m.matches())
             return true;
 
-        m = location.matcher(string);
-        return m.matches();
+        String[] data = string.split(",");
+        return data.length >= 3 && new Element(data[0]).isDouble()
+                && new Element(data[1]).isDouble()
+                && new Element(data[2]).isDouble();
     }
 
 
