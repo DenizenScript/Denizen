@@ -208,15 +208,19 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
     public dLocation getLocation() {
-        if (isSpawned()) return
-                new dLocation(getCitizen().getEntity().getLocation(locationCache));
-        else return null;
+        if (isSpawned())
+            return new dLocation(getEntity().getLocation());
+        else
+            return new dLocation(getCitizen().getStoredLocation());
     }
 
     public dLocation getEyeLocation() {
-        if (isSpawned() && getCitizen().getEntity() instanceof LivingEntity) return
-                new dLocation(((LivingEntity) getCitizen().getEntity()).getEyeLocation());
-        else return null;
+        if (isSpawned() && getCitizen().getEntity() instanceof LivingEntity)
+            return new dLocation(((LivingEntity) getCitizen().getEntity()).getEyeLocation());
+        else if (isSpawned())
+            return new dLocation(getEntity().getLocation());
+        else
+            return new dLocation(getCitizen().getStoredLocation());
     }
 
     public World getWorld() {
@@ -356,6 +360,17 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // Defined in dEntity
         if (attribute.startsWith("is_npc")) {
             return Element.TRUE.getAttribute(attribute.fulfill(1));
+        }
+
+        // Defined in dEntity
+        if (attribute.startsWith("location")) {
+            return getLocation().getAttribute(attribute.fulfill(1));
+        }
+
+
+        // Defined in dEntity
+        if (attribute.startsWith("eye_location")) {
+            return getEyeLocation().getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

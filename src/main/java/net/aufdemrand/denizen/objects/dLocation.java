@@ -168,9 +168,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     }
 
     final static Pattern location_by_saved = Pattern.compile("(l@)(.+)");
-    final static Pattern location =
-            Pattern.compile("(-?\\d+\\.?\\d*,?){3,5}[\\w\\s]*",
-                    Pattern.CASE_INSENSITIVE);
 
     public static boolean matches(String string) {
         if (string == null || string.length() == 0)
@@ -180,8 +177,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (m.matches())
             return true;
 
-        m = location.matcher(string);
-        return m.matches();
+        String[] data = string.split(",");
+        return data.length >= 3 && new Element(data[0]).isDouble()
+                && new Element(data[1]).isDouble()
+                && new Element(data[2]).isDouble();
     }
 
 
@@ -1072,6 +1071,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 attribute.hasContext(1)) {
             return new dLocation(this.clone().multiply(1D / Double.parseDouble(attribute.getContext(1))))
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.normalize>
+        // @returns dLocation
+        // @description
+        // Returns a 1-length vector in the same direction as this vector location.
+        // -->
+        if (attribute.startsWith("normalize")) {
+            double len = Math.sqrt(Math.pow(getX(), 2) + Math.pow(getY(), 2) + Math.pow(getZ(), 2));
+            if (len == 0)
+                return this.getAttribute(attribute.fulfill(1));
+            else
+                return new dLocation(this.clone().multiply(1D / len))
+                        .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

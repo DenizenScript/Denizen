@@ -88,7 +88,7 @@ public class SignCommand extends AbstractCommand {
         Utilities.setSignLines((Sign) signState, text.toArray());
         if (direction != null)
             Utilities.setSignRotation(signState, direction);
-        else if (type == Type.SIGN_POST)
+        else if (type == Type.WALL_SIGN)
             Utilities.setSignRotation(signState);
     }
 }
