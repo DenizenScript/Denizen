@@ -608,6 +608,27 @@ public class UtilTags implements Listener {
                 }
             }
 
+            // <--[tag]
+            // @attribute <util.random.decimal>
+            // @returns Element
+            // @description
+            // Returns a random decimal number from 0 to 1
+            // -->
+            else if (subType.equalsIgnoreCase("DECIMAL"))
+                event.setReplaced(new Element(Utilities.getRandom().nextDouble())
+                        .getAttribute(attribute.fulfill(2)));
+
+                // <--[tag]
+                // @attribute <util.random.gauss>
+                // @returns Element
+                // @description
+                // Returns a random decimal number with a gaussian distribution.
+                // 70% of all results will be within the range of -1 to 1.
+                // -->
+            else if (subType.equalsIgnoreCase("GAUSS"))
+                event.setReplaced(new Element(Utilities.getRandom().nextGaussian())
+                        .getAttribute(attribute.fulfill(2)));
+
             // TODO: Delete (Deprecated in favor of li@list.random)
             else if (subType.equalsIgnoreCase("ELEMENT")) {
                 dList list = dList.valueOf(subTypeContext);

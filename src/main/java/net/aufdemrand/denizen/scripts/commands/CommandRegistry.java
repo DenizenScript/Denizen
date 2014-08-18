@@ -483,7 +483,7 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(CastCommand.class,
                 "CAST, POTION", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)", 1);
 
-        // TODO: Document Command Details: Should the chat command be in the NPC group instead?
+        // TODO: Should the chat command be in the NPC group instead?
         // <--[command]
         // @Name Chat
         // @Syntax chat ["<text>"] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
@@ -1571,7 +1571,7 @@ public class CommandRegistry implements dRegistry {
         // - listen item type:craft item:wood_sword qty:1 script:SwordCrafted
 
         // @Usage
-        // Use to... (TODO: Document Command Details: Itemdrop)
+        // Use to... (TODO: Itemdrop)
 
         // @Usage
         // Use to listen for when a player walks for 150 blocks.
@@ -2043,7 +2043,7 @@ public class CommandRegistry implements dRegistry {
         // @Author David Cernat
         // @Group entity
         // @Description
-        // TODO: Document Command Details: CUBOID OPTION
+        // TODO: CUBOID OPTION
         // TODO: Document Command Details
         // @Tags
         // <e@entity.is_spawned>
@@ -2328,7 +2328,7 @@ public class CommandRegistry implements dRegistry {
          * </ol></tt>
          *
          */
-        // TODO: Document Command Details: Combine the above outdated information with the new meta tags below
+        // TODO: Combine the above outdated information with the new meta tags below
 
         // <--[command]
         // @Name Scribe
