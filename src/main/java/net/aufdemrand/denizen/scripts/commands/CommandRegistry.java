@@ -2493,7 +2493,7 @@ public class CommandRegistry implements dRegistry {
         // - sql id:name "update:INSERT INTO things VALUES (3, 'hello', 'space');"
         // @Usage
         // Use to query an SQL server.
-        // - sql sql id:name "query:SELECT id,column_name1,column_name2 FROM things;" save:saveName
+        // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things;" save:saveName
         // - narrate <entry[saveName].result>
         // @Usage
         // Use to query an SQL server.

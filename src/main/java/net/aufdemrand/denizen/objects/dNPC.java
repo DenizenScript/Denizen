@@ -353,6 +353,18 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (!(o instanceof dNPC)) return false;
+        return getId() == ((dNPC) o).getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
+    }
+
+    @Override
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return "null";
