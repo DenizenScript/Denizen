@@ -1,15 +1,18 @@
 package net.aufdemrand.denizen.tags.core;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import java.sql.Connection;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
@@ -321,6 +324,31 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("max_players")) {
             event.setReplaced(new Element(Bukkit.getServer().getMaxPlayers())
                     .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_sql_connections>
+        // @returns dList
+        // @description
+        // Returns a list of all SQL connections opened by <@link command sql>.
+        // -->
+        if (attribute.startsWith("list_sql_connections")) {
+            dList list = new dList();
+            for (Map.Entry<String, Connection> entry: SQLCommand.connections.entrySet()) {
+                try {
+                    if (!entry.getValue().isClosed()) {
+                        list.add(entry.getKey());
+                    }
+                    else {
+                        SQLCommand.connections.remove(entry.getKey());
+                    }
+                }
+                catch (SQLException e) {
+                    dB.echoError(attribute.getScriptEntry().getResidingQueue(), e);
+                }
+            }
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
             return;
         }
 
