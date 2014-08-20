@@ -23,10 +23,10 @@ public class DefineCommand extends AbstractCommand implements Listener {
 
             if (!scriptEntry.hasObject("definition")
                     && !arg.matchesPrefix("value, v")) {
-                if (arg.getValue().equals("!") && arg.hasPrefix())
+                if (arg.getValue().equals("!") && arg.hasPrefix()) {
                     scriptEntry.addObject("remove", "remove");
                     scriptEntry.addObject("definition", arg.getPrefix());
-                else
+                } else
                     scriptEntry.addObject("definition", arg.getValue().toLowerCase());
                 }
 
@@ -49,7 +49,7 @@ public class DefineCommand extends AbstractCommand implements Listener {
         dB.report(scriptEntry, getName(), aH.debugObj("queue", scriptEntry.getResidingQueue().id)
                 + aH.debugObj("definition", scriptEntry.getObject("definition").toString())
                 + aH.debugObj("value", scriptEntry.getObject("value").toString())
-                + aH.debugObj("remove?", scriptEntry.hasObject("remove").toString());
+                + aH.debugObj("remove?", scriptEntry.hasObject("remove").toString()));
 
         if (scriptEntry.hasObject("remove")) {
             scriptEntry.getResidingQueue().removeDefinition((String) scriptEntry.getObject("definition"));
