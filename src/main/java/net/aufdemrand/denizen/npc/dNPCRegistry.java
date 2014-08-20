@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -207,6 +208,7 @@ public class dNPCRegistry implements Listener {
             npcInventories.remove(npc.getId());
         }
         dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + npc.getName() + "/" + npc.getId());
+        FlagManager.clearNPCFlags(npc.getId());
         // TODO: Delete flags / etc.
     }
 
