@@ -329,6 +329,21 @@ public abstract class ScriptQueue implements Debuggable, dObject {
 
 
     /**
+     * Removes an existing definitions from the queue. This
+     * can be done with dScript as well by using the
+     * 'define' command, with :! as the value using the definition
+     * name as a prefix.
+     *
+     * @param definition  the name of the definitions
+     * @param value  the value of the definition
+     */
+    public void removeDefinition(String definition) {
+        definitions.remove(definition.toLowerCase());
+    }
+
+
+
+    /**
      * Returns a Map of all the current definitions
      * stored in the queue, keyed by 'definition id'
      *
