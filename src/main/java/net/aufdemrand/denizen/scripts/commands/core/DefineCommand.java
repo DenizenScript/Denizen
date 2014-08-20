@@ -22,8 +22,13 @@ public class DefineCommand extends AbstractCommand implements Listener {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("definition")
-                    && !arg.matchesPrefix("value, v"))
-                scriptEntry.addObject("definition", arg.getValue().toLowerCase());
+                    && !arg.matchesPrefix("value, v")) {
+                if (arg.getValue().equals("!") && arg.hasPrefix())
+                    scriptEntry.addObject("remove", "remove");
+                    scriptEntry.addObject("definition", arg.getPrefix());
+                else
+                    scriptEntry.addObject("definition", arg.getValue().toLowerCase());
+                }
 
             else if (!scriptEntry.hasObject("value")
                     && !arg.matchesPrefix("definition, def, d"))
@@ -43,10 +48,15 @@ public class DefineCommand extends AbstractCommand implements Listener {
 
         dB.report(scriptEntry, getName(), aH.debugObj("queue", scriptEntry.getResidingQueue().id)
                 + aH.debugObj("definition", scriptEntry.getObject("definition").toString())
-                + aH.debugObj("value", scriptEntry.getObject("value").toString()));
+                + aH.debugObj("value", scriptEntry.getObject("value").toString())
+                + aH.debugObj("remove?", scriptEntry.hasObject("remove").toString());
 
-        scriptEntry.getResidingQueue().addDefinition(
-                (String) scriptEntry.getObject("definition"),
-                (String) scriptEntry.getObject("value"));
+        if (scriptEntry.hasObject("remove") {
+            scriptEntry.getResidingQueue().removeDefinition((String) scriptEntry.getObject("definition"));
+        } else {
+            scriptEntry.getResidingQueue().addDefinition(
+                    (String) scriptEntry.getObject("definition"),
+                    (String) scriptEntry.getObject("value"));
+        }
     }
 }
