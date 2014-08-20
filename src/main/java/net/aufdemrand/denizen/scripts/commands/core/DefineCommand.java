@@ -46,10 +46,10 @@ public class DefineCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
+        // TODO: Report 'remove' when I have an IDE available.
         dB.report(scriptEntry, getName(), aH.debugObj("queue", scriptEntry.getResidingQueue().id)
                 + aH.debugObj("definition", scriptEntry.getObject("definition").toString())
-                + aH.debugObj("value", scriptEntry.getObject("value").toString())
-                + aH.debugObj("remove?", scriptEntry.hasObject("remove").toString()));
+                + aH.debugObj("value", scriptEntry.getObject("value").toString()));
 
         if (scriptEntry.hasObject("remove")) {
             scriptEntry.getResidingQueue().removeDefinition((String) scriptEntry.getObject("definition"));
