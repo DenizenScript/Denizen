@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 
 public class dScript implements dObject {
 
@@ -286,7 +287,28 @@ public class dScript implements dObject {
         if (attribute.startsWith("name")) {
             return new Element(name)
                     .getAttribute(attribute.fulfill(1));
+        }
 
+        // <--[tag]
+        // @attribute <s@script.relative_filename>
+        // @returns Element
+        // @description
+        // Returns the filename that contains the script, relative to the denizen/ folder.
+        // -->
+        if (attribute.startsWith("relative_filename")) {
+            return new Element(container.getFileName().replace(DenizenAPI.getCurrentInstance().getDataFolder().getAbsolutePath(), "").replace("\\", "/"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.filename>
+        // @returns Element
+        // @description
+        // Returns the filename that contains the script.
+        // -->
+        if (attribute.startsWith("filename")) {
+            return new Element(container.getFileName().replace("\\", "/"))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

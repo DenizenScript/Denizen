@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptEntrySet;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
@@ -121,6 +122,10 @@ public class ScriptContainer implements Debuggable {
      */
     public String getName() {
         return name;
+    }
+
+    public String getFileName() {
+        return ScriptHelper.getSource(getName());
     }
 
 
