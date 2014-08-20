@@ -51,7 +51,7 @@ public class DefineCommand extends AbstractCommand implements Listener {
                 + aH.debugObj("value", scriptEntry.getObject("value").toString())
                 + aH.debugObj("remove?", scriptEntry.hasObject("remove").toString());
 
-        if (scriptEntry.hasObject("remove") {
+        if (scriptEntry.hasObject("remove")) {
             scriptEntry.getResidingQueue().removeDefinition((String) scriptEntry.getObject("definition"));
         } else {
             scriptEntry.getResidingQueue().addDefinition(
