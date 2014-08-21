@@ -101,7 +101,7 @@ public class ScriptHelper {
             String line = lines[i].trim();
             String trimStart = lines[i].replaceAll("^[\\s\\t]+", "");
             if (trimStart.length() == lines[i].length() && line.endsWith(":") && line.length() > 1) {
-                scriptSources.put(line.substring(0, line.length() - 1).toUpperCase(), filename);
+                scriptSources.put(line.substring(0, line.length() - 1).toUpperCase().replace('\"', '\'').replace("'", ""), filename);
             }
             if (!line.startsWith("#")) {
                 if ((line.startsWith("}") || line.startsWith("{") || line.startsWith("else")) && !line.endsWith(":"))

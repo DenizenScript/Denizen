@@ -2486,6 +2486,9 @@ public class CommandRegistry implements dRegistry {
         // Use to connect to an SQL server.
         // - sql id:name connect:localhost:3306/test username:space password:space
         // @Usage
+        // Use to connect to an SQL server with a UTF8 text encoding
+        // - sql id:name connect:localhost:3306/test?characterEncoding=utf8 username:space password:space
+        // @Usage
         // Use to update an SQL server.
         // - sql id:name "update:CREATE table things(id int,column_name1 varchar(255),column_name2 varchar(255));"
         // @Usage
