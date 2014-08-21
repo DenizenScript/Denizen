@@ -5,11 +5,13 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.util.PlayerAnimation;
 import net.minecraft.server.v1_7_R4.EntityHuman;
 
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -22,17 +24,16 @@ public class SittingTrait extends Trait implements Listener  {
     @Persist("chair location")
     private Location chairLocation = null;
 
-    EntityHuman eh = null;
-
     @Override
     public void run() {
-        if (eh == null || chairLocation == null) return;
-        if (!Utilities.checkLocation(npc.getBukkitEntity(), chairLocation, 1)) stand();
+        if (!npc.isSpawned() || chairLocation == null) return;
+        if (!Utilities.checkLocation(npc.getBukkitEntity(), chairLocation, 1)) {
+            stand();
+        }
     }
 
     @Override
     public void onSpawn() {
-        eh = ((CraftPlayer) npc.getBukkitEntity()).getHandle();
         if (sitting) sit();
     }
 
@@ -56,10 +57,20 @@ public class SittingTrait extends Trait implements Listener  {
             return;
         }
 
-        eh.getDataWatcher().watch(0, (byte) 0x04);
-
-        sitting = true;
+        sitInternal();
         chairLocation = npc.getBukkitEntity().getLocation();
+    }
+
+    private void sitInternal() {
+        PlayerAnimation.SIT.play((Player)npc.getEntity());
+        //eh.getDataWatcher().watch(0, (byte) 0x04);
+        sitting = true;
+    }
+
+    private void standInternal() {
+        PlayerAnimation.STOP_SITTING.play((Player)npc.getEntity());
+        //eh.getDataWatcher().watch(0, (byte) 0x00);
+        sitting = false;
     }
 
     /**
@@ -70,7 +81,7 @@ public class SittingTrait extends Trait implements Listener  {
     public void sit(Location location) {
         DenizenAPI.getDenizenNPC(npc).action("sit", null);
 
-        if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+        if (npc.getEntity().getType() != EntityType.PLAYER) {
             return;
         }
 
@@ -78,12 +89,10 @@ public class SittingTrait extends Trait implements Listener  {
          * Teleport NPC to the location before
          * sending the sit packet to the clients.
          */
-        eh.getBukkitEntity().teleport(location.add(0.5, 0, 0.5));
+        npc.getEntity().teleport(location.add(0.5, 0, 0.5));
         dB.log("...NPC moved to chair");
 
-        eh.getDataWatcher().watch(0, (byte) 0x04);
-
-        sitting = true;
+        sitInternal();
         chairLocation = location;
     }
 
@@ -103,11 +112,9 @@ public class SittingTrait extends Trait implements Listener  {
     public void stand() {
         DenizenAPI.getDenizenNPC(npc).action("stand", null);
 
-
-        eh.getDataWatcher().watch(0, (byte) 0x00);
+        standInternal();
 
         chairLocation = null;
-        sitting = false;
     }
 
     /**
