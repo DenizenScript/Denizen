@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -87,11 +88,21 @@ public class ScriptHelper {
         }
     }
 
-    private static String ClearComments(String input) {
+    private static HashMap<String, String> scriptSources = new HashMap<String, String>();
+
+    public static String getSource(String script) {
+        return scriptSources.get(script.toUpperCase());
+    }
+
+    private static String ClearComments(String filename, String input) {
         StringBuilder result = new StringBuilder(input.length());
         String[] lines = input.replace("\t", "    ").replace("\r", "").split("\n");
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i].trim();
+            String trimStart = lines[i].replaceAll("^[\\s\\t]+", "");
+            if (trimStart.length() == lines[i].length() && line.endsWith(":") && line.length() > 1) {
+                scriptSources.put(line.substring(0, line.length() - 1).toUpperCase().replace('\"', '\'').replace("'", ""), filename);
+            }
             if (!line.startsWith("#")) {
                 if ((line.startsWith("}") || line.startsWith("{") || line.startsWith("else")) && !line.endsWith(":"))
                 {
@@ -110,14 +121,15 @@ public class ScriptHelper {
         return result.toString();
     }
 
-    private static YamlConfiguration loadConfig(InputStream resource) throws IOException {
+    private static YamlConfiguration loadConfig(String filename, InputStream resource) throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(resource, writer);
-        return YamlConfiguration.loadConfiguration(new StringReader(ClearComments(writer.toString())));
+        return YamlConfiguration.loadConfiguration(new StringReader(ClearComments(filename, writer.toString())));
     }
 
     private static String _concatenateCoreScripts() {
 
+        scriptSources.clear();
         try {
             File file = null;
             // Get the script directory
@@ -144,7 +156,7 @@ public class ScriptHelper {
 
                 YamlConfiguration yaml;
                 dB.log("Processing 'util.dscript'... ");
-                yaml = loadConfig(DenizenAPI.getCurrentInstance().getResource("util.dscript"));
+                yaml = loadConfig("Denizen.jar/util.dscript", DenizenAPI.getCurrentInstance().getResource("util.dscript"));
                 HandleListing(yaml, scriptNames);
                 sb.append(yaml.saveToString()).append("\r\n");
 
@@ -163,7 +175,7 @@ public class ScriptHelper {
                     dB.log("Processing '" + fileName + "'... ");
 
                     try {
-                        yaml = loadConfig(new FileInputStream(f));
+                        yaml = loadConfig(f.getAbsolutePath(), new FileInputStream(f));
                         String saved = yaml.saveToString();
                         if (yaml != null && saved.length() > 0) {
                             HandleListing(yaml, scriptNames);

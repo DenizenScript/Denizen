@@ -139,7 +139,7 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
 
     // Held script entries
-    public List<ScriptEntry> held = new ArrayList<ScriptEntry>();
+    public static List<ScriptEntry> held = new ArrayList<ScriptEntry>();
 
     @EventHandler
     public void finish(NavigationCompleteEvent e) {
@@ -168,19 +168,15 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
             // Get all NPCs associated with the entry. They must all
             // finish navigation before the entry can be let go
-            List<dNPC> npcs = (List<dNPC>) entry.getObject("npcs");
-            for (dNPC npc : npcs) {
-                List<dNPC> tally = (List<dNPC>) entry.getObject("tally");
-                // If the NPC is the NPC from the event, take it from the list.
-                tally.remove(dNPC.mirrorCitizensNPC(e.getNPC()));
+            List<dNPC> tally = (List<dNPC>) entry.getObject("tally");
+            // If the NPC is the NPC from the event, take it from the list.
+            tally.remove(dNPC.mirrorCitizensNPC(e.getNPC()));
 
-                // Check if tally is empty.
-                if (tally.isEmpty()) {
-                    entry.setFinished(true);
-                    held.remove(i);
-                    i--;
-                    break;
-                }
+            // Check if tally is empty.
+            if (tally.isEmpty()) {
+                entry.setFinished(true);
+                held.remove(i);
+                i--;
             }
         }
     }

@@ -84,7 +84,8 @@ public class SwitchCommand extends AbstractCommand {
 
         final Player player = scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getPlayerEntity(): null;
         // Switch the Block
-        switchBlock(interactLocation, switchState, player);
+        final ScriptEntry se = scriptEntry;
+        switchBlock(se, interactLocation, switchState, player);
 
         // TODO: Rewrite the below code to not use freakin' NMS!
         // If duration set, schedule a delayed task.
@@ -100,10 +101,10 @@ public class SwitchCommand extends AbstractCommand {
                     // Check to see if the state of the block is what is expected. If switched during
                     // the duration, the switchback is cancelled.
                     if (switchState == SwitchState.OFF && !((interactLocation.getBlock().getData() & 0x8) > 0))
-                        switchBlock(interactLocation, SwitchState.ON, player);
+                        switchBlock(se, interactLocation, SwitchState.ON, player);
                     else if (switchState == SwitchState.ON && ((interactLocation.getBlock().getData() & 0x8) > 0))
-                        switchBlock(interactLocation, SwitchState.OFF, player);
-                    else if (switchState == SwitchState.TOGGLE) switchBlock(interactLocation, SwitchState.TOGGLE, player);
+                        switchBlock(se, interactLocation, SwitchState.OFF, player);
+                    else if (switchState == SwitchState.TOGGLE) switchBlock(se, interactLocation, SwitchState.TOGGLE, player);
                 }
             }, duration * 20));
         }
@@ -111,7 +112,7 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
-    public void switchBlock(Location interactLocation, SwitchState switchState, Player player) {
+    public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState, Player player) {
         World world = interactLocation.getWorld();
         boolean currentState = (interactLocation.getBlock().getData() & 0x8) > 0;
         String state = switchState.toString();
@@ -131,6 +132,7 @@ public class SwitchCommand extends AbstractCommand {
                         break;
                     }
                 }
+                // TODO: backup if no human NPC available? (Fake EntityPlayer instance?)
             }
         }
 
@@ -147,7 +149,7 @@ public class SwitchCommand extends AbstractCommand {
                               interactLocation.getBlockZ(),
                               craftPlayer != null ? craftPlayer.getHandle(): null, 0, 0f, 0f, 0f);
 
-                dB.log("Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
+                dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
                         ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
 
             } catch (NullPointerException e) {

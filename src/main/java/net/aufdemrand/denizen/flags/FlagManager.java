@@ -133,6 +133,10 @@ public class FlagManager {
                 .getGlobalFlag(flagName).size() > 0;
     }
 
+    public static void clearNPCFlags(int npcid) {
+        DenizenAPI.getCurrentInstance().getSaves().set("NPCs." + npcid, null);
+    }
+
     /**
      * Returns a NPC Flag object. If this flag currently exists
      * it will be populated with the current values. If the flag does NOT exist,

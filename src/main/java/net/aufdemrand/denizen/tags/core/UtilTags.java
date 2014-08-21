@@ -1,15 +1,19 @@
 package net.aufdemrand.denizen.tags.core;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import java.sql.Connection;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
@@ -325,6 +329,31 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.list_sql_connections>
+        // @returns dList
+        // @description
+        // Returns a list of all SQL connections opened by <@link command sql>.
+        // -->
+        if (attribute.startsWith("list_sql_connections")) {
+            dList list = new dList();
+            for (Map.Entry<String, Connection> entry: SQLCommand.connections.entrySet()) {
+                try {
+                    if (!entry.getValue().isClosed()) {
+                        list.add(entry.getKey());
+                    }
+                    else {
+                        SQLCommand.connections.remove(entry.getKey());
+                    }
+                }
+                catch (SQLException e) {
+                    dB.echoError(attribute.getScriptEntry().getResidingQueue(), e);
+                }
+            }
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.list_permission_groups>
         // @returns dList
         // @description
@@ -350,6 +379,20 @@ public class UtilTags implements Listener {
             for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins())
                 plugins.add(plugin.getName());
             event.setReplaced(plugins.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_scripts>
+        // @returns dList(dScript)
+        // @description
+        // Gets a list of all scripts currently loaded into Denizen.
+        // -->
+        if (attribute.startsWith("list_scripts")) {
+            dList scripts = new dList();
+            for (String str : ScriptRegistry._getScriptNames())
+                scripts.add("s@" + str);
+            event.setReplaced(scripts.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -607,6 +650,27 @@ public class UtilTags implements Listener {
                     }
                 }
             }
+
+            // <--[tag]
+            // @attribute <util.random.decimal>
+            // @returns Element
+            // @description
+            // Returns a random decimal number from 0 to 1
+            // -->
+            else if (subType.equalsIgnoreCase("DECIMAL"))
+                event.setReplaced(new Element(Utilities.getRandom().nextDouble())
+                        .getAttribute(attribute.fulfill(2)));
+
+                // <--[tag]
+                // @attribute <util.random.gauss>
+                // @returns Element
+                // @description
+                // Returns a random decimal number with a gaussian distribution.
+                // 70% of all results will be within the range of -1 to 1.
+                // -->
+            else if (subType.equalsIgnoreCase("GAUSS"))
+                event.setReplaced(new Element(Utilities.getRandom().nextGaussian())
+                        .getAttribute(attribute.fulfill(2)));
 
             // TODO: Delete (Deprecated in favor of li@list.random)
             else if (subType.equalsIgnoreCase("ELEMENT")) {

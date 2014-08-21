@@ -14,7 +14,7 @@ import java.util.Properties;
 
 public class SQLCommand extends AbstractCommand {
 
-    public Map<String, Connection> connections = new HashMap<String, Connection>();
+    public static Map<String, Connection> connections = new HashMap<String, Connection>();
 
     @Override
     public void onDisable() {

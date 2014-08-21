@@ -103,17 +103,29 @@ public class InventoryCommand extends AbstractCommand {
 
                 // Turn destination's contents into a copy of origin's
                 case COPY:
+                    if (origin == null) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        return;
+                    }
                     origin.replace(destination);
                     break;
 
                 // Copy origin's contents to destination, then empty origin
                 case MOVE:
+                    if (origin == null) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        return;
+                    }
                     origin.replace(destination);
                     origin.clear();
                     break;
 
                 // Swap the contents of the two inventories
                 case SWAP:
+                    if (origin == null) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        return;
+                    }
                     dInventory temp = new dInventory(destination.getInventory());
                     origin.replace(destination);
                     temp.replace(origin);
@@ -121,34 +133,58 @@ public class InventoryCommand extends AbstractCommand {
 
                 // Add origin's contents to destination
                 case ADD:
+                    if (origin == null) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        return;
+                    }
                     destination.add(slot.asInt()-1, origin.getContents());
                     break;
 
                 // Remove origin's contents from destination
                 case REMOVE:
+                    if (origin == null) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        return;
+                    }
                     destination.remove(origin.getContents());
                     break;
 
                 // Set items by slot
                 case SET:
+                    if (origin == null) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        return;
+                    }
                     destination.setSlots(slot.asInt()-1, origin.getContents());
                     break;
 
                 // Keep only items from the origin's contents in the
                 // destination
                 case KEEP:
+                    if (origin == null) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        return;
+                    }
                     destination.keep(origin.getContents());
                     break;
 
                 // Exclude all items from the origin's contents in the
                 // destination
                 case EXCLUDE:
+                    if (origin == null) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        return;
+                    }
                     destination.exclude(origin.getContents());
                     break;
 
                 // Add origin's contents over and over to destination
                 // until it is full
                 case FILL:
+                    if (origin == null) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
+                        return;
+                    }
                     destination.fill(origin.getContents());
                     break;
 
