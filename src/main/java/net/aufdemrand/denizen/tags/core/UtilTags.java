@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
@@ -378,6 +379,20 @@ public class UtilTags implements Listener {
             for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins())
                 plugins.add(plugin.getName());
             event.setReplaced(plugins.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_scripts>
+        // @returns dList(dScript)
+        // @description
+        // Gets a list of all scripts currently loaded into Denizen.
+        // -->
+        if (attribute.startsWith("list_scripts")) {
+            dList scripts = new dList();
+            for (String str : ScriptRegistry._getScriptNames())
+                scripts.add("s@" + str);
+            event.setReplaced(scripts.getAttribute(attribute.fulfill(1)));
             return;
         }
 
