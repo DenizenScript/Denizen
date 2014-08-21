@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class SittingTrait extends Trait implements Listener  {
 
@@ -89,8 +90,8 @@ public class SittingTrait extends Trait implements Listener  {
          * Teleport NPC to the location before
          * sending the sit packet to the clients.
          */
-        npc.getEntity().teleport(location.add(0.5, 0, 0.5));
-        dB.log("...NPC moved to chair");
+        // TODO: Make this work better.
+        npc.teleport(location.add(0.5, 0, 0.5), PlayerTeleportEvent.TeleportCause.PLUGIN);
 
         sitInternal();
         chairLocation = location;
