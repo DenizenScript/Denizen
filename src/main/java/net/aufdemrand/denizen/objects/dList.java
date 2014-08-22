@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.NaturalOrderComparator;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -766,6 +767,19 @@ public class dList extends ArrayList<String> implements dObject {
                         return -1;
                 }
             });
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.alphanumeric>
+        // @returns Element
+        // @description
+        // returns the list sorted to be in alphabetical/numerical order.
+        // EG, a list of "b|c|a10|a1" will return "a1|a10|b|c".
+        // -->
+        if (attribute.startsWith("alphanumeric")) {
+            dList list = new dList(this);
+            Collections.sort(list, new NaturalOrderComparator());
             return list.getAttribute(attribute.fulfill(1));
         }
 
