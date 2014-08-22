@@ -477,9 +477,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns a simple version of the dLocation's block coordinates.
         // EG: x,y,z,world
         // -->
-        if (attribute.startsWith("simple"))
-            return new Element(getBlockX() + "," + getBlockY() + "," + getBlockZ()
-                    + "," + getWorld().getName()).getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("simple")) {
+            if (getWorld() == null)
+                return new Element(getBlockX() + "," + getBlockY() + "," + getBlockZ())
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new Element(getBlockX() + "," + getBlockY() + "," + getBlockZ()
+                        + "," + getWorld().getName()).getAttribute(attribute.fulfill(1));
+        }
 
 
         /////////////////////
@@ -1002,15 +1007,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         /////////////////
 
         // <--[tag]
-        // @attribute <l@location.add[<x,y,z>]>
+        // @attribute <l@location.add[<location>]>
         // @returns dLocation
         // @description
         // Returns the location with the specified coordinates added to it.
         // -->
         if (attribute.startsWith("add")
                 && attribute.hasContext(1)) {
-            if (attribute.getContext(1).split(",").length == 3) {
-                String[] ints = attribute.getContext(1).split(",", 3);
+            String[] ints = attribute.getContext(1).replace("l@", "").split(",", 4); // TODO: Just dLocation.valueOf?
+            if (ints.length >= 3) {
                 if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
                         && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
                         && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2]))) {
@@ -1026,15 +1031,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.sub[<x,y,z>]>
+        // @attribute <l@location.sub[<location>]>
         // @returns dLocation
         // @description
         // Returns the location with the specified coordinates subtracted from it.
         // -->
         if (attribute.startsWith("sub")
                 && attribute.hasContext(1)) {
-            if (attribute.getContext(1).split(",").length == 3) {
-                String[] ints = attribute.getContext(1).split(",", 3);
+            String[] ints = attribute.getContext(1).replace("l@", "").split(",", 4); // TODO: Just dLocation.valueOf?
+            if (ints.length == 3 || ints.length == 4) {
                 if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
                         && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
                         && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2]))) {
