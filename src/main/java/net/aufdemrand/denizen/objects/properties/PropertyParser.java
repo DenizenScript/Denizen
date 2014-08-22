@@ -31,6 +31,7 @@ public class PropertyParser {
 
         // register core dEntity properties
         registerProperty(EntityAge.class, dEntity.class);
+        registerProperty(EntityAngry.class, dEntity.class);
         registerProperty(EntityColor.class, dEntity.class);
         registerProperty(EntityCritical.class, dEntity.class);
         registerProperty(EntityFirework.class, dEntity.class);
