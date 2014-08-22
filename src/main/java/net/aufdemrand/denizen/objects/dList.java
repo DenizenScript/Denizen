@@ -746,6 +746,30 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.numerical>
+        // @returns Element
+        // @description
+        // returns the list sorted to be in numerical order.
+        // EG, a list of "3|2|1|10" will return "1|2|3|10".
+        // -->
+        if (attribute.startsWith("numerical")) {
+            dList list = new dList(this);
+            Collections.sort(list, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    double value = new Element(o1).asDouble() - new Element(o2).asDouble();
+                    if (value == 0)
+                        return 0;
+                    else if (value > 0)
+                        return 1;
+                    else
+                        return -1;
+                }
+            });
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.alphabetical>
         // @returns Element
         // @description
