@@ -746,6 +746,24 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.alphabetical>
+        // @returns Element
+        // @description
+        // returns the list sorted to be in alphabetical order.
+        // EG, a list of "c|d|q|a|g" will return "a|c|d|g|q".
+        // -->
+        if (attribute.startsWith("alphabetical")) {
+            dList list = new dList(this);
+            Collections.sort(list, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.sort[<procedure>]>
         // @returns Element
         // @description
