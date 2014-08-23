@@ -35,9 +35,7 @@ import org.bukkit.event.vehicle.*;
 import org.bukkit.event.weather.*;
 import org.bukkit.event.world.*;
 import org.bukkit.event.entity.*;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
@@ -2461,7 +2459,8 @@ public class WorldScriptHelper implements Listener {
         dItem item = null;
         dItem holding;
 
-        dPlayer player = new dPlayer((Player) event.getWhoClicked());
+        Inventory inventory = event.getInventory();
+        final dPlayer player = new dPlayer((Player) event.getWhoClicked());
         String type = event.getInventory().getType().name();
         String click = event.getClick().name();
         String slotType = event.getSlotType().name();
@@ -2540,7 +2539,7 @@ public class WorldScriptHelper implements Listener {
         }
 
         context.put("item", item);
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
+        context.put("inventory", dInventory.mirrorBukkitInventory(inventory));
         context.put("click", new Element(click));
         context.put("slot_type", new Element(slotType));
         context.put("slot", new Element(event.getSlot() + 1));
@@ -2550,8 +2549,18 @@ public class WorldScriptHelper implements Listener {
 
         String determination = EventManager.doEvents(events, null, player, context, true);
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);
+            final InventoryHolder holder = inventory.getHolder();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    player.getPlayerEntity().updateInventory();
+                    if (holder != null && holder instanceof Player)
+                        ((Player) holder).updateInventory();
+                }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+        }
     }
 
     // <--[event]
@@ -2608,7 +2617,8 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = null;
 
-        dPlayer player = new dPlayer((Player) event.getWhoClicked());
+        Inventory inventory = event.getInventory();
+        final dPlayer player = new dPlayer((Player) event.getWhoClicked());
         String type = event.getInventory().getType().name();
 
         List<String> events = new ArrayList<String>();
@@ -2635,12 +2645,22 @@ public class WorldScriptHelper implements Listener {
         }
 
         context.put("item", item);
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
+        context.put("inventory", dInventory.mirrorBukkitInventory(inventory));
 
         String determination = EventManager.doEvents(events, null, player, context, true);
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);
+            final InventoryHolder holder = inventory.getHolder();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    player.getPlayerEntity().updateInventory();
+                    if (holder != null && holder instanceof Player)
+                        ((Player) holder).updateInventory();
+                }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+        }
     }
 
     // <--[event]
