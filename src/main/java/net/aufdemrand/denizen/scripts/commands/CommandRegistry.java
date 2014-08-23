@@ -682,7 +682,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name Define
         // @Syntax define [<id>] [<value>]
-        // @Required 2
+        // @Required 1
         // @Stable stable
         // @Short Creates a temporary variable inside a script queue.
         // @Author aufdemrand
@@ -725,9 +725,13 @@ public class CommandRegistry implements dRegistry {
         // - run 'new_task' d:hello|world
         // 'new_task' now has some definitions, %1% and %2%, that contains the contents specified, 'hello' and 'world'.
 
+        // @Usage
+        // Use to remove a definition
+        // - define myDef:!
+
         // -->
         registerCoreMember(DefineCommand.class,
-                "DEFINE", "define [<id>] [<value>]", 2);
+                "DEFINE", "define [<id>] [<value>]", 1);
 
 
         // <--[command]
