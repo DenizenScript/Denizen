@@ -788,16 +788,36 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <cu@cuboid.list_entities>
+        // @attribute <cu@cuboid.list_entities[<entity>|...]>
         // @returns dList(dEntity)
         // @description
-        // Gets a list of all entities currently within the dCuboid.
+        // Gets a list of all entities currently within the dCuboid, with
+        // an optional search parameter for the entity type.
         // -->
         if (attribute.startsWith("list_entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
+            dList types = new dList();
+            if (attribute.hasContext(1)) {
+                for (String type : dList.valueOf(attribute.getContext(1))) {
+                    if (dEntity.matches(type))
+                        types.add(type.toUpperCase());
+                }
+            }
             for (Entity ent : getWorld().getEntities()) {
-                if (ent.isValid() && isInsideCuboid(ent.getLocation()))
-                    entities.add(new dEntity(ent));
+                dEntity current = new dEntity(ent);
+                if (ent.isValid() && isInsideCuboid(ent.getLocation())) {
+                    if (!types.isEmpty()) {
+                        for (String type : types) {
+                            if ((ent.getType().name().equals(type) ||
+                                    current.identify().equalsIgnoreCase(type)) && ent.isValid()) {
+                                entities.add(current);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        entities.add(new dEntity(ent));
+                }
             }
             return new dList(entities).getAttribute(attribute.fulfill(1));
         }
