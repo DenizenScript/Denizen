@@ -312,18 +312,22 @@ public class Comparable {
 
             // OR_MORE/OR_LESS/etc. deal with the LENGTH of the the comparable/comparedto strings
             case OR_MORE:
+                dB.echoError("Comparing text as if it were a number - calculating based on text length");
                 outcome = comparable.length() >= comparedto.length();
                 break;
 
             case OR_LESS:
+                dB.echoError("Comparing text as if it were a number - calculating based on text length");
                 outcome = comparable.length() <= comparedto.length();
                 break;
 
             case MORE:
+                dB.echoError("Comparing text as if it were a number - calculating based on text length");
                 outcome = comparable.length() > comparedto.length();
                 break;
 
             case LESS:
+                dB.echoError("Comparing text as if it were a number - calculating based on text length");
                 outcome = comparable.length() < comparedto.length();
                 break;
 
