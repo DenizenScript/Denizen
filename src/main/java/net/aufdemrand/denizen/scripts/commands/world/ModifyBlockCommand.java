@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -118,6 +119,12 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
 
         no_physics = !doPhysics;
 
+        // Freeze the first world in the list.
+        CraftWorld craftWorld = (CraftWorld)((dLocation)locations.get(0)).getWorld();
+        boolean was_static = craftWorld.getHandle().isStatic;
+        if (no_physics)
+            craftWorld.getHandle().isStatic = true;
+
         for (dObject obj : locations) {
 
             dLocation location = (dLocation) obj;
@@ -156,6 +163,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
                 }
             }
         }
+        if (no_physics)
+            craftWorld.getHandle().isStatic = was_static;
         no_physics = false;
     }
 
