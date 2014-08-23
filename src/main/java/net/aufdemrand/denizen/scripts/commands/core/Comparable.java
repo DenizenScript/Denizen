@@ -190,7 +190,7 @@ public class Comparable {
         switch(operator) {
 
             case EQUALS:
-                if (comparable.compareTo(comparedto) == 0) outcome = true;
+                if (comparable.doubleValue() == comparedto.doubleValue()) outcome = true;
                 break;
 
             case OR_MORE:
