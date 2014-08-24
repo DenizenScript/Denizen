@@ -170,20 +170,24 @@ public class dList extends ArrayList<String> implements dObject {
         return this;
     }
 
+    public String[] toArray() {
+        return toArray(size());
+    }
 
     /**
      * Fetches a String Array copy of the dList.
      *
+     * @param arraySize the size of the new array
      * @return the array copy
      */
-    public String[] toArray() {
+    public String[] toArray(int arraySize) {
         List<String> list = new ArrayList<String>();
 
         for (String string : this) {
             list.add(string);
         }
 
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[arraySize]);
     }
 
 

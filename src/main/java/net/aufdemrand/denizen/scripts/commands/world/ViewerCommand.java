@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
@@ -104,7 +105,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         final String id = scriptEntry.getObject("id").toString();
         if (viewers.containsKey(id)) scriptEntry.setPlayer(dPlayer.valueOf(viewers.get(id).getContent().split("; ")[1]));
         dLocation location = scriptEntry.hasObject("location") ? (dLocation) scriptEntry.getObject("location") : null;
-        String content = scriptEntry.hasObject("display") ? display.toString() + "; " + scriptEntry.getPlayer().getName() : null;
+        String content = scriptEntry.hasObject("display") ? display.toString() + "; " + scriptEntry.getPlayer().getOfflinePlayer().getUniqueId() : null;
 
         switch (action) {
 
@@ -127,7 +128,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
 
                 int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                     public void run() {
-                        Player player = Bukkit.getPlayerExact(viewers.get(id).getContent().split("; ")[1]);
+                        Player player = Bukkit.getPlayer(UUID.fromString(viewers.get(id).getContent().split("; ")[1]));
                         if (player == null)
                             Utilities.setSignLines((Sign) viewers.get(id).getLocation().getBlock().getState(), new String[]{"", viewers.get(id).getContent().split("; ")[1], "is offline.", ""});
                         else
@@ -153,7 +154,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
                     Bukkit.getScheduler().cancelTask(viewers.get(id).getTask());
                     int newTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                         public void run() {
-                            Player player = Bukkit.getPlayerExact(viewers.get(id).getContent().split("; ")[1]);
+                            Player player = Bukkit.getPlayer(UUID.fromString(viewers.get(id).getContent().split("; ")[1]));
                             if (player == null)
                                 Utilities.setSignLines((Sign) viewers.get(id).getLocation().getBlock().getState(), new String[]{"", viewers.get(id).getContent().split("; ")[1], "is offline.", ""});
                             else
@@ -259,7 +260,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
                 if (viewer.getContent().startsWith("LOCATION")) {
                     int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                         public void run() {
-                            Player player = Bukkit.getPlayerExact(viewers.get(id).getContent().split("; ")[1]);
+                            Player player = Bukkit.getPlayer(UUID.fromString(viewers.get(id).getContent().split("; ")[1]));
                             if (player == null)
                                 Utilities.setSignLines((Sign) viewers.get(id).getLocation().getBlock().getState(), new String[]{"", viewers.get(id).getContent().split("; ")[1], "is offline.", ""});
                             else
