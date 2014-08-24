@@ -1197,10 +1197,11 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity changes block (into <material>)
-    // entity changes <material> (into <material>)
-    // <entity> changes block (into <material>)
-    // <entity> changes <material> (into <material>)
+    // entity changes block
+    // entity changes block (into <material>) (in <notable cuboid>)
+    // entity changes <material> (into <material>) (in <notable cuboid>)
+    // <entity> changes block (into <material>) (in <notable cuboid>)
+    // <entity> changes <material> (into <material>) (in <notable cuboid>)
     //
     // @Triggers when an entity changes the material of a block.
     // @Context
@@ -1216,28 +1217,64 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityChangeBlock(EntityChangeBlockEvent event) {
 
+        List<String> events = new ArrayList<String>();
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
         dMaterial oldMaterial = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         dMaterial newMaterial = dMaterial.getMaterialFrom(event.getTo()); // Not able to get DATA here?
+        dLocation location = new dLocation(event.getBlock().getLocation());
+
+        // Look for cuboids that contain the block's location
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(location);
+
+        if (cuboids.size() > 0) {
+            events.add("entity changes block in notable cuboid");
+            events.add("entity changes " + oldMaterial.identifySimple() + " in notable cuboid");
+            events.add("entity changes block into " + newMaterial.identifySimple() + " in notable cuboid");
+            events.add("entity changes " + oldMaterial.identifySimple() + " into " + newMaterial.identifySimple()
+                    + " in notable cuboid");
+            events.add(entity.identifyType() + " changes block in notable cuboid");
+            events.add(entity.identifyType() + " changes " + oldMaterial.identifySimple() + " in notable cuboid");
+            events.add(entity.identifyType() + " changes block into " + newMaterial.identifySimple()
+                    + " in notable cuboid");
+            events.add(entity.identifyType() + " changes " + oldMaterial.identifySimple() + " into "
+                    + newMaterial.identifySimple() + " in notable cuboid");
+        }
+
+        dList cuboid_context = new dList();
+        for (dCuboid cuboid : cuboids) {
+            events.add("entity changes block in " + cuboid.identifySimple());
+            events.add("entity changes " + oldMaterial.identifySimple() + " in " + cuboid.identifySimple());
+            events.add("entity changes block into " + newMaterial.identifySimple() + " in " + cuboid.identifySimple());
+            events.add("entity changes " + oldMaterial.identifySimple() + " into " + newMaterial.identifySimple()
+                    + " in " + cuboid.identifySimple());
+            events.add(entity.identifyType() + " changes block in " + cuboid.identifySimple());
+            events.add(entity.identifyType() + " changes " + oldMaterial.identifySimple() + " in "
+                    + cuboid.identifySimple());
+            events.add(entity.identifyType() + " changes block into " + newMaterial.identifySimple() + " in "
+                    + cuboid.identifySimple());
+            events.add(entity.identifyType() + " changes " + oldMaterial.identifySimple() + " into "
+                    + newMaterial.identifySimple() + " in " + cuboid.identifySimple());
+        }
+        // Add in cuboids context, with either the cuboids or an empty list
+        context.put("cuboids", cuboid_context);
 
         context.put("entity", entity.getDenizenObject());
-        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("location", location);
         context.put("old_material", oldMaterial);
         context.put("new_material", newMaterial);
 
-        String determination = EventManager.doEvents(Arrays.asList
-                ("entity changes block",
-                        "entity changes " + oldMaterial.identifySimple(),
-                        "entity changes block into " + newMaterial.identifySimple(),
-                        "entity changes " + oldMaterial.identifySimple() +
-                                " into " + newMaterial.identifySimple(),
-                        entity.identifyType() + " changes block",
-                        entity.identifyType() + " changes " + oldMaterial.identifySimple(),
-                        entity.identifyType() + " changes block into " + newMaterial.identifySimple(),
-                        entity.identifyType() + " changes " + oldMaterial.identifySimple() +
-                                " into " + newMaterial.identifySimple()),
-                null, null, context, true);
+        events.add("entity changes block");
+        events.add("entity changes " + oldMaterial.identifySimple());
+        events.add("entity changes block into " + newMaterial.identifySimple());
+        events.add("entity changes " + oldMaterial.identifySimple() + " into " + newMaterial.identifySimple());
+        events.add(entity.identifyType() + " changes block");
+        events.add(entity.identifyType() + " changes " + oldMaterial.identifySimple());
+        events.add(entity.identifyType() + " changes block into " + newMaterial.identifySimple());
+        events.add(entity.identifyType() + " changes " + oldMaterial.identifySimple() + " into "
+                + newMaterial.identifySimple());
+
+        String determination = EventManager.doEvents(events, null, null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
