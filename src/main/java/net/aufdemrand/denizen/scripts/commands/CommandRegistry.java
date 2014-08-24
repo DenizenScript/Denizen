@@ -682,7 +682,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name Define
         // @Syntax define [<id>] [<value>]
-        // @Required 2
+        // @Required 1
         // @Stable stable
         // @Short Creates a temporary variable inside a script queue.
         // @Author aufdemrand
@@ -725,9 +725,13 @@ public class CommandRegistry implements dRegistry {
         // - run 'new_task' d:hello|world
         // 'new_task' now has some definitions, %1% and %2%, that contains the contents specified, 'hello' and 'world'.
 
+        // @Usage
+        // Use to remove a definition
+        // - define myDef:!
+
         // -->
         registerCoreMember(DefineCommand.class,
-                "DEFINE", "define [<id>] [<value>]", 2);
+                "DEFINE", "define [<id>] [<value>]", 1);
 
 
         // <--[command]
@@ -2416,7 +2420,7 @@ public class CommandRegistry implements dRegistry {
         // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
         // If there is not already a sign there, defaults to a sign_post.
         // @Tags
-        // TODO: Document Command Details
+        // <l@location.block.sign_contents>
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2429,13 +2433,13 @@ public class CommandRegistry implements dRegistry {
         // @Syntax sit (<location>)
         // @Required 0
         // @Stable unstable
-        // @Short Causes the NPC to sit. (Does not currently work!)
-        // @Author Jeebiss
+        // @Short Causes the NPC to sit.
+        // @Author Jeebiss, mcmonkey
         // @Group npc
         // @Description
         // TODO: Document Command Details
         // @Tags
-        // <l@location.block.sign_contents>
+        // TODO: Document Command Details
         // @Usage
         // TODO: Document Command Details
         // -->

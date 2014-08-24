@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
+import net.aufdemrand.denizen.utilities.SQLEscaper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.apache.commons.lang.StringUtils;
@@ -589,6 +590,16 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("escaped"))
             return new Element(EscapeTags.Escape(element)).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.sql_escaped>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns the element, escaped for safe use in SQL.
+        // -->
+        if (attribute.startsWith("sql_escaped"))
+            return new Element(SQLEscaper.escapeSQL(element)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.unescaped>

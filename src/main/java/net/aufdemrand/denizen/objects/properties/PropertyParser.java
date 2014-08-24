@@ -31,6 +31,7 @@ public class PropertyParser {
 
         // register core dEntity properties
         registerProperty(EntityAge.class, dEntity.class);
+        registerProperty(EntityAngry.class, dEntity.class);
         registerProperty(EntityColor.class, dEntity.class);
         registerProperty(EntityCritical.class, dEntity.class);
         registerProperty(EntityFirework.class, dEntity.class);
@@ -42,6 +43,7 @@ public class PropertyParser {
         registerProperty(EntityPotion.class, dEntity.class);
         registerProperty(EntityPowered.class, dEntity.class);
         registerProperty(EntityProfession.class, dEntity.class);
+        registerProperty(EntitySitting.class, dEntity.class);
         registerProperty(EntitySize.class, dEntity.class);
         registerProperty(EntitySkeleton.class, dEntity.class);
         registerProperty(EntityTame.class, dEntity.class);
