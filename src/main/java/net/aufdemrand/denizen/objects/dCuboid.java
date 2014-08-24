@@ -892,6 +892,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return list.getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <cu@cuboid.notable_name>
+        // @returns Element
+        // @description
+        // Gets the name of a Notable dCuboid. If the cuboid isn't noted,
+        // this is null.
+        // -->
+        if (attribute.startsWith("notable_name")) {
+            return NotableManager.getSavedId(this);
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

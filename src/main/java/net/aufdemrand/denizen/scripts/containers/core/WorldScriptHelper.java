@@ -102,7 +102,7 @@ public class WorldScriptHelper implements Listener {
                 " with " + item.identifyMaterial());
 
         // Look for cuboids that contain the block's location
-        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(block.getLocation());
 
         if (cuboids.size() > 0) {
             events.add("player breaks block in notable cuboid");
@@ -596,12 +596,13 @@ public class WorldScriptHelper implements Listener {
     public void blockPlace(BlockPlaceEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        Block block = event.getBlock();
+        dMaterial material = dMaterial.getMaterialFrom(block.getType(), block.getData());
         dItem item = new dItem(event.getItemInHand());
         List<String> events = new ArrayList<String>();
 
         // Look for cuboids that contain the block's location
-        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(block.getLocation());
 
         if (cuboids.size() > 0) {
             events.add("player places block in notable cuboid");
@@ -624,7 +625,7 @@ public class WorldScriptHelper implements Listener {
         events.add("player places " + material.identifySimple());
         events.add("player places " + item.identifySimple());
 
-        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("location", new dLocation(block.getLocation()));
         context.put("material", material);
         context.put("item_in_hand", item);
 
@@ -887,7 +888,9 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player changes sign
-    // player changes (<material>)
+    // player changes sign in <notable cuboid>
+    // player changes <material>
+    // player changes <material> in <notable cuboid>
     //
     // @Triggers when a player changes a sign.
     // @Context
@@ -895,6 +898,7 @@ public class WorldScriptHelper implements Listener {
     // <context.new> returns the new sign text as a dList.
     // <context.old> returns the old sign text as a dList.
     // <context.material> returns the dMaterial of the sign.
+    // <context.cuboids> returns a dList of notable cuboids surrounding the sign.
     //
     // @Determine
     // "CANCELLED" to stop the sign from being changed.
@@ -904,14 +908,17 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void signChange(final SignChangeEvent event) {
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dPlayer player = new dPlayer(event.getPlayer());
         Block block = event.getBlock();
         if (block == null || !(block.getState() instanceof Sign)) {
             return; // Fix error induced by dark magic.
         }
+
+        List<String> events = new ArrayList<String>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
+
+        dPlayer player = new dPlayer(event.getPlayer());
         Sign sign = (Sign) block.getState();
+        dLocation location = new dLocation(block.getLocation());
         dMaterial material = dMaterial.getMaterialFrom(block.getType(), block.getData());
 
         context.put("old", new dList(Arrays.asList(sign.getLines())));
@@ -929,13 +936,29 @@ public class WorldScriptHelper implements Listener {
         }
         context.put("new_escaped", new_escaped);
 
-        context.put("location", new dLocation(block.getLocation()));
+        context.put("location", location);
         context.put("material", material);
 
-        String determination = EventManager.doEvents(Arrays.asList
-                ("player changes sign",
-                        "player changes " + material.identifySimple()),
-                null, player, context, true);
+        // Look for cuboids that contain the block's location
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(location);
+
+        if (cuboids.size() > 0) {
+            events.add("player changes sign in notable cuboid");
+            events.add("player changes " + material.identifySimple() + " in notable cuboid");
+        }
+
+        dList cuboid_context = new dList();
+        for (dCuboid cuboid : cuboids) {
+            events.add("player changes sign in " + cuboid.identifySimple());
+            events.add("player changes " + material.identifySimple() + " in " + cuboid.identifySimple());
+        }
+        // Add in cuboids context, with either the cuboids or an empty list
+        context.put("cuboids", cuboid_context);
+
+        events.add("player changes sign");
+        events.add("player changes " + material.identifySimple());
+
+        String determination = EventManager.doEvents(events, null, player, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);

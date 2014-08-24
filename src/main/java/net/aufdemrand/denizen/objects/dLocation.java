@@ -1001,6 +1001,17 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             return new Element(getZ()).getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <l@location.notable_name>
+        // @returns Element
+        // @description
+        // Gets the name of a Notable dLocation. If the location isn't noted,
+        // this is null.
+        // -->
+        if (attribute.startsWith("notable_name")) {
+            return NotableManager.getSavedId(this);
+        }
+
 
         /////////////////////
         //   MATHEMATICAL ATTRIBUTES

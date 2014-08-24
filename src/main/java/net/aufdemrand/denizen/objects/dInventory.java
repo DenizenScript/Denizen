@@ -1319,6 +1319,17 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <in@inventory.notable_name>
+        // @returns Element
+        // @description
+        // Gets the name of a Notable dInventory. If the inventory isn't noted,
+        // this is null.
+        // -->
+        if (attribute.startsWith("notable_name")) {
+            return NotableManager.getSavedId(this);
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.location>
         // @returns dLocation
         // @description
