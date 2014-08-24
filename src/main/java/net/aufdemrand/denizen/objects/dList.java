@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.NaturalOrderComparator;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -743,6 +744,61 @@ public class dList extends ArrayList<String> implements dObject {
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             else
                 return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.numerical>
+        // @returns Element
+        // @description
+        // returns the list sorted to be in numerical order.
+        // EG, a list of "3|2|1|10" will return "1|2|3|10".
+        // -->
+        if (attribute.startsWith("numerical")) {
+            dList list = new dList(this);
+            Collections.sort(list, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    double value = new Element(o1).asDouble() - new Element(o2).asDouble();
+                    if (value == 0)
+                        return 0;
+                    else if (value > 0)
+                        return 1;
+                    else
+                        return -1;
+                }
+            });
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.alphanumeric>
+        // @returns Element
+        // @description
+        // returns the list sorted to be in alphabetical/numerical order.
+        // EG, a list of "b|c|a10|a1" will return "a1|a10|b|c".
+        // -->
+        if (attribute.startsWith("alphanumeric")) {
+            dList list = new dList(this);
+            Collections.sort(list, new NaturalOrderComparator());
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.alphabetical>
+        // @returns Element
+        // @description
+        // returns the list sorted to be in alphabetical order.
+        // EG, a list of "c|d|q|a|g" will return "a|c|d|g|q".
+        // -->
+        if (attribute.startsWith("alphabetical")) {
+            dList list = new dList(this);
+            Collections.sort(list, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+            return list.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

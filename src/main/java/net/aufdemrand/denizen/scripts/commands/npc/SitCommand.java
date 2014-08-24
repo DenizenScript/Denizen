@@ -42,6 +42,9 @@ public class SitCommand extends AbstractCommand {
             return;
         }
 
+        dB.report(scriptEntry, getName(), aH.debugObj("npc", scriptEntry.getNPC())
+                                        + (location != null ? location.debug(): ""));
+
         if (scriptEntry.getNPC().getEntityType() == EntityType.OCELOT) {
             ((Ocelot)scriptEntry.getNPC().getEntity()).setSitting(true);
         }
@@ -59,7 +62,6 @@ public class SitCommand extends AbstractCommand {
 
             if (trait.isSitting()) {
                 dB.echoError(scriptEntry.getResidingQueue(), "...NPC is already sitting");
-                return;
             }
 
             if (location != null) {

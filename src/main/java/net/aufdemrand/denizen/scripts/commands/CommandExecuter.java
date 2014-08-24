@@ -40,7 +40,10 @@ public class CommandExecuter {
             sb = new StringBuffer();
             while (m.find()) {
                 String definition = scriptEntry.getResidingQueue().getDefinition(m.group(1));
-                if (definition == null) definition = "null";
+                if (definition == null) {
+                    dB.echoError("Unknown definition %" + m.group(1) + "%.");
+                    definition = "null";
+                }
                 dB.echoDebug(scriptEntry, "Filled definition %" + m.group(1) + "% with '" + definition + "'.");
                 m.appendReplacement(sb, definition.replace("$", "\\$"));
             }
@@ -118,7 +121,10 @@ public class CommandExecuter {
                     sb = new StringBuffer();
                     while (m.find()) {
                         String definition = TagManager.EscapeOutput(scriptEntry.getResidingQueue().getDefinition(m.group(1)));
-                        if (definition == null) definition = "null";
+                        if (definition == null) {
+                            dB.echoError("Unknown definition %" + m.group(1) + "%.");
+                            definition = "null";
+                        }
                         dB.echoDebug(scriptEntry, "Filled definition %" + m.group(1) + "% with '" + definition + "'.");
                         m.appendReplacement(sb, definition.replace("$", "\\$"));
                     }
