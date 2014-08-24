@@ -170,6 +170,12 @@ public class dList extends ArrayList<String> implements dObject {
         return this;
     }
 
+    /**
+     * Fetches a String Array copy of the dList,
+     * with the same size as the dList.
+     *
+     * @return the array copy
+     */
     public String[] toArray() {
         return toArray(size());
     }
