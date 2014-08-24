@@ -105,10 +105,10 @@ public class WorldScriptHelper implements Listener {
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
 
         if (cuboids.size() > 0) {
-            events.add("player breaks block in cuboid");
-            events.add("player breaks " + material.identifySimple() + " in cuboid");
-            events.add("player breaks " + material.identifySimple() + " with " + item.identifySimple() + " in cuboid");
-            events.add("player breaks " + material.identifySimple() + " with " + item.identifyMaterial() + " in cuboid");
+            events.add("player breaks block in notable cuboid");
+            events.add("player breaks " + material.identifySimple() + " in notable cuboid");
+            events.add("player breaks " + material.identifySimple() + " with " + item.identifySimple() + " in notable cuboid");
+            events.add("player breaks " + material.identifySimple() + " with " + item.identifyMaterial() + " in notable cuboid");
         }
 
         dList cuboid_context = new dList();
@@ -604,10 +604,10 @@ public class WorldScriptHelper implements Listener {
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
 
         if (cuboids.size() > 0) {
-            events.add("player places block in cuboid");
-            events.add("player places " + material.identifySimple() + " in cuboid");
-            events.add("player places " + material.identifySimple() + " with " + item.identifySimple() + " in cuboid");
-            events.add("player places " + material.identifySimple() + " with " + item.identifyMaterial() + " in cuboid");
+            events.add("player places block in notable cuboid");
+            events.add("player places " + material.identifySimple() + " in notable cuboid");
+            events.add("player places " + material.identifySimple() + " with " + item.identifySimple() + " in notable cuboid");
+            events.add("player places " + material.identifySimple() + " with " + item.identifyMaterial() + " in notable cuboid");
         }
 
         dList cuboid_context = new dList();
@@ -3395,14 +3395,16 @@ public class WorldScriptHelper implements Listener {
             List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getClickedBlock().getLocation());
 
             dList cuboid_context = new dList();
-            for (dCuboid cuboid : cuboids) {
-                for (String interaction : interactions) {
-                    events.add(interaction + " block in " + cuboid.identifySimple());
-                    events.add(interaction + " block in cuboid");
-                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());
-                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in cuboid");
+            for (String interaction : interactions) {
+                if (cuboids.size() > 0) {
+                    events.add(interaction + " block in notable cuboid");
+                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in notable cuboid");
                 }
-                cuboid_context.add(cuboid.identifySimple());
+                for (dCuboid cuboid : cuboids) {
+                    events.add(interaction + " block in " + cuboid.identifySimple());
+                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());
+                    cuboid_context.add(cuboid.identifySimple());
+                }
             }
             // Add in cuboids context, with either the cuboids or an empty list
             context.put("cuboids", cuboid_context);
@@ -3421,10 +3423,10 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // player right clicks entity (with <item>)
     // player right clicks entity in <notable cuboid>
-    // player right clicks entity in cuboid
+    // player right clicks entity in notable cuboid
     // player right clicks <entity> (with <item>)
     // player right clicks <entity> in <notable cuboid>
-    // player right clicks <entity> in cuboid
+    // player right clicks <entity> in notable cuboid
 
     // @Triggers when a player right clicks on an entity.
     // @Context
@@ -3477,11 +3479,14 @@ public class WorldScriptHelper implements Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getRightClicked().getLocation());
 
+        if (cuboids.size() > 0) {
+            events.add("player right clicks entity in notable cuboid");
+            events.add("player right clicks " + entity.identifyType() + " in notable cuboid");
+        }
+
         dList cuboid_context = new dList();
         for (dCuboid cuboid : cuboids) {
             events.add("player right clicks entity in " + cuboid.identifySimple());
-            events.add("player right clicks entity in cuboid");
-            events.add("player right clicks " + entity.identifyType() + " in cuboid");
             events.add("player right clicks " + entity.identifyType() + " in " + cuboid.identifySimple());
             cuboid_context.add(cuboid.identifySimple());
         }
