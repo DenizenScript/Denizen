@@ -1009,7 +1009,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // this is null.
         // -->
         if (attribute.startsWith("notable_name")) {
-            return NotableManager.getSavedId(this);
+            return new Element(NotableManager.getSavedId(this)).getAttribute(attribute.fulfill(1));
         }
 
 

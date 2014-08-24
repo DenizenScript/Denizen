@@ -752,7 +752,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // this is null.
         // -->
         if (attribute.startsWith("notable_name")) {
-            return NotableManager.getSavedId(this);
+            return new Element(NotableManager.getSavedId(this)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
