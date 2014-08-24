@@ -1236,38 +1236,6 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity combusts
-    // <entity> combusts
-    //
-    // @Triggers when an entity combusts.
-    // @Context
-    // <context.duration> returns how long the entity takes to combust.
-    // <context.entity> returns the dEntity that combusted.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from combusting.
-    //
-    // -->
-    @EventHandler
-    public void entityCombust(EntityCombustEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        Entity entity = event.getEntity();
-
-        context.put("entity", new dEntity(entity).getDenizenObject());
-        context.put("duration", new Duration((long) event.getDuration()));
-
-        String determination = EventManager.doEvents(Arrays.asList
-                ("entity combusts",
-                        entity.getType().name() + " combusts"),
-                null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // entity explodes
     // <entity> explodes
     //
