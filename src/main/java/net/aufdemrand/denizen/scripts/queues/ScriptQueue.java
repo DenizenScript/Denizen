@@ -335,7 +335,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      * name as a prefix.
      *
      * @param definition  the name of the definitions
-     * @param value  the value of the definition
      */
     public void removeDefinition(String definition) {
         definitions.remove(definition.toLowerCase());
@@ -401,7 +400,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      * @param delay how long to delay initially.
      * @return the newly created queue.
      */
-    public ScriptQueue forceToTimed(Duration delay) {
+    public TimedQueue forceToTimed(Duration delay) {
         stop();
         TimedQueue newQueue = TimedQueue.getQueue(id);
         for (ScriptEntry entry: getEntries()) {
