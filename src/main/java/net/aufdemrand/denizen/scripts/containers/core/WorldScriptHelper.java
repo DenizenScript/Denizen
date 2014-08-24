@@ -104,16 +104,19 @@ public class WorldScriptHelper implements Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
 
+        if (cuboids.size() > 0) {
+            events.add("player breaks block in cuboid");
+            events.add("player breaks " + material.identifySimple() + " in cuboid");
+            events.add("player breaks " + material.identifySimple() + " with " + item.identifySimple() + " in cuboid");
+            events.add("player breaks " + material.identifySimple() + " with " + item.identifyMaterial() + " in cuboid");
+        }
+
         dList cuboid_context = new dList();
         for (dCuboid cuboid : cuboids) {
             events.add("player breaks block in " + cuboid.identifySimple());
             events.add("player breaks " + material.identifySimple() + " in " + cuboid.identifySimple());
             events.add("player breaks " + material.identifySimple() + " with " + item.identifySimple() + " in " + cuboid.identifySimple());
             events.add("player breaks " + material.identifySimple() + " with " + item.identifyMaterial() + " in " + cuboid.identifySimple());
-            events.add("player breaks block in cuboid");
-            events.add("player breaks " + material.identifySimple() + " in cuboid");
-            events.add("player breaks " + material.identifySimple() + " with " + item.identifySimple() + " in cuboid");
-            events.add("player breaks " + material.identifySimple() + " with " + item.identifyMaterial() + " in cuboid");
             cuboid_context.add(cuboid.identifySimple());
         }
         // Add in cuboids context, with either the cuboids or an empty list
@@ -582,6 +585,7 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.location> returns the dLocation of the block that was placed.
     // <context.material> returns the dMaterial of the block that was placed.
+    // <context.cuboids> returns a dList of notable cuboids surrounding the placed block.
     // <context.item_in_hand> returns the dItem of the item in hand.
     //
     // @Determine
@@ -598,6 +602,13 @@ public class WorldScriptHelper implements Listener {
 
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
+
+        if (cuboids.size() > 0) {
+            events.add("player places block in cuboid");
+            events.add("player places " + material.identifySimple() + " in cuboid");
+            events.add("player places " + material.identifySimple() + " with " + item.identifySimple() + " in cuboid");
+            events.add("player places " + material.identifySimple() + " with " + item.identifyMaterial() + " in cuboid");
+        }
 
         dList cuboid_context = new dList();
         for (dCuboid cuboid : cuboids) {
