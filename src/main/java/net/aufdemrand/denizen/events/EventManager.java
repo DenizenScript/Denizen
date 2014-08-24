@@ -354,6 +354,7 @@ public class EventManager implements Listener {
         registerSmartEvent(new EntityInteractSmartEvent());
         registerSmartEvent(new EntitySpawnSmartEvent());
         registerSmartEvent(new FlagSmartEvent());
+        registerSmartEvent(new ItemMoveSmartEvent());
         registerSmartEvent(new ListPingSmartEvent());
         registerSmartEvent(new NPCNavigationSmartEvent());
         registerSmartEvent(new PlayerEquipsArmorSmartEvent());

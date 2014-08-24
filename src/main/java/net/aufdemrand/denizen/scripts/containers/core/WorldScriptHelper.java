@@ -2613,55 +2613,6 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // item moves from inventory (to <inventory type>)
-    // item moves from <inventory type> (to <inventory type>)
-    //
-    // @Triggers when an entity or block moves an item from one inventory to another.
-    // @Context
-    // <context.origin> returns the origin dInventory.
-    // <context.destination> returns the destination dInventory.
-    // <context.initiator> returns the dInventory that initiatied the item's transfer.
-    // <context.item> returns the dItem that was moved.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item from being moved.
-    // dItem to set a different item to be moved.
-    //
-    // -->
-    @EventHandler
-    public void inventoryMoveItemEvent(InventoryMoveItemEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dItem item = new dItem(event.getItem());
-        String originType = event.getSource().getType().name();
-        String destinationType = event.getDestination().getType().name();
-
-        List<String> events = Arrays.asList("item moves from inventory",
-                "item moves from " + originType,
-                "item moves from " + originType
-                        + " to " + destinationType,
-                item.identifySimple() + " moves from inventory",
-                item.identifySimple() + " moves from " + originType,
-                item.identifySimple() + " moves from " + originType
-                        + " to " + destinationType);
-
-        context.put("origin", dInventory.mirrorBukkitInventory(event.getSource()));
-        context.put("destination", dInventory.mirrorBukkitInventory(event.getDestination()));
-        context.put("initiator", dInventory.mirrorBukkitInventory(event.getInitiator()));
-        context.put("item", item);
-
-        String determination = EventManager.doEvents(events,
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        if (dItem.matches(determination))
-            event.setItem(dItem.valueOf(determination).getItemStack());
-    }
-
-    // <--[event]
-    // @Events
     // player opens inventory
     // player opens <inventory type>
     //

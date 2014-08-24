@@ -30,7 +30,7 @@ public class EntityCombustSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on \\w+ combusts", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on (e@)?\\w+ combusts", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {
@@ -81,14 +81,15 @@ public class EntityCombustSmartEvent implements SmartEvent, Listener {
     public void entityCombust(EntityCombustEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        Entity entity = event.getEntity();
+        dEntity entity = new dEntity(event.getEntity());
 
-        context.put("entity", new dEntity(entity).getDenizenObject());
+        context.put("entity", entity.getDenizenObject());
         context.put("duration", new Duration((long) event.getDuration()));
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("entity combusts",
-                        entity.getType().name() + " combusts"),
+                        entity.identifySimple() + " combusts",
+                        entity.identifyType() + " combusts"),
                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
