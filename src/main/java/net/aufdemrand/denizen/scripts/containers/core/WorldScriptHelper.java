@@ -496,7 +496,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("block ignites",
                         material.identifySimple() + " ignites"),
-                null, new dPlayer(event.getPlayer()), context, true);
+                null, event.getPlayer() != null ? new dPlayer(event.getPlayer()): null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
