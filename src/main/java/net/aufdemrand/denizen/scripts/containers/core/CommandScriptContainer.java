@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
@@ -10,6 +9,7 @@ import net.aufdemrand.denizen.utilities.DenizenCommand;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
+import java.util.Map;
 
 public class CommandScriptContainer extends ScriptContainer {
 
@@ -54,6 +54,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # The script that will run when the command is executed.
     //   # No, you do not need '- determine fulfilled' or anything of the sort, since
     //   # the command is fully registered.
+    //   # This has contexts for: <player>, <npc>, <context.args>, <context.raw_args>, and <context.server>.
     //   script:
     //   - narrate "Yay!"
     //   - narrate "My command worked!"
@@ -85,8 +86,13 @@ public class CommandScriptContainer extends ScriptContainer {
         return getStringList("ALIASES");
     }
 
-    public ScriptQueue runCommandScript(dPlayer player, dNPC npc) {
+    public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, dObject> context) {
         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(getBaseEntries(player, npc));
+        if (context != null) {
+            for (Map.Entry<String, dObject> entry : context.entrySet()) {
+                queue.addContext(entry.getKey(), entry.getValue());
+            }
+        }
         queue.start();
         return queue;
     }
