@@ -85,7 +85,7 @@ public class SignCommand extends AbstractCommand {
             sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN: Material.SIGN_POST);
         BlockState signState = sign.getState();
 
-        Utilities.setSignLines((Sign) signState, text.toArray());
+        Utilities.setSignLines((Sign) signState, text.toArray(4));
         if (direction != null)
             Utilities.setSignRotation(signState, direction);
         else if (type == Type.WALL_SIGN)

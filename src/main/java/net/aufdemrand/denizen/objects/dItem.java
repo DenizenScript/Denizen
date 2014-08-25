@@ -745,6 +745,17 @@ public class dItem implements dObject, Notable, Adjustable {
             return new Element(getFullString()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <i@item.notable_name>
+        // @returns Element
+        // @description
+        // Gets the name of a Notable dItem. If the item isn't noted,
+        // this is null.
+        // -->
+        if (attribute.startsWith("notable_name")) {
+            return new Element(NotableManager.getSavedId(this)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <i@item.scriptname>
         // @returns Element
         // @group scripts

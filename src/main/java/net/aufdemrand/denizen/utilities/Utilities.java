@@ -442,11 +442,8 @@ public class Utilities {
      */
     public static void setSignLines(Sign sign, String[] lines) {
 
-        int n = 0;
-
-        for (String line : lines) {
-            sign.setLine(n, line);
-            n++;
+        for (int n = 0; n < 4; n++) {
+            sign.setLine(n, lines[n]);
         }
 
         sign.update();
