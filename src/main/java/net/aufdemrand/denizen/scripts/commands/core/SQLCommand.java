@@ -1,18 +1,22 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.Holdable;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class SQLCommand extends AbstractCommand {
+public class SQLCommand extends AbstractCommand implements Holdable {
 
     public static Map<String, Connection> connections = new HashMap<String, Connection>();
 
@@ -85,13 +89,13 @@ public class SQLCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Element action = scriptEntry.getElement("action");
-        Element server = scriptEntry.getElement("server");
-        Element username = scriptEntry.getElement("username");
-        Element password = scriptEntry.getElement("password");
-        Element sqlID = scriptEntry.getElement("sqlid");
+        final  Element server = scriptEntry.getElement("server");
+        final Element username = scriptEntry.getElement("username");
+        final Element password = scriptEntry.getElement("password");
+        final Element sqlID = scriptEntry.getElement("sqlid");
         Element query = scriptEntry.getElement("query");
 
         dB.report(scriptEntry, getName(), sqlID.debug()
@@ -100,6 +104,9 @@ public class SQLCommand extends AbstractCommand {
                                         + (username != null ? username.debug(): "")
                                         + (password != null ? aH.debugObj("password", "NotLogged"): "")
                                         + (query != null ? query.debug(): ""));
+
+        if (!action.asString().equalsIgnoreCase("connect"))
+            scriptEntry.setFinished(true);
 
         try {
             if (action.asString().equalsIgnoreCase("connect")) {
@@ -119,9 +126,35 @@ public class SQLCommand extends AbstractCommand {
                     dB.echoError("Already connected to a server with ID '" + sqlID.asString() + "'!");
                     return;
                 }
-                Connection con = getConnection(username.asString(), password.asString(), server.asString());
-                connections.put(sqlID.asString().toUpperCase(), con);
-                dB.echoDebug(scriptEntry, "Successfully connected to " + server);
+                Bukkit.getScheduler().runTaskLaterAsynchronously(DenizenAPI.getCurrentInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        Connection con = null;
+                        try {
+                            con = getConnection(username.asString(), password.asString(), server.asString());
+                        }
+                        catch (final Exception e) {
+                            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+                                @Override
+                                public void run() {
+                                    dB.echoError("SQL Exception: " + e.getMessage());
+                                    scriptEntry.setFinished(true);
+                                }
+                            }, 1);
+                        }
+                        final Connection conn = con;
+                        if (con != null) {
+                            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+                                @Override
+                                public void run() {
+                                    connections.put(sqlID.asString().toUpperCase(), conn);
+                                    dB.echoDebug(scriptEntry, "Successfully connected to " + server);
+                                    scriptEntry.setFinished(true);
+                                }
+                            }, 1);
+                        }
+                    }
+                }, 1);
             }
             else if (action.asString().equalsIgnoreCase("disconnect")) {
                 Connection con = connections.get(sqlID.asString().toUpperCase());
@@ -190,6 +223,7 @@ public class SQLCommand extends AbstractCommand {
         Properties connectionProps = new Properties();
         connectionProps.put("user", userName);
         connectionProps.put("password", password);
+        connectionProps.put("LoginTimeout", "7");
         return DriverManager.getConnection("jdbc:mysql://" + server, connectionProps);
     }
 }
