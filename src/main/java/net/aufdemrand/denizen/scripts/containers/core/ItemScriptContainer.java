@@ -159,9 +159,13 @@ public class ItemScriptContainer extends ScriptContainer {
         // Try to use this script to make an item.
         dItem stack = null;
         try {
+            boolean debug = true;
+            if (contains("DEBUG")) {
+                debug = Boolean.valueOf(getString("DEBUG"));
+            }
             // Check validity of material
             if (contains("MATERIAL")){
-                String material = TagManager.tag(player, npc, getString("MATERIAL"));
+                String material = TagManager.tag(player, npc, getString("MATERIAL"), false, null, debug);
                 if (material.startsWith("m@"))
                     material = material.substring(2);
                 stack = dItem.valueOf(material);
@@ -183,13 +187,13 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set Display Name
             if (contains("DISPLAY NAME")){
-                String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"));
+                String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"), false, null, debug);
                 meta.setDisplayName(displayName);
             }
 
             // Set if the object is bound to the player
             if (contains("BOUND")) {
-                bound = Boolean.valueOf(TagManager.tag(player, npc, getString("BOUND")));
+                bound = Boolean.valueOf(TagManager.tag(player, npc, getString("BOUND"), false, null, debug));
             }
 
             // Set Lore
@@ -208,7 +212,7 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("ENCHANTMENTS")) {
                 for (String enchantment : getStringList("ENCHANTMENTS")) {
 
-                    enchantment = TagManager.tag(player, npc, enchantment);
+                    enchantment = TagManager.tag(player, npc, enchantment, false, null, debug);
                     try {
                         // Build enchantment context
                         int level = 1;
@@ -231,14 +235,14 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set Color
             if (contains("COLOR"))
             {
-                String color = TagManager.tag(player, npc, getString("COLOR"));
+                String color = TagManager.tag(player, npc, getString("COLOR"), false, null, debug);
                 LeatherColorer.colorArmor(stack, color);
             }
 
             // Set Book
             if (contains("BOOK")) {
                 BookScriptContainer book = ScriptRegistry
-                        .getScriptContainer(getString("BOOK").replace("s@", ""));
+                        .getScriptContainer(TagManager.tag(player, npc, getString("BOOK"), false, null, debug).replace("s@", ""));
 
                 stack = book.writeBookTo(stack, player, npc);
             }

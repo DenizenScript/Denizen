@@ -153,6 +153,17 @@ public class TagManager implements Listener {
     }
 
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
+        try {
+            return tag(player, npc, arg, instant, scriptEntry, (scriptEntry != null ? scriptEntry.shouldDebug(): true));
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+            return null;
+        }
+    }
+
+
+    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug) {
         if (arg == null) return null;
 
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
@@ -185,8 +196,9 @@ public class TagManager implements Listener {
                     if ((!event.replaced() && event.getAlternative() != null)
                             || (event.getReplaced().equals("null") && event.getAlternative() != null))
                         event.setReplaced(event.getAlternative());
-                    dB.echoDebug(scriptEntry, "Filled tag <" + arg.substring(positions[0] + 1, positions[1]) + "> with '" +
-                            event.getReplaced() + "'.");
+                    if (debug)
+                        dB.echoDebug(scriptEntry, "Filled tag <" + arg.substring(positions[0] + 1, positions[1]) + "> with '" +
+                                event.getReplaced() + "'.");
                     if (!event.replaced())
                         dB.echoError("Tag '" + event.getReplaced() + "' is invalid!");
                     arg = arg.substring(0, positions[0]) + EscapeOutput(event.getReplaced()) + arg.substring(positions[1] + 1, arg.length());
