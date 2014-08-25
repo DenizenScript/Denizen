@@ -22,10 +22,7 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.*;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
-import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
-import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
-import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
-import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
+import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
@@ -264,6 +261,7 @@ public class Denizen extends JavaPlugin {
             ItemScriptHelper is_helper = new ItemScriptHelper();
             InventoryScriptHelper in_helper = new InventoryScriptHelper();
             EntityScriptHelper es_helper = new EntityScriptHelper();
+            CommandScriptHelper cs_helper = new CommandScriptHelper();
         }
         catch (Exception e) {
             dB.echoError(e);

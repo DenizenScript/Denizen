@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
 import net.aufdemrand.denizen.utilities.packets.EntityEquipment;
 import net.aufdemrand.denizen.utilities.packets.PlayerBars;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -194,11 +195,12 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public dNPC getSelectedNPC() {
-        if (getPlayerEntity().hasMetadata("selected")) {
-            return new dNPC(CitizensAPI.getNPCRegistry()
-                    .getByUniqueIdGlobal((UUID) getPlayerEntity().getMetadata("selected").get(0).value()));
+        if (Depends.citizens != null) {
+            NPC npc = CitizensAPI.getDefaultNPCSelector().getSelected(getPlayerEntity());
+            if (npc != null)
+                return dNPC.mirrorCitizensNPC(npc);
         }
-        else return null;
+        return null;
     }
 
     public String getName() {

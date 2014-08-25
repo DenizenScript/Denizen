@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
+import net.aufdemrand.denizen.scripts.containers.core.CommandScriptHelper;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -42,6 +43,8 @@ public class ScriptHelper {
 
         // Remove all recipes added by Denizen item scripts
         ItemScriptHelper.removeDenizenRecipes();
+        // Remove all registered commands added by Denizen command scripts
+        CommandScriptHelper.removeDenizenCommands();
 
         ScriptRegistry._buildCoreYamlScriptContainers(getScripts());
         Bukkit.getServer().getPluginManager().callEvent(new ScriptReloadEvent());
