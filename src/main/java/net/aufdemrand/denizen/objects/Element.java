@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.SQLEscaper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -106,7 +107,7 @@ public class Element implements dObject {
         if (string == null)
             this.element = "null";
         else
-            this.element = string;
+            this.element = TagManager.CleanOutputFully(string);
     }
 
     public Element(Boolean bool) {
@@ -147,7 +148,7 @@ public class Element implements dObject {
     public Element(String prefix, String string) {
         if (prefix == null) this.prefix = "element";
         else this.prefix = prefix;
-        this.element = string;
+        this.element = TagManager.CleanOutputFully(string);
     }
 
     public double asDouble() {
