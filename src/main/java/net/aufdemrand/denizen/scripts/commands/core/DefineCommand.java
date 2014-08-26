@@ -22,8 +22,7 @@ public class DefineCommand extends AbstractCommand implements Listener {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("definition")
-                    && !arg.matchesPrefix("value, v")) {
+            if (!scriptEntry.hasObject("definition")) {
                 if (arg.getValue().equals("!") && arg.hasPrefix()) {
                     scriptEntry.addObject("remove", new Element("true"));
                     scriptEntry.addObject("value", new Element("null"));
@@ -32,8 +31,7 @@ public class DefineCommand extends AbstractCommand implements Listener {
                     scriptEntry.addObject("definition", new Element(arg.getValue().toLowerCase()));
                 }
 
-            else if (!scriptEntry.hasObject("value")
-                    && !arg.matchesPrefix("definition, def, d"))
+            else if (!scriptEntry.hasObject("value"))
                 // Use the raw_value as to not exclude values with :'s in them.
                 scriptEntry.addObject("value", new Element(arg.raw_value));
 
