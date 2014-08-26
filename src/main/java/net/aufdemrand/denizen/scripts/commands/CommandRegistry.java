@@ -2484,14 +2484,17 @@ public class CommandRegistry implements dRegistry {
         // Note that when using tag, it is recommended you escape unusual inputs to avoid SQL injection.
         // The SQL command is merely a wrapper for SQL queries, and further usage details should be gathered from an official
         // MySQL query reference rather than from Denizen command help.
+        // SQL connections are not instant - they can take several seconds, or just never connect at all.
+        // It is recommended you hold the connection command by doing "- ~sql ..." rather than just "- sql ..."
+        // as this will delay the commands following the connect command until after the connection is established.
         // @Tags
         // <entry[saveName].result> returns a dList of all rows from a query command.
         // @Usage
         // Use to connect to an SQL server.
-        // - sql id:name connect:localhost:3306/test username:space password:space
+        // - ~sql id:name connect:localhost:3306/test username:space password:space
         // @Usage
         // Use to connect to an SQL server with a UTF8 text encoding
-        // - sql id:name connect:localhost:3306/test?characterEncoding=utf8 username:space password:space
+        // - ~sql id:name connect:localhost:3306/test?characterEncoding=utf8 username:space password:space
         // @Usage
         // Use to update an SQL server.
         // - sql id:name "update:CREATE table things(id int,column_name1 varchar(255),column_name2 varchar(255));"
