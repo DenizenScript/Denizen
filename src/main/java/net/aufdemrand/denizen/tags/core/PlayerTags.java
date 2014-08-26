@@ -63,13 +63,12 @@ public class PlayerTags implements Listener {
             if (dPlayer.matches(attribute.getContext(1)))
                 p = dPlayer.valueOf(attribute.getContext(1));
             else {
-                dB.echoDebug(event.getScriptEntry(), "Could not match '"
-                        + attribute.getContext(1) + "' to a valid player!");
+                if (!event.hasAlternative()) dB.echoError("Could not match '" + attribute.getContext(1) + "' to a valid player!");
                 return;
             }
 
         if (p == null || !p.isValid()) {
-            dB.echoDebug(event.getScriptEntry(), "Invalid or missing player for tag <" + event.raw_tag + ">!");
+            if (!event.hasAlternative()) dB.echoError("Invalid or missing player for tag <" + event.raw_tag + ">!");
             event.setReplaced("null");
             return;
         }
