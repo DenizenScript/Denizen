@@ -24,6 +24,8 @@ public class ScriptEngine {
 
 
     boolean shouldHold(ScriptQueue scriptQueue) {
+        if (scriptQueue instanceof Delayable && ((Delayable)scriptQueue).isPaused())
+            return true;
         if (scriptQueue.getLastEntryExecuted() != null
                 && scriptQueue.getLastEntryExecuted().shouldWaitFor()) {
             if (!(scriptQueue instanceof Delayable)) {
@@ -65,6 +67,8 @@ public class ScriptEngine {
             // Check if the scriptQueue is delayed (EG, via wait)
             if (scriptQueue instanceof Delayable) {
                 if (((Delayable) scriptQueue).isDelayed())
+                    break;
+                if (((Delayable) scriptQueue).isPaused())
                     break;
             }
 

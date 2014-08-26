@@ -49,7 +49,7 @@ public class EntityTags implements Listener {
                e = dEntity.valueOf("e@" + attribute.getContext(1));
 
         if (e == null || !e.isValid()) {
-            dB.echoDebug(event.getScriptEntry(), "Invalid or missing entity for tag <" + event.raw_tag + ">!");
+            if (!event.hasAlternative()) dB.echoError("Invalid or missing entity for tag <" + event.raw_tag + ">!");
             event.setReplaced("null");
             return;
         }

@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
+import net.aufdemrand.denizen.scripts.queues.core.Delayable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
@@ -74,18 +74,24 @@ public class QueueCommand extends AbstractCommand {
                 return;
 
             case PAUSE:
-                if (queue instanceof TimedQueue)
-                    ((TimedQueue) queue).setPaused(true);
+                if (queue instanceof Delayable) {
+                    ((Delayable) queue).setPaused(true);
+                }
+                else {
+                    queue.forceToTimed(new Duration(1L)).setPaused(true);
+                }
                 return;
 
             case RESUME:
-                if (queue instanceof TimedQueue)
-                    ((TimedQueue) queue).setPaused(false);
+                if (queue instanceof Delayable)
+                    ((Delayable) queue).setPaused(false);
                 return;
 
             case DELAY:
-                if (queue instanceof TimedQueue)
-                    ((TimedQueue) queue).delayFor(delay);
+                if (queue instanceof Delayable)
+                    ((Delayable) queue).delayFor(delay);
+                else
+                    queue.forceToTimed(delay);
                 return;
 
         }

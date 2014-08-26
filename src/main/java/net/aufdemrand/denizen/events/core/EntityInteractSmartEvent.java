@@ -29,7 +29,7 @@ public class EntityInteractSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on \\w+ interacts with \\w+( in \\w+)?", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on (e@)?\\w+ interacts with (m@)?\\w+( in (cu@)?\\w+)?", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {

@@ -497,7 +497,7 @@ public class WorldScriptHelper implements Listener {
         String determination = EventManager.doEvents(Arrays.asList
                 ("block ignites",
                         material.identifySimple() + " ignites"),
-                null, new dPlayer(event.getPlayer()), context, true);
+                null, event.getPlayer() != null ? new dPlayer(event.getPlayer()): null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -1298,38 +1298,6 @@ public class WorldScriptHelper implements Listener {
                 + newMaterial.identifySimple());
 
         String determination = EventManager.doEvents(events, null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // entity combusts
-    // <entity> combusts
-    //
-    // @Triggers when an entity combusts.
-    // @Context
-    // <context.duration> returns how long the entity takes to combust.
-    // <context.entity> returns the dEntity that combusted.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from combusting.
-    //
-    // -->
-    @EventHandler
-    public void entityCombust(EntityCombustEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        Entity entity = event.getEntity();
-
-        context.put("entity", new dEntity(entity).getDenizenObject());
-        context.put("duration", new Duration((long) event.getDuration()));
-
-        String determination = EventManager.doEvents(Arrays.asList
-                ("entity combusts",
-                        entity.getType().name() + " combusts"),
-                null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -2732,55 +2700,6 @@ public class WorldScriptHelper implements Listener {
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
-    }
-
-    // <--[event]
-    // @Events
-    // item moves from inventory (to <inventory type>)
-    // item moves from <inventory type> (to <inventory type>)
-    //
-    // @Triggers when an entity or block moves an item from one inventory to another.
-    // @Context
-    // <context.origin> returns the origin dInventory.
-    // <context.destination> returns the destination dInventory.
-    // <context.initiator> returns the dInventory that initiatied the item's transfer.
-    // <context.item> returns the dItem that was moved.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item from being moved.
-    // dItem to set a different item to be moved.
-    //
-    // -->
-    @EventHandler
-    public void inventoryMoveItemEvent(InventoryMoveItemEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dItem item = new dItem(event.getItem());
-        String originType = event.getSource().getType().name();
-        String destinationType = event.getDestination().getType().name();
-
-        List<String> events = Arrays.asList("item moves from inventory",
-                "item moves from " + originType,
-                "item moves from " + originType
-                        + " to " + destinationType,
-                item.identifySimple() + " moves from inventory",
-                item.identifySimple() + " moves from " + originType,
-                item.identifySimple() + " moves from " + originType
-                        + " to " + destinationType);
-
-        context.put("origin", dInventory.mirrorBukkitInventory(event.getSource()));
-        context.put("destination", dInventory.mirrorBukkitInventory(event.getDestination()));
-        context.put("initiator", dInventory.mirrorBukkitInventory(event.getInitiator()));
-        context.put("item", item);
-
-        String determination = EventManager.doEvents(events,
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        if (dItem.matches(determination))
-            event.setItem(dItem.valueOf(determination).getItemStack());
     }
 
     // <--[event]

@@ -130,7 +130,7 @@ public class Attribute {
             Matcher contextMatcher = CONTEXT_PATTERN.matcher(text);
 
             if (contextMatcher.find()) {
-                return text.substring(contextMatcher.start() + 1, contextMatcher.end() - 1);
+                return TagManager.CleanOutputFully(text.substring(contextMatcher.start() + 1, contextMatcher.end() - 1));
             }
         }
         return null;

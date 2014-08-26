@@ -111,7 +111,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
      * @param paused whether the queue should be paused
      */
     @Override
-    public TimedQueue setPaused(boolean paused) {
+    public Delayable setPaused(boolean paused) {
         this.paused = paused;
         return this;
     }

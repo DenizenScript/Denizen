@@ -361,8 +361,7 @@ public class dB {
     }
 
 
-    // Handles checking whether the provided debuggable should submit to the debugger
-    private static void echo(String string, Debuggable caller) {
+    public static boolean shouldDebug(Debuggable caller) {
         boolean should_send = true;
 
         // Attempt to see if the debug should even be sent by checking the
@@ -386,8 +385,12 @@ public class dB {
                 // Had a problem determining whether it should debug, assume true.
                 should_send = true;
             }
+        return should_send;
+    }
 
-        if (should_send) ConsoleSender.sendMessage(string);
+    // Handles checking whether the provided debuggable should submit to the debugger
+    private static void echo(String string, Debuggable caller) {
+        if (shouldDebug(caller)) ConsoleSender.sendMessage(string);
     }
 
 

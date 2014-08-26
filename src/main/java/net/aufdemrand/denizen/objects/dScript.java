@@ -332,7 +332,7 @@ public class dScript implements dObject {
 
             }
             else return new Element(TagManager.tag(attribute.getScriptEntry().getPlayer(),
-                    attribute.getScriptEntry().getNPC(), obj.toString()))
+                    attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
                     .getAttribute(attribute.fulfill(1));
         }
 

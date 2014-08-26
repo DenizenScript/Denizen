@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 
 public interface Delayable {
 
-    public ScriptQueue setPaused(boolean paused);
+    public Delayable setPaused(boolean paused);
 
     public boolean isPaused();
 
