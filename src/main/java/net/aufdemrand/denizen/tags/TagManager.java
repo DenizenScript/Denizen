@@ -154,7 +154,7 @@ public class TagManager implements Listener {
 
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
         try {
-            return tag(player, npc, arg, instant, scriptEntry, (scriptEntry != null ? scriptEntry.shouldDebug(): true));
+            return tag(player, npc, arg, instant, scriptEntry, dB.shouldDebug(scriptEntry));
         }
         catch (Exception e) {
             dB.echoError(e);
