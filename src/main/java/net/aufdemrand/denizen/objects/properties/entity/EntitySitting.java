@@ -56,7 +56,7 @@ public class EntitySitting implements Property {
 
     @Override
     public String getPropertyId() {
-        return "angry";
+        return "sitting";
     }
 
     ///////////
