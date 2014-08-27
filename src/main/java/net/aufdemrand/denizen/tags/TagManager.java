@@ -135,7 +135,7 @@ public class TagManager implements Listener {
                 return;
             }
 
-            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            Attribute attribute = event.getAttributes();
             event.setReplaced(arg.getAttribute(attribute.fulfill(1)));
         } catch (Exception e) {
             dB.echoError("Uh oh! Report this to the Denizen developers! Err: TagManagerObjectReflection");

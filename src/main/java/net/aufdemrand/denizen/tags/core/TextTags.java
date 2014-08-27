@@ -394,8 +394,7 @@ public class TextTags implements Listener {
 
     @EventHandler
     public void colorTags(ReplaceableTagEvent event) {
-        Attribute attribute =
-                new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
         int i = 0;
         for (ChatColor color : ChatColor.values()) {
             if (i > 22) break;

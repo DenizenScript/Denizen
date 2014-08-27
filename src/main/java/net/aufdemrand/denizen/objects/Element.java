@@ -1678,8 +1678,9 @@ public class Element implements dObject {
         // so far, 'null' shall be returned with a debug message.
 
         if (attribute.attributes.size() > 0) {
-            dB.echoDebug(attribute.getScriptEntry(), "Unfilled attributes '" + attribute.attributes.toString() +
-                    "' for tag <" + attribute.getOrigin() + ">!");
+            if (!attribute.hasAlternative())
+                dB.echoDebug(attribute.getScriptEntry(), "Unfilled attributes '" + attribute.attributes.toString() +
+                        "' for tag <" + attribute.getOrigin() + ">!");
             return "null";
 
         } else {

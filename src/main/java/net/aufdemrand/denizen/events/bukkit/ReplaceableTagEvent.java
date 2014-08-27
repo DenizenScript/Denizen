@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -113,6 +114,7 @@ public class ReplaceableTagEvent extends Event {
 
         // Use Attributes system to get type/subtype/etc. etc. for 'static/legacy' tags.
         core_attributes = new Attribute(raw_tag, scriptEntry);
+        core_attributes.setHadAlternative(hasAlternative());
     }
 
 
