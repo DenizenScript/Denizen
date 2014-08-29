@@ -1,6 +1,9 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.ScriptBuilder;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
@@ -51,11 +54,22 @@ public class CommandScriptContainer extends ScriptContainer {
     //   - myAlias
     //   - myCommand
     //
+    //   # The procedure-based script that will be checked when a player or the console
+    //   # is trying to view help for this command. This must always be determined true
+    //   # or false. If there is no script, it's assumed that all players and the console
+    //   # should be allowed to view the help for this command.
+    //   allowed help:
+    //   - determine <player.is_op>
+    //
     //   # The script that will run when the command is executed.
     //   # No, you do not need '- determine fulfilled' or anything of the sort, since
     //   # the command is fully registered.
     //   # This has contexts for: <player>, <npc>, <context.args>, <context.raw_args>, and <context.server>.
     //   script:
+    //   - if !<player.is_op> {
+    //     - narrate "<red>You do not have permission for that command."
+    //     - queue clear
+    //     }
     //   - narrate "Yay!"
     //   - narrate "My command worked!"
     // </code>
@@ -95,6 +109,26 @@ public class CommandScriptContainer extends ScriptContainer {
         }
         queue.start();
         return queue;
+    }
+
+    public boolean runAllowedHelpProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
+        // Add the reqId to each of the entries for the determine command
+        List<ScriptEntry> entries = getEntries(player, npc, "ALLOWED HELP");
+        long id = DetermineCommand.getNewId();
+        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+
+        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).setReqId(id).addEntries(entries);
+        if (context != null) {
+            for (Map.Entry<String, dObject> entry : context.entrySet()) {
+                queue.addContext(entry.getKey(), entry.getValue());
+            }
+        }
+        queue.start();
+        return Boolean.parseBoolean(DetermineCommand.getOutcome(id));
+    }
+
+    public boolean hasAllowedHelpProcedure() {
+        return contains("ALLOWED HELP");
     }
 
 }

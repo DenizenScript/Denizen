@@ -1,15 +1,17 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import com.google.common.base.Predicate;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.DenizenCommand;
+import net.aufdemrand.denizen.utilities.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
+import org.bukkit.craftbukkit.v1_7_R4.command.VanillaCommandWrapper;
 import org.bukkit.craftbukkit.v1_7_R4.help.CommandAliasHelpTopic;
 import org.bukkit.event.Listener;
-import org.bukkit.help.*;
+import org.bukkit.help.HelpMap;
+import org.bukkit.help.HelpTopic;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -48,6 +50,22 @@ public class CommandScriptHelper implements Listener {
             final Field helpTopicsField = helpMap.getClass().getDeclaredField("helpTopics");
             helpTopicsField.setAccessible(true);
             helpTopics = (Map<String, HelpTopic>) helpTopicsField.get(helpMap);
+
+            // The Minecraft Help command doesn't like our added commands,
+            // so let's force the server to use Bukkit's version if it's running
+            // Mojang's version.
+            // TODO: figure out a different workaround?
+            // TODO: config option for this?
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (!(knownCommands.get("help") instanceof VanillaCommandWrapper)) {
+                        return;
+                    }
+                    knownCommands.put("help", knownCommands.get("bukkit:help"));
+                    helpTopics.put("/help", helpTopics.get("/bukkit:help"));
+                }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         } catch (Exception e) {
             dB.echoError("Error getting the server's command information! Are you running a non-CraftBukkit server?");
             dB.echoError("Command scripts will not function!");
@@ -90,7 +108,7 @@ public class CommandScriptHelper implements Listener {
         // Existing Denizen commands take priority!
         if (!denizenCommands.containsKey(name)) {
             // Register the command
-            forceCommand(name, command, new GenericCommandHelpTopic(command));
+            forceCommand(name, command, new DenizenCommandHelpTopic(command));
             // Register each alias
             for (String alias : command.getAliases()) {
                 if (denizenCommands.containsKey(alias)) continue;

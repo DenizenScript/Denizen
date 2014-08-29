@@ -20,6 +20,22 @@ public class DenizenCommand extends Command {
         this.script = script;
     }
 
+    public boolean canSeeHelp(CommandSender commandSender) {
+        if (!script.hasAllowedHelpProcedure()) return true;
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dPlayer player = null;
+        dNPC npc = null;
+        if (commandSender instanceof Player) {
+            Player pl = (Player) commandSender;
+            if (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(pl))
+                player = dPlayer.mirrorBukkitPlayer(pl);
+        }
+        else {
+            context.put("server", Element.TRUE);
+        }
+        return script.runAllowedHelpProcedure(player, npc, context);
+    }
+
     @Override
     public boolean execute(CommandSender commandSender, String commandLabel, String[] arguments) {
         Map<String, dObject> context = new HashMap<String, dObject>();
