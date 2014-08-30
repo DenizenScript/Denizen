@@ -111,19 +111,19 @@ public class SQLCommand extends AbstractCommand implements Holdable {
         try {
             if (action.asString().equalsIgnoreCase("connect")) {
                 if (server == null) {
-                    dB.echoError("Must specify a server!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a server!");
                     return;
                 }
                 if (username == null) {
-                    dB.echoError("Must specify a username!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a username!");
                     return;
                 }
                 if (password == null) {
-                    dB.echoError("Must specify a password!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a password!");
                     return;
                 }
                 if (connections.containsKey(sqlID.asString().toUpperCase())) {
-                    dB.echoError("Already connected to a server with ID '" + sqlID.asString() + "'!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Already connected to a server with ID '" + sqlID.asString() + "'!");
                     return;
                 }
                 Bukkit.getScheduler().runTaskLaterAsynchronously(DenizenAPI.getCurrentInstance(), new Runnable() {
@@ -137,7 +137,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                             Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
                                 @Override
                                 public void run() {
-                                    dB.echoError("SQL Exception: " + e.getMessage());
+                                    dB.echoError(scriptEntry.getResidingQueue(), "SQL Exception: " + e.getMessage());
                                     scriptEntry.setFinished(true);
                                 }
                             }, 1);
@@ -159,7 +159,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
             else if (action.asString().equalsIgnoreCase("disconnect")) {
                 Connection con = connections.get(sqlID.asString().toUpperCase());
                 if (con == null) {
-                    dB.echoError("Not connected to server with ID '" + sqlID.asString() + "'!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Not connected to server with ID '" + sqlID.asString() + "'!");
                     return;
                 }
                 con.close();
@@ -168,12 +168,12 @@ public class SQLCommand extends AbstractCommand implements Holdable {
             }
             else if (action.asString().equalsIgnoreCase("query")) {
                 if (query == null) {
-                    dB.echoError("Must specify a query!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a query!");
                     return;
                 }
                 Connection con = connections.get(sqlID.asString().toUpperCase());
                 if (con == null) {
-                    dB.echoError("Not connected to server with ID '" + sqlID.asString() + "'!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Not connected to server with ID '" + sqlID.asString() + "'!");
                     return;
                 }
                 dB.echoDebug(scriptEntry, "Running query " + query.asString());
@@ -197,12 +197,12 @@ public class SQLCommand extends AbstractCommand implements Holdable {
             }
             else if (action.asString().equalsIgnoreCase("update")) {
                 if (query == null) {
-                    dB.echoError("Must specify an update query!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify an update query!");
                     return;
                 }
                 Connection con = connections.get(sqlID.asString().toUpperCase());
                 if (con == null) {
-                    dB.echoError("Not connected to server with ID '" + sqlID.asString() + "'!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Not connected to server with ID '" + sqlID.asString() + "'!");
                     return;
                 }
                 dB.echoDebug(scriptEntry, "Running update " + query.asString());
@@ -211,11 +211,11 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                 dB.echoDebug(scriptEntry, "Updated " + affected + " rows");
             }
             else {
-                dB.echoError("Unknown action '" + action.asString() + "'");
+                dB.echoError(scriptEntry.getResidingQueue(), "Unknown action '" + action.asString() + "'");
             }
         }
         catch (SQLException e) {
-            dB.echoError("SQL Exception: " + e.getMessage());
+            dB.echoError(scriptEntry.getResidingQueue(), "SQL Exception: " + e.getMessage());
         }
     }
 
