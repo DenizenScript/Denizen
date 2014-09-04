@@ -235,7 +235,7 @@ public class ListenerRegistry implements dRegistry, Listener {
 
         // Any saves quest listeners in progress?
         if (!denizen.getSaves().contains("Listeners." + player.getSaveName())) return;
-        Set<String> inProgress = denizen.getSaves().getConfigurationSection("Listeners." + event.getPlayer().getName()).getKeys(false);
+        Set<String> inProgress = denizen.getSaves().getConfigurationSection("Listeners." + player.getSaveName()).getKeys(false);
         // If empty, no quest listeners to load.
         if (inProgress.isEmpty()) return;
 
