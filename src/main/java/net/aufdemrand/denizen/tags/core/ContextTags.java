@@ -75,12 +75,12 @@ public class ContextTags implements Listener {
             Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
             ScriptEntry held = event.getScriptEntry().getResidingQueue().getHeldScriptEntry(id);
             if (held == null) { // Check if the ID is bad
-                dB.echoDebug(event.getScriptEntry(), "Bad saved entry ID " + id);
+                dB.echoDebug(event.getScriptEntry(), "Bad saved entry ID '" + id + "'");
 
             } else {
                 if (!held.hasObject(attribute.getAttribute(2)) // Check if there's no such object
                         || held.getdObject(attribute.getAttribute(2)) == null) { // ... or if there is such an object
-                    dB.echoDebug(event.getScriptEntry(), "Missing saved entry object " + attribute.getAttribute(2)); // but it's not a dObject...
+                    dB.echoDebug(event.getScriptEntry(), "Missing saved entry object '" + attribute.getAttribute(2) + "'"); // but it's not a dObject...
 
                 } else { // Okay, now it's safe!
                     event.setReplaced(held.getdObject(attribute.getAttribute(2)).getAttribute(attribute.fulfill(2)));
