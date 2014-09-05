@@ -673,6 +673,24 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <el@element.contains_any[<element>|...]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element contains any of a list of specified strings, case insensitive.
+        // -->
+        if (attribute.startsWith("contains_any")) {
+            dList list = dList.valueOf(attribute.getContext(1));
+            String ellow = element.toLowerCase();
+            for (String list_element: list) {
+                if (ellow.contains(list_element.toLowerCase())) {
+                    return Element.TRUE.getAttribute(attribute.fulfill(1));
+                }
+            }
+            return Element.FALSE.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <el@element.contains[<element>]>
         // @returns Element(Boolean)
         // @group string checking
