@@ -35,6 +35,7 @@ public class ScriptRegistry {
         _registerType("format", FormatScriptContainer.class);
         _registerType("inventory", InventoryScriptContainer.class);
         _registerType("player listener", PlayerListenerScriptContainer.class);
+        _registerType("command", CommandScriptContainer.class);
     }
 
     public static boolean containsScript(String id) {

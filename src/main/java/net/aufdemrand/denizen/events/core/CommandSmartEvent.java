@@ -51,7 +51,6 @@ public class CommandSmartEvent implements SmartEvent, Listener {
                 dList split = dList.valueOf(cmd);
                 for (String str: split) {
                     cmds.add(new CommandHandlerData(str.toLowerCase(), cmd));
-                    // TODO: Register command via magic of some form
                 }
                 pass = true;
             }
@@ -76,7 +75,6 @@ public class CommandSmartEvent implements SmartEvent, Listener {
         // Unregister events or any other temporary links your event created in _intialize()
         PlayerCommandPreprocessEvent.getHandlerList().unregister(this);
         ServerCommandEvent.getHandlerList().unregister(this);
-        // TODO: unregister commands
     }
 
     //////////////
