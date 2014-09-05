@@ -11,10 +11,9 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
-import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
-import net.aufdemrand.denizen.utilities.packets.EntityEquipment;
-import net.aufdemrand.denizen.utilities.packets.PlayerBars;
+import net.aufdemrand.denizen.utilities.packets.*;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -194,11 +193,12 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public dNPC getSelectedNPC() {
-        if (getPlayerEntity().hasMetadata("selected")) {
-            return new dNPC(CitizensAPI.getNPCRegistry()
-                    .getByUniqueIdGlobal((UUID) getPlayerEntity().getMetadata("selected").get(0).value()));
+        if (Depends.citizens != null) {
+            NPC npc = CitizensAPI.getDefaultNPCSelector().getSelected(getPlayerEntity());
+            if (npc != null)
+                return dNPC.mirrorCitizensNPC(npc);
         }
-        else return null;
+        return null;
     }
 
     public String getName() {
@@ -2067,6 +2067,18 @@ public class dPlayer implements dObject, Adjustable {
                     dB.echoError("'" + split[0] + "' is not a valid dEntity!");
                 }
             }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name item_message
+        // @input Element
+        // @description
+        // Shows the player an item message as if the item they are carrying had
+        // changed names to the specified Element.
+        // -->
+        if (mechanism.matches("item_message")) {
+            ItemChangeMessage.sendMessage(getPlayerEntity(), value.asString());
         }
 
         // Iterate through this object's properties' mechanisms
