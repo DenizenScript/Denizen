@@ -451,6 +451,24 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.get_players_flagged[<flag_name>]>
+        // @returns dList(dPlayer)
+        // @description
+        // Returns a list of all players with a specified flag set.
+        // -->
+        if (attribute.startsWith("get_players_flagged")
+                && attribute.hasContext(1)) {
+            String flag = attribute.getContext(1);
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (Map.Entry<String, UUID> entry : dPlayer.getAllPlayers().entrySet()) {
+                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(entry.getValue(), flag).size() > 0)
+                    players.add(new dPlayer(entry.getValue()));
+            }
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.get_npcs_flagged[<flag_name>]>
         // @returns dList(dNPC)
         // @description
