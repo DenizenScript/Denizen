@@ -987,6 +987,19 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
 
         // <--[mechanism]
         // @object dNPC
+        // @name range
+        // @input Element(Decimal)
+        // @description
+        // Sets the maximum movement distance of the NPC.
+        // @tags
+        // <n@npc.navigator.range>
+        // -->
+        if (mechanism.matches("range") && mechanism.requireFloat()) {
+            getCitizen().getNavigator().getDefaultParameters().range(mechanism.getValue().asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
         // @name attack_range
         // @input Element(Decimal)
         // @description
