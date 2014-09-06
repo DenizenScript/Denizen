@@ -739,7 +739,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // @returns Element
         // @group conversion
         // @description
-        // Returns a full reusable item identification for this item, with extra generally useless data.
+        // Returns a full reusable item identification for this item, with extra, generally useless data.
         // -->
         if (attribute.startsWith("full"))
             return new Element(getFullString()).getAttribute(attribute.fulfill(1));

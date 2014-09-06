@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags;
 
 
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -134,6 +135,16 @@ public class Attribute {
             }
         }
         return null;
+    }
+
+    private boolean hadAlternative = false;
+
+    public boolean hasAlternative() {
+        return hadAlternative;
+    }
+
+    public void setHadAlternative(boolean hadAlternative) {
+        this.hadAlternative = hadAlternative;
     }
 
     public int getIntContext(int attribute) {

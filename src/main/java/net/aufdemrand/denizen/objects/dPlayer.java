@@ -56,6 +56,10 @@ public class dPlayer implements dObject, Adjustable {
         return playerNames.containsValue(player.getUniqueId());
     }
 
+    public static Map<String, UUID> getAllPlayers() {
+        return playerNames;
+    }
+
 
     /////////////////////
     //   OBJECT FETCHER

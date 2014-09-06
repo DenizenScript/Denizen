@@ -903,6 +903,16 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return new Element(NotableManager.getSavedId(this)).getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <cu@cuboid.full>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns a full reusable item identification for this cuboid, with extra, generally useless data.
+        // -->
+        if (attribute.startsWith("full"))
+            return new Element(identifyFull()).getAttribute(attribute.fulfill(1));
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

@@ -169,6 +169,13 @@ public class FlagManager {
         return new Flag("Players." + player.getSaveName() + ".Flags." + flagName.toUpperCase(), flagName, player.identify());
     }
 
+    public Flag getPlayerFlag(UUID player, String flagName) {
+        if (player == null)
+            return new Flag("players.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "p@null");
+        String baseID = player.toString().toUpperCase().replace("-", "");
+        return new Flag("Players." + baseID.substring(0, 2) + "." + baseID + ".Flags." + flagName.toUpperCase(), flagName, "p@" + player.toString());
+    }
+
     /**
      * Returns a list of flag names currently attached to an NPC.
      */

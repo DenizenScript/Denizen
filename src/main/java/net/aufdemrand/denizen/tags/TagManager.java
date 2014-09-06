@@ -74,8 +74,12 @@ public class TagManager implements Listener {
      */
     public static String CleanOutput(String input) {
         if (input == null) return null;
-        return input.replace((char)0x01, '<').replace((char)0x02, '>')
-                /*.replace((char)0x2011, ';')*/.replace(dList.internal_escape_char, '|');
+        return input.replace((char)0x01, '<')
+                    .replace((char)0x02, '>')
+                    .replace((char)0x03, '[')
+                    .replace((char)0x04, ']')
+                    /*.replace((char)0x2011, ';')*/
+                    .replace(dList.internal_escape_char, '|');
     }
 
     /**
@@ -90,16 +94,22 @@ public class TagManager implements Listener {
      */
     public static String CleanOutputFully(String input) {
         if (input == null) return null;
-        return input.replace((char)0x01, '<').replace((char)0x02, '>')
-                .replace((char)0x2011, ';').replace(dList.internal_escape_char, '|')
-                .replace((char)0x00A0, ' ');
+        return input.replace((char)0x01, '<')
+                    .replace((char)0x02, '>')
+                    .replace((char)0x2011, ';')
+                    .replace(dList.internal_escape_char, '|')
+                    .replace((char)0x00A0, ' ')
+                    .replace((char)0x03, '[')
+                    .replace((char)0x04, ']');
     }
 
     public static String EscapeOutput(String input) {
         if (input == null) return null;
         return input.replace('|', dList.internal_escape_char)
-                    .replace('<', (char) 0x01)
-                    .replace('>', (char) 0x02);
+                    .replace('<', (char)0x01)
+                    .replace('>', (char)0x02)
+                    .replace('[', (char)0x03)
+                    .replace(']', (char)0x04);
     }
 
     @EventHandler
@@ -135,7 +145,7 @@ public class TagManager implements Listener {
                 return;
             }
 
-            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            Attribute attribute = event.getAttributes();
             event.setReplaced(arg.getAttribute(attribute.fulfill(1)));
         } catch (Exception e) {
             dB.echoError("Uh oh! Report this to the Denizen developers! Err: TagManagerObjectReflection");

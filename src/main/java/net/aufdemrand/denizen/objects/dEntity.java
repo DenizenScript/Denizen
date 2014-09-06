@@ -1271,6 +1271,7 @@ public class dEntity implements dObject, Adjustable {
         // @group data
         // @description
         // Returns the name of the entity.
+        // This can be a player name, an NPC name, a custom_name, or the entity type.
         // -->
         if (attribute.startsWith("name")) {
             return new Element(getName()).getAttribute(attribute.fulfill(1));

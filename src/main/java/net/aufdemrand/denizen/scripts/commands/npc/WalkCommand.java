@@ -161,6 +161,9 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
 
     public void checkHeld(NavigationEvent e) {
+        if (e.getNPC() == null)
+            return;
+
         // Check each held entry -- the scriptExecuter is waiting on
         // the entry to be marked 'waited for'.
         for (int i = 0; i < held.size(); i++) {

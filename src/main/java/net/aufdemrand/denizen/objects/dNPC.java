@@ -760,7 +760,17 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // returns the maximum pathfinding range.
         // -->
         if (attribute.startsWith("navigator.range"))
-            return new Element(getNavigator().getLocalParameters().range())
+        return new Element(getNavigator().getLocalParameters().range())
+                .getAttribute(attribute.fulfill(2));
+
+        // <--[tag]
+        // @attribute <n@npc.navigator.attack_range>
+        // @returns Element(Number)
+        // @description
+        // returns the maximum attack range.
+        // -->
+        if (attribute.startsWith("navigator.attack_range"))
+            return new Element(getNavigator().getLocalParameters().attackRange())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -866,6 +876,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     public void adjust(Mechanism mechanism) {
 
         Element value = mechanism.getValue();
+
+        // TODO: For all the mechanism tags, add the @Mechanism link!
 
         // <--[mechanism]
         // @object dNPC
@@ -973,6 +985,32 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                 getCitizen().spawn(value.asType(dLocation.class));
             else
                 getCitizen().spawn(getCitizen().getStoredLocation());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name range
+        // @input Element(Decimal)
+        // @description
+        // Sets the maximum movement distance of the NPC.
+        // @tags
+        // <n@npc.navigator.range>
+        // -->
+        if (mechanism.matches("range") && mechanism.requireFloat()) {
+            getCitizen().getNavigator().getDefaultParameters().range(mechanism.getValue().asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name attack_range
+        // @input Element(Decimal)
+        // @description
+        // Sets the maximum attack distance of the NPC.
+        // @tags
+        // <n@npc.navigator.attack_range>
+        // -->
+        if (mechanism.matches("attack_range") && mechanism.requireFloat()) {
+            getCitizen().getNavigator().getDefaultParameters().attackRange(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]

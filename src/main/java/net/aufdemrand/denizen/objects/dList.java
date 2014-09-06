@@ -914,7 +914,78 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.contains>
+        // @attribute <li@list.contains_any_case_sensitive[<element>|...]>
+        // @returns Element(Boolean)
+        // @description
+        // returns whether the list contains any of a list of given elements, case-sensitive.
+        // -->
+        if (attribute.startsWith("contains_any_case_sensitive")) {
+            if (attribute.hasContext(1)) {
+                dList list = dList.valueOf(attribute.getContext(1));
+                boolean state = false;
+
+                full_set:
+                for (String element : this) {
+                    for (String sub_element: list) {
+                        if (element.equals(sub_element)) {
+                            state = true;
+                            break full_set;
+                        }
+                    }
+                }
+
+                return new Element(state).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <li@list.contains_any[<element>|...]>
+        // @returns Element(Boolean)
+        // @description
+        // returns whether the list contains any of a list of given elements.
+        // -->
+        if (attribute.startsWith("contains_any")) {
+            if (attribute.hasContext(1)) {
+                dList list = dList.valueOf(attribute.getContext(1));
+                boolean state = false;
+
+                full_set:
+                for (String element : this) {
+                    for (String sub_element: list) {
+                        if (element.equalsIgnoreCase(sub_element)) {
+                            state = true;
+                            break full_set;
+                        }
+                    }
+                }
+
+                return new Element(state).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <li@list.contains_case_sensitive[<element>]>
+        // @returns Element(Boolean)
+        // @description
+        // returns whether the list contains a given element, case-sensitive.
+        // -->
+        if (attribute.startsWith("contains_case_sensitive")) {
+            if (attribute.hasContext(1)) {
+                boolean state = false;
+
+                for (String element : this) {
+                    if (element.equals(attribute.getContext(1))) {
+                        state = true;
+                        break;
+                    }
+                }
+
+                return new Element(state).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <li@list.contains[<element>]>
         // @returns Element(Boolean)
         // @description
         // returns whether the list contains a given element.

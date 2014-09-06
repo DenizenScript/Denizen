@@ -673,6 +673,55 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <el@element.contains_any_case_sensitive[<element>|...]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element contains any of a list of specified strings, case sensitive.
+        // -->
+        if (attribute.startsWith("contains_any_case_sensitive")) {
+            dList list = dList.valueOf(attribute.getContext(1));
+            for (String list_element: list) {
+                if (element.contains(list_element)) {
+                    return Element.TRUE.getAttribute(attribute.fulfill(1));
+                }
+            }
+            return Element.FALSE.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.contains_any[<element>|...]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element contains any of a list of specified strings, case insensitive.
+        // -->
+        if (attribute.startsWith("contains_any")) {
+            dList list = dList.valueOf(attribute.getContext(1));
+            String ellow = element.toLowerCase();
+            for (String list_element: list) {
+                if (ellow.contains(list_element.toLowerCase())) {
+                    return Element.TRUE.getAttribute(attribute.fulfill(1));
+                }
+            }
+            return Element.FALSE.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.contains_case_sensitive[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element contains a specified string, case sensitive.
+        // -->
+        if (attribute.startsWith("contains")) {
+            String contains = attribute.getContext(1);
+            if (element.contains(contains))
+                return new Element("true").getAttribute(attribute.fulfill(1));
+            else return new Element("false").getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <el@element.contains[<element>]>
         // @returns Element(Boolean)
         // @group string checking
@@ -704,6 +753,18 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("ends_with") || attribute.startsWith("endswith"))
             return new Element(element.toLowerCase().endsWith(attribute.getContext(1).toLowerCase())).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.equals_case_sensitive[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element matches another element, case-sensitive.
+        // -->
+        if (attribute.startsWith("equals_case_sensitive")
+                && attribute.hasContext(1)) {
+            return new Element(element.equals(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.matches[<regex>]>
@@ -1678,8 +1739,9 @@ public class Element implements dObject {
         // so far, 'null' shall be returned with a debug message.
 
         if (attribute.attributes.size() > 0) {
-            dB.echoDebug(attribute.getScriptEntry(), "Unfilled attributes '" + attribute.attributes.toString() +
-                    "' for tag <" + attribute.getOrigin() + ">!");
+            if (!attribute.hasAlternative())
+                dB.echoDebug(attribute.getScriptEntry(), "Unfilled attributes '" + attribute.attributes.toString() +
+                        "' for tag <" + attribute.getOrigin() + ">!");
             return "null";
 
         } else {

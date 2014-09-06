@@ -451,6 +451,61 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.get_online_players_flagged[<flag_name>]>
+        // @returns dList(dPlayer)
+        // @description
+        // Returns a list of all online players with a specified flag set.
+        // -->
+        if (attribute.startsWith("get_online_players_flagged")
+                && attribute.hasContext(1)) {
+            String flag = attribute.getContext(1);
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (Player player: Bukkit.getOnlinePlayers()) {
+                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new dPlayer(player), flag).size() > 0)
+                    players.add(new dPlayer(player));
+            }
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.get_players_flagged[<flag_name>]>
+        // @returns dList(dPlayer)
+        // @description
+        // Returns a list of all players with a specified flag set.
+        // -->
+        if (attribute.startsWith("get_players_flagged")
+                && attribute.hasContext(1)) {
+            String flag = attribute.getContext(1);
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (Map.Entry<String, UUID> entry : dPlayer.getAllPlayers().entrySet()) {
+                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(entry.getValue(), flag).size() > 0)
+                    players.add(new dPlayer(entry.getValue()));
+            }
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.get_spawned_npcs_flagged[<flag_name>]>
+        // @returns dList(dNPC)
+        // @description
+        // Returns a list of all spawned NPCs with a specified flag set.
+        // -->
+        if (attribute.startsWith("get_spawned_npcs_flagged")
+                && attribute.hasContext(1)) {
+            String flag = attribute.getContext(1);
+            ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                dNPC dNpc = dNPC.mirrorCitizensNPC(npc);
+                if (dNpc.isSpawned() && FlagManager.npcHasFlag(dNpc, flag))
+                    npcs.add(dNpc);
+            }
+            event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.get_npcs_flagged[<flag_name>]>
         // @returns dList(dNPC)
         // @description
