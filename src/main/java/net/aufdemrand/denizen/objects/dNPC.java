@@ -877,6 +877,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
 
         Element value = mechanism.getValue();
 
+        // TODO: For all the mechanism tags, add the @Mechanism link!
+
         // <--[mechanism]
         // @object dNPC
         // @name set_assignment

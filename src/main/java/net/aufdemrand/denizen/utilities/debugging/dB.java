@@ -242,7 +242,11 @@ public class dB {
                 context.put("queue", source);
             if (script != null)
                 context.put("script", script);
-            String Determination = EventManager.doEvents(Arrays.asList("script generates error"), null, null, context);
+            List<String> events = new ArrayList<String>();
+            events.add("script generates error");
+            if (script != null)
+                events.add(script.identifySimple() + " generates error");
+            String Determination = EventManager.doEvents(events, null, null, context, true);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
                 return;
