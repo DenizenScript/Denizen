@@ -755,6 +755,18 @@ public class Element implements dObject {
             return new Element(element.toLowerCase().endsWith(attribute.getContext(1).toLowerCase())).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <el@element.equals_case_sensitive[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element matches another element, case-sensitive.
+        // -->
+        if (attribute.startsWith("equals_case_sensitive")
+                && attribute.hasContext(1)) {
+            return new Element(element.equals(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <el@element.matches[<regex>]>
         // @returns Element(Boolean)
         // @group string checking
