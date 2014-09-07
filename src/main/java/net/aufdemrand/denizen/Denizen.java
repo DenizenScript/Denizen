@@ -28,6 +28,7 @@ import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.MetricsLite;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -181,6 +182,14 @@ public class Denizen extends JavaPlugin {
             dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
             dB.log(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
         }
         catch (Exception e) {
             dB.echoError(e);

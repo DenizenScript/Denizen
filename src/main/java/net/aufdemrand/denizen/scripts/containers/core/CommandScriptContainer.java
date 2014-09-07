@@ -25,7 +25,7 @@ public class CommandScriptContainer extends ScriptContainer {
     // on the command.
     //
     // Note that existing names or aliases from other plugins will be overridden.
-    // If you want to run a script at the same time as an existing command, see <@link example On Command Event tutorial>.
+    // If you want to run a script at the same time as an existing command, see <@link example on command event tutorial>.
     //
     // The following is the format for the container.
     //
@@ -38,21 +38,21 @@ public class CommandScriptContainer extends ScriptContainer {
     //
     //   # The name of the command. This will show up in the default list in the '/help' command
     //   # and will be the default method for running the command.
-    //   name: myCmd
+    //   name: mycmd
     //
     //   # The description of the command. This will be shown in the '/help' command.
-    //   # Multiple lines are acceptable, via <n> (the tag for a new line), but you should
+    //   # Multiple lines are acceptable, via <&nl> (the tag for a new line), but you should
     //   # make the first line a brief summary of what your command does.
     //   description: My command.
     //
     //   # Correct usage for the command. This will show in the '/help' command.
-    //   usage: /myCmd <myArg1>
+    //   usage: /mycmd <&lt>myArg1<&gt>
     //
     //   # A list of aliases for the command. These will show in the '/help' command, and
     //   # are alternatives to the default name.
     //   aliases:
-    //   - myAlias
-    //   - myCommand
+    //   - myalias
+    //   - mycommand
     //
     //   # The procedure-based script that will be checked when a player or the console
     //   # is trying to view help for this command. This must always be determined true
@@ -64,7 +64,8 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # The script that will run when the command is executed.
     //   # No, you do not need '- determine fulfilled' or anything of the sort, since
     //   # the command is fully registered.
-    //   # This has contexts for: <player>, <npc>, <context.args>, <context.raw_args>, and <context.server>.
+    //   # This has contexts for: <context.args>, <context.raw_args>, and <context.server>
+    //   # as well as <player> and <npc> links.
     //   script:
     //   - if !<player.is_op> {
     //     - narrate "<red>You do not have permission for that command."
@@ -124,7 +125,7 @@ public class CommandScriptContainer extends ScriptContainer {
             }
         }
         queue.start();
-        return Boolean.parseBoolean(DetermineCommand.getOutcome(id));
+        return DetermineCommand.getOutcome(id).equalsIgnoreCase("true");
     }
 
     public boolean hasAllowedHelpProcedure() {

@@ -96,7 +96,8 @@ public class CommandSmartEvent implements SmartEvent, Listener {
     // @Title On Command Event tutorial
     // @Description
     // Denizen contains the ability to run script entries in the form
-    // of a bukkit /command. Here's an example script that shows basic usage.
+    // of a Bukkit /command, overriding existing commands. Here's an example script that shows basic usage.
+    // If you want to add a new command, see <@link language command script containers>.
     //
     // @Code
     // # +--------------------
@@ -136,10 +137,10 @@ public class CommandSmartEvent implements SmartEvent, Listener {
     //
     //     # Commands won't be checked for <replaceable tags> So if you type /testcommand <player.name>
     //     # It won't be read as /testcommand mcmonkey
-    //     # If you want tags to be parsed (read and translated), you can instead use '<context.parsed_args>'
-    //     - narrate "With tag parsing, you input <context.parsed_args>"
+    //     # If you want tags to be parsed (read and translated), you can instead use '<parse:<context.args>>'
+    //     - narrate "With tag parsing, you input <parse:<context.raw_args>>"
     //     - if %arg_size% > 0 {
-    //       - narrate "'<context.parsed_args.get[1]>' was the first argument."
+    //       - narrate "'<parse:<context.args.get[1]>>' was the first argument."
     //       }
     //
     //     # When a command isn't found, Bukkit reports an error. To let Bukkit know
@@ -197,11 +198,10 @@ public class CommandSmartEvent implements SmartEvent, Listener {
         context.put("cuboids", cuboid_context);
 
         List<String> args = Arrays.asList(aH.buildArgs(message.split(" ").length > 1 ? message.split(" ", 2)[1] : ""));
-        List<String> parsed_args = Arrays.asList(aH.buildArgs(event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
 
         // Fill context
         context.put("args", new dList(args));
-        context.put("parsed_args", new dList(parsed_args));
+        context.put("parsed_args", new dList(args));
         context.put("command", new Element(command));
         context.put("raw_args", new Element((message.split(" ").length > 1
                 ? message.split(" ", 2)[1] : "")));
