@@ -73,12 +73,7 @@ public class InstantQueue extends ScriptQueue {
             return new Duration(0).getAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <q@queue.type>
-        // @returns Element
-        // @description
-        // Returns the type of queue.
-        // -->
+        // Meta defined in TimedQueue
         if (attribute.startsWith("type")) {
 
            return new Element("Instant").getAttribute(attribute.fulfill(1));
