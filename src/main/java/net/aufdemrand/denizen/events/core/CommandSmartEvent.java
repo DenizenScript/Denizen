@@ -152,7 +152,7 @@ public class CommandSmartEvent implements SmartEvent, Listener {
     // <--[event]
     // @Events
     // command
-    // <command_name> (command|...) (in <notable cuboid>)
+    // <command_name>|... command (in <notable cuboid>)
     //
     // @Regex on [^\s]+ command(in \w+)?
     //
