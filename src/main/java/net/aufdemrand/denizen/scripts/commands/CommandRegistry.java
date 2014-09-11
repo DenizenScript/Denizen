@@ -1037,6 +1037,9 @@ public class CommandRegistry implements dRegistry {
         // @Group world
         // @Description
         // TODO: Document Command Details
+        // Default power: 1
+        // Default location: npc.location, or if no NPC link, player.location.
+        // It is highly recommended you specify a location to be safe.
         // @Tags
         // TODO: Document Command Details
         // @Usage
@@ -2359,7 +2362,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>)
+        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air up to a certain height.
@@ -2375,6 +2378,7 @@ public class CommandRegistry implements dRegistry {
         // %location% for the last known location of the last shot entity, and
         // %hit_entities% for a list of any entities that were hit by fired projectiles.
         // Optionally, specify a speed and 'lead' value to use the experimental arrow-aiming system.
+        // Optionally, add 'no_rotate' to prevent the shoot command from rotating launched entities.
         // @Tags
         // <entry[saveName].shot_entities> returns a dList of entities that were shot.
         // @Usage
@@ -2385,7 +2389,7 @@ public class CommandRegistry implements dRegistry {
         // - shoot arrow origin:<player> speed:2
         // -->
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);
 
 
         // <--[command]
@@ -2488,7 +2492,8 @@ public class CommandRegistry implements dRegistry {
         // It is recommended you hold the connection command by doing "- ~sql ..." rather than just "- sql ..."
         // as this will delay the commands following the connect command until after the connection is established.
         // @Tags
-        // <entry[saveName].result> returns a dList of all rows from a query command.
+        // <entry[saveName].result> returns a dList of all rows from a query or update command.
+        // <entry[saveName].affected_rows> returns how many rows were affected by an update command.
         // @Usage
         // Use to connect to an SQL server.
         // - ~sql id:name connect:localhost:3306/test username:space password:space
