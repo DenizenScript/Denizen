@@ -564,7 +564,8 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 script_entries.addAll(entries);
                 dB.echoDebug(this, "Finishing up queue '" + id + "'...");
             } else /* if empty, just stop the queue like normal */ {
-                _queues.remove(id);
+                if (_queues.get(id) == this)
+                    _queues.remove(id);
                 dB.echoDebug(this, "Completing queue '" + id + "'.");
                 if (callback != null)
                     callback.run();
@@ -577,7 +578,8 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // 1) Remove the id from active queue list
         // 2) Cancel the corresponding task_id
         else {
-            _queues.remove(id);
+            if (_queues.get(id) == this)
+                _queues.remove(id);
             dB.echoDebug(this, "Re-completing queue '" + id + "'.");
             if (callback != null)
                 callback.run();
