@@ -207,7 +207,23 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                 }
                 dB.echoDebug(scriptEntry, "Running update " + query.asString());
                 Statement statement = con.createStatement();
-                int affected = statement.executeUpdate(query.asString());
+                int affected = statement.executeUpdate(query.asString(), Statement.RETURN_GENERATED_KEYS);
+                scriptEntry.addObject("affected_rows", new Element(affected));
+                ResultSet set = statement.getGeneratedKeys();
+                ResultSetMetaData rsmd = set.getMetaData();
+                int columns = rsmd.getColumnCount();
+                dB.echoDebug(scriptEntry, "Got a query result of " + columns + " columns");
+                int count = 0;
+                dList rows = new dList();
+                while (set.next()) {
+                    count++;
+                    StringBuilder current = new StringBuilder();
+                    for (int i = 0; i < columns; i++) {
+                        current.append(set.getString(i + 1)).append("/");
+                    }
+                    rows.add(current.toString());
+                }
+                scriptEntry.addObject("result", rows);
                 dB.echoDebug(scriptEntry, "Updated " + affected + " rows");
             }
             else {

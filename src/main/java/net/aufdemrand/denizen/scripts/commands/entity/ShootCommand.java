@@ -128,6 +128,11 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 scriptEntry.addObject("spread", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("no_rotate")
+                && arg.matches("no_rotate")) {
+                scriptEntry.addObject("no_rotate", new Element(true));
+            }
+
             else arg.reportUnhandled();
         }
 
@@ -160,6 +165,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                                    (dLocation) scriptEntry.getObject("originLocation") :
                                    new dLocation(originEntity.getEyeLocation()
                                                .add(originEntity.getEyeLocation().getDirection()));
+        boolean no_rotate = scriptEntry.hasObject("no_rotate") && scriptEntry.getElement("no_rotate").asBoolean();
 
         // If there is no destination set, but there is a shooter, get a point
         // in front of the shooter and set it as the destination
@@ -197,7 +203,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                              (script != null ? script.debug() : "") +
                              (shooter != null ? shooter.debug() : "") +
                              (spread != null ? spread.debug() : "") +
-                             (lead != null ? lead.debug(): ""));
+                             (lead != null ? lead.debug(): "") +
+                             (no_rotate ? aH.debugObj("no_rotate", "true"): ""));
 
         // Keep a dList of entities that can be called using <entry[name].shot_entities>
         // later in the script queue
@@ -213,7 +220,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             // instead of "e@57" on it
             entityList.add(entity.toString());
 
-            Rotation.faceLocation(entity.getBukkitEntity(), destination);
+            if (!no_rotate)
+                Rotation.faceLocation(entity.getBukkitEntity(), destination);
 
             // If the current entity is a projectile, set its shooter
             // when applicable
