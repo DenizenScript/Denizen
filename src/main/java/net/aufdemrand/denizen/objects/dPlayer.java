@@ -47,6 +47,10 @@ public class dPlayer implements dObject, Adjustable {
      * Notes that the player exists, for easy dPlayer valueOf handling.
      */
     public static void notePlayer(OfflinePlayer player) {
+        if (player.getName() == null) {
+            dB.echoError("Null player " + player.toString());
+            return;
+        }
         if (!playerNames.containsKey(player.getName().toLowerCase())) {
             playerNames.put(player.getName().toLowerCase(), player.getUniqueId());
         }
