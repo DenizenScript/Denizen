@@ -78,7 +78,7 @@ public class EntitySkeleton implements Property {
         // @name skeleton
         // @input Element(Boolean)
         // @description
-        // Changes whether an arrow is critical.
+        // Changes whether a skeleton is a normal or wither type skeleton.
         // @tags
         // <e@entity.skeleton_type>
         // -->

@@ -673,6 +673,13 @@ public class Element implements dObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <el@element.contains_any_case_sensitive_text[<element>|...]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element contains any of a list of specified strings, case sensitive.
+        // -->
+        // <--[tag]
         // @attribute <el@element.contains_any_case_sensitive[<element>|...]>
         // @returns Element(Boolean)
         // @group string checking
@@ -688,6 +695,14 @@ public class Element implements dObject {
             }
             return Element.FALSE.getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <el@element.contains_any_text[<element>|...]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element contains any of a list of specified strings, case insensitive.
+        // -->
 
         // <--[tag]
         // @attribute <el@element.contains_any[<element>|...]>
@@ -708,18 +723,35 @@ public class Element implements dObject {
         }
 
         // <--[tag]
+        // @attribute <el@element.contains_case_sensitive_text[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element contains a specified string, case sensitive.
+        // -->
+
+        // <--[tag]
         // @attribute <el@element.contains_case_sensitive[<element>]>
         // @returns Element(Boolean)
         // @group string checking
         // @description
         // Returns whether the element contains a specified string, case sensitive.
         // -->
-        if (attribute.startsWith("contains")) {
+        if (attribute.startsWith("contains_case_sensitive")) {
             String contains = attribute.getContext(1);
             if (element.contains(contains))
                 return new Element("true").getAttribute(attribute.fulfill(1));
             else return new Element("false").getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <el@element.contains_text[<element>]>
+        // @returns Element(Boolean)
+        // @group string checking
+        // @description
+        // Returns whether the element contains a specified string, case insensitive. Can use
+        // regular expression by prefixing the string with regex:
+        // -->
 
         // <--[tag]
         // @attribute <el@element.contains[<element>]>
