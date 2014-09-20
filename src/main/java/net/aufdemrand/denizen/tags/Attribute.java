@@ -93,7 +93,6 @@ public class Attribute {
         String attr = attributes.get(0);
         if (attr.contains("["))
             attr = attr.substring(0, attr.indexOf('['));
-        dB.log("Compare '" + string + "' to '" + attr + "'");
         return attr.equalsIgnoreCase(string);
     }
 
