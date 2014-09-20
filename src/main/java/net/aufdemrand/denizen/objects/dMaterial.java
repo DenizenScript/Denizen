@@ -668,7 +668,9 @@ public class dMaterial implements dObject {
 
     @Override
     public String identify() {
-        return "m@" + realName();
+        if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase();
+        if (getData() != null && getData() > 0) return "m@" + material.name().toLowerCase() + "," + getData();
+        return "m@" + material.name().toLowerCase();
     }
 
     @Override

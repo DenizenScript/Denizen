@@ -111,9 +111,9 @@ public class Utilities {
         String replacer = String.valueOf((char)0x04);
         // Get formats from Settings, and fill in <TEXT>
         String talkFormat = Settings.ChatToNpcFormat()
-                .replace("<TEXT>", replacer).replace("<text>", replacer).replace("<Text>", replacer);
+                .replaceAll("(?i)<TEXT>", replacer);
         String bystanderFormat = Settings.ChatToNpcOverheardFormat()
-                .replace("<TEXT>", replacer).replace("<text>", replacer).replace("<Text>", replacer);
+                .replaceAll("(?i)<TEXT>", replacer);
 
         // Fill in tags
         talkFormat = TagManager.tag(player, npc, talkFormat, false).replace(replacer, message);

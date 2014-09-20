@@ -48,8 +48,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         return (getBlockX() + 0.5)
                 + "," + getBlockY()
                 + "," + (getBlockZ() + 0.5)
-                + "," + getYaw()
                 + "," + getPitch()
+                + "," + getYaw()
                 + "," + getWorld().getName();
     }
 
