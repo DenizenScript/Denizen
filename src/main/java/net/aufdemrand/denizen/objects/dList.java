@@ -919,7 +919,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @description
         // returns whether the list contains any of a list of given elements, case-sensitive.
         // -->
-        if (attribute.startsWith("contains_any_case_sensitive")) {
+        if (attribute.matches("contains_any_case_sensitive")) {
             if (attribute.hasContext(1)) {
                 dList list = dList.valueOf(attribute.getContext(1));
                 boolean state = false;
@@ -944,7 +944,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @description
         // returns whether the list contains any of a list of given elements.
         // -->
-        if (attribute.startsWith("contains_any")) {
+        if (attribute.matches("contains_any")) {
             if (attribute.hasContext(1)) {
                 dList list = dList.valueOf(attribute.getContext(1));
                 boolean state = false;
@@ -969,7 +969,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @description
         // returns whether the list contains a given element, case-sensitive.
         // -->
-        if (attribute.startsWith("contains_case_sensitive")) {
+        if (attribute.matches("contains_case_sensitive")) {
             if (attribute.hasContext(1)) {
                 boolean state = false;
 
@@ -990,7 +990,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @description
         // returns whether the list contains a given element.
         // -->
-        if (attribute.startsWith("contains")) {
+        if (attribute.matches("contains")) {
             if (attribute.hasContext(1)) {
                 boolean state = false;
 

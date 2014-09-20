@@ -88,6 +88,15 @@ public class Attribute {
         this.attributes = separate_attributes(attributes);
     }
 
+    public boolean matches(String string) {
+        if (attributes.isEmpty()) return false;
+        String attr = attributes.get(0);
+        if (attr.contains("["))
+            attr = attr.substring(0, attr.indexOf('['));
+        dB.log("Compare '" + string + "' to '" + attr + "'");
+        return attr.equalsIgnoreCase(string);
+    }
+
     public boolean startsWith(String string) {
         string = string.toLowerCase();
         if (attributes.isEmpty()) return false;
