@@ -60,7 +60,7 @@ public class Comparable {
     Bridge       bridge = Bridge.FIRST;
     Object   comparable = null;
     Operator   operator = Operator.EQUALS;
-    Object   comparedto = (boolean) true;
+    Object   comparedto = "true";
     Boolean     outcome = null;
 
 
@@ -403,15 +403,20 @@ public class Comparable {
         }
     }
 
+    public String log(String str) {
+        dB.log("Warning: Unknown comparable type: " + str);
+        return str;
+    }
+
     @Override
     public String toString() {
         return  (logic != Logic.REGULAR ? "Logic='" + logic.toString() + "', " : "")
                 + "Comparable='" + (comparable == null ? "null'" : (comparable instanceof Double ? "Decimal":
-                comparable instanceof String ? "Element": (comparable instanceof Long ? "Number": comparable.getClass().getSimpleName()))
+                comparable instanceof String ? "Element": (comparable instanceof Long ? "Number": log(comparable.getClass().getSimpleName())))
                 + "(" + ChatColor.AQUA + comparable + ChatColor.WHITE + ")'")
                 + ", Operator='" + operator.toString()
                 + "', ComparedTo='" + (comparedto == null ? "null'" : (comparedto instanceof Double ? "Decimal":
-                comparedto instanceof String ? "Element": (comparedto instanceof Long ? "Number": comparedto.getClass().getSimpleName()))
+                comparedto instanceof String ? "Element": (comparedto instanceof Long ? "Number": log(comparedto.getClass().getSimpleName())))
                 + "(" + ChatColor.AQUA + comparedto + ChatColor.WHITE + ")' ")
                 + ChatColor.YELLOW + "--> OUTCOME='" + outcome + "'";
     }
