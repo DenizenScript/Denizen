@@ -977,13 +977,32 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <p@player.groups>
+        // @returns dList
+        // @description
+        // returns a list of all groups the player is in.
+        // -->
+        if (attribute.startsWith("groups")) {
+            if (Depends.permissions == null) {
+                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                return Element.NULL.getAttribute(attribute.fulfill(1));
+            }
+            dList list = new dList();
+            for (String group: Depends.permissions.getGroups()) {
+                if (Depends.permissions.playerInGroup(null, offlinePlayer, group)) {
+                    list.add(group);
+                }
+            }
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <p@player.in_group[<group_name>]>
         // @returns Element(Boolean)
         // @description
         // returns whether the player is in the specified group (requires the player to be online)
         // -->
-        if (attribute.startsWith("group")
-                || attribute.startsWith("in_group")) {
+        if (attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
                 dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return Element.NULL.getAttribute(attribute.fulfill(1));
