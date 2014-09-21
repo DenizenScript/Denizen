@@ -689,6 +689,34 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <cu@cuboid.intersects[<cuboid>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether this cuboid and another intersect.
+        // -->
+        if (attribute.startsWith("intersects")
+                && attribute.hasContext(1)) {
+            dCuboid cub2 = dCuboid.valueOf(attribute.getContext(1));
+            if (cub2 != null) {
+                boolean intersects = false;
+                for (LocationPair pair: pairs) {
+                    for (LocationPair pair2: cub2.pairs) {
+                        if (pair2.low.getX() <= pair.high.getX()
+                                && pair2.low.getY() <= pair.high.getY()
+                                && pair2.low.getZ() <= pair.high.getZ()
+                                && pair2.high.getX() >= pair.low.getX()
+                                && pair2.high.getY() >= pair.low.getY()
+                                && pair2.high.getZ() >= pair.low.getZ()) {
+                            intersects = true;
+                            break;
+                        }
+                    }
+                }
+                return new Element(intersects).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
         // @attribute <cu@cuboid.center[<index>]>
         // @returns dLocation
         // @description
