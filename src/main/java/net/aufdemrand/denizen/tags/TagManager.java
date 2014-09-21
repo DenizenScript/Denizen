@@ -221,17 +221,26 @@ public class TagManager implements Listener {
         return CleanOutput(arg);
     }
 
-    // Match all < > brackets that don't contain < > inside them
-    private static Pattern tagRegex = Pattern.compile("<([^<>]+)>", Pattern.DOTALL | Pattern.MULTILINE);
-
     private static int[] locateTag(String arg) {
-        // find escaped brackets
-
-        // find tag brackets pattern
-        Matcher tagMatcher = tagRegex.matcher(arg);
-        if (tagMatcher.find())
-            return new int[]{tagMatcher.start(), tagMatcher.end() - 1};
-            // no matching brackets pattern, return null
+        int first = arg.indexOf('<');
+        if (first == -1)
+            return null;
+        int len = arg.length();
+        int bracks = 0;
+        int second = -1;
+        for (int i = first + 1; i < len; i++) {
+            if (arg.charAt(i) == '<')
+                bracks++;
+            else if (arg.charAt(i) == '>') {
+                bracks--;
+                if (bracks == -1) {
+                    second = i;
+                    break;
+                }
+            }
+        }
+        if (first > -1 && second > first)
+            return new int[]{first, second};
         else return null;
     }
 

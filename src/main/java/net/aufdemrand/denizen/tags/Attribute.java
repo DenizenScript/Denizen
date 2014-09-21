@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.tags;
 
 
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
@@ -132,6 +134,18 @@ public class Attribute {
         return text.endsWith("]") && text.contains("[");
     }
 
+    private dPlayer getPlayer() {
+        if (getScriptEntry() == null)
+            return null;
+        return getScriptEntry().getPlayer();
+    }
+
+    private dNPC getNPC() {
+        if (getScriptEntry() == null)
+            return null;
+        return getScriptEntry().getNPC();
+    }
+
     public String getContext(int attribute) {
         if (hasContext(attribute)) {
 
@@ -139,7 +153,9 @@ public class Attribute {
             Matcher contextMatcher = CONTEXT_PATTERN.matcher(text);
 
             if (contextMatcher.find()) {
-                return TagManager.CleanOutputFully(text.substring(contextMatcher.start() + 1, contextMatcher.end() - 1));
+                return TagManager.CleanOutputFully(TagManager.tag(
+                        getPlayer(), getNPC(), text.substring(contextMatcher.start() + 1,
+                        contextMatcher.end() - 1), false, getScriptEntry()));
             }
         }
         return null;
