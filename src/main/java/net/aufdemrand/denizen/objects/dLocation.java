@@ -1116,6 +1116,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.distance_squared[<location>]>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the distance between 2 locations, squared.
+        // -->
+        if (attribute.startsWith("distance_squared")
+                && attribute.hasContext(1)) {
+            if (dLocation.matches(attribute.getContext(1))) {
+                dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
+                return new Element(this.distanceSquared(toLocation))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
         // @attribute <l@location.distance[<location>]>
         // @returns Element(Decimal)
         // @description
