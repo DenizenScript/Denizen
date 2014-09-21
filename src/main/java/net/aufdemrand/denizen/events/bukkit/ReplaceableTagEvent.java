@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -121,7 +122,7 @@ public class ReplaceableTagEvent extends Event {
     // Matches method (checks first attribute (name) of the tag)
 
     public boolean matches(String tagName) {
-        String[] tagNames = tagName.split(",");
+        String[] tagNames = StringUtils.split(tagName, ',');
         String name = getName();
         for (String string: tagNames)
             if (name.equalsIgnoreCase(string.trim())) return true;
@@ -132,8 +133,11 @@ public class ReplaceableTagEvent extends Event {
     private String StripContext(String input) {
         if (input == null)
             return null;
+        int index = input.indexOf('[');
+        if (index < 0)
+            return input;
         else
-            return Attribute.CONTEXT_PATTERN.matcher(input).replaceAll("");
+            return input.substring(0, index);
     }
 
     ////////

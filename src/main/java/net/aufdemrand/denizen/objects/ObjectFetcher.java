@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -158,7 +159,7 @@ public class ObjectFetcher {
                     valueof.get(dClass).invoke(null, matched ? matches.get(0): value));
             if (gotten != null && matched) {
                 for (int i = 1; i < matches.size(); i++) {
-                    String[] data = matches.get(i).split("=", 2);
+                    String[] data = StringUtils.split(matches.get(i), "=", 2);
                     if (data.length != 2) {
                         dB.echoError("Invalid property string '" + matches.get(i) + "'!");
                         continue;

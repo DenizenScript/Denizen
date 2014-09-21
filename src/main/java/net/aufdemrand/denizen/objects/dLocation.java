@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -116,7 +117,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Match location formats
 
         // Split values
-        String[] split = string.replace("l@", "").split(",");
+        String[] split = StringUtils.split(string.startsWith("l@") ? string.substring(2) : string, ',');
 
         if (split.length == 3)
             // If 4 values, standard dScript location format

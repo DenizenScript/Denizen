@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
@@ -95,7 +96,7 @@ public class aH {
             }
             else {
                 has_prefix = true;
-                String[] split = string.split(":", 2);
+                String[] split = StringUtils.split(string, ":", 2);
                 prefix = split[0];
                 lower_prefix = prefix.toLowerCase();
                 value = split[1];

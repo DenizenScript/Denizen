@@ -229,7 +229,7 @@ public class Element implements dObject {
 
     public boolean matchesEnum(Enum[] values) {
         for (Enum value : values)
-            if (value.name().replace("_", "").equalsIgnoreCase(element.replace("_", "")))
+            if (value.name().equalsIgnoreCase(element))
                 return true;
 
         return false;

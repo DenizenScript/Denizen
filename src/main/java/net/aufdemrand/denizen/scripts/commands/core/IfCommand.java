@@ -80,7 +80,7 @@ public class IfCommand extends AbstractCommand {
                 Element elArg = new Element(arg);
 
                 // Set bridge
-                if (elArg.matchesEnum(Comparable.Bridge.values())) {
+                if (elArg.matchesEnum(Comparable.BridgeValues)) {
                     // new Comparable to add to the list
                     comparables.add(new Comparable());
                     comparables.get(comparables.size() - 1).bridge =
@@ -88,7 +88,7 @@ public class IfCommand extends AbstractCommand {
                 }
 
                 // Set operator (Optional, default is EQUALS)
-                else if (elArg.matchesEnum(Comparable.Operator.values())) {
+                else if (elArg.matchesEnum(Comparable.OperatorValues)) {
                     comparables.get(comparables.size() - 1).operator =
                             Comparable.Operator.valueOf(arg.toUpperCase());
                     usedOperator = true;

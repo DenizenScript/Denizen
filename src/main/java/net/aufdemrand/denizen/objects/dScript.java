@@ -65,9 +65,6 @@ public class dScript implements dObject {
     // -->
 
 
-    final public static Pattern CONTAINER_PATTERN = Pattern.compile("(s@)?(.+)",
-            Pattern.CASE_INSENSITIVE);
-
     /**
      * Gets a dContainer Object from a dScript argument.
      *
@@ -77,13 +74,15 @@ public class dScript implements dObject {
     @Fetchable("s")
     public static dScript valueOf(String string) {
 
-        Matcher m = CONTAINER_PATTERN.matcher(string);
-        if (m.matches()) {
-            dScript script = new dScript(m.group(2));
-            // Make sure it's valid.
-            if (script.isValid()) return script;
-        }
-        return null;
+        if (string.startsWith("s@"))
+            string = string.substring(2);
+
+        dScript script = new dScript(string);
+        // Make sure it's valid.
+        if (script.isValid())
+            return script;
+        else
+            return null;
     }
 
 
@@ -91,13 +90,9 @@ public class dScript implements dObject {
 
         if (string.toLowerCase().startsWith("s@")) return true;
 
-        Matcher m = CONTAINER_PATTERN.matcher(string);
-        if (m.matches()) {
-            dScript script = new dScript(m.group(2));
-            // Make sure it's valid.
-            if (script.isValid()) return true;
-        }
-        return false;
+        dScript script = new dScript(string);
+        // Make sure it's valid.
+        return script.isValid();
     }
 
     //////////////////
