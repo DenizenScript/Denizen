@@ -2010,7 +2010,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name Random
         // @Syntax random [<#>/<commands>]
-        // @Required 1
+        // @Required 0
         // @Stable stable
         // @Short Selects a random choice from the following script commands.
         // @Author aufdemrand, morphan1

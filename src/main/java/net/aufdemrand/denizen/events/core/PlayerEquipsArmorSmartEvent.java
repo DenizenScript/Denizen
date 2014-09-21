@@ -112,7 +112,23 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
         }
     }
 
-    // TODO: Meta information!
+    // <--[event]
+    // @Events
+    // player equips armor
+    // player equips <item>
+    //
+    // @Regex on player equips (m@|i@)?\w+
+    //
+    // @Warning This event is minimally tested and unstable.
+    //
+    // @Triggers when a player equips armor, or closes their inventory after equipping new armor.
+    // @Context
+    // <context.armor> returns the dItem that was equipped.
+    //
+    // @Determine
+    // "CANCELLED" to stop the armor from being equipped.
+    //
+    // -->
     public void playerEquipsArmorEvent(final Player player, final ItemStack item, final int replaceSlot) {
 
         // Run this as a not-so-delayed Runnable...

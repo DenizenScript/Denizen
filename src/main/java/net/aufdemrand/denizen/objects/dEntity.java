@@ -750,6 +750,7 @@ public class dEntity implements dObject, Adjustable {
                         if (data1 != null) {
 
                             // TODO: Discourage usage of + delete the below (Use properties instead!)
+                            // TODO: Remove in 1.0
                             try {
 
                                 // Allow creepers to be powered - replaced by EntityPowered
