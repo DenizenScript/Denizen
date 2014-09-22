@@ -93,7 +93,7 @@ public class Attribute {
     public boolean matches(String string) {
         if (attributes.isEmpty()) return false;
         String attr = attributes.get(0);
-        if (attr.contains("["))
+        if (attr.contains("[") && attr.endsWith("]"))
             attr = attr.substring(0, attr.indexOf('['));
         return attr.equalsIgnoreCase(string);
     }

@@ -135,7 +135,7 @@ public class ReplaceableTagEvent extends Event {
         if (input == null)
             return null;
         int index = input.indexOf('[');
-        if (index < 0)
+        if (index < 0 || !input.endsWith("]"))
             return input;
         else
             return input.substring(0, index);
