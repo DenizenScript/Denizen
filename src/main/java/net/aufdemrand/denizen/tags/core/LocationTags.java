@@ -30,16 +30,20 @@ public class LocationTags implements Listener {
 
         // Check name context for a specified location, or check
         // the ScriptEntry for a 'location' context
-        if (event.hasNameContext() && dLocation.matches(event.getNameContext()))
-            loc = dLocation.valueOf(event.getNameContext());
+        String context = event.getNameContext();
+        if (event.hasNameContext() && dLocation.matches(context))
+            loc = dLocation.valueOf(context);
         else if (event.getScriptEntry().hasObject("location"))
             loc = (dLocation) event.getScriptEntry().getObject("location");
 
         // Check if location is null, return null if it is
-        if (loc == null) { event.setReplaced("null"); return; }
+        if (loc == null) {
+            event.setReplaced("null");
+            return;
+        }
 
         // Build and fill attributes
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
         event.setReplaced(loc.getAttribute(attribute.fulfill(1)));
 
     }

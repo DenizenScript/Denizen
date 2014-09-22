@@ -33,12 +33,14 @@ public class TagManager implements Listener {
 
     public void registerCoreTags() {
         // Objects
+        new CuboidTags(denizen);
         new EntityTags(denizen);
-        new PlayerTags(denizen);
-        new NPCTags(denizen);
+        new ListTags(denizen);
         new LocationTags(denizen);
-        new ScriptTags(denizen);
+        new NPCTags(denizen);
+        new PlayerTags(denizen);
         new QueueTags(denizen);
+        new ScriptTags(denizen);
 
         // Utilities
         new UtilTags(denizen);
