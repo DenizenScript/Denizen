@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.Event;
@@ -215,7 +216,8 @@ public class ReplaceableTagEvent extends Event {
     // Value
 
     public String getValue() {
-        return value;
+        return TagManager.CleanOutputFully(TagManager.tag(
+                getPlayer(), getNPC(), value, false, getScriptEntry()));
     }
 
     public boolean hasValue() {
@@ -225,7 +227,8 @@ public class ReplaceableTagEvent extends Event {
     // Alternative
 
     public String getAlternative() {
-        return alternative;
+        return TagManager.CleanOutputFully(TagManager.tag(
+                getPlayer(), getNPC(), alternative, false, getScriptEntry()));
     }
 
     public boolean hasAlternative() {

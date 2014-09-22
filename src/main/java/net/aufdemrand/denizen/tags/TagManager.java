@@ -204,7 +204,7 @@ public class TagManager implements Listener {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
                     if ((!event.replaced() && event.getAlternative() != null)
-                            || (event.getReplaced().equals("null") && event.getAlternative() != null))
+                            || (event.getReplaced().equals("null") && event.hasAlternative()))
                         event.setReplaced(event.getAlternative());
                     if (debug)
                         dB.echoDebug(scriptEntry, "Filled tag <" + arg.substring(positions[0] + 1, positions[1]) + "> with '" +
