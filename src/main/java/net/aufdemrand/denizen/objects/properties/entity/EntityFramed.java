@@ -56,7 +56,7 @@ public class EntityFramed implements Property {
     @Override
     public String getPropertyString() {
         if (hasItem())
-            return getItem().getMaterial().identify()
+            return getItem().identify()
                 + (getItemFrameEntity().getRotation() == Rotation.NONE ? ""
                 : '|' + getItemFrameEntity().getRotation().name().toLowerCase());
         else
