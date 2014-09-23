@@ -1844,7 +1844,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Shows the player a workbench GUI corresponding to a given location.
         // @tags
-        // <player.name.display>
+        // None
         // -->
         if (mechanism.matches("show_workbench") && mechanism.requireObject(dLocation.class)) {
             getPlayerEntity().openWorkbench(mechanism.getValue().asType(dLocation.class), true);

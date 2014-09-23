@@ -39,6 +39,10 @@ public class DefinitionTags implements Listener {
         // -->
         // Get the definition from the name input
         String defName = event.getNameContext();
+        if (event.getScriptEntry() == null) {
+            dB.echoError("No definitions available outside of a queue.");
+            return;
+        }
         String def = event.getScriptEntry().getResidingQueue().getDefinition(defName);
 
         Attribute atttribute = event.getAttributes().fulfill(1);
