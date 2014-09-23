@@ -64,8 +64,8 @@ public class ItemScrollSmartEvent implements SmartEvent, Listener {
 
     // <--[event]
     // @Events
-    // on player scrolls their hotbar
-    // on player holds item
+    // player scrolls their hotbar
+    // player holds item
     //
     // @Triggers when a player scrolls through their hotbar.
     // @Context

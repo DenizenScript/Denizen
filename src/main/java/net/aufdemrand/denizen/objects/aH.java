@@ -99,7 +99,10 @@ public class aH {
                 String[] split = StringUtils.split(string, ":", 2);
                 prefix = split[0];
                 lower_prefix = prefix.toLowerCase();
-                value = split[1];
+                if (split.length == 2)
+                    value = split[1];
+                else
+                    value = "";
                 lower_value = value.toLowerCase();
             }
 
