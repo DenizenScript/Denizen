@@ -421,9 +421,20 @@ public class Element implements dObject {
         // @description
         // Returns the element as a chunk. Note: the value must be a valid chunk.
         // -->
-        if (attribute.startsWith("as_chunk")
+        if (attribute.startsWith("aschunk")
                 || attribute.startsWith("as_chunk"))
             return HandleNull(element, dChunk.valueOf(element), "dChunk").getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.as_color>
+        // @returns dCuboid
+        // @group conversion
+        // @description
+        // Returns the element as a dColor. Note: the value must be a valid color.
+        // -->
+        if (attribute.startsWith("ascolor")
+                || attribute.startsWith("as_color"))
+            return HandleNull(element, dColor.valueOf(element), "dColor").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_cuboid>
