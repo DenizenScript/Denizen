@@ -839,6 +839,7 @@ public class CommandRegistry implements dRegistry {
         // TODO: Document Command Details
         // @Tags
         // TODO: Document Command Details
+        // <entry[saveName].dropped> returns a dEntity of the spawned item.
         // @Usage
         // TODO: Document Command Details
         // -->
