@@ -315,7 +315,7 @@ public class dScript implements dObject {
         if (attribute.startsWith("cons")) {
             if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
 
-            Object obj = getContainer().getConfigurationSection("").get(attribute.getContext(1).toUpperCase());
+            Object obj = getContainer().getConfigurationSection("constants").get(attribute.getContext(1).toUpperCase());
             if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
 
             if (obj instanceof List) {

@@ -76,9 +76,9 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
     // <entity> damaged
     // <entity> damaged by <cause>
     //
-    // @Triggers when an entity is damaged - see <@link language damage cause> for causes.
+    // @Triggers when an entity is damaged.
     // @Context
-    // <context.cause> returns the reason the entity was damaged.
+    // <context.cause> returns the reason the entity was damaged - see <@link language damage cause> for causes.
     // <context.damage> returns the amount of damage dealt.
     // <context.entity> returns the dEntity that was damaged.
     //
@@ -132,7 +132,7 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
             //
             // @Triggers when an entity is killed.
             // @Context
-            // <context.cause> returns the reason the entity was killed.
+            // <context.cause> returns the reason the entity was killed - see <@link language damage cause> for causes.
             // <context.entity> returns the dEntity that was killed.
             // <context.damage> returns the amount of damage dealt.
             // <context.damager> returns the dEntity damaging the other entity.
@@ -167,7 +167,7 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
             //
             // @Triggers when an entity damages another entity.
             // @Context
-            // <context.cause> returns the reason the entity was damaged.
+            // <context.cause> returns the reason the entity was damaged - see <@link language damage cause> for causes.
             // <context.entity> returns the dEntity that was damaged.
             // <context.damage> returns the amount of damage dealt.
             // <context.damager> returns the dEntity damaging the other entity.
@@ -295,7 +295,7 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
                 //
                 // @Triggers when an entity kills another entity.
                 // @Context
-                // <context.cause> returns the reason the entity was killed.
+                // <context.cause> returns the reason the entity was killed - see <@link language damage cause> for causes.
                 // <context.entity> returns the dEntity that was killed.
                 // <context.damager> returns the dEntity killing the other entity.
                 // <context.projectile> returns the projectile, if one caused the event.
