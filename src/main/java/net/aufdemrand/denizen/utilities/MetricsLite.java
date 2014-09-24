@@ -384,8 +384,8 @@ public class MetricsLite {
     /**
      * GZip compress a string of bytes
      *
-     * @param input
-     * @return
+     * @param input input
+     * @return output
      */
     public static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -423,9 +423,9 @@ public class MetricsLite {
     /**
      * Appends a json encoded key/value pair to the given string builder.
      *
-     * @param json
-     * @param key
-     * @param value
+     * @param json json
+     * @param key key
+     * @param value value
      * @throws UnsupportedEncodingException
      */
     private static void appendJSONPair(StringBuilder json, String key, String value) throws UnsupportedEncodingException {
@@ -457,8 +457,8 @@ public class MetricsLite {
     /**
      * Escape a string to create a valid JSON string
      *
-     * @param text
-     * @return
+     * @param text text
+     * @return escaped text
      */
     private static String escapeJSON(String text) {
         StringBuilder builder = new StringBuilder();

@@ -85,31 +85,11 @@ public class ReplaceableTagEvent extends Event {
         }
 
         // Get value (if present)
+        int valueLoc = locateValue(tag);
 
-        if (tag.indexOf(':') > 0) {
-            int x1 = -1;
-            int braced = 0;
-
-            for (int x = 0; x < tag.length(); x++) {
-                Character chr = tag.charAt(x);
-
-                if (chr == '[')
-                    braced++;
-
-                else if (chr == ']') {
-                    if (braced > 0) braced--;
-                }
-
-                else if (chr == ':' && braced == 0 && x != tag.length() - 1 && x > 0) {
-                    x1 = x;
-                    break;
-                }
-            }
-
-            if (x1 > -1) {
-                value = tag.substring(x1 + 1);
-                tag = tag.substring(0, x1);
-            }
+        if (valueLoc > 0) {
+            value = tag.substring(valueLoc + 1);
+            tag = tag.substring(0, valueLoc);
         }
 
         // Alternatives are stripped, value is stripped, let's remember the raw tag for the attributer.
@@ -120,8 +100,29 @@ public class ReplaceableTagEvent extends Event {
         core_attributes.setHadAlternative(hasAlternative());
     }
 
+    private int locateValue(String tag) {
+        int bracks = 0;
+        int bracks2 = 0;
+        for (int i = 0; i < tag.length(); i++) {
+            char c = tag.charAt(i);
+            if (c == '<')
+                bracks++;
+            else if (c == '>')
+                bracks--;
+            else if (bracks == 0 && c == '[')
+                bracks2++;
+            else if (bracks == 0 && c == ']')
+                bracks2--;
+            else if (c == ':' && bracks == 0 && bracks2 == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private int locateAlternative(String tag) {
         int bracks = 0;
+        int bracks2 = 0;
         boolean previousWasTarget = false;
         for (int i = 0; i < tag.length(); i++) {
             char c = tag.charAt(i);
@@ -129,7 +130,11 @@ public class ReplaceableTagEvent extends Event {
                 bracks++;
             else if (c == '>')
                 bracks--;
-            else if (c == '|' && bracks == 0) {
+            else if (bracks == 0 && c == '[')
+                bracks2++;
+            else if (bracks == 0 && c == ']')
+                bracks2--;
+            else if (c == '|' && bracks == 0 && bracks2 == 0) {
                 if (previousWasTarget) {
                     return i - 1;
                 }
