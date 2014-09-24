@@ -332,6 +332,31 @@ public class dScript implements dObject {
         }
 
         // <--[tag]
+        // @attribute <s@script.yaml_key[<constant_name>]>
+        // @returns Element or dList
+        // @description
+        // Returns the value of the script's YAML as either an Element or dList.
+        // -->
+        if (attribute.startsWith("yaml_key")) {
+            if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
+
+            Object obj = getContainer().getConfigurationSection("").get(attribute.getContext(1).toUpperCase());
+            if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+
+            if (obj instanceof List) {
+                dList list = new dList();
+                for (Object each : (List<Object>) obj)
+                    list.add(TagManager.tag(attribute.getScriptEntry().getPlayer(),
+                            attribute.getScriptEntry().getNPC(), each.toString(), false, attribute.getScriptEntry()));
+                return list.getAttribute(attribute.fulfill(1));
+
+            }
+            else return new Element(TagManager.tag(attribute.getScriptEntry().getPlayer(),
+                    attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <s@script.step[<player>]>
         // @returns Element
         // @description
