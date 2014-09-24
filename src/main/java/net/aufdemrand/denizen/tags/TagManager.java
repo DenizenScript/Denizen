@@ -191,7 +191,7 @@ public class TagManager implements Listener {
 
 
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug) {
-        return tag(arg, new TagContext(player, null, instant, scriptEntry, debug));
+        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug));
     }
 
     public static String tag(String arg, TagContext context) {
@@ -216,7 +216,7 @@ public class TagManager implements Listener {
             ReplaceableTagEvent event;
             if (positions == null) break;
             else {
-                String oriarg = HandleTag(arg.substring(positions[0] + 1, positions[1]), context);
+                String oriarg = arg.substring(positions[0] + 1, positions[1]);
                 event = new ReplaceableTagEvent(context.player, context.npc, oriarg, context.entry);
                 if (event.isInstant() != context.instant) {
                     // Not the right type of tag, escape the brackets so it doesn't get parsed again
@@ -241,10 +241,6 @@ public class TagManager implements Listener {
         } while (positions != null || failsafe < 50);
 
         return CleanOutput(arg);
-    }
-
-    private static String HandleTag(String tag, TagContext context) {
-        return tag; // TODO
     }
 
     private static int[] locateTag(String arg) {

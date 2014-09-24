@@ -29,6 +29,7 @@ import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -145,6 +146,19 @@ public class UtilTags implements Listener {
                         .getAttribute(attribute));
             else event.setReplaced("null");
             return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_materials>
+        // @returns dList
+        // @description
+        // Returns a list of all materials known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_materials")) {
+            dList allMats = new dList();
+            for (Material mat: Material.values())
+                allMats.add(mat.name());
+            event.setReplaced(allMats.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
