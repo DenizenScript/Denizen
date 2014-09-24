@@ -60,9 +60,10 @@ public class Attribute {
         return matches;
     }
 
-    public static String RETURN_NULL = "null";
-
     public List<String> attributes;
+    public List<String> contexts;
+    public List<String> original_attributes;
+    public List<String> original_contexts;
 
     ScriptEntry scriptEntry;
 
@@ -88,6 +89,11 @@ public class Attribute {
         }
 
         this.attributes = separate_attributes(attributes);
+        contexts = new ArrayList<String>(this.attributes.size());
+        for (int i = 0; i < this.attributes.size(); i++)
+            contexts.add(null);
+        original_attributes = new ArrayList<String>(this.attributes);
+        original_contexts = new ArrayList<String>(contexts);
     }
 
     public boolean matches(String string) {
@@ -110,9 +116,13 @@ public class Attribute {
         return getAttribute(attribute).startsWith(string);
     }
 
+    int fulfilled = 0;
+
     public Attribute fulfill(int attributes) {
         for (int x = attributes; x > 0; x--) {
             this.attributes.remove(0);
+            this.contexts.remove(0);
+            fulfilled++;
         }
         rebuild_raw_tag();
         return this;
@@ -147,15 +157,21 @@ public class Attribute {
     }
 
     public String getContext(int attribute) {
-        if (hasContext(attribute)) {
+        if (attribute <= attributes.size() && attribute > 0 && hasContext(attribute)) {
 
             String text = getAttribute(attribute);
+            if (contexts.get(attribute - 1) != null) {
+                return contexts.get(attribute - 1);
+            }
             Matcher contextMatcher = CONTEXT_PATTERN.matcher(text);
 
             if (contextMatcher.find()) {
-                return TagManager.CleanOutputFully(TagManager.tag(
+                String tagged = TagManager.CleanOutputFully(TagManager.tag(
                         getPlayer(), getNPC(), text.substring(contextMatcher.start() + 1,
                         contextMatcher.end() - 1), false, getScriptEntry()));
+                contexts.set(attribute - 1, tagged);
+                original_contexts.set(attribute - 1 + fulfilled, tagged);
+                return tagged;
             }
         }
         return null;
@@ -189,7 +205,25 @@ public class Attribute {
     }
 
     public String getAttribute(int num) {
-        if (attributes.size() < num) return "";
-        else return attributes.get(num - 1);
+        if (attributes.size() < num || num <= 0)
+            return "";
+        else {
+            return attributes.get(num - 1);
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < original_attributes.size(); i++) {
+            if (original_contexts.get(i) != null)
+                sb.append(original_attributes.get(i).substring(0, original_attributes.get(i).indexOf('[')))
+                        .append("[").append(original_contexts.get(i)).append("].");
+            else
+                sb.append(original_attributes.get(i)).append(".");
+        }
+        if (sb.length() > 0)
+            return sb.substring(0, sb.length() - 1);
+        return "";
     }
 }

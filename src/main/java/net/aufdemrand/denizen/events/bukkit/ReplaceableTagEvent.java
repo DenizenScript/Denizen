@@ -34,8 +34,10 @@ public class ReplaceableTagEvent extends Event {
     private boolean wasReplaced = false;
 
     private String alternative = null;
+    private boolean alternative_tagged = false;
     private String replaced = null;
     private String value = null;
+    private boolean value_tagged = false;
     private Attribute core_attributes = null;
 
     private ScriptEntry scriptEntry = null;
@@ -216,8 +218,12 @@ public class ReplaceableTagEvent extends Event {
     // Value
 
     public String getValue() {
-        return TagManager.CleanOutputFully(TagManager.tag(
+        if (value_tagged)
+            return value;
+        value_tagged = true;
+        value = TagManager.CleanOutputFully(TagManager.tag(
                 getPlayer(), getNPC(), value, false, getScriptEntry()));
+        return value;
     }
 
     public boolean hasValue() {
@@ -227,8 +233,12 @@ public class ReplaceableTagEvent extends Event {
     // Alternative
 
     public String getAlternative() {
-        return TagManager.CleanOutputFully(TagManager.tag(
+        if (alternative_tagged)
+            return alternative;
+        alternative_tagged = true;
+        alternative = TagManager.CleanOutputFully(TagManager.tag(
                 getPlayer(), getNPC(), alternative, false, getScriptEntry()));
+        return alternative;
     }
 
     public boolean hasAlternative() {
@@ -288,5 +298,10 @@ public class ReplaceableTagEvent extends Event {
 
     public Attribute getAttributes() {
         return core_attributes;
+    }
+
+    @Override
+    public String toString() {
+        return core_attributes.toString() + (hasValue() ? ":" + value: "") + (hasAlternative() ? "||" + alternative: "");
     }
 }

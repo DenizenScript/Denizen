@@ -300,6 +300,8 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      * @return  The value of the definitions, or null
      */
     public String getDefinition(String definition) {
+        if (definition == null)
+            return null;
         return definitions.get(definition.toLowerCase());
     }
 

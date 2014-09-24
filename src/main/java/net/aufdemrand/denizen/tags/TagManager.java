@@ -24,6 +24,21 @@ import java.util.regex.Pattern;
 
 public class TagManager implements Listener {
 
+    private static class TagContext {
+        public final dPlayer player;
+        public final dNPC npc;
+        public final boolean instant;
+        public final ScriptEntry entry;
+        public final boolean debug;
+        public TagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug) {
+            this.player = player;
+            this.npc = npc;
+            this.instant = instant;
+            this.entry = entry;
+            this.debug = debug;
+        }
+    }
+
     public Denizen denizen;
 
     public TagManager(Denizen denizen) {
@@ -176,13 +191,17 @@ public class TagManager implements Listener {
 
 
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug) {
+        return tag(arg, new TagContext(player, null, instant, scriptEntry, debug));
+    }
+
+    public static String tag(String arg, TagContext context) {
         if (arg == null) return null;
 
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return CleanOutput(arg);
 
         // Parse \escaping down to internal escaping.
-        if (!instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));
+        if (!context.instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));
 
         // Find location of the first tag
         int[] positions = locateTag(arg);
@@ -197,8 +216,9 @@ public class TagManager implements Listener {
             ReplaceableTagEvent event;
             if (positions == null) break;
             else {
-                event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]), scriptEntry);
-                if (event.isInstant() != instant) {
+                String oriarg = HandleTag(arg.substring(positions[0] + 1, positions[1]), context);
+                event = new ReplaceableTagEvent(context.player, context.npc, oriarg, context.entry);
+                if (event.isInstant() != context.instant) {
                     // Not the right type of tag, escape the brackets so it doesn't get parsed again
                     arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
                             + EscapeOutput(event.getReplaced()) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
@@ -208,8 +228,8 @@ public class TagManager implements Listener {
                     if ((!event.replaced() && event.getAlternative() != null)
                             || (event.getReplaced().equals("null") && event.hasAlternative()))
                         event.setReplaced(event.getAlternative());
-                    if (debug)
-                        dB.echoDebug(scriptEntry, "Filled tag <" + arg.substring(positions[0] + 1, positions[1]) + "> with '" +
+                    if (context.debug)
+                        dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
                                 event.getReplaced() + "'.");
                     if (!event.replaced())
                         dB.echoError("Tag '" + event.getReplaced() + "' is invalid!");
@@ -221,6 +241,10 @@ public class TagManager implements Listener {
         } while (positions != null || failsafe < 50);
 
         return CleanOutput(arg);
+    }
+
+    private static String HandleTag(String tag, TagContext context) {
+        return tag; // TODO
     }
 
     private static int[] locateTag(String arg) {
