@@ -59,6 +59,16 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
     //  MECHANICS
     ///////////
 
+    // <--[language]
+    // @name Damage Cause
+    // @group Events
+    // @description
+    // Possible damage causes
+    // BLOCK_EXPLOSION, CONTACT, CUSTOM, DROWNING, ENTITY_ATTACK, ENTITY_EXPLOSION,
+    // FALL, FALLING_BLOCK, FIRE, FIRE_TICK, LAVA, LIGHTNING, MAGIC, MELTING, POISON,
+    // PROJECTILE, STARVATION, SUFFOCATION, SUICIDE, THORNS, VOID, WITHER.
+    // -->
+
     // <--[event]
     // @Events
     // entity damaged
@@ -66,7 +76,7 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
     // <entity> damaged
     // <entity> damaged by <cause>
     //
-    // @Triggers when an entity is damaged.
+    // @Triggers when an entity is damaged - see <@link language damage cause> for causes.
     // @Context
     // <context.cause> returns the reason the entity was damaged.
     // <context.damage> returns the amount of damage dealt.

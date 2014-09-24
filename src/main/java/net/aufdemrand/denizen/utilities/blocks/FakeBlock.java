@@ -27,10 +27,11 @@ public class FakeBlock {
                 new Runnable() {
                     @Override
                     public void run() {
-                        player.getPlayerEntity().sendBlockChange(
-                                location,
-                                location.getBlock().getType(),
-                                location.getBlock().getData());
+                        if (player.isValid() && player.isOnline())
+                            player.getPlayerEntity().sendBlockChange(
+                                    location,
+                                    location.getBlock().getType(),
+                                    location.getBlock().getData());
                     }
                 }, duration.getTicks());
         }
