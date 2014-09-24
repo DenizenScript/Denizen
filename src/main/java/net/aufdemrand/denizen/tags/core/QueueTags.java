@@ -23,7 +23,7 @@ public class QueueTags implements Listener {
     @EventHandler
     public void queueTag(ReplaceableTagEvent event) {
 
-        if (!event.matches("queue, q")) return;
+        if (!event.matches("queue", "q")) return;
 
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 

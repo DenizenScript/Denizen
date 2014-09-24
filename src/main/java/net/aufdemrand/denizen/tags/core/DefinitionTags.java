@@ -23,7 +23,7 @@ public class DefinitionTags implements Listener {
     @EventHandler
     public void definitionTag(ReplaceableTagEvent event) {
 
-        if (!event.matches("definition, def, d")) return;
+        if (!event.matches("definition", "def", "d")) return;
 
         if (!event.hasNameContext()) {
             dB.echoError("Invalid definition tag, no context specified!");

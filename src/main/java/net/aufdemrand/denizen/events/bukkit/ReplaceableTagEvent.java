@@ -151,8 +151,16 @@ public class ReplaceableTagEvent extends Event {
 
     // Matches method (checks first attribute (name) of the tag)
 
+    // TODO: Remove in 1.0!
     public boolean matches(String tagName) {
         String[] tagNames = StringUtils.split(tagName, ',');
+        String name = getName();
+        for (String string: tagNames)
+            if (name.equalsIgnoreCase(string.trim())) return true;
+        return false;
+    }
+
+    public boolean matches(String... tagNames) {
         String name = getName();
         for (String string: tagNames)
             if (name.equalsIgnoreCase(string.trim())) return true;

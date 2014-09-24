@@ -54,7 +54,7 @@ public class UtilTags implements Listener {
     // -->
     @EventHandler
     public void mathTag(ReplaceableTagEvent event) {
-        if (!event.matches("math, m")) return;
+        if (!event.matches("math", "m")) return;
         try {
             Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
             event.setReplaced(new Element(String.valueOf(evaluation)).getAttribute(event.getAttributes().fulfill(1)));
@@ -78,7 +78,7 @@ public class UtilTags implements Listener {
     // -->
     @EventHandler
     public void ternaryTag(ReplaceableTagEvent event) {
-        if (!event.matches("ternary, tern, t")) return;
+        if (!event.matches("ternary", "tern", "t")) return;
 
         // Fallback if nothing to evaluate
         if (!event.hasNameContext()) return;
@@ -94,7 +94,7 @@ public class UtilTags implements Listener {
 
     @EventHandler
     public void serverTag(ReplaceableTagEvent event) {
-        if (!event.matches("server, svr, global") || event.replaced()) return;
+        if (!event.matches("server", "svr", "global") || event.replaced()) return;
         Attribute attribute =
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
@@ -681,7 +681,7 @@ public class UtilTags implements Listener {
 
     @EventHandler
     public void utilTag(ReplaceableTagEvent event) {
-        if (!event.matches("util, u")) return;
+        if (!event.matches("util", "u")) return;
 
         String type = event.getType() != null ? event.getType() : "";
         String typeContext = event.getTypeContext() != null ? event.getTypeContext() : "";
