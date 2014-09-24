@@ -484,7 +484,8 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // Else, return the material name
-        return "i@" + identifyMaterial().replace("m@", "") + PropertyParser.getPropertiesString(this);
+        return "i@" + dMaterial.getMaterialFrom(item.getType(),
+                item.getData().getData()).identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
 
 
