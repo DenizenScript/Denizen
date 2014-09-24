@@ -132,7 +132,7 @@ public class aH {
 
 
         public boolean matches(String values) {
-            for (String value : values.split(",")) {
+            for (String value : StringUtils.split(values, ',')) {
                 if (value.trim().toLowerCase().equals(lower_value))
                     return true;
             }
@@ -184,7 +184,7 @@ public class aH {
 
         public boolean matchesPrefix(String values) {
             if (!hasPrefix()) return false;
-            for (String value : values.split(",")) {
+            for (String value : StringUtils.split(values, ',')) {
                 if (value.trim().toLowerCase().equals(lower_prefix))
                     return true;
             }

@@ -31,11 +31,11 @@ public class HeadCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("material")
                     && arg.matchesArgumentType(dMaterial.class)
-                    && !arg.matchesPrefix("skin, s"))
+                    && !arg.matchesPrefix("skin", "s"))
                 scriptEntry.addObject("material", arg.asType(dMaterial.class));
 
             else if (!scriptEntry.hasObject("skin")
-                    && (arg.matchesPrefix("skin, s")))
+                    && (arg.matchesPrefix("skin", "s")))
                 scriptEntry.addObject("skin", arg.asElement());
 
             else if (!scriptEntry.hasObject("entities")

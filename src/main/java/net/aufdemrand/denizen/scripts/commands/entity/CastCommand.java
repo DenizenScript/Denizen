@@ -73,16 +73,16 @@ public class CastCommand extends AbstractCommand{
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("remove")
-                && arg.matches("remove, cancel"))
+                && arg.matches("remove", "cancel"))
                 scriptEntry.addObject("remove", Element.TRUE);
 
             else if (!scriptEntry.hasObject("duration")
-                     && arg.matchesPrefix("duration, d")
+                     && arg.matchesPrefix("duration", "d")
                      && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
 
             else if (!scriptEntry.hasObject("amplifier")
-                     && arg.matchesPrefix("power, p, amplifier, a")
+                     && arg.matchesPrefix("power", "p", "amplifier", "a")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double))
                 scriptEntry.addObject("amplifier", arg.asElement());
 

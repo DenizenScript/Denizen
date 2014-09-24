@@ -35,7 +35,7 @@ public class LookCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class)
-                    && arg.matchesPrefix("duration, d"))
+                    && arg.matchesPrefix("duration", "d"))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
 
             else if (!scriptEntry.hasObject("entities")

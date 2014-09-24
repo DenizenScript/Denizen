@@ -41,7 +41,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("origin")
-                && arg.matchesPrefix("origin, o, source, shooter, s")) {
+                && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
 
                 if (arg.matchesArgumentType(dEntity.class))
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
@@ -53,21 +53,21 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
             else if (!scriptEntry.hasObject("destination")
                      && arg.matchesArgumentType(dLocation.class)
-                     && arg.matchesPrefix("destination, d")) {
+                     && arg.matchesPrefix("destination", "d")) {
 
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("duration")
                      && arg.matchesArgumentType(Duration.class)
-                     && arg.matchesPrefix("duration, d")) {
+                     && arg.matchesPrefix("duration", "d")) {
 
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
             else if (!scriptEntry.hasObject("speed")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                     && arg.matchesPrefix("speed, s")) {
+                     && arg.matchesPrefix("speed", "s")) {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }
