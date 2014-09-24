@@ -623,6 +623,14 @@ public class dMaterial implements dObject {
         return material.name();
     }
 
+
+    public Byte getData(byte fallback) {
+        if (data == null)
+            return fallback;
+        else
+            return data;
+    }
+
     public Byte getData() {
         return data;
     }

@@ -24,6 +24,9 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.citizensnpcs.npc.entity.nonliving.FallingBlockController;
+import net.citizensnpcs.npc.entity.nonliving.ItemController;
+import net.citizensnpcs.npc.entity.nonliving.ItemFrameController;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
@@ -32,10 +35,12 @@ import net.citizensnpcs.util.Pose;
 
 import net.minecraft.server.v1_7_R4.EntityLiving;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -968,6 +973,37 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // -->
         if (mechanism.matches("owner")) {
             getCitizen().getTrait(Owner.class).setOwner(value.asString());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name item_type
+        // @input dItem
+        // @description
+        // Sets the item type of the item.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("item_type") && mechanism.requireObject(dItem.class)) {
+            dItem item = mechanism.getValue().asType(dItem.class);
+            Material mat = item.getMaterial().getMaterial();
+            int data = item.getMaterial().getData((byte)0);
+            switch (getEntity().getType()) {
+                case DROPPED_ITEM:
+                    ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
+                    ((ItemController.ItemNPC) getEntity()).setType(mat, data);
+                    break;
+                case ITEM_FRAME:
+                    ((ItemFrame) getEntity()).getItem().setType(mat);
+                    ((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
+                    break;
+                case FALLING_BLOCK:
+                    ((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
+                    break;
+                default:
+                    dB.echoError("NPC is the not an item type!");
+                    break;
+            }
         }
 
         // <--[mechanism]
