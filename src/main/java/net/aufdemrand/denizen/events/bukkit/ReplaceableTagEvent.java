@@ -42,15 +42,14 @@ public class ReplaceableTagEvent extends Event {
 
     private ScriptEntry scriptEntry = null;
 
-    // Alternative text pattern that matches everything after ||
-    private static Pattern alternativeRegex = Pattern.compile("\\|\\|(.*)", Pattern.DOTALL | Pattern.MULTILINE);
-
     public String raw_tag;
 
     ////////////
     // Constructors
 
-    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) { this(player, npc, tag, null); }
+    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) {
+        this(player, npc, tag, null);
+    }
 
     public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry) {
 
@@ -76,13 +75,13 @@ public class ReplaceableTagEvent extends Event {
         }
 
         // Get alternative text
-        Matcher alternativeMatcher = alternativeRegex.matcher(tag);
+        int alternativeLoc = locateAlternative(tag);
 
-        if (alternativeMatcher.find()) {
-            // remove found alternative from tag
-            tag = tag.substring(0, alternativeMatcher.start()).trim();
+        if (alternativeLoc >= 0) {
             // get rid of the || at the alternative's start and any trailing spaces
-            alternative = alternativeMatcher.group(1).trim();
+            alternative = tag.substring(alternativeLoc + 2).trim();
+            // remove found alternative from tag
+            tag = tag.substring(0, alternativeLoc);
         }
 
         // Get value (if present)
@@ -114,11 +113,34 @@ public class ReplaceableTagEvent extends Event {
         }
 
         // Alternatives are stripped, value is stripped, let's remember the raw tag for the attributer.
-        raw_tag = tag;
+        raw_tag = tag.trim();
 
         // Use Attributes system to get type/subtype/etc. etc. for 'static/legacy' tags.
         core_attributes = new Attribute(raw_tag, scriptEntry);
         core_attributes.setHadAlternative(hasAlternative());
+    }
+
+    private int locateAlternative(String tag) {
+        int bracks = 0;
+        boolean previousWasTarget = false;
+        for (int i = 0; i < tag.length(); i++) {
+            char c = tag.charAt(i);
+            if (c == '<')
+                bracks++;
+            else if (c == '>')
+                bracks--;
+            else if (c == '|' && bracks == 0) {
+                if (previousWasTarget) {
+                    return i - 1;
+                }
+                else {
+                    previousWasTarget = true;
+                }
+            }
+            else
+                previousWasTarget = false;
+        }
+        return -1;
     }
 
 
