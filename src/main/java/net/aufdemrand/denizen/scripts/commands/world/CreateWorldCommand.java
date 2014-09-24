@@ -23,7 +23,7 @@ public class CreateWorldCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("generator")
-                    && arg.matchesPrefix("generator, g"))
+                    && arg.matchesPrefix("generator", "g"))
                 scriptEntry.addObject("generator", arg.asElement());
 
             else if (!scriptEntry.hasObject("worldtype")

@@ -27,12 +27,12 @@ public class TriggerCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cooldown")
-                    && arg.matchesPrefix("cooldown, c")
+                    && arg.matchesPrefix("cooldown", "c")
                     && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("cooldown", arg.asType(Duration.class));
 
             else if (!scriptEntry.hasObject("radius")
-                    && arg.matchesPrefix("radius, r")
+                    && arg.matchesPrefix("radius", "r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("radius", arg.asElement());
 

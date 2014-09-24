@@ -21,7 +21,7 @@ public class TraitCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("state")
-                    && arg.matchesPrefix("state, s")
+                    && arg.matchesPrefix("state", "s")
                     && arg.matchesEnum(Toggle.values()))
                 scriptEntry.addObject("state", new Element(arg.getValue().toUpperCase()));
 

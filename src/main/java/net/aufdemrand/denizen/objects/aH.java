@@ -131,6 +131,7 @@ public class aH {
         }
 
 
+        // TODO: REMOVE IN 1.0
         public boolean matches(String values) {
             for (String value : StringUtils.split(values, ',')) {
                 if (value.trim().toLowerCase().equals(lower_value))
@@ -182,6 +183,7 @@ public class aH {
         }
 
 
+        // TODO: REMOVE IN 1.0
         public boolean matchesPrefix(String values) {
             if (!hasPrefix()) return false;
             for (String value : StringUtils.split(values, ',')) {

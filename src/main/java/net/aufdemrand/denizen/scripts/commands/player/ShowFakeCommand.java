@@ -25,7 +25,7 @@ public class ShowFakeCommand extends AbstractCommand {
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesPrefix("to, e, entities")) {
+            if (arg.matchesPrefix("to", "e", "entities")) {
                 for (String entity : dList.valueOf(arg.getValue()))
                     if (dPlayer.matches(entity)) entities.add(entity);
                 added_entities = true; // TODO: handle lists properly
@@ -39,7 +39,7 @@ public class ShowFakeCommand extends AbstractCommand {
             else if (arg.matchesArgumentType(dLocation.class))
                 locations.add(arg.getValue());
 
-            else if (arg.matchesPrefix("d, duration")
+            else if (arg.matchesPrefix("d", "duration")
                     && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
 

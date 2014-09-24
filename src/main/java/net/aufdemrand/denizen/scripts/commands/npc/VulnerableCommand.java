@@ -23,7 +23,7 @@ public class VulnerableCommand extends AbstractCommand {
 
         // Initialize fields
         Toggle vulnerable = Toggle.TRUE;
-
+        // TODO: UPDATE COMMAND PARSING
         for (String arg : scriptEntry.getArguments())
             if (aH.matchesState(arg))
                 vulnerable = Toggle.valueOf(aH.getStringFrom(arg).toUpperCase());

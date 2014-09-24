@@ -108,15 +108,15 @@ public class InjectCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matches("instant, instantly"))
+            if (arg.matches("instant", "instantly"))
                 scriptEntry.addObject("instant", new Element(true));
 
-            else if (arg.matches("local, locally"))
+            else if (arg.matches("local", "locally"))
                 scriptEntry.addObject("local", new Element(true));
 
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)
-                    && !arg.matchesPrefix("p, path"))
+                    && !arg.matchesPrefix("p", "path"))
                 scriptEntry.addObject("script", arg.asType(dScript.class));
 
             else if (!scriptEntry.hasObject("path"))

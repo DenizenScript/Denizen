@@ -48,6 +48,7 @@ public class PauseCommand extends AbstractCommand {
         if (scriptEntry.getPlayer() != null) player = scriptEntry.getPlayer().getPlayerEntity();
 
         // Parse arguments
+        // TODO: UPDATE COMMAND PARSING
         for (String arg : scriptEntry.getArguments()) {
 
             if (aH.matchesDuration(arg)) {

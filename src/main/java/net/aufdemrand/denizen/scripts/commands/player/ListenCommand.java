@@ -39,7 +39,7 @@ public class ListenCommand extends AbstractCommand {
 
                 // <id:name>
             else if (!scriptEntry.hasObject("id")
-                    && arg.matchesPrefix("id, i"))
+                    && arg.matchesPrefix("id", "i"))
                 scriptEntry.addObject("id", arg.asElement());
 
                 // <script>

@@ -34,7 +34,7 @@ public class CopyBlockCommand extends AbstractCommand{
             // CopyBlock can move a single 'location' ...
             if (arg.matchesArgumentType(dLocation.class)
                     && !scriptEntry.hasObject("location")
-                    && !arg.matchesPrefix("t, to"))
+                    && !arg.matchesPrefix("t", "to"))
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
 
                 // ... or and entire cuboid ...
@@ -44,7 +44,7 @@ public class CopyBlockCommand extends AbstractCommand{
 
                 // ... to a location.
             else if (arg.matchesArgumentType(dLocation.class)
-                    && arg.matchesPrefix("t, to"))
+                    && arg.matchesPrefix("t", "to"))
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
 
             else if (arg.matches("and_remove"))

@@ -31,19 +31,19 @@ public class FlagCommand extends AbstractCommand implements Listener {
             // A duration on a flag will set it to expire after the
             // specified amount of time
             if (!scriptEntry.hasObject("duration")
-                    && arg.matchesPrefix("duration, d")
+                    && arg.matchesPrefix("duration", "d")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
             // Also allow attached dObjects to be specified...
             else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matches("npc, denizen")) {
+                    && arg.matches("npc", "denizen")) {
                 specified_target = true;
                 scriptEntry.addObject("flag_target", scriptEntry.getNPC());
 
             } else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matches("global, server")) {
+                    && arg.matches("global", "server")) {
                 specified_target = true;
                 scriptEntry.addObject("flag_target", Element.SERVER);
 

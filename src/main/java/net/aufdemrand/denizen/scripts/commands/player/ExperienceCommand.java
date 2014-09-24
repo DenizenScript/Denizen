@@ -117,28 +117,29 @@ public class ExperienceCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
+        // TODO: UPDATE COMMAND PARSING
         int amount = 0;
         Type type = Type.SET;
         boolean level = false;
         boolean silent = false;
 
-        for (String arg : scriptEntry.getArguments()) {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (aH.matchesQuantity(arg) || aH.matchesInteger(arg)) {
-                amount = aH.getIntegerFrom(arg);
+            if (arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                amount = arg.asElement().asInt();
             }
 
-            else if (aH.matchesArg("SET, GIVE, TAKE", arg))
-                type = Type.valueOf(arg.toUpperCase());
+            else if (arg.matches("SET", "GIVE", "TAKE"))
+                type = Type.valueOf(arg.asElement().asString().toUpperCase());
 
-            else if(aH.matchesArg("LEVEL", arg))
+            else if(arg.matches("LEVEL"))
                 level = true;
 
-            else if(aH.matchesArg("SILENT", arg))
+            else if(arg.matches("SILENT"))
                 silent = true;
 
-            else throw new InvalidArgumentsException("Unknown argument '" + arg + "'");
+            else
+                arg.reportUnhandled();
         }
 
         scriptEntry.addObject("quantity", amount)

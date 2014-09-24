@@ -43,7 +43,7 @@ public class ScoreboardCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("lines")
-                     && arg.matchesPrefix("lines, l")) {
+                     && arg.matchesPrefix("lines", "l")) {
                 scriptEntry.addObject("lines", arg.asElement());
             }
 
@@ -53,12 +53,12 @@ public class ScoreboardCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("objective")
-                     && arg.matchesPrefix("objective, obj, o")) {
+                     && arg.matchesPrefix("objective", "obj", "o")) {
                 scriptEntry.addObject("objective", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("criteria")
-                     && arg.matchesPrefix("criteria, c")) {
+                     && arg.matchesPrefix("criteria", "c")) {
                 scriptEntry.addObject("criteria", arg.asElement());
             }
 

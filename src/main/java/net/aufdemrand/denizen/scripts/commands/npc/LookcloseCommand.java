@@ -24,7 +24,7 @@ public class LookcloseCommand extends AbstractCommand {
         // Parse Arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matches("realistic, realistically"))
+            if (arg.matches("realistic", "realistically"))
                 scriptEntry.addObject("realistic", Element.TRUE);
 
             else if (arg.matchesPrimitive(aH.PrimitiveType.Integer))

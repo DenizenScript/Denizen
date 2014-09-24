@@ -25,6 +25,7 @@ public class IfCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        // TODO: UPDATE TO USE BRACEDCOMMAND
         // Comparables check the logic
         List<Comparable> comparables = new ArrayList<Comparable>();
         // Insert new comparable into the list

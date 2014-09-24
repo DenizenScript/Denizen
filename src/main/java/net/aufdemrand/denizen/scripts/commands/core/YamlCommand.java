@@ -61,7 +61,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             }
 
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matchesPrefix("SAVEFILE, FILESAVE")) {
+                    arg.matchesPrefix("SAVEFILE", "FILESAVE")) {
                 scriptEntry.addObject("action", new Element("SAVE"));
                 scriptEntry.addObject("filename", arg.asElement());
             }

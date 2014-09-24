@@ -41,7 +41,7 @@ public class CooldownCommand extends AbstractCommand {
             }
 
             // Require a prefix on the script, since it's optional.
-            else if (arg.matchesPrefix("script, s")) {
+            else if (arg.matchesPrefix("script", "s")) {
                 // Check matchesArgumentType afterwards so we don't default
                 // to the attached script unintentionally.
                 if (arg.matchesArgumentType(dScript.class))
