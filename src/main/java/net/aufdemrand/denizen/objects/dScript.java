@@ -337,9 +337,8 @@ public class dScript implements dObject {
         // @description
         // Returns the value of the script's YAML as either an Element or dList.
         // -->
-        if (attribute.startsWith("yaml_key")) {
-            if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
-
+        if (attribute.startsWith("yaml_key")
+                && attribute.hasContext(1)) {
             Object obj = getContainer().getConfigurationSection("").get(attribute.getContext(1).toUpperCase());
             if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
 
@@ -353,6 +352,28 @@ public class dScript implements dObject {
             }
             else return new Element(TagManager.tag(attribute.getScriptEntry().getPlayer(),
                     attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.list_keys[<constant_name>]>
+        // @returns dList
+        // @description
+        // Returns a list of all keys within a script.
+        // -->
+        if (attribute.startsWith("list_keys")) {
+            return new dList(getContainer().getConfigurationSection(attribute.hasContext(1) ? attribute.getContext(1): "").getKeys(false))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.list_deep_keys[<constant_name>]>
+        // @returns dList
+        // @description
+        // Returns a list of all keys within a script, searching recursively.
+        // -->
+        if (attribute.startsWith("list_deep_keys")) {
+            return new dList(getContainer().getConfigurationSection(attribute.hasContext(1) ? attribute.getContext(1): "").getKeys(true))
                     .getAttribute(attribute.fulfill(1));
         }
 
