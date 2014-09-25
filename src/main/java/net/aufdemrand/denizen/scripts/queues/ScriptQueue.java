@@ -855,6 +855,18 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         }
 
         // <--[tag]
+        // @attribute <q@queue.definition[<definition>]>
+        // @returns dList
+        // @description
+        // Returns the value of the specified definition.
+        // Returns null if the queue lacks the definition.
+        // -->
+        if (attribute.startsWith("definition")
+                && attribute.hasContext(1)) {
+            return new Element(getDefinition(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <q@queue.npc>
         // @returns dNPC
         // @description
