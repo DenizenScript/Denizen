@@ -704,16 +704,17 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++)
-                            if (!materials.isEmpty()) {
-                                for (dMaterial material : materials) {
-                                    if (material.hasData() && material.getData() != 0) {
-                                        if (material.matchesMaterialData(getBlock()
-                                                .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
-                                                        .getLocation().add(x,y,z).getBlock().getData())))
+                            if (Utilities.checkLocation(this, getBlock().getLocation().add(x, y, z), radius))
+                                if (!materials.isEmpty()) {
+                                    for (dMaterial material : materials) {
+                                        if (material.hasData() && material.getData() != 0) {
+                                            if (material.matchesMaterialData(getBlock()
+                                                    .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
+                                                            .getLocation().add(x,y,z).getBlock().getData())))
+                                                found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                        }
+                                        else if (material.getMaterial() == getBlock().getLocation().add(x,y,z).getBlock().getType())
                                             found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
-                                    }
-                                    else if (material.getMaterial() == getBlock().getLocation().add(x,y,z).getBlock().getType())
-                                        found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
                                 }
                             } else found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
 
@@ -749,24 +750,26 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++) {
-                            Location l = getBlock().getLocation().clone().add(x,y,z);
-                            if (!materials.isEmpty()) {
-                                for (dMaterial material : materials) {
-                                    if (material.matchesMaterialData(getBlock()
-                                            .getLocation().clone().add(x,y,z).getBlock().getType().getNewData(getBlock()
-                                                    .getLocation().clone().add(x,y,z).getBlock().getData()))) {
-                                        if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
-                                                && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
-                                                && l.getBlock().getType() != Material.AIR)
-                                            found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
+                            if (Utilities.checkLocation(this, getBlock().getLocation().add(x, y, z), radius)) {
+                                Location l = getBlock().getLocation().clone().add(x,y,z);
+                                if (!materials.isEmpty()) {
+                                    for (dMaterial material : materials) {
+                                        if (material.matchesMaterialData(getBlock()
+                                                .getLocation().clone().add(x,y,z).getBlock().getType().getNewData(getBlock()
+                                                        .getLocation().clone().add(x,y,z).getBlock().getData()))) {
+                                            if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
+                                                    && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
+                                                    && l.getBlock().getType() != Material.AIR)
+                                                found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
+                                        }
                                     }
                                 }
-                            }
-                            else {
-                                if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
-                                        && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
-                                        && l.getBlock().getType() != Material.AIR) {
-                                    found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
+                                else {
+                                    if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
+                                            && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
+                                            && l.getBlock().getType() != Material.AIR) {
+                                        found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
+                                    }
                                 }
                             }
                         }
