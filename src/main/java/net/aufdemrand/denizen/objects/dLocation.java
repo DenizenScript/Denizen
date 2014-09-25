@@ -700,11 +700,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
                 // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
+                Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
 
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++)
-                            if (Utilities.checkLocation(this, getBlock().getLocation().add(x, y, z), radius))
+                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius))
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {
                                         if (material.hasData() && material.getData() != 0) {
@@ -746,11 +747,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 if (materials == null) return Element.NULL.getAttribute(attribute.fulfill(2));
 
                 attribute.fulfill(2);
+                Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
 
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++) {
-                            if (Utilities.checkLocation(this, getBlock().getLocation().add(x, y, z), radius)) {
+                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius)) {
                                 Location l = getBlock().getLocation().clone().add(x,y,z);
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {
@@ -823,7 +825,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (dNPC npc : DenizenAPI.getSpawnedNPCs())
-                    if (Utilities.checkLocation(this, npc.getLocation(), radius))
+                    if (Utilities.checkLocation(this.getBlock().getLocation(), npc.getLocation(), radius))
                         found.add(npc);
 
                 Collections.sort(found, new Comparator<dNPC>() {
