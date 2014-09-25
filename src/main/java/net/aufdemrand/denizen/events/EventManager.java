@@ -361,6 +361,7 @@ public class EventManager implements Listener {
         registerSmartEvent(new PlayerEquipsArmorSmartEvent());
         registerSmartEvent(new PlayerJumpSmartEvent());
         registerSmartEvent(new PlayerStepsOnSmartEvent());
+        registerSmartEvent(new RedstoneSmartEvent());
         registerSmartEvent(new SyncChatSmartEvent());
         registerSmartEvent(new VehicleCollisionSmartEvent());
     }
