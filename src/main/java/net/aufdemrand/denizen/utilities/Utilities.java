@@ -54,6 +54,7 @@ public class Utilities {
         int selected_z = random.nextInt(range * 2);
         returnable = location.clone().add(selected_x - range, 1, selected_z - range);
 
+        // TODO: Handle location being underground/in a wall better than a stack overflow?
         if (!isWalkable(returnable)) return getWalkableLocationNear(location, range);
         else return returnable;
     }
