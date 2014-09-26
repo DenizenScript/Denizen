@@ -247,12 +247,17 @@ public class TagManager implements Listener {
         int first = arg.indexOf('<');
         if (first == -1)
             return null;
+        // Handle "<-" for the flag command
+        if (first + 1 < arg.length() && (arg.charAt(first + 1) == '-')) {
+            return locateTag(arg.substring(0, first) + (char)0x01 + arg.substring(first + 1));
+        }
         int len = arg.length();
         int bracks = 0;
         int second = -1;
         for (int i = first + 1; i < len; i++) {
-            if (arg.charAt(i) == '<')
+            if (arg.charAt(i) == '<') {
                 bracks++;
+            }
             else if (arg.charAt(i) == '>') {
                 bracks--;
                 if (bracks == -1) {
