@@ -1220,6 +1220,51 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // entity combusts
+    // <entity> combusts
+    //
+    // @Triggers when an entity catches fire.
+    // @Context
+    // <context.entity> returns the entity that caught fire.
+    // <context.duration> returns the length of the burn.
+    //
+    // @Determine
+    // "CANCELLED" to stop the creeper from being powered.
+    //
+    // -->
+    // TODO: Smarten event
+    @EventHandler
+    public void onCombust(EntityCombustEvent event) {
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity entity = new dEntity(event.getEntity());
+        Duration dura = new Duration((long)event.getDuration());
+
+        context.put("entity", entity);
+        context.put("duration", dura);
+
+        dPlayer player = null;
+        dNPC npc = null;
+        if (CitizensAPI.getNPCRegistry().isNPC(entity.getBukkitEntity())) {
+            npc = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(entity.getBukkitEntity()));
+        }
+        else if (entity.getBukkitEntity() instanceof Player) {
+            player = new dPlayer((Player)entity.getBukkitEntity());
+        }
+
+        String determination = EventManager.doEvents(Arrays.asList
+                ("entity combusts",
+                        entity.identifySimple() + " combusts",
+                        entity.identifyType() + " combusts"),
+                npc, player, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (Duration.matches(determination))
+            event.setDuration(Duration.valueOf(determination).getTicksAsInt());
+    }
+
+    // <--[event]
+    // @Events
     // entity changes block
     // entity changes block (into <material>) (in <notable cuboid>)
     // entity changes <material> (into <material>) (in <notable cuboid>)

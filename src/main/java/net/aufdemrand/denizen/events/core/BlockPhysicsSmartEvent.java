@@ -73,7 +73,7 @@ public class BlockPhysicsSmartEvent implements SmartEvent, Listener {
     // <context.new_material> returns a dMaterial of what the block is becoming.
     //
     // @Determine
-    // "CANCELLED" to move the player back off the block (useless if the player jumped onto it!)
+    // "CANCELLED" to stop the physics from occuring.
     //
     // -->
     @EventHandler
