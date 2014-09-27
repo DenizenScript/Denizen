@@ -371,8 +371,8 @@ public class Element implements dObject {
             try { return new Element(Double.valueOf(element))
                     .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid Double.");
-                return new Element("null").getAttribute(attribute.fulfill(1));
+                if (!attribute.hasAlternative())
+                    dB.echoError("'" + element + "' is not a valid Double.");
             }
 
         // <--[tag]
@@ -391,8 +391,8 @@ public class Element implements dObject {
                 return new Element(Math.round(Double.valueOf(element)))
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid Integer.");
-                return new Element("null").getAttribute(attribute.fulfill(1));
+                if (!attribute.hasAlternative())
+                    dB.echoError("'" + element + "' is not a valid Integer.");
             }
 
         // <--[tag]
@@ -409,8 +409,8 @@ public class Element implements dObject {
                 return new Element(d.format(Double.valueOf(element)))
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid number.");
-                return new Element("null").getAttribute(attribute.fulfill(1));
+                if (!attribute.hasAlternative())
+                    dB.echoError("'" + element + "' is not a valid number.");
             }
         }
 
