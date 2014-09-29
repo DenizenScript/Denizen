@@ -119,10 +119,10 @@ public class CommandRegistry implements dRegistry {
         // TODO: Document Command Details
         // @Usage
         // Use to trigger a custom action
-        // - event "custom action"
+        // - action "custom action"
         // @Usage
         // Use to trigger multiple custom action with context on a different NPC
-        // - event "player dances|target enemy" n@10 context:action|custom|target|<player.selected_npc>
+        // - action "player dances|target enemy" n@10 context:action|custom|target|<player.selected_npc>
         // -->
         registerCoreMember(ActionCommand.class,
                 "ACTION", "Action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
