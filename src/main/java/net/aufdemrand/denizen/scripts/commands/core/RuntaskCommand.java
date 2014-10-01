@@ -59,7 +59,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
  */
 @Deprecated
 public class RuntaskCommand extends AbstractCommand {
-
+    // TODO: REMOVE ENTIRE COMMAND IN 1.0
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

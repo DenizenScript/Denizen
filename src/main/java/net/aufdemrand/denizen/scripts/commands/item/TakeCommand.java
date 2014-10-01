@@ -40,15 +40,15 @@ public class TakeCommand extends AbstractCommand{
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
-                    && arg.matches("money, coins"))
+                    && arg.matches("money", "coins"))
                 scriptEntry.addObject("type", Type.MONEY);
 
             else if (!scriptEntry.hasObject("type")
-                        && arg.matches("item_in_hand, iteminhand"))
+                        && arg.matches("item_in_hand", "iteminhand"))
                 scriptEntry.addObject("type", Type.ITEMINHAND);
 
             else if (!scriptEntry.hasObject("qty")
-                        && arg.matchesPrefix("q, qty, quantity")
+                        && arg.matchesPrefix("q", "qty", "quantity")
                         && arg.matchesPrimitive(aH.PrimitiveType.Double))
                 scriptEntry.addObject("qty", arg.asElement());
 
@@ -73,7 +73,7 @@ public class TakeCommand extends AbstractCommand{
                 scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
 
             else if (!scriptEntry.hasObject("inventory")
-                        && arg.matchesPrefix("f, from")
+                        && arg.matchesPrefix("f", "from")
                         && arg.matchesArgumentType(dInventory.class))
                 scriptEntry.addObject("inventory", arg.asType(dInventory.class));
 

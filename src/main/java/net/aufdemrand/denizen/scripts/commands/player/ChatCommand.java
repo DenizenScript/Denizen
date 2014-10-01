@@ -57,7 +57,7 @@ public class ChatCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             // Default target is the attached Player, if none specified otherwise.
-            if (arg.matchesPrefix("target, targets, t")) {
+            if (arg.matchesPrefix("target", "targets", "t")) {
                 if (arg.matchesArgumentList(dEntity.class))
                     scriptEntry.addObject("targets", arg.asType(dList.class));
                 specified_targets = true;
@@ -67,7 +67,7 @@ public class ChatCommand extends AbstractCommand {
                 scriptEntry.addObject("targets", new dList());
 
                 // Default talker is the attached NPC, if none specified otherwise.
-            else if (arg.matchesPrefix("talker, talkers")) {
+            else if (arg.matchesPrefix("talker", "talkers")) {
                 if (arg.matchesArgumentList(dEntity.class))
                     scriptEntry.addObject("talkers", arg.asType(dList.class));
                 specified_talker = true;

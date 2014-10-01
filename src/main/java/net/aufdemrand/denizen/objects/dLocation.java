@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -116,7 +117,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Match location formats
 
         // Split values
-        String[] split = string.replace("l@", "").split(",");
+        String[] split = StringUtils.split(string.startsWith("l@") ? string.substring(2) : string, ',');
 
         if (split.length == 3)
             // If 4 values, standard dScript location format
@@ -699,20 +700,22 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
                 // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
+                Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
 
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++)
-                            if (!materials.isEmpty()) {
-                                for (dMaterial material : materials) {
-                                    if (material.hasData() && material.getData() != 0) {
-                                        if (material.matchesMaterialData(getBlock()
-                                                .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
-                                                        .getLocation().add(x,y,z).getBlock().getData())))
+                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius))
+                                if (!materials.isEmpty()) {
+                                    for (dMaterial material : materials) {
+                                        if (material.hasData() && material.getData() != 0) {
+                                            if (material.matchesMaterialData(getBlock()
+                                                    .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
+                                                            .getLocation().add(x,y,z).getBlock().getData())))
+                                                found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                        }
+                                        else if (material.getMaterial() == getBlock().getLocation().add(x,y,z).getBlock().getType())
                                             found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
-                                    }
-                                    else if (material.getMaterial() == getBlock().getLocation().add(x,y,z).getBlock().getType())
-                                        found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
                                 }
                             } else found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
 
@@ -744,28 +747,31 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 if (materials == null) return Element.NULL.getAttribute(attribute.fulfill(2));
 
                 attribute.fulfill(2);
+                Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
 
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++) {
-                            Location l = getBlock().getLocation().clone().add(x,y,z);
-                            if (!materials.isEmpty()) {
-                                for (dMaterial material : materials) {
-                                    if (material.matchesMaterialData(getBlock()
-                                            .getLocation().clone().add(x,y,z).getBlock().getType().getNewData(getBlock()
-                                                    .getLocation().clone().add(x,y,z).getBlock().getData()))) {
-                                        if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
-                                                && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
-                                                && l.getBlock().getType() != Material.AIR)
-                                            found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
+                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius)) {
+                                Location l = getBlock().getLocation().clone().add(x,y,z);
+                                if (!materials.isEmpty()) {
+                                    for (dMaterial material : materials) {
+                                        if (material.matchesMaterialData(getBlock()
+                                                .getLocation().clone().add(x,y,z).getBlock().getType().getNewData(getBlock()
+                                                        .getLocation().clone().add(x,y,z).getBlock().getData()))) {
+                                            if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
+                                                    && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
+                                                    && l.getBlock().getType() != Material.AIR)
+                                                found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
+                                        }
                                     }
                                 }
-                            }
-                            else {
-                                if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
-                                        && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
-                                        && l.getBlock().getType() != Material.AIR) {
-                                    found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
+                                else {
+                                    if (l.clone().add(0,1,0).getBlock().getType() == Material.AIR
+                                            && l.clone().add(0,2,0).getBlock().getType() == Material.AIR
+                                            && l.getBlock().getType() != Material.AIR) {
+                                        found.add(new dLocation(getBlock().getLocation().clone().add(x + 0.5, y, z + 0.5 )));
+                                    }
                                 }
                             }
                         }
@@ -819,7 +825,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (dNPC npc : DenizenAPI.getSpawnedNPCs())
-                    if (Utilities.checkLocation(this, npc.getLocation(), radius))
+                    if (Utilities.checkLocation(this.getBlock().getLocation(), npc.getLocation(), radius))
                         found.add(npc);
 
                 Collections.sort(found, new Comparator<dNPC>() {
@@ -1113,6 +1119,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("vector_length")) {
             return new Element(Math.sqrt(Math.pow(getX(), 2) + Math.pow(getY(), 2) + Math.pow(getZ(), 2)))
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.distance_squared[<location>]>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the distance between 2 locations, squared.
+        // -->
+        if (attribute.startsWith("distance_squared")
+                && attribute.hasContext(1)) {
+            if (dLocation.matches(attribute.getContext(1))) {
+                dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
+                return new Element(this.distanceSquared(toLocation))
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]

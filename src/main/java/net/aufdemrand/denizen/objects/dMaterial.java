@@ -623,6 +623,14 @@ public class dMaterial implements dObject {
         return material.name();
     }
 
+
+    public Byte getData(byte fallback) {
+        if (data == null)
+            return fallback;
+        else
+            return data;
+    }
+
     public Byte getData() {
         return data;
     }
@@ -675,7 +683,8 @@ public class dMaterial implements dObject {
 
     @Override
     public String identifySimple() {
-        return identify();
+        if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase();
+        return "m@" + material.name().toLowerCase();
     }
 
     @Override

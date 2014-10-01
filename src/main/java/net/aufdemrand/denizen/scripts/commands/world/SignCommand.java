@@ -40,7 +40,7 @@ public class SignCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
 
             else if (!scriptEntry.hasObject("direction")
-                    && arg.matchesPrefix("direction, dir"))
+                    && arg.matchesPrefix("direction", "dir"))
                 scriptEntry.addObject("direction", arg.asElement());
 
             else if (!scriptEntry.hasObject("text"))

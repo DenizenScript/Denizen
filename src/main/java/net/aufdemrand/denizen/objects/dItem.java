@@ -484,7 +484,8 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // Else, return the material name
-        return "i@" + identifyMaterial().replace("m@", "") + PropertyParser.getPropertiesString(this);
+        return "i@" + dMaterial.getMaterialFrom(item.getType(),
+                item.getData().getData()).identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
 
 
@@ -512,7 +513,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
     // Special-case that essentially fetches the material of the items and uses its 'identify()' method
     public String identifyMaterial() {
-        return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identify();
+        return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identifySimple();
     }
 
     public String getFullString() {

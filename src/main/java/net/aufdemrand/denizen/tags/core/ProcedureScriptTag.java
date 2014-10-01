@@ -119,7 +119,7 @@ public class ProcedureScriptTag implements Listener {
         // Returns the 'determine' result of a procedure script.
         // See <@link example Using Procedure Scripts>.
         // -->
-        if (!event.matches("proc, pr")) return;
+        if (!event.matches("proc", "pr")) return;
 
         Attribute attr = event.getAttributes();
         int attribs = 1;

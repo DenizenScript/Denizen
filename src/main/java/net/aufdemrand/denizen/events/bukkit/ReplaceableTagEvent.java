@@ -8,7 +8,9 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -32,21 +34,22 @@ public class ReplaceableTagEvent extends Event {
     private boolean wasReplaced = false;
 
     private String alternative = null;
+    private boolean alternative_tagged = false;
     private String replaced = null;
     private String value = null;
+    private boolean value_tagged = false;
     private Attribute core_attributes = null;
 
     private ScriptEntry scriptEntry = null;
-
-    // Alternative text pattern that matches everything after ||
-    private static Pattern alternativeRegex = Pattern.compile("\\|\\|(.*)", Pattern.DOTALL | Pattern.MULTILINE);
 
     public String raw_tag;
 
     ////////////
     // Constructors
 
-    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) { this(player, npc, tag, null); }
+    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) {
+        this(player, npc, tag, null);
+    }
 
     public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry) {
 
@@ -72,56 +75,92 @@ public class ReplaceableTagEvent extends Event {
         }
 
         // Get alternative text
-        Matcher alternativeMatcher = alternativeRegex.matcher(tag);
+        int alternativeLoc = locateAlternative(tag);
 
-        if (alternativeMatcher.find()) {
-            // remove found alternative from tag
-            tag = tag.substring(0, alternativeMatcher.start()).trim();
+        if (alternativeLoc >= 0) {
             // get rid of the || at the alternative's start and any trailing spaces
-            alternative = alternativeMatcher.group(1).trim();
+            alternative = tag.substring(alternativeLoc + 2).trim();
+            // remove found alternative from tag
+            tag = tag.substring(0, alternativeLoc);
         }
 
         // Get value (if present)
+        int valueLoc = locateValue(tag);
 
-        if (tag.indexOf(':') > 0) {
-            int x1 = -1;
-            int braced = 0;
-
-            for (int x = 0; x < tag.length(); x++) {
-                Character chr = tag.charAt(x);
-
-                if (chr == '[')
-                    braced++;
-
-                else if (chr == ']') {
-                    if (braced > 0) braced--;
-                }
-
-                else if (chr == ':' && braced == 0 && x != tag.length() - 1 && x > 0) {
-                    x1 = x;
-                    break;
-                }
-            }
-
-            if (x1 > -1) {
-                value = tag.substring(x1 + 1);
-                tag = tag.substring(0, x1);
-            }
+        if (valueLoc > 0) {
+            value = tag.substring(valueLoc + 1);
+            tag = tag.substring(0, valueLoc);
         }
 
         // Alternatives are stripped, value is stripped, let's remember the raw tag for the attributer.
-        raw_tag = tag;
+        raw_tag = tag.trim();
 
         // Use Attributes system to get type/subtype/etc. etc. for 'static/legacy' tags.
         core_attributes = new Attribute(raw_tag, scriptEntry);
         core_attributes.setHadAlternative(hasAlternative());
     }
 
+    private int locateValue(String tag) {
+        int bracks = 0;
+        int bracks2 = 0;
+        for (int i = 0; i < tag.length(); i++) {
+            char c = tag.charAt(i);
+            if (c == '<')
+                bracks++;
+            else if (c == '>')
+                bracks--;
+            else if (bracks == 0 && c == '[')
+                bracks2++;
+            else if (bracks == 0 && c == ']')
+                bracks2--;
+            else if (c == ':' && bracks == 0 && bracks2 == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int locateAlternative(String tag) {
+        int bracks = 0;
+        int bracks2 = 0;
+        boolean previousWasTarget = false;
+        for (int i = 0; i < tag.length(); i++) {
+            char c = tag.charAt(i);
+            if (c == '<')
+                bracks++;
+            else if (c == '>')
+                bracks--;
+            else if (bracks == 0 && c == '[')
+                bracks2++;
+            else if (bracks == 0 && c == ']')
+                bracks2--;
+            else if (c == '|' && bracks == 0 && bracks2 == 0) {
+                if (previousWasTarget) {
+                    return i - 1;
+                }
+                else {
+                    previousWasTarget = true;
+                }
+            }
+            else
+                previousWasTarget = false;
+        }
+        return -1;
+    }
+
 
     // Matches method (checks first attribute (name) of the tag)
 
+    // TODO: Remove in 1.0!
     public boolean matches(String tagName) {
-        String[] tagNames = tagName.split(",");
+        String[] tagNames = StringUtils.split(tagName, ',');
+        String name = getName();
+        for (String string: tagNames)
+            if (name.equalsIgnoreCase(string.trim())) return true;
+        return false;
+    }
+
+    public boolean matches(String... tagNames) {
         String name = getName();
         for (String string: tagNames)
             if (name.equalsIgnoreCase(string.trim())) return true;
@@ -132,8 +171,11 @@ public class ReplaceableTagEvent extends Event {
     private String StripContext(String input) {
         if (input == null)
             return null;
+        int index = input.indexOf('[');
+        if (index < 0 || !input.endsWith("]"))
+            return input;
         else
-            return Attribute.CONTEXT_PATTERN.matcher(input).replaceAll("");
+            return input.substring(0, index);
     }
 
     ////////
@@ -211,6 +253,11 @@ public class ReplaceableTagEvent extends Event {
     // Value
 
     public String getValue() {
+        if (value_tagged)
+            return value;
+        value_tagged = true;
+        value = TagManager.CleanOutputFully(TagManager.tag(
+                getPlayer(), getNPC(), value, false, getScriptEntry()));
         return value;
     }
 
@@ -221,6 +268,11 @@ public class ReplaceableTagEvent extends Event {
     // Alternative
 
     public String getAlternative() {
+        if (alternative_tagged)
+            return alternative;
+        alternative_tagged = true;
+        alternative = TagManager.CleanOutputFully(TagManager.tag(
+                getPlayer(), getNPC(), alternative, false, getScriptEntry()));
         return alternative;
     }
 
@@ -281,5 +333,10 @@ public class ReplaceableTagEvent extends Event {
 
     public Attribute getAttributes() {
         return core_attributes;
+    }
+
+    @Override
+    public String toString() {
+        return core_attributes.toString() + (hasValue() ? ":" + value: "") + (hasAlternative() ? "||" + alternative: "");
     }
 }

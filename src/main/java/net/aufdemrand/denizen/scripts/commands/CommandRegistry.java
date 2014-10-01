@@ -119,10 +119,10 @@ public class CommandRegistry implements dRegistry {
         // TODO: Document Command Details
         // @Usage
         // Use to trigger a custom action
-        // - event "custom action"
+        // - action "custom action"
         // @Usage
         // Use to trigger multiple custom action with context on a different NPC
-        // - event "player dances|target enemy" n@10 context:action|custom|target|<player.selected_npc>
+        // - action "player dances|target enemy" n@10 context:action|custom|target|<player.selected_npc>
         // -->
         registerCoreMember(ActionCommand.class,
                 "ACTION", "Action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
@@ -839,6 +839,7 @@ public class CommandRegistry implements dRegistry {
         // TODO: Document Command Details
         // @Tags
         // TODO: Document Command Details
+        // <entry[saveName].dropped> returns a dEntity of the spawned item.
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2010,7 +2011,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name Random
         // @Syntax random [<#>/<commands>]
-        // @Required 1
+        // @Required 0
         // @Stable stable
         // @Short Selects a random choice from the following script commands.
         // @Author aufdemrand, morphan1

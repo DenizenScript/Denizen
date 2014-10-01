@@ -30,21 +30,21 @@ public class AttackCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cancel")
-                    && arg.matches("cancel, stop")) {
+                    && arg.matches("cancel", "stop")) {
 
                 scriptEntry.addObject("cancel", "");
             }
 
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentType(dEntity.class)
-                    && arg.matchesPrefix("target, t")) {
+                    && arg.matchesPrefix("target", "t")) {
                 // Single entity arg
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)
-                    && !arg.matchesPrefix("target, t")) {
+                    && !arg.matchesPrefix("target", "t")) {
                 // Entity dList arg
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }

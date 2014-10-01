@@ -33,7 +33,7 @@ public class PoseCommand extends AbstractCommand {
         // Parse Arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matches("add, assume, remove")) {
+            if (arg.matches("add", "assume", "remove")) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }
 

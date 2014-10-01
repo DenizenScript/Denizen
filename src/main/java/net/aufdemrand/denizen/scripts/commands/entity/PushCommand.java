@@ -41,7 +41,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("origin")
-                && arg.matchesPrefix("origin, o, source, shooter, s")) {
+                && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
 
                 if (arg.matchesArgumentType(dEntity.class))
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
@@ -53,21 +53,21 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
             else if (!scriptEntry.hasObject("destination")
                      && arg.matchesArgumentType(dLocation.class)
-                     && arg.matchesPrefix("destination, d")) {
+                     && arg.matchesPrefix("destination", "d")) {
 
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("duration")
                      && arg.matchesArgumentType(Duration.class)
-                     && arg.matchesPrefix("duration, d")) {
+                     && arg.matchesPrefix("duration", "d")) {
 
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
             else if (!scriptEntry.hasObject("speed")
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                     && arg.matchesPrefix("speed, s")) {
+                     && arg.matchesPrefix("speed", "s")) {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }
@@ -82,6 +82,11 @@ public class PushCommand extends AbstractCommand implements Holdable {
                      && arg.matchesArgumentList(dEntity.class)) {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+            }
+
+            else if (!scriptEntry.hasObject("no_rotate")
+                    && arg.matches("no_rotate")) {
+                scriptEntry.addObject("no_rotate", new Element(true));
             }
 
             else arg.reportUnhandled();
@@ -118,6 +123,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                                    new dLocation(originEntity.getEyeLocation()
                                                .add(originEntity.getEyeLocation().getDirection())
                                                .subtract(0, 0.4, 0));
+        boolean no_rotate = scriptEntry.hasObject("no_rotate") && scriptEntry.getElement("no_rotate").asBoolean();
 
         // If there is no destination set, but there is a shooter, get a point
         // in front of the shooter and set it as the destination
@@ -147,7 +153,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
                              aH.debugObj("destination", destination) +
                              aH.debugObj("speed", speed) +
                              aH.debugObj("max ticks", maxTicks) +
-                             (script != null ? script.debug() : ""));
+                             (script != null ? script.debug() : "") +
+                             (no_rotate ? aH.debugObj("no_rotate", "true"): ""));
 
         // Keep a dList of entities that can be called using <entry[name].pushed_entities>
         // later in the script queue
@@ -162,7 +169,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
             // instead of "e@57" on it
             entityList.add(entity.toString());
 
-            Rotation.faceLocation(entity.getBukkitEntity(), destination);
+            if (!no_rotate)
+                Rotation.faceLocation(entity.getBukkitEntity(), destination);
 
             // If the current entity is a projectile, set its shooter
             // when applicable

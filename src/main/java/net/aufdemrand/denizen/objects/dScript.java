@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class dScript implements dObject {
 
@@ -65,9 +66,6 @@ public class dScript implements dObject {
     // -->
 
 
-    final public static Pattern CONTAINER_PATTERN = Pattern.compile("(s@)?(.+)",
-            Pattern.CASE_INSENSITIVE);
-
     /**
      * Gets a dContainer Object from a dScript argument.
      *
@@ -77,13 +75,15 @@ public class dScript implements dObject {
     @Fetchable("s")
     public static dScript valueOf(String string) {
 
-        Matcher m = CONTAINER_PATTERN.matcher(string);
-        if (m.matches()) {
-            dScript script = new dScript(m.group(2));
-            // Make sure it's valid.
-            if (script.isValid()) return script;
-        }
-        return null;
+        if (string.startsWith("s@"))
+            string = string.substring(2);
+
+        dScript script = new dScript(string);
+        // Make sure it's valid.
+        if (script.isValid())
+            return script;
+        else
+            return null;
     }
 
 
@@ -91,13 +91,9 @@ public class dScript implements dObject {
 
         if (string.toLowerCase().startsWith("s@")) return true;
 
-        Matcher m = CONTAINER_PATTERN.matcher(string);
-        if (m.matches()) {
-            dScript script = new dScript(m.group(2));
-            // Make sure it's valid.
-            if (script.isValid()) return true;
-        }
-        return false;
+        dScript script = new dScript(string);
+        // Make sure it's valid.
+        return script.isValid();
     }
 
     //////////////////
@@ -320,19 +316,67 @@ public class dScript implements dObject {
         if (attribute.startsWith("cons")) {
             if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
 
+            ConfigurationSection section = getContainer().getConfigurationSection("constants");
+            if (section == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            Object obj = section.get(attribute.getContext(1).toUpperCase());
+            if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+
+            if (obj instanceof List) {
+                dList list = new dList();
+                for (Object each : (List<Object>) obj)
+                    list.add(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
+                            attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), each.toString(), false, attribute.getScriptEntry()));
+                return list.getAttribute(attribute.fulfill(1));
+
+            }
+            else return new Element(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
+                    attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.yaml_key[<constant_name>]>
+        // @returns Element or dList
+        // @description
+        // Returns the value of the script's YAML as either an Element or dList.
+        // -->
+        if (attribute.startsWith("yaml_key")
+                && attribute.hasContext(1)) {
             Object obj = getContainer().getConfigurationSection("").get(attribute.getContext(1).toUpperCase());
             if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
 
             if (obj instanceof List) {
                 dList list = new dList();
                 for (Object each : (List<Object>) obj)
-                    list.add(TagManager.tag(attribute.getScriptEntry().getPlayer(),
-                            attribute.getScriptEntry().getNPC(), each.toString(), false, attribute.getScriptEntry()));
+                    list.add(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
+                            attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), each.toString(), false, attribute.getScriptEntry()));
                 return list.getAttribute(attribute.fulfill(1));
 
             }
-            else return new Element(TagManager.tag(attribute.getScriptEntry().getPlayer(),
-                    attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
+            else return new Element(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
+                    attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.list_keys[<constant_name>]>
+        // @returns dList
+        // @description
+        // Returns a list of all keys within a script.
+        // -->
+        if (attribute.startsWith("list_keys")) {
+            return new dList(getContainer().getConfigurationSection(attribute.hasContext(1) ? attribute.getContext(1): "").getKeys(false))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.list_deep_keys[<constant_name>]>
+        // @returns dList
+        // @description
+        // Returns a list of all keys within a script, searching recursively.
+        // -->
+        if (attribute.startsWith("list_deep_keys")) {
+            return new dList(getContainer().getConfigurationSection(attribute.hasContext(1) ? attribute.getContext(1): "").getKeys(true))
                     .getAttribute(attribute.fulfill(1));
         }
 

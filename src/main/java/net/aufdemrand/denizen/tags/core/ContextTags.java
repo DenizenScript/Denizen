@@ -23,7 +23,7 @@ public class ContextTags implements Listener {
     // Get scriptqueue context!
     @EventHandler
     public void contextTags(ReplaceableTagEvent event) {
-        if (!event.matches("context, c") || event.getScriptEntry() == null) return;
+        if (!event.matches("context", "c") || event.getScriptEntry() == null) return;
 
         String object = event.getType();
 
@@ -62,7 +62,7 @@ public class ContextTags implements Listener {
     // Get a saved script entry!
     @EventHandler
     public void savedEntryTags(ReplaceableTagEvent event) {
-        if (!event.matches("entry, e")
+        if (!event.matches("entry", "e")
                 || event.getScriptEntry() == null
                 || !event.hasNameContext()) return;
 

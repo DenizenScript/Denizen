@@ -210,6 +210,16 @@ public class dColor implements dObject {
             return new Element(color.getBlue()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <co@color.rgb>
+        // @returns Element
+        // @description
+        // returns the RGB value of this color.
+        // EG, 255,0,255
+        // -->
+        if (attribute.startsWith("rgb"))
+            return new Element(color.getRed() + "," + color.getGreen() + "," + color.getBlue()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <co@color.hue>
         // @returns Element(Number)
         // @description
@@ -235,6 +245,18 @@ public class dColor implements dObject {
         // -->
         if (attribute.startsWith("brightness"))
             return new Element(ToHSB()[2]).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <co@color.hsv>
+        // @returns Element
+        // @description
+        // returns the HSV value of this color.
+        // EG, 100,100,255
+        // -->
+        if (attribute.startsWith("hsv")) {
+            int[] HSV = ToHSB();
+            return new Element(HSV[1] + "," + HSV[1] + "," + HSV[2]).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <co@color.name>

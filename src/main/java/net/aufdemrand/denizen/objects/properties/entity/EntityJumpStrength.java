@@ -1,22 +1,27 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.Mechanism;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Slime;
 
-public class EntitySize implements Property {
+public class EntityJumpStrength implements Property {
 
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity &&
-                ((dEntity) entity).getBukkitEntity() instanceof Slime;
+                ((dEntity) entity).getEntityType() == EntityType.HORSE;
     }
 
-    public static EntitySize getFrom(dObject entity) {
+    public static EntityJumpStrength getFrom(dObject entity) {
         if (!describes(entity)) return null;
 
-        else return new EntitySize((dEntity) entity);
+        else return new EntityJumpStrength((dEntity) entity);
     }
 
 
@@ -24,7 +29,7 @@ public class EntitySize implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntitySize(dEntity ent) {
+    private EntityJumpStrength(dEntity ent) {
         entity = ent;
     }
 
@@ -36,12 +41,12 @@ public class EntitySize implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(((Slime) entity.getBukkitEntity()).getSize());
+        return String.valueOf(((Horse) entity.getBukkitEntity()).getJumpStrength());
     }
 
     @Override
     public String getPropertyId() {
-        return "size";
+        return "jump_strength";
     }
 
 
@@ -55,15 +60,15 @@ public class EntitySize implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <e@entity.size>
+        // @attribute <e@entity.jump_strength>
         // @returns Element(Number)
-        // @mechanism dEntity.size
+        // @mechanism dEntity.jump_strength
         // @group properties
         // @description
-        // Returns the size of a slime-type entity (1-120).
+        // Returns the power of a horse's jump.
         // -->
-        if (attribute.startsWith("size")) {
-            return new Element(((Slime) entity.getBukkitEntity()).getSize())
+        if (attribute.startsWith("jump_strength")) {
+            return new Element(((Horse) entity.getBukkitEntity()).getJumpStrength())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -75,16 +80,16 @@ public class EntitySize implements Property {
 
         // <--[mechanism]
         // @object dEntity
-        // @name size
+        // @name jump_strength
         // @input Element(Number)
         // @description
-        // Sets the size of a slime-type entity (1-120).
+        // Sets the power of the horse's jump.
         // @tags
-        // <e@entity.size>
+        // <e@entity.jump_strength>
         // -->
 
-        if (mechanism.matches("size") && mechanism.requireInteger()) {
-            ((Slime) entity.getBukkitEntity()).setSize(mechanism.getValue().asInt());
+        if (mechanism.matches("jump_strength") && mechanism.requireDouble()) {
+            ((Horse) entity.getBukkitEntity()).setJumpStrength(mechanism.getValue().asDouble());
         }
     }
 }

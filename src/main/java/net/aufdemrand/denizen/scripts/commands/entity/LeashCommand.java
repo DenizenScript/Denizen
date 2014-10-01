@@ -29,7 +29,7 @@ public class LeashCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cancel")
-                && arg.matches("cancel, stop")) {
+                && arg.matches("cancel", "stop")) {
                 scriptEntry.addObject("cancel", "");
             }
 
@@ -39,7 +39,7 @@ public class LeashCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("holder")
-                     && arg.matchesPrefix("holder, h")) {
+                     && arg.matchesPrefix("holder", "h")) {
 
                 if (arg.matchesArgumentType(dEntity.class))
                     scriptEntry.addObject("holder", arg.asType(dEntity.class));

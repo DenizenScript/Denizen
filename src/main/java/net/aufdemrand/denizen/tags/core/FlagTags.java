@@ -41,7 +41,7 @@ public class FlagTags implements Listener {
         // Replace <FLAG...> TAGs.
         String flagName = event.getValue().split(":").length > 1
                 ? event.getValue().split(":")[0].toUpperCase() : event.getValue().toUpperCase();
-        String flagFallback = event.getAlternative() != null ? event.getAlternative() : "EMPTY";
+        String flagFallback = event.hasAlternative() ? event.getAlternative() : "EMPTY";
         int index = -1;
         ReplaceType replaceType = ReplaceType.ASSTRING;
 

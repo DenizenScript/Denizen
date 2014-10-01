@@ -229,7 +229,7 @@ public class Element implements dObject {
 
     public boolean matchesEnum(Enum[] values) {
         for (Enum value : values)
-            if (value.name().replace("_", "").equalsIgnoreCase(element.replace("_", "")))
+            if (value.name().equalsIgnoreCase(element))
                 return true;
 
         return false;
@@ -371,8 +371,8 @@ public class Element implements dObject {
             try { return new Element(Double.valueOf(element))
                     .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid Double.");
-                return new Element("null").getAttribute(attribute.fulfill(1));
+                if (!attribute.hasAlternative())
+                    dB.echoError("'" + element + "' is not a valid Double.");
             }
 
         // <--[tag]
@@ -391,8 +391,8 @@ public class Element implements dObject {
                 return new Element(Math.round(Double.valueOf(element)))
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid Integer.");
-                return new Element("null").getAttribute(attribute.fulfill(1));
+                if (!attribute.hasAlternative())
+                    dB.echoError("'" + element + "' is not a valid Integer.");
             }
 
         // <--[tag]
@@ -409,8 +409,8 @@ public class Element implements dObject {
                 return new Element(d.format(Double.valueOf(element)))
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
-                dB.echoError("'" + element + "' is not a valid number.");
-                return new Element("null").getAttribute(attribute.fulfill(1));
+                if (!attribute.hasAlternative())
+                    dB.echoError("'" + element + "' is not a valid number.");
             }
         }
 
@@ -421,9 +421,20 @@ public class Element implements dObject {
         // @description
         // Returns the element as a chunk. Note: the value must be a valid chunk.
         // -->
-        if (attribute.startsWith("as_chunk")
+        if (attribute.startsWith("aschunk")
                 || attribute.startsWith("as_chunk"))
             return HandleNull(element, dChunk.valueOf(element), "dChunk").getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <el@element.as_color>
+        // @returns dCuboid
+        // @group conversion
+        // @description
+        // Returns the element as a dColor. Note: the value must be a valid color.
+        // -->
+        if (attribute.startsWith("ascolor")
+                || attribute.startsWith("as_color"))
+            return HandleNull(element, dColor.valueOf(element), "dColor").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.as_cuboid>

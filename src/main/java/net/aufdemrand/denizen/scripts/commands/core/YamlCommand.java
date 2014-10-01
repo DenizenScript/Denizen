@@ -61,7 +61,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             }
 
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matchesPrefix("SAVEFILE, FILESAVE")) {
+                    arg.matchesPrefix("SAVEFILE", "FILESAVE")) {
                 scriptEntry.addObject("action", new Element("SAVE"));
                 scriptEntry.addObject("filename", arg.asElement());
             }
@@ -416,7 +416,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // Check if there is a yaml file loaded with the specified id
         if (!yamls.containsKey(id.toUpperCase())) {
             dB.echoError("YAML tag '" + event.raw_tag + "' has specified an invalid ID, or the specified id has already" +
-                    "been closed. Tag replacement aborted.");
+                    " been closed. Tag replacement aborted. ID given: '" + id + "'.");
             return;
         }
 

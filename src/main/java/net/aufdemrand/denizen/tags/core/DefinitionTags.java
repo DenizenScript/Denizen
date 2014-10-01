@@ -23,7 +23,7 @@ public class DefinitionTags implements Listener {
     @EventHandler
     public void definitionTag(ReplaceableTagEvent event) {
 
-        if (!event.matches("definition, def, d")) return;
+        if (!event.matches("definition", "def", "d")) return;
 
         if (!event.hasNameContext()) {
             dB.echoError("Invalid definition tag, no context specified!");
@@ -39,6 +39,10 @@ public class DefinitionTags implements Listener {
         // -->
         // Get the definition from the name input
         String defName = event.getNameContext();
+        if (event.getScriptEntry() == null) {
+            dB.echoError("No definitions available outside of a queue.");
+            return;
+        }
         String def = event.getScriptEntry().getResidingQueue().getDefinition(defName);
 
         Attribute atttribute = event.getAttributes().fulfill(1);

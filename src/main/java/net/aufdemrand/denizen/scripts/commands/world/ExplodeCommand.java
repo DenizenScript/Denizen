@@ -32,7 +32,7 @@ public class ExplodeCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("power")
                     && arg.matchesPrimitive(aH.PrimitiveType.Float)
-                    && arg.matchesPrefix("power, p")) {
+                    && arg.matchesPrefix("power", "p")) {
 
                 scriptEntry.addObject("power", arg.asElement());
             }

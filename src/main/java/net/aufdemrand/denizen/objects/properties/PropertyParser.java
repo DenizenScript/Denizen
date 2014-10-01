@@ -38,6 +38,7 @@ public class PropertyParser {
         registerProperty(EntityFramed.class, dEntity.class);
         registerProperty(EntityInfected.class, dEntity.class);
         registerProperty(EntityItem.class, dEntity.class);
+        registerProperty(EntityJumpStrength.class, dEntity.class);
         registerProperty(EntityKnockback.class, dEntity.class);
         registerProperty(EntityPainting.class, dEntity.class);
         registerProperty(EntityPotion.class, dEntity.class);

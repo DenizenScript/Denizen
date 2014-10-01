@@ -33,6 +33,13 @@ public class CommandExecuter {
      */
 
     public boolean execute(ScriptEntry scriptEntry) {
+        StringBuilder output = new StringBuilder();
+        output.append(scriptEntry.getCommandName());
+        for (String arg: scriptEntry.getOriginalArguments())
+            output.append(' ').append(arg);
+
+        dB.echoDebug(scriptEntry, "Queue '" + scriptEntry.getResidingQueue().id + "' Executing: " + output.toString());
+
         Matcher m;
         StringBuffer sb;
         if (scriptEntry.getCommandName().indexOf('%') != -1) {

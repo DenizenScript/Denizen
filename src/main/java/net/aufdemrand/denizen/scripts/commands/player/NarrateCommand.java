@@ -34,7 +34,7 @@ public class NarrateCommand extends AbstractCommand {
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (!scriptEntry.hasObject("format")
-                    && arg.matchesPrefix("format, f")) {
+                    && arg.matchesPrefix("format", "f")) {
                 FormatScriptContainer format = null;
                 String formatStr = arg.getValue();
                 format = ScriptRegistry.getScriptContainer(formatStr);
@@ -44,7 +44,7 @@ public class NarrateCommand extends AbstractCommand {
 
             // Add players to target list
             else if (!scriptEntry.hasObject("targets")
-                    && arg.matchesPrefix("target, targets, t")) {
+                    && arg.matchesPrefix("target", "targets", "t")) {
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
             }
 

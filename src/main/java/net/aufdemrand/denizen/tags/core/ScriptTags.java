@@ -23,7 +23,7 @@ public class ScriptTags implements Listener {
     @EventHandler
     public void scriptTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("script, s") || event.replaced()) return;
+        if (!event.matches("script", "s") || event.replaced()) return;
 
         // Stage the location
         dScript script = null;

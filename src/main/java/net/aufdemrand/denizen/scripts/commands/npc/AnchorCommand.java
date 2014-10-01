@@ -38,12 +38,12 @@ public class AnchorCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("range")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("range, r"))
+                    && arg.matchesPrefix("range", "r"))
                 scriptEntry.addObject("range", arg.asElement());
 
 
             else if (!scriptEntry.hasObject("id")
-                    && arg.matchesPrefix("id, i"))
+                    && arg.matchesPrefix("id", "i"))
                 scriptEntry.addObject("id", arg.asElement());
 
 

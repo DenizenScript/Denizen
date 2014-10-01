@@ -14,6 +14,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_7_R4.Block;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
@@ -87,7 +88,6 @@ public class SwitchCommand extends AbstractCommand {
         final ScriptEntry se = scriptEntry;
         switchBlock(se, interactLocation, switchState, player);
 
-        // TODO: Rewrite the below code to not use freakin' NMS!
         // If duration set, schedule a delayed task.
         if (duration > 0) {
             // If this block already had a delayed task, cancel it.
@@ -141,13 +141,26 @@ public class SwitchCommand extends AbstractCommand {
              state.equals("TOGGLE")) {
 
             try {
+                if (interactLocation.getBlock().getType() == Material.IRON_DOOR_BLOCK) {
+                    interactLocation.getBlock().setData((byte) (interactLocation.getBlock().getData() ^ 4));
+                    Location block = null;
+                    if (interactLocation.clone().add(0, 1, 0).getBlock().getType() == Material.IRON_DOOR_BLOCK)
+                        block = interactLocation.clone().add(0, 1, 0);
+                    else if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == Material.IRON_DOOR_BLOCK)
+                        block = interactLocation.clone().add(0, -1, 0);
+                    if (block != null)
+                        block.getBlock().setData((byte) (block.getBlock().getData() ^ 4));
+                }
+                else {
 
-                Block.getById(interactLocation.getBlock().getType().getId())
-                    .interact(((CraftWorld)world).getHandle(),
-                              interactLocation.getBlockX(),
-                              interactLocation.getBlockY(),
-                              interactLocation.getBlockZ(),
-                              craftPlayer != null ? craftPlayer.getHandle(): null, 0, 0f, 0f, 0f);
+                    // TODO: Rewrite the below code to not use freakin' NMS!
+                    Block.getById(interactLocation.getBlock().getType().getId())
+                        .interact(((CraftWorld)world).getHandle(),
+                                interactLocation.getBlockX(),
+                                interactLocation.getBlockY(),
+                                interactLocation.getBlockZ(),
+                                craftPlayer != null ? craftPlayer.getHandle(): null, 0, 0f, 0f, 0f);
+                }
 
                 dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
                         ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));

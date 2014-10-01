@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
@@ -95,10 +96,13 @@ public class aH {
             }
             else {
                 has_prefix = true;
-                String[] split = string.split(":", 2);
+                String[] split = StringUtils.split(string, ":", 2);
                 prefix = split[0];
                 lower_prefix = prefix.toLowerCase();
-                value = split[1];
+                if (split.length == 2)
+                    value = split[1];
+                else
+                    value = "";
                 lower_value = value.toLowerCase();
             }
 
@@ -127,8 +131,9 @@ public class aH {
         }
 
 
+        // TODO: REMOVE IN 1.0
         public boolean matches(String values) {
-            for (String value : values.split(",")) {
+            for (String value : StringUtils.split(values, ',')) {
                 if (value.trim().toLowerCase().equals(lower_value))
                     return true;
             }
@@ -178,9 +183,10 @@ public class aH {
         }
 
 
+        // TODO: REMOVE IN 1.0
         public boolean matchesPrefix(String values) {
             if (!hasPrefix()) return false;
-            for (String value : values.split(",")) {
+            for (String value : StringUtils.split(values, ',')) {
                 if (value.trim().toLowerCase().equals(lower_prefix))
                     return true;
             }

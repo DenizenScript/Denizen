@@ -54,6 +54,7 @@ public class Utilities {
         int selected_z = random.nextInt(range * 2);
         returnable = location.clone().add(selected_x - range, 1, selected_z - range);
 
+        // TODO: Handle location being underground/in a wall better than a stack overflow?
         if (!isWalkable(returnable)) return getWalkableLocationNear(location, range);
         else return returnable;
     }
@@ -371,8 +372,6 @@ public class Utilities {
      * Checks entity's location against a Location (with leeway). Should be faster than
      * bukkit's built in Location.distance(Location) since there's no sqrt math.
      *
-     * Thanks chainsol :)
-     *
      * @return true if within the specified location, false otherwise.
      */
     public static boolean checkLocation(Location baseLocation, Location theLocation, double theLeeway) {
@@ -380,14 +379,7 @@ public class Utilities {
         if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName()))
             return false;
 
-        if (Math.abs(baseLocation.getX() - theLocation.getX())
-                > theLeeway) return false;
-        if (Math.abs(baseLocation.getY() - theLocation.getY())
-                > theLeeway) return false;
-        if (Math.abs(baseLocation.getZ() - theLocation.getZ())
-                > theLeeway) return false;
-
-        return true;
+        return baseLocation.distanceSquared(theLocation) < theLeeway * theLeeway;
     }
 
 

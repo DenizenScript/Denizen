@@ -83,35 +83,35 @@ public class PlayEffectCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("visibility, v, radius, r")) {
+                    && arg.matchesPrefix("visibility", "v", "radius", "r")) {
 
                 scriptEntry.addObject("radius", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("data")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("data, d")) {
+                    && arg.matchesPrefix("data", "d")) {
 
                 scriptEntry.addObject("data", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)
-                    && arg.matchesPrefix("qty, q")) {
+                    && arg.matchesPrefix("qty", "q")) {
 
                 scriptEntry.addObject("qty", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("offset")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("offset, o")) {
+                    && arg.matchesPrefix("offset", "o")) {
 
                 scriptEntry.addObject("offset", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("targets")
                 && arg.matchesArgumentList(dPlayer.class)
-                && arg.matchesPrefix("targets, target, t")) {
+                && arg.matchesPrefix("targets", "target", "t")) {
 
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
             }

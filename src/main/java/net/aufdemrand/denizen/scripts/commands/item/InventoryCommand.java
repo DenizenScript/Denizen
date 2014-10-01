@@ -34,7 +34,7 @@ public class InventoryCommand extends AbstractCommand {
             // Check for an origin, which can be a dInventory, dEntity, dLocation
             // or a dList of dItems
             else if (!scriptEntry.hasObject("origin")
-                     && arg.matchesPrefix("origin, o, source, items, item, i, from, f")
+                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
                      && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
                          || arg.matchesArgumentList(dItem.class))) {
                 scriptEntry.addObject("origin", Conversion.getInventory(arg));
@@ -43,7 +43,7 @@ public class InventoryCommand extends AbstractCommand {
             // Check for a destination, which can be a dInventory, dEntity
             // or dLocation
             else if (!scriptEntry.hasObject("destination")
-                     && arg.matchesPrefix("destination, dest, d, target, to, t")
+                     && arg.matchesPrefix("destination", "dest", "d", "target", "to", "t")
                      && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
                 scriptEntry.addObject("destination", Conversion.getInventory(arg));
             }

@@ -4,7 +4,9 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,17 +30,22 @@ public class PlayerTags implements Listener {
     public static Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>(8, 0.9f, 2);
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void addMessage(AsyncPlayerChatEvent event) {
-        List<String> history = playerChatHistory.get(event.getPlayer().getName());
-        // If history hasn't been started for this player, initialize a new ArrayList
-        if (history == null) history = new ArrayList<String>();
-        // Maximum history size is 10
-        // TODO: Make size configurable
-        if (history.size() > 10) history.remove(9);
-        // Add message to history
-        history.add(0, event.getMessage());
-        // Store the new history
-        playerChatHistory.put(event.getPlayer().getName(), history);
+    public void addMessage(final AsyncPlayerChatEvent event) {
+        Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+            @Override
+            public void run() {
+                List<String> history = playerChatHistory.get(event.getPlayer().getName());
+                // If history hasn't been started for this player, initialize a new ArrayList
+                if (history == null) history = new ArrayList<String>();
+                // Maximum history size is 10
+                // TODO: Make size configurable
+                if (history.size() > 10) history.remove(9);
+                // Add message to history
+                history.add(0, event.getMessage());
+                // Store the new history
+                playerChatHistory.put(event.getPlayer().getName(), history);
+            }
+        }, 1);
     }
 
 
@@ -49,7 +56,7 @@ public class PlayerTags implements Listener {
     @EventHandler
     public void playerTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("player, pl") || event.replaced()) return;
+        if (!event.matches("player", "pl") || event.replaced()) return;
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());

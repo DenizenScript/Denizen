@@ -24,6 +24,21 @@ import java.util.regex.Pattern;
 
 public class TagManager implements Listener {
 
+    private static class TagContext {
+        public final dPlayer player;
+        public final dNPC npc;
+        public final boolean instant;
+        public final ScriptEntry entry;
+        public final boolean debug;
+        public TagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug) {
+            this.player = player;
+            this.npc = npc;
+            this.instant = instant;
+            this.entry = entry;
+            this.debug = debug;
+        }
+    }
+
     public Denizen denizen;
 
     public TagManager(Denizen denizen) {
@@ -33,12 +48,14 @@ public class TagManager implements Listener {
 
     public void registerCoreTags() {
         // Objects
+        new CuboidTags(denizen);
         new EntityTags(denizen);
-        new PlayerTags(denizen);
-        new NPCTags(denizen);
+        new ListTags(denizen);
         new LocationTags(denizen);
-        new ScriptTags(denizen);
+        new NPCTags(denizen);
+        new PlayerTags(denizen);
         new QueueTags(denizen);
+        new ScriptTags(denizen);
 
         // Utilities
         new UtilTags(denizen);
@@ -174,13 +191,17 @@ public class TagManager implements Listener {
 
 
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug) {
+        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug));
+    }
+
+    public static String tag(String arg, TagContext context) {
         if (arg == null) return null;
 
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return CleanOutput(arg);
 
         // Parse \escaping down to internal escaping.
-        if (!instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));
+        if (!context.instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));
 
         // Find location of the first tag
         int[] positions = locateTag(arg);
@@ -195,8 +216,9 @@ public class TagManager implements Listener {
             ReplaceableTagEvent event;
             if (positions == null) break;
             else {
-                event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]), scriptEntry);
-                if (event.isInstant() != instant) {
+                String oriarg = arg.substring(positions[0] + 1, positions[1]);
+                event = new ReplaceableTagEvent(context.player, context.npc, oriarg, context.entry);
+                if (event.isInstant() != context.instant) {
                     // Not the right type of tag, escape the brackets so it doesn't get parsed again
                     arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
                             + EscapeOutput(event.getReplaced()) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
@@ -204,10 +226,10 @@ public class TagManager implements Listener {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
                     if ((!event.replaced() && event.getAlternative() != null)
-                            || (event.getReplaced().equals("null") && event.getAlternative() != null))
+                            || (event.getReplaced().equals("null") && event.hasAlternative()))
                         event.setReplaced(event.getAlternative());
-                    if (debug)
-                        dB.echoDebug(scriptEntry, "Filled tag <" + arg.substring(positions[0] + 1, positions[1]) + "> with '" +
+                    if (context.debug)
+                        dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
                                 event.getReplaced() + "'.");
                     if (!event.replaced())
                         dB.echoError("Tag '" + event.getReplaced() + "' is invalid!");
@@ -221,17 +243,31 @@ public class TagManager implements Listener {
         return CleanOutput(arg);
     }
 
-    // Match all < > brackets that don't contain < > inside them
-    private static Pattern tagRegex = Pattern.compile("<([^<>]+)>", Pattern.DOTALL | Pattern.MULTILINE);
-
     private static int[] locateTag(String arg) {
-        // find escaped brackets
-
-        // find tag brackets pattern
-        Matcher tagMatcher = tagRegex.matcher(arg);
-        if (tagMatcher.find())
-            return new int[]{tagMatcher.start(), tagMatcher.end() - 1};
-            // no matching brackets pattern, return null
+        int first = arg.indexOf('<');
+        if (first == -1)
+            return null;
+        // Handle "<-" for the flag command
+        if (first + 1 < arg.length() && (arg.charAt(first + 1) == '-')) {
+            return locateTag(arg.substring(0, first) + (char)0x01 + arg.substring(first + 1));
+        }
+        int len = arg.length();
+        int bracks = 0;
+        int second = -1;
+        for (int i = first + 1; i < len; i++) {
+            if (arg.charAt(i) == '<') {
+                bracks++;
+            }
+            else if (arg.charAt(i) == '>') {
+                bracks--;
+                if (bracks == -1) {
+                    second = i;
+                    break;
+                }
+            }
+        }
+        if (first > -1 && second > first)
+            return new int[]{first, second};
         else return null;
     }
 

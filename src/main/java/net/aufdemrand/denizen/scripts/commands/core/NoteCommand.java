@@ -17,7 +17,7 @@ public class NoteCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesPrefix("as, i, id"))
+            if (arg.matchesPrefix("as", "i", "id"))
                 scriptEntry.addObject("id", arg.asElement());
 
             else if (ObjectFetcher.canFetch(arg.getValue().split("@")[0]))

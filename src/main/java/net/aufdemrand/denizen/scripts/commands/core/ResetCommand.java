@@ -17,11 +17,11 @@ public class ResetCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matches("finishes, finished, finish")
+            if (arg.matches("finishes", "finished", "finish")
                     && !scriptEntry.hasObject("type"))
                 scriptEntry.addObject("type", Type.FINISH);
 
-            else if (arg.matches("fails, failed, fail")
+            else if (arg.matches("fails", "failed", "fail")
                     && !scriptEntry.hasObject("type"))
                 scriptEntry.addObject("type", Type.FAIL);
 

@@ -35,7 +35,7 @@ public class RemoveCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("region")
-                    && arg.matchesPrefix("region, r")) {
+                    && arg.matchesPrefix("region", "r")) {
                 scriptEntry.addObject("region", arg.asElement());
             }
 

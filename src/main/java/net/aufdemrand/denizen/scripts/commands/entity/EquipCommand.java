@@ -37,22 +37,22 @@ public class EquipCommand extends AbstractCommand {
             }
 
             else if (arg.matchesArgumentType(dItem.class)
-                     && arg.matchesPrefix("head, helmet")) {
+                     && arg.matchesPrefix("head", "helmet")) {
                 equipment.put("head", dItem.valueOf(arg.getValue()));
             }
 
             else if (arg.matchesArgumentType(dItem.class)
-                     && arg.matchesPrefix("chest, chestplate")) {
+                     && arg.matchesPrefix("chest", "chestplate")) {
                 equipment.put("chest", dItem.valueOf(arg.getValue()));
             }
 
             else if (arg.matchesArgumentType(dItem.class)
-                     && arg.matchesPrefix("legs, leggings")) {
+                     && arg.matchesPrefix("legs", "leggings")) {
                 equipment.put("legs", dItem.valueOf(arg.getValue()));
             }
 
             else if (arg.matchesArgumentType(dItem.class)
-                     && arg.matchesPrefix("boots, feet")) {
+                     && arg.matchesPrefix("boots", "feet")) {
                 equipment.put("boots", dItem.valueOf(arg.getValue()));
             }
 
