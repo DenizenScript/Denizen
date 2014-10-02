@@ -348,6 +348,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
                 namesList = namesList + curNam + ", ";
                 namesList = namesList.substring(0, namesList.length() - 1);
             }
+            event.setReplaced(namesList);
         }
     }
 }
