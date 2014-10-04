@@ -747,7 +747,7 @@ public class dList extends ArrayList<String> implements dObject {
         // returns the last element in the list.
         // If the list is empty, returns null instead.
         // EG, a list of "one|two|three" will return "three".
-        // Effectively equivalent to .get[9999]
+        // Effectively equivalent to .get[999999]
         // -->
         if (attribute.startsWith("last")) {
             if (size() == 0)

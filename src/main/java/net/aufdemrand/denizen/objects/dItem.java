@@ -746,6 +746,16 @@ public class dItem implements dObject, Notable, Adjustable {
             return new Element(getFullString()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <i@item.simple>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns a simple reusable item identification for this item, with minimal extra data.
+        // -->
+        if (attribute.startsWith("simple"))
+            return new Element(identifySimple()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <i@item.notable_name>
         // @returns Element
         // @description
