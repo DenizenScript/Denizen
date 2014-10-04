@@ -38,6 +38,11 @@ public class Settings {
                 .getInt("Debug.Console width", 60);
     }
 
+    public static int trimLength() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getInt("Debug.trim length", 512);
+    }
+
     public static boolean ShowExHelp() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Debug.Ex command help", true);

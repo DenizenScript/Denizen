@@ -72,7 +72,6 @@ public class dB {
     public static List<String> filter = new ArrayList<String>();
 
     public static boolean shouldTrim = true;
-    public static int trimSize = 512;
     public static boolean record = false;
     public static StringBuilder Recording = new StringBuilder();
     public static void toggle() { showDebug = !showDebug; }
@@ -359,6 +358,7 @@ public class dB {
     // Some debug methods trim to keep super-long messages from hitting the console.
     private static String trimMessage(String message) {
         if (!shouldTrim) return message;
+        int trimSize = Settings.trimLength();
         if (message.length() > trimSize)
             message = message.substring(0, trimSize - 1) + "... * snip! *";
         return message;

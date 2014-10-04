@@ -4,6 +4,7 @@ Debug:
   Show: true
   Ex command help: true
   Console width: 60
+  trim length: 512
 
 Scripts:
   World:
