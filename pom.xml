@@ -64,6 +64,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>denizencore</artifactId>
+            <version>LATEST</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${json.version}</version>

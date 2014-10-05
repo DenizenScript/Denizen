@@ -37,6 +37,8 @@ import net.aufdemrand.denizen.utilities.command.Injector;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.DenizenCore;
+import net.aufdemrand.denizencore.DenizenImplementation;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 
@@ -53,7 +55,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-public class Denizen extends JavaPlugin {
+public class Denizen extends JavaPlugin implements DenizenImplementation {
     public final static int configVersion = 7;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
@@ -163,6 +165,11 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
+            versionTag = this.getDescription().getVersion();
+
+            // Load Denizen's core
+            DenizenCore.Init(this);
+
             // Activate dependencies
             depends.initialize();
 
@@ -172,7 +179,6 @@ public class Denizen extends JavaPlugin {
                 //return;
             }
             startedSuccessful = true;
-            versionTag = this.getDescription().getVersion();
 
             // Startup procedure
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
@@ -654,6 +660,36 @@ public class Denizen extends JavaPlugin {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<File> getScriptFolders() {
+        return null; // TODO
+    }
+
+    @Override
+    public String getImplementationVersion() {
+        return versionTag;
+    }
+
+    @Override
+    public void debugMessage(String message) {
+        dB.log(message);
+    }
+
+    @Override
+    public void debugException(Exception ex) {
+        dB.echoError(ex);
+    }
+
+    @Override
+    public void debugError(String error) {
+        dB.echoError(error);
+    }
+
+    @Override
+    public String getImplementationName() {
+        return "Bukkit";
     }
 }
 
