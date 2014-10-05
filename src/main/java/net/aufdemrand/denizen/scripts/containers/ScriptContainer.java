@@ -6,13 +6,14 @@ import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptEntrySet;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,21 +61,21 @@ public class ScriptContainer implements Debuggable {
     // -->
 
 
-    public ScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public ScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         contents = configurationSection;
         this.name = scriptContainerName.toUpperCase();
     }
 
 
     // The contents of the script container
-    ConfigurationSection contents;
+    YamlConfiguration contents;
 
     /**
      * Gets the contents of the container.
      *
      * @return a ConfigurationSection object
      */
-    public ConfigurationSection getContents() {
+    public YamlConfiguration getContents() {
         return contents;
     }
 
@@ -194,7 +195,7 @@ public class ScriptContainer implements Debuggable {
     }
 
 
-    public ConfigurationSection getConfigurationSection(String path) {
+    public YamlConfiguration getConfigurationSection(String path) {
         return contents.getConfigurationSection(path.toUpperCase());
     }
 

@@ -383,48 +383,6 @@ public class Utilities {
     }
 
 
-    // TODO: Javadocs, comments
-    //
-    protected static FilenameFilter scriptsFilter;
-
-    static {
-        scriptsFilter = new FilenameFilter() {
-            public boolean accept(File file, String fileName) {
-                if(fileName.startsWith(".")) return false;
-
-                String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
-                return ext.equalsIgnoreCase("YML") || ext.equalsIgnoreCase("DSCRIPT");
-            }
-        };
-    }
-
-
-    /**
-     * Lists all files in the given directory.
-     *
-     * @param dir The directory to search in
-     * @param recursive If true subfolders will also get checked
-     * @return A {@link File} collection
-     */
-    public static List<File> listDScriptFiles(File dir, boolean recursive) {
-        List<File> files = new ArrayList<File>();
-        File[] entries = dir.listFiles();
-
-        for (File file : entries) {
-            // Add file
-            if (scriptsFilter == null || scriptsFilter.accept(dir, file.getName())) {
-                files.add(file);
-            }
-
-            // Add subdirectories
-            if (recursive && file.isDirectory()) {
-                files.addAll(listDScriptFiles(file, recursive));
-            }
-        }
-
-        return files;
-    }
-
 
     /**
      * Set the lines on a sign to the strings in a string array

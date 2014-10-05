@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class dScript implements dObject {
@@ -316,7 +317,7 @@ public class dScript implements dObject {
         if (attribute.startsWith("cons")) {
             if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
 
-            ConfigurationSection section = getContainer().getConfigurationSection("constants");
+            YamlConfiguration section = getContainer().getConfigurationSection("constants");
             if (section == null) return Element.NULL.getAttribute(attribute.fulfill(1));
             Object obj = section.get(attribute.getContext(1).toUpperCase());
             if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));

@@ -40,7 +40,7 @@ public class Settings {
 
     public static int trimLength() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Debug.trim length", 512);
+                .getInt("Debug.Trim length", 512);
     }
 
     public static boolean showExHelp() {
@@ -63,17 +63,6 @@ public class Settings {
         catch (Exception e) { delay = "0.5s"; }
 
         return delay;
-    }
-
-    /*
-
-    # Whether scripts in subfolders of the scripts folder should be loaded
-
-    */
-
-    public static boolean loadScriptsInSubfolders() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Scripts.Load scripts in subfolders", true);
     }
 
     /*

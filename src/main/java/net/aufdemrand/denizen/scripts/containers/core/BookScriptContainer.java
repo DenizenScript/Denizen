@@ -6,8 +6,8 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.objects.dItem;
 
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class BookScriptContainer extends ScriptContainer {
     // </code>
     //
     // -->
-    public BookScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public BookScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
 

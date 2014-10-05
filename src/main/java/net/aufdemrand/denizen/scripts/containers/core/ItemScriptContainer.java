@@ -15,8 +15,8 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -98,7 +98,7 @@ public class ItemScriptContainer extends ScriptContainer {
     public boolean bound = false;
     String hash = "";
 
-    public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public ItemScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
 
         ItemScriptHelper.item_scripts.put(getName(), this);

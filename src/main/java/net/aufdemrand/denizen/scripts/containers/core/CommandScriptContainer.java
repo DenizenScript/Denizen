@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 import java.util.List;
 import java.util.Map;
@@ -77,7 +77,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public CommandScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public CommandScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         CommandScriptHelper.registerDenizenCommand(new DenizenCommand(this));
     }

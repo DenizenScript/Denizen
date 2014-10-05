@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -133,7 +134,7 @@ public class TagManager implements Listener {
     public void fetchObject(ReplaceableTagEvent event) {
         if (!event.getName().contains("@")) return;
 
-        String object_type = event.getName().split("@")[0].toLowerCase();
+        String object_type = StringUtils.split(event.getName(), '@')[0].toLowerCase();
         Class object_class = ObjectFetcher.getObjectClass(object_type);
 
         if (object_class == null) {

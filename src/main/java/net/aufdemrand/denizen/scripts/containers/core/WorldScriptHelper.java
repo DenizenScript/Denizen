@@ -2655,7 +2655,7 @@ public class WorldScriptHelper implements Listener {
     // npc closes inventory
     // npc closes <inventory type>
     //
-    // @Triggers when a player closes an inventory.
+    // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
     // @Context
     // <context.inventory> returns the dInventory.
     //
@@ -2753,7 +2753,7 @@ public class WorldScriptHelper implements Listener {
     // player opens inventory
     // player opens <inventory type>
     //
-    // @Triggers when a player opens an inventory.
+    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
     // @Context
     // <context.inventory> returns the dInventory.
     //

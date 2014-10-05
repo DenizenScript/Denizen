@@ -11,7 +11,7 @@ import net.aufdemrand.denizen.objects.Duration;
 
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class TaskScriptContainer extends ScriptContainer {
 
-    public TaskScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public TaskScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
 
@@ -39,6 +39,7 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public TaskScriptContainer setSpeed(Duration speed) {
+        //  TODO: Remove with RunTask
         set("SPEED", speed.getSeconds());
         return this;
     }
