@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.commands;
 
 import java.util.*;
 
-import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
+import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.debugging.dB;

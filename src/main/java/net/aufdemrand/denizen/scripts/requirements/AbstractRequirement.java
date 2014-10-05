@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.requirements;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import org.bukkit.Bukkit;

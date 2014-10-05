@@ -4,7 +4,6 @@ package net.aufdemrand.denizen.tags;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

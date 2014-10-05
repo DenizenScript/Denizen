@@ -206,7 +206,7 @@ public class DenizenCommandHandler {
         Messaging.sendInfo(sender, " _/_ _  ._  _ _  ");
         Messaging.sendInfo(sender, "(/(-/ )/ /_(-/ ) " + "<7> scriptable NPCs"); // TODO: "It's Scriptable!"?
                 Messaging.send(sender, "");
-        Messaging.send(sender, "<7>by: <f>aufdemrand");
+        Messaging.send(sender, "<7>by: <f>aufdemrand and mcmonkey");
         Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag);
     }
 

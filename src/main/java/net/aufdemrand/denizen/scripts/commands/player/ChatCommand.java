@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechContext;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechController;
 import net.aufdemrand.denizen.objects.*;

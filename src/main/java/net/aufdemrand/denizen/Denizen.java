@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.interfaces.dExternal;
+import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.speech.DenizenChat;
@@ -63,7 +63,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     private CommandManager commandManager;
 
-    public CommandManager getCommandManager() { return commandManager; }
+    public CommandManager getCommandManager() {
+        return commandManager;
+    }
 
 
     /*

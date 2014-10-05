@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.triggers;
 
-import net.aufdemrand.denizen.interfaces.dRegistry;
-import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizencore.interfaces.dRegistry;
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.triggers.core.ChatTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.ClickTrigger;
