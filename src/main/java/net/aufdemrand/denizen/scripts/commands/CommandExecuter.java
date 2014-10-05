@@ -127,7 +127,7 @@ public class CommandExecuter {
                     m = definition_pattern.matcher(arg.raw_value);
                     sb = new StringBuffer();
                     while (m.find()) {
-                        String definition = TagManager.EscapeOutput(scriptEntry.getResidingQueue().getDefinition(m.group(1)));
+                        String definition = TagManager.escapeOutput(scriptEntry.getResidingQueue().getDefinition(m.group(1)));
                         if (definition == null) {
                             dB.echoError("Unknown definition %" + m.group(1) + "%.");
                             definition = "null";

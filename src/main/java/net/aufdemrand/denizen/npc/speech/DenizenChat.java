@@ -51,14 +51,14 @@ public class DenizenChat implements VocalChord {
 
         // Chat to the world using Denizen chat settings
         if (!context.hasRecipients()) {
-            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.ChatNoTargetFormat(), false, entry);
+            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.chatNoTargetFormat(), false, entry);
             talkToBystanders(talker, text, context);
         }
 
         // Single recipient
         else if (context.size() <= 1) {
             // Send chat to target
-            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.ChatToTargetFormat(), false, entry);
+            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.chatToTargetFormat(), false, entry);
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
             }
@@ -69,7 +69,7 @@ public class DenizenChat implements VocalChord {
                     defTarget = queue.getDefinition("target");
                 queue.addDefinition("target", new dEntity(context.iterator().next().getEntity()).identify());
                 String bystanderText = TagManager.tag(entry.getPlayer(), entry.getNPC(),
-                        Settings.ChatWithTargetToBystandersFormat(), false, entry);
+                        Settings.chatWithTargetToBystandersFormat(), false, entry);
                 talkToBystanders(talker, bystanderText, context);
                 if (defTarget != null)
                     queue.addDefinition("target", defTarget);
@@ -79,12 +79,12 @@ public class DenizenChat implements VocalChord {
         // Multiple recipients
         else {
             // Send chat to targets
-            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.ChatToTargetFormat(), false, entry);
+            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.chatToTargetFormat(), false, entry);
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
             }
             if (context.isBystandersEnabled()) {
-                String[] format = Settings.ChatMultipleTargetsFormat().split("%target%");
+                String[] format = Settings.chatMultipleTargetsFormat().split("%target%");
                 if (format.length <= 1)
                     dB.echoError("Invalid 'Commands.Chat.Options.Multiple targets format' in config.yml! Must have at least 1 %target%");
                 StringBuilder parsed = new StringBuilder();
@@ -106,7 +106,7 @@ public class DenizenChat implements VocalChord {
                 queue.addDefinition("targets", targets);
 
                 String bystanderText = TagManager.tag(entry.getPlayer(), entry.getNPC(),
-                        Settings.ChatWithTargetsToBystandersFormat(), false, entry);
+                        Settings.chatWithTargetsToBystandersFormat(), false, entry);
                 talkToBystanders(talker, bystanderText, context);
 
                 if (defTargets != null)

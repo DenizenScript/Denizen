@@ -34,7 +34,7 @@ public class SyncChatSmartEvent implements SmartEvent, Listener {
     public boolean shouldInitialize(Set<String> events) {
 
         // Fail if "Use asynchronous event" is true in config file
-        if (Settings.WorldScriptChatEventAsynchronous()) return false;
+        if (Settings.worldScriptChatEventAsynchronous()) return false;
 
         // Loop through event names from loaded world script events
         for (String event : events) {

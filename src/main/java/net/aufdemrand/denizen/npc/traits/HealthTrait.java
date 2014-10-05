@@ -31,13 +31,13 @@ public class HealthTrait extends Trait implements Listener {
 
     // Saved to the C2 saves.yml
     @Persist("animatedeath")
-    private boolean animatedeath = Settings.HealthTraitAnimatedDeathEnabled();
+    private boolean animatedeath = Settings.healthTraitAnimatedDeathEnabled();
 
     @Persist("respawnondeath")
-    private boolean respawn = Settings.HealthTraitRespawnEnabled();
+    private boolean respawn = Settings.healthTraitRespawnEnabled();
 
     @Persist("respawndelayinseconds")
-    private String respawnDelay = Settings.HealthTraitRespawnDelay();
+    private String respawnDelay = Settings.healthTraitRespawnDelay();
 
     @Persist("respawnlocation")
     private String respawnLocation =  "<npc.flag[respawn_location] || <npc.location>>";

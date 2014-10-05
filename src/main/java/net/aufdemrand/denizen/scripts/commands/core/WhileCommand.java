@@ -147,7 +147,7 @@ public class WhileCommand extends BracedCommand {
                 data.index++;
                 if (System.currentTimeMillis() - data.LastChecked < 50) {
                     data.instaTicks++;
-                    int max = Settings.WhileMaxLoops();
+                    int max = Settings.whileMaxLoops();
                     if (data.instaTicks > max && max != 0)
                         return;
                 }

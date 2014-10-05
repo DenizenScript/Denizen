@@ -64,7 +64,7 @@ import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
  */
 public class dB {
 
-    public static boolean showDebug = Settings.ShowDebug();
+    public static boolean showDebug = Settings.showDebug();
     public static boolean showStackTraces = true;
     public static boolean showScriptBuilder = false;
     public static boolean showColor = true;
@@ -418,7 +418,7 @@ public class dB {
 
             // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
             // than having a bunch of ChatColor.XXXX
-            string = TagManager.CleanOutputFully(string
+            string = TagManager.cleanOutputFully(string
                     .replace("<Y>", ChatColor.YELLOW.toString())
                     .replace("<G>", ChatColor.DARK_GRAY.toString())
                     .replace("<A>", ChatColor.AQUA.toString()));
@@ -433,9 +433,10 @@ public class dB {
             String[] words = string.split(" ");
             StringBuilder buffer = new StringBuilder();
             int length = 0;
+            int width = Settings.consoleWidth();
             for (String word : words) { // # of total chars * # of lines - timestamp
                 int strippedLength = ChatColor.stripColor(word).length() + 1;
-                if (length + strippedLength  < Settings.ConsoleWidth()) {
+                if (length + strippedLength  < width) {
                     buffer.append(word).append(" ");
                     length = length + strippedLength;
                 } else {
@@ -443,7 +444,7 @@ public class dB {
                     length = strippedLength;
                     // Leave spaces to account for timestamp and indent
                     buffer.append("\n                   ").append(word).append(" ");
-                }                          // 16:05:06 [INFO]
+                }                 // [01:02:03 INFO]:
             }
 
             String result = buffer.toString();

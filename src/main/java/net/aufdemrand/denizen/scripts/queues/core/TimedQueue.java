@@ -38,7 +38,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
             // If not, create a new one.
         else {
             scriptQueue = new TimedQueue(id,
-                    Duration.valueOf(Settings.ScriptQueueSpeed()));
+                    Duration.valueOf(Settings.scriptQueueSpeed()));
         }
         // Return the queue
         return scriptQueue;

@@ -201,8 +201,8 @@ public class UtilTags implements Listener {
         // -->
         if (attribute.startsWith("has_event")
                 && attribute.hasContext(1)) {
-            event.setReplaced(new Element(EventManager.EventExists(attribute.getContext(1))
-                    || EventManager.EventExists(EventManager.StripIdentifiers(attribute.getContext(1))))
+            event.setReplaced(new Element(EventManager.eventExists(attribute.getContext(1))
+                    || EventManager.eventExists(EventManager.StripIdentifiers(attribute.getContext(1))))
                     .getAttribute(attribute.fulfill(1)));
         }
 

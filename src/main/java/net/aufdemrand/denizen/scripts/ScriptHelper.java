@@ -151,7 +151,7 @@ public class ScriptHelper {
 
 
             // Get files using script directory
-            List<File> files = Utilities.listDScriptFiles(file, Settings.LoadScriptsInSubfolders());
+            List<File> files = Utilities.listDScriptFiles(file, Settings.loadScriptsInSubfolders());
 
             if (files.size() > 0) {
                 StringBuilder sb = new StringBuilder();

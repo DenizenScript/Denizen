@@ -63,7 +63,7 @@ public class LogCommand extends AbstractCommand {
         String directory = URLDecoder.decode(System.getProperty("user.dir"));
         File file = new File(directory, fileName.asString());
 
-        String output = TagManager.CleanOutputFully(message.asString());
+        String output = TagManager.cleanOutputFully(message.asString());
 
         if (type == Type.NONE) {
             try {

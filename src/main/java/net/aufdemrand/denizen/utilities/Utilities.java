@@ -111,9 +111,9 @@ public class Utilities {
     public static void talkToNPC(String message, dPlayer player, dNPC npc, double range) {
         String replacer = String.valueOf((char)0x04);
         // Get formats from Settings, and fill in <TEXT>
-        String talkFormat = Settings.ChatToNpcFormat()
+        String talkFormat = Settings.chatToNpcFormat()
                 .replaceAll("(?i)<TEXT>", replacer);
-        String bystanderFormat = Settings.ChatToNpcOverheardFormat()
+        String bystanderFormat = Settings.chatToNpcOverheardFormat()
                 .replaceAll("(?i)<TEXT>", replacer);
 
         // Fill in tags

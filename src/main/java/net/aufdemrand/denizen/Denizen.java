@@ -170,7 +170,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             versionTag = this.getDescription().getVersion();
 
             // Load Denizen's core
-            DenizenCore.Init(this);
+            DenizenCore.init(this);
 
             // Activate dependencies
             depends.initialize();
@@ -359,6 +359,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             @Override
             public void run() {
                 try {
+                    DenizenCore.loadScripts();
                     ScriptHelper.reloadScripts();
 
                     // Reload notables from notables.yml into memory
@@ -622,7 +623,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 return true;
             }
 
-            if (Settings.ShowExHelp()) {
+            if (Settings.showExHelp()) {
                 if (dB.showDebug)
                     sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for debug output!");
                 else

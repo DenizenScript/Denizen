@@ -184,7 +184,7 @@ public class EventManager implements Listener {
     }
 
 
-    public static boolean EventExists(String original) {
+    public static boolean eventExists(String original) {
         return events.containsKey("ON " + original.toUpperCase());
     }
 

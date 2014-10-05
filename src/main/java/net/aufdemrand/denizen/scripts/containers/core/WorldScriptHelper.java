@@ -988,13 +988,14 @@ public class WorldScriptHelper implements Listener {
     // -->
     public void serverStartEvent() {
         // Start the 'timeEvent'
+        long ticks = Settings.worldScriptTimeEventFrequency().getTicks();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
                 new Runnable() {
                     @Override
                     public void run() {
                         timeEvent();
                     }
-                }, Settings.WorldScriptTimeEventFrequency().getTicks(), Settings.WorldScriptTimeEventFrequency().getTicks());
+                }, ticks, ticks);
 
         // Fire the 'Server Start' event
         String determination = EventManager.doEvents(Arrays.asList("server start"),

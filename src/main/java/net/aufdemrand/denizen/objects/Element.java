@@ -107,7 +107,7 @@ public class Element implements dObject {
         if (string == null)
             this.element = "null";
         else
-            this.element = TagManager.CleanOutputFully(string);
+            this.element = TagManager.cleanOutputFully(string);
     }
 
     public Element(Boolean bool) {
@@ -148,7 +148,7 @@ public class Element implements dObject {
     public Element(String prefix, String string) {
         if (prefix == null) this.prefix = "element";
         else this.prefix = prefix;
-        this.element = TagManager.CleanOutputFully(string);
+        this.element = TagManager.cleanOutputFully(string);
     }
 
     public double asDouble() {

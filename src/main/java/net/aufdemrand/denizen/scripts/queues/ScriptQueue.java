@@ -528,11 +528,11 @@ public abstract class ScriptQueue implements Debuggable, dObject {
 
     private String breakMe = null;
 
-    public void BreakLoop(String toBreak) {
+    public void breakLoop(String toBreak) {
         breakMe = toBreak;
     }
 
-    public String IsLoopBroken() {
+    public String isLoopBroken() {
         return breakMe;
     }
 

@@ -256,7 +256,7 @@ public class ReplaceableTagEvent extends Event {
         if (value_tagged)
             return value;
         value_tagged = true;
-        value = TagManager.CleanOutputFully(TagManager.tag(
+        value = TagManager.cleanOutputFully(TagManager.tag(
                 getPlayer(), getNPC(), value, false, getScriptEntry()));
         return value;
     }
@@ -271,7 +271,7 @@ public class ReplaceableTagEvent extends Event {
         if (alternative_tagged)
             return alternative;
         alternative_tagged = true;
-        alternative = TagManager.CleanOutputFully(TagManager.tag(
+        alternative = TagManager.cleanOutputFully(TagManager.tag(
                 getPlayer(), getNPC(), alternative, false, getScriptEntry()));
         return alternative;
     }

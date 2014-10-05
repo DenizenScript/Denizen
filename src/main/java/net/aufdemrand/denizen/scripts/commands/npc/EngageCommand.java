@@ -100,7 +100,7 @@ public class EngageCommand extends AbstractCommand {
      */
     public static void setEngaged(NPC npc, boolean engaged) {
         if (engaged) currentlyEngaged.put(npc, System.currentTimeMillis()
-                + (long) (Duration.valueOf(Settings.EngageTimeoutInSeconds()).getSeconds()) * 1000 );
+                + (long) (Duration.valueOf(Settings.engageTimeoutInSeconds()).getSeconds()) * 1000 );
         if (!engaged) currentlyEngaged.remove(npc);
     }
 

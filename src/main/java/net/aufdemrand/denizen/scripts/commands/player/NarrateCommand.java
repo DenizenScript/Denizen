@@ -50,7 +50,7 @@ public class NarrateCommand extends AbstractCommand {
 
             // Use raw_value as to not accidentally strip a value before any :'s.
             else if (!scriptEntry.hasObject("text"))
-                    scriptEntry.addObject("text", new Element(TagManager.CleanOutputFully(arg.raw_value)));
+                    scriptEntry.addObject("text", new Element(TagManager.cleanOutputFully(arg.raw_value)));
 
             else
                 arg.reportUnhandled();

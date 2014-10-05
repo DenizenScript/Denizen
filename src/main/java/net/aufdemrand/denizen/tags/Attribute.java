@@ -165,7 +165,7 @@ public class Attribute {
             Matcher contextMatcher = CONTEXT_PATTERN.matcher(text);
 
             if (contextMatcher.find()) {
-                String tagged = TagManager.CleanOutputFully(TagManager.tag(
+                String tagged = TagManager.cleanOutputFully(TagManager.tag(
                         getPlayer(), getNPC(), text.substring(contextMatcher.start() + 1,
                         contextMatcher.end() - 1), false, getScriptEntry()));
                 contexts.set(attribute - 1, tagged);
