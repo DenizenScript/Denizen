@@ -13,8 +13,6 @@ import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Calls a bukkit event for replaceable tags.

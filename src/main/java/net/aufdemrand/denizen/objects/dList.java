@@ -14,9 +14,9 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.NaturalOrderComparator;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 
 import java.util.*;
@@ -1055,7 +1055,7 @@ public class dList extends ArrayList<String> implements dObject {
                     available.addAll(this);
                     dList toReturn = new dList();
                     while (!available.isEmpty() && times < count) {
-                        int random = Utilities.getRandom().nextInt(available.size());
+                        int random = CoreUtilities.getRandom().nextInt(available.size());
                         toReturn.add(available.get(random));
                         available.remove(random);
                         times++;
@@ -1063,7 +1063,7 @@ public class dList extends ArrayList<String> implements dObject {
                     return toReturn.getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new Element(this.get(Utilities.getRandom().nextInt(this.size())))
+                    return new Element(this.get(CoreUtilities.getRandom().nextInt(this.size())))
                             .getAttribute(attribute.fulfill(1));
                 }
             }

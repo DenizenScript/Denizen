@@ -1,8 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -14,7 +12,6 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
-import org.bukkit.configuration.ConfigurationSection;
 
 public class dScript implements dObject {
 

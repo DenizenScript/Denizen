@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 
@@ -64,7 +64,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     ParticleEffect effect = null;
                     // Make sure the new effect is not an invisible effect
                     while (effect == null || effect.toString().matches("^(BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) {
-                        effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
+                        effect = ParticleEffect.values()[CoreUtilities.getRandom().nextInt(ParticleEffect.values().length)];
                     }
                     scriptEntry.addObject("particleeffect", effect);
                 }

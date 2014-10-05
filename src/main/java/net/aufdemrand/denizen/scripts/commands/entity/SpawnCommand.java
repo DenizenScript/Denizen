@@ -11,9 +11,9 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 
 /**
@@ -105,9 +105,9 @@ public class SpawnCommand extends AbstractCommand {
         for (dEntity entity : entities) {
             Location loc = location.clone();
             if (spread != null) {
-                loc.add(Utilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt(),
+                loc.add(CoreUtilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt(),
                         0,
-                        Utilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt());
+                        CoreUtilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt());
             }
 
             entity.spawnAt(loc);

@@ -7,9 +7,9 @@ import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 
 /**
@@ -87,12 +87,12 @@ public class RandomCommand extends BracedCommand {
             possibilities = bracedCommands.size();
         }
 
-        int selected = Utilities.getRandom().nextInt(possibilities);
+        int selected = CoreUtilities.getRandom().nextInt(possibilities);
         // Try to not duplicate
         if (selected == previous || selected == previous2 || selected == previous3)
-            selected = Utilities.getRandom().nextInt(possibilities);
+            selected = CoreUtilities.getRandom().nextInt(possibilities);
         if (selected == previous || selected == previous2 || selected == previous3)
-            selected = Utilities.getRandom().nextInt(possibilities);
+            selected = CoreUtilities.getRandom().nextInt(possibilities);
         previous3 = previous2;
         previous2 = previous;
         previous = selected;

@@ -1,15 +1,11 @@
 package net.aufdemrand.denizen.events.bukkit;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 
 import net.aufdemrand.denizen.tags.TagManager;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

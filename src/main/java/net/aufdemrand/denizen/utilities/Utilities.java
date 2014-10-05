@@ -1,14 +1,12 @@
 package net.aufdemrand.denizen.utilities;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Set;
 
 import net.aufdemrand.denizen.Settings;
@@ -18,6 +16,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.TagManager;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -36,22 +35,14 @@ import org.bukkit.entity.Player;
  */
 public class Utilities {
 
-    // TODO: Javadocs, comments
-    //
-    static Random random = new Random();
-
-    public static Random getRandom() {
-        return random;
-    }
-
 
     // TODO: Javadocs, comments
     //
     public static Location getWalkableLocationNear(Location location, int range) {
         Location returnable;
 
-        int selected_x = random.nextInt(range * 2);
-        int selected_z = random.nextInt(range * 2);
+        int selected_x = CoreUtilities.getRandom().nextInt(range * 2);
+        int selected_z = CoreUtilities.getRandom().nextInt(range * 2);
         returnable = location.clone().add(selected_x - range, 1, selected_z - range);
 
         // TODO: Handle location being underground/in a wall better than a stack overflow?
@@ -188,9 +179,9 @@ public class Utilities {
             f++;
 
             Location loc = location.clone()
-                    .add(Utilities.getRandom().nextInt(range * 2) - range,
-                            Utilities.getRandom().nextInt(range * 2) - range,
-                            Utilities.getRandom().nextInt(range * 2) - range);
+                    .add(CoreUtilities.getRandom().nextInt(range * 2) - range,
+                            CoreUtilities.getRandom().nextInt(range * 2) - range,
+                            CoreUtilities.getRandom().nextInt(range * 2) - range);
 
             if (loc.getBlock().getType().isSolid()) {
                 blocks.add(loc.getBlock());
@@ -510,7 +501,7 @@ public class Utilities {
     public static String generateRandomColors(int count) {
         String ret = "";
         for (int i = 0; i < count; i++) {
-            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(random.nextInt(34));
+            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(CoreUtilities.getRandom().nextInt(34));
         }
         return ret;
     }

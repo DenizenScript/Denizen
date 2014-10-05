@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
@@ -492,7 +492,7 @@ public class dMaterial implements dObject {
                 || string.toLowerCase().matches("m@random")) {
 
             // Get a random material
-            return new dMaterial(Material.values()[Utilities.getRandom().nextInt(Material.values().length)]);
+            return new dMaterial(Material.values()[CoreUtilities.getRandom().nextInt(Material.values().length)]);
         }
 
         Matcher m = materialPattern.matcher(string);

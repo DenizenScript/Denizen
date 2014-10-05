@@ -6,11 +6,8 @@ import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
 import java.util.*;
 
 public class ScriptRegistry {

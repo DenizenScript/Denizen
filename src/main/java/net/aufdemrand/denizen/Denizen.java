@@ -52,7 +52,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.yaml.snakeyaml.Yaml;
 
 
 public class Denizen extends JavaPlugin implements DenizenImplementation {

@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptEntrySet;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;

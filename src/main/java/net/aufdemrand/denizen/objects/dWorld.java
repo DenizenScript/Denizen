@@ -3,8 +3,8 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Bukkit;
@@ -272,7 +272,7 @@ public class dWorld implements dObject, Adjustable {
         // returns a random loaded chunk.
         // -->
         if (attribute.startsWith("random_loaded_chunk")) {
-            int random = Utilities.getRandom().nextInt(getWorld().getLoadedChunks().length);
+            int random = CoreUtilities.getRandom().nextInt(getWorld().getLoadedChunks().length);
             return new dChunk((CraftChunk) getWorld().getLoadedChunks()[random])
                     .getAttribute(attribute.fulfill(1));
         }

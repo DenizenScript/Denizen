@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Color;
 
 import net.aufdemrand.denizen.tags.Attribute;
@@ -36,9 +36,9 @@ public class dColor implements dObject {
         if (string.matches("RANDOM")) {
 
             // Get a color using random RGB values
-            return new dColor(Utilities.getRandom().nextInt(256),
-                    Utilities.getRandom().nextInt(256),
-                    Utilities.getRandom().nextInt(256));
+            return new dColor(CoreUtilities.getRandom().nextInt(256),
+                    CoreUtilities.getRandom().nextInt(256),
+                    CoreUtilities.getRandom().nextInt(256));
         }
 
         Matcher m = rgbPattern.matcher(string);

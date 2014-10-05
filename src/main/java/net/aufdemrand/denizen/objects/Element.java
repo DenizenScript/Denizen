@@ -17,7 +17,6 @@ import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.SQLEscaper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 
 // <--[language]

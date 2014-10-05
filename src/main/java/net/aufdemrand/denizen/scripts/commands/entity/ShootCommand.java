@@ -19,7 +19,6 @@ import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.Velocity;
@@ -27,6 +26,7 @@ import net.aufdemrand.denizen.utilities.entity.Gravity;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
@@ -294,8 +294,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             Vector base = lastEntity.getVelocity().clone();
             float sf = spread.asFloat();
             for (dEntity entity: entities) {
-                Vector newvel = Velocity.spread(base, (Utilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(Utilities.getRandom().nextDouble() * sf),
-                        (Utilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(Utilities.getRandom().nextDouble() * sf));
+                Vector newvel = Velocity.spread(base, (CoreUtilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(CoreUtilities.getRandom().nextDouble() * sf),
+                        (CoreUtilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(CoreUtilities.getRandom().nextDouble() * sf));
                 entity.setVelocity(newvel);
             }
         }

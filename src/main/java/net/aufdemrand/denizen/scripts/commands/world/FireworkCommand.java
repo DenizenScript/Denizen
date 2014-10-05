@@ -13,9 +13,9 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Conversion;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.entity.Firework;
@@ -44,7 +44,7 @@ public class FireworkCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("type")
                      && arg.matches("random")) {
-                scriptEntry.addObject("type", new Element(FireworkEffect.Type.values()[Utilities.getRandom().nextInt(FireworkEffect.Type.values().length)].name()));
+                scriptEntry.addObject("type", new Element(FireworkEffect.Type.values()[CoreUtilities.getRandom().nextInt(FireworkEffect.Type.values().length)].name()));
             }
 
             else if (!scriptEntry.hasObject("type")
