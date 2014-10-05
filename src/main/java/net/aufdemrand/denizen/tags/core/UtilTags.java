@@ -24,7 +24,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
+import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;

@@ -17,6 +17,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 
 /**
  * Preferred method of outputting debugger information with Denizen and

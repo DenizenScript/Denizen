@@ -13,7 +13,7 @@ import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.Debuggable;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.apache.commons.lang.RandomStringUtils;
