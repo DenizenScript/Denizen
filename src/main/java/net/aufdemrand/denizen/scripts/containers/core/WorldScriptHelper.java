@@ -3388,6 +3388,7 @@ public class WorldScriptHelper implements Listener {
                     events.add(interaction + " block in notable cuboid");
                     events.add(interaction + ' ' + blockMaterial.identifySimple() + " in notable cuboid");
                 }
+                // TODO: Add all events + in <cuboid>
                 for (dCuboid cuboid : cuboids) {
                     events.add(interaction + " block in " + cuboid.identifySimple());
                     events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());

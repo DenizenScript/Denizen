@@ -231,7 +231,7 @@ public class TagManager implements Listener {
                         dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
                                 event.getReplaced() + "'.");
                     if (!event.replaced())
-                        dB.echoError("Tag '" + event.getReplaced() + "' is invalid!");
+                        dB.echoError(context.entry != null ? context.entry.getResidingQueue(): null, "Tag '" + event.getReplaced() + "' is invalid!");
                     arg = arg.substring(0, positions[0]) + escapeOutput(event.getReplaced()) + arg.substring(positions[1] + 1, arg.length());
                 }
             }
