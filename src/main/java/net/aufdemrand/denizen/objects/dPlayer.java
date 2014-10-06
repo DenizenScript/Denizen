@@ -552,17 +552,17 @@ public class dPlayer implements dObject, Adjustable {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
             else return Element.NULL.getAttribute(attribute.fulfill(1));
-            attribute.fulfill(1);
-            if (attribute.startsWith("is_expired")
+            if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired"))
                 return new Element(!FlagManager.playerHasFlag(this, flag_name))
-                        .getAttribute(attribute.fulfill(1));
-            if (attribute.startsWith("size") && !FlagManager.playerHasFlag(this, flag_name))
-                return new Element(0).getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(2));
+            if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.playerHasFlag(this, flag_name))
+                return new Element(0).getAttribute(attribute.fulfill(2));
             if (FlagManager.playerHasFlag(this, flag_name))
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getPlayerFlag(this, flag_name))
-                        .getAttribute(attribute);
+                        .getAttribute(attribute.fulfill(1));
+            return new Element(identify()).getAttribute(attribute);
         }
 
         // <--[tag]
