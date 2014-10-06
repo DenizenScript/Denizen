@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
@@ -320,8 +321,7 @@ public class DenizenCommandHandler {
         if (args.hasFlag('a')) {
             denizen.reloadConfig();
             denizen.runtimeCompiler.reload();
-            ScriptHelper.resetError();
-            ScriptHelper.reloadScripts();
+            DenizenCore.reloadScripts();
             denizen.notableManager().reloadNotables();
             denizen.reloadSaves();
             Messaging.send(sender, "Denizen/saves.yml, Denizen/notables.yml, Denizen/config.yml, Denizen/scripts/..., and Denizen/externals/... reloaded from disk to memory.");
@@ -352,8 +352,7 @@ public class DenizenCommandHandler {
                 Messaging.send(sender, "Denizen/config.yml reloaded from disk to memory.");
                 return;
             } else if (args.getString(1).equalsIgnoreCase("scripts")) {
-                ScriptHelper.resetError();
-                ScriptHelper.reloadScripts();
+                DenizenCore.reloadScripts();
                 Messaging.send(sender, "Denizen/scripts/... reloaded from disk to memory.");
                 if (ScriptHelper.hadError()) {
                     Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
@@ -387,7 +386,7 @@ public class DenizenCommandHandler {
      * DENIZEN SCRIPTS
      */
     @Command(
-            aliases = { "denizen" }, usage = "scripts (--type assignment|task|activity|interact) (--filter string)",
+            aliases = { "denizen" }, usage = "scripts (--type assignment|task|...) (--filter string)",
             desc = "Lists currently loaded dScripts.", modifiers = { "scripts" },
             min = 1, max = 4, permission = "denizen.basic")
     public void scripts(CommandContext args, CommandSender sender) throws CommandException {

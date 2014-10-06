@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -115,7 +116,7 @@ public class ScriptRegistry {
      */
     public static void removeYamlScriptContainer(FileConfiguration yaml_script) {
         outside_scripts.remove(yaml_script);
-        ScriptHelper.reloadScripts();
+        DenizenCore.reloadScripts();
     }
 
     public static <T extends ScriptContainer> T getScriptContainerAs(String name, Class<T> type) {
