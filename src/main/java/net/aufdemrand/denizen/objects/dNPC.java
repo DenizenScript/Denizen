@@ -538,7 +538,6 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getNPCFlag(getId(), flag_name))
                         .getAttribute(attribute);
-            else return Element.NULL.getAttribute(attribute);
         }
 
         // <--[tag]

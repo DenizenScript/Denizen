@@ -144,7 +144,6 @@ public class UtilTags implements Listener {
                 event.setReplaced(new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getGlobalFlag(flag_name))
                         .getAttribute(attribute));
-            else event.setReplaced("null");
             return;
         }
 
