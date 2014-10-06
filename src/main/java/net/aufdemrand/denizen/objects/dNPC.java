@@ -380,7 +380,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         }
 
         // Defined in dEntity
-        if (attribute.startsWith("location")) {
+        if (attribute.startsWith("location") && !isSpawned()) {
             return getLocation().getAttribute(attribute.fulfill(1));
         }
 
@@ -527,18 +527,17 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
             else return Element.NULL.getAttribute(attribute.fulfill(1));
-            attribute.fulfill(1);
-            if (attribute.startsWith("is_expired")
+            if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired"))
                 return new Element(!FlagManager.npcHasFlag(this, flag_name))
-                        .getAttribute(attribute.fulfill(1));
-            if (attribute.startsWith("size") && !FlagManager.npcHasFlag(this, flag_name))
-                return new Element(0).getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(2));
+            if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.npcHasFlag(this, flag_name))
+                return new Element(0).getAttribute(attribute.fulfill(2));
             if (FlagManager.npcHasFlag(this, flag_name))
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getNPCFlag(getId(), flag_name))
-                        .getAttribute(attribute);
-            else return Element.NULL.getAttribute(attribute);
+                        .getAttribute(attribute.fulfill(1));
+             return new Element(identify()).getAttribute(attribute);
         }
 
         // <--[tag]

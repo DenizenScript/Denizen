@@ -47,14 +47,14 @@ public class TriggerTrait extends Trait implements Listener {
         super("triggers");
         for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet())
             if (!enabled.containsKey(triggerName))
-                enabled.put(triggerName, Settings.TriggerEnabled(triggerName));
+                enabled.put(triggerName, Settings.triggerEnabled(triggerName));
     }
 
 
     public void onSpawn() {
         for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet())
             if (!enabled.containsKey(triggerName))
-                enabled.put(triggerName, Settings.TriggerEnabled(triggerName));
+                enabled.put(triggerName, Settings.triggerEnabled(triggerName));
     }
 
 
@@ -108,7 +108,7 @@ public class TriggerTrait extends Trait implements Listener {
     public double getCooldownDuration(String triggerName) {
         if (duration.containsKey(triggerName.toUpperCase()))
             return duration.get(triggerName.toUpperCase());
-        else return Settings.TriggerDefaultCooldown(triggerName);
+        else return Settings.triggerDefaultCooldown(triggerName);
     }
 
 
@@ -116,7 +116,7 @@ public class TriggerTrait extends Trait implements Listener {
         try {
             if (type.containsKey(triggerName.toUpperCase()))
                 return type.get(triggerName.toUpperCase());
-            else return CooldownType.valueOf(Settings.TriggerDefaultCooldownType(triggerName).toUpperCase());
+            else return CooldownType.valueOf(Settings.triggerDefaultCooldownType(triggerName).toUpperCase());
         } catch (Exception e) { return CooldownType.PLAYER; }
     }
 
@@ -129,7 +129,7 @@ public class TriggerTrait extends Trait implements Listener {
     public double getRadius(String triggerName) {
         if (radius.containsKey(triggerName.toUpperCase()))
             return radius.get(triggerName.toUpperCase());
-        else return Settings.TriggerDefaultRange(triggerName);
+        else return Settings.triggerDefaultRange(triggerName);
     }
 
 

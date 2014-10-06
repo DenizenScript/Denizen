@@ -11,10 +11,12 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.ai.TargetType;
+import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 
+import net.citizensnpcs.api.ai.event.NavigationStuckEvent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -77,6 +79,10 @@ public class NPCTags implements Listener {
     // @Warning This event may fire very rapidly.
     //
     // @Triggers when an NPC finishes navigating.
+    //
+    // @Context
+    // None
+    //
     // -->
 
     // <--[action]
@@ -93,15 +99,15 @@ public class NPCTags implements Listener {
     @EventHandler
     public void navComplete(NavigationCompleteEvent event) {
 
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive())
             EventManager.doEvents(Arrays.asList
-                    ("npc completes navigation"),
-                    dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
+                    ("npc completes navigation"), npc, null, null);
 
         // Do the assignment script action
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
-        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("complete navigation", null);
 
     }
@@ -113,6 +119,10 @@ public class NPCTags implements Listener {
     // @Warning This event may fire very rapidly.
     //
     // @Triggers when an NPC begins navigating.
+    //
+    // @Context
+    // None
+    //
     // -->
 
     // <--[action]
@@ -128,14 +138,14 @@ public class NPCTags implements Listener {
     // -->
     @EventHandler
     public void navBegin(NavigationBeginEvent event) {
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive())
             EventManager.doEvents(Arrays.asList
-                    ("npc begins navigation"),
-                    dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
+                    ("npc begins navigation"), npc, null, null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
-        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("begin navigation", null);
 
         if (event.getNPC().getNavigator().getTargetType() == TargetType.ENTITY) {
@@ -185,13 +195,70 @@ public class NPCTags implements Listener {
     // -->
     @EventHandler
     public void navCancel(NavigationCancelEvent event) {
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+
         EventManager.doEvents(Arrays.asList
-                ("npc cancels navigation"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
+                ("npc cancels navigation"), npc, null, null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
-        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("cancel navigation", null);
         npc.action("cancel navigation due to " + event.getCancelReason().toString(), null);
+    }
+
+    // <--[event]
+    // @Events
+    // npc stuck
+    //
+    // @Triggers when an NPC's navigator is stuck.
+    //
+    // @Context
+    // <context.action> returns 'teleport' or 'none'
+    //
+    // @Determine
+    // "NONE" to do nothing.
+    // "TELEPORT" to teleport.
+    // -->
+
+    // <--[action]
+    // @Actions
+    // stuck
+    //
+    // @Triggers when the NPC's navigator is stuck.
+    //
+    // @Context
+    // <context.action> returns 'teleport' or 'none'
+    //
+    // @Determine
+    // "NONE" to do nothing.
+    // "TELEPORT" to teleport.
+    //
+    // -->
+    @EventHandler
+    public void navStuck(NavigationStuckEvent event) {
+
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+
+        context.put("action", new Element(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport": "none"));
+
+        // Do world script event 'On NPC stuck'
+        if (NPCNavigationSmartEvent.IsActive()) {
+            String determination = EventManager.doEvents(Arrays.asList
+                    ("npc stuck"), npc, null, context);
+            if (determination.equalsIgnoreCase("none"))
+                event.setAction(null);
+            if (determination.equalsIgnoreCase("teleport"))
+                event.setAction(TeleportStuckAction.INSTANCE);
+        }
+
+        // Do the assignment script action
+        if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
+        String determination2 = npc.action("stuck", null, context);
+        if (determination2.equalsIgnoreCase("none"))
+            event.setAction(null);
+        if (determination2.equalsIgnoreCase("teleport"))
+            event.setAction(TeleportStuckAction.INSTANCE);
+
     }
 }

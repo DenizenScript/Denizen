@@ -80,10 +80,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // reduce accidental chats with NPCs.
 
 
-        if (Settings.ChatMustSeeNPC())
+        if (Settings.chatMustSeeNPC())
             if (!player.hasLineOfSight(npc.getEntity())) return new ChatContext(false);
 
-        if (Settings.ChatMustLookAtNPC())
+        if (Settings.chatMustLookAtNPC())
             if (!Rotation.isFacingEntity(player, npc.getEntity(), 45)) return new ChatContext(false);
 
         Boolean ret = false;
@@ -115,7 +115,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (!trigger.wasTriggered()) {
             // If the NPC is not interact-able, Settings may allow the chat to filter
             // through. Check the Settings if this is enabled.
-            if (Settings.ChatGloballyIfUninteractable()) {
+            if (Settings.chatGloballyIfUninteractable()) {
                 dB.echoDebug(script, ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
                         + "The NPC is currently cooling down or engaged.");
                 return new ChatContext(false);
@@ -148,13 +148,13 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             // If this is a Chatbot, make it chat anything it wants if
             // it has no chat triggers for this step
             if (npc.getCitizen().hasTrait(ChatbotTrait.class)) {
-                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
+                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
                 npc.getCitizen().getTrait(ChatbotTrait.class).chatTo(player, message);
                 return new ChatContext(false);
             }
 
             // No chat trigger for this step.. do we chat globally, or to the NPC?
-            else if (!Settings.ChatGloballyIfNoChatTriggers()) {
+            else if (!Settings.chatGloballyIfNoChatTriggers()) {
                 dB.echoDebug(script, player.getName() + " says to "
                         + npc.getNicknameTrait().getNickname() + ", " + message);
                 return new ChatContext(false);
@@ -242,7 +242,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
-            Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
+            Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
             parse(npc, denizenPlayer, script, id, context);
             return new ChatContext(true);
         }
@@ -250,12 +250,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             // If this is a Chatbot, make it chat anything it wants if
             // none of its chat triggers worked
             if (npc.getCitizen().hasTrait(ChatbotTrait.class)) {
-                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
+                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
                 npc.getCitizen().getTrait(ChatbotTrait.class).chatTo(player, message);
                 return new ChatContext(true);
             }
-            else if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
-                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
+            else if (!Settings.chatGloballyIfFailedChatTriggers ()) {
+                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
                 return new ChatContext(true);
             }
             // No matching chat triggers, and the config.yml says we
@@ -270,7 +270,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (event.isCancelled()) return;
 
         // Return if "Use asynchronous event" is false in config file
-        if (!Settings.ChatAsynchronous()) return;
+        if (!Settings.chatAsynchronous()) return;
 
         Callable<ChatContext> call = new Callable<ChatContext>() {
             public ChatContext call() {
@@ -309,7 +309,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (event.isCancelled()) return;
 
         // Return if "Use asynchronous event" is true in config file
-        if (Settings.ChatAsynchronous()) return;
+        if (Settings.chatAsynchronous()) return;
 
         ChatContext chat = process(event.getPlayer(), event.getMessage());
 

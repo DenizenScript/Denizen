@@ -19,12 +19,12 @@ import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
 
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -144,7 +144,6 @@ public class UtilTags implements Listener {
                 event.setReplaced(new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getGlobalFlag(flag_name))
                         .getAttribute(attribute));
-            else event.setReplaced("null");
             return;
         }
 
@@ -201,8 +200,8 @@ public class UtilTags implements Listener {
         // -->
         if (attribute.startsWith("has_event")
                 && attribute.hasContext(1)) {
-            event.setReplaced(new Element(EventManager.EventExists(attribute.getContext(1))
-                    || EventManager.EventExists(EventManager.StripIdentifiers(attribute.getContext(1))))
+            event.setReplaced(new Element(EventManager.eventExists(attribute.getContext(1))
+                    || EventManager.eventExists(EventManager.StripIdentifiers(attribute.getContext(1))))
                     .getAttribute(attribute.fulfill(1)));
         }
 
@@ -714,7 +713,7 @@ public class UtilTags implements Listener {
                         }
 
                         event.setReplaced(new Element(
-                                String.valueOf(Utilities.getRandom().nextInt(max - min + 1) + min))
+                                String.valueOf(CoreUtilities.getRandom().nextInt(max - min + 1) + min))
                                 .getAttribute(attribute.fulfill(3)));
                     }
                 }
@@ -727,7 +726,7 @@ public class UtilTags implements Listener {
             // Returns a random decimal number from 0 to 1
             // -->
             else if (subType.equalsIgnoreCase("DECIMAL"))
-                event.setReplaced(new Element(Utilities.getRandom().nextDouble())
+                event.setReplaced(new Element(CoreUtilities.getRandom().nextDouble())
                         .getAttribute(attribute.fulfill(2)));
 
                 // <--[tag]
@@ -738,7 +737,7 @@ public class UtilTags implements Listener {
                 // 70% of all results will be within the range of -1 to 1.
                 // -->
             else if (subType.equalsIgnoreCase("GAUSS"))
-                event.setReplaced(new Element(Utilities.getRandom().nextGaussian())
+                event.setReplaced(new Element(CoreUtilities.getRandom().nextGaussian())
                         .getAttribute(attribute.fulfill(2)));
 
             // TODO: Delete (Deprecated in favor of li@list.random)

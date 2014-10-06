@@ -17,6 +17,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 
 /**
  * Preferred method of outputting debugger information with Denizen and
@@ -63,7 +64,7 @@ import org.bukkit.command.CommandSender;
  */
 public class dB {
 
-    public static boolean showDebug = Settings.ShowDebug();
+    public static boolean showDebug = Settings.showDebug();
     public static boolean showStackTraces = true;
     public static boolean showScriptBuilder = false;
     public static boolean showColor = true;
@@ -72,7 +73,6 @@ public class dB {
     public static List<String> filter = new ArrayList<String>();
 
     public static boolean shouldTrim = true;
-    public static int trimSize = 512;
     public static boolean record = false;
     public static StringBuilder Recording = new StringBuilder();
     public static void toggle() { showDebug = !showDebug; }
@@ -359,6 +359,7 @@ public class dB {
     // Some debug methods trim to keep super-long messages from hitting the console.
     private static String trimMessage(String message) {
         if (!shouldTrim) return message;
+        int trimSize = Settings.trimLength();
         if (message.length() > trimSize)
             message = message.substring(0, trimSize - 1) + "... * snip! *";
         return message;
@@ -417,7 +418,7 @@ public class dB {
 
             // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
             // than having a bunch of ChatColor.XXXX
-            string = TagManager.CleanOutputFully(string
+            string = TagManager.cleanOutputFully(string
                     .replace("<Y>", ChatColor.YELLOW.toString())
                     .replace("<G>", ChatColor.DARK_GRAY.toString())
                     .replace("<A>", ChatColor.AQUA.toString()));
@@ -432,9 +433,10 @@ public class dB {
             String[] words = string.split(" ");
             StringBuilder buffer = new StringBuilder();
             int length = 0;
+            int width = Settings.consoleWidth();
             for (String word : words) { // # of total chars * # of lines - timestamp
                 int strippedLength = ChatColor.stripColor(word).length() + 1;
-                if (length + strippedLength  < Settings.ConsoleWidth()) {
+                if (length + strippedLength  < width) {
                     buffer.append(word).append(" ");
                     length = length + strippedLength;
                 } else {
@@ -442,7 +444,7 @@ public class dB {
                     length = strippedLength;
                     // Leave spaces to account for timestamp and indent
                     buffer.append("\n                   ").append(word).append(" ");
-                }                          // 16:05:06 [INFO]
+                }                 // [01:02:03 INFO]:
             }
 
             String result = buffer.toString();

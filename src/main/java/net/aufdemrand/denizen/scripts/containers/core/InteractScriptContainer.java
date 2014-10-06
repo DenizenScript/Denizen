@@ -7,12 +7,12 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import java.util.*;
 
 public class InteractScriptContainer extends ScriptContainer {
 
-    public InteractScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public InteractScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
 
         try {
@@ -25,7 +25,7 @@ public class InteractScriptContainer extends ScriptContainer {
 
             for (String step : keys) {
                 if (step.contains("*")) {
-                    ConfigurationSection defaultStepSection = getConfigurationSection("STEPS." + step);
+                    YamlConfiguration defaultStepSection = getConfigurationSection("STEPS." + step);
                     step = step.replace("*", "");
                     set("STEPS." + step, defaultStepSection);
                     set("STEPS." + step + "*", null);

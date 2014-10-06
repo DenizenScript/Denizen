@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.interfaces.dExternal;
+import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;

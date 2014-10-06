@@ -13,8 +13,8 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,7 +70,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public InventoryScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public InventoryScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         InventoryScriptHelper.inventory_scripts.put(getName(), this);
     }

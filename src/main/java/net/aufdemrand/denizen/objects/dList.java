@@ -14,9 +14,9 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.NaturalOrderComparator;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 
 import java.util.*;
@@ -453,7 +453,16 @@ public class dList extends ArrayList<String> implements dObject {
             StringBuilder dScriptArg = new StringBuilder();
 
             for (int n = 0; n < this.size(); n++) {
-                if (dEntity.matches(get(n))) {
+                if (dPlayer.matches(get(n))) {
+                    dPlayer gotten = dPlayer.valueOf(get(n));
+                    if (gotten != null) {
+                        dScriptArg.append(gotten.getName());
+                    }
+                    else {
+                        dScriptArg.append(get(n).replaceAll("\\w+@", ""));
+                    }
+                }
+                else if (dEntity.matches(get(n))) {
                     dEntity gotten = dEntity.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
@@ -747,7 +756,7 @@ public class dList extends ArrayList<String> implements dObject {
         // returns the last element in the list.
         // If the list is empty, returns null instead.
         // EG, a list of "one|two|three" will return "three".
-        // Effectively equivalent to .get[9999]
+        // Effectively equivalent to .get[999999]
         // -->
         if (attribute.startsWith("last")) {
             if (size() == 0)
@@ -1055,7 +1064,7 @@ public class dList extends ArrayList<String> implements dObject {
                     available.addAll(this);
                     dList toReturn = new dList();
                     while (!available.isEmpty() && times < count) {
-                        int random = Utilities.getRandom().nextInt(available.size());
+                        int random = CoreUtilities.getRandom().nextInt(available.size());
                         toReturn.add(available.get(random));
                         available.remove(random);
                         times++;
@@ -1063,7 +1072,7 @@ public class dList extends ArrayList<String> implements dObject {
                     return toReturn.getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new Element(this.get(Utilities.getRandom().nextInt(this.size())))
+                    return new Element(this.get(CoreUtilities.getRandom().nextInt(this.size())))
                             .getAttribute(attribute.fulfill(1));
                 }
             }

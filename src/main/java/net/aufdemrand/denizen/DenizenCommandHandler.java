@@ -8,7 +8,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -206,7 +206,7 @@ public class DenizenCommandHandler {
         Messaging.sendInfo(sender, " _/_ _  ._  _ _  ");
         Messaging.sendInfo(sender, "(/(-/ )/ /_(-/ ) " + "<7> scriptable NPCs"); // TODO: "It's Scriptable!"?
                 Messaging.send(sender, "");
-        Messaging.send(sender, "<7>by: <f>aufdemrand");
+        Messaging.send(sender, "<7>by: <f>aufdemrand and mcmonkey");
         Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag);
     }
 

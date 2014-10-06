@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -147,7 +147,7 @@ public class WhileCommand extends BracedCommand {
                 data.index++;
                 if (System.currentTimeMillis() - data.LastChecked < 50) {
                     data.instaTicks++;
-                    int max = Settings.WhileMaxLoops();
+                    int max = Settings.whileMaxLoops();
                     if (data.instaTicks > max && max != 0)
                         return;
                 }

@@ -56,7 +56,7 @@ public class EscapeTags implements Listener {
     public static String Escape(String input) {
         if (input == null)
             return null;
-        return TagManager.CleanOutputFully(input)
+        return TagManager.cleanOutputFully(input)
                 .replace("&", "&amp").replace("|", "&pipe")
                 .replace(">", "&gt").replace("<", "&lt")
                 .replace("\n", "&nl").replace(";", "&sc")
@@ -76,7 +76,7 @@ public class EscapeTags implements Listener {
     public static String unEscape(String input) {
         if (input == null)
             return null;
-        return TagManager.CleanOutputFully(input)
+        return TagManager.cleanOutputFully(input)
                 .replace("&pipe", "|").replace("&nl", "\n")
                 .replace("&gt", ">").replace("&lt", "<")
                 .replace("&sc", ";").replace("&sq", "'")

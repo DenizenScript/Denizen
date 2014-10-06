@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 public class FormatScriptContainer extends ScriptContainer {
 
@@ -63,16 +63,12 @@ public class FormatScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public FormatScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public FormatScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
 
     public String getFormat() {
         return getString("FORMAT", "<text>");
-    }
-
-    public void setFormat(String format) {
-        set("FORMAT", format);
     }
 
     public String getFormattedText(ScriptEntry entry) {

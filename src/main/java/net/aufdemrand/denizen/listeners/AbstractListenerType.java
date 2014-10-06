@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 
 public abstract class AbstractListenerType implements RegistrationableInstance {
 

@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
@@ -100,7 +100,7 @@ public class EngageCommand extends AbstractCommand {
      */
     public static void setEngaged(NPC npc, boolean engaged) {
         if (engaged) currentlyEngaged.put(npc, System.currentTimeMillis()
-                + (long) (Duration.valueOf(Settings.EngageTimeoutInSeconds()).getSeconds()) * 1000 );
+                + (long) (Duration.valueOf(Settings.engageTimeoutInSeconds()).getSeconds()) * 1000 );
         if (!engaged) currentlyEngaged.remove(npc);
     }
 

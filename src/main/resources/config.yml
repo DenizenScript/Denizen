@@ -4,6 +4,7 @@ Debug:
   Show: true
   Ex command help: true
   Console width: 60
+  Trim length: 512
 
 Scripts:
   World:
@@ -17,7 +18,6 @@ Scripts:
   Scripts location:
     Use default script folder: true
     Alternative folder path: 'plugins/Denizen'
-  Load scripts in subfolders: true
 
 # The default options for new Denizen NPCs
 

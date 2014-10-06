@@ -2,9 +2,7 @@ package net.aufdemrand.denizen.scripts.requirements;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.scripts.ScriptBuilder;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import org.bukkit.Bukkit;
 
 import java.util.List;
@@ -20,8 +18,6 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
         public String USAGE_HINT = "";
         public int REQUIRED_ARGS = -1;
 
-        public RequirementOptions() { }
-
         public RequirementOptions(String usageHint, int numberOfRequiredArgs) {
             this.USAGE_HINT = usageHint;
             this.REQUIRED_ARGS = numberOfRequiredArgs;
@@ -29,8 +25,6 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
     }
 
     protected Denizen plugin;
-    protected ScriptHelper sH;
-    protected ScriptBuilder sB;
     protected String name;
 
     public RequirementOptions requirementOptions;

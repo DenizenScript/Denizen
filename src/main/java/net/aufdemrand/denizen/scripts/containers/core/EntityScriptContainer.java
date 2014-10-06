@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 public class EntityScriptContainer extends ScriptContainer {
 
@@ -38,7 +38,7 @@ public class EntityScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public EntityScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public EntityScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
 

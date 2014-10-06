@@ -4,7 +4,6 @@ package net.aufdemrand.denizen.tags;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -166,7 +165,7 @@ public class Attribute {
             Matcher contextMatcher = CONTEXT_PATTERN.matcher(text);
 
             if (contextMatcher.find()) {
-                String tagged = TagManager.CleanOutputFully(TagManager.tag(
+                String tagged = TagManager.cleanOutputFully(TagManager.tag(
                         getPlayer(), getNPC(), text.substring(contextMatcher.start() + 1,
                         contextMatcher.end() - 1), false, getScriptEntry()));
                 contexts.set(attribute - 1, tagged);

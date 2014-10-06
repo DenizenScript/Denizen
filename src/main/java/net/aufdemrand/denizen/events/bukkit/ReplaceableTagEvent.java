@@ -1,15 +1,11 @@
 package net.aufdemrand.denizen.events.bukkit;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 
 import net.aufdemrand.denizen.tags.TagManager;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -256,7 +252,7 @@ public class ReplaceableTagEvent extends Event {
         if (value_tagged)
             return value;
         value_tagged = true;
-        value = TagManager.CleanOutputFully(TagManager.tag(
+        value = TagManager.cleanOutputFully(TagManager.tag(
                 getPlayer(), getNPC(), value, false, getScriptEntry()));
         return value;
     }
@@ -271,7 +267,7 @@ public class ReplaceableTagEvent extends Event {
         if (alternative_tagged)
             return alternative;
         alternative_tagged = true;
-        alternative = TagManager.CleanOutputFully(TagManager.tag(
+        alternative = TagManager.cleanOutputFully(TagManager.tag(
                 getPlayer(), getNPC(), alternative, false, getScriptEntry()));
         return alternative;
     }

@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 
-import org.bukkit.Bukkit;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 
 public abstract class AbstractCommand implements RegistrationableInstance {
 
@@ -45,7 +45,7 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 
     @Override
     public AbstractCommand activate() {
-        this.denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+        this.denizen = DenizenAPI.getCurrentInstance();
         return this;
     }
 

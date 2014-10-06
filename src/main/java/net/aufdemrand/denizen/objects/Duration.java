@@ -8,9 +8,9 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 
 import com.google.common.primitives.Ints;
@@ -109,7 +109,7 @@ public class Duration implements dObject {
             // and that 'low' is less time than 'high'.
             if (low != null && high != null
                     && low.getSecondsAsInt() < high.getSecondsAsInt()) {
-                int seconds = Utilities.getRandom()
+                int seconds = CoreUtilities.getRandom()
                         .nextInt((high.getSecondsAsInt() - low.getSecondsAsInt() + 1))
                                 + low.getSecondsAsInt();
                 // dB.log("Getting random duration between " + low.identify()

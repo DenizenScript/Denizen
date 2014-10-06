@@ -8,10 +8,10 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_7_R4.EntityHuman;
 import net.minecraft.server.v1_7_R4.EntityLiving;
 import org.bukkit.*;
@@ -82,7 +82,7 @@ public class dEntity implements dObject, Adjustable {
                             "|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LEASH_HITCH|LIGHTNING" +
                             "|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$")) {
 
-                randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
+                randomType = EntityType.values()[CoreUtilities.getRandom().nextInt(EntityType.values().length)];
             }
 
             return new dEntity(randomType, "RANDOM");
@@ -903,7 +903,7 @@ public class dEntity implements dObject, Adjustable {
 
         if (value.equalsIgnoreCase("RANDOM")) {
 
-            entityClass.getMethod(method, typeClass).invoke(entity, types[Utilities.getRandom().nextInt(types.length)]);
+            entityClass.getMethod(method, typeClass).invoke(entity, types[CoreUtilities.getRandom().nextInt(types.length)]);
         }
         else {
             for (Object type : types) {

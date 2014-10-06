@@ -1,8 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -13,7 +11,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 public class dScript implements dObject {
 
@@ -316,7 +314,7 @@ public class dScript implements dObject {
         if (attribute.startsWith("cons")) {
             if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
 
-            ConfigurationSection section = getContainer().getConfigurationSection("constants");
+            YamlConfiguration section = getContainer().getConfigurationSection("constants");
             if (section == null) return Element.NULL.getAttribute(attribute.fulfill(1));
             Object obj = section.get(attribute.getContext(1).toUpperCase());
             if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));

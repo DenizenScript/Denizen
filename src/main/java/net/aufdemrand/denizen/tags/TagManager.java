@@ -6,14 +6,13 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Calls a bukkit event for replaceable tags.
@@ -89,7 +88,7 @@ public class TagManager implements Listener {
      * @param input the potentially escaped input string.
      * @return the cleaned output string.
      */
-    public static String CleanOutput(String input) {
+    public static String cleanOutput(String input) {
         if (input == null) return null;
         return input.replace((char)0x01, '<')
                     .replace((char)0x02, '>')
@@ -109,7 +108,7 @@ public class TagManager implements Listener {
      * @param input the potentially escaped input string.
      * @return the cleaned output string.
      */
-    public static String CleanOutputFully(String input) {
+    public static String cleanOutputFully(String input) {
         if (input == null) return null;
         return input.replace((char)0x01, '<')
                     .replace((char)0x02, '>')
@@ -120,7 +119,7 @@ public class TagManager implements Listener {
                     .replace((char)0x06, ']');
     }
 
-    public static String EscapeOutput(String input) {
+    public static String escapeOutput(String input) {
         if (input == null) return null;
         return input.replace('|', dList.internal_escape_char)
                     .replace('<', (char)0x01)
@@ -133,7 +132,7 @@ public class TagManager implements Listener {
     public void fetchObject(ReplaceableTagEvent event) {
         if (!event.getName().contains("@")) return;
 
-        String object_type = event.getName().split("@")[0].toLowerCase();
+        String object_type = StringUtils.split(event.getName(), '@')[0].toLowerCase();
         Class object_class = ObjectFetcher.getObjectClass(object_type);
 
         if (object_class == null) {
@@ -198,7 +197,7 @@ public class TagManager implements Listener {
         if (arg == null) return null;
 
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
-        if (arg.indexOf('>') == -1 || arg.length() < 3) return CleanOutput(arg);
+        if (arg.indexOf('>') == -1 || arg.length() < 3) return cleanOutput(arg);
 
         // Parse \escaping down to internal escaping.
         if (!context.instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));
@@ -206,7 +205,7 @@ public class TagManager implements Listener {
         // Find location of the first tag
         int[] positions = locateTag(arg);
         if (positions == null) {
-            return CleanOutput(arg);
+            return cleanOutput(arg);
         }
 
         int failsafe = 0;
@@ -221,7 +220,7 @@ public class TagManager implements Listener {
                 if (event.isInstant() != context.instant) {
                     // Not the right type of tag, escape the brackets so it doesn't get parsed again
                     arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
-                            + EscapeOutput(event.getReplaced()) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
+                            + escapeOutput(event.getReplaced()) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
                 } else {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
@@ -232,15 +231,15 @@ public class TagManager implements Listener {
                         dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
                                 event.getReplaced() + "'.");
                     if (!event.replaced())
-                        dB.echoError("Tag '" + event.getReplaced() + "' is invalid!");
-                    arg = arg.substring(0, positions[0]) + EscapeOutput(event.getReplaced()) + arg.substring(positions[1] + 1, arg.length());
+                        dB.echoError(context.entry != null ? context.entry.getResidingQueue(): null, "Tag '" + event.getReplaced() + "' is invalid!");
+                    arg = arg.substring(0, positions[0]) + escapeOutput(event.getReplaced()) + arg.substring(positions[1] + 1, arg.length());
                 }
             }
             // Find new tag
             positions = locateTag(arg);
         } while (positions != null || failsafe < 50);
 
-        return CleanOutput(arg);
+        return cleanOutput(arg);
     }
 
     private static int[] locateTag(String arg) {

@@ -11,8 +11,10 @@ import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
+import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.interfaces.dExternal;
+import net.aufdemrand.denizen.utilities.*;
+import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.speech.DenizenChat;
@@ -28,15 +30,14 @@ import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.TagManager;
-import net.aufdemrand.denizen.utilities.MetricsLite;
-import net.aufdemrand.denizen.utilities.RuntimeCompiler;
-import net.aufdemrand.denizen.utilities.ScoreboardHelper;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.command.CommandManager;
 import net.aufdemrand.denizen.utilities.command.Injector;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.DenizenCore;
+import net.aufdemrand.denizencore.DenizenImplementation;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 
@@ -53,7 +54,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-public class Denizen extends JavaPlugin {
+public class Denizen extends JavaPlugin implements DenizenImplementation {
     public final static int configVersion = 7;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
@@ -61,7 +62,9 @@ public class Denizen extends JavaPlugin {
 
     private CommandManager commandManager;
 
-    public CommandManager getCommandManager() { return commandManager; }
+    public CommandManager getCommandManager() {
+        return commandManager;
+    }
 
 
     /*
@@ -163,6 +166,11 @@ public class Denizen extends JavaPlugin {
         }
 
         try {
+            versionTag = this.getDescription().getVersion();
+
+            // Load Denizen's core
+            DenizenCore.init(this);
+
             // Activate dependencies
             depends.initialize();
 
@@ -172,7 +180,6 @@ public class Denizen extends JavaPlugin {
                 //return;
             }
             startedSuccessful = true;
-            versionTag = this.getDescription().getVersion();
 
             // Startup procedure
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
@@ -351,7 +358,7 @@ public class Denizen extends JavaPlugin {
             @Override
             public void run() {
                 try {
-                    ScriptHelper.reloadScripts();
+                    DenizenCore.loadScripts();
 
                     // Reload notables from notables.yml into memory
                     notableManager.reloadNotables();
@@ -614,7 +621,7 @@ public class Denizen extends JavaPlugin {
                 return true;
             }
 
-            if (Settings.ShowExHelp()) {
+            if (Settings.showExHelp()) {
                 if (dB.showDebug)
                     sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for debug output!");
                 else
@@ -654,6 +661,78 @@ public class Denizen extends JavaPlugin {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public File getScriptFolder() {
+        File file = null;
+        // Get the script directory
+        if (Settings.useDefaultScriptPath())
+            file = new File(DenizenAPI.getCurrentInstance()
+                    .getDataFolder() + File.separator + "scripts");
+        else
+            file = new File(Settings.getAlternateScriptPath().replace("/", File.separator));
+        return file;
+    }
+
+    @Override
+    public String getImplementationVersion() {
+        return versionTag;
+    }
+
+    @Override
+    public void debugMessage(String message) {
+        dB.log(message);
+    }
+
+    @Override
+    public void debugException(Exception ex) {
+        dB.echoError(ex);
+    }
+
+    @Override
+    public void debugError(String error) {
+        dB.echoError(error);
+    }
+
+    @Override
+    public void debugApproval(String message) {
+        dB.echoApproval(message);
+    }
+
+    @Override
+    public String getImplementationName() {
+        return "Bukkit";
+    }
+
+    @Override
+    public void preScriptReload() {
+        // Remove all recipes added by Denizen item scripts
+        ItemScriptHelper.removeDenizenRecipes();
+        // Remove all registered commands added by Denizen command scripts
+        CommandScriptHelper.removeDenizenCommands();
+    }
+
+    @Override
+    public void onScriptReload() {
+        Bukkit.getServer().getPluginManager().callEvent(new ScriptReloadEvent());
+    }
+
+    @Override
+    public void buildCoreContainers(net.aufdemrand.denizencore.utilities.YamlConfiguration config) {
+        ScriptRegistry._buildCoreYamlScriptContainers(config);
+    }
+
+    @Override
+    public List<net.aufdemrand.denizencore.utilities.YamlConfiguration> getOutsideScripts() {
+        List<net.aufdemrand.denizencore.utilities.YamlConfiguration> files = new ArrayList<net.aufdemrand.denizencore.utilities.YamlConfiguration>();
+        try {
+            files.add(ScriptHelper.loadConfig("Denizen.jar/util.dscript", getResource("util.dscript")));
+        }
+        catch (IOException e) {
+            dB.echoError(e);
+        }
+        return files;
     }
 }
 

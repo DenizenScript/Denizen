@@ -1,14 +1,12 @@
 package net.aufdemrand.denizen.utilities;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Set;
 
 import net.aufdemrand.denizen.Settings;
@@ -18,6 +16,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.TagManager;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -36,22 +35,14 @@ import org.bukkit.entity.Player;
  */
 public class Utilities {
 
-    // TODO: Javadocs, comments
-    //
-    static Random random = new Random();
-
-    public static Random getRandom() {
-        return random;
-    }
-
 
     // TODO: Javadocs, comments
     //
     public static Location getWalkableLocationNear(Location location, int range) {
         Location returnable;
 
-        int selected_x = random.nextInt(range * 2);
-        int selected_z = random.nextInt(range * 2);
+        int selected_x = CoreUtilities.getRandom().nextInt(range * 2);
+        int selected_z = CoreUtilities.getRandom().nextInt(range * 2);
         returnable = location.clone().add(selected_x - range, 1, selected_z - range);
 
         // TODO: Handle location being underground/in a wall better than a stack overflow?
@@ -111,9 +102,9 @@ public class Utilities {
     public static void talkToNPC(String message, dPlayer player, dNPC npc, double range) {
         String replacer = String.valueOf((char)0x04);
         // Get formats from Settings, and fill in <TEXT>
-        String talkFormat = Settings.ChatToNpcFormat()
+        String talkFormat = Settings.chatToNpcFormat()
                 .replaceAll("(?i)<TEXT>", replacer);
-        String bystanderFormat = Settings.ChatToNpcOverheardFormat()
+        String bystanderFormat = Settings.chatToNpcOverheardFormat()
                 .replaceAll("(?i)<TEXT>", replacer);
 
         // Fill in tags
@@ -188,9 +179,9 @@ public class Utilities {
             f++;
 
             Location loc = location.clone()
-                    .add(Utilities.getRandom().nextInt(range * 2) - range,
-                            Utilities.getRandom().nextInt(range * 2) - range,
-                            Utilities.getRandom().nextInt(range * 2) - range);
+                    .add(CoreUtilities.getRandom().nextInt(range * 2) - range,
+                            CoreUtilities.getRandom().nextInt(range * 2) - range,
+                            CoreUtilities.getRandom().nextInt(range * 2) - range);
 
             if (loc.getBlock().getType().isSolid()) {
                 blocks.add(loc.getBlock());
@@ -383,48 +374,6 @@ public class Utilities {
     }
 
 
-    // TODO: Javadocs, comments
-    //
-    protected static FilenameFilter scriptsFilter;
-
-    static {
-        scriptsFilter = new FilenameFilter() {
-            public boolean accept(File file, String fileName) {
-                if(fileName.startsWith(".")) return false;
-
-                String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
-                return ext.equalsIgnoreCase("YML") || ext.equalsIgnoreCase("DSCRIPT");
-            }
-        };
-    }
-
-
-    /**
-     * Lists all files in the given directory.
-     *
-     * @param dir The directory to search in
-     * @param recursive If true subfolders will also get checked
-     * @return A {@link File} collection
-     */
-    public static List<File> listDScriptFiles(File dir, boolean recursive) {
-        List<File> files = new ArrayList<File>();
-        File[] entries = dir.listFiles();
-
-        for (File file : entries) {
-            // Add file
-            if (scriptsFilter == null || scriptsFilter.accept(dir, file.getName())) {
-                files.add(file);
-            }
-
-            // Add subdirectories
-            if (recursive && file.isDirectory()) {
-                files.addAll(listDScriptFiles(file, recursive));
-            }
-        }
-
-        return files;
-    }
-
 
     /**
      * Set the lines on a sign to the strings in a string array
@@ -552,7 +501,7 @@ public class Utilities {
     public static String generateRandomColors(int count) {
         String ret = "";
         for (int i = 0; i < count; i++) {
-            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(random.nextInt(34));
+            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(CoreUtilities.getRandom().nextInt(34));
         }
         return ret;
     }

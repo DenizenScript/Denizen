@@ -988,13 +988,14 @@ public class WorldScriptHelper implements Listener {
     // -->
     public void serverStartEvent() {
         // Start the 'timeEvent'
+        long ticks = Settings.worldScriptTimeEventFrequency().getTicks();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
                 new Runnable() {
                     @Override
                     public void run() {
                         timeEvent();
                     }
-                }, Settings.WorldScriptTimeEventFrequency().getTicks(), Settings.WorldScriptTimeEventFrequency().getTicks());
+                }, ticks, ticks);
 
         // Fire the 'Server Start' event
         String determination = EventManager.doEvents(Arrays.asList("server start"),
@@ -2654,7 +2655,7 @@ public class WorldScriptHelper implements Listener {
     // npc closes inventory
     // npc closes <inventory type>
     //
-    // @Triggers when a player closes an inventory.
+    // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
     // @Context
     // <context.inventory> returns the dInventory.
     //
@@ -2752,7 +2753,7 @@ public class WorldScriptHelper implements Listener {
     // player opens inventory
     // player opens <inventory type>
     //
-    // @Triggers when a player opens an inventory.
+    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
     // @Context
     // <context.inventory> returns the dInventory.
     //
@@ -3387,6 +3388,7 @@ public class WorldScriptHelper implements Listener {
                     events.add(interaction + " block in notable cuboid");
                     events.add(interaction + ' ' + blockMaterial.identifySimple() + " in notable cuboid");
                 }
+                // TODO: Add all events + in <cuboid>
                 for (dCuboid cuboid : cuboids) {
                     events.add(interaction + " block in " + cuboid.identifySimple());
                     events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());

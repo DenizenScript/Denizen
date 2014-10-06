@@ -31,13 +31,13 @@ public class HealthTrait extends Trait implements Listener {
 
     // Saved to the C2 saves.yml
     @Persist("animatedeath")
-    private boolean animatedeath = Settings.HealthTraitAnimatedDeathEnabled();
+    private boolean animatedeath = Settings.healthTraitAnimatedDeathEnabled();
 
     @Persist("respawnondeath")
-    private boolean respawn = Settings.HealthTraitRespawnEnabled();
+    private boolean respawn = Settings.healthTraitRespawnEnabled();
 
     @Persist("respawndelayinseconds")
-    private String respawnDelay = Settings.HealthTraitRespawnDelay();
+    private String respawnDelay = Settings.healthTraitRespawnDelay();
 
     @Persist("respawnlocation")
     private String respawnLocation =  "<npc.flag[respawn_location] || <npc.location>>";
@@ -326,14 +326,14 @@ public class HealthTrait extends Trait implements Listener {
 //        dMaterial mat = new dMaterial(Material.WOOL, 14);
 //
 //        for (dPlayer player : Utilities.getClosestPlayers(entity.getLocation(), 10)) {
-//            for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 3, 65))
+//            for (Block block : CoreUtilities.getRandomSolidBlocks(entity.getLocation(), 3, 65))
 //                new FakeBlock(player, new dLocation(block.getLocation()),
 //                        mat, Duration.valueOf("10-20s"));
 //        }
 //
 //        ParticleEffect.CRIT.play(entity.getEyeLocation(), .2f, .2f, .2f, 0, 3500);
 //
-//        for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 2, 5)) {
+//        for (Block block : CoreUtilities.getRandomSolidBlocks(entity.getLocation(), 2, 5)) {
 //            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.BONE)).setPickupDelay(Integer.MAX_VALUE);
 //            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE, 1, (short) 14)).setPickupDelay(Integer.MAX_VALUE);
 //        }

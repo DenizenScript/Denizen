@@ -14,10 +14,10 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -63,12 +63,16 @@ public class EventManager implements Listener {
         // Build a Map of scripts keyed by 'world events name'.
 
         // Loop through each world script
+        dB.log("Scanning " + world_scripts.size() + " world scripts...");
         for (WorldScriptContainer script : world_scripts.values()) {
-            if (script == null) continue;
+            if (script == null) {
+                dB.echoError("Null world script?!");
+                continue;
+            }
 
             // ...and through each event inside the script.
             if (script.contains("EVENTS")) {
-                ConfigurationSection configSection = script.getConfigurationSection("EVENTS");
+                YamlConfiguration configSection = script.getConfigurationSection("EVENTS");
                 if (configSection == null) {
                     dB.echoError("Script '" + script.getName() + "' has an invalid events block!");
                     break;
@@ -88,8 +92,9 @@ public class EventManager implements Listener {
                     events.put(eventName, list);
                 }
             }
-            else
+            else {
                 dB.echoError("Script '" + script.getName() + "' does not have an events block!");
+            }
         }
         // dB.echoApproval("Built events map: " + events);
 
@@ -184,7 +189,7 @@ public class EventManager implements Listener {
     }
 
 
-    public static boolean EventExists(String original) {
+    public static boolean eventExists(String original) {
         return events.containsKey("ON " + original.toUpperCase());
     }
 

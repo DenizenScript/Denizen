@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechContext;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechController;
 import net.aufdemrand.denizen.objects.*;
@@ -104,7 +104,7 @@ public class ChatCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("message"))
             throw new InvalidArgumentsException("Must specify a message!");
 
-        scriptEntry.defaultObject("range", new Element(Settings.ChatBystandersRange()));
+        scriptEntry.defaultObject("range", new Element(Settings.chatBystandersRange()));
 
     }
 
@@ -119,7 +119,7 @@ public class ChatCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug() + chatRange.debug());
 
         // Create new speech context
-        DenizenSpeechContext context = new DenizenSpeechContext(TagManager.CleanOutputFully(message.asString()),
+        DenizenSpeechContext context = new DenizenSpeechContext(TagManager.cleanOutputFully(message.asString()),
                 scriptEntry, chatRange.asDouble());
 
         if (!targets.isEmpty()) {
