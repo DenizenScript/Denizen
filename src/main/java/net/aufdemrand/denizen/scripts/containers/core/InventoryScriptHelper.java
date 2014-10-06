@@ -54,5 +54,4 @@ public class InventoryScriptHelper implements Listener {
         if (tempInventoryScripts.containsKey(inventory) && inventory.getViewers().isEmpty())
             tempInventoryScripts.remove(inventory);
     }
-
 }

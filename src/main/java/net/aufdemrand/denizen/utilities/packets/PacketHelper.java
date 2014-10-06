@@ -35,5 +35,4 @@ public class PacketHelper {
             return classFields.get(cl);
         return null;
     }
-
 }

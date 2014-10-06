@@ -148,5 +148,4 @@ public class CommandScriptHelper implements Listener {
             return topic.getName().charAt(0) == '/';
         }
     }
-
 }

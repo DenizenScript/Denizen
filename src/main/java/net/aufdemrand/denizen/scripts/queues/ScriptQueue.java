@@ -342,8 +342,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         definitions.remove(definition.toLowerCase());
     }
 
-
-
     /**
      * Returns a Map of all the current definitions
      * stored in the queue, keyed by 'definition id'

@@ -113,5 +113,4 @@ public class SyncChatSmartEvent implements SmartEvent, Listener {
         }
 
     }
-
 }

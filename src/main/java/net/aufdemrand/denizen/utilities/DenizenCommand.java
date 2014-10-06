@@ -75,5 +75,4 @@ public class DenizenCommand extends Command {
     public boolean isRegistered() {
         return true;
     }
-
 }

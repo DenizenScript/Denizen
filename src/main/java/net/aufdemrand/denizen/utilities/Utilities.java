@@ -373,8 +373,6 @@ public class Utilities {
         return baseLocation.distanceSquared(theLocation) < theLeeway * theLeeway;
     }
 
-
-
     /**
      * Set the lines on a sign to the strings in a string array
      *

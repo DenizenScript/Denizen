@@ -222,5 +222,4 @@ public class dNPCRegistry implements Listener {
                 equipment.set(i, inventory.getItem(i));
         }
     }
-
 }
