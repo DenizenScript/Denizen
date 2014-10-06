@@ -380,7 +380,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         }
 
         // Defined in dEntity
-        if (attribute.startsWith("location")) {
+        if (attribute.startsWith("location") && !isSpawned()) {
             return getLocation().getAttribute(attribute.fulfill(1));
         }
 
