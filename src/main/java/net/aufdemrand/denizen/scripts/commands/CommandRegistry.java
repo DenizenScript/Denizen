@@ -1567,7 +1567,11 @@ public class CommandRegistry implements dRegistry {
 
         // @Usage
         // Use to listen for when the player kills 10 zombies.
-        // - listen kill type:entity target:zombie mobnames:ZombieBoss qty:10 script:ZombiesKilled
+        // - listen kill type:entity target:zombie qty:10 script:ZombiesKilled
+        
+        //@Usage
+        //Use to listen for when the player kills 3 zombies named "Boss"
+        // - listen kill type:entity target:zombie qty:3 mobnames:Boss script:ZombiesKilled
 
         // @Usage
         // Use to listen for when a player mines 1 iron ore.
