@@ -128,6 +128,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
             this.pre_tagged_args = Arrays.asList(arguments);
         } else {
             this.args = new ArrayList<String>();
+            this.pre_tagged_args = new ArrayList<String>();
         }
 
         // Check for replaceable tags. We'll try not to make a habit of checking for tags/doing
