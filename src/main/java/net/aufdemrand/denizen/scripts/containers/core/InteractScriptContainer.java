@@ -17,7 +17,7 @@ public class InteractScriptContainer extends ScriptContainer {
 
         try {
             // Find steps/default step in the script
-            Set<String> keys = new HashSet<String>();
+            Set<String> keys;
             keys = getConfigurationSection("STEPS").getKeys(false);
 
             if (keys.isEmpty())
@@ -38,7 +38,7 @@ public class InteractScriptContainer extends ScriptContainer {
             }
 
         } catch (Exception e) {
-            dB.echoError("Could not find any STEPS in " + getName() + "! Is the type on this script correct?");
+            dB.echoError(e);
         }
 
         // Make default step the only step if there is only one step
@@ -149,6 +149,10 @@ public class InteractScriptContainer extends ScriptContainer {
                             + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT"));
             // No entries, so just return an empty list to avoid NPEs
         } else {
+            dB.echoDebug(this, "No entries in script for " +
+                    ("STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
+                    + triggerName + " TRIGGER."
+                    + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT")));
             return Collections.emptyList();
         }
     }
