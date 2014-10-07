@@ -1004,7 +1004,7 @@ public class Element implements dObject {
         if (attribute.startsWith("after_last")
                 && attribute.hasContext(1)) {
             String delimiter = attribute.getContext(1);
-            if (element.contains(delimiter))
+            if (element.toLowerCase().contains(delimiter.toLowerCase()))
                 return new Element(element.substring
                         (element.toLowerCase().lastIndexOf(delimiter.toLowerCase()) + delimiter.length()))
                         .getAttribute(attribute.fulfill(1));
@@ -1024,7 +1024,7 @@ public class Element implements dObject {
         if (attribute.startsWith("after")
                 && attribute.hasContext(1)) {
             String delimiter = attribute.getContext(1);
-            if (element.contains(delimiter))
+            if (element.toLowerCase().contains(delimiter.toLowerCase()))
                 return new Element(element.substring
                     (element.toLowerCase().indexOf(delimiter.toLowerCase()) + delimiter.length()))
                     .getAttribute(attribute.fulfill(1));
@@ -1044,7 +1044,7 @@ public class Element implements dObject {
         if (attribute.startsWith("before_last")
                 && attribute.hasContext(1)) {
             String delimiter = attribute.getContext(1);
-            if (element.contains(delimiter))
+            if (element.toLowerCase().contains(delimiter.toLowerCase()))
                 return new Element(element.substring
                         (0, element.toLowerCase().lastIndexOf(delimiter.toLowerCase())))
                         .getAttribute(attribute.fulfill(1));
@@ -1064,7 +1064,7 @@ public class Element implements dObject {
         if (attribute.startsWith("before")
                 && attribute.hasContext(1)) {
             String delimiter = attribute.getContext(1);
-            if (element.contains(delimiter))
+            if (element.toLowerCase().contains(delimiter.toLowerCase()))
                 return new Element(element.substring
                     (0, element.toLowerCase().indexOf(delimiter.toLowerCase())))
                     .getAttribute(attribute.fulfill(1));

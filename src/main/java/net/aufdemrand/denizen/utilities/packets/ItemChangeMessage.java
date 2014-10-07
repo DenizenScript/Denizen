@@ -103,5 +103,4 @@ public class ItemChangeMessage implements Listener {
         if (player != null && slotChanged.containsKey(player.getUniqueId()))
             slotChanged.remove(player.getUniqueId());
     }
-
 }

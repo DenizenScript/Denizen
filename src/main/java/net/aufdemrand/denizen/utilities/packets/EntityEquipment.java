@@ -58,5 +58,4 @@ public class EntityEquipment {
         PacketHelper.sendPacket(player, getEquipmentPacket(entity, 3, equipment.getChestplate()));
         PacketHelper.sendPacket(player, getEquipmentPacket(entity, 4, equipment.getHelmet()));
     }
-
 }

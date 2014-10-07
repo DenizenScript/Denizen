@@ -16,5 +16,4 @@ public class DenizenCommandHelpTopic extends GenericCommandHelpTopic {
     public boolean canSee(CommandSender sender) {
         return denizenCommand.canSeeHelp(sender);
     }
-
 }

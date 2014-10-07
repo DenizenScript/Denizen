@@ -120,6 +120,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
      *
      * @return    The Set of NPCs that are
      */
+    // TODO: Delete?
     public Set<NPC> getActiveNPCsWithinRangeWithTrigger (Location location, int maxRange) {
         Set<NPC> closestNPCs = new HashSet<NPC> ();
 
