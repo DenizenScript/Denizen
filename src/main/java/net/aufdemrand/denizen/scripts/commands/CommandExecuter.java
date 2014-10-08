@@ -40,7 +40,7 @@ public class CommandExecuter {
         }
         else {
             for (String arg: scriptEntry.getOriginalArguments())
-                output.append(' ').append(arg);
+                output.append(" \"").append(arg).append("\"");
         }
 
         dB.echoDebug(scriptEntry, "Queue '" + scriptEntry.getResidingQueue().id + "' Executing: " + output.toString());
