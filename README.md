@@ -13,9 +13,10 @@ Denizen: Helpful Citizens for Bukkit!
 **Denizen Handbook**: http://bit.ly/XaWBLN  
 **command/tag/event search**: http://mcmonkey.org/denizen/logs/  
 **Beginner's Guide**: http://bit.ly/1bHkByR  
-**Tutorial Videos**: http://www.youtube.com/playlist?list=PLSiy0fFeYjtWVBr_NgJ5I-yWdsYLIVu6h  
+**Tutorial Videos**: http://mcmonkey.org/denizen/vids  
 
 #### Also check out:
 
 **Citizens2 (Base plugin - required!)**: https://github.com/CitizensDev/Citizens2/  
-**Depenizen (Plugin support - optional)**: https://github.com/Morphan1/Depenizen  
+**Depenizen (Plugin support - optional)**: https://github.com/DenizenScript/Depenizen-For-Bukkit  
+**Denizen Core (Our core, needed for building)**: https://github.com/DenizenScript/Denizen-Core  
