@@ -197,8 +197,9 @@ public class NPCTags implements Listener {
     public void navCancel(NavigationCancelEvent event) {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
-        EventManager.doEvents(Arrays.asList
-                ("npc cancels navigation"), npc, null, null);
+        if (NPCNavigationSmartEvent.IsActive())
+            EventManager.doEvents(Arrays.asList
+                    ("npc cancels navigation"), npc, null, null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         npc.action("cancel navigation", null);
