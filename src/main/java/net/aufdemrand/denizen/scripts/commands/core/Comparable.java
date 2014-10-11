@@ -77,13 +77,13 @@ public class Comparable {
     public void setComparable(String arg) {
 
         // If a Number
-        if (aH.matchesInteger(arg))
+        if (arg.length() > 0 && aH.matchesInteger(arg))
             comparable = aH.getLongFrom(arg);
-        else if (aH.matchesDouble(arg))
+        else if (arg.length() > 0 && aH.matchesDouble(arg))
             comparable = aH.getDoubleFrom(arg);
 
             // If a List<Object>
-        else if (dList.matches(arg)) {
+        else if (arg.length() > 0 && dList.matches(arg)) {
             comparable = dList.valueOf(arg);
         }
 
@@ -111,8 +111,9 @@ public class Comparable {
                 comparedto = aH.getDoubleFrom(arg);
             else {
                 if (!arg.equalsIgnoreCase("null"))
-                    dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
-                            + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
+                    // TODO: echoDebug instead of log
+                 //   dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
+                 //           + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
                 comparedto = Double.NaN;
             }
         }
