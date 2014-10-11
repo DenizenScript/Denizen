@@ -284,59 +284,65 @@ public class EventManager implements Listener {
 
     public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context) {
 
-        String determination = "none";
+        try {
+            String determination = "none";
 
-        // Trim again to catch events that don't trim internally.
-        eventNames = trimEvents(eventNames);
+            // Trim again to catch events that don't trim internally.
+            eventNames = trimEvents(eventNames);
 
-        for (String eventName : eventNames) {
+            for (String eventName : eventNames) {
 
-            if (events.containsKey("ON " + eventName.toUpperCase()))
+                if (events.containsKey("ON " + eventName.toUpperCase()))
 
-                for (WorldScriptContainer script : events.get("ON " + eventName.toUpperCase())) {
+                    for (WorldScriptContainer script : events.get("ON " + eventName.toUpperCase())) {
 
-                    if (script == null) continue;
+                        if (script == null) continue;
 
-                    // Fetch script from Event
-                    List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
+                        // Fetch script from Event
+                        List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
 
-                    if (entries.isEmpty()) continue;
+                        if (entries.isEmpty()) continue;
 
-                    dB.report(script, "Event",
-                            aH.debugObj("Type", "on " + eventName)
-                                    + script.getAsScriptArg().debug()
-                                    + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
-                                    + (player != null ? aH.debugObj("Player", player.getName()) : "")
-                                    + (context != null ? aH.debugObj("Context", context.toString()) : ""));
+                        dB.report(script, "Event",
+                                aH.debugObj("Type", "on " + eventName)
+                                        + script.getAsScriptArg().debug()
+                                        + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
+                                        + (player != null ? aH.debugObj("Player", player.getName()) : "")
+                                        + (context != null ? aH.debugObj("Context", context.toString()) : ""));
 
-                    dB.echoDebug(script, dB.DebugElement.Header, "Building event 'ON " + eventName.toUpperCase()
-                            + "' for " + script.getName());
+                        dB.echoDebug(script, dB.DebugElement.Header, "Building event 'ON " + eventName.toUpperCase()
+                                + "' for " + script.getName());
 
-                    // Create new ID -- this is what we will look for when determining an outcome
-                    long id = DetermineCommand.getNewId();
+                        // Create new ID -- this is what we will look for when determining an outcome
+                        long id = DetermineCommand.getNewId();
 
-                    // Add the reqId to each of the entries for the determine command
-                    ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+                        // Add the reqId to each of the entries for the determine command
+                        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
-                    // Add entries and context to the queue
-                    ScriptQueue queue = InstantQueue.getQueue(null).addEntries(entries).setReqId(id);
+                        // Add entries and context to the queue
+                        ScriptQueue queue = InstantQueue.getQueue(null).addEntries(entries).setReqId(id);
 
-                    if (context != null) {
-                        for (Map.Entry<String, dObject> entry : context.entrySet()) {
-                            queue.addContext(entry.getKey(), entry.getValue());
+                        if (context != null) {
+                            for (Map.Entry<String, dObject> entry : context.entrySet()) {
+                                queue.addContext(entry.getKey(), entry.getValue());
+                            }
                         }
+
+                        // Start the queue!
+                        queue.start();
+
+                        // Check the determination
+                        if (DetermineCommand.hasOutcome(id))
+                            determination =  DetermineCommand.getOutcome(id);
                     }
+            }
 
-                    // Start the queue!
-                    queue.start();
-
-                    // Check the determination
-                    if (DetermineCommand.hasOutcome(id))
-                        determination =  DetermineCommand.getOutcome(id);
-                }
+            return determination;
         }
-
-        return determination;
+        catch (Exception e) {
+            dB.echoError(e);
+            return "none";
+        }
     }
 
     ////////////////////
