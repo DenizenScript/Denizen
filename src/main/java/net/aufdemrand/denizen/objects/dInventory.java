@@ -1462,9 +1462,12 @@ public class dInventory implements dObject, Notable, Adjustable {
     private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
 
     public void applyProperty(Mechanism mechanism) {
-        if (idType == null)  mechanisms.add(mechanism);
-        else if (idType.equals("generic") || mechanism.matches("holder")) adjust(mechanism);
-        else dB.echoError("Cannot apply properties to non-generic inventory!");
+        if (idType == null)
+            mechanisms.add(mechanism);
+        else if (idType.equals("generic") || mechanism.matches("holder"))
+            adjust(mechanism);
+        else if (!(idType.equals("location") && mechanism.matches("title")))
+            dB.echoError("Cannot apply properties to non-generic inventory!");
     }
 
     @Override

@@ -50,7 +50,13 @@ public class InventoryTitle implements Property {
 
     @Override
     public String getPropertyString() {
-        return getTitle();
+        // Only show a property string for titles that can actually change
+        if (inventory.isUnique()
+                || inventory.getIdType().equals("generic")
+                || inventory.getIdType().equals("location"))
+            return getTitle();
+        else
+            return null;
     }
 
     @Override
