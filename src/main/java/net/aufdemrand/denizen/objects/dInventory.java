@@ -194,8 +194,14 @@ public class dInventory implements dObject, Notable, Adjustable {
                     return dPlayer.valueOf(holder).getInventory();
             }
             else if (type.equals("workbench")) {
-                if (dPlayer.matches(holder))
-                    return dPlayer.valueOf(holder).getWorkbench();
+                if (dPlayer.matches(holder)) {
+                    dInventory workbench = dPlayer.valueOf(holder).getWorkbench();
+                    if (workbench != null)
+                        dB.echoError("Value of dInventory returning null (" + string + ")." +
+                                " Specified player does not have an open workbench.");
+                    else
+                        return workbench;
+                }
             }
             else if (type.equals("enderchest")) {
                 if (dPlayer.matches(holder))
