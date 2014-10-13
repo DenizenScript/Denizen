@@ -261,8 +261,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
         }
 
-        if (results.size() > 0) return results;
-        else return null;
+        return results;
     }
 
 
