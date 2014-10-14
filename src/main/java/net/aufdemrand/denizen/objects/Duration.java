@@ -314,7 +314,7 @@ public class Duration implements dObject {
      */
     @Override
     public String identify() {
-        return getTicks() + "t";
+        return "d@" + getTicks() + "t";
     }
 
     @Override
