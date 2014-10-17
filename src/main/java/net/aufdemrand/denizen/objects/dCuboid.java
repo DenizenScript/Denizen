@@ -372,6 +372,22 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
 
     public dList getBlocks() {
+        return getBlocks(null);
+    }
+
+    private boolean matchesMaterialList(Location loc, List<dMaterial> materials) {
+        if (materials == null)
+            return true;
+        dMaterial mat = dMaterial.getMaterialFrom(loc.getBlock().getType(), loc.getBlock().getData());
+        for (dMaterial material: materials) {
+            if (mat.equals(material)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public dList getBlocks(List<dMaterial> materials) {
         dLocation loc;
         dList list = new dList();
 
@@ -385,16 +401,23 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             for (int x = 0; x != x_distance + 1; x++) {
                 for (int z = 0; z != z_distance + 1; z++) {
                     for (int y = 0; y != y_distance + 1; y++) {
-                        loc = new dLocation(loc_1.clone()
-                                .add(x, y, z));
+                        loc = new dLocation(loc_1.clone().add(x, y, z));
                         if (!filter.isEmpty()) {
                             // Check filter
-                            for (dObject material : filter)
+                            for (dObject material : filter) {
                                 if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
-                                        .getMaterial().name()))
-                                    list.add(loc.identify());
-                        } else
-                            list.add(loc.identify());
+                                        .getMaterial().name())) {
+                                    if (matchesMaterialList(loc, materials)) {
+                                        list.add(loc.identify());
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            if (matchesMaterialList(loc, materials)) {
+                                list.add(loc.identify());
+                            }
+                        }
                     }
                 }
             }
@@ -613,14 +636,19 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_blocks>
+        // @attribute <cu@cuboid.get_blocks[<material>...]>
         // @returns dList(dLocation)
         // @description
         // Returns each block location within the dCuboid.
         // -->
-        if (attribute.startsWith("get_blocks"))
-            return new dList(getBlocks())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("get_blocks")) {
+            if (attribute.hasContext(1))
+                return new dList(getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new dList(getBlocks())
+                        .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <cu@cuboid.members_size>
@@ -784,7 +812,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.include[<location>]>
-        // @returns dLocation
+        // @returns dCuboid
         // @description
         // Expands the first member of the dCuboid to contain the given location.
         // -->

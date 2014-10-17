@@ -314,7 +314,7 @@ public class Duration implements dObject {
      */
     @Override
     public String identify() {
-        return getTicks() + "t";
+        return "d@" + getTicks() + "t";
     }
 
     @Override
@@ -396,7 +396,7 @@ public class Duration implements dObject {
         // returns the number of seconds in the Duration.
         // -->
         if (attribute.startsWith("in_seconds") || attribute.startsWith("seconds"))
-            return new Element(seconds)
+            return new Element(getTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -406,7 +406,7 @@ public class Duration implements dObject {
         // returns the number of milliseconds in the Duration.
         // -->
         if (attribute.startsWith("in_milliseconds") || attribute.startsWith("milliseconds"))
-            return new Element(seconds * 1000)
+            return new Element(getTicks() * (1000 / 20))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]

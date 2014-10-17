@@ -195,6 +195,8 @@ public class ScriptContainer implements Debuggable {
 
 
     public YamlConfiguration getConfigurationSection(String path) {
+        if (path.length() == 0)
+                return contents;
         return contents.getConfigurationSection(path.toUpperCase());
     }
 

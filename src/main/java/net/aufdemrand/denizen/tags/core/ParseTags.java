@@ -31,7 +31,8 @@ public class ParseTags implements Listener {
                 return;
             }
             ScriptEntry se = event.getAttributes().getScriptEntry();
-            String read = TagManager.tag(se.getPlayer(), se.getNPC(), TagManager.cleanOutputFully(event.getValue()), false, se);
+            String read = TagManager.tag((se != null ?se.getPlayer(): null),
+                    (se != null ?se.getNPC(): null), TagManager.cleanOutputFully(event.getValue()), false, se);
             event.setReplaced(new Element(read).getAttribute(event.getAttributes().fulfill(1)));
         }
     }
