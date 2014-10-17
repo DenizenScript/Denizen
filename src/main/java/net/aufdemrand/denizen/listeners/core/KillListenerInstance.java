@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 
 import net.citizensnpcs.api.CitizensAPI;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -31,7 +32,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
     // The targets
     //
     dList targets;
-    
+
     //
     // The names
     //
@@ -95,7 +96,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         if (names == null) {
             names = new dList("*");
         }
-        
+
         if (type == null) {
             dB.echoError("Missing TYPE argument! Valid: NPC, ENTITY, PLAYER, GROUP");
             cancel();
@@ -340,8 +341,8 @@ public class KillListenerInstance extends AbstractListener implements Listener {
                 targetList = targetList.substring(0, targetList.length() - 1);
             }
             event.setReplaced(targetList);
-        } 
-        
+        }
+
         else if (event.getValue().equalsIgnoreCase("mobnames")){
             String namesList = "";
             for (String curNam : names){
