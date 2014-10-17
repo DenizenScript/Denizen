@@ -194,8 +194,14 @@ public class dInventory implements dObject, Notable, Adjustable {
                     return dPlayer.valueOf(holder).getInventory();
             }
             else if (type.equals("workbench")) {
-                if (dPlayer.matches(holder))
-                    return dPlayer.valueOf(holder).getWorkbench();
+                if (dPlayer.matches(holder)) {
+                    dInventory workbench = dPlayer.valueOf(holder).getWorkbench();
+                    if (workbench != null)
+                        dB.echoError("Value of dInventory returning null (" + string + ")." +
+                                " Specified player does not have an open workbench.");
+                    else
+                        return workbench;
+                }
             }
             else if (type.equals("enderchest")) {
                 if (dPlayer.matches(holder))
@@ -1462,9 +1468,12 @@ public class dInventory implements dObject, Notable, Adjustable {
     private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
 
     public void applyProperty(Mechanism mechanism) {
-        if (idType == null)  mechanisms.add(mechanism);
-        else if (idType.equals("generic") || mechanism.matches("holder")) adjust(mechanism);
-        else dB.echoError("Cannot apply properties to non-generic inventory!");
+        if (idType == null)
+            mechanisms.add(mechanism);
+        else if (idType.equals("generic") || mechanism.matches("holder"))
+            adjust(mechanism);
+        else if (!(idType.equals("location") && mechanism.matches("title")))
+            dB.echoError("Cannot apply properties to non-generic inventory!");
     }
 
     @Override

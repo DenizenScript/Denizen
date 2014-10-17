@@ -52,7 +52,7 @@ import java.util.Map;
 public class dNPC implements dObject, Adjustable, InventoryHolder {
 
     public static dNPC mirrorCitizensNPC(NPC npc) {
-        if (dNPCRegistry.denizenNPCs.containsKey(npc.getId())) return dNPCRegistry.denizenNPCs.get(npc.getId());
+        if (dNPCRegistry._isRegistered(npc)) return dNPCRegistry.getDenizen(npc);
         else return new dNPC(npc);
     }
 
@@ -70,10 +70,12 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         string = string.toUpperCase().replace("N@", "");
         NPC npc;
         if (aH.matchesInteger(string)) {
-            if (dNPCRegistry.denizenNPCs.containsKey(aH.getIntegerFrom(string)))
-                return dNPCRegistry.denizenNPCs.get(aH.getIntegerFrom(string));
+            int id = aH.getIntegerFrom(string);
 
-            npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
+            if (dNPCRegistry._isRegistered(id))
+                return dNPCRegistry.getDenizen(id);
+
+            npc = CitizensAPI.getNPCRegistry().getById(id);
             if (npc != null) return new dNPC(npc);
         }
 
@@ -123,8 +125,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     public dNPC(NPC citizensNPC) {
         if (citizensNPC != null)
             this.npcid = citizensNPC.getId();
-        if (npcid >= 0 && !dNPCRegistry.denizenNPCs.containsKey(npcid))
-            dNPCRegistry.denizenNPCs.put(npcid, this);
+        if (npcid >= 0 && !dNPCRegistry._isRegistered(citizensNPC))
+            dNPCRegistry._registerNPC(this);
     }
 
     public EntityLiving getHandle() {
@@ -283,6 +285,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (!npc.hasTrait(HealthTrait.class))
             npc.addTrait(HealthTrait.class);
         return npc.getTrait(HealthTrait.class);
+    }
+
+    public net.citizensnpcs.api.trait.trait.Inventory getInventoryTrait() {
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(net.citizensnpcs.api.trait.trait.Inventory.class))
+            npc.addTrait(net.citizensnpcs.api.trait.trait.Inventory.class);
+        return npc.getTrait(net.citizensnpcs.api.trait.trait.Inventory.class);
     }
 
     public LookClose getLookCloseTrait() {

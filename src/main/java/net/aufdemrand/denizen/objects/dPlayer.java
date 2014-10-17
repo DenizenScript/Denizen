@@ -258,17 +258,20 @@ public class dPlayer implements dObject, Adjustable {
 
     public CraftingInventory getBukkitWorkbench() {
         if (isOnline()) {
-            if (getPlayerEntity().getOpenInventory().getType() != InventoryType.WORKBENCH
-                    && getPlayerEntity().getOpenInventory().getType() != InventoryType.CRAFTING)
-                getPlayerEntity().openWorkbench(null, true);
-            return (CraftingInventory) getPlayerEntity().getOpenInventory().getTopInventory();
+            if (getPlayerEntity().getOpenInventory().getType() == InventoryType.WORKBENCH
+                    || getPlayerEntity().getOpenInventory().getType() == InventoryType.CRAFTING)
+                return (CraftingInventory) getPlayerEntity().getOpenInventory().getTopInventory();
         }
-        else return null;
+        return null;
     }
 
     public dInventory getWorkbench() {
-        if (isOnline()) return new dInventory(getBukkitWorkbench(), getPlayerEntity());
-        else return null;
+        if (isOnline()) {
+            CraftingInventory workbench = getBukkitWorkbench();
+            if (workbench != null)
+                return new dInventory(workbench, getPlayerEntity());
+        }
+        return null;
     }
 
     public Inventory getBukkitEnderChest() {

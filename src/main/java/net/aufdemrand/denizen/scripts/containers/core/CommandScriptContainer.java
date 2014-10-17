@@ -11,8 +11,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommandScriptContainer extends ScriptContainer {
 
@@ -98,7 +97,8 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public List<String> getAliases() {
-        return getStringList("ALIASES");
+        List<String> aliases = getStringList("ALIASES");
+        return aliases != null? aliases : new ArrayList<String>();
     }
 
     public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, dObject> context) {

@@ -2691,6 +2691,8 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.item> returns the dItem the player has dragged.
     // <context.inventory> returns the dInventory.
+    // <context.slots> returns a dList of the slot numbers dragged through.
+    // <context.raw_slots> returns a dList of the raw slot numbers dragged through.
     //
     // @Determine
     // "CANCELLED" to stop the player from dragging.
@@ -2731,6 +2733,16 @@ public class WorldScriptHelper implements Listener {
 
         context.put("item", item);
         context.put("inventory", dInventory.mirrorBukkitInventory(inventory));
+        dList slots = new dList();
+        for (Integer slot : event.getInventorySlots()) {
+            slots.add(slot.toString());
+        }
+        context.put("slots", slots);
+        dList raw_slots = new dList();
+        for (Integer raw_slot : event.getRawSlots()) {
+            raw_slots.add(raw_slot.toString());
+        }
+        context.put("raw_slots", raw_slots);
 
         String determination = EventManager.doEvents(events, null, player, context, true);
 
