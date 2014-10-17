@@ -31,6 +31,11 @@ public class KillListenerInstance extends AbstractListener implements Listener {
     // The targets
     //
     dList targets;
+    
+    //
+    // The names
+    //
+    dList names;
 
     //
     // The counters
@@ -51,7 +56,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         // to server-operators about the current status of this listener.
         return player.getName() + " currently has quest listener '" + id
                 + "' active and must kill " + Arrays.toString(targets.toArray())
-                + " '" + type.name() + "'(s). Current progress '" + kills_so_far + "/" + required + "'.";
+                + " '" + type.name() +  "'(s) named " + Arrays.toString(names.toArray()) + ". Current progress '" + kills_so_far + "/" + required + "'.";
     }
 
 
@@ -78,12 +83,19 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
             else if (arg.matchesPrefix("targets, target, t, name, names"))
                 targets = arg.asType(dList.class);
+             else if (arg.matchesPrefix("mobnames, mn")) {
+                names = arg.asType(dList.class);
+            }
 
         }
 
         if (targets == null)
             targets = new dList("*");
 
+        if (names == null) {
+            names = new dList("*");
+        }
+        
         if (type == null) {
             dB.echoError("Missing TYPE argument! Valid: NPC, ENTITY, PLAYER, GROUP");
             cancel();
@@ -100,6 +112,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         // saved data from onSave().
         type = KillType.valueOf(((String) get("Type")));
         targets = new dList((List<String>) get("Targets"));
+        names = new dList((List<String>) get("Names"));
         required = (Integer) get("Quantity");
         kills_so_far = (Integer) get("Current Kills");
         region = (String) get("Region");
@@ -115,6 +128,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         // so that it can be rebuilt onLoad(). id and type are done automatically.
         store("Type", type.name());
         store("Targets", targets);
+        store("Names", names);
         store("Quantity", required);
         store("Current Kills", kills_so_far);
         store("Region", region);
@@ -192,15 +206,23 @@ public class KillListenerInstance extends AbstractListener implements Listener {
                     if (ent.comparesTo(dEntity.valueOf(target)) == 1)
                         count_it = true;
             }
+            boolean right_name = false;
+            for (String name : names) {
+                if (ChatColor.stripColor(ent.getName()).contains(name)) {
+                    right_name = true;
+                }
+            }
             // If an entity was found, or targets is '*', increment the
             // kills_so_far
             if (count_it || targets.contains("*")) {
-                kills_so_far++;
-                dB.log(player.getName() + " killed a "
-                        + ent.identify() + ". Current progress '"
-                        + kills_so_far + "/" + required + "'.");
-                // Check the number of kills so far
-                check();
+                if (right_name || names.contains("*")) {
+                    kills_so_far++;
+                    dB.log(player.getName() + " killed a "
+                            + ent.identify() + ". Current progress '"
+                            + kills_so_far + "/" + required + "'.");
+                    // Check the number of kills so far
+                    check();
+                }
             }
         }
 
@@ -318,6 +340,15 @@ public class KillListenerInstance extends AbstractListener implements Listener {
                 targetList = targetList.substring(0, targetList.length() - 1);
             }
             event.setReplaced(targetList);
+        } 
+        
+        else if (event.getValue().equalsIgnoreCase("mobnames")){
+            String namesList = "";
+            for (String curNam : names){
+                namesList = namesList + curNam + ", ";
+                namesList = namesList.substring(0, namesList.length() - 1);
+            }
+            event.setReplaced(namesList);
         }
     }
 }
