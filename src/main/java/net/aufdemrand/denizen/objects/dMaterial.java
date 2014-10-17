@@ -577,8 +577,6 @@ public class dMaterial implements dObject {
     }
 
     /**
-     * TODO: Needs testing.
-     *
      * @param object object-fetchable String of a valid dMaterial, or a dMaterial object
      * @return true if the dMaterials are the same.
      */
@@ -586,8 +584,10 @@ public class dMaterial implements dObject {
     public boolean equals(Object object) {
         if (object instanceof dMaterial)
             return ((dMaterial) object).identify().equals(this.identify());
-        else
-            return valueOf(object.toString()) != null && valueOf(object.toString()).identify().equals(this.identify());
+        else {
+            dMaterial parsed = valueOf(object.toString());
+            return parsed != null && parsed.identify().equals(this.identify());
+        }
     }
 
 
