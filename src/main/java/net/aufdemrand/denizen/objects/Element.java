@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -148,6 +149,14 @@ public class Element implements dObject {
         if (prefix == null) this.prefix = "element";
         else this.prefix = prefix;
         this.element = TagManager.cleanOutputFully(string);
+    }
+
+    private BigDecimal getBD(String text) {
+        return new BigDecimal(text);
+    }
+
+    public BigDecimal asBigDecimal() {
+        return getBD(element.replaceAll("%", ""));
     }
 
     public double asDouble() {
@@ -1483,7 +1492,7 @@ public class Element implements dObject {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             }
-            return new Element(asDouble() + aH.getDoubleFrom(attribute.getContext(1)))
+            return new Element(asBigDecimal().add(getBD(attribute.getContext(1))).toString())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1500,7 +1509,7 @@ public class Element implements dObject {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             }
-            return new Element(asDouble() / aH.getDoubleFrom(attribute.getContext(1)))
+            return new Element(asBigDecimal().divide(getBD(attribute.getContext(1))).toString())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1534,7 +1543,7 @@ public class Element implements dObject {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             }
-            return new Element(asDouble() * aH.getDoubleFrom(attribute.getContext(1)))
+            return new Element(asBigDecimal().multiply(getBD(attribute.getContext(1))).toString())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1551,7 +1560,7 @@ public class Element implements dObject {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             }
-            return new Element(asDouble() - aH.getDoubleFrom(attribute.getContext(1)))
+            return new Element(asBigDecimal().subtract(getBD(attribute.getContext(1))).toString())
                     .getAttribute(attribute.fulfill(1));
         }
 
