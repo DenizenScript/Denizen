@@ -1,35 +1,41 @@
 # /dTime Command
 
-_util_dtime_command:
-    type: world
 
-    events:
-        on dtime command:
-        - if !<player.is_op> queue clear
-        - flag 'ddtc_time:<context.args.get[1]>'
-        - if <flag.p:ddtc_time> > 24
-          queue clear
-          else narrate 'Changing time to <flag.p:ddtc_time>:00.'
-        - if <flag.p:ddtc_time> == 24
-          execute as_op 'time set 18000'
-        - flag ddtc_time:-:6
-        - if <flag.p:ddtc_time> >= 0
-          execute as_op 'time set <flag.p:ddtc_time.asint>000'
-        - flag ddtc_time:+:24
-        - if <flag.p:ddtc_time> > 18
-          execute as_op 'time set <flag.p:ddtc_time.asint>000'
-        - flag ddtc_time:!
-        - determine cancelled
+_util_dtime_command:
+    type: command
+    name: dtime
+    description: (Deprecated) Changes the server time.
+    usage: /dtime <time>
+    allowed help:
+    - determine <player.is_op>
+    script:
+    - if !<player.is_op> queue clear
+    - narrate "WARNING- This command is deprecated!"
+    - flag 'ddtc_time:<context.args.get[1]>'
+    - if <flag.p:ddtc_time> > 24
+      queue clear
+      else narrate 'Changing time to <flag.p:ddtc_time>:00.'
+    - if <flag.p:ddtc_time> == 24
+      execute as_op 'time set 18000'
+    - flag ddtc_time:-:6
+    - if <flag.p:ddtc_time> >= 0
+      execute as_op 'time set <flag.p:ddtc_time.asint>000'
+    - flag ddtc_time:+:24
+    - if <flag.p:ddtc_time> > 18
+      execute as_op 'time set <flag.p:ddtc_time.asint>000'
+    - flag ddtc_time:!
+    - determine cancelled
 
 
 # Generic Looper (GL)
 
-"loop through":
+loop through:
     type: task
     speed: 0
     context: task|flag|type
 
     script:
+    - announce to_console "<&3>Denizen<&co><&c> Using outdated 'loop through' task script"
     - ^if %3% == global || <context.type> == global ^define 3 server
       else ^define 3 <context.type>
     - ^define queue <util.random.uuid>
@@ -38,7 +44,7 @@ _util_dtime_command:
       else ^run '_depend generic loop process'
       "def:<context.task>|<context.flag>|%3%|%queue%" instantly
 
-"_util_gl":
+_util_gl:
     type: task
     speed: 0
     context: task|flag|type
@@ -49,7 +55,7 @@ _util_dtime_command:
       else run '_depend generic loop process'
       "def:<context.task>|<context.flag>|<context.type>|<util.random.uuid>" instantly
 
-"_depend generic loop process":
+_depend generic loop process:
     type: task
     definitions: task|flag|type|id
 
@@ -67,10 +73,13 @@ _util_dtime_command:
 # Load Tester
 
 Load Tester:
-  type: world
-
-  events:
-    on testload command:
+    type: command
+    name: testload
+    description: Tests server load.
+    usage: /testload <power>
+    allowed help:
+    - determine <player.is_op>
+    script:
 
     # ops only!
     - if !<player.is_op> queue clear
