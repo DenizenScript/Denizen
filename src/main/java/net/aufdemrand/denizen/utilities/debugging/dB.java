@@ -246,7 +246,9 @@ public class dB {
             events.add("script generates error");
             if (script != null)
                 events.add(script.identifySimple() + " generates error");
-            String Determination = EventManager.doEvents(events, null, null, context, true);
+            ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
+            String Determination = EventManager.doEvents(events, (entry != null ? entry.getNPC(): null),
+                    (entry != null ? entry.getPlayer(): null), context, true);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
                 return;
@@ -287,7 +289,9 @@ public class dB {
             context.put("message", new Element(thrown.getMessage()));
             context.put("type", new Element(thrown.getClass().getSimpleName()));
             context.put("queue", source);
-            String Determination = EventManager.doEvents(Arrays.asList("server generates exception"), null, null, context);
+            ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
+            String Determination = EventManager.doEvents(Arrays.asList("server generates exception"),
+                    (entry != null ? entry.getNPC(): null), (entry != null ? entry.getPlayer(): null), context);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
                 return;
