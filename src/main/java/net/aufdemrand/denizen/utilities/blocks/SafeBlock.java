@@ -15,6 +15,7 @@ public class SafeBlock {
             case SAPLING:
             case SIGN_POST:
             case SIGN:
+            case SNOW:
             case TORCH:
             case DETECTOR_RAIL:
             case ACTIVATOR_RAIL:
