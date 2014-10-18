@@ -471,6 +471,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Debugs the player in the log and returns true.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("debug.log")) {
             dB.log(debug());
@@ -483,6 +484,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element
         // @description
         // Returns the player's debug with no color.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("debug.no_color")) {
             return new Element(ChatColor.stripColor(debug()))
@@ -494,6 +496,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element
         // @description
         // Returns the player's debug.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("debug")) {
             return new Element(debug())
@@ -505,6 +508,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element
         // @description
         // Returns the dObject's prefix.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
@@ -521,6 +525,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Returns a list of the last 10 things the player has said, less
         // if the player hasn't said all that much.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("chat_history_list"))
             return new dList(PlayerTags.playerChatHistory.get(getName())) // TODO: UUID?
@@ -532,6 +537,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // returns the last thing the player said.
         // If a number is specified, returns an earlier thing the player said.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("chat_history")) {
             int x = 1;
@@ -550,6 +556,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Flag dList
         // @description
         // returns the specified flag from the player.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("flag")) {
             String flag_name;
@@ -573,6 +580,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns true if the Player has the specified flag, otherwise returns false.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("has_flag")) {
             String flag_name;
@@ -587,6 +595,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Returns a list of a player's flag names, with an optional search for
         // names containing a certain pattern.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("list_flags")) {
             dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listPlayerFlags(this));
@@ -625,6 +634,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Decimal)
         // @description
         // returns the amount of money the player has with the registered Economy system.
+        // May work offline depending on economy plugin.
         // -->
 
         if (attribute.startsWith("money")) {
@@ -837,6 +847,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element
         // @description
         // returns the ID used to save the player in Denizen's saves.yml file.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("save_name"))
             return new Element(getSaveName()).getAttribute(attribute.fulfill(1));
@@ -852,6 +863,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Returns the location of the player's bed spawn location, 'null' if
         // it doesn't exist.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("bed_spawn"))
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
@@ -874,6 +886,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Duration
         // @description
         // returns the millisecond time of when the player first logged on to this server.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("first_played")) {
             attribute = attribute.fulfill(1);
@@ -890,6 +903,8 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player has played before.
+        // Works with offline players.
+        // Note: This will just always return true.
         // -->
         if (attribute.startsWith("has_played_before"))
             return new Element(true)
@@ -937,6 +952,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player is currently online.
+        // Works with offline players (returns false in that case).
         // -->
         if (attribute.startsWith("is_online"))
             return new Element(isOnline()).getAttribute(attribute.fulfill(1));
@@ -946,6 +962,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player is a full server operator.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("is_op"))
             return new Element(getOfflinePlayer().isOp())
@@ -956,6 +973,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player is whitelisted.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("is_whitelisted"))
             return new Element(getOfflinePlayer().isWhitelisted())
@@ -965,8 +983,8 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.last_played>
         // @returns Duration
         // @description
-        // returns the millisecond time of when the player
-        // was last seen.
+        // returns the millisecond time of when the player was last seen.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("last_played")) {
             attribute = attribute.fulfill(1);
@@ -983,6 +1001,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns dList
         // @description
         // returns a list of all groups the player is in.
+        // May work with offline players, depending on permission plugin.
         // -->
         if (attribute.startsWith("groups")) {
             if (Depends.permissions == null) {
@@ -1109,6 +1128,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns dInventory
         // @description
         // returns a dInventory of the player's current inventory.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("inventory")) {
             return getInventory().getAttribute(attribute.fulfill(1));
@@ -1119,6 +1139,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns dInventory
         // @description
         // Gets the player's enderchest inventory.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("enderchest"))
             return getEnderChest().getAttribute(attribute.fulfill(1));

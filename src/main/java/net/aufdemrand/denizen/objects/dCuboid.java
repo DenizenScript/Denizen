@@ -645,6 +645,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @returns dList(dLocation)
         // @description
         // Returns each block location within the dCuboid.
+        // Optionally, specify a list of materials to only return locations
+        // with that block type.
         // -->
         if (attribute.startsWith("get_blocks")) {
             if (attribute.hasContext(1))
@@ -682,11 +684,13 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_spawnable_blocks>
+        // @attribute <cu@cuboid.get_spawnable_blocks[<Material>|...]>
         // @returns dList(dLocation)
         // @description
         // Returns each dLocation within the dCuboid that is
         // safe for players or similar entities to spawn in.
+        // Optionally, specify a list of materials to only return locations
+        // with that block type.
         // -->
         if (attribute.startsWith("get_spawnable_blocks")) {
             if (attribute.hasContext(1))
