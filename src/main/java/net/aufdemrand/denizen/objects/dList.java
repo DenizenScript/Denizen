@@ -595,7 +595,7 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.remove[<#>]>
+        // @attribute <li@list.remove[<#>|...]>
         // @returns dList
         // @description
         // returns a new dList excluding the items at the specified index.
@@ -603,10 +603,17 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("remove") &&
                 attribute.hasContext(1)) {
-            int remove = new Element(attribute.getContext(1)).asInt() - 1;
+            dList indices = dList.valueOf(attribute.getContext(1));
             dList list = new dList(this);
-            if (remove >= 0 && remove < list.size()) {
-                list.remove(remove);
+            for (String index: indices) {
+                int remove = new Element(index).asInt() - 1;
+                if (remove >= 0 && remove < list.size()) {
+                    list.set(remove, "\0");
+                }
+            }
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).equals("\0"))
+                    list.remove(i--);
             }
             return list.getAttribute(attribute.fulfill(1));
         }
