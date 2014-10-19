@@ -195,9 +195,11 @@ public class dNPCRegistry implements Listener {
         dNPC npc = getDenizen(event.getNPC());
 
         // Do world script event 'On NPC Despawns'
-        EventManager.doEvents(Arrays.asList("npc despawns"), npc, null, null);
+        if (npc != null)
+            EventManager.doEvents(Arrays.asList("npc despawns"), npc, null, null);
 
-        npc.action("despawn", null);
+        if (npc != null)
+            npc.action("despawn", null);
     }
 
 
