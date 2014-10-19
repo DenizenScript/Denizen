@@ -653,42 +653,55 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.get[<#>]>
+        // @attribute <li@list.get[<#>|...]>
         // @returns dObject
         // @description
         // returns an element of the value specified by the supplied context.
         // EG, .get[1] on a list of "one|two" will return "one", and .get[2] will return "two"
+        // Specify more than one index to get a list of results.
         // -->
         if (attribute.startsWith("get") &&
                 attribute.hasContext(1)) {
             if (isEmpty()) return "null";
-            int index = attribute.getIntContext(1);
-            if (index > size()) return "null";
-            if (index < 1) index = 1;
-            attribute = attribute.fulfill(1);
-
-            // <--[tag]
-            // @attribute <li@list.get[<#>].to[<#>]>
-            // @returns dList
-            // @description
-            // returns all elements in the range from the first index to the second.
-            // EG, .get[1].to[3] on a list of "one|two|three|four" will return "one|two|three"
-            // -->
-            if (attribute.startsWith("to") &&
-                    attribute.hasContext(1)) {
-                int index2 = attribute.getIntContext(1);
-                if (index2 > size()) index2 = size();
-                if (index2 < 1) index2 = 1;
-                String item = "";
-                for (int i = index; i <= index2; i++) {
-                    item += get(i - 1) + (i < index2 ? "|": "");
+            dList indices = dList.valueOf(attribute.getContext(1));
+            if (indices.size() > 1) {
+                dList results = new dList();
+                for (String index: indices) {
+                    int ind = aH.getIntegerFrom(index);
+                    if (ind > 0 && ind <= size())
+                        results.add(get(ind - 1));
                 }
-                return new dList(item).getAttribute(attribute.fulfill(1));
+                return results.getAttribute(attribute.fulfill(1));
             }
-            else {
-                String item;
-                item = get(index - 1);
-                return ObjectFetcher.pickObjectFor(item).getAttribute(attribute);
+            if (indices.size() > 0) {
+                int index = aH.getIntegerFrom(indices.get(0));
+                if (index > size()) return "null";
+                if (index < 1) index = 1;
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <li@list.get[<#>].to[<#>]>
+                // @returns dList
+                // @description
+                // returns all elements in the range from the first index to the second.
+                // EG, .get[1].to[3] on a list of "one|two|three|four" will return "one|two|three"
+                // -->
+                if (attribute.startsWith("to") &&
+                        attribute.hasContext(1)) {
+                    int index2 = attribute.getIntContext(1);
+                    if (index2 > size()) index2 = size();
+                    if (index2 < 1) index2 = 1;
+                    String item = "";
+                    for (int i = index; i <= index2; i++) {
+                        item += get(i - 1) + (i < index2 ? "|": "");
+                    }
+                    return new dList(item).getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    String item;
+                    item = get(index - 1);
+                    return ObjectFetcher.pickObjectFor(item).getAttribute(attribute);
+                }
             }
         }
 
