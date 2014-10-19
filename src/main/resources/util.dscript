@@ -5,7 +5,7 @@ _util_dtime_command:
     type: command
     name: dtime
     description: (Deprecated) Changes the server time.
-    usage: /dtime <time>
+    usage: /dtime <&lt>time<&gt>
     allowed help:
     - determine <player.is_op>
     script:
@@ -76,7 +76,7 @@ Load Tester:
     type: command
     name: testload
     description: Tests server load.
-    usage: /testload <power>
+    usage: /testload <&lt>power<&gt>
     allowed help:
     - determine <player.is_op>
     script:
@@ -117,5 +117,5 @@ Load Tester:
     - determine fulfilled
 
 
-  test:
-  - flag server stress_test_counter:++
+    test:
+    - flag server stress_test_counter:++
