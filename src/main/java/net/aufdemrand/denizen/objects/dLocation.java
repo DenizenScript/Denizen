@@ -255,7 +255,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         return hasInventory() ? new dInventory(getBukkitInventory()) : null;
     }
 
-    int Compare(dLocation loc1, dLocation loc2) {
+    public int compare(Location loc1, Location loc2) {
         if (loc1 == null || loc2 == null || loc1.equals(loc2))
             return 0;
         else {
@@ -722,7 +722,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
                     public int compare(dLocation loc1, dLocation loc2) {
-                        return Compare(loc1, loc2);
+                        return dLocation.this.compare(loc1, loc2);
                     }
                 });
 
@@ -779,7 +779,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
                     public int compare(dLocation loc1, dLocation loc2) {
-                        return Compare(loc1, loc2);
+                        return dLocation.this.compare(loc1, loc2);
                     }
                 });
 
@@ -805,7 +805,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dPlayer>() {
                     @Override
                     public int compare(dPlayer pl1, dPlayer pl2) {
-                        return Compare(pl1.getLocation(), pl2.getLocation());
+                        return dLocation.this.compare(pl1.getLocation(), pl2.getLocation());
                     }
                 });
 
@@ -831,7 +831,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dNPC>() {
                     @Override
                     public int compare(dNPC npc1, dNPC npc2) {
-                        return Compare(npc1.getLocation(), npc2.getLocation());
+                        return dLocation.this.compare(npc1.getLocation(), npc2.getLocation());
                     }
                 });
 
@@ -878,7 +878,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dEntity>() {
                     @Override
                     public int compare(dEntity ent1, dEntity ent2) {
-                        return Compare(ent1.getLocation(), ent2.getLocation());
+                        return dLocation.this.compare(ent1.getLocation(), ent2.getLocation());
                     }
                 });
 
@@ -905,7 +905,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dEntity>() {
                     @Override
                     public int compare(dEntity ent1, dEntity ent2) {
-                        return Compare(ent1.getLocation(), ent2.getLocation());
+                        return dLocation.this.compare(ent1.getLocation(), ent2.getLocation());
                     }
                 });
 
