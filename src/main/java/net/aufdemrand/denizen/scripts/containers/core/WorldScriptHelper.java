@@ -2223,9 +2223,11 @@ public class WorldScriptHelper implements Listener {
             events.add("entity shoots block");
             events.add("entity shoots block with " + projectile.identifyType());
             events.add("entity shoots " + material.identifySimple() + " with " + projectile.identifyType());
+            events.add("entity shoots " + material.identifySimple());
             events.add(shooter.identifyType() + " shoots block");
             events.add(shooter.identifyType() + " shoots block with " + projectile.identifyType());
             events.add(shooter.identifyType() + " shoots " + material.identifySimple() + " with " + projectile.identifyType());
+            events.add(shooter.identifyType() + " shoots " + material.identifySimple());
         }
 
         EventManager.doEvents(events, npc, player, context, true);
