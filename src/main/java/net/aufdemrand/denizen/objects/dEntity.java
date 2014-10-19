@@ -520,7 +520,7 @@ public class dEntity implements dObject, Adjustable {
             if (customName != null)
                 return customName;
         }
-        return entity.getType().getName();
+        return entity_type.name();
     }
 
     /**
