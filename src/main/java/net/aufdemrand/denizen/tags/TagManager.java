@@ -23,7 +23,7 @@ import java.util.List;
 
 public class TagManager implements Listener {
 
-    private static class TagContext {
+    public static class TagContext {
         public final dPlayer player;
         public final dNPC npc;
         public final boolean instant;

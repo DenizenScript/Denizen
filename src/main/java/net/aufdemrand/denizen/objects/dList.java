@@ -890,6 +890,28 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.parse[<tag>]>
+        // @returns dList
+        // @description
+        // returns a copy of the list with all its contents parsed through the given tag.
+        // For example, a list of 'one|two' .parse[to_uppercase] returns a list of 'ONE|TWO'.
+        // -->
+        if (attribute.startsWith("parse")
+                && attribute.hasContext(1)) {
+            dList newlist = new dList();
+            try {
+                for (String str: this) {
+                    newlist.add(ObjectFetcher.pickObjectFor(str).getAttribute(new Attribute(attribute.getContext(1),
+                            attribute.getScriptEntry())));
+                }
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+            }
+            return newlist.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.escape_contents>
         // @returns dList
         // @description
