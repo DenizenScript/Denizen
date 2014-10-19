@@ -693,12 +693,32 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.find_all[<element>]>
+        // @returns dList(Element(Number))
+        // @description
+        // returns all the numbered locations of elements within a list,
+        // or an empty list if the list does not contain that item.
+        // EG, .find[two] on a list of "one|two|three|two" will return "2|4".
+        // TODO: Take multiple inputs? Or a regex?
+        // -->
+        if (attribute.startsWith("find_all") &&
+                attribute.hasContext(1)) {
+            dList positions = new dList();
+            for (int i = 0; i < size(); i++) {
+                if (get(i).equalsIgnoreCase(attribute.getContext(1)))
+                    positions.add(String.valueOf(i + 1));
+            }
+            return positions.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.find[<element>]>
         // @returns Element(Number)
         // @description
         // returns the numbered location of an element within a list,
         // or -1 if the list does not contain that item.
         // EG, .find[two] on a list of "one|two|three" will return "2".
+        // TODO: Take multiple inputs? Or a regex?
         // -->
         if (attribute.startsWith("find") &&
                 attribute.hasContext(1)) {
@@ -706,11 +726,13 @@ public class dList extends ArrayList<String> implements dObject {
                 if (get(i).equalsIgnoreCase(attribute.getContext(1)))
                     return new Element(i + 1).getAttribute(attribute.fulfill(1));
             }
-            // TODO: Why does this loop twice?
+            // TODO: This should be find_partial or something
+            /*
             for (int i = 0; i < size(); i++) {
                 if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
                     return new Element(i + 1).getAttribute(attribute.fulfill(1));
             }
+            */
             return new Element(-1).getAttribute(attribute.fulfill(1));
         }
 
