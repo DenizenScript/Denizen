@@ -713,6 +713,25 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.find_all_partial[<element>]>
+        // @returns dList(Element(Number))
+        // @description
+        // returns all the numbered locations of elements within a list,
+        // or an empty list if the list does not contain that item.
+        // EG, .find[two] on a list of "one|two|three|two" will return "2|4".
+        // TODO: Take multiple inputs? Or a regex?
+        // -->
+        if (attribute.startsWith("find_all_partial") &&
+                attribute.hasContext(1)) {
+            dList positions = new dList();
+            for (int i = 0; i < size(); i++) {
+                if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
+                    positions.add(String.valueOf(i + 1));
+            }
+            return positions.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.find_all[<element>]>
         // @returns dList(Element(Number))
         // @description
@@ -729,6 +748,24 @@ public class dList extends ArrayList<String> implements dObject {
                     positions.add(String.valueOf(i + 1));
             }
             return positions.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.find_partial[<element>]>
+        // @returns Element(Number)
+        // @description
+        // returns the numbered location of the first partially matching element within a list,
+        // or -1 if the list does not contain that item.
+        // EG, .find[two] on a list of "one|two|three" will return "2".
+        // TODO: Take multiple inputs? Or a regex?
+        // -->
+        if (attribute.startsWith("find_partial") &&
+                attribute.hasContext(1)) {
+            for (int i = 0; i < size(); i++) {
+                if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
+                    return new Element(i + 1).getAttribute(attribute.fulfill(1));
+            }
+            return new Element(-1).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
