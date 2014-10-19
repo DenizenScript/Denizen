@@ -55,8 +55,10 @@ public class TimeCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("world",
                 scriptEntry.hasNPC() ? new dWorld(scriptEntry.getNPC().getWorld()) : null,
-                scriptEntry.hasPlayer() ? new dWorld(scriptEntry.getPlayer().getWorld()) : null,
-                dWorld.valueOf("world"));
+                scriptEntry.hasPlayer() ? new dWorld(scriptEntry.getPlayer().getWorld()) : null);
+
+        if (!scriptEntry.hasObject("world"))
+            throw new InvalidArgumentsException("Must specify a valid world!");
     }
 
     @Override

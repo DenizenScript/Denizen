@@ -461,6 +461,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
 
+    public dList getSpawnableBlocks() {
+        return getSpawnableBlocks(null);
+    }
+
     /**
      * Returns a dList of dLocations with 2 vertical blocks of air
      * that are safe for players and similar entities to spawn in,
@@ -469,7 +473,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
      * @return  The dList
      */
 
-    public dList getSpawnableBlocks() {
+    public dList getSpawnableBlocks(List<dMaterial> mats) {
         dLocation loc;
         dList list = new dList();
 
@@ -489,7 +493,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
                         if (SafeBlock.blockIsSafe(loc.getBlock().getType())
                                 && SafeBlock.blockIsSafe(loc.clone().add(0, 1, 0).getBlock().getType())
-                                && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()) {
+                                && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()
+                                && matchesMaterialList(loc.clone().add(0, -1, 0), mats)) {
                             // Get the center of the block, so the entity won't suffocate
                             // inside the edges for a couple of seconds
                             loc.add(0.5, 0, 0.5);
@@ -640,6 +645,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @returns dList(dLocation)
         // @description
         // Returns each block location within the dCuboid.
+        // Optionally, specify a list of materials to only return locations
+        // with that block type.
         // -->
         if (attribute.startsWith("get_blocks")) {
             if (attribute.hasContext(1))
@@ -677,15 +684,22 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_spawnable_blocks>
+        // @attribute <cu@cuboid.get_spawnable_blocks[<Material>|...]>
         // @returns dList(dLocation)
         // @description
         // Returns each dLocation within the dCuboid that is
         // safe for players or similar entities to spawn in.
+        // Optionally, specify a list of materials to only return locations
+        // with that block type.
         // -->
-        if (attribute.startsWith("get_spawnable_blocks"))
-            return new dList(getSpawnableBlocks())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("get_spawnable_blocks")) {
+            if (attribute.hasContext(1))
+                return new dList(getSpawnableBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new dList(getSpawnableBlocks())
+                        .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <cu@cuboid.get_outline>

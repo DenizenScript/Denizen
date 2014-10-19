@@ -520,7 +520,7 @@ public class dEntity implements dObject, Adjustable {
             if (customName != null)
                 return customName;
         }
-        return entity.getType().getName();
+        return entity_type.name();
     }
 
     /**
@@ -1194,6 +1194,7 @@ public class dEntity implements dObject, Adjustable {
         // @group data
         // @description
         // Returns the permanent unique ID of the entity.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("uuid"))
             return new Element(getUUID().toString())
@@ -1273,6 +1274,7 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the name of the entity.
         // This can be a player name, an NPC name, a custom_name, or the entity type.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("name")) {
             return new Element(getName()).getAttribute(attribute.fulfill(1));
@@ -1438,6 +1440,7 @@ public class dEntity implements dObject, Adjustable {
         // @group location
         // @description
         // Returns the location of what the entity is standing on.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("location.standing_on"))
             return new dLocation(entity.getLocation().clone().add(0, -0.5f, 0))
@@ -1449,6 +1452,7 @@ public class dEntity implements dObject, Adjustable {
         // @group location
         // @description
         // Returns the location of the entity.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("location")) {
             return new dLocation(entity.getLocation())
@@ -1801,6 +1805,7 @@ public class dEntity implements dObject, Adjustable {
         // @group attributes
         // @description
         // Returns the maximum duration of oxygen the entity can have.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("oxygen.max"))
             return new Duration((long) getLivingEntity().getMaximumAir())
@@ -1812,6 +1817,7 @@ public class dEntity implements dObject, Adjustable {
         // @group attributes
         // @description
         // Returns the duration of oxygen the entity has left.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("oxygen"))
             return new Duration((long) getLivingEntity().getRemainingAir())
@@ -1887,6 +1893,7 @@ public class dEntity implements dObject, Adjustable {
         // @group data
         // @description
         // Returns whether the entity is a player.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("is_player")) {
             return new Element(isPlayer())

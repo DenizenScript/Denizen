@@ -114,7 +114,7 @@ public class ScriptRegistry {
      * @param yaml_script  the FileConfiguration containing the script
      *
      */
-    public static void removeYamlScriptContainer(FileConfiguration yaml_script) {
+    public static void removeYamlScriptContainer(YamlConfiguration yaml_script) {
         outside_scripts.remove(yaml_script);
         DenizenCore.reloadScripts();
     }

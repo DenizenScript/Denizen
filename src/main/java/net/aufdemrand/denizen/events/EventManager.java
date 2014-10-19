@@ -60,53 +60,58 @@ public class EventManager implements Listener {
 
     @EventHandler
     public void scanWorldEvents(ScriptReloadEvent event) {
-        // Build a Map of scripts keyed by 'world events name'.
+        try {
+            // Build a Map of scripts keyed by 'world events name'.
 
-        // Loop through each world script
-        dB.log("Scanning " + world_scripts.size() + " world scripts...");
-        for (WorldScriptContainer script : world_scripts.values()) {
-            if (script == null) {
-                dB.echoError("Null world script?!");
-                continue;
-            }
+            // Loop through each world script
+            dB.log("Scanning " + world_scripts.size() + " world scripts...");
+            for (WorldScriptContainer script : world_scripts.values()) {
+                if (script == null) {
+                    dB.echoError("Null world script?!");
+                    continue;
+                }
 
-            // ...and through each event inside the script.
-            if (script.contains("EVENTS")) {
-                YamlConfiguration configSection = script.getConfigurationSection("EVENTS");
-                if (configSection == null) {
-                    dB.echoError("Script '" + script.getName() + "' has an invalid events block!");
-                    break;
+                // ...and through each event inside the script.
+                if (script.contains("EVENTS")) {
+                    YamlConfiguration configSection = script.getConfigurationSection("EVENTS");
+                    if (configSection == null) {
+                        dB.echoError("Script '" + script.getName() + "' has an invalid events block!");
+                        break;
+                    }
+                    Set<String> keys = configSection.getKeys(false);
+                    if (keys == null) {
+                        dB.echoError("Script '" + script.getName() + "' has an empty events block!");
+                        break;
+                    }
+                    for (String eventName : keys) {
+                        List<WorldScriptContainer> list;
+                        if (events.containsKey(eventName))
+                            list = events.get(eventName);
+                        else
+                            list = new ArrayList<WorldScriptContainer>();
+                        list.add(script);
+                        events.put(eventName, list);
+                    }
                 }
-                Set<String> keys = configSection.getKeys(false);
-                if (keys == null) {
-                    dB.echoError("Script '" + script.getName() + "' has an empty events block!");
-                    break;
-                }
-                for (String eventName : keys) {
-                    List<WorldScriptContainer> list;
-                    if (events.containsKey(eventName))
-                        list = events.get(eventName);
-                    else
-                        list = new ArrayList<WorldScriptContainer>();
-                    list.add(script);
-                    events.put(eventName, list);
+                else {
+                    dB.echoError("Script '" + script.getName() + "' does not have an events block!");
                 }
             }
-            else {
-                dB.echoError("Script '" + script.getName() + "' does not have an events block!");
-            }
-        }
-        // dB.echoApproval("Built events map: " + events);
+            // dB.echoApproval("Built events map: " + events);
 
-        // Breakdown all SmartEvents (if still being used, they will reinitialize next)
-        for (SmartEvent smartEvent : smart_events)
+            // Breakdown all SmartEvents (if still being used, they will reinitialize next)
+            for (SmartEvent smartEvent : smart_events)
                 smartEvent.breakDown();
 
-        // Pass these along to each SmartEvent so they can determine whether they can be enabled or not
-        for (SmartEvent smartEvent : smart_events) {
-            // If it should initialize, run _initialize!
-            if (smartEvent.shouldInitialize(events.keySet()))
-                smartEvent._initialize();
+            // Pass these along to each SmartEvent so they can determine whether they can be enabled or not
+            for (SmartEvent smartEvent : smart_events) {
+                // If it should initialize, run _initialize!
+                if (smartEvent.shouldInitialize(events.keySet()))
+                    smartEvent._initialize();
+            }
+        }
+        catch (Exception e) {
+            dB.echoError(e);
         }
     }
 

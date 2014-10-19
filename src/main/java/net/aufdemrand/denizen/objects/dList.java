@@ -452,7 +452,7 @@ public class dList extends ArrayList<String> implements dObject {
             StringBuilder dScriptArg = new StringBuilder();
 
             for (int n = 0; n < this.size(); n++) {
-                if (dPlayer.matches(get(n))) {
+                if (get(n).startsWith("p@")) {
                     dPlayer gotten = dPlayer.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
@@ -461,7 +461,7 @@ public class dList extends ArrayList<String> implements dObject {
                         dScriptArg.append(get(n).replaceAll("\\w+@", ""));
                     }
                 }
-                else if (dEntity.matches(get(n))) {
+                else if (get(n).startsWith("e@") || get(n).startsWith("n@")) {
                     dEntity gotten = dEntity.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
@@ -595,7 +595,7 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.remove[<#>]>
+        // @attribute <li@list.remove[<#>|...]>
         // @returns dList
         // @description
         // returns a new dList excluding the items at the specified index.
@@ -603,10 +603,17 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("remove") &&
                 attribute.hasContext(1)) {
-            int remove = new Element(attribute.getContext(1)).asInt() - 1;
+            dList indices = dList.valueOf(attribute.getContext(1));
             dList list = new dList(this);
-            if (remove >= 0 && remove < list.size()) {
-                list.remove(remove);
+            for (String index: indices) {
+                int remove = new Element(index).asInt() - 1;
+                if (remove >= 0 && remove < list.size()) {
+                    list.set(remove, "\0");
+                }
+            }
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).equals("\0"))
+                    list.remove(i--);
             }
             return list.getAttribute(attribute.fulfill(1));
         }
@@ -653,43 +660,112 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.get[<#>]>
+        // @attribute <li@list.get[<#>|...]>
         // @returns dObject
         // @description
         // returns an element of the value specified by the supplied context.
         // EG, .get[1] on a list of "one|two" will return "one", and .get[2] will return "two"
+        // Specify more than one index to get a list of results.
         // -->
         if (attribute.startsWith("get") &&
                 attribute.hasContext(1)) {
             if (isEmpty()) return "null";
-            int index = attribute.getIntContext(1);
-            if (index > size()) return "null";
-            if (index < 1) index = 1;
-            attribute = attribute.fulfill(1);
-
-            // <--[tag]
-            // @attribute <li@list.get[<#>].to[<#>]>
-            // @returns dList
-            // @description
-            // returns all elements in the range from the first index to the second.
-            // EG, .get[1].to[3] on a list of "one|two|three|four" will return "one|two|three"
-            // -->
-            if (attribute.startsWith("to") &&
-                    attribute.hasContext(1)) {
-                int index2 = attribute.getIntContext(1);
-                if (index2 > size()) index2 = size();
-                if (index2 < 1) index2 = 1;
-                String item = "";
-                for (int i = index; i <= index2; i++) {
-                    item += get(i - 1) + (i < index2 ? "|": "");
+            dList indices = dList.valueOf(attribute.getContext(1));
+            if (indices.size() > 1) {
+                dList results = new dList();
+                for (String index: indices) {
+                    int ind = aH.getIntegerFrom(index);
+                    if (ind > 0 && ind <= size())
+                        results.add(get(ind - 1));
                 }
-                return new dList(item).getAttribute(attribute.fulfill(1));
+                return results.getAttribute(attribute.fulfill(1));
             }
-            else {
-                String item;
-                item = get(index - 1);
-                return ObjectFetcher.pickObjectFor(item).getAttribute(attribute);
+            if (indices.size() > 0) {
+                int index = aH.getIntegerFrom(indices.get(0));
+                if (index > size()) return "null";
+                if (index < 1) index = 1;
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <li@list.get[<#>].to[<#>]>
+                // @returns dList
+                // @description
+                // returns all elements in the range from the first index to the second.
+                // EG, .get[1].to[3] on a list of "one|two|three|four" will return "one|two|three"
+                // -->
+                if (attribute.startsWith("to") &&
+                        attribute.hasContext(1)) {
+                    int index2 = attribute.getIntContext(1);
+                    if (index2 > size()) index2 = size();
+                    if (index2 < 1) index2 = 1;
+                    String item = "";
+                    for (int i = index; i <= index2; i++) {
+                        item += get(i - 1) + (i < index2 ? "|": "");
+                    }
+                    return new dList(item).getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    String item;
+                    item = get(index - 1);
+                    return ObjectFetcher.pickObjectFor(item).getAttribute(attribute);
+                }
             }
+        }
+
+        // <--[tag]
+        // @attribute <li@list.find_all_partial[<element>]>
+        // @returns dList(Element(Number))
+        // @description
+        // returns all the numbered locations of elements within a list,
+        // or an empty list if the list does not contain that item.
+        // EG, .find[two] on a list of "one|two|three|two" will return "2|4".
+        // TODO: Take multiple inputs? Or a regex?
+        // -->
+        if (attribute.startsWith("find_all_partial") &&
+                attribute.hasContext(1)) {
+            dList positions = new dList();
+            for (int i = 0; i < size(); i++) {
+                if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
+                    positions.add(String.valueOf(i + 1));
+            }
+            return positions.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.find_all[<element>]>
+        // @returns dList(Element(Number))
+        // @description
+        // returns all the numbered locations of elements within a list,
+        // or an empty list if the list does not contain that item.
+        // EG, .find[two] on a list of "one|two|three|two" will return "2|4".
+        // TODO: Take multiple inputs? Or a regex?
+        // -->
+        if (attribute.startsWith("find_all") &&
+                attribute.hasContext(1)) {
+            dList positions = new dList();
+            for (int i = 0; i < size(); i++) {
+                if (get(i).equalsIgnoreCase(attribute.getContext(1)))
+                    positions.add(String.valueOf(i + 1));
+            }
+            return positions.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.find_partial[<element>]>
+        // @returns Element(Number)
+        // @description
+        // returns the numbered location of the first partially matching element within a list,
+        // or -1 if the list does not contain that item.
+        // EG, .find[two] on a list of "one|two|three" will return "2".
+        // TODO: Take multiple inputs? Or a regex?
+        // -->
+        if (attribute.startsWith("find_partial") &&
+                attribute.hasContext(1)) {
+            for (int i = 0; i < size(); i++) {
+                if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
+                    return new Element(i + 1).getAttribute(attribute.fulfill(1));
+            }
+            return new Element(-1).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -699,6 +775,7 @@ public class dList extends ArrayList<String> implements dObject {
         // returns the numbered location of an element within a list,
         // or -1 if the list does not contain that item.
         // EG, .find[two] on a list of "one|two|three" will return "2".
+        // TODO: Take multiple inputs? Or a regex?
         // -->
         if (attribute.startsWith("find") &&
                 attribute.hasContext(1)) {
@@ -706,11 +783,13 @@ public class dList extends ArrayList<String> implements dObject {
                 if (get(i).equalsIgnoreCase(attribute.getContext(1)))
                     return new Element(i + 1).getAttribute(attribute.fulfill(1));
             }
-            // TODO: Why does this loop twice?
+            // TODO: This should be find_partial or something
+            /*
             for (int i = 0; i < size(); i++) {
                 if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
                     return new Element(i + 1).getAttribute(attribute.fulfill(1));
             }
+            */
             return new Element(-1).getAttribute(attribute.fulfill(1));
         }
 
@@ -887,6 +966,28 @@ public class dList extends ArrayList<String> implements dObject {
                 dB.echoError("list.sort[...] tag failed - procedure returned unreasonable valid - internal error: " + e.getMessage());
             }
             return new dList(list).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.parse[<tag>]>
+        // @returns dList
+        // @description
+        // returns a copy of the list with all its contents parsed through the given tag.
+        // For example, a list of 'one|two' .parse[to_uppercase] returns a list of 'ONE|TWO'.
+        // -->
+        if (attribute.startsWith("parse")
+                && attribute.hasContext(1)) {
+            dList newlist = new dList();
+            try {
+                for (String str: this) {
+                    newlist.add(ObjectFetcher.pickObjectFor(str).getAttribute(new Attribute(attribute.getContext(1),
+                            attribute.getScriptEntry())));
+                }
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+            }
+            return newlist.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

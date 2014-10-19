@@ -23,7 +23,7 @@ import java.util.List;
 
 public class TagManager implements Listener {
 
-    private static class TagContext {
+    public static class TagContext {
         public final dPlayer player;
         public final dNPC npc;
         public final boolean instant;
@@ -169,6 +169,26 @@ public class TagManager implements Listener {
         }
     }
 
+    public static String readSingleTag(String str, TagContext context) {
+        ReplaceableTagEvent event = new ReplaceableTagEvent(context.player, context.npc, str, context.entry);
+        if (event.isInstant() != context.instant) {
+            // Not the right type of tag, escape the brackets so it doesn't get parsed again
+            return String.valueOf((char)0x01) + str + String.valueOf((char)0x02);
+        } else {
+            // Call Event
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if ((!event.replaced() && event.getAlternative() != null)
+                    || (event.getReplaced().equals("null") && event.hasAlternative()))
+                event.setReplaced(event.getAlternative());
+            if (context.debug)
+                dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
+                        event.getReplaced() + "'.");
+            if (!event.replaced())
+                dB.echoError(context.entry != null ? context.entry.getResidingQueue(): null, "Tag '" + event.getReplaced() + "' is invalid!");
+            return escapeOutput(event.getReplaced());
+        }
+    }
+
 
     public static String tag(dPlayer player, dNPC npc, String arg) {
         return tag(player, npc, arg, false, null);
@@ -212,28 +232,11 @@ public class TagManager implements Listener {
         do {
             // Just in case, do-loops make me nervous, but does implement a limit of 25 tags per argument.
             failsafe++;
-            ReplaceableTagEvent event;
             if (positions == null) break;
             else {
                 String oriarg = arg.substring(positions[0] + 1, positions[1]);
-                event = new ReplaceableTagEvent(context.player, context.npc, oriarg, context.entry);
-                if (event.isInstant() != context.instant) {
-                    // Not the right type of tag, escape the brackets so it doesn't get parsed again
-                    arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
-                            + escapeOutput(event.getReplaced()) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
-                } else {
-                    // Call Event
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-                    if ((!event.replaced() && event.getAlternative() != null)
-                            || (event.getReplaced().equals("null") && event.hasAlternative()))
-                        event.setReplaced(event.getAlternative());
-                    if (context.debug)
-                        dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
-                                event.getReplaced() + "'.");
-                    if (!event.replaced())
-                        dB.echoError(context.entry != null ? context.entry.getResidingQueue(): null, "Tag '" + event.getReplaced() + "' is invalid!");
-                    arg = arg.substring(0, positions[0]) + escapeOutput(event.getReplaced()) + arg.substring(positions[1] + 1, arg.length());
-                }
+                String replaced = readSingleTag(oriarg, context);
+                arg = arg.substring(0, positions[0]) + replaced + arg.substring(positions[1] + 1, arg.length());
             }
             // Find new tag
             positions = locateTag(arg);

@@ -47,7 +47,7 @@ public class GiveCommand  extends AbstractCommand {
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
-                scriptEntry.addObject("set_quantity", Element.TRUE);
+                scriptEntry.addObject("set_quantity",  new Element(true));
             }
 
             else if (!scriptEntry.hasObject("type")
@@ -60,16 +60,17 @@ public class GiveCommand  extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("engrave")
                         && arg.matches("engrave"))
-                scriptEntry.addObject("engrave", Element.TRUE);
+                scriptEntry.addObject("engrave",  new Element(true));
 
             else if (!scriptEntry.hasObject("unlimit_stack_size")
                     && arg.matches("unlimit_stack_size"))
-                scriptEntry.addObject("unlimit_stack_size", Element.TRUE);
+                scriptEntry.addObject("unlimit_stack_size", new Element(true));
 
             else if (!scriptEntry.hasObject("items")
                         && !scriptEntry.hasObject("type")
-                        && arg.matchesArgumentList(dItem.class))
+                        && arg.matchesArgumentList(dItem.class)) {
                 scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
+            }
 
             else if (!scriptEntry.hasObject("inventory")
                         && arg.matchesPrefix("t", "to")
@@ -81,11 +82,14 @@ public class GiveCommand  extends AbstractCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("slot", arg.asElement());
 
+            else
+                arg.reportUnhandled();
+
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
-                .defaultObject("engrave", Element.FALSE)
-                .defaultObject("unlimit_stack_size", Element.FALSE)
+                .defaultObject("engrave",  new Element(false))
+                .defaultObject("unlimit_stack_size", new Element(false))
                 .defaultObject("qty", new Element(1))
                 .defaultObject("slot", new Element(1));
 
