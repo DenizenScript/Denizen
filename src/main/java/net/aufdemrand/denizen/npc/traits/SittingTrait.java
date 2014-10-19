@@ -2,17 +2,21 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 
 public class SittingTrait extends Trait implements Listener  {
 
@@ -33,6 +37,13 @@ public class SittingTrait extends Trait implements Listener  {
     @Override
     public void onSpawn() {
         if (sitting) sit();
+    }
+
+    @Override
+    public void onDespawn() {
+        if (npc.getEntity().getVehicle() != null) {
+            npc.getEntity().getVehicle().setPassenger(null);
+        }
     }
 
     // <--[action]
@@ -60,13 +71,20 @@ public class SittingTrait extends Trait implements Listener  {
     }
 
     private void sitInternal() {
-        PlayerAnimation.SIT.play((Player)npc.getEntity());
+        CraftFakeArrow.createArrow(npc.getEntity().getLocation()).setPassenger(npc.getEntity());
+        //PlayerAnimation.SIT.play((Player)npc.getEntity());
         //eh.getDataWatcher().watch(0, (byte) 0x04);
         sitting = true;
     }
 
     private void standInternal() {
-        PlayerAnimation.STOP_SITTING.play((Player)npc.getEntity());
+        Entity vehicle = npc.getEntity().getVehicle();
+        npc.despawn();
+        npc.spawn(npc.getStoredLocation());
+        if (vehicle != null && vehicle.isValid()) {
+            vehicle.remove();
+        }
+        //PlayerAnimation.STOP_SITTING.play((Player)npc.getEntity());
         //eh.getDataWatcher().watch(0, (byte) 0x00);
         sitting = false;
     }
@@ -88,7 +106,7 @@ public class SittingTrait extends Trait implements Listener  {
          * sending the sit packet to the clients.
          */
         // TODO: Make this work better.
-        npc.teleport(location.add(0.5, 0, 0.5), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        npc.teleport(location.clone().add(0.5, 0, 0.5), PlayerTeleportEvent.TeleportCause.PLUGIN);
 
         sitInternal();
         chairLocation = location;
@@ -121,7 +139,7 @@ public class SittingTrait extends Trait implements Listener  {
      * @return boolean
      */
     public boolean isSitting() {
-        return sitting;
+        return true; // If the trait is attached, let's assume the NPC is sitting
     }
 
     /**
@@ -145,6 +163,20 @@ public class SittingTrait extends Trait implements Listener  {
         if (chairLocation == null) return;
         if (event.getBlock().getLocation().equals(chairLocation)) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void arrowDismount(final VehicleExitEvent event) {
+        if (event.getVehicle() instanceof CraftFakeArrow) {
+            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    if (event.getVehicle().isValid()) {
+                        event.getVehicle().remove();
+                    }
+                }
+            }, 1);
         }
     }
 
