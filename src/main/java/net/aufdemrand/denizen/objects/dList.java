@@ -452,7 +452,7 @@ public class dList extends ArrayList<String> implements dObject {
             StringBuilder dScriptArg = new StringBuilder();
 
             for (int n = 0; n < this.size(); n++) {
-                if (dPlayer.matches(get(n))) {
+                if (get(n).startsWith("p@")) {
                     dPlayer gotten = dPlayer.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
@@ -461,7 +461,7 @@ public class dList extends ArrayList<String> implements dObject {
                         dScriptArg.append(get(n).replaceAll("\\w+@", ""));
                     }
                 }
-                else if (dEntity.matches(get(n))) {
+                else if (get(n).startsWith("e@") || get(n).startsWith("n@")) {
                     dEntity gotten = dEntity.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
