@@ -2,7 +2,10 @@ package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.SmartEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -102,7 +105,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
         if (isArmor(item)) {
             for (final Player player : location.getWorld().getPlayers()) {
                 if (Utilities.checkLocation(player, location, 2.5)) {
-                    final ItemStack[] armor_contents = player.getInventory().getArmorContents();
+                    final ItemStack[] armor_contents = player.getInventory().getArmorContents().clone();
                     final Vector velocity = event.getVelocity();
                     new BukkitRunnable() {
                         @Override
@@ -115,8 +118,10 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
                                         && now.getDurability() == item.getDurability()
                                         && (before == null || before.getType() == Material.AIR)) {
                                     if (playerEquipsArmorEvent(player, item)) {
-                                        player.getInventory().setContents(armor_contents);
                                         location.getWorld().dropItemNaturally(location, item).setVelocity(velocity);
+                                        armor_contents[i] = null;
+                                        player.getInventory().setArmorContents(armor_contents);
+                                        player.updateInventory();
                                     }
                                 }
                             }
