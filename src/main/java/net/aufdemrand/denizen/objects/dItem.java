@@ -371,16 +371,6 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     /**
-     * Check whether this item is some form of armor.
-     *
-     * @return  True if it is, otherwise false.
-     */
-    public boolean isArmor() {
-        int type = item.getTypeId();
-        return type >= 298 && type <= 317;
-    }
-
-    /**
      * Check whether this item contains the lore specific
      * to item scripts.
      *
