@@ -901,11 +901,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             }
             for (Entity ent : getWorld().getEntities()) {
                 dEntity current = new dEntity(ent);
-                if (ent.isValid() && isInsideCuboid(ent.getLocation())) {
+                if (ent.isValid() && isInsideCuboid(ent.getLocation())
+                        && !CitizensAPI.getNPCRegistry().isNPC(ent)) {
                     if (!types.isEmpty()) {
                         for (String type : types) {
                             if ((ent.getType().name().equals(type) ||
-                                    current.identify().equalsIgnoreCase(type)) && ent.isValid()) {
+                                    current.identify().equalsIgnoreCase(type))) {
                                 entities.add(current);
                                 break;
                             }
@@ -927,7 +928,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute.startsWith("list_living_entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
             for (Entity ent : getWorld().getLivingEntities()) {
-                if (ent.isValid() && isInsideCuboid(ent.getLocation()))
+                if (ent.isValid() && isInsideCuboid(ent.getLocation())
+                        && !CitizensAPI.getNPCRegistry().isNPC(ent))
                     entities.add(new dEntity(ent));
             }
             return new dList(entities).getAttribute(attribute.fulfill(1));
