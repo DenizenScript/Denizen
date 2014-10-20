@@ -2653,7 +2653,7 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);
-            final InventoryHolder holder = inventory.getHolder();
+            final InventoryHolder holder = event.getInventory().getHolder();
             new BukkitRunnable() {
                 @Override
                 public void run() {
