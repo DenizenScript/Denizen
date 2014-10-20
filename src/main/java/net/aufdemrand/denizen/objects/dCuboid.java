@@ -877,7 +877,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute.startsWith("list_npcs")) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                if (npc.isSpawned() && isInsideCuboid(npc.getEntity().getLocation()))
+                if (isInsideCuboid(npc.getEntity().getLocation()))
                     npcs.add(dNPC.mirrorCitizensNPC(npc));
             }
             return new dList(npcs).getAttribute(attribute.fulfill(1));
