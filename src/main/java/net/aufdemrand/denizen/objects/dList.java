@@ -1094,24 +1094,26 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.contains[<element>]>
+        // @attribute <li@list.contains[<element>|...]>
         // @returns Element(Boolean)
         // @description
-        // returns whether the list contains a given element.
+        // returns whether the list contains all of the given elements.
         // -->
-        if (attribute.matches("contains")) {
-            if (attribute.hasContext(1)) {
-                boolean state = false;
+        if (attribute.matches("contains")
+                && attribute.hasContext(1)) {
+            dList needed = dList.valueOf(attribute.getContext(1));
+            int gotten = 0;
 
+            for (String check: needed) {
                 for (String element : this) {
-                    if (element.equalsIgnoreCase(attribute.getContext(1))) {
-                        state = true;
+                    if (element.equalsIgnoreCase(check)) {
+                        gotten++;
                         break;
                     }
                 }
-
-                return new Element(state).getAttribute(attribute.fulfill(1));
             }
+
+            return new Element(gotten == needed.size()).getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("prefix"))
