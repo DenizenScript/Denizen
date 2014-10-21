@@ -2532,7 +2532,7 @@ public class CommandRegistry implements dRegistry {
         // @Syntax stand
         // @Required 0
         // @Stable unstable
-        // @Short Causes the NPC to stand. (Does not currently work!)
+        // @Short Causes the NPC to stand.
         // @Author Jeebiss
         // @Group npc
         // @Description
