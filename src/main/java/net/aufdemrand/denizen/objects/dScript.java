@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 public class dScript implements dObject {
@@ -340,7 +341,17 @@ public class dScript implements dObject {
         // -->
         if (attribute.startsWith("yaml_key")
                 && attribute.hasContext(1)) {
-            Object obj = getContainer().getConfigurationSection("").get(attribute.getContext(1).toUpperCase());
+            ScriptContainer container = getContainer();
+            if (container == null) {
+                dB.echoError("Missing script container?!");
+                return new Element(identify()).getAttribute(attribute);
+            }
+            YamlConfiguration section = container.getConfigurationSection("");
+            if (section == null) {
+                dB.echoError("Missing YAML section?!");
+                return new Element(identify()).getAttribute(attribute);
+            }
+            Object obj = section.get(attribute.getContext(1).toUpperCase());
             if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
 
             if (obj instanceof List) {
