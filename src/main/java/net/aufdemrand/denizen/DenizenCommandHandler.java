@@ -128,7 +128,7 @@ public class DenizenCommandHandler {
     @Command(
             aliases = { "denizen" }, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db", "dbug" },
-            min = 1, max = 5, permission = "denizen.debug", flags = "scebrx")
+            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxo")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
             if (!dB.showDebug) dB.toggle();
@@ -136,13 +136,22 @@ public class DenizenCommandHandler {
             Messaging.sendInfo(sender, (dB.showStackTraces ? "Denizen dBugger is now showing caught " +
                     "exception stack traces." : "Denizen dBugger is now hiding caught stacktraces."));
 
-        } if (args.hasFlag('c')) {
+        }
+        if (args.hasFlag('c')) {
             if (!dB.showDebug) dB.toggle();
             dB.showColor = !dB.showColor;
             Messaging.sendInfo(sender, (dB.showColor ? "Denizen dBugger is now showing color."
                     : "Denizen dBugger color has been disabled."));
 
-        } if (args.hasFlag('e')) {
+        }
+        if (args.hasFlag('o')) {
+            if (!dB.showDebug) dB.toggle();
+            dB.debugOverride = !dB.debugOverride;
+            Messaging.sendInfo(sender, (dB.debugOverride ? "Denizen dBugger is now overriding 'debug: false'."
+                    : "Denizen dBugger override has been disabled."));
+
+        }
+        if (args.hasFlag('e')) {
             if (!dB.showDebug) dB.toggle();
             dB.showEventsTrimming = !dB.showEventsTrimming;
             Messaging.sendInfo(sender, (dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
