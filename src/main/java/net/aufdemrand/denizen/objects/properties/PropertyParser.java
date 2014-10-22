@@ -44,6 +44,7 @@ public class PropertyParser {
         registerProperty(EntityPotion.class, dEntity.class);
         registerProperty(EntityPowered.class, dEntity.class);
         registerProperty(EntityProfession.class, dEntity.class);
+        registerProperty(EntityRotation.class, dEntity.class);
         registerProperty(EntitySitting.class, dEntity.class);
         registerProperty(EntitySize.class, dEntity.class);
         registerProperty(EntitySkeleton.class, dEntity.class);
