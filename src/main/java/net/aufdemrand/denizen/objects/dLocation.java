@@ -24,6 +24,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.block.Skull;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -453,6 +455,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("spawner_type")) {
             if (getBlock().getState() instanceof CreatureSpawner) {
                 return new dEntity(((CreatureSpawner) getBlock().getState()).getSpawnedType())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else return "null";
+        }
+
+        // <--[tag]
+        // @attribute <l@location.skull_skin>
+        // @returns Element
+        // @mechanism dLocation.skull_skin
+        // @description
+        // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object.
+        // -->
+        if (attribute.startsWith("skull_skin")) {
+            if (getBlock().getState() instanceof Skull) {
+                return new Element(((Skull) getBlock().getState()).getOwner())
                         .getAttribute(attribute.fulfill(1));
             }
             else return "null";
@@ -1415,6 +1432,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 }
             }
             state.update();
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name skull_skin
+        // @input Element
+        // @description
+        // Sets the skin of a skull block.
+        // Takes a name or UUID.
+        // @tags
+        // <l@location.skull_skin>
+        // -->
+        if (mechanism.matches("skull_skin") && getBlock().getState() instanceof Skull) {
+            ((Skull)getBlock().getState()).setOwner(value.asString());
+            getBlock().getState().update(true);
         }
 
         if (!mechanism.fulfilled())
