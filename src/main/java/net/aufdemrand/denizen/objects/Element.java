@@ -1509,8 +1509,14 @@ public class Element implements dObject {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             }
-            return new Element(asBigDecimal().divide(getBD(attribute.getContext(1))).toString())
-                    .getAttribute(attribute.fulfill(1));
+            try {
+                return new Element(asBigDecimal().divide(getBD(attribute.getContext(1))).toString())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            catch (Exception e) {
+                return new Element(asDouble() / (aH.getDoubleFrom(attribute.getContext(1))))
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -1543,8 +1549,14 @@ public class Element implements dObject {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
                 return Element.NULL.getAttribute(attribute.fulfill(1));
             }
-            return new Element(asBigDecimal().multiply(getBD(attribute.getContext(1))).toString())
-                    .getAttribute(attribute.fulfill(1));
+            try {
+                return new Element(asBigDecimal().multiply(getBD(attribute.getContext(1))).toString())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            catch (Exception e) {
+                return new Element(asDouble() * (aH.getDoubleFrom(attribute.getContext(1))))
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]

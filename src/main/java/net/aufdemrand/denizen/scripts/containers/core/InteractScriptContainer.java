@@ -135,6 +135,10 @@ public class InteractScriptContainer extends ScriptContainer {
      */
     public List<ScriptEntry> getEntriesFor(Class<? extends AbstractTrigger> trigger,
                                            dPlayer player, dNPC npc, String id) {
+        return getEntriesFor(trigger, player, npc, id, false);
+    }
+    public List<ScriptEntry> getEntriesFor(Class<? extends AbstractTrigger> trigger,
+                                           dPlayer player, dNPC npc, String id, boolean quiet) {
         // Get the trigger name
         String triggerName = DenizenAPI.getCurrentInstance()
                 .getTriggerRegistry().get(trigger).getName().toUpperCase();
@@ -149,10 +153,11 @@ public class InteractScriptContainer extends ScriptContainer {
                             + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT"));
             // No entries, so just return an empty list to avoid NPEs
         } else {
-            dB.echoDebug(this, "No entries in script for " +
-                    ("STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
-                    + triggerName + " TRIGGER."
-                    + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT")));
+            if (!quiet)
+                dB.echoDebug(this, "No entries in script for " +
+                        ("STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
+                        + triggerName + " TRIGGER."
+                        + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT")));
             return Collections.emptyList();
         }
     }

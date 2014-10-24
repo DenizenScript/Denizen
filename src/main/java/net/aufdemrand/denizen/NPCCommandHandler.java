@@ -321,10 +321,6 @@ public class NPCCommandHandler {
         if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
         SittingTrait trait = npc.getTrait(SittingTrait.class);
 
-        if (trait.isSitting()) {
-            Messaging.sendError(sender, npc.getName() + " is already sitting!");
-            return;
-        }
         if (args.hasFlag('c')) {
             trait.sit(args.getSenderTargetBlockLocation());
         } else if (args.hasValueFlag("location")) {
@@ -359,11 +355,6 @@ public class NPCCommandHandler {
 
         if (npc.hasTrait(SittingTrait.class)) {
             SittingTrait trait = npc.getTrait(SittingTrait.class);
-            if (!trait.isSitting()) {
-                npc.removeTrait(SittingTrait.class);
-                Messaging.sendError(sender, npc.getName() + " is already standing!");
-                return;
-            }
             trait.stand();
             npc.removeTrait(SittingTrait.class);
         } else if (npc.hasTrait(SneakingTrait.class)) {

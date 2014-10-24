@@ -60,10 +60,6 @@ public class SitCommand extends AbstractCommand {
                 dB.echoDebug(scriptEntry, "...added sitting trait");
             }
 
-            if (trait.isSitting()) {
-                dB.echoError(scriptEntry.getResidingQueue(), "...NPC is already sitting");
-            }
-
             if (location != null) {
                 trait.sit(location);
             } else {

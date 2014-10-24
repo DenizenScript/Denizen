@@ -969,6 +969,30 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.filter[<tag>]>
+        // @returns dList
+        // @description
+        // returns a copy of the list with all its contents parsed through the given tag and only including ones that returned 'true'.
+        // For example, a list of '1|2|3|4|5' .filter[is[or_more].than[3]] returns a list of '3|4|5'.
+        // -->
+        if (attribute.startsWith("filter")
+                && attribute.hasContext(1)) {
+            dList newlist = new dList();
+            try {
+                for (String str: this) {
+                    if (ObjectFetcher.pickObjectFor(str).getAttribute(new Attribute(attribute.getContext(1),
+                            attribute.getScriptEntry())).equalsIgnoreCase("true")) {
+                        newlist.add(str);
+                    }
+                }
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+            }
+            return newlist.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <li@list.parse[<tag>]>
         // @returns dList
         // @description
@@ -1094,24 +1118,26 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.contains[<element>]>
+        // @attribute <li@list.contains[<element>|...]>
         // @returns Element(Boolean)
         // @description
-        // returns whether the list contains a given element.
+        // returns whether the list contains all of the given elements.
         // -->
-        if (attribute.matches("contains")) {
-            if (attribute.hasContext(1)) {
-                boolean state = false;
+        if (attribute.matches("contains")
+                && attribute.hasContext(1)) {
+            dList needed = dList.valueOf(attribute.getContext(1));
+            int gotten = 0;
 
+            for (String check: needed) {
                 for (String element : this) {
-                    if (element.equalsIgnoreCase(attribute.getContext(1))) {
-                        state = true;
+                    if (element.equalsIgnoreCase(check)) {
+                        gotten++;
                         break;
                     }
                 }
-
-                return new Element(state).getAttribute(attribute.fulfill(1));
             }
+
+            return new Element(gotten == needed.size()).getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("prefix"))

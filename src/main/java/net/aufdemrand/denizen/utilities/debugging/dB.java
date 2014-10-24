@@ -69,6 +69,7 @@ public class dB {
     public static boolean showScriptBuilder = false;
     public static boolean showColor = true;
     public static boolean showEventsTrimming = false;
+    public static boolean debugOverride = false;
 
     public static List<String> filter = new ArrayList<String>();
 
@@ -371,6 +372,9 @@ public class dB {
 
 
     public static boolean shouldDebug(Debuggable caller) {
+        if (debugOverride) {
+            return true;
+        }
         boolean should_send = true;
 
         // Attempt to see if the debug should even be sent by checking the
