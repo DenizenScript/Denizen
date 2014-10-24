@@ -105,7 +105,7 @@ public class ObjectFetcher {
 
     final static Pattern PROPERTIES_PATTERN = Pattern.compile("([^\\[]+)\\[(.+=.+)\\]", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-    final static Pattern DESCRIBED_PATTERN =
+    public final static Pattern DESCRIBED_PATTERN =
             Pattern.compile("[^\\[]+\\[.+=.+\\]", Pattern.DOTALL | Pattern.MULTILINE);
 
     public static boolean checkMatch(Class<? extends dObject> dClass, String value) {

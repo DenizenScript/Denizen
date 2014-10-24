@@ -2542,11 +2542,13 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void inventoryClickEvent(InventoryClickEvent event) {
 
+        // TODO: make this a smart event...
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = null;
         dItem holding;
 
-        Inventory inventory = event.getInventory();
+        dInventory inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         final dPlayer player = new dPlayer((Player) event.getWhoClicked());
         String type = event.getInventory().getType().name();
         String click = event.getClick().name();
@@ -2555,11 +2557,13 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("player clicks in inventory");
         events.add("player clicks in " + type);
+        events.add("player clicks in " + inventory.identifySimple());
 
         String interaction = "player " + click + " clicks ";
 
         events.add(interaction + "in inventory");
         events.add(interaction + "in " + type);
+        events.add(interaction + "in " + inventory.identifySimple());
 
         if (event.getCursor() != null) {
             holding = new dItem(event.getCursor());
@@ -2567,12 +2571,16 @@ public class WorldScriptHelper implements Listener {
 
             events.add(interaction + "in inventory with " + holding.identifySimple());
             events.add(interaction + "in " + type + " with " + holding.identifySimple());
+            events.add(interaction + "in " + inventory.identifySimple() + " with " + holding.identifySimple());
             events.add(interaction + "in inventory with " + holding.identifyMaterial());
             events.add(interaction + "in " + type + " with " + holding.identifyMaterial());
+            events.add(interaction + "in " + inventory.identifySimple() + " with " + holding.identifyMaterial());
             events.add("player clicks in inventory with " + holding.identifySimple());
             events.add("player clicks in " + type + " with " + holding.identifySimple());
+            events.add("player clicks in " + inventory.identifySimple() + " with " + holding.identifySimple());
             events.add("player clicks in inventory with " + holding.identifyMaterial());
             events.add("player clicks in " + type + " with " + holding.identifyMaterial());
+            events.add("player clicks in " + inventory.identifySimple() + " with " + holding.identifyMaterial());
         }
 
         if (event.getCurrentItem() != null) {
@@ -2587,6 +2595,10 @@ public class WorldScriptHelper implements Listener {
             events.add(interaction +
                     item.identifySimple() + " in " + type);
             events.add("player clicks " +
+                    item.identifySimple() + " in " + inventory.identifySimple());
+            events.add(interaction +
+                    item.identifySimple() + " in " + inventory.identifySimple());
+            events.add("player clicks " +
                     item.identifyMaterial() + " in inventory");
             events.add(interaction +
                     item.identifyMaterial() + " in inventory");
@@ -2594,39 +2606,42 @@ public class WorldScriptHelper implements Listener {
                     item.identifyMaterial() + " in " + type);
             events.add(interaction +
                     item.identifyMaterial() + " in " + type);
+            events.add("player clicks " +
+                    item.identifyMaterial() + " in " + inventory.identifySimple());
+            events.add(interaction +
+                    item.identifyMaterial() + " in " + inventory.identifySimple());
 
             if (event.getCursor() != null) {
                 holding = new dItem(event.getCursor());
 
-                events.add("player clicks " +
-                        item.identifySimple() + " in inventory with " + holding.identifySimple());
-                events.add(interaction +
-                        item.identifySimple() + " in inventory with " + holding.identifySimple());
-                events.add(interaction +
-                        item.identifySimple() + " in " + type + " with " + holding.identifySimple());
-                events.add("player clicks " +
-                        item.identifySimple() + " in inventory with " + holding.identifyMaterial());
-                events.add(interaction +
-                        item.identifySimple() + " in inventory with " + holding.identifyMaterial());
-                events.add(interaction +
-                        item.identifySimple() + " in " + type + " with " + holding.identifyMaterial());
-                events.add("player clicks " +
-                        item.identifyMaterial() + " in inventory with " + holding.identifyMaterial());
-                events.add(interaction +
-                        item.identifyMaterial() + " in inventory with " + holding.identifyMaterial());
-                events.add(interaction +
-                        item.identifyMaterial() + " in " + type + " with " + holding.identifyMaterial());
-                events.add("player clicks " +
-                        item.identifyMaterial() + " in inventory with " + holding.identifySimple());
-                events.add(interaction +
-                        item.identifyMaterial() + " in inventory with " + holding.identifySimple());
-                events.add(interaction +
-                        item.identifyMaterial() + " in " + type + " with " + holding.identifySimple());
+                final String[] itemStrings = new String[] {
+                        item.identifySimple(),
+                        item.identifyMaterial()
+                };
+                final String[] inventoryStrings = new String[] {
+                        "inventory",
+                        type,
+                        inventory.identifySimple()
+                };
+                final String[] holdingStrings = new String[] {
+                        holding.identifySimple(),
+                        holding.identifyMaterial()
+                };
+
+                for (String itemString : itemStrings) {
+                    for (String inventoryString : inventoryStrings) {
+                        for (String holdingString : holdingStrings) {
+                            String fullString = itemString + " in " + inventoryString + " with " + holdingString;
+                            events.add("player clicks " + fullString);
+                            events.add(interaction + fullString);
+                        }
+                    }
+                }
             }
         }
 
         context.put("item", item);
-        context.put("inventory", dInventory.mirrorBukkitInventory(inventory));
+        context.put("inventory", inventory);
         context.put("click", new Element(click));
         context.put("slot_type", new Element(slotType));
         context.put("slot", new Element(event.getSlot() + 1));
@@ -2638,7 +2653,7 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);
-            final InventoryHolder holder = inventory.getHolder();
+            final InventoryHolder holder = event.getInventory().getHolder();
             new BukkitRunnable() {
                 @Override
                 public void run() {
