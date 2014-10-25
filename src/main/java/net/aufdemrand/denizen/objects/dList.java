@@ -382,6 +382,46 @@ public class dList extends ArrayList<String> implements dObject {
             return sub_list.getAttribute(attribute);
         }
 
+        // <--[tag]
+        // @attribute <li@list.map_get[<element>]>
+        // @returns dList
+        // @description
+        // Returns the sub-list split by the / symbol's
+        // value for the matching input element.
+        // TODO: Clarify
+        // EG: li@one/a|two/b.map_get[one] returns a.
+        // -->
+
+        if (attribute.startsWith("map_get")
+                && attribute.hasContext(1)) {
+            String input = attribute.getContext(1);
+            attribute.fulfill(1);
+
+
+            // <--[tag]
+            // @attribute <li@list.map_get[<element>].split_by[<element>]>
+            // @returns dList
+            // @description
+            // Returns the sub-list split by the given symbol's
+            // value for the matching input element.
+            // TODO: Clarify
+            // EG: li@one/a|two/b.map_get[one] returns a.
+            // -->
+
+            String split = "/";
+            if (attribute.startsWith("split_by")) {
+                if (attribute.hasContext(1) && attribute.getContext(1).length() > 0)
+                    split = attribute.getContext(1);
+                attribute.fulfill(1);
+            }
+
+            for (String item : this) {
+                String[] strings = item.split(Pattern.quote(split));
+                if (strings.length > 1 && strings[0].equalsIgnoreCase(input)) {
+                    return new Element(strings[1]).getAttribute(attribute);
+                }
+            }
+        }
 
         // <--[tag]
         // @attribute <li@list.comma_separated>
