@@ -416,7 +416,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
 
             for (String item : this) {
-                String[] strings = item.split(Pattern.quote(split));
+                String[] strings = item.split(Pattern.quote(split), 2);
                 if (strings.length > 1 && strings[0].equalsIgnoreCase(input)) {
                     return new Element(strings[1]).getAttribute(attribute);
                 }
