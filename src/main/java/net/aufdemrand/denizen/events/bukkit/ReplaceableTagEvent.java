@@ -303,12 +303,12 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean replaced() {
-        return wasReplaced;
+        return wasReplaced && replaced != null;
     }
 
     public void setReplaced(String string) {
         replaced = string;
-        wasReplaced = true;
+        wasReplaced = string != null;
     }
 
     public boolean hasScriptEntryAttached() {

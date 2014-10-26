@@ -1805,7 +1805,7 @@ public class Element implements dObject {
             if (!attribute.hasAlternative())
                 dB.echoDebug(attribute.getScriptEntry(), "Unfilled attributes '" + attribute.attributes.toString() +
                         "' for tag <" + attribute.getOrigin() + ">!");
-            return "null";
+            return null;
 
         } else {
             return element;

@@ -177,14 +177,13 @@ public class TagManager implements Listener {
         } else {
             // Call Event
             Bukkit.getServer().getPluginManager().callEvent(event);
-            if ((!event.replaced() && event.getAlternative() != null)
-                    || (event.getReplaced().equals("null") && event.hasAlternative()))
+            if ((!event.replaced() && event.getAlternative() != null) && event.hasAlternative())
                 event.setReplaced(event.getAlternative());
             if (context.debug)
                 dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
                         event.getReplaced() + "'.");
             if (!event.replaced())
-                dB.echoError(context.entry != null ? context.entry.getResidingQueue(): null, "Tag '" + event.getReplaced() + "' is invalid!");
+                dB.echoError(context.entry != null ? context.entry.getResidingQueue(): null, "Tag <" + event.toString() + "> is invalid!");
             return escapeOutput(event.getReplaced());
         }
     }
