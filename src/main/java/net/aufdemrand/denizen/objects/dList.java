@@ -709,7 +709,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("get") &&
                 attribute.hasContext(1)) {
-            if (isEmpty()) return "null";
+            if (isEmpty()) return null;
             dList indices = dList.valueOf(attribute.getContext(1));
             if (indices.size() > 1) {
                 dList results = new dList();
@@ -722,7 +722,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
             if (indices.size() > 0) {
                 int index = aH.getIntegerFrom(indices.get(0));
-                if (index > size()) return "null";
+                if (index > size()) return null;
                 if (index < 1) index = 1;
                 attribute = attribute.fulfill(1);
 
