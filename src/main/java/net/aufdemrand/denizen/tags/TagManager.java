@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -51,7 +52,8 @@ public class TagManager implements Listener {
         new EntityTags(denizen);
         new ListTags(denizen);
         new LocationTags(denizen);
-        new NPCTags(denizen);
+        if (Depends.citizens != null)
+            new NPCTags(denizen);
         new PlayerTags(denizen);
         new QueueTags(denizen);
         new ScriptTags(denizen);
