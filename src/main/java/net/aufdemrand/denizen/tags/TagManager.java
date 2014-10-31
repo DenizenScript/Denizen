@@ -220,9 +220,6 @@ public class TagManager implements Listener {
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return cleanOutput(arg);
 
-        // Parse \escaping down to internal escaping.
-        if (!context.instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));
-
         // Find location of the first tag
         int[] positions = locateTag(arg);
         if (positions == null) {
