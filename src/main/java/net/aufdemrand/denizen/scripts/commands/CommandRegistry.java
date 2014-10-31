@@ -453,7 +453,7 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
-        // @Name Cast, Potion
+        // @Name Cast
         // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
         // @Required 1
         // @Stable Stable
@@ -817,7 +817,7 @@ public class CommandRegistry implements dRegistry {
         // Use to reenable a NPC's triggers, disabled via 'engage'.
         // - engage
         // - chat 'Be right there!'
-        // - walkto <player.location>
+        // - walk <player.location>
         // - wait 5s
         // - disengage
         //
@@ -917,9 +917,9 @@ public class CommandRegistry implements dRegistry {
         // Use to make a NPC appear 'busy'.
         // - engage
         // - chat 'Give me a few minutes while I mix you a potion!'
-        // - walkto <npc.anchor[mixing_station]>
+        // - walk <npc.anchor[mixing_station]>
         // - wait 10s
-        // - walkto <npc.anchor[service_station]>
+        // - walk <npc.anchor[service_station]>
         // - chat 'Here you go!'
         // - give potion <player>
         // - disengage
@@ -2760,7 +2760,7 @@ public class CommandRegistry implements dRegistry {
                 "WAIT", "wait (<duration>) (queue:<name>)", 0);
 
         // <--[command]
-        // @Name Walk, WalkTo
+        // @Name Walk
         // @Syntax walk (<npc>|...) [<location>] (speed:<#.#>) (auto_range) (radius:<#.#>)
         // @Required 1
         // @Stable stable
