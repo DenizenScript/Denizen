@@ -1149,43 +1149,48 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Flag
-        // @Syntax flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
+        // @Syntax flag ({player}/npc/global/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
         // @Required 1
         // @Stable stable
         // @Short Sets or modifies a flag on the player, NPC, or server.
         // @Author aufdemrand
         // @Group core
         // @Description
+        // The flag command sets or modifies custom value storage database entries connected to
+        // each player, each NPC, and the server.
         // TODO: Document Command Details
         // @Tags
         // <p@player.flag[<flag>]>
         // <n@npc.flag[<flag>]>
-        // <global.flag[<flag>]>
+        // <server.flag[<flag>]>
         // @Usage
         // @Usage
-        // Use to create a flag named 'playstyle' on the player with 'agressive' as the value.
+        // Use to create or set a flag on a player.
         // - flag player playstyle:agressive
         // @Usage
-        // Use to create a flag on the npc with its current location as the value.
+        // Use to flag an npc with a given tag value.
         // - flag npc location:<npc.location>
         // @Usage
-        // Use to increase the context player flag 'damage_dealt' with the context damage as amount.
+        // Use to apply mathematical changes to a flag's value on a unique object.
         // - flag <context.damager> damage_dealt:+:<context.damage>
         // @Usage
-        // Use to add p@TheBlackCoyote to the server flag called 'cool_people' as a new value without removing existing values.
+        // Use to add an item to a server flag as a new value without removing existing values.
         // - flag server cool_people:->:p@TheBlackCoyote
         // @Usage
-        // Use to add both p@mcmonkey4eva and p@morphan1 as individual new values to the server flag 'cool_people'.
+        // Use to add both multiple items as individual new values to a server flag.
         // - flag server cool_people:|:p@mcmonkey4eva|p@morphan1
         // @Usage
-        // Use to remove p@morphan1 from the server flag 'cool_people'.
+        // Use to remove an entry from a server flag.
         // - flag server cool_people:<-:p@morphan1
         // @Usage
         // Use to completely remove a flag.
         // - flag server cool_people:!
+        // @Usage
+        // Use to modify a specific index in a list flag.
+        // - flag server myflag[3]:HelloWorld
         // -->
         registerCoreMember(FlagCommand.class,
-                "FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
+                "FLAG", "flag ({player}/npc/global/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
 
 
         // <--[command]
