@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.aufdemrand.denizen.utilities.ReflectionUtil;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -170,7 +171,7 @@ public enum ParticleEffect {
 
     private static void sendPacket(Player p, Object packet) {
         // Denizen: Check player against NPC registry to prevent errors
-        if (packet != null && !CitizensAPI.getNPCRegistry().isNPC(p))
+        if (packet != null && (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(p)))
             try {
                 Object entityPlayer = ReflectionUtil.invokeMethod("getHandle", p.getClass(), p);
                 Object playerConnection = ReflectionUtil.getValue("playerConnection", entityPlayer);
