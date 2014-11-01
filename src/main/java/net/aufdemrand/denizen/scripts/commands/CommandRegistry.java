@@ -136,6 +136,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Adjusts a dObjects mechanism.
         // @Author aufdemrand
         // @Group core
+        // @Video /denizen/vids/Properties%20and%20Mechanisms
 
         // @Description
         // Many dObjects contains options and properties that need to be adjusted. Denizen employs a mechanism
