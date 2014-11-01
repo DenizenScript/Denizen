@@ -1234,6 +1234,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Loops through a dList, running a set of commands for each item.
         // @Author Morphan1, mcmonkey
         // @Group core
+        // @Video /denizen/vids/Loops
 
         // @Description
         // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
@@ -1415,6 +1416,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Compares values, and runs one script if they match, or a different script if they don't match.
         // @Author aufdemrand, David Cernat
         // @Group core
+        // @Video /denizen/vids/Alternate/Dynamic%20Actions:%20The%20If%20Command
         // @Description
         // TODO: Document Command Details
         // @Tags
@@ -2099,6 +2101,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Runs a series of braced commands several times.
         // @Author morphan1, mcmonkey
         // @Group core
+        // @Video /denizen/vids/Loops
 
         // @Description
         // Loops through a series of braced commands a specified number of times.
@@ -2807,6 +2810,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Runs a series of braced commands until the tag returns false.
         // @Author mcmonkey
         // @Group core
+        // @Video /denizen/vids/Loops
 
         // @Description
         // TODO: Document Command Details
