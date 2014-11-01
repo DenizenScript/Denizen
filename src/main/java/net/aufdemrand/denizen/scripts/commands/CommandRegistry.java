@@ -2835,13 +2835,17 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Syntax yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
+        // @Syntax yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
         // @Required 2
-        // @Stable TODO: Document Command Details
+        // @Stable stable
         // @Short Edits a YAML configuration file.
         // @Author aufdemrand
         // @Group core
         // @Description
+        // Edits a YAML configuration file.
+        // This can be used for interacting with other plugins' configuration files.
+        // It can also be used for storing your own script's data.
+        // It can even be used to edit Denizen's saves/config, or even Denizen scripts.
         // TODO: Document Command Details
         // @Tags
         // <yaml[<idname>].contains[<path>]>
@@ -2855,8 +2859,8 @@ public class CommandRegistry implements dRegistry {
         // Use to load a YAML file from disk
         // - yaml load:myfile.yml id:myfile
         // @Usage
-        // Use to write to a YAML file
-        // - yaml write:my.key value:myvalue id:myfile
+        // Use to modify a YAML file similarly to a flag
+        // - yaml id:myfile set my.key:HelloWorld
         // @Usage
         // Use to save a YAML file to disk
         // - yaml savefile:myfile.yml id:myfile
@@ -2871,7 +2875,7 @@ public class CommandRegistry implements dRegistry {
         // - yaml id:myfile set my.key[2]:hello
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)] [id:<name>]", 2);
+                "YAML", "yaml [create]/[load:<file>]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
 
         // <--[command]
         // @Name Zap
