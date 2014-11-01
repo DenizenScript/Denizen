@@ -1238,7 +1238,7 @@ public class dList extends ArrayList<String> implements dObject {
                     return toReturn.getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new Element(this.get(CoreUtilities.getRandom().nextInt(this.size())))
+                    return ObjectFetcher.pickObjectFor(this.get(CoreUtilities.getRandom().nextInt(this.size())))
                             .getAttribute(attribute.fulfill(1));
                 }
             }
