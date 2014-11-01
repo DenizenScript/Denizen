@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.bukkit;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 
@@ -12,13 +13,7 @@ import org.bukkit.event.HandlerList;
 
 /**
  * Bukkit event that fires on the finding of a replaceable tag, as indicated by surrounding < >'s.
- *
- * @author Jeremy Schroeder
- *
- * @version 1.0
- *
  */
-
 public class ReplaceableTagEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
@@ -40,17 +35,20 @@ public class ReplaceableTagEvent extends Event {
 
     public String raw_tag;
 
+    private dScript script;
+
     ////////////
     // Constructors
 
     public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) {
-        this(player, npc, tag, null);
+        this(player, npc, tag, null, null);
     }
 
-    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry) {
+    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry, dScript script) {
 
         // Reference ScriptEntry if available
         this.scriptEntry = scriptEntry;
+        this.script = script;
 
         // Reference player/npc
         this.player = player;
@@ -300,6 +298,10 @@ public class ReplaceableTagEvent extends Event {
 
     public boolean isInstant() {
         return instant;
+    }
+
+    public dScript getScript() {
+        return script;
     }
 
     public boolean replaced() {

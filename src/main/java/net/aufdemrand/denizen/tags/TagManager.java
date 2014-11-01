@@ -30,12 +30,14 @@ public class TagManager implements Listener {
         public final boolean instant;
         public final ScriptEntry entry;
         public final boolean debug;
-        public TagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug) {
+        public final dScript script;
+        public TagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug, dScript script) {
             this.player = player;
             this.npc = npc;
             this.instant = instant;
             this.entry = entry;
             this.debug = debug;
+            this.script = script;
         }
     }
 
@@ -172,7 +174,7 @@ public class TagManager implements Listener {
     }
 
     public static String readSingleTag(String str, TagContext context) {
-        ReplaceableTagEvent event = new ReplaceableTagEvent(context.player, context.npc, str, context.entry);
+        ReplaceableTagEvent event = new ReplaceableTagEvent(context.player, context.npc, str, context.entry, context.script);
         if (event.isInstant() != context.instant) {
             // Not the right type of tag, escape the brackets so it doesn't get parsed again
             return String.valueOf((char)0x01) + str + String.valueOf((char)0x02);
@@ -211,7 +213,11 @@ public class TagManager implements Listener {
 
 
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug) {
-        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug));
+        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug, scriptEntry != null ? scriptEntry.getScript(): null));
+    }
+
+    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug, dScript script) {
+        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug, script));
     }
 
     public static String tag(String arg, TagContext context) {

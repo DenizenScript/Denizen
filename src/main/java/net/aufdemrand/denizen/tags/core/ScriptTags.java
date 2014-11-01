@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -32,6 +33,10 @@ public class ScriptTags implements Listener {
         // the ScriptEntry for a 'script' context
         if (event.hasNameContext() && dScript.matches(event.getNameContext()))
             script = dScript.valueOf(event.getNameContext());
+        else if (event.getScript() != null)
+            script = event.getScript();
+        else if (event.getScriptEntry() == null)
+            return;
         else if (event.getScriptEntry().getScript() != null)
             script = event.getScriptEntry().getScript();
         else if (event.getScriptEntry().hasObject("script"))

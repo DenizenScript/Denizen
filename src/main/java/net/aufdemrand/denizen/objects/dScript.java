@@ -113,6 +113,12 @@ public class dScript implements dObject {
         }
     }
 
+    public dScript(ScriptContainer container) {
+        this.container = container;
+        name = container.getName().toUpperCase();
+        valid = true;
+    }
+
     ///////////////////////
     // Instance fields and methods
     /////////////////////
