@@ -466,7 +466,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 List<String> value = getYaml(id).getStringList(path);
                 if (value == null) {
                     // If value is null, the key at the specified path didn't exist.
-                    event.setReplaced(Element.NULL.getAttribute(attribute));
                     return;
                 }
                 else {
@@ -478,7 +477,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 String value = getYaml(id).getString(path);
                 if (value == null) {
                     // If value is null, the key at the specified path didn't exist.
-                    event.setReplaced(Element.NULL.getAttribute(attribute));
                     return;
                 }
                 else {
@@ -499,7 +497,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
             if (path != null && path.length() > 0) {
                 ConfigurationSection section = getYaml(id).getConfigurationSection(path);
                 if (section == null) {
-                    event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                     return;
                 }
                 keys = section.getKeys(true);
@@ -508,7 +505,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 keys = getYaml(id).getKeys(true);
             }
             if (keys == null) {
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                 return;
 
             } else {
@@ -530,7 +526,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
             if (path != null && path.length() > 0) {
                 ConfigurationSection section = getYaml(id).getConfigurationSection(path);
                 if (section == null) {
-                    event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                     return;
                 }
                 keys = section.getKeys(false);
@@ -539,7 +534,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 keys = getYaml(id).getKeys(false);
             }
             if (keys == null) {
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                 return;
 
             } else {
