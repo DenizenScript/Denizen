@@ -368,7 +368,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
 
             if (index < 0)
-                return Element.NULL.getAttribute(attribute);
+                return null;
 
             dList sub_list = new dList();
 
@@ -591,7 +591,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
             else {
                 dB.echoError("The tag li@list.insert[...] requires an at[#] tag follow it!");
-                return Element.NULL.getAttribute(attribute);
+                return null;
             }
         }
 
@@ -862,7 +862,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("first")) {
             if (size() == 0)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(get(0)).getAttribute(attribute.fulfill(1));
         }
@@ -878,7 +878,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("last")) {
             if (size() == 0)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
         }

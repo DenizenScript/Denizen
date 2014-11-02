@@ -319,12 +319,12 @@ public class dScript implements dObject {
         // Returns the value of the constant as either an Element or dList.
         // -->
         if (attribute.startsWith("cons")) {
-            if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (!attribute.hasContext(1)) return null;
 
             YamlConfiguration section = getContainer().getConfigurationSection("constants");
-            if (section == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (section == null) return null;
             Object obj = section.get(attribute.getContext(1).toUpperCase());
-            if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (obj == null) return null;
 
             if (obj instanceof List) {
                 dList list = new dList();
@@ -358,7 +358,7 @@ public class dScript implements dObject {
                 return new Element(identify()).getAttribute(attribute);
             }
             Object obj = section.get(attribute.getContext(1).toUpperCase());
-            if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (obj == null) return null;
 
             if (obj instanceof List) {
                 dList list = new dList();

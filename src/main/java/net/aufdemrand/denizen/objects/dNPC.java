@@ -522,7 +522,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (attribute.startsWith("has_flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return Element.NULL.getAttribute(attribute.fulfill(1));
+            else return null;
             return new Element(FlagManager.npcHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
@@ -535,7 +535,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
          if (attribute.startsWith("flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return Element.NULL.getAttribute(attribute.fulfill(1));
+            else return null;
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired"))
                 return new Element(!FlagManager.npcHasFlag(this, flag_name))
@@ -583,7 +583,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                     .getConstant(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return Element.NULL.getAttribute(attribute.fulfill(1));
+                    return null;
                 }
             }
         }
@@ -599,7 +599,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                 return new Element(getCitizen().getTrait(Poses.class).hasPose(attribute.getContext(1)))
                         .getAttribute(attribute.fulfill(1));
             else
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
         }
 
         // <--[tag]
@@ -616,7 +616,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                         .getAttribute(attribute.fulfill(1));
             }
             else
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
         }
 
         // <--[tag]
@@ -725,7 +725,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (attribute.startsWith("location.previous_location"))
             return (NPCTags.previousLocations.containsKey(getId())
                     ? NPCTags.previousLocations.get(getId()).getAttribute(attribute.fulfill(2))
-                    : Element.NULL.getAttribute(attribute.fulfill(2)));
+                    : null);
 
         // <--[tag]
         // @attribute <n@npc.teleport_on_stuck>
@@ -759,7 +759,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (attribute.startsWith("script")) {
             NPC citizen = getCitizen();
             if (!citizen.hasTrait(AssignmentTrait.class) || !citizen.getTrait(AssignmentTrait.class).hasAssignment()) {
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             else {
                 return new dScript(citizen.getTrait(AssignmentTrait.class).getAssignment().getName())
@@ -855,7 +855,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (attribute.startsWith("navigator.target_location"))
             return (getNavigator().getTargetAsLocation() != null
                     ? new dLocation(getNavigator().getTargetAsLocation()).getAttribute(attribute.fulfill(2))
-                    : Element.NULL.getAttribute(attribute.fulfill(2)));
+                    : null);
 
         // <--[tag]
         // @attribute <n@npc.navigator.is_fighting>
@@ -874,7 +874,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // returns the entity type of the target.
         // -->
         if (attribute.startsWith("navigator.target_type"))
-            return new Element(getNavigator().getTargetType() == null ? Element.NULL.getAttribute(attribute.fulfill(2))
+            // TODO: IMPROVE
+            return new Element(getNavigator().getTargetType() == null ? "null"
                     : getNavigator().getTargetType().toString())
                     .getAttribute(attribute.fulfill(2));
 
@@ -887,7 +888,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (attribute.startsWith("navigator.target_entity"))
             return (getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().getTarget() != null
                     ? new dEntity(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2))
-                    : Element.NULL.getAttribute(attribute.fulfill(2)));
+                    : null);
 
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {

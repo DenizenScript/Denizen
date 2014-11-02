@@ -451,7 +451,7 @@ public class dPlayer implements dObject, Adjustable {
             return "null";
 
         if (offlinePlayer == null)
-            return Element.NULL.getAttribute(attribute);
+            return null;
 
         /////////////////////
         //   OFFLINE ATTRIBUTES
@@ -545,7 +545,7 @@ public class dPlayer implements dObject, Adjustable {
                 x = attribute.getIntContext(1);
             // No playerchathistory? Return null.
             if (!PlayerTags.playerChatHistory.containsKey(getName())) // TODO: UUID?
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(PlayerTags.playerChatHistory.get(getName()).get(x - 1)) // TODO: UUID?
                         .getAttribute(attribute.fulfill(1));
@@ -561,7 +561,7 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return Element.NULL.getAttribute(attribute.fulfill(1));
+            else return null;
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired"))
                 return new Element(!FlagManager.playerHasFlag(this, flag_name))
@@ -585,7 +585,7 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("has_flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return Element.NULL.getAttribute(attribute.fulfill(1));
+            else return null;
             return new Element(FlagManager.playerHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
@@ -667,7 +667,7 @@ public class dPlayer implements dObject, Adjustable {
 
             } else {
                 dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
         }
 
@@ -746,7 +746,7 @@ public class dPlayer implements dObject, Adjustable {
                 bi = new BlockIterator(getPlayerEntity(), range);
             }
             catch (IllegalStateException e) {
-                return Element.NULL.getAttribute(attribute.fulfill(attribs));
+                return null;
             }
             Block b;
             Location l;
@@ -781,7 +781,7 @@ public class dPlayer implements dObject, Adjustable {
                     }
                 }
             }
-            return Element.NULL.getAttribute(attribute.fulfill(attribs));
+            return null;
         }
 
         // <--[tag]
@@ -1006,7 +1006,7 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("groups")) {
             if (Depends.permissions == null) {
                 dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             dList list = new dList();
             for (String group: Depends.permissions.getGroups()) {
@@ -1026,7 +1026,7 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
                 dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
 
             String group = attribute.getContext(1);
@@ -1201,7 +1201,7 @@ public class dPlayer implements dObject, Adjustable {
             if (getPlayerEntity().hasMetadata("selected"))
                 return getSelectedNPC()
                         .getAttribute(attribute.fulfill(1));
-            else return Element.NULL.getAttribute(attribute.fulfill(1));
+            else return null;
         }
 
 
@@ -1497,7 +1497,7 @@ public class dPlayer implements dObject, Adjustable {
             // specified qualifier, which can be either an entity or material.
             // -->
             if (attribute.getAttribute(2).startsWith("qualifier")) {
-                if (statistic == null) return Element.NULL.getAttribute(attribute.fulfill(2));
+                if (statistic == null) return null;
                 dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2));
                 if (obj instanceof dMaterial)
                     return new Element(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
@@ -1506,10 +1506,10 @@ public class dPlayer implements dObject, Adjustable {
                     return new Element(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getEntityType()))
                             .getAttribute(attribute.fulfill(2));
                 else
-                    return Element.NULL.getAttribute(attribute.fulfill(2));
+                    return null;
             }
 
-            if (statistic == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (statistic == null) return null;
             return new Element(getPlayerEntity().getStatistic(statistic)).getAttribute(attribute.fulfill(1));
         }
 
@@ -1559,7 +1559,7 @@ public class dPlayer implements dObject, Adjustable {
                 return new Element(getPlayerEntity().getPlayerWeather().name())
                         .getAttribute(attribute.fulfill(1));
             else
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
         }
 
         // <--[tag]

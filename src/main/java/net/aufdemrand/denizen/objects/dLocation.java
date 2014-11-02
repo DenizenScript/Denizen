@@ -713,7 +713,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
                 // Avoid NPE from invalid materials
-                if (materials == null) return Element.NULL.getAttribute(attribute.fulfill(2));
+                if (materials == null) return null;
 
                 // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
@@ -761,7 +761,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
                 // Avoid NPE from invalid materials
-                if (materials == null) return Element.NULL.getAttribute(attribute.fulfill(2));
+                if (materials == null) return null;
 
                 attribute.fulfill(2);
                 Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
