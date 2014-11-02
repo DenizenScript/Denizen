@@ -248,7 +248,7 @@ public class UtilTags implements Listener {
             NPC npc = ((Citizens) Bukkit.getPluginManager().getPlugin("Citizens"))
                     .getNPCSelector().getSelected(Bukkit.getConsoleSender());
             if (npc == null)
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
+                return;
             else
                 event.setReplaced(new dNPC(npc).getAttribute(attribute.fulfill(1)));
             return;

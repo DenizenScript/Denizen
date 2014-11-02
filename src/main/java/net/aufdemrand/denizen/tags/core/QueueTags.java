@@ -31,7 +31,7 @@ public class QueueTags implements Listener {
 
         if (event.hasNameContext()) {
             if (ScriptQueue._queueExists(event.getNameContext()))
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
+                return;
             else
                 event.setReplaced(ScriptQueue._getExistingQueue(event.getNameContext())
                         .getAttribute(attribute.fulfill(1)));
