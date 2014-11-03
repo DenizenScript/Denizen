@@ -2880,7 +2880,7 @@ public class CommandRegistry implements dRegistry {
         // - yaml id:myfile set my.key[2]:hello
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [create]/[load:<file>]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
+                "YAML", "yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
 
         // <--[command]
         // @Name Zap

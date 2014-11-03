@@ -9,25 +9,15 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
-
-/**
- *
- * - yaml load:filename.yml    ...
- * - yaml create:filename.yml    ...
- * - yaml read:filename.yml key:yaml-key     ...
- * - yaml write:filename.yml key:yaml-key value:value    ...
- * - yaml savefile:filename.yml
- *
- */
 
 public class YamlCommand extends AbstractCommand implements Listener {
 
@@ -226,7 +216,15 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     dB.echoError("File cannot be found!");
                     return;
                 }
-                yamlConfiguration = YamlConfiguration.loadConfiguration(file);
+                try {
+                    FileInputStream fis = new FileInputStream(file);
+                    yamlConfiguration = YamlConfiguration.load(ScriptHelper.convertStreamToString(fis));
+                    fis.close();
+                }
+                catch (Exception e) {
+                    dB.echoError(e);
+                    return;
+                }
                 if (yamls.containsKey(id))
                     yamls.remove(id);
                 if (yamlConfiguration != null)
@@ -243,7 +241,12 @@ public class YamlCommand extends AbstractCommand implements Listener {
             case SAVE:
                 if (yamls.containsKey(id)) {
                     try {
-                        yamls.get(id).save(new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename.asString()));
+                        FileWriter fw = new FileWriter(DenizenAPI.getCurrentInstance()
+                                .getDataFolder().getAbsolutePath() + "/" + filename.asString());
+                        BufferedWriter writer = new BufferedWriter(fw);
+                        writer.write(yamls.get(id).saveToString());
+                        writer.close();
+                        fw.close();
                     } catch (IOException e) {
                         dB.echoError(e);
                     }
@@ -268,7 +271,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             case SET:
                 if (yamls.containsKey(id)) {
                     if (yaml_action == null || key == null || value == null) {
-                        dB.echoError("Must specify a flag action and value!");
+                        dB.echoError("Must specify a YAML action and value!");
                         return;
                     }
                     YamlConfiguration yaml = yamls.get(id);
@@ -306,6 +309,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         case INSERT:
                         {
                             List<String> list = yaml.getStringList(keyStr);
+                            if (list == null)
+                                list = new ArrayList<String>();
                             list.add(valueStr);
                             yaml.set(keyStr, list);
                             break;
@@ -313,6 +318,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         case REMOVE:
                         {
                             List<String> list = yaml.getStringList(keyStr);
+                            if (list == null)
+                                break;
                             if (index > -1 && index < list.size()) {
                                 list.remove(index);
                             }
@@ -330,6 +337,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         case SPLIT:
                         {
                             List<String> list = yaml.getStringList(keyStr);
+                            if (list == null)
+                                list = new ArrayList<String>();
                             list.addAll(dList.valueOf(valueStr));
                             yaml.set(keyStr, list);
                             break;
@@ -404,7 +413,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
 
         // YAML tag requires name context and type context.
-        if (!event.hasNameContext() || !event.hasTypeContext()) {
+        if (!event.hasNameContext() || !(event.hasTypeContext() || attribute.getAttribute(2).equalsIgnoreCase("to_json"))) {
             dB.echoError("YAML tag '" + event.raw_tag + "' is missing required context. Tag replacement aborted.");
             return;
         }
@@ -495,7 +504,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         if (attribute.startsWith("list_deep_keys")) {
             Set<String> keys;
             if (path != null && path.length() > 0) {
-                ConfigurationSection section = getYaml(id).getConfigurationSection(path);
+                YamlConfiguration section = getYaml(id).getConfigurationSection(path);
                 if (section == null) {
                     return;
                 }
@@ -524,7 +533,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         if (attribute.startsWith("list_keys")) {
             Set<String> keys;
             if (path != null && path.length() > 0) {
-                ConfigurationSection section = getYaml(id).getConfigurationSection(path);
+                YamlConfiguration section = getYaml(id).getConfigurationSection(path);
                 if (section == null) {
                     return;
                 }
@@ -544,5 +553,16 @@ public class YamlCommand extends AbstractCommand implements Listener {
             }
         }
 
+        // <--[tag]
+        // @attribute <yaml[<id>].to_json>
+        // @returns dList
+        // @description
+        // Converts the YAML container to a JSON array.
+        // -->
+        if (attribute.startsWith("to_json")) {
+            JSONObject jsobj = new JSONObject(getYaml(id).getMap());
+            event.setReplaced(new Element(jsobj.toString()).getAttribute(attribute.fulfill(1)));
+            return;
+        }
     }
 }
