@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import org.json.JSONObject;
 
 public class dScript implements dObject {
 
@@ -448,6 +449,12 @@ public class dScript implements dObject {
         // -->
         if (attribute.startsWith("object_type")) {
             return new Element(getObjectType()).getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("to_json")) {
+            JSONObject jsobj = new JSONObject(container.getConfigurationSection("").getMap());
+            jsobj.remove("TYPE");
+            return new Element(jsobj.toString()).getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
