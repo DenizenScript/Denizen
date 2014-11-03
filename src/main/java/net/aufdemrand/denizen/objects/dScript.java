@@ -451,6 +451,13 @@ public class dScript implements dObject {
             return new Element(getObjectType()).getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <s@script.to_json>
+        // @returns Element
+        // @description
+        // Converts the YAML Script Container to a JSON array.
+        // Best used with 'yaml data' type scripts.
+        // -->
         if (attribute.startsWith("to_json")) {
             JSONObject jsobj = new JSONObject(container.getConfigurationSection("").getMap());
             jsobj.remove("TYPE");
