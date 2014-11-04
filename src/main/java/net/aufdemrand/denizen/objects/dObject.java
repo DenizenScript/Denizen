@@ -94,6 +94,11 @@ import net.aufdemrand.denizen.tags.Attribute;
 // |   cu@<position_1>|<position_2>|... - fetches a new cuboid encompassing a region from position 1 to 2, from 2 to 3, ...
 // |   cu@<notable_cuboid_name> - fetches the cuboid that has been 'noted' with the specified ID
 //
+// + ----- dChunk ------+
+// | object notation: ch@   can reference unique objects: yes      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   ch@<x>,<y>,<world> - fetches a chunk at the given chunk location
+//
 // + ----- dInventory ---+
 // | object notation: in@   can reference unique objects: yes     can be notable: soon
 // | constructors: ( <>'s represent non-static information and are not literal)

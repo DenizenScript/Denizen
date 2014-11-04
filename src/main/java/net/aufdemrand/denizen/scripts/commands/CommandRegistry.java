@@ -539,7 +539,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name ChunkLoad
-        // @Syntax chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
+        // @Syntax chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)
         // @Required 1
         // @Stable stable
         // @Short Keeps a chunk actively loaded and allowing NPC activity.
@@ -550,10 +550,20 @@ public class CommandRegistry implements dRegistry {
         // @Tags
         // TODO: Document Command Details
         // @Usage
-        // TODO: Document Command Details
+        // Use to load a chunk.
+        // - chunkload ch@0,0,world
+        // @Usage
+        // Use to temporarily load a chunk.
+        // - chunkload ch@0,0,world duration:5m
+        // @Usage
+        // Use to stop loading a chunk.
+        // - chunkload remove ch@0,0,world
+        // @Usage
+        // Use to stop loading any chunks.
+        // - chunkload removeall
         // -->
         registerCoreMember(ChunkLoadCommand.class,
-                "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<location>] (duration:<value>)", 1);
+                "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)", 1);
 
 
         // <--[command]

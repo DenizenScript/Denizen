@@ -3,17 +3,15 @@ package net.aufdemrand.denizen.scripts.commands.world;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,8 +35,15 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (arg.matchesEnum(Action.values())
-                    && !scriptEntry.hasObject("action"))
+                    && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", new Element(arg.getValue().toUpperCase()));
+                if (arg.getValue().equalsIgnoreCase("removeall"))
+                    scriptEntry.addObject("location", new dLocation(Bukkit.getWorlds().get(0), 0, 0, 0));
+            }
+
+            else if (arg.matchesArgumentType(dChunk.class)
+                    && !scriptEntry.hasObject("location"))
+                scriptEntry.addObject("location", arg.asType(dChunk.class).getCenter());
 
             else if (arg.matchesArgumentType(dLocation.class)
                     && !scriptEntry.hasObject("location"))
