@@ -2011,7 +2011,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Queue
-        // @Syntax queue (queue:<id>) [clear/stop/pause/resume/delay:<#>]
+        // @Syntax queue (<queue>) [clear/stop/pause/resume/delay:<#>]
         // @Required 1
         // @Stable stable
         // @Short Modifies the current state of a script queue.
@@ -2020,11 +2020,25 @@ public class CommandRegistry implements dRegistry {
         // @Description
         // TODO: Document Command Details
         // @Tags
+        // <queue>
         // <queue.id>
         // <queue.size>
         // <queue.exists[queue_id]>
         // @Usage
-        // TODO: Document Command Details
+        // Use to clear the current queue.
+        // - queue clear
+        // @Usage
+        // Use to force-stop a given queue.
+        // - queue <server.flag[OtherQueue]> clear
+        // @Usage
+        // Use to delay the current queue (use <@link command wait> instead!)
+        // - queue delay:5t
+        // @Usage
+        // Use to pause the given queue.
+        // - queue <server.flag[OtherQueue]> pause
+        // @Usage
+        // Use to resume the given queue.
+        // - queue <server.flag[OtherQueue]> resume
         // -->
         registerCoreMember(QueueCommand.class,
                 "QUEUE", "queue (queue:<id>) [clear/stop/pause/resume/delay:<#>]", 1);
