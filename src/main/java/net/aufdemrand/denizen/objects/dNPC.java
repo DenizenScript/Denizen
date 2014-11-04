@@ -428,7 +428,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // returns the name of the NPC.
         // -->
         if (attribute.startsWith("name"))
-            return new Element(ChatColor.stripColor(getName()))
+            return new Element(getName())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
