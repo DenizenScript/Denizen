@@ -17,7 +17,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class LogCommand extends AbstractCommand {
 
-    public enum Type { SEVERE, INFO, WARNING, FINE, FINER, FINEST, NONE }
+    public enum Type { SEVERE, INFO, WARNING, FINE, FINER, FINEST, NONE, CLEAR }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -70,6 +70,22 @@ public class LogCommand extends AbstractCommand {
                 file.getParentFile().mkdirs();
                 FileWriter fw = new FileWriter(file, true);
                 fw.write(output + "\n");
+                fw.close();
+            }
+            catch (IOException e) {
+                dB.echoError(scriptEntry.getResidingQueue(), "Error logging to file...");
+                dB.echoError(scriptEntry.getResidingQueue(), e);
+            }
+            return;
+        }
+
+        else if (type == Type.CLEAR) {
+            try {
+                file.getParentFile().mkdirs();
+                FileWriter fw = new FileWriter(file);
+                if (output.length() > 0) {
+                    fw.write(output + "\n");
+                }
                 fw.close();
             }
             catch (IOException e) {
