@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -21,7 +22,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     @Override
     public void onEnable() {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
     /*

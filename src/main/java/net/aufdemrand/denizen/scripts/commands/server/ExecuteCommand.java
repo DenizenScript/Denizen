@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.server;
 
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.DenizenCommandSender;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -138,7 +139,7 @@ public class ExecuteCommand extends AbstractCommand {
             dcs.clearOutput();
             ServerCommandEvent sce = new ServerCommandEvent(dcs, command);
             Bukkit.getPluginManager().callEvent(sce);
-            denizen.getServer().dispatchCommand(dcs, sce.getCommand());
+            DenizenAPI.getCurrentInstance().getServer().dispatchCommand(dcs, sce.getCommand());
             scriptEntry.addObject("output", new dList(dcs.getOutput()));
         }
     }

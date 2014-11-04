@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -178,6 +179,6 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                 }
             }
         };
-        task.runTaskTimer(denizen, 0, frequency.getTicks());
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, frequency.getTicks());
     }
 }

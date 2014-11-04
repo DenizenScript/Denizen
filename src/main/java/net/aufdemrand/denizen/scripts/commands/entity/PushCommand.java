@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -242,6 +243,6 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 }
             }
         };
-        task.runTaskTimer(denizen, 0, 2);
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 2);
     }
 }

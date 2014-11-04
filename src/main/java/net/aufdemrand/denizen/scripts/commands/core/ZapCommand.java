@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -124,7 +125,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         // ZAP for this script is taking place.
         if (durations.containsKey(scriptEntry.getPlayer().getSaveName() + "," + script.getName()))
             try {
-                denizen.getServer().getScheduler().cancelTask(durations.get(scriptEntry.getPlayer().getSaveName() + "," + script.getName()));
+                DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(scriptEntry.getPlayer().getSaveName() + "," + script.getName()));
             } catch (Exception e) { }
 
         // One last thing... check for duration.
@@ -145,7 +146,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
             // Set delayed task and put id in a map
             dB.log("Setting delayed task 'RESET ZAP' for '" + script.identify() + "'");
             durations.put(scriptEntry.getPlayer().getSaveName() + "," + script.getName(),
-                    denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
+                    DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                             new Runnable() {
                                 @Override
                                 public void run() {
@@ -165,7 +166,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         // FINALLY! ZAP! Change the step in Saves... your step is now ZAPPED!
         // Fun fact: ZAP is named in homage of ZZT-OOPs ZAP command. Google it.
         //
-        denizen.getSaves().set("Players." + scriptEntry.getPlayer().getSaveName()
+        DenizenAPI.getCurrentInstance().getSaves().set("Players." + scriptEntry.getPlayer().getSaveName()
                 + ".Scripts." + script.getName().toUpperCase() + "." + "Current Step", step);
     }
 }

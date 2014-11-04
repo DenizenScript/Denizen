@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.aufdemrand.denizen.objects.*;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -89,7 +90,7 @@ public class LookCommand extends AbstractCommand {
                     }
                 }
             };
-            task.runTaskTimer(denizen, 0, 2);
+            task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 2);
         }
     }
 }

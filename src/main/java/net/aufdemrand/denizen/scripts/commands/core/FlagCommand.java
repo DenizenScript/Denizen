@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.flags.FlagManager;
@@ -191,13 +192,13 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         // Returns existing flag (if existing), or a new flag if not
         if (flag_target instanceof Element)
-            flag = denizen.flagManager().getGlobalFlag(name.asString());
+            flag = DenizenAPI.getCurrentInstance().flagManager().getGlobalFlag(name.asString());
 
         else if (flag_target instanceof dPlayer)
-            flag = denizen.flagManager().getPlayerFlag((dPlayer) flag_target, name.asString());
+            flag = DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag((dPlayer) flag_target, name.asString());
 
         else if (flag_target instanceof dNPC)
-            flag = denizen.flagManager().getNPCFlag(((dNPC) flag_target).getId(), name.asString());
+            flag = DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(((dNPC) flag_target).getId(), name.asString());
 
         else throw new CommandExecutionException("Could not fetch a flag for this entity: " + flag_target.debug());
 

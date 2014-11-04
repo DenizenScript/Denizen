@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
@@ -37,15 +36,12 @@ public abstract class AbstractCommand implements RegistrationableInstance {
         return braced;
     }
 
-    public Denizen denizen;
-
     protected String name;
 
     public CommandOptions commandOptions;
 
     @Override
     public AbstractCommand activate() {
-        this.denizen = DenizenAPI.getCurrentInstance();
         return this;
     }
 
@@ -53,7 +49,7 @@ public abstract class AbstractCommand implements RegistrationableInstance {
     public AbstractCommand as(String commandName) {
         // Register command with Registry with a Name
         name = commandName.toUpperCase();
-        denizen.getCommandRegistry().register(this.name, this);
+        DenizenAPI.getCurrentInstance().getCommandRegistry().register(this.name, this);
         onEnable();
         return this;
     }

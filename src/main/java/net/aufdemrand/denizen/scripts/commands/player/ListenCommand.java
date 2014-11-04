@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.listeners.AbstractListener;
@@ -90,9 +91,9 @@ public class ListenCommand extends AbstractCommand {
 
             case NEW:
                 // First make sure there isn't already a 'player listener' for this player with the specified ID.
-                if (denizen.getListenerRegistry()
+                if (DenizenAPI.getCurrentInstance().getListenerRegistry()
                         .getListenersFor(scriptEntry.getPlayer()) != null
-                        && denizen.getListenerRegistry().getListenersFor(scriptEntry.getPlayer())
+                        && DenizenAPI.getCurrentInstance().getListenerRegistry().getListenersFor(scriptEntry.getPlayer())
                         .containsKey(id.asString().toLowerCase())) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Cancelled creation of NEW listener! Listener ID '" + id.asString() + "' already exists!");
                     break;
@@ -105,7 +106,7 @@ public class ListenCommand extends AbstractCommand {
                 }
 
                 try {
-                    denizen.getListenerRegistry().get(type.asString())
+                    DenizenAPI.getCurrentInstance().getListenerRegistry().get(type.asString())
                             .createInstance(scriptEntry.getPlayer(), id.asString())
                             .build(scriptEntry.getPlayer(),
                                     id.asString(),
@@ -118,7 +119,7 @@ public class ListenCommand extends AbstractCommand {
                     dB.echoDebug(scriptEntry, "Cancelled creation of NEW listener!");
 
                     // Why? Maybe a wrong listener type...
-                    if (denizen.getListenerRegistry().get(type.asString()) == null)
+                    if (DenizenAPI.getCurrentInstance().getListenerRegistry().get(type.asString()) == null)
                         dB.echoError(scriptEntry.getResidingQueue(), "Invalid listener type!");
 
                     // Just print the stacktrace if anything else, so we can debug other possible
@@ -127,32 +128,32 @@ public class ListenCommand extends AbstractCommand {
                         dB.echoError(scriptEntry.getResidingQueue(), e);
 
                     // Deconstruct the listener in case it was partially created while erroring out.
-                    try { denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id.asString()).cancel(); }
+                    try { DenizenAPI.getCurrentInstance().getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id.asString()).cancel(); }
                     catch (Exception ex) { }
                 }
                 break;
 
             case FINISH:
-                if (denizen.getListenerRegistry()
+                if (DenizenAPI.getCurrentInstance().getListenerRegistry()
                         .getListenerFor(scriptEntry.getPlayer(), id.asString()) != null)
-                    denizen.getListenerRegistry()
+                    DenizenAPI.getCurrentInstance().getListenerRegistry()
                             .getListenerFor(scriptEntry.getPlayer(), id.asString()).finish();
                 break;
 
             case CANCEL:
                 if (scriptEntry.getPlayer() != null) {
                     if (id != null)
-                        if (denizen.getListenerRegistry()
+                        if (DenizenAPI.getCurrentInstance().getListenerRegistry()
                                 .getListenerFor(scriptEntry.getPlayer(), id.asString()) != null)
-                            denizen.getListenerRegistry()
+                            DenizenAPI.getCurrentInstance().getListenerRegistry()
                                     .getListenerFor(scriptEntry.getPlayer(), id.asString()).cancel();
                     else
                         for (AbstractListener listener :
-                                denizen.getListenerRegistry().getListenersFor(scriptEntry.getPlayer()).values())
+                                DenizenAPI.getCurrentInstance().getListenerRegistry().getListenersFor(scriptEntry.getPlayer()).values())
                             listener.cancel();
                 }
                 else
-                    denizen.getSaves().set("Listeners." + scriptEntry.getPlayer().getName() + "." + id, null);
+                    DenizenAPI.getCurrentInstance().getSaves().set("Listeners." + scriptEntry.getPlayer().getName() + "." + id, null);
                 break;
         }
     }

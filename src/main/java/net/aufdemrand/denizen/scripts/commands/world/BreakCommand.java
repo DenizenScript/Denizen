@@ -103,7 +103,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
                 location.getBlock(), config);
         if (breaker.shouldExecute()) {
             TaskRunnable run = new TaskRunnable(breaker);
-            run.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, run, 0, 1);
+            run.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), run, 0, 1);
         }
     }
 

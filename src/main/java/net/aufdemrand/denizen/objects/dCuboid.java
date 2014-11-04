@@ -828,7 +828,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @attribute <cu@cuboid.include[<location>]>
         // @returns dCuboid
         // @description
-        // Expands the first member of the dCuboid to contain the given location.
+        // Expands the first member of the dCuboid to contain the given location, and returns the expanded cuboid.
         // -->
         if (attribute.startsWith("include")
                 && attribute.hasContext(1)) {
@@ -1024,6 +1024,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public void adjust(Mechanism mechanism) {
 
         Element value = mechanism.getValue();
+
+        // TODO: Should cuboids have mechanisms? Aren't tags sufficient?
 
         // <--[mechanism]
         // @object dCuboid

@@ -369,7 +369,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             }
         };
 
-        task.runTaskTimer(denizen, 0, 2);
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 2);
     }
 
     @EventHandler

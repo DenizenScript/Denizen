@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -74,7 +75,7 @@ public class PauseCommand extends AbstractCommand {
         // If duration...
         if (duration > 0) {
             if (durations.containsKey(dNPC.getCitizen().getId() + pauseType.name())) {
-                try { denizen.getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name())); }
+                try { DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name())); }
                 catch (Exception e) {
                     dB.echoError(scriptEntry.getResidingQueue(), "There was an error pausing that!");
                     dB.echoError(scriptEntry.getResidingQueue(), e);
@@ -84,7 +85,8 @@ public class PauseCommand extends AbstractCommand {
             dB.echoDebug(scriptEntry, "Running delayed task: Unpause " + pauseType.toString());
 
             final ScriptEntry se = scriptEntry;
-            durations.put(dNPC.getId() + pauseType.name(), denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
+            durations.put(dNPC.getId() + pauseType.name(), DenizenAPI.getCurrentInstance()
+                    .getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                 @Override public void run() {
                     dB.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());

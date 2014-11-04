@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -271,6 +272,6 @@ public class FlyCommand extends AbstractCommand {
             }
         };
 
-           task.runTaskTimer(denizen, 0, 3);
+           task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 3);
     }
 }

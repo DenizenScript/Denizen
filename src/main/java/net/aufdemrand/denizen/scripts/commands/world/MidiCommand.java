@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -60,7 +61,7 @@ public class MidiCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("file")) {
 
-                String path = denizen.getDataFolder() +
+                String path = DenizenAPI.getCurrentInstance().getDataFolder() +
                         File.separator + "midi" +
                         File.separator + arg.getValue();
                 if (!path.endsWith(".mid"))

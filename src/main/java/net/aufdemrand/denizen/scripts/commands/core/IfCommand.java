@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.*;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
@@ -107,7 +108,7 @@ public class IfCommand extends AbstractCommand {
 
                 // Check if filling comparables are done by checking the command registry for valid commands.
                 // If using an operator though, skip on to compared-to!
-                else if (!usedOperator && denizen.getCommandRegistry()
+                else if (!usedOperator && DenizenAPI.getCurrentInstance().getCommandRegistry()
                         .get(arg.replace("^", "")) != null) {
                     buildingComparables = false;
                 }
