@@ -2,12 +2,15 @@ package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.SmartEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dChunk;
+import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,7 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChunkLoadSmartEvent implements SmartEvent, Listener {
+public class ChunkUnloadSmartEvent implements SmartEvent, Listener {
 
 
     ///////////////////
@@ -31,7 +34,7 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on chunk loads for the first time( in (w@)?\\w+)?", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on chunk unloads( in (w@)?\\w+)?", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {
@@ -48,13 +51,13 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
     public void _initialize() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
-        dB.log("Loaded Chunk Load SmartEvent.");
+        dB.log("Loaded Chunk Unload SmartEvent.");
     }
 
 
     @Override
     public void breakDown() {
-        ChunkLoadEvent.getHandlerList().unregister(this);
+        ChunkUnloadEvent.getHandlerList().unregister(this);
     }
 
     //////////////
@@ -63,7 +66,7 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
 
     // <--[event]
     // @Events
-    // chunk loads for the first time (in <world>)
+    // chunk unloads (in <world>)
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //
@@ -71,16 +74,18 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
     // @Context
     // <context.chunk> returns the loading chunk.
     //
+    // @Determine
+    // "CANCELLED" to prevent the chunk from being unloaded.
+    //
     // -->
     @EventHandler
-    public void onChunkLoad(ChunkLoadEvent event) {
-        if (!event.isNewChunk()) return;
+    public void onChunkLoad(ChunkUnloadEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
         dWorld world = new dWorld(event.getWorld());
         context.put("chunk", new dChunk(event.getChunk()));
-        context.put("world", world); // Deprecated in favor of context.chunk.world
-        String determination = EventManager.doEvents(Arrays.asList("chunk loads for the first time",
-                "chunk loads for the first time in " + world.identify()), null, null, context, true);
-        // TODO: Find way to cancel this?... may not be reasonably possible.
+        String determination = EventManager.doEvents(Arrays.asList("chunk unloads",
+                "chunk unloads " + world.identify()), null, null, context, true);
+        if (determination.equalsIgnoreCase("cancelled"))
+            event.setCancelled(true);
     }
 }
