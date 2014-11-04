@@ -114,7 +114,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
                     dB.echoError(null, "The command '" + this.command + "' cannot be waited for!");
                 }
             }
-            actualCommand = DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command);
+            actualCommand = (AbstractCommand)DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command);
         }
         else {
             actualCommand = null;

@@ -3,8 +3,8 @@ package net.aufdemrand.denizen.utilities;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
 import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
-import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -52,7 +52,7 @@ public class DenizenAPI {
         return (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
     }
 
-    public static CommandRegistry _commandRegistry() {
+    public static BukkitCommandRegistry _commandRegistry() {
         return getCurrentInstance().getCommandRegistry();
     }
 

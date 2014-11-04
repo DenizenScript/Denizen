@@ -4,24 +4,9 @@ import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.scripts.commands.BaseAbstractCommand;
 
 public abstract class AbstractCommand extends BaseAbstractCommand {
-
-    @Override
-    public AbstractCommand activate() {
-        return this;
-    }
-
-    @Override
-    public AbstractCommand as(String commandName) {
-        // Register command with Registry with a Name
-        name = commandName.toUpperCase();
-        DenizenAPI.getCurrentInstance().getCommandRegistry().register(this.name, this);
-        onEnable();
-        return this;
-    }
 
     public abstract void execute(ScriptEntry scriptEntry) throws CommandExecutionException;
 
