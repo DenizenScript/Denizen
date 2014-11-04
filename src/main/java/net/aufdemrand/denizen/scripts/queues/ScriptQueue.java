@@ -882,7 +882,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 dB.echoError(this, "Can't determine a linked NPC.");
             }
             if (npc == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return npc.getAttribute(attribute.fulfill(1));
         }
@@ -905,7 +905,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 dB.echoError(this, "Can't determine a linked player.");
             }
             if (player == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return player.getAttribute(attribute.fulfill(1));
         }
@@ -920,7 +920,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // -->
         if (attribute.startsWith("determination")) {
             if (reqId < 0 || !DetermineCommand.hasOutcome(reqId))
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return ObjectFetcher.pickObjectFor(DetermineCommand.readOutcome(reqId)).getAttribute(attribute.fulfill(1));
         }

@@ -136,6 +136,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Adjusts a dObjects mechanism.
         // @Author aufdemrand
         // @Group core
+        // @Video /denizen/vids/Properties%20and%20Mechanisms
 
         // @Description
         // Many dObjects contains options and properties that need to be adjusted. Denizen employs a mechanism
@@ -453,7 +454,7 @@ public class CommandRegistry implements dRegistry {
 
 
         // <--[command]
-        // @Name Cast, Potion
+        // @Name Cast
         // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
         // @Required 1
         // @Stable Stable
@@ -817,7 +818,7 @@ public class CommandRegistry implements dRegistry {
         // Use to reenable a NPC's triggers, disabled via 'engage'.
         // - engage
         // - chat 'Be right there!'
-        // - walkto <player.location>
+        // - walk <player.location>
         // - wait 5s
         // - disengage
         //
@@ -917,9 +918,9 @@ public class CommandRegistry implements dRegistry {
         // Use to make a NPC appear 'busy'.
         // - engage
         // - chat 'Give me a few minutes while I mix you a potion!'
-        // - walkto <npc.anchor[mixing_station]>
+        // - walk <npc.anchor[mixing_station]>
         // - wait 10s
-        // - walkto <npc.anchor[service_station]>
+        // - walk <npc.anchor[service_station]>
         // - chat 'Here you go!'
         // - give potion <player>
         // - disengage
@@ -1148,43 +1149,48 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Flag
-        // @Syntax flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
+        // @Syntax flag ({player}/npc/global/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
         // @Required 1
         // @Stable stable
         // @Short Sets or modifies a flag on the player, NPC, or server.
         // @Author aufdemrand
         // @Group core
         // @Description
+        // The flag command sets or modifies custom value storage database entries connected to
+        // each player, each NPC, and the server.
         // TODO: Document Command Details
         // @Tags
         // <p@player.flag[<flag>]>
         // <n@npc.flag[<flag>]>
-        // <global.flag[<flag>]>
+        // <server.flag[<flag>]>
         // @Usage
         // @Usage
-        // Use to create a flag named 'playstyle' on the player with 'agressive' as the value.
+        // Use to create or set a flag on a player.
         // - flag player playstyle:agressive
         // @Usage
-        // Use to create a flag on the npc with its current location as the value.
+        // Use to flag an npc with a given tag value.
         // - flag npc location:<npc.location>
         // @Usage
-        // Use to increase the context player flag 'damage_dealt' with the context damage as amount.
+        // Use to apply mathematical changes to a flag's value on a unique object.
         // - flag <context.damager> damage_dealt:+:<context.damage>
         // @Usage
-        // Use to add p@TheBlackCoyote to the server flag called 'cool_people' as a new value without removing existing values.
+        // Use to add an item to a server flag as a new value without removing existing values.
         // - flag server cool_people:->:p@TheBlackCoyote
         // @Usage
-        // Use to add both p@mcmonkey4eva and p@morphan1 as individual new values to the server flag 'cool_people'.
+        // Use to add both multiple items as individual new values to a server flag.
         // - flag server cool_people:|:p@mcmonkey4eva|p@morphan1
         // @Usage
-        // Use to remove p@morphan1 from the server flag 'cool_people'.
+        // Use to remove an entry from a server flag.
         // - flag server cool_people:<-:p@morphan1
         // @Usage
         // Use to completely remove a flag.
         // - flag server cool_people:!
+        // @Usage
+        // Use to modify a specific index in a list flag.
+        // - flag server myflag[3]:HelloWorld
         // -->
         registerCoreMember(FlagCommand.class,
-                "FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
+                "FLAG", "flag ({player}/npc/global/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
 
 
         // <--[command]
@@ -1234,6 +1240,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Loops through a dList, running a set of commands for each item.
         // @Author Morphan1, mcmonkey
         // @Group core
+        // @Video /denizen/vids/Loops
 
         // @Description
         // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
@@ -1415,6 +1422,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Compares values, and runs one script if they match, or a different script if they don't match.
         // @Author aufdemrand, David Cernat
         // @Group core
+        // @Video /denizen/vids/Alternate/Dynamic%20Actions:%20The%20If%20Command
         // @Description
         // TODO: Document Command Details
         // @Tags
@@ -2099,6 +2107,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Runs a series of braced commands several times.
         // @Author morphan1, mcmonkey
         // @Group core
+        // @Video /denizen/vids/Loops
 
         // @Description
         // Loops through a series of braced commands a specified number of times.
@@ -2760,7 +2769,7 @@ public class CommandRegistry implements dRegistry {
                 "WAIT", "wait (<duration>) (queue:<name>)", 0);
 
         // <--[command]
-        // @Name Walk, WalkTo
+        // @Name Walk
         // @Syntax walk (<npc>|...) [<location>] (speed:<#.#>) (auto_range) (radius:<#.#>)
         // @Required 1
         // @Stable stable
@@ -2807,6 +2816,7 @@ public class CommandRegistry implements dRegistry {
         // @Short Runs a series of braced commands until the tag returns false.
         // @Author mcmonkey
         // @Group core
+        // @Video /denizen/vids/Loops
 
         // @Description
         // TODO: Document Command Details
@@ -2830,13 +2840,17 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Syntax yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
+        // @Syntax yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
         // @Required 2
-        // @Stable TODO: Document Command Details
+        // @Stable stable
         // @Short Edits a YAML configuration file.
         // @Author aufdemrand
         // @Group core
         // @Description
+        // Edits a YAML configuration file.
+        // This can be used for interacting with other plugins' configuration files.
+        // It can also be used for storing your own script's data.
+        // It can even be used to edit Denizen's saves/config, or even Denizen scripts.
         // TODO: Document Command Details
         // @Tags
         // <yaml[<idname>].contains[<path>]>
@@ -2850,8 +2864,8 @@ public class CommandRegistry implements dRegistry {
         // Use to load a YAML file from disk
         // - yaml load:myfile.yml id:myfile
         // @Usage
-        // Use to write to a YAML file
-        // - yaml write:my.key value:myvalue id:myfile
+        // Use to modify a YAML file similarly to a flag
+        // - yaml id:myfile set my.key:HelloWorld
         // @Usage
         // Use to save a YAML file to disk
         // - yaml savefile:myfile.yml id:myfile
@@ -2866,7 +2880,7 @@ public class CommandRegistry implements dRegistry {
         // - yaml id:myfile set my.key[2]:hello
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [create]/[load:<file>]/[savefile:<file>]/[write:<key>]/[write:<key> value:<value> (split_list)] [id:<name>]", 2);
+                "YAML", "yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
 
         // <--[command]
         // @Name Zap

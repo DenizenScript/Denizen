@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import org.json.JSONObject;
 
 public class dScript implements dObject {
 
@@ -111,6 +112,12 @@ public class dScript implements dObject {
             name = scriptName.toUpperCase();
             valid = true;
         }
+    }
+
+    public dScript(ScriptContainer container) {
+        this.container = container;
+        name = container.getName().toUpperCase();
+        valid = true;
     }
 
     ///////////////////////
@@ -313,12 +320,12 @@ public class dScript implements dObject {
         // Returns the value of the constant as either an Element or dList.
         // -->
         if (attribute.startsWith("cons")) {
-            if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (!attribute.hasContext(1)) return null;
 
             YamlConfiguration section = getContainer().getConfigurationSection("constants");
-            if (section == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (section == null) return null;
             Object obj = section.get(attribute.getContext(1).toUpperCase());
-            if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (obj == null) return null;
 
             if (obj instanceof List) {
                 dList list = new dList();
@@ -352,7 +359,7 @@ public class dScript implements dObject {
                 return new Element(identify()).getAttribute(attribute);
             }
             Object obj = section.get(attribute.getContext(1).toUpperCase());
-            if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (obj == null) return null;
 
             if (obj instanceof List) {
                 dList list = new dList();
@@ -442,6 +449,19 @@ public class dScript implements dObject {
         // -->
         if (attribute.startsWith("object_type")) {
             return new Element(getObjectType()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.to_json>
+        // @returns Element
+        // @description
+        // Converts the YAML Script Container to a JSON array.
+        // Best used with 'yaml data' type scripts.
+        // -->
+        if (attribute.startsWith("to_json")) {
+            JSONObject jsobj = new JSONObject(container.getConfigurationSection("").getMap());
+            jsobj.remove("TYPE");
+            return new Element(jsobj.toString()).getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
