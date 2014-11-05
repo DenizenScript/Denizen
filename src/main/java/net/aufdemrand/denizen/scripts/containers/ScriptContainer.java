@@ -231,11 +231,6 @@ public class ScriptContainer implements Debuggable {
         return getEntries(data, "script");
     }
 
-    @Deprecated
-    public List<ScriptEntry> getBaseEntries(dPlayer player, dNPC npc) {
-        return getEntries(player, npc, "script");
-    }
-
     public List<ScriptEntry> getEntries(ScriptEntryData data, String path) {
         if (path == null) path = "script";
         ScriptEntrySet set = getSetFor(path.toUpperCase());
@@ -245,12 +240,6 @@ public class ScriptContainer implements Debuggable {
             entry.entryData = data;
         }
         return set.getEntries();
-    }
-
-    @Deprecated
-    public List<ScriptEntry> getEntries(dPlayer player, dNPC npc, String path) {
-        BukkitScriptEntryData bsed = new BukkitScriptEntryData(player, npc);
-        return getEntries(bsed, path);
     }
 
     ScriptEntrySet getSetFor(String path) {

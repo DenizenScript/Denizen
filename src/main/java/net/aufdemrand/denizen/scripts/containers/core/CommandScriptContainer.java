@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -102,7 +103,8 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, dObject> context) {
-        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(getBaseEntries(player, npc));
+        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(getBaseEntries(
+                new BukkitScriptEntryData(player, npc)));
         if (context != null) {
             for (Map.Entry<String, dObject> entry : context.entrySet()) {
                 queue.addContext(entry.getKey(), entry.getValue());
@@ -114,7 +116,7 @@ public class CommandScriptContainer extends ScriptContainer {
 
     public boolean runAllowedHelpProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
         // Add the reqId to each of the entries for the determine command
-        List<ScriptEntry> entries = getEntries(player, npc, "ALLOWED HELP");
+        List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "ALLOWED HELP");
         long id = DetermineCommand.getNewId();
         ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 

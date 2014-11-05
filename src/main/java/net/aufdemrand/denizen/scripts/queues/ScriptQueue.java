@@ -562,8 +562,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             List<ScriptEntry> entries =
                     (lastEntryExecuted != null && lastEntryExecuted.getScript() != null ?
                             lastEntryExecuted.getScript().getContainer()
-                                    .getEntries(lastEntryExecuted.getPlayer(),
-                                            lastEntryExecuted.getNPC(), "on queue completes") : new ArrayList<ScriptEntry>());
+                                    .getEntries(lastEntryExecuted.entryData.clone(), "on queue completes") : new ArrayList<ScriptEntry>());
             // Add the 'finishing' entries back into the queue (if not empty)
             if (!entries.isEmpty()) {
                 script_entries.addAll(entries);

@@ -152,22 +152,16 @@ public class InjectCommand extends AbstractCommand {
         List<ScriptEntry> entries;
         // If it's local
         if (scriptEntry.hasObject("local"))
-            entries = scriptEntry.getScript().getContainer().getEntries(
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
+            entries = scriptEntry.getScript().getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
 
         // If it has a path
         else if (scriptEntry.hasObject("path"))
-            entries = script.getContainer().getEntries(
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
+            entries = script.getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
 
         // Else, assume standard path
-        else entries = script.getContainer().getBaseEntries(
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
+        else entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
 
         // For determine
         ScriptBuilder.addObjectToEntries(entries, "ReqId", scriptEntry.getObject("ReqId"));

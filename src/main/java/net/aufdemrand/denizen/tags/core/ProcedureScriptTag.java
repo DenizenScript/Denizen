@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.tags.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.ObjectFetcher;
@@ -151,9 +152,9 @@ public class ProcedureScriptTag implements Listener {
         // Build script entries
         List<ScriptEntry> entries;
         if (path != null)
-            entries = script.getContainer().getEntries(event.getPlayer(), event.getNPC(), path);
+            entries = script.getContainer().getEntries(new BukkitScriptEntryData(event.getPlayer(), event.getNPC()), path);
         else
-            entries = script.getContainer().getBaseEntries(event.getPlayer(), event.getNPC());
+            entries = script.getContainer().getBaseEntries(new BukkitScriptEntryData(event.getPlayer(), event.getNPC()));
 
         // Return if no entries built
         if (entries.isEmpty()) return;

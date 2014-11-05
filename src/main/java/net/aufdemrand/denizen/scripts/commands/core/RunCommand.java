@@ -162,24 +162,18 @@ public class RunCommand extends AbstractCommand implements Holdable {
         List<ScriptEntry> entries;
         // If it's local
         if (scriptEntry.hasObject("local")) {
-            entries = scriptEntry.getScript().getContainer().getEntries(
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
+            entries = scriptEntry.getScript().getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
             script = scriptEntry.getScript();
         }
 
             // If it has a path
         else if (scriptEntry.hasObject("path") && scriptEntry.getObject("path") != null)
-            entries = script.getContainer().getEntries(
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
+            entries = script.getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
 
             // Else, assume standard path
-        else entries = script.getContainer().getBaseEntries(
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
+        else entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
 
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?

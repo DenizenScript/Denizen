@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.npc.actions;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dObject;
@@ -48,7 +49,7 @@ public class ActionHandler {
                         + (player != null ? aH.debugObj("Player", player.getName()) : ""));
 
         // Fetch script from Actions
-        List<ScriptEntry> script = assignment.getEntries(player, npc, "actions.on " + actionName);
+        List<ScriptEntry> script = assignment.getEntries(new BukkitScriptEntryData(player, npc), "actions.on " + actionName);
         if (script.isEmpty()) return determination;
 
         // Create new ID -- this is what we will look for when determining an outcome

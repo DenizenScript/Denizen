@@ -968,7 +968,7 @@ public class dList extends ArrayList<String> implements dObject {
                 Collections.sort(list, new Comparator<String>() {
                     @Override
                     public int compare(String o1, String o2) {
-                        List<ScriptEntry> entries = script.getBaseEntries(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC());
+                        List<ScriptEntry> entries = script.getBaseEntries(entry.entryData.clone());
                         if (entries.isEmpty()) {
                             return 0;
                         }

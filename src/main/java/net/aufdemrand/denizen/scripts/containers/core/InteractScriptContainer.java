@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -147,7 +148,7 @@ public class InteractScriptContainer extends ScriptContainer {
                 + triggerName + " TRIGGER."
                 + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT"))) {
             // Entries exist, so get them and return the list of ScriptEntries
-            return getEntries(player, npc,
+            return getEntries(new BukkitScriptEntryData(player, npc),
                     "STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
                             + triggerName + " TRIGGER."
                             + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT"));

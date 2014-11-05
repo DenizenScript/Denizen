@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.events;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.objects.aH;
@@ -304,7 +305,7 @@ public class EventManager implements Listener {
                         if (script == null) continue;
 
                         // Fetch script from Event
-                        List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
+                        List<ScriptEntry> entries = script.getEntries(new BukkitScriptEntryData(player, npc), "events.on " + eventName);
 
                         if (entries.isEmpty()) continue;
 
