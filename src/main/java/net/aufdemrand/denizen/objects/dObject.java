@@ -147,6 +147,11 @@ import net.aufdemrand.denizen.tags.Attribute;
 // |   el@<value> - fetches an element with the specified value
 // |   el@val[<value>] - slightly more verbose, but tag friendly way to fetch a new element (allows periods)
 //
+// + ----- Queue ------+
+// | object notation: q@   can reference unique objects: yes      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   q@<id> - fetches the queue with the given ID
+//
 // -->
 
 public interface dObject {
