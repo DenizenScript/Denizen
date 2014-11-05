@@ -80,7 +80,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
      * @param command  the name of the command this entry will be handed to
      * @param arguments  an array of the arguments
      * @param script  optional ScriptContainer reference
-     * @throws ScriptEntryCreationException  let's hope this never happens!
+     * @throws ScriptEntryCreationException if 'command' is null
      */
     public ScriptEntry(String command, String[] arguments, ScriptContainer script) throws ScriptEntryCreationException {
 
