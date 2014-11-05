@@ -252,6 +252,9 @@ public class YamlCommand extends AbstractCommand implements Listener {
                                 return;
                             }
                         }
+                        File fileObj = new File(DenizenAPI.getCurrentInstance().
+                                getDataFolder().getAbsolutePath() + "/" + filename.asString());
+                        fileObj.mkdirs();
                         FileWriter fw = new FileWriter(DenizenAPI.getCurrentInstance()
                                 .getDataFolder().getAbsolutePath() + "/" + filename.asString());
                         BufferedWriter writer = new BufferedWriter(fw);
