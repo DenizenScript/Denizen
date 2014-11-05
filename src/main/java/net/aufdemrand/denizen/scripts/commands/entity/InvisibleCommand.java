@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.citizensnpcs.api.npc.NPC;
@@ -37,13 +38,13 @@ public class InvisibleCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("target")
                     && arg.matches("PLAYER")
-                    && scriptEntry.hasPlayer())
-                scriptEntry.addObject("target", scriptEntry.getPlayer().getDenizenEntity());
+                    && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("target", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity());
 
             else if (!scriptEntry.hasObject("target")
                     && arg.matches("NPC")
-                    && scriptEntry.hasNPC())
-                scriptEntry.addObject("target", scriptEntry.getNPC().getDenizenEntity());
+                    && ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
+                scriptEntry.addObject("target", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity());
 
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentType(dEntity.class))

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Effect;
@@ -122,8 +123,8 @@ public class PlayEffectCommand extends AbstractCommand {
 
         // Use default values if necessary
         scriptEntry.defaultObject("location",
-                scriptEntry.hasNPC() && scriptEntry.getNPC().isSpawned() ? Arrays.asList(scriptEntry.getNPC().getLocation()) : null,
-                scriptEntry.hasPlayer() && scriptEntry.getPlayer().isOnline() ? Arrays.asList(scriptEntry.getPlayer().getLocation()): null);
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() && ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isSpawned() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getLocation()) : null,
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() && ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isOnline() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation()): null);
         scriptEntry.defaultObject("data", new Element(0));
         scriptEntry.defaultObject("radius", new Element(15));
         scriptEntry.defaultObject("qty", new Element(1));

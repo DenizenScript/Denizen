@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
@@ -76,18 +77,18 @@ public class CommandExecuter {
             return false;
         }
 
-        if (scriptEntry.hasNPC() && scriptEntry.getNPC().getCitizen() == null)
+        if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() && ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen() == null)
             scriptEntry.setNPC(null);
 
         // Debugger information
         if (scriptEntry.getOriginalArguments() == null ||
                 scriptEntry.getOriginalArguments().size() == 0 ||
                 !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
-            if (scriptEntry.getPlayer() != null)
-                dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" + scriptEntry.getPlayer().getName());
+            if (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null)
+                dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" + ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName());
             else
                 dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " +
-                    scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/n@" + scriptEntry.getNPC().getName() : ""));
+                    scriptEntry.getCommandName() + (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() != null ? "/n@" + ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getName() : ""));
         }
 
         // Don't execute() if problems arise in parseArgs()
@@ -153,7 +154,7 @@ public class CommandExecuter {
                 // Fill player/off-line player
                 if (arg.matchesPrefix("player") && !if_ignore) {
                     dB.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
-                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false, scriptEntry);
+                    String value = TagManager.tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), arg.getValue(), false, scriptEntry);
                     dPlayer player = dPlayer.valueOf(value);
                     if (player == null || !player.isValid()) {
                         dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
@@ -165,7 +166,7 @@ public class CommandExecuter {
                 // Fill NPCID/NPC argument
                 else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
                     dB.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
-                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false, scriptEntry);
+                    String value = TagManager.tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), arg.getValue(), false, scriptEntry);
                     dNPC npc = dNPC.valueOf(value);
                     if (npc == null || !npc.isValid()) {
                         dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
@@ -176,8 +177,8 @@ public class CommandExecuter {
 
                 // Save the scriptentry if needed later for fetching scriptentry context
                 else if (arg.matchesPrefix("save") && !if_ignore) {
-                    String saveName = TagManager.tag(scriptEntry.getPlayer(),
-                            scriptEntry.getNPC(), arg.getValue(), false, scriptEntry);
+                    String saveName = TagManager.tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                            ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), arg.getValue(), false, scriptEntry);
                     dB.echoDebug(scriptEntry, "...remembering this script entry as '" + saveName + "'!");
                     scriptEntry.getResidingQueue().holdScriptEntry(saveName, scriptEntry);
                 }

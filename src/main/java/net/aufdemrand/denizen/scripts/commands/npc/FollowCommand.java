@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -38,12 +39,12 @@ public class FollowCommand extends AbstractCommand {
                 arg.reportUnhandled();
         }
         if (!scriptEntry.hasObject("target")) {
-            if (scriptEntry.hasPlayer())
-                scriptEntry.addObject("target", scriptEntry.getPlayer().getDenizenEntity());
+            if (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("target", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity());
             else
                 throw new InvalidArgumentsException("This command requires a linked player!");
         }
-        if (!scriptEntry.hasNPC())
+        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
             throw new InvalidArgumentsException("This command requires a linked NPC!");
     }
 
@@ -56,20 +57,20 @@ public class FollowCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(),
-                        (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().debug() : "")
+                        (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().debug() : "")
                         + (stop == null ? aH.debugObj("Action", "FOLLOW")
                         : aH.debugObj("Action", "STOP"))
                         + (lead != null ? aH.debugObj("Lead", lead.toString()) : "")
                         + target.debug());
 
         if (lead != null)
-            scriptEntry.getNPC().getNavigator().getLocalParameters().distanceMargin(lead.asDouble());
+            ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getNavigator().getLocalParameters().distanceMargin(lead.asDouble());
 
         if (stop != null)
-            scriptEntry.getNPC().getNavigator()
+            ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getNavigator()
                     .cancelNavigation();
         else
-            scriptEntry.getNPC().getNavigator()
+            ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getNavigator()
                 .setTarget(target.getBukkitEntity(), false);
 
     }

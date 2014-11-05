@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -28,7 +29,7 @@ public class VulnerableCommand extends AbstractCommand {
             if (aH.matchesState(arg))
                 vulnerable = Toggle.valueOf(aH.getStringFrom(arg).toUpperCase());
 
-        if (scriptEntry.getNPC() == null)
+        if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() == null)
             throw new InvalidArgumentsException("This command requires a linked NPC!");
 
         // Add objects that need to be passed to execute() to the scriptEntry
@@ -42,10 +43,10 @@ public class VulnerableCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(),
-                aH.debugObj("NPC", scriptEntry.getNPC().toString()) +
+                aH.debugObj("NPC", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().toString()) +
                         aH.debugObj("Toggle", toggle.toString()));
 
-        NPC npc = scriptEntry.getNPC().getCitizen();
+        NPC npc = ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen();
 
         boolean vulnerable;
 

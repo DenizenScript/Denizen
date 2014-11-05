@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -246,8 +247,8 @@ public class dList extends ArrayList<String> implements dObject {
                 if (ObjectFetcher.checkMatch(dClass, element)) {
 
                     T object = ObjectFetcher.getObjectFrom(dClass, element,
-                            (entry != null ? entry.getPlayer(): null),
-                            (entry != null ? entry.getNPC(): null));
+                            (entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null),
+                            (entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null));
 
                     // Only add the object if it is not null, thus filtering useless
                     // list items
@@ -967,7 +968,7 @@ public class dList extends ArrayList<String> implements dObject {
                 Collections.sort(list, new Comparator<String>() {
                     @Override
                     public int compare(String o1, String o2) {
-                        List<ScriptEntry> entries = script.getBaseEntries(entry.getPlayer(), entry.getNPC());
+                        List<ScriptEntry> entries = script.getBaseEntries(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC());
                         if (entries.isEmpty()) {
                             return 0;
                         }

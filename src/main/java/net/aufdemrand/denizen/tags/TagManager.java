@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.tags;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.*;
@@ -292,7 +293,7 @@ public class TagManager implements Listener {
                 if (argument.equals("}")) nested_level--;
                 // If this argument isn't nested, fill the tag.
                 if (nested_level < 1) {
-                    filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
+                    filledArgs.add(tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), argument, instant, scriptEntry));
                 }
                     else filledArgs.add(argument);
             }

@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import java.util.Arrays;
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -51,8 +52,8 @@ public class LookCommand extends AbstractCommand {
         // Use the NPC or player as the entity if no entities are specified
 
         scriptEntry.defaultObject("entities",
-                scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null,
-                scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null);
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()) : null,
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()) : null);
 
         if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException("Must specify a location and entity!");

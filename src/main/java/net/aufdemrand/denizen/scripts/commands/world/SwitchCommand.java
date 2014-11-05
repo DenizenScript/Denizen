@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -84,7 +85,7 @@ public class SwitchCommand extends AbstractCommand {
         int duration = ((Duration)scriptEntry.getObject("duration")).getSecondsAsInt();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
 
-        final Player player = scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getPlayerEntity(): null;
+        final Player player = ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(): null;
         // Switch the Block
         final ScriptEntry se = scriptEntry;
         switchBlock(se, interactLocation, switchState, player);

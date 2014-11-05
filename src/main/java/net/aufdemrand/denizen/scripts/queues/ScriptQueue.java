@@ -18,7 +18,6 @@ import net.aufdemrand.denizencore.utilities.QueueWordList;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 
 /**

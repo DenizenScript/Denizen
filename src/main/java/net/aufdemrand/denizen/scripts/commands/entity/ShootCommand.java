@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -141,8 +142,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         if (!scriptEntry.hasObject("originLocation")) {
 
             scriptEntry.defaultObject("originEntity",
-                    scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() : null,
-                    scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity() : null,
+                    ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
         }
 
         scriptEntry.defaultObject("height", new Element(3));
@@ -333,8 +334,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     if (script != null) {
                         // Build a queue out of the targeted script
                         List<ScriptEntry> entries = script.getContainer().getBaseEntries
-                                (scriptEntry.getPlayer(),
-                                        scriptEntry.getNPC());
+                                (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                                        ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
                         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
 
                         // Add relevant definitions

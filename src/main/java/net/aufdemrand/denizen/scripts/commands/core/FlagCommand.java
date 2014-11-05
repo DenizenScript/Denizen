@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -41,7 +42,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("npc", "denizen")) {
                 specified_target = true;
-                scriptEntry.addObject("flag_target", scriptEntry.getNPC());
+                scriptEntry.addObject("flag_target", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
 
             } else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("global", "server")) {
@@ -51,7 +52,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             } else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("player")) {
                 specified_target = true;
-                scriptEntry.addObject("flag_target", scriptEntry.getPlayer());
+                scriptEntry.addObject("flag_target", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
             }
 
             // Allow a p@player or n@npc entity to specify the target to be flagged.
@@ -150,7 +151,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         // Set defaults
         if (!specified_target)
-            scriptEntry.defaultObject("flag_target", scriptEntry.getPlayer());
+            scriptEntry.defaultObject("flag_target", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
 
         // Check required arguments
         if (!scriptEntry.hasObject("action"))

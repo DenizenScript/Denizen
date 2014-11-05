@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands;
 
 import java.util.*;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -31,7 +32,7 @@ public abstract class BracedCommand extends AbstractCommand {
                 for (Map.Entry<String, ArrayList<ScriptEntry>> entry: entryBracedSet.entrySet()) {
                     ArrayList array = new ArrayList(entry.getValue().size());
                     for (ScriptEntry sEntry: entry.getValue()) {
-                        array.add(sEntry.clone().setPlayer(scriptEntry.getPlayer()).setNPC(scriptEntry.getNPC()));
+                        array.add(sEntry.clone().setPlayer(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()).setNPC(((BukkitScriptEntryData)scriptEntry.entryData).getNPC()));
                     }
                     bracedSections.put(entry.getKey(), array);
                 }
@@ -120,8 +121,8 @@ public abstract class BracedCommand extends AbstractCommand {
                             bracesSection.add(new ScriptEntry(cmd,
                                     args,
                                     scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
-                            bracesSection.get(bracesSection.size() - 1).setPlayer(scriptEntry.getPlayer());
-                            bracesSection.get(bracesSection.size() - 1).setNPC(scriptEntry.getNPC());
+                            bracesSection.get(bracesSection.size() - 1).setPlayer(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+                            bracesSection.get(bracesSection.size() - 1).setNPC(((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
                             if (hyperdebug) dB.echoDebug(scriptEntry, "Command added: " + cmd + ", with " + String.valueOf(args.length) + " arguments");
                         } catch (ScriptEntryCreationException e) {
                             if (hyperdebug) dB.echoError(scriptEntry.getResidingQueue(), e.getMessage());

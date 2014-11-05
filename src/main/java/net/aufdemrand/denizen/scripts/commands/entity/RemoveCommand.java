@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -56,8 +57,8 @@ public class RemoveCommand extends AbstractCommand {
         // world, or default to the specified world in the server properties if necessary
 
         scriptEntry.defaultObject("world",
-                (scriptEntry.hasNPC() && scriptEntry.getNPC().isSpawned()) ? new dWorld(scriptEntry.getNPC().getWorld()) : null,
-                (scriptEntry.hasPlayer() && scriptEntry.getPlayer().isOnline()) ? new dWorld(scriptEntry.getPlayer().getWorld()) : null,
+                (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() && ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isSpawned()) ? new dWorld(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getWorld()) : null,
+                (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() && ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isOnline()) ? new dWorld(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getWorld()) : null,
                 new dWorld(Bukkit.getWorlds().get(0)));
     }
 

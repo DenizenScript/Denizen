@@ -34,7 +34,6 @@ import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
 
 import net.minecraft.server.v1_7_R4.EntityLiving;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;

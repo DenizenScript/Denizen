@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -162,8 +163,8 @@ public class RunCommand extends AbstractCommand implements Holdable {
         // If it's local
         if (scriptEntry.hasObject("local")) {
             entries = scriptEntry.getScript().getContainer().getEntries(
-                    scriptEntry.getPlayer(),
-                    scriptEntry.getNPC(),
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                     scriptEntry.getElement("path").asString());
             script = scriptEntry.getScript();
         }
@@ -171,14 +172,14 @@ public class RunCommand extends AbstractCommand implements Holdable {
             // If it has a path
         else if (scriptEntry.hasObject("path") && scriptEntry.getObject("path") != null)
             entries = script.getContainer().getEntries(
-                    scriptEntry.getPlayer(),
-                    scriptEntry.getNPC(),
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                     scriptEntry.getElement("path").asString());
 
             // Else, assume standard path
         else entries = script.getContainer().getBaseEntries(
-                    scriptEntry.getPlayer(),
-                    scriptEntry.getNPC());
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
 
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?

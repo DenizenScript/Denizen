@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -45,8 +46,8 @@ public class PauseCommand extends AbstractCommand {
         pauseType = null;
         dNPC = null;
         player = null;
-        if (scriptEntry.getNPC() != null) dNPC = scriptEntry.getNPC();
-        if (scriptEntry.getPlayer() != null) player = scriptEntry.getPlayer().getPlayerEntity();
+        if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() != null) dNPC = ((BukkitScriptEntryData)scriptEntry.entryData).getNPC();
+        if (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null) player = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity();
 
         // Parse arguments
         // TODO: UPDATE COMMAND PARSING

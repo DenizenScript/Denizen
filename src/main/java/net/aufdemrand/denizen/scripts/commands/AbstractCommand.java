@@ -15,9 +15,9 @@ public abstract class AbstractCommand extends BaseAbstractCommand {
      * should be iterated through and checked before continuing to execute(). Note that
      * PLAYER:player_name and NPCID:# arguments are parsed automatically by the Executer
      * and should not be handled by this Command otherwise. Their output is stored in the
-     * attached {@link ScriptEntry} and can be retrieved with scriptEntry.getPlayer(),
+     * attached {@link ScriptEntry} and can be retrieved with ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
      * scriptEntry.getOfflinePlayer() (if the player specified is not online), and
-     * scriptEntry.getNPC(). Remember that any of these have a possibility of being null
+     * ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(). Remember that any of these have a possibility of being null
      * and should be handled accordingly if required by this Command.
      *
      * @param scriptEntry
