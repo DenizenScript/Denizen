@@ -1,21 +1,12 @@
 package net.aufdemrand.denizen.tags;
 
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-/**
- *
- * @author Jeremy Schroeder
- *
- */
 
 public class Attribute {
 
@@ -43,7 +34,7 @@ public class Attribute {
             }
 
             else if (chr == '.'
-                    && !StringUtils.isNumeric(Character.toString(attributes.charAt(x + 1)))
+                    && !(attributes.charAt(x + 1) >= '0' && attributes.charAt(x + 1) <= '9')
                     && braced == 0)
                 x2 = x;
 
@@ -142,20 +133,6 @@ public class Attribute {
         return text.endsWith("]") && text.contains("[");
     }
 
-    @Deprecated
-    private dPlayer getPlayer() {
-        if (getScriptEntry() == null)
-            return null;
-        return getScriptEntry().getPlayer();
-    }
-
-    @Deprecated
-    private dNPC getNPC() {
-        if (getScriptEntry() == null)
-            return null;
-        return getScriptEntry().getNPC();
-    }
-
     public String getContext(int attribute) {
         if (attribute <= attributes.size() && attribute > 0 && hasContext(attribute)) {
 
@@ -167,7 +144,8 @@ public class Attribute {
 
             if (contextMatcher.find()) {
                 String tagged = TagManager.cleanOutputFully(TagManager.tag(
-                        getPlayer(), getNPC(), text.substring(contextMatcher.start() + 1,
+                        scriptEntry != null ? scriptEntry.getPlayer(): null, scriptEntry != null ? scriptEntry.getNPC(): null,
+                        text.substring(contextMatcher.start() + 1,
                         contextMatcher.end() - 1), false, getScriptEntry()));
                 contexts.set(attribute - 1, tagged);
                 original_contexts.set(attribute - 1 + fulfilled, tagged);
