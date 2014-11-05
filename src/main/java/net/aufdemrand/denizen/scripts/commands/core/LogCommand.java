@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLDecoder;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -51,6 +52,10 @@ public class LogCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+        if (!Settings.allowLogging()) {
+            dB.echoError("Logging disabled by administrator.");
+            return;
+        }
         Element message =  scriptEntry.getElement("message");
         Element fileName = scriptEntry.getElement("file");
         Element typeElement = scriptEntry.getElement("type");
