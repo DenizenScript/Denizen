@@ -5,10 +5,7 @@ import java.util.List;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
-import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -235,54 +232,6 @@ public class dScript implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <s@script.cooled_down[<player>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the script is currently cooled down for the player. Any global
-        // cooldown present on the script will also be taken into account. Not specifying a player will result in
-        // using the attached player available in the script entry. Not having a valid player will result in 'null'.
-        // -->
-        if (attribute.startsWith("cooled_down")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
-            if (player != null && player.isValid())
-                return new Element(CooldownCommand.checkCooldown(player, container.getName()))
-                        .getAttribute(attribute.fulfill(1));
-            else return "null";
-        }
-
-        // <--[tag]
-        // @attribute <s@script.requirements[<player>].check[<path>]>
-        // @returns Element
-        // @description
-        // Returns whether the player specified (defaults to current) has the requirement.
-        // Must be an INTERACT script.
-        // -->
-        if (attribute.startsWith("requirements.check")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
-            if (attribute.hasContext(2))
-                return new Element(((InteractScriptContainer)container).checkRequirements(player,
-                        attribute.getScriptEntry().getNPC(),
-                        attribute.getContext(2)))
-                        .getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <s@script.cooldown[<player>]>
-        // @returns Duration
-        // @description
-        // Returns the time left for the player to cooldown for the script.
-        // -->
-        if (attribute.startsWith("cooldown")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
-            return CooldownCommand.getCooldownDuration(player, name)
-                    .getAttribute(attribute.fulfill(1));
-
-        }
-
-        // <--[tag]
         // @attribute <s@script.name>
         // @returns Element
         // @description
@@ -399,20 +348,17 @@ public class dScript implements dObject {
         }
 
         // <--[tag]
-        // @attribute <s@script.step[<player>]>
+        // @attribute <s@script.to_json>
         // @returns Element
         // @description
-        // Returns the name of a script step that the player is currently on.
+        // Converts the YAML Script Container to a JSON array.
+        // Best used with 'yaml data' type scripts.
         // -->
-        if (attribute.startsWith("step")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
-
-            if (player != null && player.isValid())
-                return new Element(InteractScriptHelper.getCurrentStep(player, container.getName()))
-                        .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("to_json")) {
+            JSONObject jsobj = new JSONObject(container.getConfigurationSection("").getMap());
+            jsobj.remove("TYPE");
+            return new Element(jsobj.toString()).getAttribute(attribute.fulfill(1));
         }
-
 
         /////////////////
         // dObject attributes
@@ -451,19 +397,6 @@ public class dScript implements dObject {
         // -->
         if (attribute.startsWith("object_type")) {
             return new Element(getObjectType()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <s@script.to_json>
-        // @returns Element
-        // @description
-        // Converts the YAML Script Container to a JSON array.
-        // Best used with 'yaml data' type scripts.
-        // -->
-        if (attribute.startsWith("to_json")) {
-            JSONObject jsobj = new JSONObject(container.getConfigurationSection("").getMap());
-            jsobj.remove("TYPE");
-            return new Element(jsobj.toString()).getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes
