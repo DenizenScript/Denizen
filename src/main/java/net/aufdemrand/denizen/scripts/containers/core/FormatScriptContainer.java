@@ -77,7 +77,7 @@ public class FormatScriptContainer extends ScriptContainer {
     }
 
     public String getFormattedText(String textToReplace, dNPC npc, dPlayer player) {
-        String text = getFormat().replace("<text>", textToReplace);
+        String text = getFormat().replace("<text>", TagManager.escapeOutput(textToReplace));
         boolean debug = true;
         if (contains("DEBUG"))
             debug = Boolean.valueOf(getString("DEBUG"));
