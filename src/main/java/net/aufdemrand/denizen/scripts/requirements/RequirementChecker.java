@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.scripts.requirements;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
@@ -67,7 +69,8 @@ public class RequirementChecker {
             //
             // Replace tags and build arguments
             //
-            List<String> argumentList = TagManager.fillArguments(aH.buildArgs(reqEntry), context.player, context.npc);
+            List<String> argumentList = TagManager.fillArguments(aH.buildArgs(reqEntry),
+                    new BukkitTagContext(context.player, context.npc, false, null, dB.shouldDebug(context.getScriptContainer()), new dScript(context.getScriptContainer())));
             String reqString = argumentList.get(0).toUpperCase();
 
             //

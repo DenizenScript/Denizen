@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 public class Attribute {
 
-
     private static List<String> separate_attributes(String attributes) {
 
         List<String> matches = new ArrayList<String>();
