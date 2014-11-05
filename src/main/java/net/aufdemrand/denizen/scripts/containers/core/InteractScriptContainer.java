@@ -5,6 +5,8 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -254,5 +256,23 @@ public class InteractScriptContainer extends ScriptContainer {
         String step = InteractScriptHelper.getCurrentStep(player, getName());
         return contains("STEPS." + step + "." + triggerName + " TRIGGER"
                 + (id == null ? "" : "." + id.toUpperCase()) + "." + option.toUpperCase());
+    }
+    public boolean checkBaseRequirements(dPlayer player, dNPC npc) {
+        return checkRequirements(player, npc, "");
+    }
+
+    public boolean checkRequirements(dPlayer player, dNPC npc, String path) {
+        if (path == null) path = "";
+        if (path.length() > 0) path = path + ".";
+        // Get requirements
+        List<String> requirements = getContents().getStringList(path + "REQUIREMENTS.LIST");
+        String mode = getContents().getString(path + "REQUIREMENTS.MODE", "ALL");
+        // No requirements? Meets requirements!
+        if (requirements == null || requirements.isEmpty()) return true;
+        // Return new RequirementsContext built with info extracted from the ScriptContainer
+        RequirementsContext context = new RequirementsContext(new RequirementsMode(mode), requirements, this);
+        context.attachPlayer(player);
+        context.attachNPC(npc);
+        return DenizenAPI.getCurrentInstance().getScriptEngine().getRequirementChecker().check(context);
     }
 }

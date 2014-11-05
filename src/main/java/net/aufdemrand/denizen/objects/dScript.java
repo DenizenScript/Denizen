@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -245,7 +246,7 @@ public class dScript implements dObject {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : attribute.getScriptEntry().getPlayer());
             if (player != null && player.isValid())
-                return new Element(container.checkCooldown(player))
+                return new Element(CooldownCommand.checkCooldown(player, container.getName()))
                         .getAttribute(attribute.fulfill(1));
             else return "null";
         }
@@ -255,12 +256,13 @@ public class dScript implements dObject {
         // @returns Element
         // @description
         // Returns whether the player specified (defaults to current) has the requirement.
+        // Must be an INTERACT script.
         // -->
         if (attribute.startsWith("requirements.check")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : attribute.getScriptEntry().getPlayer());
             if (attribute.hasContext(2))
-                return new Element(container.checkRequirements(player,
+                return new Element(((InteractScriptContainer)container).checkRequirements(player,
                         attribute.getScriptEntry().getNPC(),
                         attribute.getContext(2)))
                         .getAttribute(attribute.fulfill(2));
