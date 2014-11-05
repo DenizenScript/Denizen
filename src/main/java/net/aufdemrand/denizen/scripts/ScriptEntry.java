@@ -87,6 +87,8 @@ public class ScriptEntry implements Cloneable, Debuggable {
         if (command == null)
             throw new ScriptEntryCreationException("dCommand 'name' cannot be null!");
 
+        entryData = new BukkitScriptEntryData(null, null); // TODO: Make version-cross-compatible
+
         this.command = command.toUpperCase();
 
         // Knowing which script created this entry provides important context. We'll store
