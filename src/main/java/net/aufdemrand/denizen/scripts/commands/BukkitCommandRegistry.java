@@ -921,7 +921,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Execute
-        // @Syntax execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]
+        // @Syntax execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)
         // @Required 2
         // @Stable stable
         // @Short Executes an arbitrary server command as if the player, NPC, or server typed it in.
@@ -935,7 +935,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ExecuteCommand.class,
-                "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]", 2);
+                "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)", 2);
 
 
         // <--[command]

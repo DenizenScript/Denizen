@@ -20,6 +20,8 @@ public class DenizenCommandSender extends ColouredConsoleSender {
 
     private ArrayList<String> output = new ArrayList<String>();
 
+    public boolean silent = false;
+
     public ArrayList<String> getOutput() {
         return output;
     }
@@ -31,7 +33,8 @@ public class DenizenCommandSender extends ColouredConsoleSender {
     @Override
     public void sendMessage(String s) {
         output.add(s);
-        Bukkit.getServer().getConsoleSender().sendMessage(s);
+        if (!silent)
+            Bukkit.getServer().getConsoleSender().sendMessage(s);
     }
 
     @Override
