@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
 

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -17,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.util.*;
 
 public class YamlCommand extends AbstractCommand implements Listener {
@@ -241,6 +243,18 @@ public class YamlCommand extends AbstractCommand implements Listener {
             case SAVE:
                 if (yamls.containsKey(id)) {
                     try {
+                        if (!Settings.allowStrangeYAMLSaves()) {
+                            File fileObj = new File(DenizenAPI.getCurrentInstance().
+                                    getDataFolder().getAbsolutePath() + "/" + filename.asString());
+                            String directory = URLDecoder.decode(System.getProperty("user.dir"));
+                            if (!fileObj.getCanonicalPath().startsWith(directory)) {
+                                dB.echoError("Outside-the-main-folder YAML saves disabled by administrator.");
+                                return;
+                            }
+                        }
+                        File fileObj = new File(DenizenAPI.getCurrentInstance().
+                                getDataFolder().getAbsolutePath() + "/" + filename.asString());
+                        fileObj.mkdirs();
                         FileWriter fw = new FileWriter(DenizenAPI.getCurrentInstance()
                                 .getDataFolder().getAbsolutePath() + "/" + filename.asString());
                         BufferedWriter writer = new BufferedWriter(fw);

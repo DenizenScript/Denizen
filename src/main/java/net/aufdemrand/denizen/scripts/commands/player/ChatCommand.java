@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -47,8 +48,6 @@ import org.bukkit.entity.Entity;
  */
 public class ChatCommand extends AbstractCommand {
 
-    // TODO: Make this class abstract to minimize code duplication for Whisper/Shout/etc.
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -87,12 +86,12 @@ public class ChatCommand extends AbstractCommand {
         }
 
         // Add default recipient as the attached Player if no recipients set otherwise
-        if (!scriptEntry.hasObject("targets") && scriptEntry.hasPlayer() && !specified_targets)
-            scriptEntry.defaultObject("targets", new dList(scriptEntry.getPlayer().identify()));
+        if (!scriptEntry.hasObject("targets") && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() && !specified_targets)
+            scriptEntry.defaultObject("targets", new dList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().identify()));
 
         // Add default talker as the attached NPC if no recipients set otherwise
-        if (!scriptEntry.hasObject("talkers") && scriptEntry.hasNPC() && !specified_talker)
-            scriptEntry.defaultObject("talkers", new dList(scriptEntry.getNPC().identify()));
+        if (!scriptEntry.hasObject("talkers") && ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() && !specified_talker)
+            scriptEntry.defaultObject("talkers", new dList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().identify()));
 
         // Verify essential fields are set
         if (!scriptEntry.hasObject("targets"))

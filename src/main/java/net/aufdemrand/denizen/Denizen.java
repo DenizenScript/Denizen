@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
 import net.aufdemrand.denizen.utilities.*;
 import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
@@ -23,7 +24,6 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.*;
-import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
@@ -80,14 +80,14 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     /*
      * Denizen Registries
      */
-    private CommandRegistry commandRegistry = new CommandRegistry(this);
+    private BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
     private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
     private ListenerRegistry listenerRegistry = new ListenerRegistry();
     private dNPCRegistry dNPCRegistry;
 
 
-    public CommandRegistry getCommandRegistry() {
+    public BukkitCommandRegistry getCommandRegistry() {
         return commandRegistry;
     }
 
@@ -226,6 +226,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
+            DenizenCore.setCommandRegistry(getCommandRegistry());
             getCommandRegistry().registerCoreMembers();
         }
         catch (Exception e) {
@@ -686,7 +687,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     }
 
     @Override
-    public void debugException(Exception ex) {
+    public void debugException(Throwable ex) {
         dB.echoError(ex);
     }
 

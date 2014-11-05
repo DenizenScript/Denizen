@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -70,12 +71,12 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
             throw new InvalidArgumentsException("Must specify a location!");
 
         if (!scriptEntry.hasObject("npcs")) {
-            if (scriptEntry.getNPC() == null
-                    || !scriptEntry.getNPC().isValid()
-                    || !scriptEntry.getNPC().isSpawned())
+            if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() == null
+                    || !((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isValid()
+                    || !((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isSpawned())
                 throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
             else
-                scriptEntry.addObject("npcs", Arrays.asList(scriptEntry.getNPC()));
+                scriptEntry.addObject("npcs", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC()));
         }
 
 

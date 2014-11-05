@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -84,7 +86,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
 
     @Override
     public void onEnable() {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
     @Override
@@ -133,7 +135,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
 
         BookScriptContainer bookScript = (BookScriptContainer) script.getContainer();
 
-        book = bookScript.writeBookTo(book, scriptEntry.getPlayer(), scriptEntry.getNPC());
+        book = bookScript.writeBookTo(book, ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
 
         // Post-write action? Can be NONE.
         switch (action) {
@@ -142,15 +144,15 @@ public class ScribeCommand extends AbstractCommand implements Listener {
                 break;
 
             case GIVE:
-                giveBook(scriptEntry.getPlayer().getPlayerEntity(), book.getItemStack());
+                giveBook(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
                 // Update player's inventory
-                scriptEntry.getPlayer().getPlayerEntity().updateInventory();
+                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
                 break;
 
             case EQUIP:
-                equipBook(scriptEntry.getPlayer().getPlayerEntity(), book.getItemStack());
+                equipBook(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
                 // Update player's inventory
-                scriptEntry.getPlayer().getPlayerEntity().updateInventory();
+                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
                 break;
 
             case NONE:

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -96,7 +97,7 @@ public class GiveCommand  extends AbstractCommand {
         Type type = (Type) scriptEntry.getObject("type");
 
         if (type != Type.MONEY && scriptEntry.getObject("inventory") == null)
-            scriptEntry.addObject("inventory", scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory(): null);
+            scriptEntry.addObject("inventory", ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getInventory(): null);
 
         if (!scriptEntry.hasObject("inventory") && type != Type.MONEY)
             throw new InvalidArgumentsException("Must specify an inventory to give to!");
@@ -135,13 +136,13 @@ public class GiveCommand  extends AbstractCommand {
 
             case MONEY:
                 if(Depends.economy != null)
-                    Depends.economy.depositPlayer(scriptEntry.getPlayer().getName(), qty.asDouble());
+                    Depends.economy.depositPlayer(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName(), qty.asDouble());
                 else
                     dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 break;
 
             case EXP:
-                scriptEntry.getPlayer().getPlayerEntity().giveExp(qty.asInt());
+                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().giveExp(qty.asInt());
                 break;
 
             case ITEM:
@@ -155,7 +156,7 @@ public class GiveCommand  extends AbstractCommand {
                     }
                     if (set_quantity)
                         is.setAmount(qty.asInt());
-                    if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
+                    if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName());
 
                     List<ItemStack> leftovers = inventory.addWithLeftovers(slot.asInt()-1, limited, is);
 

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
@@ -47,7 +48,7 @@ public class AssignmentCommand extends AbstractCommand {
         }
 
         // Check required arguments
-        if (!scriptEntry.hasNPC())
+        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
 
         if (!scriptEntry.hasObject("action"))
@@ -68,11 +69,11 @@ public class AssignmentCommand extends AbstractCommand {
 
         // Perform desired action
         if (scriptEntry.getObject("action").equals(Action.SET))
-            scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)
-                    .setAssignment(script.getName(), scriptEntry.getPlayer());
+            ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
+                    .setAssignment(script.getName(), ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
 
         else if (scriptEntry.getObject("action").equals(Action.REMOVE))
-            scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)
-                    .removeAssignment(scriptEntry.getPlayer());
+            ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
+                    .removeAssignment(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
     }
 }

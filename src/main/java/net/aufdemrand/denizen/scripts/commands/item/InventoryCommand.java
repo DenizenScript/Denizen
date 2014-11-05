@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.item;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -63,7 +64,7 @@ public class InventoryCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an Inventory action!");
 
         scriptEntry.defaultObject("slot", new Element(1)).defaultObject("destination",
-                        scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity().getInventory() : null);
+                        ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity().getInventory() : null);
     }
 
     @SuppressWarnings("unchecked")
@@ -89,16 +90,16 @@ public class InventoryCommand extends AbstractCommand {
                 case OPEN:
                     // Use special method to make opening workbenches work properly
                     if (destination.getIdHolder().equalsIgnoreCase("workbench")) {
-                        scriptEntry.getPlayer().getPlayerEntity()
+                        ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity()
                             .openWorkbench(destination.getLocation(), true);
                     }
                     // Otherwise, open inventory as usual
-                    else scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+                    else ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().openInventory(destination.getInventory());
                     break;
 
                 // Make the attached player close any open inventory
                 case CLOSE:
-                    scriptEntry.getPlayer().getPlayerEntity().closeInventory();
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().closeInventory();
                     break;
 
                 // Turn destination's contents into a copy of origin's

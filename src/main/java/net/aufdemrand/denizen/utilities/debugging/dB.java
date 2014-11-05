@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 
 import net.aufdemrand.denizen.events.EventManager;
@@ -248,8 +249,8 @@ public class dB {
             if (script != null)
                 events.add(script.identifySimple() + " generates error");
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
-            String Determination = EventManager.doEvents(events, (entry != null ? entry.getNPC(): null),
-                    (entry != null ? entry.getPlayer(): null), context, true);
+            String Determination = EventManager.doEvents(events, (entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null),
+                    (entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null), context, true);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
                 return;
@@ -292,7 +293,7 @@ public class dB {
             context.put("queue", source);
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
             String Determination = EventManager.doEvents(Arrays.asList("server generates exception"),
-                    (entry != null ? entry.getNPC(): null), (entry != null ? entry.getPlayer(): null), context);
+                    (entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null), (entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null), context);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
                 return;

@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.dScript;
@@ -160,10 +161,10 @@ public class RuntaskCommand extends AbstractCommand {
                         + aH.debugObj("Instant", instant.toString())
                         + aH.debugObj("Queue", id)
                         + (context != null ? aH.debugObj("Context", context.toString()) : "")
-                        + (scriptEntry.getPlayer() != null
-                        ? aH.debugObj("Player", scriptEntry.getPlayer().getName()) : "")
-                        + (scriptEntry.getNPC() != null
-                        ? aH.debugObj("NPC", scriptEntry.getNPC().toString()) : ""));
+                        + (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null
+                        ? aH.debugObj("Player", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName()) : "")
+                        + (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() != null
+                        ? aH.debugObj("NPC", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().toString()) : ""));
 
         if (instant) {
             // Instant, but no delay
@@ -173,8 +174,8 @@ public class RuntaskCommand extends AbstractCommand {
                     // Instant, no delay, new queue
                     ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
                             .runTaskScript(queue.id,
-                                    scriptEntry.getPlayer(),
-                                    scriptEntry.getNPC(),
+                                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                                     context);
                 }
 
@@ -182,8 +183,8 @@ public class RuntaskCommand extends AbstractCommand {
                     // Instant, no delay, injection into current queue
                     ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
                             .injectTaskScript(queue.id,
-                                    scriptEntry.getPlayer(),
-                                    scriptEntry.getNPC(),
+                                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                                     context);
                 }
             }
@@ -192,8 +193,8 @@ public class RuntaskCommand extends AbstractCommand {
                 // Instant, has delay, new queue
                 ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
                         .runTaskScriptWithDelay(queue.id,
-                                scriptEntry.getPlayer(),
-                                scriptEntry.getNPC(),
+                                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                                ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                                 context,
                                 delay);
             }
@@ -206,8 +207,8 @@ public class RuntaskCommand extends AbstractCommand {
                 if (scriptEntry.getResidingQueue() != queue) {
                     ((TaskScriptContainer) script.getContainer())
                             .runTaskScript(queue.id,
-                                    scriptEntry.getPlayer(),
-                                    scriptEntry.getNPC(),
+                                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                                     context);
                 }
 
@@ -215,8 +216,8 @@ public class RuntaskCommand extends AbstractCommand {
                     // Not instant, no delay, injection into current queue
                     ((TaskScriptContainer) script.getContainer())
                             .injectTaskScript(queue.id,
-                                    scriptEntry.getPlayer(),
-                                    scriptEntry.getNPC(),
+                                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                                     context);
                 }
             }
@@ -225,8 +226,8 @@ public class RuntaskCommand extends AbstractCommand {
                 // Not instant, delayed, new queue
                 ((TaskScriptContainer) script.getContainer())
                         .runTaskScriptWithDelay(queue.id,
-                                scriptEntry.getPlayer(),
-                                scriptEntry.getNPC(),
+                                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                                ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                                 context,
                                 delay);
             }

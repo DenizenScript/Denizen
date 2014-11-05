@@ -7,6 +7,7 @@ import java.util.*;
 
 import java.sql.Connection;
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
@@ -675,6 +676,38 @@ public class UtilTags implements Listener {
         }
         // TODO: Add everything else from Bukkit.getServer().*
 
+    }
+
+    public static void adjustServer(Mechanism mechanism) {
+        Element value = mechanism.getValue();
+
+        // <--[mechanism]
+        // @object server
+        // @name delete_file
+        // @input Element
+        // @description
+        // Deletes the given file from the server.
+        // @tags
+        // <server.has_file[<file>]>
+        // -->
+        if (mechanism.matches("delete_file") && mechanism.hasValue()) {
+            if (!Settings.allowDelete()) {
+                dB.echoError("File deletion disabled by administrator.");
+                return;
+            }
+            File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), value.asString());
+            try {
+                file.delete();
+            }
+            catch (Exception e) {
+                dB.echoError("Failed to delete file: " + e.getMessage());
+            }
+        }
+
+        // TODO: Properties somehow?
+
+        if (!mechanism.fulfilled())
+            mechanism.reportInvalid();
     }
 
 

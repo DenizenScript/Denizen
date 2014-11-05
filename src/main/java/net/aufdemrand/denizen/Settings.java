@@ -30,7 +30,7 @@ public class Settings {
 
     public static boolean showDebug() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Debug.Show", false);
+                .getBoolean("Debug.Show", true);
     }
 
     public static int consoleWidth() {
@@ -191,6 +191,21 @@ public class Settings {
     public static int whileMaxLoops() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getInt("Commands.While.Max loops", 10000);
+    }
+
+    public static boolean allowDelete() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.Delete.Allow file deletion", true);
+    }
+
+    public static boolean allowLogging() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.log.Allow logging", true);
+    }
+
+    public static boolean allowStrangeYAMLSaves() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.yaml.Allow saving outside folder", false);
     }
 
     public static String chatMultipleTargetsFormat() {

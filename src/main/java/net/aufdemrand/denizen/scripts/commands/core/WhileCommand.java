@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -152,7 +153,7 @@ public class WhileCommand extends BracedCommand {
                         return;
                 }
                 data.LastChecked = System.currentTimeMillis();
-                if (TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(),
+                if (TagManager.tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                         data.value, false, scriptEntry).equalsIgnoreCase("true")) {
                     dB.echoDebug(scriptEntry, dB.DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
@@ -195,7 +196,7 @@ public class WhileCommand extends BracedCommand {
             // Report to dB
             dB.report(scriptEntry, getName(), value.debug());
 
-            if (!TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(),
+            if (!TagManager.tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                     value.asString(), false, scriptEntry).equalsIgnoreCase("true"))
                 return;
 

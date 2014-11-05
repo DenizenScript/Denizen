@@ -1,11 +1,13 @@
 package net.aufdemrand.denizen.scripts.containers;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptEntrySet;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
@@ -225,17 +227,30 @@ public class ScriptContainer implements Debuggable {
         return DenizenAPI.getCurrentInstance().getScriptEngine().getRequirementChecker().check(context);
     }
 
+    public List<ScriptEntry> getBaseEntries(ScriptEntryData data) {
+        return getEntries(data, "script");
+    }
+
+    @Deprecated
     public List<ScriptEntry> getBaseEntries(dPlayer player, dNPC npc) {
         return getEntries(player, npc, "script");
     }
 
-    public List<ScriptEntry> getEntries(dPlayer player, dNPC npc, String path) {
+    public List<ScriptEntry> getEntries(ScriptEntryData data, String path) {
         if (path == null) path = "script";
         ScriptEntrySet set = getSetFor(path.toUpperCase());
         if (set == null)
             return new ArrayList<ScriptEntry>();
-        set.setPlayerAndNPC(player, npc);
+        for (ScriptEntry entry: set.getEntries()) {
+            entry.entryData = data;
+        }
         return set.getEntries();
+    }
+
+    @Deprecated
+    public List<ScriptEntry> getEntries(dPlayer player, dNPC npc, String path) {
+        BukkitScriptEntryData bsed = new BukkitScriptEntryData(player, npc);
+        return getEntries(bsed, path);
     }
 
     ScriptEntrySet getSetFor(String path) {

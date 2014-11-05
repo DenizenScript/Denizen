@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -37,7 +38,7 @@ public class GroupCommand extends AbstractCommand {
 
         }
 
-        if (!scriptEntry.hasPlayer() || !scriptEntry.getPlayer().isValid())
+        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isValid())
             throw new InvalidArgumentsException("Must have player context!");
 
         if (!scriptEntry.hasObject("action"))
@@ -62,7 +63,7 @@ public class GroupCommand extends AbstractCommand {
         if (world != null)
             bukkitWorld = world.getWorld();
 
-        OfflinePlayer player = scriptEntry.getPlayer().getOfflinePlayer();
+        OfflinePlayer player = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getOfflinePlayer();
         boolean inGroup = Depends.permissions.playerInGroup((bukkitWorld == null ? null: bukkitWorld.getName()), player, group.asString());
 
         switch (Action.valueOf(action.asString().toUpperCase())) {

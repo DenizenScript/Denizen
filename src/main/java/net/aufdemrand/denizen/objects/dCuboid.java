@@ -828,7 +828,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @attribute <cu@cuboid.include[<location>]>
         // @returns dCuboid
         // @description
-        // Expands the first member of the dCuboid to contain the given location.
+        // Expands the first member of the dCuboid to contain the given location, and returns the expanded cuboid.
         // -->
         if (attribute.startsWith("include")
                 && attribute.hasContext(1)) {
@@ -895,19 +895,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
             dList types = new dList();
             if (attribute.hasContext(1)) {
-                for (String type : dList.valueOf(attribute.getContext(1))) {
-                    if (dEntity.matches(type))
-                        types.add(type.toUpperCase());
-                }
+                types = dList.valueOf(attribute.getContext(1));
             }
             for (Entity ent : getWorld().getEntities()) {
                 dEntity current = new dEntity(ent);
-                if (ent.isValid() && isInsideCuboid(ent.getLocation())
-                        && !CitizensAPI.getNPCRegistry().isNPC(ent)) {
+                if (ent.isValid() && isInsideCuboid(ent.getLocation())) {
                     if (!types.isEmpty()) {
                         for (String type : types) {
-                            if ((ent.getType().name().equals(type) ||
-                                    current.identify().equalsIgnoreCase(type))) {
+                            if (current.identifySimpleType().equalsIgnoreCase(type)) {
                                 entities.add(current);
                                 break;
                             }
@@ -1029,6 +1024,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public void adjust(Mechanism mechanism) {
 
         Element value = mechanism.getValue();
+
+        // TODO: Should cuboids have mechanisms? Aren't tags sufficient?
 
         // <--[mechanism]
         // @object dCuboid

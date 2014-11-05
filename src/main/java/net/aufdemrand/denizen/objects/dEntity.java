@@ -1063,6 +1063,12 @@ public class dEntity implements dObject, Adjustable {
         else return "e@" + entity_type.name();
     }
 
+    public String identifySimpleType() {
+        if (isNPC()) return "npc";
+        else if (isPlayer()) return "player";
+        else return entity_type.name();
+    }
+
     @Override
     public String toString() {
         return identify();

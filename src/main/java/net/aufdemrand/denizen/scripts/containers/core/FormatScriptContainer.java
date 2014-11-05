@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -72,11 +73,11 @@ public class FormatScriptContainer extends ScriptContainer {
     }
 
     public String getFormattedText(ScriptEntry entry) {
-        return getFormattedText(entry.getElement("text").asString(), entry.getNPC(), entry.getPlayer());
+        return getFormattedText(entry.getElement("text").asString(), ((BukkitScriptEntryData)entry.entryData).getNPC(), ((BukkitScriptEntryData)entry.entryData).getPlayer());
     }
 
     public String getFormattedText(String textToReplace, dNPC npc, dPlayer player) {
-        String text = getFormat().replace("<text>", textToReplace);
+        String text = getFormat().replace("<text>", TagManager.escapeOutput(textToReplace));
         boolean debug = true;
         if (contains("DEBUG"))
             debug = Boolean.valueOf(getString("DEBUG"));

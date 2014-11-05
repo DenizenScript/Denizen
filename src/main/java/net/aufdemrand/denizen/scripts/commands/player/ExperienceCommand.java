@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -160,14 +161,14 @@ public class ExperienceCommand extends AbstractCommand {
 
         dB.report(scriptEntry, name, aH.debugObj("Type", type.toString())
             + aH.debugObj("Quantity", level ? quantity.toString() + " levels" : quantity.toString())
-            + aH.debugObj("Player", scriptEntry.getPlayer().getName()));
+            + aH.debugObj("Player", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName()));
 
-        Player player = scriptEntry.getPlayer().getPlayerEntity();
+        Player player = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity();
 
         switch (type) {
             case SET:
                 if(level)
-                    scriptEntry.getPlayer().setLevel(quantity);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().setLevel(quantity);
                 else if ( !silent )
                     setTotalExperience(player, quantity);
                 else
@@ -176,7 +177,7 @@ public class ExperienceCommand extends AbstractCommand {
 
             case GIVE:
                 if(level)
-                    scriptEntry.getPlayer().setLevel(scriptEntry.getPlayer().getPlayerEntity().getLevel() + quantity);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().setLevel(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().getLevel() + quantity);
                 else if ( !silent )
                     giveExperience(player, quantity);
                 else
@@ -185,8 +186,8 @@ public class ExperienceCommand extends AbstractCommand {
 
             case TAKE:
                 if(level) {
-                    int value = scriptEntry.getPlayer().getPlayerEntity().getLevel() - quantity;
-                    scriptEntry.getPlayer().setLevel(value <= 0 ? 0: value);
+                    int value = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().getLevel() - quantity;
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().setLevel(value <= 0 ? 0: value);
                 }
                 else if ( !silent )
                     giveExperience(player, -quantity);
