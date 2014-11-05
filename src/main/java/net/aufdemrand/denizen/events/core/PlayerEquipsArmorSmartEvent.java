@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -121,7 +122,6 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
                                         location.getWorld().dropItemNaturally(location, item).setVelocity(velocity);
                                         armor_contents[i] = null;
                                         player.getInventory().setArmorContents(armor_contents);
-                                        player.updateInventory();
                                     }
                                 }
                             }
@@ -194,12 +194,14 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
         if (event.hasItem()) {
             ItemStack item = event.getItem();
             Action action = event.getAction();
+            Block clicked = event.getClickedBlock();
             if ((action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK)
-                    || !isArmor(item) || isInteractive(event.getClickedBlock().getType()))
+                    || !isArmor(item) || (clicked != null && isInteractive(clicked.getType())))
                 return;
             ItemStack currentItem = event.getPlayer().getInventory().getArmorContents()[getArmorTypeNumber(item)];
             if (currentItem == null || currentItem.getType() == Material.AIR) {
-                if (playerEquipsArmorEvent(event.getPlayer(), item)) {
+                Player player = event.getPlayer();
+                if (playerEquipsArmorEvent(player, item)) {
                     event.setCancelled(true);
                     return;
                 }
@@ -316,7 +318,17 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
                                 "player equips " + armor.identifyMaterial()),
                 null, new dPlayer(player), context).toUpperCase();
 
-        return determination.startsWith("CANCELLED");
+        if (determination.startsWith("CANCELLED")) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    player.updateInventory();
+                }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+            return true;
+        }
+
+        return false;
 
     }
 
@@ -349,7 +361,17 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
                                 "player unequips " + armor.identifyMaterial()),
                 null, new dPlayer(player), context).toUpperCase();
 
-        return determination.startsWith("CANCELLED");
+        if (determination.startsWith("CANCELLED")) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    player.updateInventory();
+                }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+            return true;
+        }
+
+        return false;
         
     }
 }
