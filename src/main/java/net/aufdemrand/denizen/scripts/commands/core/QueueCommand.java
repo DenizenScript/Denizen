@@ -29,7 +29,8 @@ public class QueueCommand extends AbstractCommand {
             }
 
             // No prefix required to specify the queue
-            else if (arg.matchesArgumentType(ScriptQueue.class)
+            else if ((arg.matchesArgumentType(ScriptQueue.class)
+                    || arg.matchesPrefix("queue"))
                     && !scriptEntry.hasObject("queue")) {
                 scriptEntry.addObject("queue", arg.asType(ScriptQueue.class));
             }
