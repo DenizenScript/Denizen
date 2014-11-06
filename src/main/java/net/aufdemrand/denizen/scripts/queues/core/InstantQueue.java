@@ -32,7 +32,7 @@ public class InstantQueue extends ScriptQueue {
         InstantQueue scriptQueue;
         // Does the queue already exist?
         if (_queueExists(id))
-            scriptQueue = (InstantQueue) _queues.get(id.toUpperCase());
+            scriptQueue = (InstantQueue) _queues.get(id);
             // If not, create a new one.
         else {
             scriptQueue = new InstantQueue(id);

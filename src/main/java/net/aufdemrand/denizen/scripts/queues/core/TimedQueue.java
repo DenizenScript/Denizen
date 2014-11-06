@@ -34,7 +34,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         TimedQueue scriptQueue;
         // Does the queue already exist? Get it if it does.
         if (_queueExists(id))
-            scriptQueue = (TimedQueue) ScriptQueue._queues.get(id.toUpperCase());
+            scriptQueue = (TimedQueue) ScriptQueue._queues.get(id);
             // If not, create a new one.
         else {
             scriptQueue = new TimedQueue(id,
