@@ -211,7 +211,7 @@ public class ScriptContainer implements Debuggable {
         if (set == null)
             return new ArrayList<ScriptEntry>();
         for (ScriptEntry entry: set.getEntries()) {
-            entry.entryData = data;
+            entry.entryData = data.clone();
         }
         return set.getEntries();
     }
