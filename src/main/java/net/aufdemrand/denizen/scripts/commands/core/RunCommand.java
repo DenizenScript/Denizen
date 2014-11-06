@@ -100,16 +100,20 @@ public class RunCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("id", arg.asElement());
 
             else if (arg.matchesPrefix("a", "as")
-                    && arg.matchesArgumentType(dPlayer.class))
+                    && arg.matchesArgumentType(dPlayer.class)) {
                 scriptEntry.setPlayer(arg.asType(dPlayer.class));
+                dB.echoError(scriptEntry.getResidingQueue(), "Run as:<player> is outdated, use player:<player>");
+            }
 
             else if (arg.matchesPrefix("a", "as")
-                    && arg.matchesArgumentType(dNPC.class))
+                    && arg.matchesArgumentType(dNPC.class)) {
                 scriptEntry.setNPC(arg.asType(dNPC.class));
+                dB.echoError(scriptEntry.getResidingQueue(), "Run as:<npc> is outdated, use npc:<npc>");
+            }
 
             // Catch invalid entry for 'as' argument
             else if (arg.matchesPrefix("a", "as"))
-                dB.echoDebug(scriptEntry, "Specified target was not attached. Value must contain a valid PLAYER or NPC object.");
+                dB.echoError(scriptEntry.getResidingQueue(), "Specified target was not attached. Value must contain a valid PLAYER or NPC object.");
 
             else if (arg.matchesPrefix("d", "def", "define", "c", "context"))
                 scriptEntry.addObject("definitions", arg.asType(dList.class));
