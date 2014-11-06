@@ -30,7 +30,7 @@ public class QueueTags implements Listener {
         // Handle <queue[id]. ...> tags
 
         if (event.hasNameContext()) {
-            if (ScriptQueue._queueExists(event.getNameContext()))
+            if (!ScriptQueue._queueExists(event.getNameContext()))
                 return;
             else
                 event.setReplaced(ScriptQueue._getExistingQueue(event.getNameContext())
