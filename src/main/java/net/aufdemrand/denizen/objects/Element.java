@@ -92,7 +92,7 @@ public class Element implements dObject {
      * @param type The type of object expected, for debugging. (EG: 'dNPC')
      * @return The object or Element.NULL if the object is null.
      */
-    public static dObject HandleNull(String tag, dObject object, String type, boolean has_fallback) {
+    public static dObject handleNull(String tag, dObject object, String type, boolean has_fallback) {
         if (object == null) {
             if (!has_fallback)
                 dB.echoError("'" + tag + "' is an invalid " + type + "!");
@@ -432,7 +432,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("aschunk")
                 || attribute.startsWith("as_chunk")) {
-            dObject object = HandleNull(element, dChunk.valueOf(element), "dChunk", attribute.hasAlternative());
+            dObject object = handleNull(element, dChunk.valueOf(element), "dChunk", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -446,7 +446,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("ascolor")
                 || attribute.startsWith("as_color")) {
-            dObject object = HandleNull(element, dColor.valueOf(element), "dColor", attribute.hasAlternative());
+            dObject object = handleNull(element, dColor.valueOf(element), "dColor", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -460,7 +460,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("ascuboid")
                 || attribute.startsWith("as_cuboid")) {
-            dObject object = HandleNull(element, dCuboid.valueOf(element), "dCuboid", attribute.hasAlternative());
+            dObject object = handleNull(element, dCuboid.valueOf(element), "dCuboid", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -474,7 +474,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asentity")
                 || attribute.startsWith("as_entity")) {
-            dObject object = HandleNull(element, dEntity.valueOf(element), "dEntity", attribute.hasAlternative());
+            dObject object = handleNull(element, dEntity.valueOf(element), "dEntity", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -488,7 +488,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asinventory")
                 || attribute.startsWith("as_inventory")) {
-            dObject object = HandleNull(element, dInventory.valueOf(element), "dInventory", attribute.hasAlternative());
+            dObject object = handleNull(element, dInventory.valueOf(element), "dInventory", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -503,7 +503,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asitem")
                 || attribute.startsWith("as_item")) {
-            dObject object = HandleNull(element, dItem.valueOf(element), "dItem", attribute.hasAlternative());
+            dObject object = handleNull(element, dItem.valueOf(element), "dItem", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -517,7 +517,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("aslist")
                 || attribute.startsWith("as_list")) {
-            dObject object = HandleNull(element, dList.valueOf(element), "dList", attribute.hasAlternative());
+            dObject object = handleNull(element, dList.valueOf(element), "dList", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -531,7 +531,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("aslocation")
                 || attribute.startsWith("as_location")) {
-            dObject object = HandleNull(element, dLocation.valueOf(element), "dLocation", attribute.hasAlternative());
+            dObject object = handleNull(element, dLocation.valueOf(element), "dLocation", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -545,7 +545,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asmaterial")
                 || attribute.startsWith("as_material")) {
-            dObject object = HandleNull(element, dMaterial.valueOf(element), "dMaterial", attribute.hasAlternative());
+            dObject object = handleNull(element, dMaterial.valueOf(element), "dMaterial", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -559,7 +559,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asnpc")
                 || attribute.startsWith("as_npc")) {
-            dObject object = HandleNull(element, dNPC.valueOf(element), "dNPC", attribute.hasAlternative());
+            dObject object = handleNull(element, dNPC.valueOf(element), "dNPC", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -573,7 +573,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asplayer")
                 || attribute.startsWith("as_player")) {
-            dObject object = HandleNull(element, dPlayer.valueOf(element), "dPlayer", attribute.hasAlternative());
+            dObject object = handleNull(element, dPlayer.valueOf(element), "dPlayer", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -587,7 +587,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asplugin")
                 || attribute.startsWith("as_plugin")) {
-            dObject object = HandleNull(element, dPlugin.valueOf(element), "dPlugin", attribute.hasAlternative());
+            dObject object = handleNull(element, dPlugin.valueOf(element), "dPlugin", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -601,7 +601,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asscript")
                 || attribute.startsWith("as_script")) {
-            dObject object = HandleNull(element, dScript.valueOf(element), "dScript", attribute.hasAlternative());
+            dObject object = handleNull(element, dScript.valueOf(element), "dScript", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -615,7 +615,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asduration")
                 || attribute.startsWith("as_duration")) {
-            dObject object = HandleNull(element, Duration.valueOf(element), "Duration", attribute.hasAlternative());
+            dObject object = handleNull(element, Duration.valueOf(element), "Duration", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -629,7 +629,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asworld")
                 || attribute.startsWith("as_world")) {
-            dObject object = HandleNull(element, dWorld.valueOf(element), "dWorld", attribute.hasAlternative());
+            dObject object = handleNull(element, dWorld.valueOf(element), "dWorld", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -643,7 +643,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asqueue")
                 || attribute.startsWith("as_queue")) {
-            dObject object = HandleNull(element, ScriptQueue.valueOf(element), "dQueue", attribute.hasAlternative());
+            dObject object = handleNull(element, ScriptQueue.valueOf(element), "dQueue", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }

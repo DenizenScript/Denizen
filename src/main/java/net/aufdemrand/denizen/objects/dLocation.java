@@ -406,7 +406,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // block is not a container, returns null.
         // -->
         if (attribute.startsWith("inventory")) {
-            return Element.HandleNull(identify() + ".inventory", getInventory(), "dInventory").getAttribute(attribute.fulfill(1));
+            return Element.handleNull(identify() + ".inventory", getInventory(), "dInventory", attribute.hasAlternative()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
