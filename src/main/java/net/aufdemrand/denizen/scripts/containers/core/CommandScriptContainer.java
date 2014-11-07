@@ -83,7 +83,7 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public String getCommandName() {
-        return getString("NAME", null);
+        return getString("NAME", null).toLowerCase();
     }
 
     public String getDescription() {
