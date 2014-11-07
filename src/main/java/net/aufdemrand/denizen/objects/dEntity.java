@@ -1147,13 +1147,12 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.type>
         // @returns Element
-        // @group debug
         // @description
-        // Returns 'Entity', the type of this dObject.
+        // Always returns 'Entity' for dEntity objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
-            return new Element(getObjectType())
-                    .getAttribute(attribute.fulfill(1));
+            return new Element("Entity").getAttribute(attribute.fulfill(1));
         }
 
         /////////////////////

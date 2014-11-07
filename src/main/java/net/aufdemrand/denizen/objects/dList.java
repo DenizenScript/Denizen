@@ -1201,14 +1201,20 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("identify")) {
+        if (attribute.startsWith("identify")) { // TODO: ???
             return new Element(identify())
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <li@list.type>
+        // @returns Element
+        // @description
+        // Always returns 'List' for dList objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
+        // -->
         if (attribute.startsWith("type")) {
-            return new Element(getObjectType())
-                    .getAttribute(attribute.fulfill(1));
+            return new Element("List").getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

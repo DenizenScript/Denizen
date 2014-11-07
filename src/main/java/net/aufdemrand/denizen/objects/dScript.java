@@ -227,7 +227,7 @@ public class dScript implements dObject {
         // Returns the type of script container that is associated with this dScript object. For example: 'task', or
         // 'world'.
         // -->
-        if (attribute.startsWith("container_type") || attribute.startsWith("type"))
+        if (attribute.startsWith("container_type"))
             return new Element(container.getContainerType())
                     .getAttribute(attribute.fulfill(1));
 
@@ -389,14 +389,14 @@ public class dScript implements dObject {
         }
 
         // <--[tag]
-        // @attribute <s@script.object_type>
+        // @attribute <s@script.type>
         // @returns Element
         // @description
         // Always returns 'Script' for dScript objects. All objects fetchable by the Object Fetcher will return a the
         // type of object that is fulfilling this attribute.
         // -->
-        if (attribute.startsWith("object_type")) {
-            return new Element(getObjectType()).getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("type")) {
+            return new Element("Script").getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes

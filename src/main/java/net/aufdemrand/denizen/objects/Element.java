@@ -1846,6 +1846,16 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <el@element.type>
+        // @returns Element
+        // @description
+        // Always returns 'Element' for Element objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Element").getAttribute(attribute.fulfill(1));
+        }
         // Unfilled attributes past this point probably means the tag is spelled
         // incorrectly. So instead of just passing through what's been resolved
         // so far, 'null' shall be returned with a debug message.
