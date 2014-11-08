@@ -255,9 +255,9 @@ public class aH {
         // Check if this argument matches a dList of a certain dObject
         public boolean matchesArgumentList(Class<? extends dObject> dClass) {
 
-            dList list = new dList(this.value.replace("li@", ""));
+            dList list = dList.valueOf(this.value);
 
-            return list.containsObjectsFrom(dClass) || list.isEmpty();
+            return list.isEmpty() || list.containsObjectsFrom(dClass);
         }
 
 

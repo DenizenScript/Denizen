@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -246,8 +247,8 @@ public class dList extends ArrayList<String> implements dObject {
                 if (ObjectFetcher.checkMatch(dClass, element)) {
 
                     T object = ObjectFetcher.getObjectFrom(dClass, element,
-                            (entry != null ? entry.getPlayer(): null),
-                            (entry != null ? entry.getNPC(): null));
+                            (entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null),
+                            (entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null));
 
                     // Only add the object if it is not null, thus filtering useless
                     // list items
@@ -368,7 +369,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
 
             if (index < 0)
-                return Element.NULL.getAttribute(attribute);
+                return null;
 
             dList sub_list = new dList();
 
@@ -382,6 +383,46 @@ public class dList extends ArrayList<String> implements dObject {
             return sub_list.getAttribute(attribute);
         }
 
+        // <--[tag]
+        // @attribute <li@list.map_get[<element>]>
+        // @returns dList
+        // @description
+        // Returns the sub-list split by the / symbol's
+        // value for the matching input element.
+        // TODO: Clarify
+        // EG: li@one/a|two/b.map_get[one] returns a.
+        // -->
+
+        if (attribute.startsWith("map_get")
+                && attribute.hasContext(1)) {
+            String input = attribute.getContext(1);
+            attribute.fulfill(1);
+
+
+            // <--[tag]
+            // @attribute <li@list.map_get[<element>].split_by[<element>]>
+            // @returns dList
+            // @description
+            // Returns the sub-list split by the given symbol's
+            // value for the matching input element.
+            // TODO: Clarify
+            // EG: li@one/a|two/b.map_get[one] returns a.
+            // -->
+
+            String split = "/";
+            if (attribute.startsWith("split_by")) {
+                if (attribute.hasContext(1) && attribute.getContext(1).length() > 0)
+                    split = attribute.getContext(1);
+                attribute.fulfill(1);
+            }
+
+            for (String item : this) {
+                String[] strings = item.split(Pattern.quote(split), 2);
+                if (strings.length > 1 && strings[0].equalsIgnoreCase(input)) {
+                    return new Element(strings[1]).getAttribute(attribute);
+                }
+            }
+        }
 
         // <--[tag]
         // @attribute <li@list.comma_separated>
@@ -551,7 +592,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
             else {
                 dB.echoError("The tag li@list.insert[...] requires an at[#] tag follow it!");
-                return Element.NULL.getAttribute(attribute);
+                return null;
             }
         }
 
@@ -669,7 +710,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("get") &&
                 attribute.hasContext(1)) {
-            if (isEmpty()) return "null";
+            if (isEmpty()) return null;
             dList indices = dList.valueOf(attribute.getContext(1));
             if (indices.size() > 1) {
                 dList results = new dList();
@@ -682,7 +723,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
             if (indices.size() > 0) {
                 int index = aH.getIntegerFrom(indices.get(0));
-                if (index > size()) return "null";
+                if (index > size()) return null;
                 if (index < 1) index = 1;
                 attribute = attribute.fulfill(1);
 
@@ -822,7 +863,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("first")) {
             if (size() == 0)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(get(0)).getAttribute(attribute.fulfill(1));
         }
@@ -838,7 +879,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("last")) {
             if (size() == 0)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
         }
@@ -927,7 +968,7 @@ public class dList extends ArrayList<String> implements dObject {
                 Collections.sort(list, new Comparator<String>() {
                     @Override
                     public int compare(String o1, String o2) {
-                        List<ScriptEntry> entries = script.getBaseEntries(entry.getPlayer(), entry.getNPC());
+                        List<ScriptEntry> entries = script.getBaseEntries(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC());
                         if (entries.isEmpty()) {
                             return 0;
                         }
@@ -1198,7 +1239,7 @@ public class dList extends ArrayList<String> implements dObject {
                     return toReturn.getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new Element(this.get(CoreUtilities.getRandom().nextInt(this.size())))
+                    return ObjectFetcher.pickObjectFor(this.get(CoreUtilities.getRandom().nextInt(this.size())))
                             .getAttribute(attribute.fulfill(1));
                 }
             }

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -48,7 +49,7 @@ public class ResetCommand extends AbstractCommand {
 
         // Use attached player if none is specified, and we're not resetting GLOBAL_COOLDOWN
         if (!scriptEntry.getObject("type").equals(Type.GLOBAL_COOLDOWN))
-            scriptEntry.defaultObject("players", scriptEntry.getPlayer());
+            scriptEntry.defaultObject("players", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
 
         // Must specify a script unless resetting SAVES
         if (!scriptEntry.hasObject("script") && !scriptEntry.getObject("type").equals(Type.SAVES))
@@ -65,16 +66,16 @@ public class ResetCommand extends AbstractCommand {
             players = new dList(player.identify());
         else players = scriptEntry.getdObject("players");
 
-        Element type = scriptEntry.getElement("type");
+        Type type = (Type)scriptEntry.getObject("type");
         dScript script = scriptEntry.getdObject("script");
 
         dB.report(scriptEntry, getName(),
                 (players != null ? players.debug() : "")
-                        + type.debug()
+                        + aH.debugObj("type", type)
                         + (script != null ? script.debug() : ""));
 
         // Deal with GLOBAL_COOLDOWN reset first, since there's no player/players involved
-        if (Type.valueOf(type.asString()) == Type.GLOBAL_COOLDOWN) {
+        if (type == Type.GLOBAL_COOLDOWN) {
             CooldownCommand.setCooldown(null, Duration.ZERO, script.getName(), true);
             return;
         }
@@ -85,7 +86,7 @@ public class ResetCommand extends AbstractCommand {
             dPlayer resettable = dPlayer.valueOf(object);
             if (resettable.isValid()) {
 
-                switch (Type.valueOf(type.asString())) {
+                switch (type) {
                     case FAIL:
                         FailCommand.resetFails(resettable.getName(), script.getName());
                         return;

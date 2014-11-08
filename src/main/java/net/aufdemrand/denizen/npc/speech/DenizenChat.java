@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.npc.speech;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -51,14 +52,14 @@ public class DenizenChat implements VocalChord {
 
         // Chat to the world using Denizen chat settings
         if (!context.hasRecipients()) {
-            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.chatNoTargetFormat(), false, entry);
+            String text = TagManager.tag(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC(), Settings.chatNoTargetFormat(), false, entry);
             talkToBystanders(talker, text, context);
         }
 
         // Single recipient
         else if (context.size() <= 1) {
             // Send chat to target
-            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.chatToTargetFormat(), false, entry);
+            String text = TagManager.tag(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC(), Settings.chatToTargetFormat(), false, entry);
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
             }
@@ -68,7 +69,7 @@ public class DenizenChat implements VocalChord {
                 if (queue.hasDefinition("target"))
                     defTarget = queue.getDefinition("target");
                 queue.addDefinition("target", new dEntity(context.iterator().next().getEntity()).identify());
-                String bystanderText = TagManager.tag(entry.getPlayer(), entry.getNPC(),
+                String bystanderText = TagManager.tag(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC(),
                         Settings.chatWithTargetToBystandersFormat(), false, entry);
                 talkToBystanders(talker, bystanderText, context);
                 if (defTarget != null)
@@ -79,7 +80,7 @@ public class DenizenChat implements VocalChord {
         // Multiple recipients
         else {
             // Send chat to targets
-            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.chatToTargetFormat(), false, entry);
+            String text = TagManager.tag(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC(), Settings.chatToTargetFormat(), false, entry);
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
             }
@@ -98,14 +99,14 @@ public class DenizenChat implements VocalChord {
                     parsed.append(format[i]).append(new dEntity(iter.next().getEntity()).getName());
                     i++;
                 }
-                String targets = TagManager.tag(entry.getPlayer(), entry.getNPC(), parsed.toString(), false, entry);
+                String targets = TagManager.tag(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC(), parsed.toString(), false, entry);
 
                 String defTargets = null;
                 if (queue.hasDefinition("targets"))
                     defTargets = queue.getDefinition("targets");
                 queue.addDefinition("targets", targets);
 
-                String bystanderText = TagManager.tag(entry.getPlayer(), entry.getNPC(),
+                String bystanderText = TagManager.tag(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC(),
                         Settings.chatWithTargetsToBystandersFormat(), false, entry);
                 talkToBystanders(talker, bystanderText, context);
 

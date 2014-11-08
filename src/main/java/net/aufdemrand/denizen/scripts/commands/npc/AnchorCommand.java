@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -55,7 +56,7 @@ public class AnchorCommand extends AbstractCommand {
         }
 
         // Check required arguments
-        if (!scriptEntry.hasNPC())
+        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
 
         if (!scriptEntry.hasObject("action"))
@@ -75,12 +76,12 @@ public class AnchorCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(),
-                aH.debugObj("NPC", scriptEntry.getNPC().toString())
+                aH.debugObj("NPC", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().toString())
                         + action.name() + id.debug()
                         + (location != null ? location.debug() : "")
                         + (range != null ? range.debug() : "" ));
 
-        dNPC npc = scriptEntry.getNPC();
+        dNPC npc = ((BukkitScriptEntryData)scriptEntry.entryData).getNPC();
 
         if (!npc.getCitizen().hasTrait(Anchors.class))
             npc.getCitizen().addTrait(Anchors.class);

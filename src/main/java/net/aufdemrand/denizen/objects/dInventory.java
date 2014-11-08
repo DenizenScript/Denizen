@@ -1346,7 +1346,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (location != null)
                 return location.getAttribute(attribute.fulfill(1));
             else
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
         }
 
         // <--[tag]
@@ -1417,7 +1417,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("equipment")) {
             dList equipment = getEquipment();
             if (equipment == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return equipment.getAttribute(attribute.fulfill(1));
         }
@@ -1452,7 +1452,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (craftingInventory.getResult() != null)
                     return new dItem(craftingInventory.getResult()).getAttribute(attribute.fulfill(1));
                 else
-                    return Element.NULL.getAttribute(attribute.fulfill(1));
+                    return null;
             }
         }
 

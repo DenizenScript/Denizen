@@ -92,15 +92,7 @@ public class ItemBook implements Property {
                 return new Element(bookInfo.getPage(attribute.getIntContext(1)))
                     .getAttribute(attribute.fulfill(1));
 
-            // <--[tag]
-            // @attribute <i@item.book.pages.escaped>
-            // @returns dList
-            // @mechanism dItem.book
-            // @group properties
-            // @description
-            // Returns the pages of the book as a dList, pre-escaped to prevent issues.
-            // See <@link language Property Escaping>
-            // -->
+            // Deprecated in favor of pages.escape_contents
             if (attribute.startsWith("pages.escaped")) {
                 StringBuilder output = new StringBuilder();
                 for (String page: bookInfo.getPages()) {

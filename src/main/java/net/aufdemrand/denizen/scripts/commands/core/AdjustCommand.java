@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.tags.core.UtilTags;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -58,6 +59,11 @@ public class AdjustCommand extends AbstractCommand {
         dList result = new dList();
 
         for (String object: objects) {
+            if (object.equalsIgnoreCase("server")) {
+                UtilTags.adjustServer(new Mechanism(mechanism, value));
+                continue;
+            }
+
             Class object_class = ObjectFetcher.getObjectClass(object.split("@")[0]);
 
             if (object_class == null) {
@@ -75,7 +81,7 @@ public class AdjustCommand extends AbstractCommand {
             fetched = ObjectFetcher.getObjectFrom(object_class, object);
 
             // Make sure this object is Adjustable
-            if (!(fetched instanceof Adjustable)) {
+            if (fetched == null || !(fetched instanceof Adjustable)) {
                 dB.echoError("'" + object + "' is not adjustable.");
                 return;
             }

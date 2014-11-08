@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -56,8 +57,8 @@ public class ExplodeCommand extends AbstractCommand {
         // Use default values if necessary
         scriptEntry.defaultObject("power", new Element(1.0));
         scriptEntry.defaultObject("location",
-                scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
-                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getLocation() : null,
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation() : null);
 
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");

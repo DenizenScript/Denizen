@@ -87,6 +87,10 @@ public class dChunk implements dObject, Adjustable {
         this((CraftChunk) location.getChunk());
     }
 
+    public dLocation getCenter() {
+        return new dLocation(getWorld(), getX() * 16 + 8, 128, getZ() * 16 + 8);
+    }
+
     public int getX() {
         return chunk.getX();
     }

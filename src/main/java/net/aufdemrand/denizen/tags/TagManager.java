@@ -1,11 +1,13 @@
 package net.aufdemrand.denizen.tags;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -29,12 +31,14 @@ public class TagManager implements Listener {
         public final boolean instant;
         public final ScriptEntry entry;
         public final boolean debug;
-        public TagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug) {
+        public final dScript script;
+        public TagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug, dScript script) {
             this.player = player;
             this.npc = npc;
             this.instant = instant;
             this.entry = entry;
             this.debug = debug;
+            this.script = script;
         }
     }
 
@@ -51,7 +55,8 @@ public class TagManager implements Listener {
         new EntityTags(denizen);
         new ListTags(denizen);
         new LocationTags(denizen);
-        new NPCTags(denizen);
+        if (Depends.citizens != null)
+            new NPCTags(denizen);
         new PlayerTags(denizen);
         new QueueTags(denizen);
         new ScriptTags(denizen);
@@ -170,21 +175,20 @@ public class TagManager implements Listener {
     }
 
     public static String readSingleTag(String str, TagContext context) {
-        ReplaceableTagEvent event = new ReplaceableTagEvent(context.player, context.npc, str, context.entry);
+        ReplaceableTagEvent event = new ReplaceableTagEvent(context.player, context.npc, str, context.entry, context.script);
         if (event.isInstant() != context.instant) {
             // Not the right type of tag, escape the brackets so it doesn't get parsed again
             return String.valueOf((char)0x01) + str + String.valueOf((char)0x02);
         } else {
             // Call Event
             Bukkit.getServer().getPluginManager().callEvent(event);
-            if ((!event.replaced() && event.getAlternative() != null)
-                    || (event.getReplaced().equals("null") && event.hasAlternative()))
+            if ((!event.replaced() && event.getAlternative() != null) && event.hasAlternative())
                 event.setReplaced(event.getAlternative());
             if (context.debug)
                 dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
                         event.getReplaced() + "'.");
             if (!event.replaced())
-                dB.echoError(context.entry != null ? context.entry.getResidingQueue(): null, "Tag '" + event.getReplaced() + "' is invalid!");
+                dB.echoError(context.entry != null ? context.entry.getResidingQueue(): null, "Tag <" + event.toString() + "> is invalid!");
             return escapeOutput(event.getReplaced());
         }
     }
@@ -210,7 +214,11 @@ public class TagManager implements Listener {
 
 
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug) {
-        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug));
+        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug, scriptEntry != null ? scriptEntry.getScript(): null));
+    }
+
+    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug, dScript script) {
+        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug, script));
     }
 
     public static String tag(String arg, TagContext context) {
@@ -218,9 +226,6 @@ public class TagManager implements Listener {
 
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return cleanOutput(arg);
-
-        // Parse \escaping down to internal escaping.
-        if (!context.instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));
 
         // Find location of the first tag
         int[] positions = locateTag(arg);
@@ -288,7 +293,7 @@ public class TagManager implements Listener {
                 if (argument.equals("}")) nested_level--;
                 // If this argument isn't nested, fill the tag.
                 if (nested_level < 1) {
-                    filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
+                    filledArgs.add(tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), argument, instant, scriptEntry));
                 }
                     else filledArgs.add(argument);
             }

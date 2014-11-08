@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -97,8 +99,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
         if (!scriptEntry.hasObject("originLocation")) {
 
             scriptEntry.defaultObject("originEntity",
-                    scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() : null,
-                    scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity() : null,
+                    ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
         }
 
         scriptEntry.defaultObject("speed", new Element(1.5));
@@ -227,8 +229,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     if (script != null) {
 
                         List<ScriptEntry> entries = script.getContainer().getBaseEntries(
-                                scriptEntry.getPlayer(),
-                                scriptEntry.getNPC());
+                                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                                ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
                         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
                         if (lastEntity.getLocation() != null)
                             queue.addDefinition("location", lastEntity.getLocation().identify());
@@ -242,6 +244,6 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 }
             }
         };
-        task.runTaskTimer(denizen, 0, 2);
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 2);
     }
 }

@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -83,7 +85,7 @@ public class SwitchCommand extends AbstractCommand {
         int duration = ((Duration)scriptEntry.getObject("duration")).getSecondsAsInt();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
 
-        final Player player = scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getPlayerEntity(): null;
+        final Player player = ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(): null;
         // Switch the Block
         final ScriptEntry se = scriptEntry;
         switchBlock(se, interactLocation, switchState, player);
@@ -92,10 +94,10 @@ public class SwitchCommand extends AbstractCommand {
         if (duration > 0) {
             // If this block already had a delayed task, cancel it.
             if (taskMap.containsKey(interactLocation))
-                try { denizen.getServer().getScheduler().cancelTask(taskMap.get(interactLocation)); } catch (Exception e) { }
+                try { DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(taskMap.get(interactLocation)); } catch (Exception e) { }
             dB.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
             // Store new delayed task ID, for checking against, then schedule new delayed task.
-            taskMap.put(interactLocation, denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
+            taskMap.put(interactLocation, DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         public void run() {
                     // Check to see if the state of the block is what is expected. If switched during

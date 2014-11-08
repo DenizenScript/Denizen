@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.tags;
 
-
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -143,12 +142,14 @@ public class Attribute {
         return text.endsWith("]") && text.contains("[");
     }
 
+    @Deprecated
     private dPlayer getPlayer() {
         if (getScriptEntry() == null)
             return null;
         return getScriptEntry().getPlayer();
     }
 
+    @Deprecated
     private dNPC getNPC() {
         if (getScriptEntry() == null)
             return null;

@@ -132,7 +132,7 @@ public class InventoryHolder implements Property {
         // -->
         if (attribute.startsWith("id_holder")) {
             if (holder == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             return holder.getAttribute(attribute.fulfill(1));
         }
 

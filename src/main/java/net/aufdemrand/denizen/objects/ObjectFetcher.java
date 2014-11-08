@@ -109,6 +109,8 @@ public class ObjectFetcher {
             Pattern.compile("[^\\[]+\\[.+=.+\\]", Pattern.DOTALL | Pattern.MULTILINE);
 
     public static boolean checkMatch(Class<? extends dObject> dClass, String value) {
+        if (value == null || dClass == null)
+            return false;
         Matcher m = PROPERTIES_PATTERN.matcher(value);
         try {
             return (Boolean) matches.get(dClass).invoke(null, m.matches() ? m.group(1): value);

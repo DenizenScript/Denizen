@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -90,8 +92,8 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
         // Use the NPC or the Player as the default entity
         scriptEntry.defaultObject("entities",
-                (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
-                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
+                (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),
+                (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
 
         scriptEntry.defaultObject("yaw", new Element(10));
         scriptEntry.defaultObject("pitch", new Element(0));
@@ -178,6 +180,6 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                 }
             }
         };
-        task.runTaskTimer(denizen, 0, frequency.getTicks());
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, frequency.getTicks());
     }
 }

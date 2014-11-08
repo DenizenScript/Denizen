@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -68,8 +69,8 @@ public class StatisticCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("Must specify a valid ENTITY!");
         }
 
-        if (!scriptEntry.hasObject("players") && scriptEntry.hasPlayer() && !specified_players)
-            scriptEntry.addObject("players", new dList(scriptEntry.getPlayer().identify()));
+        if (!scriptEntry.hasObject("players") && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() && !specified_players)
+            scriptEntry.addObject("players", new dList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().identify()));
 
         if (!scriptEntry.hasObject("players"))
             throw new InvalidArgumentsException("Must specify valid players!");

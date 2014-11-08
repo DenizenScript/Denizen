@@ -90,8 +90,7 @@ public class EntityTame implements Property {
                 return new dPlayer((OfflinePlayer) ((Tameable) entity.getBukkitEntity()).getOwner())
                         .getAttribute(attribute.fulfill(1));
             else
-                return Element.NULL
-                        .getAttribute(attribute.fulfill(1));
+                return null;
         }
 
         return null;

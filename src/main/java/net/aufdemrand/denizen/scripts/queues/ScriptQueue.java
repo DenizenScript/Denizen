@@ -13,10 +13,11 @@ import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.QueueWordList;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 
 /**
@@ -56,7 +57,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      */
     public static ScriptQueue _getExistingQueue(String id) {
         if (!_queueExists(id)) return null;
-        else return _queues.get(id.toUpperCase());
+        else return _queues.get(id);
     }
 
 
@@ -66,7 +67,11 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      * @return String value of a random id
      */
     public static String _getNextId() {
-        String id = RandomStringUtils.random(10, "DENIZEN");
+        //String id = RandomStringUtils.random(10, "DENIZEN");
+        int size = QueueWordList.FinalWordList.size();
+        String id = QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
+                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
+                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size));
         return _queues.containsKey(id) ? _getNextId() : id;
     }
 
@@ -80,7 +85,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      *               doesn't exist or does not match
      */
     public static boolean _matchesType(String queue, Class type) {
-        return (_queueExists(queue.toUpperCase())) && _queues.get(queue.toUpperCase()).getClass() == type;
+        return (_queueExists(queue)) && _queues.get(queue).getClass() == type;
     }
 
 
@@ -106,7 +111,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      * @return  true if it exists.
      */
     public static boolean _queueExists(String id) {
-        return _queues.containsKey(id.toUpperCase());
+        return _queues.containsKey(id);
     }
 
     /////////////////////
@@ -179,9 +184,9 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      */
     protected ScriptQueue(String id) {
         // Remember the 'id'
-        this.id = id.toUpperCase();
+        this.id = id;
         // Save the instance to the _queues static map
-        _queues.put(id.toUpperCase(), this);
+        _queues.put(id, this);
         // Increment the stats
         total_queues++;
     }
@@ -882,7 +887,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 dB.echoError(this, "Can't determine a linked NPC.");
             }
             if (npc == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return npc.getAttribute(attribute.fulfill(1));
         }
@@ -905,7 +910,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 dB.echoError(this, "Can't determine a linked player.");
             }
             if (player == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return player.getAttribute(attribute.fulfill(1));
         }
@@ -920,7 +925,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // -->
         if (attribute.startsWith("determination")) {
             if (reqId < 0 || !DetermineCommand.hasOutcome(reqId))
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return ObjectFetcher.pickObjectFor(DetermineCommand.readOutcome(reqId)).getAttribute(attribute.fulfill(1));
         }

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -24,6 +25,7 @@ import java.util.List;
 public class DropCommand extends AbstractCommand {
 
 
+    // TODO: This should be meta info
     public String getHelp() {
         return  "Drops things into the world. Must specify something to drop," +
                 "such as 'experience', an item, or an entity. Must also" +
@@ -91,8 +93,8 @@ public class DropCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify something to drop!");
 
         if (!scriptEntry.hasObject("location"))
-            if (scriptEntry.getPlayer() != null && scriptEntry.getPlayer().isOnline()) {
-                scriptEntry.addObject("location", scriptEntry.getPlayer().getLocation().setPrefix("location"));
+            if (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null && ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isOnline()) {
+                scriptEntry.addObject("location", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation().setPrefix("location"));
                 dB.echoDebug(scriptEntry, "Did not specify a location, assuming Player's location.");
 
             } else throw new InvalidArgumentsException("Must specify a location!");

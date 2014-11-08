@@ -95,7 +95,7 @@ public class Element implements dObject {
     public static dObject HandleNull(String tag, dObject object, String type) {
         if (object == null) {
             dB.echoError("'" + tag + "' is an invalid " + type + "!");
-            return Element.NULL;
+            return Element.NULL; // TODO: Raw null
         }
         return object;
     }
@@ -844,7 +844,7 @@ public class Element implements dObject {
             String regex = attribute.getContext(1);
             Matcher m = Pattern.compile(regex).matcher(element);
             if (!m.matches()) {
-                return Element.NULL.getAttribute(attribute.fulfill(2));
+                return null;
             }
             int group = new Element(attribute.getContext(2)).asInt();
             if (group < 0)
@@ -991,7 +991,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             int index = attribute.getIntContext(1) - 1;
             if (index < 0 || index >= element.length())
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(String.valueOf(element.charAt(index)))
                         .getAttribute(attribute.fulfill(1));
@@ -1211,7 +1211,7 @@ public class Element implements dObject {
             FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getContext(1));
             if (format == null) {
                 dB.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             else {
                 return new Element(format.getFormattedText(element,
@@ -1405,7 +1405,7 @@ public class Element implements dObject {
         if (attribute.startsWith("abs")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.abs(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1422,7 +1422,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asLong() + aH.getLongFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1439,7 +1439,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asLong() / aH.getLongFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1456,7 +1456,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asLong() * aH.getLongFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1473,7 +1473,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asLong() - aH.getLongFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1490,7 +1490,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asBigDecimal().add(getBD(attribute.getContext(1))).toString())
                     .getAttribute(attribute.fulfill(1));
@@ -1507,7 +1507,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             try {
                 return new Element(asBigDecimal().divide(getBD(attribute.getContext(1))).toString())
@@ -1530,7 +1530,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asDouble() % aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1547,7 +1547,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             try {
                 return new Element(asBigDecimal().multiply(getBD(attribute.getContext(1))).toString())
@@ -1570,7 +1570,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asBigDecimal().subtract(getBD(attribute.getContext(1))).toString())
                     .getAttribute(attribute.fulfill(1));
@@ -1586,7 +1586,7 @@ public class Element implements dObject {
         if (attribute.startsWith("sqrt")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.sqrt(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1609,7 +1609,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.pow(asDouble(), aH.getDoubleFrom(attribute.getContext(1))))
                     .getAttribute(attribute.fulfill(1));
@@ -1631,7 +1631,7 @@ public class Element implements dObject {
         if (attribute.startsWith("asin")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.asin(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1647,7 +1647,7 @@ public class Element implements dObject {
         if (attribute.startsWith("acos")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.acos(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1663,7 +1663,7 @@ public class Element implements dObject {
         if (attribute.startsWith("atan")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.atan(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1679,7 +1679,7 @@ public class Element implements dObject {
         if (attribute.startsWith("cos")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.cos(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1695,7 +1695,7 @@ public class Element implements dObject {
         if (attribute.startsWith("sin")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.sin(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1711,7 +1711,7 @@ public class Element implements dObject {
         if (attribute.startsWith("tan")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.tan(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1727,7 +1727,7 @@ public class Element implements dObject {
         if (attribute.startsWith("to_degrees")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.toDegrees(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1743,7 +1743,7 @@ public class Element implements dObject {
         if (attribute.startsWith("to_radians")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.toRadians(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1759,7 +1759,7 @@ public class Element implements dObject {
         if (attribute.startsWith("round_up")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element((int)Math.ceil(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1775,7 +1775,7 @@ public class Element implements dObject {
         if (attribute.startsWith("round_down")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element((int)Math.floor(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1791,7 +1791,7 @@ public class Element implements dObject {
         if (attribute.startsWith("round")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element((int)Math.round(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1805,7 +1805,7 @@ public class Element implements dObject {
             if (!attribute.hasAlternative())
                 dB.echoDebug(attribute.getScriptEntry(), "Unfilled attributes '" + attribute.attributes.toString() +
                         "' for tag <" + attribute.getOrigin() + ">!");
-            return "null";
+            return null;
 
         } else {
             return element;

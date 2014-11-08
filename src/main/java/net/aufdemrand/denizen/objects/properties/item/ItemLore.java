@@ -39,15 +39,7 @@ public class ItemLore implements Property {
 
         if (attribute == null) return "null";
 
-        // <--[tag]
-        // @attribute <i@item.lore.escaped>
-        // @returns dList
-        // @mechanism dItem.lore
-        // @group properties
-        // @description
-        // Returns lore as a dList, pre-escaped to prevent issues.
-        // See <@link language Property Escaping>
-        // -->
+        // deprecated in favor of .escape_contents
         if (attribute.startsWith("lore.escaped")) {
             if (hasLore())
                 return new Element(getPropertyString()).getAttribute(attribute.fulfill(2));

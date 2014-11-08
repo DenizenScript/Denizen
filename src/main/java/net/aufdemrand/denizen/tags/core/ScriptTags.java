@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
-import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.event.EventHandler;
@@ -32,6 +31,10 @@ public class ScriptTags implements Listener {
         // the ScriptEntry for a 'script' context
         if (event.hasNameContext() && dScript.matches(event.getNameContext()))
             script = dScript.valueOf(event.getNameContext());
+        else if (event.getScript() != null)
+            script = event.getScript();
+        else if (event.getScriptEntry() == null)
+            return;
         else if (event.getScriptEntry().getScript() != null)
             script = event.getScriptEntry().getScript();
         else if (event.getScriptEntry().hasObject("script"))
@@ -41,7 +44,7 @@ public class ScriptTags implements Listener {
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
 
         // Check if location is null, return null if it is
-        if (script == null) { event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1))); return; }
+        if (script == null) { return; }
 
         // Else, get the attribute from the script
         event.setReplaced(script.getAttribute(attribute.fulfill(1)));

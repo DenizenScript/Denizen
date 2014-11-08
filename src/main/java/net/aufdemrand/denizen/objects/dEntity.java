@@ -1063,6 +1063,12 @@ public class dEntity implements dObject, Adjustable {
         else return "e@" + entity_type.name();
     }
 
+    public String identifySimpleType() {
+        if (isNPC()) return "npc";
+        else if (isPlayer()) return "player";
+        else return entity_type.name();
+    }
+
     @Override
     public String toString() {
         return identify();
@@ -1083,7 +1089,7 @@ public class dEntity implements dObject, Adjustable {
                 return new Element(identify()).getAttribute(attribute);
             }
             dB.echoError("dEntity has returned null.");
-            return Element.NULL.getAttribute(attribute);
+            return null;
         }
 
         /////////////////////
@@ -1249,7 +1255,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("custom_name")) {
             if (!isLivingEntity() || getLivingEntity().getCustomName() == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(1));
         }
 
@@ -1262,7 +1268,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("custom_name.visible")) {
             if (!isLivingEntity())
-                return Element.NULL.getAttribute(attribute.fulfill(2));
+                return null;
             return new Element(getLivingEntity().isCustomNameVisible())
                     .getAttribute(attribute.fulfill(2));
         }

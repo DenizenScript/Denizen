@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.bukkit.ScriptFailEvent;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -50,7 +51,7 @@ public class FailCommand extends AbstractCommand {
         }
 
         // Check for required args
-        scriptEntry.defaultObject("player", scriptEntry.getPlayer());
+        scriptEntry.defaultObject("player", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
         scriptEntry.defaultObject("script", scriptEntry.getScript());
     }
 

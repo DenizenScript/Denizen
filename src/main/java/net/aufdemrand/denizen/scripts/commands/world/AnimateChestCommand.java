@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.minecraft.server.v1_7_R4.PacketPlayOutBlockAction;
 import org.bukkit.Sound;
@@ -55,8 +56,8 @@ public class AnimateChestCommand extends AbstractCommand {
             scriptEntry.addObject("sound", Element.TRUE);
 
         if (!scriptEntry.hasObject("players")) {
-            if (scriptEntry.hasPlayer())
-                scriptEntry.addObject("players", Arrays.asList(scriptEntry.getPlayer()));
+            if (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("players", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()));
             else // TODO: Perhaps instead add all players in sight range?
                 throw new InvalidArgumentsException("Missing 'players' argument!");
         }

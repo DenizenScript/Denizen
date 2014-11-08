@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts;
 
 import java.util.*;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.Element;
@@ -12,14 +13,13 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.citizensnpcs.api.CitizensAPI;
 
 
 /**
@@ -45,8 +45,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     private boolean waitfor = false;
 
     // 'Attached' core context
-    private dPlayer player = null;
-    private dNPC npc = null;
+    public ScriptEntryData entryData;
     private dScript script = null;
     private ScriptQueue queue = null;
 
@@ -69,6 +68,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     public ScriptEntry clone() throws CloneNotSupportedException {
         ScriptEntry se = (ScriptEntry) super.clone();
         se.objects = new HashMap<String, Object>();
+        se.entryData = (ScriptEntryData)entryData.clone();
         return se;
     }
 
@@ -80,12 +80,14 @@ public class ScriptEntry implements Cloneable, Debuggable {
      * @param command  the name of the command this entry will be handed to
      * @param arguments  an array of the arguments
      * @param script  optional ScriptContainer reference
-     * @throws ScriptEntryCreationException  let's hope this never happens!
+     * @throws ScriptEntryCreationException if 'command' is null
      */
     public ScriptEntry(String command, String[] arguments, ScriptContainer script) throws ScriptEntryCreationException {
 
         if (command == null)
             throw new ScriptEntryCreationException("dCommand 'name' cannot be null!");
+
+        entryData = new BukkitScriptEntryData(null, null); // TODO: Make version-cross-compatible
 
         this.command = command.toUpperCase();
 
@@ -114,7 +116,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
                     dB.echoError(null, "The command '" + this.command + "' cannot be waited for!");
                 }
             }
-            actualCommand = DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command);
+            actualCommand = (AbstractCommand)DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command);
         }
         else {
             actualCommand = null;
@@ -258,8 +260,8 @@ public class ScriptEntry implements Cloneable, Debuggable {
     }
 
     public void copyFrom(ScriptEntry entry) {
-        setPlayer(entry.getPlayer());
-        setNPC(entry.getNPC());
+        setPlayer(((BukkitScriptEntryData)entry.entryData).getPlayer());
+        setNPC(((BukkitScriptEntryData)entry.entryData).getNPC());
         setSendingQueue(entry.getResidingQueue());
     }
 
@@ -325,46 +327,37 @@ public class ScriptEntry implements Cloneable, Debuggable {
      *
      * @return the NPC linked to this script entry
      */
+    @Deprecated
     public dNPC getNPC() {
-        return npc;
+        return ((BukkitScriptEntryData)entryData).getNPC();
     }
 
-
+    @Deprecated
     public boolean hasNPC() {
-        return (npc != null);
+        return ((BukkitScriptEntryData)entryData).hasNPC();
     }
 
 
-    private boolean dontFixMe = false;
-
+    @Deprecated
     public ScriptEntry setNPC(dNPC dNPC) {
-        if (dNPC == null && dontFixMe) {
-            dontFixMe = false;
-            return this;
-        }
-        this.npc = dNPC;
+        ((BukkitScriptEntryData)entryData).setNPC(dNPC);
         return this;
     }
 
 
+    @Deprecated
     public dPlayer getPlayer() {
-        return player;
+        return ((BukkitScriptEntryData)entryData).getPlayer();
     }
 
-
+    @Deprecated
     public boolean hasPlayer() {
-        return (player != null);
+        return ((BukkitScriptEntryData)entryData).hasPlayer();
     }
 
-
+    @Deprecated
     public ScriptEntry setPlayer(dPlayer player) {
-        if (player != null && player.isOnline() && Depends.citizens != null
-                && CitizensAPI.getNPCRegistry().isNPC(player.getPlayerEntity())) {
-            dontFixMe = true;
-            this.npc = new dNPC(CitizensAPI.getNPCRegistry().getNPC(player.getPlayerEntity()));
-        }
-        else
-            this.player = player;
+        ((BukkitScriptEntryData)entryData).setPlayer(player);
         return this;
     }
 

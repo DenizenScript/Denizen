@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
@@ -26,9 +27,9 @@ public class HealthCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("target")
                     && arg.matches("player")) {
-                if (!scriptEntry.hasPlayer())
+                if (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
                     throw new InvalidArgumentsException("No player attached!");
-                scriptEntry.addObject("target", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
+                scriptEntry.addObject("target", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()));
             }
 
             else if (!scriptEntry.hasObject("qty")
@@ -52,9 +53,9 @@ public class HealthCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action"))
             throw new InvalidArgumentsException("Must specify a quantity!");
         if (!scriptEntry.hasObject("target")) {
-            if (!scriptEntry.hasNPC())
+            if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
                 throw new InvalidArgumentsException("Missing NPC!");
-            scriptEntry.addObject("target", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
+            scriptEntry.addObject("target", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()));
         }
 
     }

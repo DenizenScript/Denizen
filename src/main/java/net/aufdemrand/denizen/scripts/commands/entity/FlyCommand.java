@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -90,8 +92,8 @@ public class FlyCommand extends AbstractCommand {
 
         // Use the NPC or player's locations as the location if one is not specified
         scriptEntry.defaultObject("origin",
-                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null,
-                scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null);
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation() : null,
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getLocation() : null);
 
         // Use a default speed and rotation threshold if they are not specified
         scriptEntry.defaultObject("speed", new Element(1.2));
@@ -271,6 +273,6 @@ public class FlyCommand extends AbstractCommand {
             }
         };
 
-           task.runTaskTimer(denizen, 0, 3);
+           task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 3);
     }
 }
