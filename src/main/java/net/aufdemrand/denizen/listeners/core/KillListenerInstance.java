@@ -101,6 +101,10 @@ public class KillListenerInstance extends AbstractListener implements Listener {
             dB.echoError("Missing TYPE argument! Valid: NPC, ENTITY, PLAYER, GROUP");
             cancel();
         }
+        else if (type == KillType.NPC && Depends.citizens == null) {
+            dB.echoError("Invalid TYPE argument 'NPC': Citizens2 is not enabled.");
+            cancel();
+        }
 
         // At this point, constructed() is called.
     }
@@ -267,7 +271,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         else if (type == KillType.PLAYER) {
             // Check to make sure entity is a Player, and not a NPC
             if (event.getEntityType() != EntityType.PLAYER) return;
-            if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) return;
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) return;
 
             // Get player killed
             dPlayer player = dPlayer.mirrorBukkitPlayer((Player) event.getEntity());

@@ -274,7 +274,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of NPCs with a certain name.
         // -->
-        if (attribute.startsWith("get_npcs_named") && attribute.hasContext(1)) {
+        if (attribute.startsWith("get_npcs_named") && Depends.citizens != null && attribute.hasContext(1)) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
             for (NPC npc : CitizensAPI.getNPCRegistry())
                 if (npc.getName().equalsIgnoreCase(attribute.getContext(1)))
@@ -459,7 +459,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of all NPCs assigned to a specified script.
         // -->
-        if (attribute.startsWith("get_npcs_assigned")
+        if (attribute.startsWith("get_npcs_assigned") && Depends.citizens != null
                 && attribute.hasContext(1)) {
             dScript script = dScript.valueOf(attribute.getContext(1));
             if (script == null || !(script.getContainer() instanceof AssignmentScriptContainer)) {
@@ -519,7 +519,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of all spawned NPCs with a specified flag set.
         // -->
-        if (attribute.startsWith("get_spawned_npcs_flagged")
+        if (attribute.startsWith("get_spawned_npcs_flagged") && Depends.citizens != null
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
@@ -538,7 +538,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of all NPCs with a specified flag set.
         // -->
-        if (attribute.startsWith("get_npcs_flagged")
+        if (attribute.startsWith("get_npcs_flagged") && Depends.citizens != null
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
@@ -557,7 +557,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of all NPCs.
         // -->
-        if (attribute.startsWith("list_npcs")) {
+        if (attribute.startsWith("list_npcs")) && Depends.citizens != null {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
             for (NPC npc : CitizensAPI.getNPCRegistry())
                 npcs.add(dNPC.mirrorCitizensNPC(npc));

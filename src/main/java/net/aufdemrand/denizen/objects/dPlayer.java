@@ -734,13 +734,14 @@ public class dPlayer implements dObject, Adjustable {
                         for (String ent: context.split("\\|")) {
                             boolean valid = false;
 
-                            if (ent.equalsIgnoreCase("npc") && CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                            if (ent.equalsIgnoreCase("npc") && Depends.citizens != null
+                                    && CitizensAPI.getNPCRegistry().isNPC(entity)) {
                                 valid = true;
                             }
                             else if (dEntity.matches(ent)) {
                                 // only accept generic entities that are not NPCs
                                 if (dEntity.valueOf(ent).isGeneric()) {
-                                    if (!CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                                    if (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(entity)) {
                                         valid = true;
                                     }
                                 }

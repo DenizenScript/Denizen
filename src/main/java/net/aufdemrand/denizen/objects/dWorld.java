@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 
@@ -228,7 +229,7 @@ public class dWorld implements dObject, Adjustable {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
 
             for (Player player : getWorld().getPlayers()) {
-                if (!CitizensAPI.getNPCRegistry().isNPC(player))
+                if (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(player))
                     players.add(new dPlayer(player));
             }
 
