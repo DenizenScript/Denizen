@@ -1,11 +1,5 @@
 package net.aufdemrand.denizen.tags.core;
 
-import java.io.File;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import java.sql.Connection;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
@@ -20,8 +14,6 @@ import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-
-
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -37,6 +29,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class UtilTags implements Listener {
 
@@ -162,7 +161,7 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
-        // @attribute <server.list_flags[<search>]>
+        // @attribute <server.list_flags[(regex:)<search>]>
         // @returns dList
         // @description
         // Returns a list of the server's flag names, with an optional search for
@@ -173,9 +172,23 @@ public class UtilTags implements Listener {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                for (String flag : allFlags)
-                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
-                        searchFlags.add(flag);
+                String search = attribute.getContext(1).toLowerCase();
+                if (search.startsWith("regex:")) {
+                    String regex = search.substring(6);
+                    try {
+                        Pattern pattern = Pattern.compile(search.substring(6));
+                        for (String flag : allFlags)
+                            if (pattern.matcher(flag).matches())
+                                searchFlags.add(flag);
+                    } catch (Exception e) {
+                        dB.echoError(e);
+                    }
+                }
+                else {
+                    for (String flag : allFlags)
+                        if (flag.toLowerCase().contains(search))
+                            searchFlags.add(flag);
+                }
             }
             event.setReplaced(searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1)));

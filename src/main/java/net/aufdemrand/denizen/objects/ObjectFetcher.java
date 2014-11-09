@@ -126,7 +126,7 @@ public class ObjectFetcher {
         return getObjectFrom(dClass, value, null, null);
     }
 
-    public static List<String> SeparateProperties(String input) {
+    public static List<String> separateProperties(String input) {
         if (input.indexOf('[') == -1 || input.lastIndexOf(']') != input.length() - 1)
             return null;
         ArrayList<String> output = new ArrayList<String>();
@@ -155,7 +155,7 @@ public class ObjectFetcher {
 
     public static <T extends dObject> T getObjectFrom(Class<T> dClass, String value, dPlayer player, dNPC npc) {
         try {
-            List<String> matches = SeparateProperties(value);
+            List<String> matches = separateProperties(value);
             boolean matched = matches != null && Adjustable.class.isAssignableFrom(dClass);
             T gotten = (T) ((dClass.equals(dItem.class)) ? dItem.valueOf(matched ? matches.get(0): value, player, npc):
                     valueof.get(dClass).invoke(null, matched ? matches.get(0): value));

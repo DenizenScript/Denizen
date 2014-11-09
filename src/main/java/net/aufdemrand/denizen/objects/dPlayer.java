@@ -11,7 +11,10 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
-import net.aufdemrand.denizen.utilities.packets.*;
+import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
+import net.aufdemrand.denizen.utilities.packets.EntityEquipment;
+import net.aufdemrand.denizen.utilities.packets.ItemChangeMessage;
+import net.aufdemrand.denizen.utilities.packets.PlayerBars;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -27,6 +30,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.BlockIterator;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class dPlayer implements dObject, Adjustable {
 
@@ -590,7 +594,7 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <p@player.list_flags[<search>]>
+        // @attribute <p@player.list_flags[(regex:)<search>]>
         // @returns dList
         // @description
         // Returns a list of a player's flag names, with an optional search for
@@ -602,9 +606,22 @@ public class dPlayer implements dObject, Adjustable {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                for (String flag : allFlags)
-                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
-                        searchFlags.add(flag);
+                String search = attribute.getContext(1).toLowerCase();
+                if (search.startsWith("regex:")) {
+                    try {
+                        Pattern pattern = Pattern.compile(search.substring(6));
+                        for (String flag : allFlags)
+                            if (pattern.matcher(flag).matches())
+                                searchFlags.add(flag);
+                    } catch (Exception e) {
+                        dB.echoError(e);
+                    }
+                }
+                else {
+                    for (String flag : allFlags)
+                        if (flag.toLowerCase().contains(search))
+                            searchFlags.add(flag);
+                }
             }
             return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1));
