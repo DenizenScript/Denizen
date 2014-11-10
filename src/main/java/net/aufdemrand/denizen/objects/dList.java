@@ -16,23 +16,17 @@ import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.NaturalOrderComparator;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class dList extends ArrayList<String> implements dObject {
 
-    final static Pattern flag_by_id =
-            Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
-                    Pattern.CASE_INSENSITIVE);
-
     public final static char internal_escape_char = (char)0x05;
     public final static String internal_escape = String.valueOf(internal_escape_char);
-    final static Pattern identifier = Pattern.compile("li@", Pattern.CASE_INSENSITIVE);
 
     @Fetchable("li, fl")
     public static dList valueOf(String string) {
@@ -41,45 +35,65 @@ public class dList extends ArrayList<String> implements dObject {
         ///////
         // Match @object format
 
-        // Make sure string matches what this interpreter can accept.
-        Matcher m;
-        m = flag_by_id.matcher(string);
-
-        if (m.matches()) {
+        if (string.startsWith("fl")) {
             FlagManager flag_manager = DenizenAPI.getCurrentInstance().flagManager();
-
-            try {
-                // Global
-                if (m.group(1).equalsIgnoreCase("fl@")) {
-                    if (FlagManager.serverHasFlag(m.group(4)))
-                        return new dList(flag_manager.getGlobalFlag(m.group(4)));
-
-                } else if (m.group(2).toLowerCase().startsWith("p@")) {
-                    if (FlagManager.playerHasFlag(dPlayer.valueOf(m.group(3)), m.group(4)))
-                        return new dList(flag_manager.getPlayerFlag(dPlayer.valueOf(m.group(3)), m.group(4)));
-
-                } else if (m.group(2).toLowerCase().startsWith("n@")) {
-                    if (FlagManager.npcHasFlag(dNPC.valueOf(m.group(3)), m.group(4)))
-                        return new dList(flag_manager.getNPCFlag(Integer.valueOf(m.group(3)), m.group(4)));
+            if (string.indexOf('[') == 3) {
+                int cb = string.indexOf(']');
+                if (cb > 4 && string.indexOf('@') == (cb + 1)) {
+                    String owner = string.substring(3, cb - 1);
+                    String flag = string.substring(cb + 1);
+                    if (dPlayer.matches(owner)) {
+                        dPlayer player = dPlayer.valueOf(owner);
+                        if (FlagManager.playerHasFlag(player, flag))
+                            return new dList(flag_manager.getPlayerFlag(player, flag));
+                        else
+                            dB.echoError("Player '" + owner + "' flag '" + flag + "' not found.");
+                    }
+                    else if (Depends.citizens != null && dNPC.matches(owner)) {
+                        dNPC npc = dNPC.valueOf(owner);
+                        if (FlagManager.npcHasFlag(npc, flag))
+                            return new dList(flag_manager.getNPCFlag(npc.getId(), flag));
+                        else
+                            dB.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
+                    }
                 }
-
-            } catch (Exception e) {
-                dB.echoError("Flag '" + m.group() + "' could not be found!");
-                return null;
+                else
+                    dB.echoError("Invalid dFlag format: " + string);
             }
+            else if (string.indexOf('@') == 3) {
+                String flag = string.substring(3);
+                if (FlagManager.serverHasFlag(flag))
+                    return new dList(flag_manager.getGlobalFlag(flag));
+                else
+                    dB.echoError("Global flag '" + flag + "' not found.");
+            }
+            return null;
         }
 
         // Use value of string, which will separate values by the use of a pipe '|'
-        return new dList(string.replaceFirst(identifier.pattern(), ""));
+        return new dList(string.startsWith("li@") ? string.substring(3) : string);
     }
 
 
     public static boolean matches(String arg) {
 
-        Matcher m;
-        m = flag_by_id.matcher(arg);
+        boolean flag = false;
 
-        return m.matches() || arg.contains("|") || arg.contains(internal_escape) || arg.toLowerCase().startsWith("li@");
+        if (arg.startsWith("fl")) {
+            if (arg.indexOf('[') == 3) {
+                int cb = arg.indexOf(']');
+                if (cb > 4 && arg.indexOf('@') == (cb + 1)) {
+                    String owner = arg.substring(3, cb - 1);
+                    flag = arg.substring(cb + 1).length() > 0 && (dPlayer.matches(owner)
+                            || (Depends.citizens != null && dNPC.matches(owner)));
+                }
+            }
+            else if (arg.indexOf('@') == 3) {
+                flag = arg.substring(3).length() > 0;
+            }
+        }
+
+        return flag || arg.contains("|") || arg.contains(internal_escape) || arg.startsWith("li@");
     }
 
 
