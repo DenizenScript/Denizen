@@ -100,7 +100,7 @@ public class ResetCommand extends AbstractCommand {
                         return;
 
                     case SAVES:
-                        DenizenAPI.getCurrentInstance().getSaves().set("Players." + resettable.getName(), null);
+                        DenizenAPI.getCurrentInstance().getSaves().set("Players." + resettable.getSaveName(), null);
                 }
             }
 
