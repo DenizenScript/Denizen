@@ -1706,7 +1706,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ModifyBlock
-        // @Syntax modifyblock [<location>|...] [<material>] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)
+        // @Syntax modifyblock [<location>|...] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)
         // @Required 2
         // @Stable stable
         // @Short Modifies blocks.
@@ -1724,7 +1724,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ModifyBlockCommand.class,
-                "MODIFYBLOCK", "modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)", 2);
+                "MODIFYBLOCK", "modifyblock [<location>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)", 2);
 
 
         // <--[command]

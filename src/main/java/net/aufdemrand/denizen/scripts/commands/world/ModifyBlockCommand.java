@@ -26,7 +26,7 @@ import java.util.List;
  * Modifies blocks based based of single block location.
  * Possibility to do faux animations with blocks.
  *
- * @author Mason Adkins, aufdemrand
+ * @author Mason Adkins, aufdemrand, mcmonkey
  */
 
 public class ModifyBlockCommand extends AbstractCommand implements Listener {
@@ -41,9 +41,9 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("locations", arg.asType(dList.class).filter(dLocation.class));
             }
 
-            else if (!scriptEntry.hasObject("material")
-                    && arg.matchesArgumentType(dMaterial.class)) {
-                scriptEntry.addObject("material", arg.asType(dMaterial.class));
+            else if (!scriptEntry.hasObject("materials")
+                    && arg.matchesArgumentList(dMaterial.class)) {
+                scriptEntry.addObject("materials", arg.asType(dList.class));
             }
 
             else if (!scriptEntry.hasObject("radius")
@@ -75,7 +75,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
         }
 
         // Must have material
-        if (!scriptEntry.hasObject("material"))
+        if (!scriptEntry.hasObject("materials"))
             throw new InvalidArgumentsException("Missing material argument!");
 
         // ..and at least one location.
@@ -95,16 +95,17 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dMaterial material = (dMaterial) scriptEntry.getObject("material");
+        dList materials = (dList) scriptEntry.getObject("materials");
         List<dObject> locations = (List<dObject>) scriptEntry.getObject("locations");
         Element physics = scriptEntry.getElement("physics");
         Element natural = scriptEntry.getElement("natural");
         Element radiusElement = scriptEntry.getElement("radius");
         Element heightElement = scriptEntry.getElement("height");
         Element depthElement = scriptEntry.getElement("depth");
+        List<dMaterial> materialList = materials.filter(dMaterial.class);
 
         dB.report(scriptEntry, getName(), aH.debugList("locations", locations)
-                                          + material.debug()
+                                          + materials.debug()
                                           + physics.debug()
                                           + radiusElement.debug()
                                           + heightElement.debug()
@@ -125,8 +126,11 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
         if (no_physics)
             craftWorld.getHandle().isStatic = true;
 
+        int index = 0;
         for (dObject obj : locations) {
 
+            dMaterial material = materialList.get(index % materialList.size());
+            index++;
             dLocation location = (dLocation) obj;
             World world = location.getWorld();
 
