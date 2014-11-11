@@ -58,14 +58,16 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # is trying to view help for this command. This must always be determined true
     //   # or false. If there is no script, it's assumed that all players and the console
     //   # should be allowed to view the help for this command.
+    //   # Available context: <context.server> returns whether the server is viewing the help (a player if false).
     //   allowed help:
     //   - determine <player.is_op>
     //
     //   # The script that will run when the command is executed.
     //   # No, you do not need '- determine fulfilled' or anything of the sort, since
     //   # the command is fully registered.
-    //   # This has contexts for: <context.args>, <context.raw_args>, and <context.server>
-    //   # as well as <player> and <npc> links.
+    //   # Available context: <context.args> returns a list of input arguments.
+    //   # <context.raw_args> returns all the arguments as raw text.
+    //   # <context.server> returns whether the server is running the command (a player if false).
     //   script:
     //   - if !<player.is_op> {
     //     - narrate "<red>You do not have permission for that command."
