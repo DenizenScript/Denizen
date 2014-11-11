@@ -3341,7 +3341,8 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.item> returns the dItem the player is clicking with.
     // <context.location> returns the dLocation the player is clicking on.
-    // <context.cuboids> returns the notable cuboids that contain the clicked block
+    // <context.cuboids> returns a list of the notable cuboids that contain the clicked block.
+    // <context.click_type> returns an element of the click type.
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
@@ -3369,6 +3370,7 @@ public class WorldScriptHelper implements Listener {
         // The only other action is PHYSICAL, which is triggered when a player
         // stands on a pressure plate
         else interactions = new String[]{"player stands on"};
+        context.put("click_type", new Element(action.name()));
 
         for (String interaction : interactions)
             events.add(interaction);
