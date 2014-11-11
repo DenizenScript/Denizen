@@ -84,7 +84,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>LATEST</version>
+            <version>1.4.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
