@@ -123,6 +123,10 @@ public class ScriptContainer implements Debuggable {
         return ScriptHelper.getSource(getName());
     }
 
+    public String getOriginalName() {
+        return ScriptHelper.getOriginalName(getName());
+    }
+
 
     /**
      * Gets a dScript object that represents this container.

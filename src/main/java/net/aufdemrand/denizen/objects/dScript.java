@@ -257,10 +257,21 @@ public class dScript implements dObject {
         // @attribute <s@script.filename>
         // @returns Element
         // @description
-        // Returns the filename that contains the script.
+        // Returns the absolute filename that contains the script.
         // -->
         if (attribute.startsWith("filename")) {
             return new Element(container.getFileName().replace("\\", "/"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.original_name>
+        // @returns Element
+        // @description
+        // Returns the originally cased script name.
+        // -->
+        if (attribute.startsWith("original_name")) {
+            return new Element(container.getOriginalName())
                     .getAttribute(attribute.fulfill(1));
         }
 
