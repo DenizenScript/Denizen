@@ -797,7 +797,8 @@ public class UtilTags implements Listener {
             // Returns a random 'denizen' unique ID, which is made of a randomly generated sentence.
             // -->
             else if (subType.equalsIgnoreCase("DUUID"))
-                event.setReplaced(new Element(ScriptQueue._getNextId())
+                event.setReplaced(new Element(ScriptQueue
+                        .getNextId(event.hasSubTypeContext() ? event.getSubTypeContext(): "DUUID"))
                         .getAttribute(attribute.fulfill(2)));
         }
 

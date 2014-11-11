@@ -95,12 +95,12 @@ public class RuntaskCommand extends AbstractCommand {
 
             }   // Gets a new, randomly named queue
             else if (aH.matchesArg("QUEUE", arg)) {
-                queue = ScriptQueue._getNextId();
+                queue = ScriptQueue.getNextId("RUNTASK");
                 instant = false;
 
             }   // Run the script instantly.
             else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
-                queue = ScriptQueue._getNextId();
+                queue = ScriptQueue.getNextId("RUNTASK");
                 instant = true;
 
             }   // Build context map if specified
