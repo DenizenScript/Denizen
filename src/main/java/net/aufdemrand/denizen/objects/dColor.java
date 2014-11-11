@@ -282,6 +282,17 @@ public class dColor implements dObject {
                 dB.echoError("'" + attribute.getContext(1) + "' is not a valid color!");
         }
 
+        // <--[tag]
+        // @attribute <co@color.type>
+        // @returns Element
+        // @description
+        // Always returns 'Color' for dColor objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Color").getAttribute(attribute.fulfill(1));
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

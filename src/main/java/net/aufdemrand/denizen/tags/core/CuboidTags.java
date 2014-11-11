@@ -32,7 +32,6 @@ public class CuboidTags implements Listener {
 
         // Check if cuboid is null, return null if it is
         if (cuboid == null) {
-            event.setReplaced("null");
             return;
         }
 

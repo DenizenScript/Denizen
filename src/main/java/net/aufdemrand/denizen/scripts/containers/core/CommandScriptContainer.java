@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -57,14 +58,16 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # is trying to view help for this command. This must always be determined true
     //   # or false. If there is no script, it's assumed that all players and the console
     //   # should be allowed to view the help for this command.
+    //   # Available context: <context.server> returns whether the server is viewing the help (a player if false).
     //   allowed help:
     //   - determine <player.is_op>
     //
     //   # The script that will run when the command is executed.
     //   # No, you do not need '- determine fulfilled' or anything of the sort, since
     //   # the command is fully registered.
-    //   # This has contexts for: <context.args>, <context.raw_args>, and <context.server>
-    //   # as well as <player> and <npc> links.
+    //   # Available context: <context.args> returns a list of input arguments.
+    //   # <context.raw_args> returns all the arguments as raw text.
+    //   # <context.server> returns whether the server is running the command (a player if false).
     //   script:
     //   - if !<player.is_op> {
     //     - narrate "<red>You do not have permission for that command."
@@ -82,7 +85,7 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public String getCommandName() {
-        return getString("NAME", null);
+        return getString("NAME", null).toLowerCase();
     }
 
     public String getDescription() {
@@ -102,7 +105,8 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, dObject> context) {
-        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(getBaseEntries(player, npc));
+        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).addEntries(getBaseEntries(
+                new BukkitScriptEntryData(player, npc)));
         if (context != null) {
             for (Map.Entry<String, dObject> entry : context.entrySet()) {
                 queue.addContext(entry.getKey(), entry.getValue());
@@ -114,11 +118,11 @@ public class CommandScriptContainer extends ScriptContainer {
 
     public boolean runAllowedHelpProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
         // Add the reqId to each of the entries for the determine command
-        List<ScriptEntry> entries = getEntries(player, npc, "ALLOWED HELP");
+        List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "ALLOWED HELP");
         long id = DetermineCommand.getNewId();
         ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
-        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).setReqId(id).addEntries(entries);
+        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).setReqId(id).addEntries(entries);
         if (context != null) {
             for (Map.Entry<String, dObject> entry : context.entrySet()) {
                 queue.addContext(entry.getKey(), entry.getValue());

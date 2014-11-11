@@ -61,18 +61,42 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     }
 
 
+    private static String randomEntry(String[] strings) {
+        return strings[CoreUtilities.getRandom().nextInt(strings.length)];
+    }
     /**
      * Gets a random id for use in creating a 'nameless' queue.
      *
      * @return String value of a random id
      */
     public static String _getNextId() {
+        // DUUIDs v1.0
         //String id = RandomStringUtils.random(10, "DENIZEN");
+        // DUUIDs v2.0
+        /*
         int size = QueueWordList.FinalWordList.size();
         String id = QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
                 + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
-                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size));
+                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size));*/
+        // DUUIDs v3.0
+        String id = randomEntry(QueueWordList.Pronouns)
+                + randomEntry(QueueWordList.Verbs)
+                + randomEntry(QueueWordList.Modifiers)
+                + randomEntry(QueueWordList.Adjectives)
+                + randomEntry(QueueWordList.Nouns);
         return _queues.containsKey(id) ? _getNextId() : id;
+    }
+
+    public static String getNextId(String prefix) {
+        // DUUIDs v3.1
+        String id = prefix.replace(' ', '_')
+                + "_"
+                + randomEntry(QueueWordList.Pronouns)
+                + randomEntry(QueueWordList.Verbs)
+                + randomEntry(QueueWordList.Modifiers)
+                + randomEntry(QueueWordList.Adjectives)
+                + randomEntry(QueueWordList.Nouns);
+        return _queues.containsKey(id) ? getNextId(prefix) : id;
     }
 
 
@@ -562,8 +586,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             List<ScriptEntry> entries =
                     (lastEntryExecuted != null && lastEntryExecuted.getScript() != null ?
                             lastEntryExecuted.getScript().getContainer()
-                                    .getEntries(lastEntryExecuted.getPlayer(),
-                                            lastEntryExecuted.getNPC(), "on queue completes") : new ArrayList<ScriptEntry>());
+                                    .getEntries(lastEntryExecuted.entryData.clone(), "on queue completes") : new ArrayList<ScriptEntry>());
             // Add the 'finishing' entries back into the queue (if not empty)
             if (!entries.isEmpty()) {
                 script_entries.addAll(entries);

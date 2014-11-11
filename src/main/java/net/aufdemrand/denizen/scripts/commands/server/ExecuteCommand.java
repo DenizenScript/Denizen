@@ -55,6 +55,10 @@ public class ExecuteCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("type"))
                 scriptEntry.addObject("type", new Element("AS_SERVER"));
 
+            else if (!scriptEntry.hasObject("silent")
+                    && arg.matches("silent"))
+                scriptEntry.addObject("silent", new Element("true"));
+
             else if (!scriptEntry.hasObject("command"))
                 scriptEntry.addObject("command", new Element(arg.raw_value));
 
@@ -68,6 +72,8 @@ public class ExecuteCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("command"))
             throw new InvalidArgumentsException("Missing command text!");
 
+        scriptEntry.defaultObject("silent", new Element("false"));
+
     }
 
     @Override
@@ -75,11 +81,13 @@ public class ExecuteCommand extends AbstractCommand {
 
         Element cmd = scriptEntry.getElement("command");
         Element type = scriptEntry.getElement("type");
+        Element silent = scriptEntry.getElement("silent");
 
         // Report to dB
         dB.report(scriptEntry, getName(),
                 type.debug()
-                + cmd.debug());
+                + cmd.debug()
+                + silent.debug());
 
         String command = cmd.asString();
 
@@ -138,6 +146,7 @@ public class ExecuteCommand extends AbstractCommand {
 
         case AS_SERVER:
             dcs.clearOutput();
+            dcs.silent = silent.asBoolean();
             ServerCommandEvent sce = new ServerCommandEvent(dcs, command);
             Bukkit.getPluginManager().callEvent(sce);
             DenizenAPI.getCurrentInstance().getServer().dispatchCommand(dcs, sce.getCommand());

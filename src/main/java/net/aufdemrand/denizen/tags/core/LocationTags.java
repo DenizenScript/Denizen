@@ -38,7 +38,6 @@ public class LocationTags implements Listener {
 
         // Check if location is null, return null if it is
         if (loc == null) {
-            event.setReplaced("null");
             return;
         }
 

@@ -333,10 +333,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
                     if (script != null) {
                         // Build a queue out of the targeted script
-                        List<ScriptEntry> entries = script.getContainer().getBaseEntries
-                                (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
-                                        ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
-                        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
+                        List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
+                        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()))
+                                .addEntries(entries);
 
                         // Add relevant definitions
                         queue.addDefinition("location", lastLocation.identify());

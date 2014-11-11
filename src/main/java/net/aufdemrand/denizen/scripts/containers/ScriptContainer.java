@@ -1,18 +1,11 @@
 package net.aufdemrand.denizen.scripts.containers;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptEntrySet;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
-import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
-import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 
@@ -130,6 +123,10 @@ public class ScriptContainer implements Debuggable {
         return ScriptHelper.getSource(getName());
     }
 
+    public String getOriginalName() {
+        return ScriptHelper.getOriginalName(getName());
+    }
+
 
     /**
      * Gets a dScript object that represents this container.
@@ -208,32 +205,8 @@ public class ScriptContainer implements Debuggable {
     }
 
 
-    public boolean checkBaseRequirements(dPlayer player, dNPC npc) {
-        return checkRequirements(player, npc, "");
-    }
-
-    public boolean checkRequirements(dPlayer player, dNPC npc, String path) {
-        if (path == null) path = "";
-        if (path.length() > 0) path = path + ".";
-        // Get requirements
-        List<String> requirements = contents.getStringList(path + "REQUIREMENTS.LIST");
-        String mode = contents.getString(path + "REQUIREMENTS.MODE", "ALL");
-        // No requirements? Meets requirements!
-        if (requirements == null || requirements.isEmpty()) return true;
-        // Return new RequirementsContext built with info extracted from the ScriptContainer
-        RequirementsContext context = new RequirementsContext(new RequirementsMode(mode), requirements, this);
-        context.attachPlayer(player);
-        context.attachNPC(npc);
-        return DenizenAPI.getCurrentInstance().getScriptEngine().getRequirementChecker().check(context);
-    }
-
     public List<ScriptEntry> getBaseEntries(ScriptEntryData data) {
         return getEntries(data, "script");
-    }
-
-    @Deprecated
-    public List<ScriptEntry> getBaseEntries(dPlayer player, dNPC npc) {
-        return getEntries(player, npc, "script");
     }
 
     public List<ScriptEntry> getEntries(ScriptEntryData data, String path) {
@@ -242,15 +215,9 @@ public class ScriptContainer implements Debuggable {
         if (set == null)
             return new ArrayList<ScriptEntry>();
         for (ScriptEntry entry: set.getEntries()) {
-            entry.entryData = data;
+            entry.entryData = data.clone();
         }
         return set.getEntries();
-    }
-
-    @Deprecated
-    public List<ScriptEntry> getEntries(dPlayer player, dNPC npc, String path) {
-        BukkitScriptEntryData bsed = new BukkitScriptEntryData(player, npc);
-        return getEntries(bsed, path);
     }
 
     ScriptEntrySet getSetFor(String path) {
@@ -267,10 +234,6 @@ public class ScriptContainer implements Debuggable {
     }
 
     private Map<String, ScriptEntrySet> scriptsMap = new HashMap<String, ScriptEntrySet>();
-
-    public boolean checkCooldown(dPlayer player) {
-        return CooldownCommand.checkCooldown(player, name);
-    }
 
     /////////////
     // DEBUGGABLE

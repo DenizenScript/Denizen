@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.objects.properties;
 
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitScriptProperties;
 import net.aufdemrand.denizen.objects.properties.entity.*;
 import net.aufdemrand.denizen.objects.properties.inventory.*;
 import net.aufdemrand.denizen.objects.properties.item.*;
@@ -28,6 +26,9 @@ public class PropertyParser {
         properties.clear();
         describes.clear();
         getFrom.clear();
+
+        // register properties that add Bukkit code to core objects
+        registerProperty(BukkitScriptProperties.class, dScript.class);
 
         // register core dEntity properties
         registerProperty(EntityAge.class, dEntity.class);

@@ -65,7 +65,7 @@ public class SittingTrait extends Trait implements Listener  {
         }
 
         sitInternal();
-        chairLocation = npc.getBukkitEntity().getLocation();
+        chairLocation = npc.getBukkitEntity().getLocation().clone().add(0, 0.5, 0);
     }
 
     private void sitInternal() {
@@ -78,7 +78,8 @@ public class SittingTrait extends Trait implements Listener  {
     private void standInternal() {
         Entity vehicle = npc.getEntity().getVehicle();
         npc.despawn();
-        npc.spawn(npc.getStoredLocation());
+        npc.spawn(npc.getStoredLocation().clone().add(0, 0.5, 0));
+        vehicle.setPassenger(null);
         if (vehicle != null && vehicle.isValid()) {
             vehicle.remove();
         }
@@ -104,7 +105,7 @@ public class SittingTrait extends Trait implements Listener  {
          * sending the sit packet to the clients.
          */
         // TODO: Make this work better.
-        npc.teleport(location.clone().add(0.5, 0, 0.5), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        npc.teleport(location.clone().add(0, 0.5, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
 
         sitInternal();
         chairLocation = location;
@@ -126,6 +127,7 @@ public class SittingTrait extends Trait implements Listener  {
     public void stand() {
         DenizenAPI.getDenizenNPC(npc).action("stand", null);
 
+        standInternal();
         standInternal();
 
         chairLocation = null;

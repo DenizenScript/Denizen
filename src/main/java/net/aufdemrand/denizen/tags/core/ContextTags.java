@@ -54,7 +54,7 @@ public class ContextTags implements Listener {
             }
         }
 
-        else event.setReplaced("null");
+        else return;
 
     }
 
