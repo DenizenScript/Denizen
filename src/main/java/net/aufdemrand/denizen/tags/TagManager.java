@@ -79,12 +79,29 @@ public class TagManager implements Listener {
      */
     public static String cleanOutput(String input) {
         if (input == null) return null;
-        return input.replace((char)0x01, '<')
-                    .replace((char)0x02, '>')
-                    .replace((char)0x03, '[')
-                    .replace((char)0x06, ']')
-                    /*.replace((char)0x2011, ';')*/
-                    .replace(dList.internal_escape_char, '|');
+        char[] data = input.toCharArray();
+        for (int i = 0; i < data.length; i++) {
+            switch (data[i]) {
+                case 0x01:
+                    data[i] = '<';
+                    break;
+                case 0x02:
+                    data[i] = '>';
+                    break;
+                case 0x03:
+                    data[i] = '[';
+                    break;
+                case 0x06:
+                    data[i] = ']';
+                    break;
+                case dList.internal_escape_char:
+                    data[i] = '|';
+                    break;
+                default:
+                    break;
+            }
+        }
+        return new String(data);
     }
 
     /**
@@ -99,22 +116,62 @@ public class TagManager implements Listener {
      */
     public static String cleanOutputFully(String input) {
         if (input == null) return null;
-        return input.replace((char)0x01, '<')
-                    .replace((char)0x02, '>')
-                    .replace((char)0x2011, ';')
-                    .replace(dList.internal_escape_char, '|')
-                    .replace((char)0x00A0, ' ')
-                    .replace((char)0x03, '[')
-                    .replace((char)0x06, ']');
+        char[] data = input.toCharArray();
+        for (int i = 0; i < data.length; i++) {
+            switch (data[i]) {
+                case 0x01:
+                    data[i] = '<';
+                    break;
+                case 0x02:
+                    data[i] = '>';
+                    break;
+                case 0x2011:
+                    data[i] = ';';
+                    break;
+                case 0x00A0:
+                    data[i] = ' ';
+                    break;
+                case 0x03:
+                    data[i] = '[';
+                    break;
+                case 0x06:
+                    data[i] = ']';
+                    break;
+                case dList.internal_escape_char:
+                    data[i] = '|';
+                    break;
+                default:
+                    break;
+            }
+        }
+        return new String(data);
     }
 
     public static String escapeOutput(String input) {
         if (input == null) return null;
-        return input.replace('|', dList.internal_escape_char)
-                    .replace('<', (char)0x01)
-                    .replace('>', (char)0x02)
-                    .replace('[', (char)0x03)
-                    .replace(']', (char)0x06);
+        char[] data = input.toCharArray();
+        for (int i = 0; i < data.length; i++) {
+            switch (data[i]) {
+                case '<':
+                    data[i] = 0x01;
+                    break;
+                case '>':
+                    data[i] = 0x02;
+                    break;
+                case '[':
+                    data[i] = 0x03;
+                    break;
+                case ']':
+                    data[i] = 0x06;
+                    break;
+                case '|':
+                    data[i] = dList.internal_escape_char;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return new String(data);
     }
 
     @EventHandler
