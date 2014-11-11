@@ -143,7 +143,7 @@ public class dPlayer implements dObject, Adjustable {
                 // Nothing
             }
         }
-        return playerNames.containsKey(arg.toLowerCase());
+        return false;
     }
 
     public static boolean playerNameIsValid(String name) {
