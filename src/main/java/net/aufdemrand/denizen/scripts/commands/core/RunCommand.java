@@ -181,7 +181,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
 
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?
-                (scriptEntry.getElement("id")).asString() : ScriptQueue._getNextId());
+                (scriptEntry.getElement("id")).asString() : ScriptQueue.getNextId(script.getContainer().getName()));
 
         // Build the queue
         ScriptQueue queue;

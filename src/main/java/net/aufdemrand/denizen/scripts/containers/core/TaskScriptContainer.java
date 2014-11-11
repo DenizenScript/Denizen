@@ -46,7 +46,7 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public ScriptQueue runTaskScript(dPlayer player, dNPC npc, Map<String, String> context) {
-        return runTaskScript(ScriptQueue._getNextId(), player, npc, context);
+        return runTaskScript(ScriptQueue.getNextId(getName()), player, npc, context);
     }
 
     public ScriptQueue runTaskScript(String queueId, dPlayer player, dNPC npc, Map<String, String> context) {

@@ -103,7 +103,7 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, dObject> context) {
-        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(getBaseEntries(
+        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).addEntries(getBaseEntries(
                 new BukkitScriptEntryData(player, npc)));
         if (context != null) {
             for (Map.Entry<String, dObject> entry : context.entrySet()) {
@@ -120,7 +120,7 @@ public class CommandScriptContainer extends ScriptContainer {
         long id = DetermineCommand.getNewId();
         ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
-        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).setReqId(id).addEntries(entries);
+        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).setReqId(id).addEntries(entries);
         if (context != null) {
             for (Map.Entry<String, dObject> entry : context.entrySet()) {
                 queue.addContext(entry.getKey(), entry.getValue());

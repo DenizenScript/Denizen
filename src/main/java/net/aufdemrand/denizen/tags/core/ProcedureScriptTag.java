@@ -165,7 +165,7 @@ public class ProcedureScriptTag implements Listener {
         // Add the reqId to each of the entries for referencing
         ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
-        InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
+        InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()));
         queue.addEntries(entries);
         queue.setReqId(id);
         if (event.hasType() &&
