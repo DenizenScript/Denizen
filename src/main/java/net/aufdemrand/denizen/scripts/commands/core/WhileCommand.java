@@ -152,6 +152,9 @@ public class WhileCommand extends BracedCommand {
                     if (data.instaTicks > max && max != 0)
                         return;
                 }
+                else {
+                    data.instaTicks = 0;
+                }
                 data.LastChecked = System.currentTimeMillis();
                 if (TagManager.tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(),
                         data.value, false, scriptEntry).equalsIgnoreCase("true")) {
