@@ -99,9 +99,7 @@ public class Attribute {
     }
 
     public boolean startsWith(String string, int attribute) {
-        if (attributes.isEmpty()) return false;
-        if (attributes.size() < attribute) return false;
-        return getAttribute(attribute).startsWith(string);
+        return getAttribute(attribute).toLowerCase().startsWith(string);
     }
 
     int fulfilled = 0;
