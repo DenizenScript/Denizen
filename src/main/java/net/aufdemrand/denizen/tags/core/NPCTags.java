@@ -57,7 +57,6 @@ public class NPCTags implements Listener {
 
         if (n == null || !n.isValid()) {
             if (!event.hasAlternative()) dB.echoError("Invalid or missing NPC for tag <" + event.raw_tag + ">!");
-            event.setReplaced("null");
             return;
         }
 

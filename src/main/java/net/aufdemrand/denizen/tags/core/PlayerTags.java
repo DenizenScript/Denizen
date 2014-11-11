@@ -76,7 +76,6 @@ public class PlayerTags implements Listener {
 
         if (p == null || !p.isValid()) {
             if (!event.hasAlternative()) dB.echoError("Invalid or missing player for tag <" + event.raw_tag + ">!");
-            event.setReplaced("null");
             return;
         }
 

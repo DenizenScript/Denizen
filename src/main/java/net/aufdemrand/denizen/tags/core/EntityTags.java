@@ -50,7 +50,6 @@ public class EntityTags implements Listener {
 
         if (e == null || !e.isValid()) {
             if (!event.hasAlternative()) dB.echoError("Invalid or missing entity for tag <" + event.raw_tag + ">!");
-            event.setReplaced("null");
             return;
         }
 
