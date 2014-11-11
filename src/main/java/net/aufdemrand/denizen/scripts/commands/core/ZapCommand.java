@@ -121,6 +121,11 @@ public class ZapCommand extends AbstractCommand implements Listener{
             } else step = "1";
         }
 
+        if (step.equalsIgnoreCase(currentStep)) {
+            dB.echoError(scriptEntry.getResidingQueue(), "Zapping to own current step!");
+            return;
+        }
+
         // If the durationsMap already contains an entry for this player/script combination,
         // cancel the task since it's probably not desired to change back anymore if another
         // ZAP for this script is taking place.
