@@ -79,7 +79,7 @@ public class dList extends ArrayList<String> implements dObject {
         Matcher m;
         m = flag_by_id.matcher(arg);
 
-        return m.matches() || arg.contains("|") || arg.contains(internal_escape) || arg.toLowerCase().startsWith("li@");
+        return m.matches() || arg.contains("|") || arg.contains(internal_escape) || CoreUtilities.toLowerCase(arg).startsWith("li@");
     }
 
 

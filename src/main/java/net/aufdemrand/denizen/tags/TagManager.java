@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -178,7 +179,7 @@ public class TagManager implements Listener {
     public void fetchObject(ReplaceableTagEvent event) {
         if (!event.getName().contains("@")) return;
 
-        String object_type = StringUtils.split(event.getName(), '@')[0].toLowerCase();
+        String object_type = CoreUtilities.toLowerCase(CoreUtilities.Split(event.getName(), '@').get(0));
         Class object_class = ObjectFetcher.getObjectClass(object_type);
 
         if (object_class == null) {

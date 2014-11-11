@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptEntrySet;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 
@@ -256,6 +257,6 @@ public class ScriptContainer implements Debuggable {
 
     @Override
     public String toString() {
-        return "s@" + getName().toLowerCase();
+        return "s@" + CoreUtilities.toLowerCase(getName());
     }
 }
