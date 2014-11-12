@@ -35,11 +35,9 @@ public class _templateCommand extends AbstractCommand {
 
             else
                 arg.reportUnhandled();
-
         }
 
         // Check for required information
-
          if (!scriptEntry.hasObject("required_object"))
           throw new InvalidArgumentsException("Must have required object!");
 
@@ -50,14 +48,12 @@ public class _templateCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Fetch required objects
-
-         Element required_integer = scriptEntry.getElement("required_integer");
-         dLocation required_location = (dLocation) scriptEntry.getObject("required_location");
+        Element required_integer = scriptEntry.getElement("required_integer");
+        dLocation required_location = scriptEntry.getdObject("required_location");
 
         // Debug the execution
-
-         dB.report(scriptEntry, getName(), required_integer.debug()
-                                           + required_location.debug());
+        dB.report(scriptEntry, getName(), required_integer.debug()
+                                          + required_location.debug());
 
         // Do the execution
 
