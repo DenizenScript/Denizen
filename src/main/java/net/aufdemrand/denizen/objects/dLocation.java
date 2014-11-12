@@ -275,9 +275,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (o == null) return false;
         if (!(o instanceof dLocation)) return false;
         dLocation other = (dLocation) o;
-        return Math.round(getX()) == Math.round(other.getX())
-                && Math.round(getY()) == Math.round(other.getY())
-                && Math.round(getZ()) == Math.round(other.getZ());
+        return Math.floor(getX()) == Math.floor(other.getX())
+                && Math.floor(getY()) == Math.floor(other.getY())
+                && Math.floor(getZ()) == Math.floor(other.getZ());
     }
 
     String prefix = "Location";
