@@ -274,7 +274,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     public boolean equals(Object o) {
         if (o == null) return false;
         if (!(o instanceof dLocation)) return false;
-        return getBlock().getLocation().equals(((dLocation) o).getBlock().getLocation());
+        dLocation other = (dLocation) o;
+        return Math.round(getX()) == Math.round(other.getX())
+                && Math.round(getY()) == Math.round(other.getY())
+                && Math.round(getZ()) == Math.round(other.getZ());
     }
 
     String prefix = "Location";
