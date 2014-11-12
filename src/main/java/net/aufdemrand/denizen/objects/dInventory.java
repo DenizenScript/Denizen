@@ -1430,12 +1430,12 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.holder_type>
+        // @attribute <in@inventory.inventory_type>
         // @returns Element
         // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
         // -->
-        if (attribute.startsWith("holder_type"))
+        if (attribute.startsWith("inventory_type"))
             return new Element(getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
 
