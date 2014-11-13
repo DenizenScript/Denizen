@@ -77,4 +77,41 @@ public class DenizenCommand extends Command {
     public boolean isRegistered() {
         return true;
     }
+
+    @Override
+    public List<String> tabComplete(CommandSender commandSender, String alias, String[] arguments) {
+        if (!script.hasTabCompleteProcedure()) return super.tabComplete(commandSender, alias, arguments);
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        String raw_args = "";
+        if (arguments.length > 0) {
+            StringBuilder rawArgsBuilder = new StringBuilder();
+            for (String arg : arguments) {
+                rawArgsBuilder.append(arg).append(' ');
+            }
+            raw_args = rawArgsBuilder.substring(0, rawArgsBuilder.length() - 1);
+        }
+        List<String> args = Arrays.asList(aH.buildArgs(raw_args));
+        context.put("args", new dList(args));
+        context.put("raw_args", new Element(raw_args));
+        context.put("alias", new Element(alias));
+        dPlayer player = null;
+        dNPC npc = null;
+        if (commandSender instanceof Player) {
+            Player pl = (Player) commandSender;
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(pl))
+                npc = dNPC.fromEntity(pl);
+            else
+                player = dPlayer.mirrorBukkitPlayer(pl);
+            context.put("server", Element.FALSE);
+        }
+        else {
+            context.put("server", Element.TRUE);
+        }
+        if (Depends.citizens != null && npc == null) {
+            NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);
+            if (citizen != null)
+                npc = dNPC.mirrorCitizensNPC(citizen);
+        }
+        return script.runTabCompleteProcedure(player, npc, context);
+    }
 }

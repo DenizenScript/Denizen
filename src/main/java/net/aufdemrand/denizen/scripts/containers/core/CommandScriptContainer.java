@@ -60,7 +60,19 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # should be allowed to view the help for this command.
     //   # Available context: <context.server> returns whether the server is viewing the help (a player if false).
     //   allowed help:
-    //   - determine <player.is_op>
+    //   - determine <player.is_op||<context.server>>
+    //
+    //   # The procedure-based script that will run when a player uses tab completion to
+    //   # predict words. This should return a dList of words that the player can tab through,
+    //   # based on the arguments they have already typed. Leaving this node out will result
+    //   # in using Bukkit's built-in tab completion.
+    //   # Available context:  <context.args> returns a list of input arguments.
+    //   # <context.raw_args> returns all the arguments as raw text.
+    //   # <context.server> returns whether the server is using tab completion (a player if false).
+    //   # <context.alias> returns the command alias being used.
+    //   tab complete:
+    //   - if !<player.is_op||<context.server>> queue clear
+    //   - determine <server.list_online_players.parse[name].include[pizza|potato|anchovy].filter[starts_with[<context.args.last>]]>
     //
     //   # The script that will run when the command is executed.
     //   # No, you do not need '- determine fulfilled' or anything of the sort, since
@@ -69,12 +81,13 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # <context.raw_args> returns all the arguments as raw text.
     //   # <context.server> returns whether the server is running the command (a player if false).
     //   script:
-    //   - if !<player.is_op> {
+    //   - if !<player.is_op||<context.server>> {
     //     - narrate "<red>You do not have permission for that command."
     //     - queue clear
     //     }
     //   - narrate "Yay!"
     //   - narrate "My command worked!"
+    //   - narrate "And I typed '<context.raw_args>'!"
     // </code>
     //
     // -->
@@ -132,7 +145,30 @@ public class CommandScriptContainer extends ScriptContainer {
         return DetermineCommand.getOutcome(id).equalsIgnoreCase("true");
     }
 
+    public List<String> runTabCompleteProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
+        // Add the reqId to each of the entries for the determine command
+        List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "TAB COMPLETE");
+        long id = DetermineCommand.getNewId();
+        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+
+        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).setReqId(id).addEntries(entries);
+        if (context != null) {
+            for (Map.Entry<String, dObject> entry : context.entrySet()) {
+                queue.addContext(entry.getKey(), entry.getValue());
+            }
+        }
+        queue.start();
+        if (DetermineCommand.hasOutcome(id))
+            return dList.valueOf(DetermineCommand.getOutcome(id));
+        else
+            return new ArrayList<String>();
+    }
+
     public boolean hasAllowedHelpProcedure() {
         return contains("ALLOWED HELP");
+    }
+
+    public boolean hasTabCompleteProcedure() {
+        return contains("TAB COMPLETE");
     }
 }
