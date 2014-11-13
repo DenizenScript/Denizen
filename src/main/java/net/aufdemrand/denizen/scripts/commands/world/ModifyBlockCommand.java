@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -8,6 +10,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,7 +32,7 @@ import java.util.List;
  * @author Mason Adkins, aufdemrand, mcmonkey
  */
 
-public class ModifyBlockCommand extends AbstractCommand implements Listener {
+public class ModifyBlockCommand extends AbstractCommand implements Listener, Holdable {
 
     public class IntHolder {
         public int MyInteger = 0;
@@ -77,6 +80,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
             else if (arg.matches("delayed"))
                 scriptEntry.addObject("delayed", new Element(true));
 
+            else if (!scriptEntry.hasObject("script")
+                    && arg.matchesArgumentType(dScript.class))
+                scriptEntry.addObject("script", arg.asType(dScript.class));
+
             else
                 arg.reportUnhandled();
         }
@@ -101,7 +108,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
 
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         final dList materials = (dList) scriptEntry.getObject("materials");
         final List<dObject> locations = (List<dObject>) scriptEntry.getObject("locations");
@@ -112,6 +119,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
         final Element heightElement = scriptEntry.getElement("height");
         final Element depthElement = scriptEntry.getElement("depth");
         final List<dMaterial> materialList = materials.filter(dMaterial.class);
+        final dScript script = scriptEntry.getdObject("script");
 
         dB.report(scriptEntry, getName(), aH.debugList("locations", locations)
                                           + materials.debug()
@@ -120,7 +128,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
                                           + heightElement.debug()
                                           + depthElement.debug()
                                           + natural.debug()
-                                          + delayed.debug());
+                                          + delayed.debug()
+                                          + (script != null ? script.debug(): ""));
 
         final boolean doPhysics = physics.asBoolean();
         final  boolean isNatural = natural.asBoolean();
@@ -147,6 +156,13 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
                     }
                     postComplete(loc, was_static);
                     if (locations.size() == 0) {
+                        if (script != null) {
+                            List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
+                            ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()))
+                                    .addEntries(entries);
+                            queue.start();
+                        }
+                        scriptEntry.setFinished(true);
                         Bukkit.getScheduler().cancelTask(myint.MyInteger);
                     }
                 }
@@ -160,6 +176,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
                 handleLocation((dLocation) obj, index, materialList, doPhysics, isNatural, radius, height, depth);
             }
             postComplete(loc, was_static);
+            scriptEntry.setFinished(true);
         }
     }
 

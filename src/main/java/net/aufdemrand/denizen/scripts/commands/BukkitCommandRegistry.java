@@ -1706,7 +1706,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ModifyBlock
-        // @Syntax modifyblock [<location>|...] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed)
+        // @Syntax modifyblock [<location>|...] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>)
         // @Required 2
         // @Stable stable
         // @Short Modifies blocks.
@@ -1719,13 +1719,15 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // control physics for an extended period of time.
         // Use 'naturally' when setting a block to air to break it naturally, meaning that it will drop items.
         // Use 'delayed' to make the modifyblock slowly edit blocks at a time pace roughly equivalent to the server's limits.
+        // Specify a script to be ran after the delayed edits finish.
+        // This command is ~holdable.
         // @Tags
         // <l@location.block.material>
         // @Usage
         // TODO: Document Command Details
         // -->
         registerCoreMember(ModifyBlockCommand.class,
-                "MODIFYBLOCK", "modifyblock [<location>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed)", 2);
+                "MODIFYBLOCK", "modifyblock [<location>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>)", 2);
 
 
         // <--[command]
