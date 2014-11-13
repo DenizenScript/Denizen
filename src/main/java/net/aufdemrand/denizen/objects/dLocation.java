@@ -531,6 +531,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the compass direction between two locations.
         // If no second location is specified, returns the direction of the location.
+        // Example returns include "north", "southwest", ...
         // -->
         if (attribute.startsWith("direction")) {
             // Get the cardinal direction from this location to another
