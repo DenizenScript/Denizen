@@ -84,7 +84,10 @@ public class _TemplateSmartEvent implements SmartEvent, Listener {
         // Add some things to it
         context.put("location", new dLocation(event.getTo()));
         // Fire the event!
-        String determination = EventManager.doEvents(Arrays.asList("x or y or z"), null /* NPC */, new dPlayer(event.getPlayer()), context);
+        String determination = EventManager.doEvents(Arrays.asList("x or y or z"), null /* NPC */,
+                new dPlayer(event.getPlayer()), context);
         // Parse the determination and edit the event accordingly here
+        if (determination.equalsIgnoreCase("CANCELLED"))
+            event.setCancelled(true);
     }
 }

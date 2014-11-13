@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.tags;
 
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,13 +94,13 @@ public class Attribute {
     }
 
     public boolean startsWith(String string) {
-        string = string.toLowerCase();
+        string = CoreUtilities.toLowerCase(string);
         if (attributes.isEmpty()) return false;
-        return raw_tag.toLowerCase().startsWith(string);
+        return CoreUtilities.toLowerCase(raw_tag).startsWith(string);
     }
 
     public boolean startsWith(String string, int attribute) {
-        return getAttribute(attribute).toLowerCase().startsWith(string);
+        return CoreUtilities.toLowerCase(getAttribute(attribute)).startsWith(string);
     }
 
     int fulfilled = 0;

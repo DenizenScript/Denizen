@@ -274,7 +274,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     public boolean equals(Object o) {
         if (o == null) return false;
         if (!(o instanceof dLocation)) return false;
-        return getBlock().getLocation().equals(((dLocation) o).getBlock().getLocation());
+        dLocation other = (dLocation) o;
+        return Math.floor(getX()) == Math.floor(other.getX())
+                && Math.floor(getY()) == Math.floor(other.getY())
+                && Math.floor(getZ()) == Math.floor(other.getZ());
     }
 
     String prefix = "Location";
@@ -528,6 +531,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the compass direction between two locations.
         // If no second location is specified, returns the direction of the location.
+        // Example returns include "north", "southwest", ...
         // -->
         if (attribute.startsWith("direction")) {
             // Get the cardinal direction from this location to another
@@ -1449,13 +1453,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @input Element
         // @description
         // Sets the skin of a skull block.
-        // Takes a name or UUID.
+        // Takes a username.
         // @tags
         // <l@location.skull_skin>
         // -->
         if (mechanism.matches("skull_skin") && getBlock().getState() instanceof Skull) {
-            ((Skull)getBlock().getState()).setOwner(value.asString());
-            getBlock().getState().update(true);
+            Skull state = ((Skull)getBlock().getState());
+            if (!state.setOwner(value.asString()))
+                dB.echoError("Failed to set skull_skin!");
+            state.update(true);
         }
 
         if (!mechanism.fulfilled())

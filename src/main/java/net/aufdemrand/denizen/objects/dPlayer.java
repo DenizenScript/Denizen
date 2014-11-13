@@ -683,7 +683,8 @@ public class dPlayer implements dObject, Adjustable {
                         .getAttribute(attribute.fulfill(1));
 
             } else {
-                dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                if (!attribute.hasAlternative())
+                    dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 return null;
             }
         }
@@ -1023,7 +1024,8 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("groups")) {
             if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                if (!attribute.hasAlternative())
+                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return null;
             }
             dList list = new dList();
@@ -1043,7 +1045,8 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                if (!attribute.hasAlternative())
+                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return null;
             }
 
@@ -1098,7 +1101,8 @@ public class dPlayer implements dObject, Adjustable {
             String permission = attribute.getContext(1);
 
             if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                if (!attribute.hasAlternative())
+                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return null;
             }
 

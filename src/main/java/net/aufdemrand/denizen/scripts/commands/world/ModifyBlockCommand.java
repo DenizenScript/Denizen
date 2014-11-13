@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
@@ -8,6 +10,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,7 +32,11 @@ import java.util.List;
  * @author Mason Adkins, aufdemrand, mcmonkey
  */
 
-public class ModifyBlockCommand extends AbstractCommand implements Listener {
+public class ModifyBlockCommand extends AbstractCommand implements Listener, Holdable {
+
+    public class IntHolder {
+        public int MyInteger = 0;
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
@@ -70,6 +77,13 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
             else if (arg.matches("naturally"))
                 scriptEntry.addObject("natural", new Element(true));
 
+            else if (arg.matches("delayed"))
+                scriptEntry.addObject("delayed", new Element(true));
+
+            else if (!scriptEntry.hasObject("script")
+                    && arg.matchesArgumentType(dScript.class))
+                scriptEntry.addObject("script", arg.asType(dScript.class));
+
             else
                 arg.reportUnhandled();
         }
@@ -87,22 +101,25 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
                 .defaultObject("height", new Element(0))
                 .defaultObject("depth", new Element(0))
                 .defaultObject("physics", new Element(true))
-                .defaultObject("natural", new Element(false));
+                .defaultObject("natural", new Element(false))
+                .defaultObject("delayed", new Element(false));
 
     }
 
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dList materials = (dList) scriptEntry.getObject("materials");
-        List<dObject> locations = (List<dObject>) scriptEntry.getObject("locations");
-        Element physics = scriptEntry.getElement("physics");
-        Element natural = scriptEntry.getElement("natural");
-        Element radiusElement = scriptEntry.getElement("radius");
-        Element heightElement = scriptEntry.getElement("height");
-        Element depthElement = scriptEntry.getElement("depth");
-        List<dMaterial> materialList = materials.filter(dMaterial.class);
+        final dList materials = (dList) scriptEntry.getObject("materials");
+        final List<dObject> locations = (List<dObject>) scriptEntry.getObject("locations");
+        final Element physics = scriptEntry.getElement("physics");
+        final Element natural = scriptEntry.getElement("natural");
+        final Element delayed = scriptEntry.getElement("delayed");
+        final Element radiusElement = scriptEntry.getElement("radius");
+        final Element heightElement = scriptEntry.getElement("height");
+        final Element depthElement = scriptEntry.getElement("depth");
+        final List<dMaterial> materialList = materials.filter(dMaterial.class);
+        final dScript script = scriptEntry.getdObject("script");
 
         dB.report(scriptEntry, getName(), aH.debugList("locations", locations)
                                           + materials.debug()
@@ -110,66 +127,117 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener {
                                           + radiusElement.debug()
                                           + heightElement.debug()
                                           + depthElement.debug()
-                                          + natural.debug());
+                                          + natural.debug()
+                                          + delayed.debug()
+                                          + (script != null ? script.debug(): ""));
 
-        boolean doPhysics = physics.asBoolean();
-        boolean isNatural = natural.asBoolean();
-        int radius = radiusElement.asInt();
-        int height = heightElement.asInt();
-        int depth = depthElement.asInt();
+        final boolean doPhysics = physics.asBoolean();
+        final  boolean isNatural = natural.asBoolean();
+        final int radius = radiusElement.asInt();
+        final int height = heightElement.asInt();
+        final int depth = depthElement.asInt();
 
         no_physics = !doPhysics;
+        if (delayed.asBoolean()) {
+            final IntHolder myint = new IntHolder();
+            myint.MyInteger = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    boolean was_static = preSetup(locations);
+                    int index = 0;
+                    long start = System.currentTimeMillis();
+                    Location loc = (dLocation)locations.get(0);
+                    while (locations.size() > 0) {
+                        handleLocation((dLocation) locations.get(0), index, materialList, doPhysics, isNatural, radius, height, depth);
+                        locations.remove(0);
+                        if (System.currentTimeMillis() - start > 50) {
+                            break;
+                        }
+                    }
+                    postComplete(loc, was_static);
+                    if (locations.size() == 0) {
+                        if (script != null) {
+                            List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
+                            ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()))
+                                    .addEntries(entries);
+                            queue.start();
+                        }
+                        scriptEntry.setFinished(true);
+                        Bukkit.getScheduler().cancelTask(myint.MyInteger);
+                    }
+                }
+            }, 1, 1);
+        }
+        else {
+            boolean was_static = preSetup(locations);
+            Location loc = (dLocation)locations.get(0);
+            int index = 0;
+            for (dObject obj : locations) {
+                handleLocation((dLocation) obj, index, materialList, doPhysics, isNatural, radius, height, depth);
+            }
+            postComplete(loc, was_static);
+            scriptEntry.setFinished(true);
+        }
+    }
 
+    boolean preSetup(List<dObject> locations) {
+        if (locations.size() == 0)
+            return false;
         // Freeze the first world in the list.
         CraftWorld craftWorld = (CraftWorld)((dLocation)locations.get(0)).getWorld();
         boolean was_static = craftWorld.getHandle().isStatic;
         if (no_physics)
             craftWorld.getHandle().isStatic = true;
+        return was_static;
+    }
 
-        int index = 0;
-        for (dObject obj : locations) {
+    void postComplete(Location loc, boolean was_static) {
+        // Unfreeze the first world in the list.
+        CraftWorld craftWorld = (CraftWorld)loc.getWorld();
+        if (no_physics)
+            craftWorld.getHandle().isStatic = was_static;
+        no_physics = false;
+    }
 
-            dMaterial material = materialList.get(index % materialList.size());
-            index++;
-            dLocation location = (dLocation) obj;
-            World world = location.getWorld();
+    void handleLocation(dLocation location, int index, List<dMaterial> materialList, boolean doPhysics,
+                        boolean isNatural, int radius, int height, int depth) {
 
-            location.setX(location.getBlockX());
-            location.setY(location.getBlockY());
-            location.setZ(location.getBlockZ());
-            setBlock(location, material, doPhysics, isNatural);
+        dMaterial material = materialList.get(index % materialList.size());
+        index++;
+        World world = location.getWorld();
 
-            if (radius != 0){
-                for (int x = 0; x  < 2 * radius + 1;  x++) {
-                    for (int z = 0; z < 2 * radius + 1; z++) {
-                        setBlock(new Location(world, location.getX() + x - radius, location.getY(), location.getZ() + z - radius), material, doPhysics, isNatural);
-                    }
+        location.setX(location.getBlockX());
+        location.setY(location.getBlockY());
+        location.setZ(location.getBlockZ());
+        setBlock(location, material, doPhysics, isNatural);
+
+        if (radius != 0){
+            for (int x = 0; x  < 2 * radius + 1;  x++) {
+                for (int z = 0; z < 2 * radius + 1; z++) {
+                    setBlock(new Location(world, location.getX() + x - radius, location.getY(), location.getZ() + z - radius), material, doPhysics, isNatural);
                 }
             }
+        }
 
-            if (height != 0){
-                for (int x = 0; x  < 2 * radius + 1;  x++) {
-                    for (int z = 0; z < 2 * radius + 1; z++) {
-                        for (int y = 1; y < height + 1; y++) {
-                            setBlock(new Location(world, location.getX() + x - radius, location.getY() + y, location.getZ() + z - radius), material, doPhysics, isNatural);
-                        }
-                    }
-                }
-            }
-
-            if (depth != 0){
-                for (int x = 0; x  < 2 * radius + 1;  x++) {
-                    for (int z = 0; z < 2 * radius + 1; z++) {
-                        for (int y = 1; y < depth + 1; y++) {
-                            setBlock(new Location(world, location.getX() + x - radius, location.getY() - y, location.getZ() + z - radius), material, doPhysics, isNatural);
-                        }
+        if (height != 0){
+            for (int x = 0; x  < 2 * radius + 1;  x++) {
+                for (int z = 0; z < 2 * radius + 1; z++) {
+                    for (int y = 1; y < height + 1; y++) {
+                        setBlock(new Location(world, location.getX() + x - radius, location.getY() + y, location.getZ() + z - radius), material, doPhysics, isNatural);
                     }
                 }
             }
         }
-        if (no_physics)
-            craftWorld.getHandle().isStatic = was_static;
-        no_physics = false;
+
+        if (depth != 0){
+            for (int x = 0; x  < 2 * radius + 1;  x++) {
+                for (int z = 0; z < 2 * radius + 1; z++) {
+                    for (int y = 1; y < depth + 1; y++) {
+                        setBlock(new Location(world, location.getX() + x - radius, location.getY() - y, location.getZ() + z - radius), material, doPhysics, isNatural);
+                    }
+                }
+            }
+        }
     }
 
     void setBlock(Location location, dMaterial material, boolean physics, boolean natural) {

@@ -26,9 +26,9 @@ public class InstantQueue extends ScriptQueue {
      * @param id  unique id of the queue
      * @return  a ScriptQueue
      */
-    public static InstantQueue getQueue(String id) { // TODO: Prefix
+    public static InstantQueue getQueue(String id) {
         // Get id if not specified.
-        if (id == null) id = _getNextId();
+        if (id == null) throw new IllegalArgumentException("ID cannot be null!");
         InstantQueue scriptQueue;
         // Does the queue already exist?
         if (_queueExists(id))

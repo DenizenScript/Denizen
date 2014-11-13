@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -111,8 +112,9 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getTo());
         List<dCuboid> match = new ArrayList<dCuboid>();
-        if (player_cuboids.containsKey(event.getPlayer().getName().toLowerCase()))
-            match = player_cuboids.get(event.getPlayer().getName().toLowerCase());
+        String namelow = CoreUtilities.toLowerCase(event.getPlayer().getName());
+        if (player_cuboids.containsKey(namelow))
+            match = player_cuboids.get(namelow);
 
         List<dCuboid> exits = new ArrayList<dCuboid>(match);
         exits.removeAll(cuboids);
@@ -152,7 +154,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
             }
         }
 
-        player_cuboids.put(event.getPlayer().getName().toLowerCase(), cuboids);
+        player_cuboids.put(namelow, cuboids);
     }
 
     /**
