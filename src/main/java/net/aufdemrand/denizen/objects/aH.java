@@ -133,7 +133,6 @@ public class aH {
 
 
         // TODO: REMOVE IN 1.0
-        @Deprecated
         public boolean matches(String values) {
             for (String value : StringUtils.split(values, ',')) {
                 if (CoreUtilities.toLowerCase(value.trim()).equals(lower_value))
