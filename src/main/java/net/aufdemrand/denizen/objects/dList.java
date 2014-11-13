@@ -37,11 +37,11 @@ public class dList extends ArrayList<String> implements dObject {
 
         if (string.startsWith("fl")) {
             FlagManager flag_manager = DenizenAPI.getCurrentInstance().flagManager();
-            if (string.indexOf('[') == 3) {
+            if (string.indexOf('[') == 2) {
                 int cb = string.indexOf(']');
                 if (cb > 4 && string.indexOf('@') == (cb + 1)) {
-                    String owner = string.substring(3, cb - 1);
-                    String flag = string.substring(cb + 1);
+                    String owner = string.substring(3, cb);
+                    String flag = string.substring(cb + 2);
                     if (dPlayer.matches(owner)) {
                         dPlayer player = dPlayer.valueOf(owner);
                         if (FlagManager.playerHasFlag(player, flag))
@@ -60,7 +60,7 @@ public class dList extends ArrayList<String> implements dObject {
                 else
                     dB.echoError("Invalid dFlag format: " + string);
             }
-            else if (string.indexOf('@') == 3) {
+            else if (string.indexOf('@') == 2) {
                 String flag = string.substring(3);
                 if (FlagManager.serverHasFlag(flag))
                     return new dList(flag_manager.getGlobalFlag(flag));
@@ -80,15 +80,15 @@ public class dList extends ArrayList<String> implements dObject {
         boolean flag = false;
 
         if (arg.startsWith("fl")) {
-            if (arg.indexOf('[') == 3) {
+            if (arg.indexOf('[') == 2) {
                 int cb = arg.indexOf(']');
                 if (cb > 4 && arg.indexOf('@') == (cb + 1)) {
-                    String owner = arg.substring(3, cb - 1);
-                    flag = arg.substring(cb + 1).length() > 0 && (dPlayer.matches(owner)
+                    String owner = arg.substring(3, cb);
+                    flag = arg.substring(cb + 2).length() > 0 && (dPlayer.matches(owner)
                             || (Depends.citizens != null && dNPC.matches(owner)));
                 }
             }
-            else if (arg.indexOf('@') == 3) {
+            else if (arg.indexOf('@') == 2) {
                 flag = arg.substring(3).length() > 0;
             }
         }
