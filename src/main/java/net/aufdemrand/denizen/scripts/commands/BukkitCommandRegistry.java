@@ -1706,7 +1706,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ModifyBlock
-        // @Syntax modifyblock [<location>|...] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)
+        // @Syntax modifyblock [<location>|...] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>)
         // @Required 2
         // @Stable stable
         // @Short Modifies blocks.
@@ -1718,13 +1718,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // physics taking over the modified blocks. This is useful for block types such as portals. This does NOT
         // control physics for an extended period of time.
         // Use 'naturally' when setting a block to air to break it naturally, meaning that it will drop items.
+        // Use 'delayed' to make the modifyblock slowly edit blocks at a time pace roughly equivalent to the server's limits.
+        // Specify a script to be ran after the delayed edits finish.
+        // This command is ~holdable.
         // @Tags
         // <l@location.block.material>
         // @Usage
         // TODO: Document Command Details
         // -->
         registerCoreMember(ModifyBlockCommand.class,
-                "MODIFYBLOCK", "modifyblock [<location>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)", 2);
+                "MODIFYBLOCK", "modifyblock [<location>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>)", 2);
 
 
         // <--[command]
@@ -2086,7 +2089,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Reset
-        // @Syntax reset (<player>) [fails/finishes/cooldown/saves/global_cooldown] (<script>)
+        // @Syntax reset (<player>|...) [fails/finishes/cooldown/saves/global_cooldown] (<script>)
         // @Required 1
         // @Stable stable
         // @Short Resets various parts of Denizen's saves.yml, including script finishes/fails, a script's fails, finishes, or cooldowns.
@@ -2100,7 +2103,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ResetCommand.class,
-                "RESET", "reset (<player>) [fails/finishes/cooldown/saves/global_cooldown] (<script>)", 1);
+                "RESET", "reset (<player>|...) [fails/finishes/cooldown/saves/global_cooldown] (<script>)", 1);
 
 
         // <--[command]
@@ -2605,22 +2608,34 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Time
-        // @Syntax time [type:{global}/player] [<value>] (world:<name>)
+        // @Syntax time [{global}/player] [<time duration>] (<world>)
         // @Required 1
         // @Stable TODO: Document Command Details
         // @Short Changes the current time in the minecraft world.
-        // @Author David Cernat
+        // @Author David Cernat, mcmonkey
         // @Group world
         // @Description
+        // Changes the current time in a world or the time that a player sees the world in.
         // TODO: Document Command Details
+        // If no world is specified, defaults to the NPCs world. If no NPC is available,
+        // defaults to the player's world. If no player is available, an error will be thrown.
         // @Tags
         // <w@world.time>
         // <w@world.time.period>
         // @Usage
+        // Use to set the time in the NPC or Player's world.
+        // - time 500t
+        // @Usage
+        // Use to make the player see a different time than everyone else.
+        // - time player 500t
+        // @Usage
+        // Use to set the time in a specific world.
+        // - time 500t w@myworld
+        // @Usage
         // TODO: Document Command Details
         // -->
         registerCoreMember(TimeCommand.class,
-                "TIME", "time [type:{global}/player] [<value>] (world:<name>)", 1);
+                "TIME", "time [{global}/player] [<time duration>] (<world>)", 1);
 
         // <--[command]
         // @Name Trait

@@ -18,6 +18,7 @@ import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.SQLEscaper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 
 // <--[language]
@@ -1323,7 +1324,7 @@ public class Element implements dObject {
         // Returns the value of an element in all lowercase letters.
         // -->
         if (attribute.startsWith("to_lowercase") || attribute.startsWith("lower"))
-            return new Element(element.toLowerCase()).getAttribute(attribute.fulfill(1));
+            return new Element(CoreUtilities.toLowerCase(element)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.to_titlecase>

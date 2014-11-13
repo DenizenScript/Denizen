@@ -67,35 +67,25 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     /**
      * Gets a random id for use in creating a 'nameless' queue.
      *
+     * @param prefix the name of the script running the new queue.
      * @return String value of a random id
      */
-    public static String _getNextId() {
-        // DUUIDs v1.0
-        //String id = RandomStringUtils.random(10, "DENIZEN");
-        // DUUIDs v2.0
-        /*
-        int size = QueueWordList.FinalWordList.size();
-        String id = QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
-                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
-                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size));*/
-        // DUUIDs v3.0
-        String id = randomEntry(QueueWordList.Pronouns)
-                + randomEntry(QueueWordList.Verbs)
-                + randomEntry(QueueWordList.Modifiers)
-                + randomEntry(QueueWordList.Adjectives)
-                + randomEntry(QueueWordList.Nouns);
-        return _queues.containsKey(id) ? _getNextId() : id;
-    }
-
     public static String getNextId(String prefix) {
+        // DUUIDs v2.1
+        int size = QueueWordList.FinalWordList.size();
+        String id = prefix + "_"
+                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
+                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
+                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size));
         // DUUIDs v3.1
+        /*
         String id = prefix.replace(' ', '_')
                 + "_"
                 + randomEntry(QueueWordList.Pronouns)
                 + randomEntry(QueueWordList.Verbs)
                 + randomEntry(QueueWordList.Modifiers)
                 + randomEntry(QueueWordList.Adjectives)
-                + randomEntry(QueueWordList.Nouns);
+                + randomEntry(QueueWordList.Nouns);*/
         return _queues.containsKey(id) ? getNextId(prefix) : id;
     }
 

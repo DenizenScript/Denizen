@@ -168,7 +168,7 @@ public class TakeCommand extends AbstractCommand{
             case ITEM:
                 for (dItem item : items) {
                     ItemStack is = item.getItemStack();
-                    is.setAmount((int)qty.asDouble());
+                    is.setAmount(qty.asInt());
 
                     // Remove books with a certain title even if they
                     // are not identical to an item script, to allow
@@ -177,8 +177,9 @@ public class TakeCommand extends AbstractCommand{
                         && ((BookMeta) is.getItemMeta()).hasTitle()) {
                             inventory.removeBook(is);
                     }
-                    else if (!inventory.getInventory().removeItem(is).isEmpty())
-                        dB.echoError(scriptEntry.getResidingQueue(), "Inventory does not contain at least " + qty.asInt() + " of " + item.identify() +
+                    else if (!inventory.removeItem(item, item.getAmount()))
+                        dB.echoError(scriptEntry.getResidingQueue(), "Inventory does not contain at least "
+                                + qty.asInt() + " of " + item.getFullString() +
                                 "... Taking as much as possible...");
                 }
                 break;

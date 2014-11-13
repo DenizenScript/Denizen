@@ -79,8 +79,8 @@ public class SittingTrait extends Trait implements Listener  {
         Entity vehicle = npc.getEntity().getVehicle();
         npc.despawn();
         npc.spawn(npc.getStoredLocation().clone().add(0, 0.5, 0));
-        vehicle.setPassenger(null);
         if (vehicle != null && vehicle.isValid()) {
+            vehicle.setPassenger(null);
             vehicle.remove();
         }
         //PlayerAnimation.STOP_SITTING.play((Player)npc.getEntity());

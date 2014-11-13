@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
@@ -92,18 +93,18 @@ public class aH {
 
             if ((first_space > -1 && first_space < first_colon) || first_colon == -1)  {
                 value = string;
-                lower_value = string.toLowerCase();
+                lower_value = CoreUtilities.toLowerCase(string);
             }
             else {
                 has_prefix = true;
                 String[] split = StringUtils.split(string, ":", 2);
                 prefix = split[0];
-                lower_prefix = prefix.toLowerCase();
+                lower_prefix = CoreUtilities.toLowerCase(prefix);
                 if (split.length == 2)
                     value = split[1];
                 else
                     value = "";
-                lower_value = value.toLowerCase();
+                lower_value = CoreUtilities.toLowerCase(value);
             }
 
         }
@@ -115,7 +116,7 @@ public class aH {
 
 
         public boolean startsWith(String string) {
-            return lower_value.startsWith(string.toLowerCase());
+            return lower_value.startsWith(CoreUtilities.toLowerCase(string));
         }
 
 
@@ -134,7 +135,7 @@ public class aH {
         // TODO: REMOVE IN 1.0
         public boolean matches(String values) {
             for (String value : StringUtils.split(values, ',')) {
-                if (value.trim().toLowerCase().equals(lower_value))
+                if (CoreUtilities.toLowerCase(value.trim()).equals(lower_value))
                     return true;
             }
             return false;
@@ -142,7 +143,7 @@ public class aH {
 
         public boolean matches(String... values) {
             for (String value : values) {
-                if (value.toLowerCase().equals(lower_value))
+                if (CoreUtilities.toLowerCase(value).equals(lower_value))
                     return true;
             }
             return false;
@@ -151,7 +152,7 @@ public class aH {
 
         public void replaceValue(String string) {
             value = string;
-            lower_value = value.toLowerCase();
+            lower_value = CoreUtilities.toLowerCase(value);
         }
 
 
@@ -187,7 +188,7 @@ public class aH {
         public boolean matchesPrefix(String values) {
             if (!hasPrefix()) return false;
             for (String value : StringUtils.split(values, ',')) {
-                if (value.trim().toLowerCase().equals(lower_prefix))
+                if (CoreUtilities.toLowerCase(value.trim()).equals(lower_prefix))
                     return true;
             }
             return false;
@@ -196,7 +197,7 @@ public class aH {
         public boolean matchesPrefix(String... values) {
             if (!hasPrefix()) return false;
             for (String value : values) {
-                if (value.toLowerCase().equals(lower_prefix))
+                if (CoreUtilities.toLowerCase(value).equals(lower_prefix))
                     return true;
             }
             return false;

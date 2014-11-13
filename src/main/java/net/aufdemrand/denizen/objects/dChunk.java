@@ -315,7 +315,7 @@ public class dChunk implements dObject, Adjustable {
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
-            return new Element("chunk").getAttribute(attribute.fulfill(1));
+            return new Element("Chunk").getAttribute(attribute.fulfill(1));
         }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {

@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BrewingStand;
@@ -349,6 +350,36 @@ public class dInventory implements dObject, Notable, Adjustable {
             inventory = Bukkit.getServer().createInventory(null, inventory.getType(), title);
         inventory.setContents(contents);
         loadIdentifiers();
+    }
+
+    public boolean removeItem(dItem item, int amount) {
+        if (item == null)
+            return false;
+        item.setAmount(1);
+        String myItem = CoreUtilities.toLowerCase(item.getFullString());
+        for (int i = 0; i < inventory.getSize(); i++) {
+            ItemStack is = inventory.getItem(i);
+            if (is == null)
+                continue;
+            is = is.clone();
+            int count = is.getAmount();
+            is.setAmount(1);
+            String newItem = CoreUtilities.toLowerCase(new dItem(is).getFullString());
+            if (myItem.equals(newItem)) {
+                if (count <= amount) {
+                    inventory.setItem(i, null);
+                    amount -= count;
+                    if (amount == 0)
+                        return true;
+                }
+                else if (count > amount) {
+                    is.setAmount(count - amount);
+                    inventory.setItem(i, is);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void setSize(int size) {
@@ -1399,12 +1430,12 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.holder_type>
+        // @attribute <in@inventory.inventory_type>
         // @returns Element
         // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
         // -->
-        if (attribute.startsWith("holder_type"))
+        if (attribute.startsWith("inventory_type"))
             return new Element(getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
 
