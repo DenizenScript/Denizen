@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -24,23 +25,6 @@ import java.util.List;
  */
 
 public class TagManager implements Listener {
-
-    public static class TagContext {
-        public final dPlayer player;
-        public final dNPC npc;
-        public final boolean instant;
-        public final ScriptEntry entry;
-        public final boolean debug;
-        public final dScript script;
-        public TagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug, dScript script) {
-            this.player = player;
-            this.npc = npc;
-            this.instant = instant;
-            this.entry = entry;
-            this.debug = debug;
-            this.script = script;
-        }
-    }
 
     public Denizen denizen;
 
@@ -177,7 +161,8 @@ public class TagManager implements Listener {
     }
 
     public static String readSingleTag(String str, TagContext context) {
-        ReplaceableTagEvent event = new ReplaceableTagEvent(context.player, context.npc, str, context.entry, context.script);
+        ReplaceableTagEvent event = new ReplaceableTagEvent(((BukkitTagContext)context).player,
+                ((BukkitTagContext)context).npc, str, ((BukkitTagContext)context).entry, ((BukkitTagContext)context).script);
         if (event.isInstant() != context.instant) {
             // Not the right type of tag, escape the brackets so it doesn't get parsed again
             return String.valueOf((char)0x01) + str + String.valueOf((char)0x02);
@@ -187,23 +172,26 @@ public class TagManager implements Listener {
             if ((!event.replaced() && event.getAlternative() != null) && event.hasAlternative())
                 event.setReplaced(event.getAlternative());
             if (context.debug)
-                dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
+                dB.echoDebug(((BukkitTagContext)context).entry, "Filled tag <" + event.toString() + "> with '" +
                         event.getReplaced() + "'.");
             if (!event.replaced())
-                dB.echoError(context.entry != null ? context.entry.getResidingQueue(): null, "Tag <" + event.toString() + "> is invalid!");
+                dB.echoError(((BukkitTagContext)context).entry != null ? ((BukkitTagContext)context).entry.getResidingQueue(): null, "Tag <" + event.toString() + "> is invalid!");
             return escapeOutput(event.getReplaced());
         }
     }
 
 
+    @Deprecated
     public static String tag(dPlayer player, dNPC npc, String arg) {
         return tag(player, npc, arg, false, null);
     }
 
+    @Deprecated
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant) {
         return tag(player, npc, arg, instant, null);
     }
 
+    @Deprecated
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
         try {
             return tag(player, npc, arg, instant, scriptEntry, dB.shouldDebug(scriptEntry));
@@ -215,12 +203,14 @@ public class TagManager implements Listener {
     }
 
 
+    @Deprecated
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug) {
-        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug, scriptEntry != null ? scriptEntry.getScript(): null));
+        return tag(arg, new BukkitTagContext(player, npc, instant, scriptEntry, debug, scriptEntry != null ? scriptEntry.getScript(): null));
     }
 
+    @Deprecated
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug, dScript script) {
-        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug, script));
+        return tag(arg, new BukkitTagContext(player, npc, instant, scriptEntry, debug, script));
     }
 
     public static String tag(String arg, TagContext context) {
@@ -303,11 +293,11 @@ public class TagManager implements Listener {
         return filledArgs;
     }
 
-    public static List<String> fillArguments(String[] args, dPlayer player, dNPC npc) {
+    public static List<String> fillArguments(String[] args, TagContext context) {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {
             for (String argument : args) {
-                filledArgs.add(tag(player, npc, argument, false));
+                filledArgs.add(tag(argument, context));
             }
         }
         return filledArgs;

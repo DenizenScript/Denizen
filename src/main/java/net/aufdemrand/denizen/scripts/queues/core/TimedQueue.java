@@ -28,13 +28,13 @@ public class TimedQueue extends ScriptQueue implements Delayable {
      * @param id  unique id of the queue
      * @return  a TimedQueue
      */
-    public static TimedQueue getQueue(String id) {
+    public static TimedQueue getQueue(String id) { // TODO: Prefix
         // Get id if not specified.
-        if (id == null) id = String.valueOf(_getNextId());
+        if (id == null) id = _getNextId();
         TimedQueue scriptQueue;
         // Does the queue already exist? Get it if it does.
         if (_queueExists(id))
-            scriptQueue = (TimedQueue) ScriptQueue._queues.get(id.toUpperCase());
+            scriptQueue = (TimedQueue) ScriptQueue._queues.get(id);
             // If not, create a new one.
         else {
             scriptQueue = new TimedQueue(id,

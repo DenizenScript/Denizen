@@ -807,8 +807,7 @@ public class UtilTags implements Listener {
             // @attribute <util.random.duuid>
             // @returns Element
             // @description
-            // Returns a random 'denizen' unique ID, which resolves to a 10-character long
-            // randomly generated string using the letters 'D E N I Z E N'.
+            // Returns a random 'denizen' unique ID, which is made of a randomly generated sentence.
             // -->
             else if (subType.equalsIgnoreCase("DUUID"))
                 event.setReplaced(new Element(ScriptQueue._getNextId())

@@ -982,13 +982,13 @@ public class dList extends ArrayList<String> implements dObject {
                 Collections.sort(list, new Comparator<String>() {
                     @Override
                     public int compare(String o1, String o2) {
-                        List<ScriptEntry> entries = script.getBaseEntries(((BukkitScriptEntryData)entry.entryData).getPlayer(), ((BukkitScriptEntryData)entry.entryData).getNPC());
+                        List<ScriptEntry> entries = script.getBaseEntries(entry.entryData.clone());
                         if (entries.isEmpty()) {
                             return 0;
                         }
                         long id = DetermineCommand.getNewId();
                         ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
-                        InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
+                        InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId("DLIST_SORT"));
                         queue.addEntries(entries);
                         queue.setReqId(id);
                         int x = 1;
@@ -1215,14 +1215,20 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("identify")) {
+        if (attribute.startsWith("identify")) { // TODO: ???
             return new Element(identify())
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <li@list.type>
+        // @returns Element
+        // @description
+        // Always returns 'List' for dList objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
+        // -->
         if (attribute.startsWith("type")) {
-            return new Element(getObjectType())
-                    .getAttribute(attribute.fulfill(1));
+            return new Element("List").getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

@@ -921,7 +921,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Execute
-        // @Syntax execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]
+        // @Syntax execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)
         // @Required 2
         // @Stable stable
         // @Short Executes an arbitrary server command as if the player, NPC, or server typed it in.
@@ -935,7 +935,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ExecuteCommand.class,
-                "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]", 2);
+                "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)", 2);
 
 
         // <--[command]
@@ -1706,7 +1706,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ModifyBlock
-        // @Syntax modifyblock [<location>|...] [<material>] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)
+        // @Syntax modifyblock [<location>|...] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)
         // @Required 2
         // @Stable stable
         // @Short Modifies blocks.
@@ -1724,7 +1724,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ModifyBlockCommand.class,
-                "MODIFYBLOCK", "modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)", 2);
+                "MODIFYBLOCK", "modifyblock [<location>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally)", 2);
 
 
         // <--[command]
@@ -2125,7 +2125,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Run
-        // @Syntax run (locally) [<script>] (path:<name>) (as:<player>/<npc>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)
+        // @Syntax run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)
         // @Required 1
         // @Stable stable
         // @Short Runs a script in a new ScriptQueue.
@@ -2139,7 +2139,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(RunCommand.class,
-                "RUN", "run (locally) [<script>] (path:<name>) (as:<player>/<npc>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)", 1);
+                "RUN", "run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)", 1);
 
 
         // <--[command]

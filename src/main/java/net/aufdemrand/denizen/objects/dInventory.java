@@ -1399,12 +1399,12 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.type>
+        // @attribute <in@inventory.holder_type>
         // @returns Element
         // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
         // -->
-        if (attribute.startsWith("type"))
+        if (attribute.startsWith("holder_type"))
             return new Element(getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
 
@@ -1454,6 +1454,17 @@ public class dInventory implements dObject, Notable, Adjustable {
                 else
                     return null;
             }
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.type>
+        // @returns Element
+        // @description
+        // Always returns 'Inventory' for dInventory objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Inventory").getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes

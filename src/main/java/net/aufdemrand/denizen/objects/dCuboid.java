@@ -1008,6 +1008,16 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute.startsWith("full"))
             return new Element(identifyFull()).getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <cu@cuboid.type>
+        // @returns Element
+        // @description
+        // Always returns 'Cuboid' for dCuboid objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Cuboid").getAttribute(attribute.fulfill(1));
+        }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

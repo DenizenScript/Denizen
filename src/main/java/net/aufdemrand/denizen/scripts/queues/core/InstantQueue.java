@@ -26,13 +26,13 @@ public class InstantQueue extends ScriptQueue {
      * @param id  unique id of the queue
      * @return  a ScriptQueue
      */
-    public static InstantQueue getQueue(String id) {
+    public static InstantQueue getQueue(String id) { // TODO: Prefix
         // Get id if not specified.
-        if (id == null) id = String.valueOf(_getNextId());
+        if (id == null) id = _getNextId();
         InstantQueue scriptQueue;
         // Does the queue already exist?
         if (_queueExists(id))
-            scriptQueue = (InstantQueue) _queues.get(id.toUpperCase());
+            scriptQueue = (InstantQueue) _queues.get(id);
             // If not, create a new one.
         else {
             scriptQueue = new InstantQueue(id);

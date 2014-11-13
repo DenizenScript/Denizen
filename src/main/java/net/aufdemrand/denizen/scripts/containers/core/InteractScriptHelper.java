@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -94,7 +95,7 @@ public class InteractScriptHelper {
                             dB.echoApproval("'" + entry + "' meets requirements.");
 
                         // Meets requirements, but we need to check cool down, too.
-                        if (interactScript.checkCooldown(player))
+                        if (CooldownCommand.checkCooldown(player, interactScript.getName()))
                             interactableScripts.add(new PriorityPair(priority, entry.split(" ", 2)[1]));
                         else {
                             if (dB.shouldDebug(interactScript))

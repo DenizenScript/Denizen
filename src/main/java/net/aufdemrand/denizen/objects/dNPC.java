@@ -902,6 +902,17 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                     ? new dEntity(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2))
                     : null);
 
+        // <--[tag]
+        // @attribute <n@npc.type>
+        // @returns Element
+        // @description
+        // Always returns 'NPC' for dNPC objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("NPC").getAttribute(attribute.fulfill(1));
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

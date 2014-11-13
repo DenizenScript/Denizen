@@ -31,7 +31,6 @@ public class ListTags implements Listener {
 
         // Check if list is null, return null if it is
         if (list == null) {
-            event.setReplaced("null");
             return;
         }
 

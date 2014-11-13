@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.*;
 import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
@@ -631,7 +632,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             }
 
             entries.add(entry);
-            InstantQueue queue = InstantQueue.getQueue(null);
+            InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId("EXCOMMAND"));
             dNPC npc = null;
             if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null)
                 npc = new dNPC(Depends.citizens.getNPCSelector().getSelected(sender));

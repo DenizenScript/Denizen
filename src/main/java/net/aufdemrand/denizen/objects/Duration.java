@@ -517,6 +517,16 @@ public class Duration implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <d@duration.type>
+        // @returns Element
+        // @description
+        // Always returns 'Duration' for Duration objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Duration").getAttribute(attribute.fulfill(1));
+        }
 
         /////////////////////
         //   FORMAT ATTRIBUTES

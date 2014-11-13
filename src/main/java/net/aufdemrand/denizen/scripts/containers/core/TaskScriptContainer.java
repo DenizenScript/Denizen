@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -45,7 +46,7 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public ScriptQueue runTaskScript(dPlayer player, dNPC npc, Map<String, String> context) {
-        return runTaskScript(ScriptQueue._getNextId(), player, npc, context);
+        return runTaskScript(ScriptQueue.getNextId(getName()), player, npc, context);
     }
 
     public ScriptQueue runTaskScript(String queueId, dPlayer player, dNPC npc, Map<String, String> context) {
@@ -54,7 +55,7 @@ public class TaskScriptContainer extends ScriptContainer {
             queue = InstantQueue.getQueue(queueId);
         else queue = TimedQueue.getQueue(queueId).setSpeed(getSpeed().getTicks());
 
-        List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
+        List<ScriptEntry> listOfEntries = getBaseEntries(new BukkitScriptEntryData(player, npc));
         if (context != null)
             ScriptBuilder.addObjectToEntries(listOfEntries, "context", context);
         queue.addEntries(listOfEntries);
@@ -81,7 +82,7 @@ public class TaskScriptContainer extends ScriptContainer {
             queue = InstantQueue.getQueue(queueId);
         else queue = TimedQueue.getQueue(queueId).setSpeed(getSpeed().getTicks());
 
-        List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
+        List<ScriptEntry> listOfEntries = getBaseEntries(new BukkitScriptEntryData(player, npc));
         if (context != null)
             ScriptBuilder.addObjectToEntries(listOfEntries, "context", context);
         queue.addEntries(listOfEntries);
@@ -92,7 +93,7 @@ public class TaskScriptContainer extends ScriptContainer {
 
     public ScriptQueue injectTaskScript(String queueId, dPlayer player, dNPC npc, Map<String, String> context) {
         ScriptQueue queue = ScriptQueue._getExistingQueue(queueId);
-        List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
+        List<ScriptEntry> listOfEntries = getBaseEntries(new BukkitScriptEntryData(player, npc));
         if (context != null)
             ScriptBuilder.addObjectToEntries(listOfEntries, "context", context);
         queue.injectEntries(listOfEntries, 0);

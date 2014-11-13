@@ -557,6 +557,16 @@ public class dWorld implements dObject, Adjustable {
             return new Duration((long) getWorld().getWeatherDuration())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <w@world.type>
+        // @returns Element
+        // @description
+        // Always returns 'World' for dWorld objects. All objects fetchable by the Object Fetcher will return a the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("World").getAttribute(attribute.fulfill(1));
+        }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
