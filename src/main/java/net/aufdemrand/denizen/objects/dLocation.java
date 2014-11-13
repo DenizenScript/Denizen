@@ -1453,13 +1453,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @input Element
         // @description
         // Sets the skin of a skull block.
-        // Takes a name or UUID.
+        // Takes a username.
         // @tags
         // <l@location.skull_skin>
         // -->
         if (mechanism.matches("skull_skin") && getBlock().getState() instanceof Skull) {
-            ((Skull)getBlock().getState()).setOwner(value.asString());
-            getBlock().getState().update(true);
+            Skull state = ((Skull)getBlock().getState());
+            if (!state.setOwner(value.asString()))
+                dB.echoError("Failed to set skull_skin!");
+            state.update(true);
         }
 
         if (!mechanism.fulfilled())
