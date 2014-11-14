@@ -75,7 +75,6 @@ public class UtilTags implements Listener {
     // the outcome of the condition. First element will show in a result of 'true',
     // otherwise the fallback element will show.
     // Example: '<t[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
-    // or '<t[<player.health.is[less].than[<player.health.max>]:You look healthy! || Got some bruises, eh?>'.
     // -->
     @EventHandler
     public void ternaryTag(ReplaceableTagEvent event) {
