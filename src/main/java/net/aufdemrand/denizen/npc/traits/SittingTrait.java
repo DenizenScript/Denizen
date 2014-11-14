@@ -89,7 +89,7 @@ public class SittingTrait extends Trait implements Listener  {
     }
 
     /**
-     * Makes the NPC sit a the specified location
+     * Makes the NPC sit at the specified location
      *
      * @param location where to sit
      */

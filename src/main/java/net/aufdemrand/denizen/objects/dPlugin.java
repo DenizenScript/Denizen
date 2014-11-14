@@ -179,7 +179,7 @@ public class dPlugin implements dObject {
         // @attribute <pl@plugin.type>
         // @returns Element
         // @description
-        // Always returns 'Plugin' for dPlugin objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Plugin' for dPlugin objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

@@ -793,7 +793,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // @attribute <i@item.type>
         // @returns Element
         // @description
-        // Always returns 'Item' for dItem objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Item' for dItem objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

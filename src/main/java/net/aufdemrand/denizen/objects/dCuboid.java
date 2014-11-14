@@ -1012,7 +1012,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @attribute <cu@cuboid.type>
         // @returns Element
         // @description
-        // Always returns 'Cuboid' for dCuboid objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Cuboid' for dCuboid objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

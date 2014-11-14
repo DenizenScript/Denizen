@@ -906,7 +906,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.type>
         // @returns Element
         // @description
-        // Always returns 'NPC' for dNPC objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'NPC' for dNPC objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

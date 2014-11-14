@@ -1491,7 +1491,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @attribute <in@inventory.type>
         // @returns Element
         // @description
-        // Always returns 'Inventory' for dInventory objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Inventory' for dInventory objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

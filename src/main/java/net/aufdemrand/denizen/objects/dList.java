@@ -1224,7 +1224,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.type>
         // @returns Element
         // @description
-        // Always returns 'List' for dList objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'List' for dList objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

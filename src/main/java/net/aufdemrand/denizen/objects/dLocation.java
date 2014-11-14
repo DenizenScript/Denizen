@@ -1354,7 +1354,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.type>
         // @returns Element
         // @description
-        // Always returns 'Location' for dLocation objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Location' for dLocation objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
