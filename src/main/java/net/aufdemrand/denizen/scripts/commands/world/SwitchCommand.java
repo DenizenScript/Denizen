@@ -144,14 +144,12 @@ public class SwitchCommand extends AbstractCommand {
 
             try {
                 if (interactLocation.getBlock().getType() == Material.IRON_DOOR_BLOCK) {
-                    interactLocation.getBlock().setData((byte) (interactLocation.getBlock().getData() ^ 4));
-                    Location block = null;
-                    if (interactLocation.clone().add(0, 1, 0).getBlock().getType() == Material.IRON_DOOR_BLOCK)
-                        block = interactLocation.clone().add(0, 1, 0);
-                    else if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == Material.IRON_DOOR_BLOCK)
+                    Location block;
+                    if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == Material.IRON_DOOR_BLOCK)
                         block = interactLocation.clone().add(0, -1, 0);
-                    if (block != null)
-                        block.getBlock().setData((byte) (block.getBlock().getData() ^ 4));
+                    else
+                        block = interactLocation;
+                    block.getBlock().setData((byte) (block.getBlock().getData() ^ 4));
                 }
                 else {
 

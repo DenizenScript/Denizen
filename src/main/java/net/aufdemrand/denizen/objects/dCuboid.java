@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.notable.Note;
@@ -289,6 +290,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         //  | +---|-+
         //  |/    |/
         //  1-----+
+        int max = Settings.blockTagsMaxBlocks();
+        int index = 0;
 
         dList list = new dList();
 
@@ -320,6 +323,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         loc_2.getBlockX(),
                         y,
                         loc_1.getBlockZ()).identify());
+                index++;
+                if (index > max)
+                    return list;
             }
 
             for (int x = loc_1.getBlockX(); x <= loc_1.getBlockX() + x_distance; x++) {
@@ -342,6 +348,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         x,
                         loc_2.getBlockY(),
                         loc_1.getBlockZ()).identify());
+                index++;
+                if (index > max)
+                    return list;
             }
 
             for (int z = loc_1.getBlockZ(); z <= loc_1.getBlockZ() + z_distance; z++) {
@@ -364,6 +373,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         loc_2.getBlockX(),
                         loc_1.getBlockY(),
                         z).identify());
+                index++;
+                if (index > max)
+                    return list;
             }
         }
 
@@ -388,8 +400,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     public dList getBlocks(List<dMaterial> materials) {
+        int max = Settings.blockTagsMaxBlocks();
         dLocation loc;
         dList list = new dList();
+        int index = 0;
 
         for (LocationPair pair : pairs) {
 
@@ -418,6 +432,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                                 list.add(loc.identify());
                             }
                         }
+                        index++;
+                        if (index > max)
+                            return list;
                     }
                 }
             }
@@ -428,8 +445,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     public List<dLocation> getBlockLocations() {
+        int max = Settings.blockTagsMaxBlocks();
         dLocation loc;
         List<dLocation> list = new ArrayList<dLocation>();
+        int index = 0;
 
         for (LocationPair pair : pairs) {
 
@@ -449,8 +468,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                                 if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
                                         .getMaterial().name()))
                                     list.add(loc);
-                        } else
+                        }
+                        else
                             list.add(loc);
+                        index++;
+                        if (index > max)
+                            return list;
                     }
                 }
             }
@@ -474,8 +497,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
      */
 
     public dList getSpawnableBlocks(List<dMaterial> mats) {
+        int max = Settings.blockTagsMaxBlocks();
         dLocation loc;
         dList list = new dList();
+        int index = 0;
 
         for (LocationPair pair : pairs) {
 
@@ -500,6 +525,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                             loc.add(0.5, 0, 0.5);
                             list.add(loc.identify());
                         }
+                        index++;
+                        if (index > max)
+                            return list;
                     }
                 }
             }

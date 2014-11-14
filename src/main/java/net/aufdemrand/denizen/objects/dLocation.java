@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.notable.Note;
@@ -717,27 +718,34 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
                 // Avoid NPE from invalid materials
                 if (materials == null) return null;
+                int max = Settings.blockTagsMaxBlocks();
+                int index = 0;
 
                 // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
                 Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
 
+                fullloop:
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
-                        for (double z = -(radius); z <= radius; z++)
+                        for (double z = -(radius); z <= radius; z++) {
+                            index++;
+                            if (index > max)
+                                break fullloop;
+                            if (index > max)
                             if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius))
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {
                                         if (material.hasData() && material.getData() != 0) {
                                             if (material.matchesMaterialData(getBlock()
-                                                    .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
-                                                            .getLocation().add(x,y,z).getBlock().getData())))
+                                                    .getLocation().add(x, y, z).getBlock().getType().getNewData(getBlock()
+                                                            .getLocation().add(x, y, z).getBlock().getData())))
                                                 found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
-                                        }
-                                        else if (material.getMaterial() == getBlock().getLocation().add(x,y,z).getBlock().getType())
+                                        } else if (material.getMaterial() == getBlock().getLocation().add(x, y, z).getBlock().getType())
                                             found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
-                                }
-                            } else found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                    }
+                                } else found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                        }
 
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
@@ -765,13 +773,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
                 // Avoid NPE from invalid materials
                 if (materials == null) return null;
+                int max = Settings.blockTagsMaxBlocks();
+                int index = 0;
 
                 attribute.fulfill(2);
                 Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
 
+                fullloop:
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++) {
+                            index++;
+                            if (index > max)
+                                break fullloop;
                             if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius)) {
                                 Location l = getBlock().getLocation().clone().add(x,y,z);
                                 if (!materials.isEmpty()) {
