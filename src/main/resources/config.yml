@@ -101,7 +101,7 @@ Tags:
   # Settings for tags like cuboid.get_blocks, location.find.blocks, ...
   Block tags:
     # How many blocks can be read, max, before stopping the tag in place
-    max blocks: 1000000
+    Max blocks: 1000000
 
 
 # The version of this configuration file, used to check if your

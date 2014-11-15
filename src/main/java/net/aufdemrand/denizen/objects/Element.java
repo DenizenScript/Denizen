@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -1844,6 +1845,19 @@ public class Element implements dObject {
                 return null;
             }
             return new Element((int)Math.round(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+
+        // <--[tag]
+        // @attribute <el@element.to_itemscript_hash>
+        // @returns Element(Number)
+        // @group conversion
+        // @description
+        // Shortens the element down to an itemscript hash ID, made of invisible color codes.
+        // -->
+        if (attribute.startsWith("to_itemscript_hash")) {
+            return new Element(ItemScriptHelper.createItemScriptID(element))
                     .getAttribute(attribute.fulfill(1));
         }
 
