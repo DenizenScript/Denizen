@@ -343,6 +343,9 @@ public class Comparable {
                 else if (comparedto.equalsIgnoreCase("material"))
                     outcome = dMaterial.matches(comparable);
 
+                else if (comparedto.equalsIgnoreCase("materiallist"))
+                    outcome = dList.valueOf(comparable).containsObjectsFrom(dMaterial.class);
+
                 else if (comparedto.equalsIgnoreCase("script"))
                     outcome = dScript.matches(comparable);
 
