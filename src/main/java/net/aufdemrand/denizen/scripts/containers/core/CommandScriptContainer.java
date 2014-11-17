@@ -28,6 +28,7 @@ public class CommandScriptContainer extends ScriptContainer {
     // If you want to run a script at the same time as an existing command, see <@link example on command event tutorial>.
     //
     // The following is the format for the container.
+    // Note that everything is optional except for "name" and "script".
     //
     //
     // <code>
@@ -53,6 +54,15 @@ public class CommandScriptContainer extends ScriptContainer {
     //   aliases:
     //   - myalias
     //   - mycommand
+    //
+    //   # The permission node to check for permissions plugins. This will automatically
+    //   # block players without the permission from accessing the command and help for
+    //   # the command.
+    //   permission: my.permission.node
+    //
+    //   # The message to send to the player when they try to use the command without
+    //   # permission. If this is not specified, the default Bukkit message will be sent.
+    //   permission message: Sorry, <player.name>, you can't use my command because you don't have the permission '<permission>'!
     //
     //   # The procedure-based script that will be checked when a player or the console
     //   # is trying to view help for this command. This must always be determined true
@@ -115,6 +125,14 @@ public class CommandScriptContainer extends ScriptContainer {
     public List<String> getAliases() {
         List<String> aliases = getStringList("ALIASES");
         return aliases != null? aliases : new ArrayList<String>();
+    }
+
+    public String getPermission() {
+        return getString("PERMISSION");
+    }
+
+    public String getPermissionMessage() {
+        return getString("PERMISSION MESSAGE");
     }
 
     public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, dObject> context) {
