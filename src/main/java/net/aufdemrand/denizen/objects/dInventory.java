@@ -1267,34 +1267,64 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains[<item>]>
+        // @attribute <in@inventory.contains_any[<item>|...]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the inventory contains an item.
+        // Returns whether the inventory contains any of the specified items.
         // -->
-        if (attribute.startsWith("contains")) {
-            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
+        if (attribute.startsWith("contains_any")) {
+            if (attribute.hasContext(1) && dList.matches(attribute.getContext(1))) {
                 int qty = 1;
                 int attribs = 1;
 
                 // <--[tag]
-                // @attribute <in@inventory.contains[<item>].qty[<#>]>
+                // @attribute <in@inventory.contains_any[<item>|...].qty[<#>]>
                 // @returns Element(Boolean)
                 // @description
-                // Returns whether the inventory contains a certain quantity of an item.
+                // Returns whether the inventory contains a certain quantity of any of the specified items.
                 // -->
-                if (attribute.getAttribute(2).startsWith("qty") &&
-                        attribute.hasContext(2) &&
-                        aH.matchesInteger(attribute.getContext(2))) {
-
+                if (attribute.getAttribute(2).startsWith("qty")
+                        && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
                     qty = attribute.getIntContext(2);
                     attribs = 2;
                 }
 
-                return new Element(getInventory().containsAtLeast
-                        (dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(),
-                                attribute.getScriptEntry().getNPC()).getItemStack(), qty))
-                        .getAttribute(attribute.fulfill(attribs));
+                for (dItem item : dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry())) {
+                    if (getInventory().containsAtLeast(item.getItemStack(), qty))
+                        return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+                }
+                return Element.FALSE.getAttribute(attribute.fulfill(attribs));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.contains[<item>|...]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory contains all of the specified items.
+        // -->
+        if (attribute.startsWith("contains")) {
+            if (attribute.hasContext(1) && dList.matches(attribute.getContext(1))) {
+                int qty = 1;
+                int attribs = 1;
+
+                // <--[tag]
+                // @attribute <in@inventory.contains[<item>|...].qty[<#>]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the inventory contains a certain quantity of all of the specified items.
+                // -->
+                if (attribute.getAttribute(2).startsWith("qty")
+                        && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
+                    qty = attribute.getIntContext(2);
+                    attribs = 2;
+                }
+
+                for (dItem item : dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry())) {
+                    if (!getInventory().containsAtLeast(item.getItemStack(), qty))
+                        return Element.FALSE.getAttribute(attribute.fulfill(attribs));
+                }
+                return Element.TRUE.getAttribute(attribute.fulfill(attribs));
             }
         }
 
