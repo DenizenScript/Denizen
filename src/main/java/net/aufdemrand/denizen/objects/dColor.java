@@ -286,7 +286,7 @@ public class dColor implements dObject {
         // @attribute <co@color.type>
         // @returns Element
         // @description
-        // Always returns 'Color' for dColor objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Color' for dColor objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

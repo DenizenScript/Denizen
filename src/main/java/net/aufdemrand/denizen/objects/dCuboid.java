@@ -18,6 +18,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -902,7 +903,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @description
         // Gets a list of all NPCs currently within the dCuboid.
         // -->
-        if (attribute.startsWith("list_npcs")) {
+        if (attribute.startsWith("list_npcs") && Depends.citizens != null) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 dNPC dnpc = dNPC.mirrorCitizensNPC(npc);
@@ -953,7 +954,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
             for (Entity ent : getWorld().getLivingEntities()) {
                 if (ent.isValid() && isInsideCuboid(ent.getLocation())
-                        && !CitizensAPI.getNPCRegistry().isNPC(ent))
+                        && (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(ent)))
                     entities.add(new dEntity(ent));
             }
             return new dList(entities).getAttribute(attribute.fulfill(1));
@@ -1039,7 +1040,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @attribute <cu@cuboid.type>
         // @returns Element
         // @description
-        // Always returns 'Cuboid' for dCuboid objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Cuboid' for dCuboid objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

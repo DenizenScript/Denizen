@@ -1245,7 +1245,7 @@ public class WorldScriptHelper implements Listener {
 
         dPlayer player = null;
         dNPC npc = null;
-        if (CitizensAPI.getNPCRegistry().isNPC(entity.getBukkitEntity())) {
+        if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(entity.getBukkitEntity())) {
             npc = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(entity.getBukkitEntity()));
         }
         else if (entity.getBukkitEntity() instanceof Player) {

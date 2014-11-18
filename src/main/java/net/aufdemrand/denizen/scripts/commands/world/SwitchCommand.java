@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -126,7 +127,7 @@ public class SwitchCommand extends AbstractCommand {
             if (Bukkit.getOnlinePlayers().size() > 0) {
                 craftPlayer = (CraftPlayer) Bukkit.getOnlinePlayers().toArray()[0];
             }
-            else {
+            else if (Depends.citizens != null) {
                 // If there are no players, link any Human NPC
                 for (NPC npc: CitizensAPI.getNPCRegistry()) {
                     if (npc.isSpawned() && npc.getEntity() instanceof Player) {

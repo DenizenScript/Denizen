@@ -56,9 +56,11 @@ public class TagManager implements Listener {
         new ParseTags(denizen);
 
         // For compatibility
-        new AnchorTags(denizen);
+        if (Depends.citizens != null) {
+            new AnchorTags(denizen);
+            new ConstantTags(denizen);
+        }
         new FlagTags(denizen);
-        new ConstantTags(denizen);
         new NotableLocationTags(denizen);
 
         denizen.getServer().getPluginManager().registerEvents(this, denizen);

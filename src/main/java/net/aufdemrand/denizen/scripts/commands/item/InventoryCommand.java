@@ -89,9 +89,10 @@ public class InventoryCommand extends AbstractCommand {
                 // Make the attached player open the destination inventory
                 case OPEN:
                     // Use special method to make opening workbenches work properly
-                    if (destination.getIdHolder().equalsIgnoreCase("workbench")) {
+                    if (destination.getIdType().equals("workbench")
+                            || destination.getIdHolder().equalsIgnoreCase("workbench")) {
                         ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity()
-                            .openWorkbench(destination.getLocation(), true);
+                            .openWorkbench(null, true);
                     }
                     // Otherwise, open inventory as usual
                     else ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().openInventory(destination.getInventory());

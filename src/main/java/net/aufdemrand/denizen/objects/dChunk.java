@@ -311,7 +311,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.type>
         // @returns Element
         // @description
-        // Always returns 'Chunk' for dChunk objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Chunk' for dChunk objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

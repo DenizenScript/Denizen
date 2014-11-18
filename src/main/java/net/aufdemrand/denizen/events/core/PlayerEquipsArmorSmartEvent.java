@@ -2,21 +2,20 @@ package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.events.SmartEvent;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dMaterial;
-import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -118,7 +117,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
                                 if (now != null && now.getType() == item.getType()
                                         && now.getDurability() == item.getDurability()
                                         && (before == null || before.getType() == Material.AIR)) {
-                                    if (playerEquipsArmorEvent(player, item)) {
+                                    if (playerEquipsArmorEvent(player, item, "DISPENSER")) {
                                         location.getWorld().dropItemNaturally(location, item).setVelocity(velocity);
                                         armor_contents[i] = null;
                                         player.getInventory().setArmorContents(armor_contents);
@@ -143,13 +142,13 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
         if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
             if (item != null && item.getType() != Material.AIR
                     && (cursor == null || cursor.getType() == Material.AIR || isArmor(cursor))) {
-                if (playerUnequipsArmorEvent(player, item)) {
+                if (playerUnequipsArmorEvent(player, item, "INVENTORY")) {
                     event.setCancelled(true);
                     return;
                 }
             }
             if (cursor != null && cursor.getType() != Material.AIR && isArmor(cursor)) {
-                if (playerEquipsArmorEvent(player, cursor)) {
+                if (playerEquipsArmorEvent(player, cursor, "INVENTORY")) {
                     event.setCancelled(true);
                     return;
                 }
@@ -158,7 +157,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
         else if (event.getClick().isShiftClick() && item != null && isArmor(item)) {
             ItemStack currentItem = player.getInventory().getArmorContents()[getArmorTypeNumber(item)];
             if (currentItem == null || currentItem.getType() == Material.AIR) {
-                if (playerEquipsArmorEvent(player, item)) {
+                if (playerEquipsArmorEvent(player, item, "INVENTORY")) {
                     event.setCancelled(true);
                     return;
                 }
@@ -180,7 +179,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
             if (slots.contains(slot) && (slot-5 == getArmorTypeNumber(item))) {
                 ItemStack before = inventory.getItem(slot);
                 if (before == null || before.getType() == Material.AIR) {
-                    if (playerEquipsArmorEvent(player, item)) {
+                    if (playerEquipsArmorEvent(player, item, "INVENTORY")) {
                         event.setCancelled(true);
                         return;
                     }
@@ -201,12 +200,39 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
             ItemStack currentItem = event.getPlayer().getInventory().getArmorContents()[getArmorTypeNumber(item)];
             if (currentItem == null || currentItem.getType() == Material.AIR) {
                 Player player = event.getPlayer();
-                if (playerEquipsArmorEvent(player, item)) {
+                if (playerEquipsArmorEvent(player, item, "INTERACT")) {
                     event.setCancelled(true);
                     return;
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void entityDamage(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+        if (!(entity instanceof Player))
+            return;
+        final Player player = (Player) entity;
+        final ItemStack[] oldArmor = player.getInventory().getArmorContents();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ItemStack[] newArmor = player.getInventory().getArmorContents();
+                for (int i = 0; i < 4; i++) {
+                    ItemStack o = oldArmor[i];
+                    ItemStack n = newArmor[i];
+                    if (o != null) {
+                        if (n == null || !n.equals(o)) {
+                            if (playerUnequipsArmorEvent(player, o, "BREAK")) {
+                                newArmor[i] = o;
+                            }
+                        }
+                    }
+                    player.getInventory().setArmorContents(newArmor);
+                }
+            }
+        }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
     }
 
     private boolean isArmor(ItemStack itemStack) {
@@ -291,25 +317,27 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
 
     // <--[event]
     // @Events
-    // player equips armor
-    // player equips <item>
-    // player equips [helmet/chestplate/leggings/boots]
+    // player (un)equips armor
+    // player (un)equips <item>
+    // player (un)equips [helmet/chestplate/leggings/boots]
     //
-    // @Regex on player equips (m@|i@)?\w+
+    // @Regex on player (un)equips (m@|i@)?\w+
     //
-    // @Triggers when a player equips armor.
+    // @Triggers when a player (un)equips armor.
     // @Context
-    // <context.armor> returns the dItem that was equipped.
+    // <context.armor> returns the dItem that was (un)equipped.
+    // <context.reason> returns the reason that the armor was (un)equipped. Can be "INVENTORY", "INTERACT", "DISPENSER", or "BREAK".
     //
     // @Determine
-    // "CANCELLED" to stop the armor from being equipped.
+    // "CANCELLED" to stop the armor from being (un)equipped.
     // -->
-    private boolean playerEquipsArmorEvent(final Player player, final ItemStack item) {
+    private boolean playerEquipsArmorEvent(final Player player, final ItemStack item, String reason) {
 
         dItem armor = new dItem(item);
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("armor", armor);
+        context.put("reason", new Element(reason));
 
         String determination = EventManager.doEvents(Arrays.asList
                         ("player equips armor",
@@ -332,27 +360,13 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
 
     }
 
-    // <--[event]
-    // @Events
-    // player unequips armor
-    // player unequips <item>
-    // player unequips [helmet/chestplate/leggings/boots]
-    //
-    // @Regex on player unequips (m@|i@)?\w+
-    //
-    // @Triggers when a player unequips armor.
-    // @Context
-    // <context.armor> returns the dItem that was unequipped.
-    //
-    // @Determine
-    // "CANCELLED" to stop the armor from being unequipped.
-    // -->
-    private boolean playerUnequipsArmorEvent(final Player player, final ItemStack item) {
+    private boolean playerUnequipsArmorEvent(final Player player, final ItemStack item, String reason) {
 
         dItem armor = new dItem(item);
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("armor", armor);
+        context.put("reason", new Element(reason));
 
         String determination = EventManager.doEvents(Arrays.asList
                         ("player unequips armor",
