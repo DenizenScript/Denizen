@@ -178,7 +178,7 @@ public class TakeCommand extends AbstractCommand{
                             inventory.removeBook(is);
                     }
                     else if (!inventory.removeItem(item, item.getAmount()))
-                        dB.echoError(scriptEntry.getResidingQueue(), "Inventory does not contain at least "
+                        dB.echoDebug(scriptEntry, "Inventory does not contain at least "
                                 + qty.asInt() + " of " + item.getFullString() +
                                 "... Taking as much as possible...");
                 }

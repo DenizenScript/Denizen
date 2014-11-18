@@ -69,7 +69,7 @@ public class ChunkUnloadSmartEvent implements SmartEvent, Listener {
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //
-    // @Triggers when a new chunk is loaded
+    // @Triggers when a chunk is unloaded
     // @Context
     // <context.chunk> returns the loading chunk.
     //
