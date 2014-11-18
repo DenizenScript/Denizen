@@ -1235,17 +1235,25 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.is_within[<cuboid>]>
+        // @attribute <l@location.is_within[<cuboid>/<ellipsoid>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the location is within the cuboid.
         // -->
         if (attribute.startsWith("is_within")
                 && attribute.hasContext(1)) {
-            dCuboid cuboid = dCuboid.valueOf(attribute.getContext(1));
-            if (cuboid != null)
-                return new Element(cuboid.isInsideCuboid(this))
-                        .getAttribute(attribute.fulfill(1));
+            if (dEllipsoid.matches(attribute.getContext(1))) {
+                dEllipsoid ellipsoid = dEllipsoid.valueOf(attribute.getContext(1));
+                if (ellipsoid != null)
+                    return new Element(ellipsoid.contains(this))
+                            .getAttribute(attribute.fulfill(1));
+            }
+            else {
+                dCuboid cuboid = dCuboid.valueOf(attribute.getContext(1));
+                if (cuboid != null)
+                    return new Element(cuboid.isInsideCuboid(this))
+                            .getAttribute(attribute.fulfill(1));
+            }
         }
 
 
