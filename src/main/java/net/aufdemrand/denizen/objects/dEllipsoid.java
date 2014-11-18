@@ -159,6 +159,26 @@ public class dEllipsoid implements dObject {
                         .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <ellipsoid@ellipsoid.location>
+        // @returns dLocation
+        // @description
+        // Returns the location of the ellipsoid.
+        // -->
+        if (attribute.startsWith("location")) {
+            return loc.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <ellipsoid@ellipsoid.size>
+        // @returns dLocation
+        // @description
+        // Returns the size of the ellipsoid.
+        // -->
+        if (attribute.startsWith("size")) {
+            return size.getAttribute(attribute.fulfill(1));
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
