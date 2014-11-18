@@ -97,6 +97,13 @@ Commands:
     # Otherwise, a bad script or plugin could potentially damage things
     # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...
 
+Tags:
+  # Settings for tags like cuboid.get_blocks, location.find.blocks, ...
+  Block tags:
+    # How many blocks can be read, max, before stopping the tag in place
+    Max blocks: 1000000
+
+
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:

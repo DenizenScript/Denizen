@@ -439,7 +439,7 @@ public class Duration implements dObject {
             // Returns the current year of the time specified by the duration object.
             // -->
             if (attribute.startsWith("year"))
-                return new Element(currentDate.getYear()).getAttribute(attribute.fulfill(1));
+                return new Element(currentDate.getYear() + 1900 /* ??? */).getAttribute(attribute.fulfill(1));
 
                 // <--[tag]
                 // @attribute <d@duration.time.month>

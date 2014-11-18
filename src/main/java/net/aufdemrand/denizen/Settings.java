@@ -345,6 +345,10 @@ public class Settings {
     public static Duration worldScriptTimeEventFrequency() {
         return Duration.valueOf(DenizenAPI.getCurrentInstance().getConfig()
                 .getString("Scripts.World.Events.On time changes.Frequency of check", "250t"));
+    }
 
+    public static int blockTagsMaxBlocks() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getInt("Tags.Block tags.Max blocks", 1000000);
     }
 }
