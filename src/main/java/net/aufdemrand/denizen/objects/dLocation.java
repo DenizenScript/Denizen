@@ -1238,7 +1238,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.is_within[<cuboid>/<ellipsoid>]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the location is within the cuboid.
+        // Returns whether the location is within the cuboid or ellipsoid.
         // -->
         if (attribute.startsWith("is_within")
                 && attribute.hasContext(1)) {
