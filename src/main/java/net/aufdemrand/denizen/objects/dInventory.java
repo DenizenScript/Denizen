@@ -1300,7 +1300,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns whether the inventory contains any of the specified items.
         // -->
         if (attribute.startsWith("contains_any")) {
-            if (attribute.hasContext(1) && dList.matches(attribute.getContext(1))) {
+            if (attribute.hasContext(1)) {
                 int qty = 1;
                 int attribs = 1;
 
@@ -1331,7 +1331,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns whether the inventory contains all of the specified items.
         // -->
         if (attribute.startsWith("contains")) {
-            if (attribute.hasContext(1) && dList.matches(attribute.getContext(1))) {
+            if (attribute.hasContext(1)) {
                 int qty = 1;
                 int attribs = 1;
 

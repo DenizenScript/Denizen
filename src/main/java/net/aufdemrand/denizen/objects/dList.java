@@ -76,24 +76,7 @@ public class dList extends ArrayList<String> implements dObject {
 
 
     public static boolean matches(String arg) {
-
-        boolean flag = false;
-
-        if (arg.startsWith("fl")) {
-            if (arg.indexOf('[') == 2) {
-                int cb = arg.indexOf(']');
-                if (cb > 4 && arg.indexOf('@') == (cb + 1)) {
-                    String owner = arg.substring(3, cb);
-                    flag = arg.substring(cb + 2).length() > 0 && (dPlayer.matches(owner)
-                            || (Depends.citizens != null && dNPC.matches(owner)));
-                }
-            }
-            else if (arg.indexOf('@') == 2) {
-                flag = arg.substring(3).length() > 0;
-            }
-        }
-
-        return flag || arg.contains("|") || arg.contains(internal_escape) || arg.startsWith("li@");
+        return true;
     }
 
 
