@@ -1637,6 +1637,44 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
+        // @Name Map
+        // @Syntax map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/text:<text>] (x:<#>) (y:<#>)
+        // @Required 2
+        // @Stable stable
+        // @Short Modifies a new or existing map by adding images or text.
+        // @Author Morphan1
+        // @Group item
+
+        // @Description
+        // This command modifies an existing map, or creates a new one. Using this will override existing
+        // non-Denizen map renderers with Denizen's custom map renderer.
+        // You can reset this at any time by using the 'reset:<location>' argument, which will remove all
+        // images and texts on the map and show the default world map at the specified location.
+        // Note that all maps have a size of 128x128.
+        // The file path is relative to the '../plugins/Denizen/' folder.
+        // Use escaping to let the image and text arguments have tags based on the player viewing the map.
+        // Custom maps do not persist over restarts.
+
+        // @Usage
+        // Use to add an auto-resized background image to map 3
+        // - map 3 image:my_map_images/my_background.png resize
+
+        // @Usage
+        // Use to add an image with the top-left corner at the center of a new map
+        // - map new:w@world image:my_map_images/my_center_image.png x:64 y:64
+
+        // @Usage
+        // Use to add some text to map 0
+        // - map 0 "text:Hello World!" x:35 y:60
+
+        // @Usage
+        // Reset map to have the center at the player's location
+        // - map 3 reset:<player.location>
+        // -->
+        registerCoreMember(MapCommand.class,
+                "MAP", "map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/text:<text>] (x:<#>) (y:<#>)", 2);
+
+        // <--[command]
         // @Name Midi
         // @Syntax midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>)
         // @Required 1

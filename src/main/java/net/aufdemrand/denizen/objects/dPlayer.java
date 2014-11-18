@@ -27,6 +27,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.map.MapView;
 import org.bukkit.util.BlockIterator;
 
 import java.util.*;
@@ -1755,6 +1756,23 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("saturation") && mechanism.requireFloat()) {
             getPlayerEntity().setSaturation(value.asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name send_map
+        // @input Element(Number)
+        // @description
+        // Forces a player to receive the entirety of the specified map ID instantly.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("send_map") && mechanism.requireInteger()) {
+            MapView map = Bukkit.getServer().getMap((short) value.asInt());
+            if (map != null)
+                getPlayerEntity().sendMap(map);
+            else
+                dB.echoError("No map found for ID " + value.asInt() + "!");
         }
 
         // <--[mechanism]
