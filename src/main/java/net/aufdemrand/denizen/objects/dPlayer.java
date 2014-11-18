@@ -11,7 +11,10 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
-import net.aufdemrand.denizen.utilities.packets.*;
+import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
+import net.aufdemrand.denizen.utilities.packets.EntityEquipment;
+import net.aufdemrand.denizen.utilities.packets.ItemChangeMessage;
+import net.aufdemrand.denizen.utilities.packets.PlayerBars;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -24,9 +27,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.map.MapView;
 import org.bukkit.util.BlockIterator;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class dPlayer implements dObject, Adjustable {
 
@@ -590,7 +595,7 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <p@player.list_flags[<search>]>
+        // @attribute <p@player.list_flags[(regex:)<search>]>
         // @returns dList
         // @description
         // Returns a list of a player's flag names, with an optional search for
@@ -602,9 +607,22 @@ public class dPlayer implements dObject, Adjustable {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                for (String flag : allFlags)
-                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
-                        searchFlags.add(flag);
+                String search = attribute.getContext(1).toLowerCase();
+                if (search.startsWith("regex:")) {
+                    try {
+                        Pattern pattern = Pattern.compile(search.substring(6));
+                        for (String flag : allFlags)
+                            if (pattern.matcher(flag).matches())
+                                searchFlags.add(flag);
+                    } catch (Exception e) {
+                        dB.echoError(e);
+                    }
+                }
+                else {
+                    for (String flag : allFlags)
+                        if (flag.toLowerCase().contains(search))
+                            searchFlags.add(flag);
+                }
             }
             return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1));
@@ -718,13 +736,14 @@ public class dPlayer implements dObject, Adjustable {
                         for (String ent: context.split("\\|")) {
                             boolean valid = false;
 
-                            if (ent.equalsIgnoreCase("npc") && CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                            if (ent.equalsIgnoreCase("npc") && Depends.citizens != null
+                                    && CitizensAPI.getNPCRegistry().isNPC(entity)) {
                                 valid = true;
                             }
                             else if (dEntity.matches(ent)) {
                                 // only accept generic entities that are not NPCs
                                 if (dEntity.valueOf(ent).isGeneric()) {
-                                    if (!CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                                    if (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(entity)) {
                                         valid = true;
                                     }
                                 }
@@ -1610,7 +1629,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.type>
         // @returns Element
         // @description
-        // Always returns 'Player' for dPlayer objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Player' for dPlayer objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
@@ -1737,6 +1756,23 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("saturation") && mechanism.requireFloat()) {
             getPlayerEntity().setSaturation(value.asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name send_map
+        // @input Element(Number)
+        // @description
+        // Forces a player to receive the entirety of the specified map ID instantly.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("send_map") && mechanism.requireInteger()) {
+            MapView map = Bukkit.getServer().getMap((short) value.asInt());
+            if (map != null)
+                getPlayerEntity().sendMap(map);
+            else
+                dB.echoError("No map found for ID " + value.asInt() + "!");
         }
 
         // <--[mechanism]

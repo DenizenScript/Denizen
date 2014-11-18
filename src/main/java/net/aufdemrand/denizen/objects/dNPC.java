@@ -32,7 +32,6 @@ import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
-
 import net.minecraft.server.v1_7_R4.EntityLiving;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -47,6 +46,7 @@ import org.bukkit.inventory.InventoryHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class dNPC implements dObject, Adjustable, InventoryHolder {
 
@@ -549,7 +549,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         }
 
         // <--[tag]
-        // @attribute <n@npc.list_flags[<search>]>
+        // @attribute <n@npc.list_flags[(regex:)<search>]>
         // @returns dList
         // @description
         // Returns a list of an NPC's flag names, with an optional search for
@@ -560,9 +560,22 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                for (String flag : allFlags)
-                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
-                        searchFlags.add(flag);
+                String search = attribute.getContext(1).toLowerCase();
+                if (search.startsWith("regex:")) {
+                    try {
+                        Pattern pattern = Pattern.compile(search.substring(6));
+                        for (String flag : allFlags)
+                            if (pattern.matcher(flag).matches())
+                                searchFlags.add(flag);
+                    } catch (Exception e) {
+                        dB.echoError(e);
+                    }
+                }
+                else {
+                    for (String flag : allFlags)
+                        if (flag.toLowerCase().contains(search))
+                            searchFlags.add(flag);
+                }
             }
             return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1));
@@ -893,7 +906,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.type>
         // @returns Element
         // @description
-        // Always returns 'NPC' for dNPC objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'NPC' for dNPC objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {

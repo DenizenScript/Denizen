@@ -324,7 +324,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         // Register Core Members in the Denizen Registries
         try {
-            getTriggerRegistry().registerCoreMembers();
+            if (Depends.citizens != null)
+                getTriggerRegistry().registerCoreMembers();
             getRequirementRegistry().registerCoreMembers();
             getListenerRegistry().registerCoreMembers();
         }

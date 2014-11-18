@@ -21,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +34,6 @@ import java.util.List;
  */
 
 public class ModifyBlockCommand extends AbstractCommand implements Listener, Holdable {
-
-    public class IntHolder {
-        public int MyInteger = 0;
-    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
@@ -139,8 +136,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
         no_physics = !doPhysics;
         if (delayed.asBoolean()) {
-            final IntHolder myint = new IntHolder();
-            myint.MyInteger = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     boolean was_static = preSetup(locations);
@@ -163,10 +159,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                             queue.start();
                         }
                         scriptEntry.setFinished(true);
-                        Bukkit.getScheduler().cancelTask(myint.MyInteger);
+                        cancel();
                     }
                 }
-            }, 1, 1);
+            }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
         }
         else {
             boolean was_static = preSetup(locations);

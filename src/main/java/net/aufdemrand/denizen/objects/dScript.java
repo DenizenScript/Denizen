@@ -403,7 +403,7 @@ public class dScript implements dObject {
         // @attribute <s@script.type>
         // @returns Element
         // @description
-        // Always returns 'Script' for dScript objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Script' for dScript objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
