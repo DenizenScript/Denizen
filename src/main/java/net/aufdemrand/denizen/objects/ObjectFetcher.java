@@ -73,6 +73,7 @@ public class ObjectFetcher {
         registerWithObjectFetcher(dChunk.class);     // ch@
         registerWithObjectFetcher(dPlugin.class);    // pl@
         registerWithObjectFetcher(ScriptQueue.class);// q@
+        registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
 
         _initialize();
 

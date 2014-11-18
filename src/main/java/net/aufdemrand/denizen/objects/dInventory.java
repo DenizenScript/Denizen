@@ -352,6 +352,33 @@ public class dInventory implements dObject, Notable, Adjustable {
         loadIdentifiers();
     }
 
+    public boolean containsItem(dItem item, int amount) {
+        if (item == null)
+            return false;
+        item.setAmount(1);
+        String myItem = CoreUtilities.toLowerCase(item.getFullString());
+        for (int i = 0; i < inventory.getSize(); i++) {
+            ItemStack is = inventory.getItem(i);
+            if (is == null)
+                continue;
+            is = is.clone();
+            int count = is.getAmount();
+            is.setAmount(1);
+            String newItem = CoreUtilities.toLowerCase(new dItem(is).getFullString());
+            if (myItem.equals(newItem)) {
+                if (count <= amount) {
+                    amount -= count;
+                    if (amount == 0)
+                        return true;
+                }
+                else if (count > amount) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean removeItem(dItem item, int amount) {
         if (item == null)
             return false;
@@ -1273,7 +1300,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns whether the inventory contains any of the specified items.
         // -->
         if (attribute.startsWith("contains_any")) {
-            if (attribute.hasContext(1) && dList.matches(attribute.getContext(1))) {
+            if (attribute.hasContext(1)) {
                 int qty = 1;
                 int attribs = 1;
 
@@ -1290,7 +1317,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
 
                 for (dItem item : dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry())) {
-                    if (getInventory().containsAtLeast(item.getItemStack(), qty))
+                    if (containsItem(item, qty))
                         return Element.TRUE.getAttribute(attribute.fulfill(attribs));
                 }
                 return Element.FALSE.getAttribute(attribute.fulfill(attribs));
@@ -1304,7 +1331,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns whether the inventory contains all of the specified items.
         // -->
         if (attribute.startsWith("contains")) {
-            if (attribute.hasContext(1) && dList.matches(attribute.getContext(1))) {
+            if (attribute.hasContext(1)) {
                 int qty = 1;
                 int attribs = 1;
 
@@ -1321,7 +1348,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
 
                 for (dItem item : dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry())) {
-                    if (!getInventory().containsAtLeast(item.getItemStack(), qty))
+                    if (!containsItem(item, qty))
                         return Element.FALSE.getAttribute(attribute.fulfill(attribs));
                 }
                 return Element.TRUE.getAttribute(attribute.fulfill(attribs));
@@ -1366,7 +1393,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (inventory.getItem(i) != null) {
                     dItem compare_to = new dItem(inventory.getItem(i).clone());
                     compare_to.setAmount(1);
-                    if (item.identify().equalsIgnoreCase(compare_to.identify())) {
+                    if (item.getFullString().equalsIgnoreCase(compare_to.getFullString())) {
                         slot = i + 1;
                         break;
                     }
