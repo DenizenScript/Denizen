@@ -137,15 +137,16 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         no_physics = !doPhysics;
         if (delayed.asBoolean()) {
             new BukkitRunnable() {
+                int index = 0;
                 @Override
                 public void run() {
                     boolean was_static = preSetup(locations);
-                    int index = 0;
                     long start = System.currentTimeMillis();
                     Location loc = (dLocation)locations.get(0);
                     while (locations.size() > 0) {
                         handleLocation((dLocation) locations.get(0), index, materialList, doPhysics, isNatural, radius, height, depth);
                         locations.remove(0);
+                        index++;
                         if (System.currentTimeMillis() - start > 50) {
                             break;
                         }
@@ -170,6 +171,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             int index = 0;
             for (dObject obj : locations) {
                 handleLocation((dLocation) obj, index, materialList, doPhysics, isNatural, radius, height, depth);
+                index++;
             }
             postComplete(loc, was_static);
             scriptEntry.setFinished(true);
@@ -199,7 +201,6 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                         boolean isNatural, int radius, int height, int depth) {
 
         dMaterial material = materialList.get(index % materialList.size());
-        index++;
         World world = location.getWorld();
 
         location.setX(location.getBlockX());
