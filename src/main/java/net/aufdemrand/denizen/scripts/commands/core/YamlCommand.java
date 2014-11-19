@@ -95,7 +95,12 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
             else if (!scriptEntry.hasObject("split") &&
                     arg.matches("split_list")) {
-                scriptEntry.addObject("split", Element.TRUE);
+                scriptEntry.addObject("split", new Element("true"));
+            }
+
+            else if (!scriptEntry.hasObject("fix_formatting") &&
+                    arg.matches("fix_formatting")) {
+                scriptEntry.addObject("fix_formatting", new Element("true"));
             }
 
             // Check for key:value/action
@@ -181,6 +186,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             throw new InvalidArgumentsException("Must specify a key!");
 
         scriptEntry.defaultObject("value", new Element(""));
+        scriptEntry.defaultObject("fix_formatting", new Element("false"));
     }
 
 
@@ -194,6 +200,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         YAML_Action yaml_action = (YAML_Action) scriptEntry.getObject("yaml_action");
         Element actionElement = scriptEntry.getElement("action");
         Element idElement = scriptEntry.getElement("id");
+        Element fixFormatting = scriptEntry.getElement("fix_formatting");
 
         YamlConfiguration yamlConfiguration;
 
@@ -204,7 +211,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         + (yaml_action != null ? aH.debugObj("yaml_action", yaml_action.name()): "")
                         + (key != null ? key.debug() : "")
                         + (value != null ? value.debug() : "")
-                        + (split != null ? split.debug() : ""));
+                        + (split != null ? split.debug() : "")
+                        + fixFormatting.debug());
 
         // Do action
         Action action = Action.valueOf(actionElement.asString().toUpperCase());
@@ -220,7 +228,10 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 }
                 try {
                     FileInputStream fis = new FileInputStream(file);
-                    yamlConfiguration = YamlConfiguration.load(ScriptHelper.convertStreamToString(fis));
+                    String str = ScriptHelper.convertStreamToString(fis);
+                    if (fixFormatting.asBoolean())
+                        str = ScriptHelper.ClearComments("", str, false);
+                    yamlConfiguration = YamlConfiguration.load(str);
                     fis.close();
                 }
                 catch (Exception e) {

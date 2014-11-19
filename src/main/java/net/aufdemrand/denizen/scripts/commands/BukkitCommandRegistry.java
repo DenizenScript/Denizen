@@ -2847,7 +2847,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Syntax yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
+        // @Syntax yaml [create]/[load:<file> (fix_formatting)]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
         // @Required 2
         // @Stable stable
         // @Short Edits a YAML configuration file.
@@ -2859,6 +2859,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // It can also be used for storing your own script's data.
         // It can even be used to edit Denizen's saves/config, or even Denizen scripts.
         // TODO: Document Command Details
+        // When loading a script, optionally add 'fix_formatting' to run the file through
+        // Denizen's built in script preparser to correct common YAML errors,
+        // such as tabs instead of spaces or comments inside braced blocks.
         // @Tags
         // <yaml[<idname>].contains[<path>]>
         // <yaml[<idname>].read[<path>]>
@@ -2887,7 +2890,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - yaml id:myfile set my.key[2]:hello
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [create]/[load:<file>]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
+                "YAML", "yaml [create]/[load:<file> (fix_formatting)]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
 
         // <--[command]
         // @Name Zap
