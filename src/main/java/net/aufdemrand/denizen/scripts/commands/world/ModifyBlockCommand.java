@@ -134,6 +134,11 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         final int height = heightElement.asInt();
         final int depth = depthElement.asInt();
 
+        if (locations.size() == 0)
+            dB.echoError("Must have a valid location!");
+        if (materials.size() == 0)
+            dB.echoError("Must have a valid material!");
+
         no_physics = !doPhysics;
         if (delayed.asBoolean()) {
             new BukkitRunnable() {
