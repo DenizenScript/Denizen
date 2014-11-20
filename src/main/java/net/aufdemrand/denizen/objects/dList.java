@@ -67,7 +67,9 @@ public class dList extends ArrayList<String> implements dObject {
                 else
                     dB.echoError("Global flag '" + flag + "' not found.");
             }
-            return null;
+            else {
+                return new dList(string);
+            }
         }
 
         // Use value of string, which will separate values by the use of a pipe '|'
