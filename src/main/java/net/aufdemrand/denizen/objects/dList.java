@@ -613,6 +613,40 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
+        // @attribute <li@list.set[...|...].at[<#>]>
+        // @returns dList
+        // @description
+        // returns a new dList with the items specified inserted to the specified location, replacing the element
+        // already at that location.
+        // EG, .set[two].at[2] on a list of "one|four" will return "one|two|three".
+        // -->
+        if (attribute.startsWith("set") &&
+                attribute.hasContext(1)) {
+            if (this.size() == 0)
+                return null;
+            dList items = dList.valueOf(attribute.getContext(1));
+            attribute = attribute.fulfill(1);
+            if (attribute.startsWith("at")
+                    && attribute.hasContext(1)) {
+                dList result = new dList(this);
+                int index = new Element(attribute.getContext(1)).asInt() - 1;
+                if (index < 0)
+                    index = 0;
+                if (index > result.size() - 1)
+                    index = result.size() - 1;
+                result.remove(index);
+                for (int i = 0; i < items.size(); i++) {
+                    result.add(index + i, items.get(i));
+                }
+                return result.getAttribute(attribute.fulfill(1));
+            }
+            else {
+                dB.echoError("The tag li@list.set[...] requires an at[#] tag follow it!");
+                return null;
+            }
+        }
+
+        // <--[tag]
         // @attribute <li@list.include[...|...]>
         // @returns dList
         // @description
