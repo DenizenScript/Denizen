@@ -90,6 +90,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # Available context: <context.args> returns a list of input arguments.
     //   # <context.raw_args> returns all the arguments as raw text.
     //   # <context.server> returns whether the server is running the command (a player if false).
+    //   # <context.alias> returns the command alias being used.
     //   script:
     //   - if !<player.is_op||<context.server>> {
     //     - narrate "<red>You do not have permission for that command."

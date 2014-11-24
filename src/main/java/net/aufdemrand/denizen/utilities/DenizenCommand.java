@@ -96,6 +96,7 @@ public class DenizenCommand extends Command {
         List<String> args = Arrays.asList(aH.buildArgs(raw_args));
         context.put("args", new dList(args));
         context.put("raw_args", new Element(raw_args));
+        context.put("alias", new Element(commandLabel));
         dPlayer player = null;
         dNPC npc = null;
         if (commandSender instanceof Player) {
