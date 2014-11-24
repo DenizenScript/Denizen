@@ -40,7 +40,7 @@ public class Comparable {
     // MATCHES checks whether the first element matches a given type.
     // EG, "if 1 matches number" or "if p@bob matches player".
     // Match types: location, material, materiallist, script, entity, spawnedentity, entitytype,
-    // npc, player, offlineplayer, onlineplaye, item, pose, duration, cuboid, decimal,
+    // npc, player, offlineplayer, onlineplayer, item, pose, duration, cuboid, decimal,
     // number, even number, odd number, boolean.
     //
     // Note: When using an operator in a replaceable tag (such as <el@element.is[...].than[...]>),

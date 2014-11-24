@@ -607,7 +607,7 @@ public class dList extends ArrayList<String> implements dObject {
                 return result.getAttribute(attribute.fulfill(1));
             }
             else {
-                dB.echoError("The tag li@list.insert[...] requires an at[#] tag follow it!");
+                dB.echoError("The tag li@list.insert[...] must be followed by .at[#]!");
                 return null;
             }
         }
@@ -618,7 +618,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @description
         // returns a new dList with the items specified inserted to the specified location, replacing the element
         // already at that location.
-        // EG, .set[two].at[2] on a list of "one|four" will return "one|two|three".
+        // EG, .set[potato].at[2] on a list of "one|two|three" will return "one|potato|three".
         // -->
         if (attribute.startsWith("set") &&
                 attribute.hasContext(1)) {
@@ -641,7 +641,7 @@ public class dList extends ArrayList<String> implements dObject {
                 return result.getAttribute(attribute.fulfill(1));
             }
             else {
-                dB.echoError("The tag li@list.set[...] requires an at[#] tag follow it!");
+                dB.echoError("The tag li@list.set[...] must be followed by .at[#]!");
                 return null;
             }
         }

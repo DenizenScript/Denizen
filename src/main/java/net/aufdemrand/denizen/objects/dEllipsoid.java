@@ -143,7 +143,7 @@ public class dEllipsoid implements dObject {
     public String getAttribute(Attribute attribute) {
 
         // <--[tag]
-        // @attribute <ellipsoid@ellipsoid.get_blocks[<material>...]>
+        // @attribute <ellipsoid@ellipsoid.get_blocks[<material>|...]>
         // @returns dList(dLocation)
         // @description
         // Returns each block location within the dEllipsoid.
