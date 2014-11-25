@@ -106,7 +106,7 @@ public class ProcedureScriptTag implements Listener {
     public void procedureTag(ReplaceableTagEvent event) {
 
         // <--[tag]
-        // @attribute <proc[ProcedureScript].Context[<element>|...]>
+        // @attribute <proc[ProcedureScript].context[<element>|...]>
         // @returns dObject
         // @description
         // Returns the 'determine' result of a procedure script with the given context.
@@ -191,7 +191,7 @@ public class ProcedureScriptTag implements Listener {
         queue.start();
 
         if (DetermineCommand.hasOutcome(id)) {
-            event.setReplaced(ObjectFetcher.pickObjectFor(DetermineCommand.getOutcome(id))
+            event.setReplaced(ObjectFetcher.pickObjectFor(DetermineCommand.getOutcome(id).get(0))
                     .getAttribute(attr.fulfill(attribs)));
         }
     }

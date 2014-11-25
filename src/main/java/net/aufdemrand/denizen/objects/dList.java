@@ -807,9 +807,9 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.find_all_partial[<element>]>
         // @returns dList(Element(Number))
         // @description
-        // returns all the numbered locations of elements within a list,
+        // returns all the numbered locations of elements that contain the text within a list,
         // or an empty list if the list does not contain that item.
-        // EG, .find[two] on a list of "one|two|three|two" will return "2|4".
+        // EG, .find_all_partial[tw] on a list of "one|two|three|two" will return "2|4".
         // TODO: Take multiple inputs? Or a regex?
         // -->
         if (attribute.startsWith("find_all_partial") &&
@@ -826,7 +826,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.find_all[<element>]>
         // @returns dList(Element(Number))
         // @description
-        // returns all the numbered locations of elements within a list,
+        // returns all the numbered locations of elements that match the text within a list,
         // or an empty list if the list does not contain that item.
         // EG, .find[two] on a list of "one|two|three|two" will return "2|4".
         // TODO: Take multiple inputs? Or a regex?
@@ -1043,7 +1043,7 @@ public class dList extends ArrayList<String> implements dObject {
                         queue.start();
                         int res = 0;
                         if (DetermineCommand.hasOutcome(id))
-                            res = new Element(DetermineCommand.getOutcome(id)).asInt();
+                            res = new Element(DetermineCommand.getOutcome(id).get(0)).asInt();
                         if (res < 0)
                             return -1;
                         else if (res > 0)

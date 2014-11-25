@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +30,7 @@ public class DetermineCommand extends AbstractCommand {
 
     // Map for keeping track of cache
     // Key: ID, Value: outcome
-    private static Map<Long, String> cache = new ConcurrentHashMap<Long, String>(8, 0.9f, 1);
+    private static Map<Long, List<String>> cache = new ConcurrentHashMap<Long, List<String>>(8, 0.9f, 1);
 
     // Start at 0
     public static long uniqueId = 0;
@@ -56,7 +58,7 @@ public class DetermineCommand extends AbstractCommand {
      * @return if the cache has the outcome
      */
     public static boolean hasOutcome(long id) {
-        return cache.containsKey(id);
+        return cache.containsKey(id) && !cache.get(id).isEmpty();
     }
 
 
@@ -66,8 +68,8 @@ public class DetermineCommand extends AbstractCommand {
      * @param id the outcome id to check
      * @return the outcome
      */
-    public static String getOutcome(long id) {
-        String outcome = cache.get(id);
+    public static List<String> getOutcome(long id) {
+        List<String> outcome = cache.get(id);
         cache.remove(id);
         return outcome;
     }
@@ -81,7 +83,7 @@ public class DetermineCommand extends AbstractCommand {
      * @return the current value of the outcome
      */
     public static String readOutcome(long id) {
-        return cache.get(id);
+        return cache.get(id).isEmpty() ? DETERMINE_NONE: cache.get(id).get(0);
     }
 
 
@@ -136,7 +138,15 @@ public class DetermineCommand extends AbstractCommand {
         }
 
         // Store the outcome in the cache
-        cache.put(uniqueId, outcome);
+        List<String> strs;
+        if (cache.containsKey(uniqueId)) {
+            strs = cache.get(uniqueId);
+        }
+        else {
+            strs = new ArrayList<String>();
+            cache.put(uniqueId, strs);
+        }
+        strs.add(outcome);
 
         if (!passively)
             // Stop the queue by clearing the remainder of it.

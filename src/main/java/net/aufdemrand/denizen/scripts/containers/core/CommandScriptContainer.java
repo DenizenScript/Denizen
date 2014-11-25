@@ -161,7 +161,7 @@ public class CommandScriptContainer extends ScriptContainer {
             }
         }
         queue.start();
-        return DetermineCommand.getOutcome(id).equalsIgnoreCase("true");
+        return DetermineCommand.hasOutcome(id) && DetermineCommand.getOutcome(id).get(0).equalsIgnoreCase("true");
     }
 
     public List<String> runTabCompleteProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
@@ -178,7 +178,7 @@ public class CommandScriptContainer extends ScriptContainer {
         }
         queue.start();
         if (DetermineCommand.hasOutcome(id))
-            return dList.valueOf(DetermineCommand.getOutcome(id));
+            return dList.valueOf(DetermineCommand.getOutcome(id).get(0));
         else
             return new ArrayList<String>();
     }

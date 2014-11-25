@@ -229,6 +229,16 @@ public class EventManager implements Listener {
                 npc, player, context);
     }
 
+    public static List<String> doEvents1(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context,
+                                  boolean usesIdentifiers) {
+
+        // If a list of events uses identifiers, also add those events to the list
+        // with their identifiers stripped
+        return doEvents1(usesIdentifiers ? addAlternates(eventNames)
+                        : eventNames,
+                npc, player, context);
+    }
+
 
     public static List<String> addAlternates(List<String> events) {
 
@@ -289,9 +299,17 @@ public class EventManager implements Listener {
     }
 
     public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context) {
+        List<String> strs = doEvents1(eventNames, npc, player, context);
+        if (strs.isEmpty())
+            return DetermineCommand.DETERMINE_NONE;
+        else
+            return strs.get(0);
+    }
+
+    public static List<String> doEvents1(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context) {
 
         try {
-            String determination = "none";
+            List<String> determinations = new ArrayList<String>();
 
             // Trim again to catch events that don't trim internally.
             eventNames = trimEvents(eventNames);
@@ -339,15 +357,15 @@ public class EventManager implements Listener {
 
                         // Check the determination
                         if (DetermineCommand.hasOutcome(id))
-                            determination =  DetermineCommand.getOutcome(id);
+                            determinations =  DetermineCommand.getOutcome(id);
                     }
             }
 
-            return determination;
+            return determinations;
         }
         catch (Exception e) {
             dB.echoError(e);
-            return "none";
+            return new ArrayList<String>();
         }
     }
 

@@ -75,8 +75,8 @@ public class ActionHandler {
 
         // Check the determination by asking the DetermineCommand
         if (DetermineCommand.hasOutcome(id))
-            determination =  DetermineCommand.getOutcome(id);
-
+            determination =  DetermineCommand.getOutcome(id).get(0);
+        // TODO: Multiple determination system
         return determination;
     }
 }
