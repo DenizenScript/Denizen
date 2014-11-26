@@ -31,10 +31,22 @@ public class Comparable {
     // their name or symbol. Using a '!' in front of the operator will also reverse logic, effectively
     // turning 'EQUALS' into 'DOES NOT EQUAL', for example.
     //
+    // == <= >= > < all compare arguments as text or numbers.
+    //
+    // CONTAINS checks whether a list contains an element, or an element contains another element.
+    //
+    // IS_EMPTY checks whether a list is empty. (This exists for back-support).
+    //
+    // MATCHES checks whether the first element matches a given type.
+    // EG, "if 1 matches number" or "if p@bob matches player".
+    // Match types: location, material, materiallist, script, entity, spawnedentity, entitytype,
+    // npc, player, offlineplayer, onlineplayer, item, pose, duration, cuboid, decimal,
+    // number, even number, odd number, boolean.
+    //
     // Note: When using an operator in a replaceable tag (such as <el@element.is[...].than[...]>),
     // keep in mind that < and >, and even >= and <= must be either escaped, or referred to by name.
-    // Example: <player.health.is[\<].than[10]> can alternatively be <player.health.is[LESS].than[10],
-    // but <player.health.is[<].than[10]> will produce undesired results. <>'s must be escaped since
+    // Example: "<player.health.is[<&lt>].than[10]>" or "<player.health.is[LESS].than[10]>",
+    // but <player.health.is[<].than[10]> will produce undesired results. <>'s must be escaped or replaced since
     // they are normally notation for a replaceable tag. Escaping is not necessary when the argument
     // contains no replaceable tags.
     //

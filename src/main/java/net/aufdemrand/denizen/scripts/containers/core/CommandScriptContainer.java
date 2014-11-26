@@ -90,6 +90,7 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # Available context: <context.args> returns a list of input arguments.
     //   # <context.raw_args> returns all the arguments as raw text.
     //   # <context.server> returns whether the server is running the command (a player if false).
+    //   # <context.alias> returns the command alias being used.
     //   script:
     //   - if !<player.is_op||<context.server>> {
     //     - narrate "<red>You do not have permission for that command."
@@ -160,7 +161,7 @@ public class CommandScriptContainer extends ScriptContainer {
             }
         }
         queue.start();
-        return DetermineCommand.getOutcome(id).equalsIgnoreCase("true");
+        return DetermineCommand.hasOutcome(id) && DetermineCommand.getOutcome(id).get(0).equalsIgnoreCase("true");
     }
 
     public List<String> runTabCompleteProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
@@ -177,7 +178,7 @@ public class CommandScriptContainer extends ScriptContainer {
         }
         queue.start();
         if (DetermineCommand.hasOutcome(id))
-            return dList.valueOf(DetermineCommand.getOutcome(id));
+            return dList.valueOf(DetermineCommand.getOutcome(id).get(0));
         else
             return new ArrayList<String>();
     }

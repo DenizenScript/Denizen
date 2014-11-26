@@ -118,54 +118,51 @@ public class EntityDeathSmartEvent implements SmartEvent, Listener {
                 context.put("inventory", player.getInventory());
         }
 
-        String determination = EventManager.doEvents(Arrays.asList
-                ("entity dies",
-                        entity.identifyType() + " dies",
-                        entity.identifySimple() + " dies",
-                        entity.identifySimple() + " death",
-                        "entity death",
-                        entity.identifyType() + " death"),
+        List<String> determinations = EventManager.doEvents1(Arrays.asList
+                        ("entity dies",
+                                entity.identifyType() + " dies",
+                                entity.identifySimple() + " dies",
+                                entity.identifySimple() + " death",
+                                "entity death",
+                                entity.identifyType() + " death"),
                 npc, player, context, true);
 
-        // Handle message
-        if (determination.toUpperCase().startsWith("DROPS ")) {
-            determination = determination.substring(6);
-        }
+        for (String determination : determinations) {
+            // Handle message
+            if (determination.toUpperCase().startsWith("DROPS ")) {
+                determination = determination.substring(6);
+            }
 
-        if (determination.toUpperCase().startsWith("NO_DROPS")) {
-            event.getDrops().clear();
-            if (determination.endsWith("_OR_XP")) {
+            if (determination.toUpperCase().startsWith("NO_DROPS")) {
+                event.getDrops().clear();
+                if (determination.endsWith("_OR_XP")) {
+                    event.setDroppedExp(0);
+                }
+            } else if (determination.toUpperCase().equals("NO_XP")) {
                 event.setDroppedExp(0);
             }
-        }
 
-        else if (determination.toUpperCase().equals("NO_XP")) {
-            event.setDroppedExp(0);
-        }
-
-        // Drops
-        else if (aH.Argument.valueOf(determination).matchesArgumentList(dItem.class)) {
-            dList drops = dList.valueOf(determination);
-            drops.filter(dItem.class);
-            event.getDrops().clear();
-            for (String drop : drops) {
-                dItem item = dItem.valueOf(drop);
-                if (item != null)
-                    event.getDrops().add(item.getItemStack());
+            // Drops
+            else if (aH.Argument.valueOf(determination).matchesArgumentList(dItem.class)) {
+                dList drops = dList.valueOf(determination);
+                drops.filter(dItem.class);
+                event.getDrops().clear();
+                for (String drop : drops) {
+                    dItem item = dItem.valueOf(drop);
+                    if (item != null)
+                        event.getDrops().add(item.getItemStack());
+                }
             }
 
-        }
-
-        // XP
-        else if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
-            int xp = Integer.valueOf(determination.substring(3));
-            event.setDroppedExp(xp);
-        }
-
-        else if (!determination.toUpperCase().equals("NONE")) {
-            if (event instanceof PlayerDeathEvent) {
-                subEvent.setDeathMessage(determination);
+            // XP
+            else if (aH.Argument.valueOf(determination)
+                    .matchesPrimitive(aH.PrimitiveType.Integer)) {
+                int xp = Integer.valueOf(determination.substring(3));
+                event.setDroppedExp(xp);
+            } else if (!determination.toUpperCase().equals("NONE")) {
+                if (event instanceof PlayerDeathEvent) {
+                    subEvent.setDeathMessage(determination);
+                }
             }
         }
     }

@@ -401,9 +401,18 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     public dList getBlocks(List<dMaterial> materials) {
+        List<dLocation> locs = getBlocks_internal(materials);
+        dList list = new dList();
+        for (dLocation loc: locs) {
+            list.add(loc.identify());
+        }
+        return list;
+    }
+
+    public List<dLocation> getBlocks_internal(List<dMaterial> materials) {
         int max = Settings.blockTagsMaxBlocks();
         dLocation loc;
-        dList list = new dList();
+        List<dLocation> list = new ArrayList<dLocation>();
         int index = 0;
 
         for (LocationPair pair : pairs) {
@@ -423,14 +432,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                                 if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
                                         .getMaterial().name())) {
                                     if (matchesMaterialList(loc, materials)) {
-                                        list.add(loc.identify());
+                                        list.add(loc);
                                     }
                                 }
                             }
                         }
                         else {
                             if (matchesMaterialList(loc, materials)) {
-                                list.add(loc.identify());
+                                list.add(loc);
                             }
                         }
                         index++;

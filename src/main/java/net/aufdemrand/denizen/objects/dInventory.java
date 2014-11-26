@@ -1377,6 +1377,35 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <in@inventory.find_imperfect[<item>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the location of the first slot that contains the item.
+        // Returns -1 if there's no match.
+        // Will match item script to item script, even if one is edited.
+        // -->
+        if (attribute.startsWith("find")
+                && attribute.hasContext(1)
+                && dItem.matches(attribute.getContext(1))) {
+            dItem item = dItem.valueOf(attribute.getContext(1),
+                    attribute.getScriptEntry() != null ? attribute.getScriptEntry().getPlayer(): null,
+                    attribute.getScriptEntry() != null ? attribute.getScriptEntry().getNPC(): null);
+            item.setAmount(1);
+            int slot = -1;
+            for (int i = 0; i < inventory.getSize(); i++) {
+                if (inventory.getItem(i) != null) {
+                    dItem compare_to = new dItem(inventory.getItem(i).clone());
+                    compare_to.setAmount(1);
+                    if (item.identify().equalsIgnoreCase(compare_to.identify())) {
+                        slot = i + 1;
+                        break;
+                    }
+                }
+            }
+            return new Element(slot).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.find[<item>]>
         // @returns Element(Number)
         // @description
@@ -1386,7 +1415,9 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("find")
                 && attribute.hasContext(1)
                 && dItem.matches(attribute.getContext(1))) {
-                dItem item = dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(), attribute.getScriptEntry().getNPC());
+                dItem item = dItem.valueOf(attribute.getContext(1),
+                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getPlayer(): null,
+                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getNPC(): null);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {

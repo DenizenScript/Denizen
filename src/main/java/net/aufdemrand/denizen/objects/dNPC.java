@@ -248,7 +248,9 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
     public String getOwner() {
-        return getCitizen().getTrait(Owner.class).getOwner();
+        if (getCitizen().getTrait(Owner.class).getOwnerId() == null)
+            return getCitizen().getTrait(Owner.class).getOwner();
+        return getCitizen().getTrait(Owner.class).getOwnerId().toString();
     }
 
     public AssignmentTrait getAssignmentTrait() {

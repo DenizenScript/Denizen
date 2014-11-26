@@ -233,7 +233,8 @@ public class TagManager implements Listener {
                 dB.echoDebug(((BukkitTagContext)context).entry, "Filled tag <" + event.toString() + "> with '" +
                         event.getReplaced() + "'.");
             if (!event.replaced())
-                dB.echoError(((BukkitTagContext)context).entry != null ? ((BukkitTagContext)context).entry.getResidingQueue(): null, "Tag <" + event.toString() + "> is invalid!");
+                dB.echoError(((BukkitTagContext)context).entry != null ? ((BukkitTagContext)context).entry.getResidingQueue(): null,
+                        "Tag <" + event.toString() + "> is invalid!");
             return escapeOutput(event.getReplaced());
         }
     }

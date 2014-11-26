@@ -66,13 +66,7 @@ public class PlayerTags implements Listener {
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1))
-            // Check if this is a valid player and update the dPlayer object reference.
-            if (dPlayer.matches(attribute.getContext(1)))
-                p = dPlayer.valueOf(attribute.getContext(1));
-            else {
-                if (!event.hasAlternative()) dB.echoError("Could not match '" + attribute.getContext(1) + "' to a valid player!");
-                return;
-            }
+            p = dPlayer.valueOf(attribute.getContext(1));
 
         if (p == null || !p.isValid()) {
             if (!event.hasAlternative()) dB.echoError("Invalid or missing player for tag <" + event.raw_tag + ">!");

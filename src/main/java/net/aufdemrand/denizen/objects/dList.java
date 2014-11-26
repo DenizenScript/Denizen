@@ -67,7 +67,9 @@ public class dList extends ArrayList<String> implements dObject {
                 else
                     dB.echoError("Global flag '" + flag + "' not found.");
             }
-            return null;
+            else {
+                return new dList(string);
+            }
         }
 
         // Use value of string, which will separate values by the use of a pipe '|'
@@ -605,7 +607,41 @@ public class dList extends ArrayList<String> implements dObject {
                 return result.getAttribute(attribute.fulfill(1));
             }
             else {
-                dB.echoError("The tag li@list.insert[...] requires an at[#] tag follow it!");
+                dB.echoError("The tag li@list.insert[...] must be followed by .at[#]!");
+                return null;
+            }
+        }
+
+        // <--[tag]
+        // @attribute <li@list.set[...|...].at[<#>]>
+        // @returns dList
+        // @description
+        // returns a new dList with the items specified inserted to the specified location, replacing the element
+        // already at that location.
+        // EG, .set[potato].at[2] on a list of "one|two|three" will return "one|potato|three".
+        // -->
+        if (attribute.startsWith("set") &&
+                attribute.hasContext(1)) {
+            if (this.size() == 0)
+                return null;
+            dList items = dList.valueOf(attribute.getContext(1));
+            attribute = attribute.fulfill(1);
+            if (attribute.startsWith("at")
+                    && attribute.hasContext(1)) {
+                dList result = new dList(this);
+                int index = new Element(attribute.getContext(1)).asInt() - 1;
+                if (index < 0)
+                    index = 0;
+                if (index > result.size() - 1)
+                    index = result.size() - 1;
+                result.remove(index);
+                for (int i = 0; i < items.size(); i++) {
+                    result.add(index + i, items.get(i));
+                }
+                return result.getAttribute(attribute.fulfill(1));
+            }
+            else {
+                dB.echoError("The tag li@list.set[...] must be followed by .at[#]!");
                 return null;
             }
         }
@@ -771,9 +807,9 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.find_all_partial[<element>]>
         // @returns dList(Element(Number))
         // @description
-        // returns all the numbered locations of elements within a list,
+        // returns all the numbered locations of elements that contain the text within a list,
         // or an empty list if the list does not contain that item.
-        // EG, .find[two] on a list of "one|two|three|two" will return "2|4".
+        // EG, .find_all_partial[tw] on a list of "one|two|three|two" will return "2|4".
         // TODO: Take multiple inputs? Or a regex?
         // -->
         if (attribute.startsWith("find_all_partial") &&
@@ -790,7 +826,7 @@ public class dList extends ArrayList<String> implements dObject {
         // @attribute <li@list.find_all[<element>]>
         // @returns dList(Element(Number))
         // @description
-        // returns all the numbered locations of elements within a list,
+        // returns all the numbered locations of elements that match the text within a list,
         // or an empty list if the list does not contain that item.
         // EG, .find[two] on a list of "one|two|three|two" will return "2|4".
         // TODO: Take multiple inputs? Or a regex?
@@ -1007,7 +1043,7 @@ public class dList extends ArrayList<String> implements dObject {
                         queue.start();
                         int res = 0;
                         if (DetermineCommand.hasOutcome(id))
-                            res = new Element(DetermineCommand.getOutcome(id)).asInt();
+                            res = new Element(DetermineCommand.getOutcome(id).get(0)).asInt();
                         if (res < 0)
                             return -1;
                         else if (res > 0)

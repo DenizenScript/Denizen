@@ -5,6 +5,8 @@ import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -35,20 +37,15 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
 
             if (m.matches()) {
 
-                // We'll actually check the content supplied -- this is a SMART event after all!
-                // If registerable, the event matched our checks, and this event can be safely loaded.
-                boolean registerable = true;
-
                 // Check first group which contains entity name against dEntity's matches() method
                 if (!dEntity.matches(m.group(1)) && (!m.group(1).equalsIgnoreCase("entity") && !m.group(1).equalsIgnoreCase("npc"))) {
                     dB.echoError("Possible issue with '" + event + "' world event in script(s) " + EventManager.events.get(event)
                             + ". Specified entity is not valid.");
-                    registerable = false;
                 }
 
                 // If registerable, we'll set should_register to true, but keep iterating through the matches
                 // to check them for errors, as caught above.
-                if (registerable) should_register = true;
+                should_register = true;
             }
         }
 
@@ -99,6 +96,13 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
     // "CANCELLED" to stop the entity from spawning.
     //
     // -->
+    @EventHandler
+    public void npcSpawn(NPCSpawnEvent event) {
+        if (event.getNPC().getEntity() instanceof LivingEntity)
+        creatureSpawn(new CreatureSpawnEvent((LivingEntity)event.getNPC().getEntity(),
+                CreatureSpawnEvent.SpawnReason.CUSTOM));
+    }
+
     @EventHandler
     public void creatureSpawn(CreatureSpawnEvent event) {
 
