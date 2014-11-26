@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -97,7 +98,9 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
     // -->
     @EventHandler
     public void npcSpawn(NPCSpawnEvent event) {
-        creatureSpawn(new CreatureSpawnEvent(event.getNPC().getBukkitEntity(), CreatureSpawnEvent.SpawnReason.CUSTOM));
+        if (event.getNPC().getEntity() instanceof LivingEntity)
+        creatureSpawn(new CreatureSpawnEvent((LivingEntity)event.getNPC().getEntity(),
+                CreatureSpawnEvent.SpawnReason.CUSTOM));
     }
 
     @EventHandler

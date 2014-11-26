@@ -420,6 +420,27 @@ public class Duration implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <d@duration.sub[<duration>]>
+        // @returns Element(Number)
+        // @description
+        // returns this duration minus another.
+        // -->
+        if (attribute.startsWith("sub") && attribute.hasContext(1)) {
+            return new Duration(getTicks() - Duration.valueOf(attribute.getContext(1)).getTicks())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <d@duration.sub[<duration>]>
+        // @returns Element(Number)
+        // @description
+        // returns this duration plus another.
+        // -->
+        if (attribute.startsWith("add") && attribute.hasContext(1)) {
+            return new Duration(getTicks() + Duration.valueOf(attribute.getContext(1)).getTicks())
+                    .getAttribute(attribute.fulfill(1));
+        }
+        // <--[tag]
         // @attribute <d@duration.time>
         // @returns Element(Number)
         // @description
