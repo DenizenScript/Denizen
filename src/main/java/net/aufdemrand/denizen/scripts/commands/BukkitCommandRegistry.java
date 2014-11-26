@@ -2130,7 +2130,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax reset (<player>|...) [fails/finishes/cooldown/saves/global_cooldown] (<script>)
         // @Required 1
         // @Stable stable
-        // @Short Resets various parts of Denizen's saves.yml, including script finishes/fails, a script's fails, finishes, or cooldowns.
+        // @Short Resets various parts of Denizen's saves.yml, including a script's fails, finishes, or cooldowns.
         // @Author aufdemrand
         // @Group core
         // @Description
