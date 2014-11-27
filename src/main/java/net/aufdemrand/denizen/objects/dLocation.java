@@ -1169,6 +1169,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 && attribute.hasContext(1)) {
             if (dLocation.matches(attribute.getContext(1))) {
                 dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
+                if (!getWorld().getName().equalsIgnoreCase(toLocation.getWorld().getName())) {
+                    if (!attribute.hasAlternative()) dB.echoError("Can't measure distance between two different worlds!");
+                    return null;
+                }
                 return new Element(this.distanceSquared(toLocation))
                         .getAttribute(attribute.fulfill(1));
             }
@@ -1233,6 +1237,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                                 .getAttribute(attribute.fulfill(2));
                 }
 
+                if (!getWorld().getName().equalsIgnoreCase(toLocation.getWorld().getName())) {
+                    if (!attribute.hasAlternative()) dB.echoError("Can't measure distance between two different worlds!");
+                    return null;
+                }
                 else return new Element(this.distance(toLocation))
                             .getAttribute(attribute.fulfill(1));
             }
