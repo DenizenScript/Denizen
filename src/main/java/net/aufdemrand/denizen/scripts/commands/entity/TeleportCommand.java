@@ -55,7 +55,8 @@ public class TeleportCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a location!");
 
         // Use player or NPC as default entity
-        scriptEntry.defaultObject("entities", (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),
+        if (!scriptEntry.hasObject("entities"))
+            scriptEntry.defaultObject("entities", (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),
                                               (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
 
     }
