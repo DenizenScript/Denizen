@@ -219,6 +219,7 @@ public class EventManager implements Listener {
                 npc, player, context);
     }
 
+    @Deprecated
     public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context,
                                   boolean usesIdentifiers) {
 
@@ -298,6 +299,7 @@ public class EventManager implements Listener {
         return doEvents(eventNames, npc, player, context);
     }
 
+    @Deprecated
     public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context) {
         List<String> strs = doEvents1(eventNames, npc, player, context);
         if (strs.isEmpty())

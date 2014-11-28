@@ -27,7 +27,7 @@ public class CuboidTags implements Listener {
         dCuboid cuboid = null;
 
         String context = event.getNameContext();
-        if (event.hasNameContext() && dCuboid.matches(context))
+        if (event.hasNameContext())
             cuboid = dCuboid.valueOf(context);
 
         // Check if cuboid is null, return null if it is

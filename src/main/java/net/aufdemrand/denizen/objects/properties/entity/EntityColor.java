@@ -73,7 +73,7 @@ public class EntityColor implements Property {
     ////////
 
     // <--[language]
-    // @name Horse Type
+    // @name Horse Types
     // @group Properties
     // @description
     // This is a quick rundown of the styling information used to create a horse,

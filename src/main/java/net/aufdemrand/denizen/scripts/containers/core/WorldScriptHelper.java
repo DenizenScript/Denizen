@@ -3423,8 +3423,10 @@ public class WorldScriptHelper implements Listener {
                 for (dCuboid cuboid : cuboids) {
                     events.add(interaction + " block in " + cuboid.identifySimple());
                     events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());
-                    cuboid_context.add(cuboid.identifySimple());
                 }
+            }
+            for (dCuboid cuboid : cuboids) {
+                cuboid_context.add(cuboid.identifySimple());
             }
             // Add in cuboids context, with either the cuboids or an empty list
             context.put("cuboids", cuboid_context);
