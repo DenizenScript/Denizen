@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.Attribute;
 
 import net.aufdemrand.denizen.tags.TagManager;
-import net.minecraft.util.org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
