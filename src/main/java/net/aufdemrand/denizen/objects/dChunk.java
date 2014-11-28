@@ -308,6 +308,21 @@ public class dChunk implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <ch@chunk.spawn_slimes>
+        // @returns dList(dLocation)
+        // @description
+        // returns whether the chunk is specially located 'slime spawner' chunk.
+        // -->
+        if (attribute.startsWith("spawn_slimes")) {
+            Random random = new Random(getWorld().getSeed() +
+                    getX() * getX() * 4987142 +
+                    getX() * 5947611 +
+                    getZ() * getZ() * 4392871L +
+                    getZ() * 389711 ^ 0x3AD8025F);
+            return new Element(random.nextInt(10) == 0).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <ch@chunk.type>
         // @returns Element
         // @description
