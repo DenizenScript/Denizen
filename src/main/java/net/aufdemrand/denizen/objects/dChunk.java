@@ -311,7 +311,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.spawn_slimes>
         // @returns dList(dLocation)
         // @description
-        // returns whether the chunk is specially located 'slime spawner' chunk.
+        // returns whether the chunk is a specially located 'slime spawner' chunk.
         // -->
         if (attribute.startsWith("spawn_slimes")) {
             Random random = new Random(getWorld().getSeed() +
