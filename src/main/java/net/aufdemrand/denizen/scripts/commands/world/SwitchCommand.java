@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import com.google.common.collect.ImmutableMap;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -14,15 +15,16 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_7_R4.Block;
+import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -155,12 +157,15 @@ public class SwitchCommand extends AbstractCommand {
                 else {
 
                     // TODO: Rewrite the below code to not use freakin' NMS!
+                    BlockPosition pos =
+                            new BlockPosition(interactLocation.getBlockX(),
+                                    interactLocation.getBlockY(),
+                                    interactLocation.getBlockZ());
                     Block.getById(interactLocation.getBlock().getType().getId())
-                        .interact(((CraftWorld)world).getHandle(),
-                                interactLocation.getBlockX(),
-                                interactLocation.getBlockY(),
-                                interactLocation.getBlockZ(),
-                                craftPlayer != null ? craftPlayer.getHandle(): null, 0, 0f, 0f, 0f);
+                        .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
+                                pos,
+                                ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
+                                craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
                 }
 
                 dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +

@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_7_R4.EntityHuman;
-import net.minecraft.server.v1_7_R4.EntityLiving;
+import net.minecraft.server.v1_8_R1.EntityHuman;
+import net.minecraft.server.v1_8_R1.EntityLiving;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftEntity;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -47,7 +47,7 @@ public class Rotation {
         }
 
         else {
-            net.minecraft.server.v1_7_R4.Entity handle = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_8_R1.Entity handle = ((CraftEntity) entity).getHandle();
             handle.yaw = yaw;
             handle.pitch = pitch;
         }
@@ -55,7 +55,7 @@ public class Rotation {
 
     // Taken from C2 NMS class for less dependency on C2
     private static void look(Entity entity, float yaw, float pitch) {
-        net.minecraft.server.v1_7_R4.Entity handle = !(entity instanceof CraftEntity)?null:((CraftEntity)entity).getHandle();
+        net.minecraft.server.v1_8_R1.Entity handle = !(entity instanceof CraftEntity)?null:((CraftEntity)entity).getHandle();
         if (handle != null) {
             handle.yaw = yaw;
             if(entity instanceof EntityLiving) {
@@ -66,10 +66,12 @@ public class Rotation {
                 while(yaw >= 180.0F) {
                     yaw -= 360.0F;
                 }
+                /*
                 livingHandle.aO = yaw;
                 if(!(handle instanceof EntityHuman))
                     livingHandle.aM = yaw;
-                livingHandle.aP = yaw;
+                livingHandle.aP = yaw;*/
+                // TODO: 1.8 UPDATE
             }
             handle.pitch = pitch;
         }

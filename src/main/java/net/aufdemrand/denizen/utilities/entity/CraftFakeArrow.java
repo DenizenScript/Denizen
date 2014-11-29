@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_7_R4.EntityArrow;
+import net.minecraft.server.v1_8_R1.EntityArrow;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R4.CraftServer;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftArrow;
+import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Vehicle;

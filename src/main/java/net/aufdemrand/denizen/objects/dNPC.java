@@ -32,10 +32,10 @@ import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
-import net.minecraft.server.v1_7_R4.EntityLiving;
+import net.minecraft.server.v1_8_R1.EntityLiving;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -1066,14 +1066,17 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             switch (getEntity().getType()) {
                 case DROPPED_ITEM:
                     ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
-                    ((ItemController.ItemNPC) getEntity()).setType(mat, data);
+                    //((ItemController.ItemNPC) getEntity()).setType(mat, data);
+                    // TODO: 1.8 UPDATE
                     break;
                 case ITEM_FRAME:
                     ((ItemFrame) getEntity()).getItem().setType(mat);
-                    ((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
+                    //((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
+                    // TODO: 1.8 UPDATE
                     break;
                 case FALLING_BLOCK:
-                    ((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
+                    //((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
+                    // TODO: 1.8 UPDATE
                     break;
                 default:
                     dB.echoError("NPC is the not an item type!");

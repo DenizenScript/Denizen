@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
-import net.minecraft.server.v1_7_R4.PacketPlayOutBlockAction;
+import net.minecraft.server.v1_8_R1.PacketPlayOutBlockAction;
 import org.bukkit.Sound;
 
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -10,8 +10,8 @@ import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +77,7 @@ public class AnimateChestCommand extends AbstractCommand {
                                           + aH.debugObj("players", players.toString()));
 
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
+            /*
             case OPEN:
                 for (dPlayer player: players) {
                     if (sound.asBoolean()) player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
@@ -93,7 +94,8 @@ public class AnimateChestCommand extends AbstractCommand {
                             new PacketPlayOutBlockAction(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
                             ((CraftWorld)location.getWorld()).getHandle().getType(location.getBlockX(), location.getBlockY(), location.getBlockZ()), 1, 0));
                 }
-                break;
+                break;*/
+            // TODO: 1.8 UPDATE
         }
     }
 }

@@ -6,10 +6,10 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
-import net.minecraft.server.v1_7_R4.*;
+import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.util.Vector;
@@ -20,9 +20,30 @@ import java.util.List;
 
 public class FishingTrait extends Trait {
 
-    private static final List junkResults = Arrays.asList(new PossibleFishingResult[]{(new PossibleFishingResult(new ItemStack(Items.LEATHER_BOOTS), 10)).a(0.9F), new PossibleFishingResult(new ItemStack(Items.LEATHER), 10), new PossibleFishingResult(new ItemStack(Items.BONE), 10), new PossibleFishingResult(new ItemStack(Items.POTION), 10), new PossibleFishingResult(new ItemStack(Items.STRING), 5), (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 2)).a(0.9F), new PossibleFishingResult(new ItemStack(Items.BOWL), 10), new PossibleFishingResult(new ItemStack(Items.STICK), 5), new PossibleFishingResult(new ItemStack(Items.INK_SACK, 10, 0), 1), new PossibleFishingResult(new ItemStack(Blocks.TRIPWIRE_SOURCE), 10), new PossibleFishingResult(new ItemStack(Items.ROTTEN_FLESH), 10)});
-    private static final List treasureResults = Arrays.asList(new PossibleFishingResult[] { new PossibleFishingResult(new ItemStack(Blocks.WATER_LILY), 1), new PossibleFishingResult(new ItemStack(Items.NAME_TAG), 1), new PossibleFishingResult(new ItemStack(Items.SADDLE), 1), (new PossibleFishingResult(new ItemStack(Items.BOW), 1)).a(0.25F).a(), (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 1)).a(0.25F).a(), (new PossibleFishingResult(new ItemStack(Items.BOOK), 1)).a()});
-    private static final List fishResults = Arrays.asList(new PossibleFishingResult[] { new PossibleFishingResult(new ItemStack(Items.RAW_FISH, 1, EnumFish.COD.a()), 60), new PossibleFishingResult(new ItemStack(Items.RAW_FISH, 1, EnumFish.SALMON.a()), 25), new PossibleFishingResult(new ItemStack(Items.RAW_FISH, 1, EnumFish.CLOWNFISH.a()), 2), new PossibleFishingResult(new ItemStack(Items.RAW_FISH, 1, EnumFish.PUFFERFISH.a()), 13)});
+    private static final List junkResults = Arrays.asList(new PossibleFishingResult[]{(
+            new PossibleFishingResult(new ItemStack(Items.LEATHER_BOOTS), 10)).a(0.9F),
+            new PossibleFishingResult(new ItemStack(Items.LEATHER), 10),
+            new PossibleFishingResult(new ItemStack(Items.BONE), 10),
+            new PossibleFishingResult(new ItemStack(Items.POTION), 10),
+            new PossibleFishingResult(new ItemStack(Items.STRING), 5),
+            (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 2)).a(0.9F),
+            new PossibleFishingResult(new ItemStack(Items.BOWL), 10),
+            new PossibleFishingResult(new ItemStack(Items.STICK), 5),
+            new PossibleFishingResult(new ItemStack(Items.DYE, 10, 0), 1),
+            new PossibleFishingResult(new ItemStack(Blocks.TRIPWIRE_HOOK), 10),
+            new PossibleFishingResult(new ItemStack(Items.ROTTEN_FLESH), 10)});
+    private static final List treasureResults = Arrays.asList(new PossibleFishingResult[] {
+            new PossibleFishingResult(new ItemStack(Blocks.WATERLILY), 1),
+            new PossibleFishingResult(new ItemStack(Items.NAME_TAG), 1),
+            new PossibleFishingResult(new ItemStack(Items.SADDLE), 1),
+            (new PossibleFishingResult(new ItemStack(Items.BOW), 1)).a(0.25F).a(),
+            (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 1)).a(0.25F).a(),
+            (new PossibleFishingResult(new ItemStack(Items.BOOK), 1)).a()});
+    private static final List fishResults = Arrays.asList(new PossibleFishingResult[] {
+            new PossibleFishingResult(new ItemStack(Items.FISH, 1, EnumFish.COD.a()), 60),
+            new PossibleFishingResult(new ItemStack(Items.FISH, 1, EnumFish.SALMON.a()), 25),
+            new PossibleFishingResult(new ItemStack(Items.FISH, 1, EnumFish.CLOWNFISH.a()), 2),
+            new PossibleFishingResult(new ItemStack(Items.FISH, 1, EnumFish.PUFFERFISH.a()), 13)});
 
     public static enum CatchType { NONE, DEFAULT, JUNK, TREASURE, FISH }
 
@@ -236,8 +257,13 @@ public class FishingTrait extends Trait {
     public ItemStack getFishingResult() {
         if (catchType == CatchType.DEFAULT) {
             float f = nmsworld.random.nextFloat();
+            /*
             int i = EnchantmentManager.getLuckEnchantmentLevel(fishHook.owner);
             int j = EnchantmentManager.getLureEnchantmentLevel(fishHook.owner);
+            */
+            // TODO: 1.8 UPDATE
+            int i = 0;
+            int j = 0;
             float f1 = 0.1F - (float) i * 0.025F - (float) j * 0.01F;
             float f2 = 0.05F + (float) i * 0.01F - (float) j * 0.01F;
 
