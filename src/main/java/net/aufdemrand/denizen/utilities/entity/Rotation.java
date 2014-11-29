@@ -66,12 +66,10 @@ public class Rotation {
                 while(yaw >= 180.0F) {
                     yaw -= 360.0F;
                 }
-                /*
-                livingHandle.aO = yaw;
+                livingHandle.aI = yaw;
                 if(!(handle instanceof EntityHuman))
-                    livingHandle.aM = yaw;
-                livingHandle.aP = yaw;*/
-                // TODO: 1.8 UPDATE
+                    livingHandle.aG = yaw;
+                livingHandle.aJ = yaw;
             }
             handle.pitch = pitch;
         }

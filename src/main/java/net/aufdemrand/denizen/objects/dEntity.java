@@ -2168,9 +2168,9 @@ public class dEntity implements dObject, Adjustable {
             dList list = dList.valueOf(value.asString());
             if (list.size() > 1) {
                 if (list.get(0).equalsIgnoreCase("true"))
-                    ((CraftAnimals)getLivingEntity()).getHandle().a((EntityHuman) null); // TODO: 1.8 UPDATE - is this right?
+                    ((CraftAnimals)getLivingEntity()).getHandle().a((EntityHuman) null);
                 else
-                    ((CraftAnimals)getLivingEntity()).getHandle().cf();
+                    ((CraftAnimals)getLivingEntity()).getHandle().cq();
             }
         }
 
