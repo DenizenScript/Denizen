@@ -720,7 +720,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // {'text':'Item','color':'white','hoverEvent':{'action':'show_item','value':'{<player.item_in_hand.json>}'}}]}"
         // -->
         if (attribute.startsWith("json")) {
-            String JSON = CraftItemStack.asNMSCopy(item).C().getChatModifier().toString(); // TODO: 1.8 UPDATE: Is this correct?
+            String JSON = CraftItemStack.asNMSCopy(item).C().getChatModifier().toString();
             return new Element(JSON.substring(176, JSON.length() - 154))
                     .getAttribute(attribute.fulfill(1));
         }
