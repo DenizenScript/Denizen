@@ -93,7 +93,7 @@ public class TagManager implements Listener {
                 case 0x07:
                     data[i] = '[';
                     break;
-                case 0x06:
+                case 0x09:
                     data[i] = ']';
                     break;
                 case dList.internal_escape_char:
@@ -136,7 +136,7 @@ public class TagManager implements Listener {
                 case 0x07:
                     data[i] = '[';
                     break;
-                case 0x06:
+                case 0x09:
                     data[i] = ']';
                     break;
                 case dList.internal_escape_char:
@@ -164,7 +164,7 @@ public class TagManager implements Listener {
                     data[i] = 0x07;
                     break;
                 case ']':
-                    data[i] = 0x06;
+                    data[i] = 0x09;
                     break;
                 case '|':
                     data[i] = dList.internal_escape_char;

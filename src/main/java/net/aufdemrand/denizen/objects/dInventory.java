@@ -1384,7 +1384,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns -1 if there's no match.
         // Will match item script to item script, even if one is edited.
         // -->
-        if (attribute.startsWith("find")
+        if (attribute.startsWith("find_imperfect")
                 && attribute.hasContext(1)
                 && dItem.matches(attribute.getContext(1))) {
             dItem item = dItem.valueOf(attribute.getContext(1),
