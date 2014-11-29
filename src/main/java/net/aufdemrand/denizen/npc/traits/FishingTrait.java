@@ -257,13 +257,8 @@ public class FishingTrait extends Trait {
     public ItemStack getFishingResult() {
         if (catchType == CatchType.DEFAULT) {
             float f = nmsworld.random.nextFloat();
-            /*
-            int i = EnchantmentManager.getLuckEnchantmentLevel(fishHook.owner);
-            int j = EnchantmentManager.getLureEnchantmentLevel(fishHook.owner);
-            */
-            // TODO: 1.8 UPDATE
-            int i = 0;
-            int j = 0;
+            int i = EnchantmentManager.g(fishHook.owner);
+            int j = EnchantmentManager.h(fishHook.owner);
             float f1 = 0.1F - (float) i * 0.025F - (float) j * 0.01F;
             float f2 = 0.05F + (float) i * 0.01F - (float) j * 0.01F;
 
