@@ -1016,7 +1016,7 @@ public class dEntity implements dObject, Adjustable {
                 //    return "e@" + getSaved(this);
 
             else if (isSpawned())
-                return "e@" + entity.getEntityId();
+                return "e@" + entity.getUniqueId().toString();
         }
 
         // Try to identify as an entity script
