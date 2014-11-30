@@ -80,13 +80,13 @@ public class TagManager implements Listener {
                     break;
                 }
             }
-            if (!has) {
+            /*if (!has) {
                 break;
-            }
+            }*/
             Class[] parameters = method.getParameterTypes();
             if (parameters.length != 1 || parameters[0] != ReplaceableTagEvent.class) {
-                dB.echoError("Class " + o.getClass().getCanonicalName() + " has a method "
-                        + method.getName() + " that is targeted at the event manager but has invalid parameters.");
+                //dB.echoError("Class " + o.getClass().getCanonicalName() + " has a method "
+                //        + method.getName() + " that is targeted at the event manager but has invalid parameters.");
                 break;
             }
             registerMethod(method, o);
