@@ -543,6 +543,7 @@ public class dWorld implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether it is currently thundering in this world.
+        // -->
         if (attribute.startsWith("thundering"))
             return new Element(getWorld().isThundering())
                     .getAttribute(attribute.fulfill(1));
