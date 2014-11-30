@@ -1,12 +1,11 @@
-package net.aufdemrand.denizen.utilities;
+package net.aufdemrand.denizen.utilities.maps;
 
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.entity.Player;
 import org.bukkit.map.*;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,10 @@ public class DenizenMapRenderer extends MapRenderer {
     }
 
     public void addImage(int x, int y, String file, boolean resize) {
-        imageList.add(new MapImage(x, y, file, resize));
+        if (file.toLowerCase().endsWith(".gif"))
+            imageList.add(new MapAnimatedImage(x, y, file, resize));
+        else
+            imageList.add(new MapImage(x, y, file, resize));
     }
 
     public List<MapRenderer> getOldRenderers() {
@@ -36,12 +38,13 @@ public class DenizenMapRenderer extends MapRenderer {
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
         dPlayer pl = dPlayer.mirrorBukkitPlayer(player);
-        for (MapText text : textList)
-            mapCanvas.drawText(text.x, text.y, MinecraftFont.Font, TagManager.tag(pl, pl.getSelectedNPC(), text.text));
         for (MapImage image : imageList) {
-            Image i = new ImageIcon(image.file).getImage();
             // Use custom function to draw image to allow transparency
-            this.drawImage(image.x, image.y, image.resize ? MapPalette.resizeImage(i) : i, mapCanvas);
+            this.drawImage(image.getX(), image.getY(), image.getImage(), mapCanvas);
+        }
+        for (MapText text : textList) {
+            mapCanvas.drawText(text.getX(), text.getY(),
+                    MinecraftFont.Font, TagManager.tag(pl, pl.getSelectedNPC(), text.getText()));
         }
     }
 
@@ -53,32 +56,6 @@ public class DenizenMapRenderer extends MapRenderer {
                 if (p != MapPalette.TRANSPARENT)
                     canvas.setPixel(x + x2, y + y2, p);
             }
-        }
-    }
-
-    public class MapText {
-        public final int x;
-        public final int y;
-        public final String text;
-
-        public MapText(int x, int y, String text) {
-            this.x = x;
-            this.y = y;
-            this.text = text;
-        }
-    }
-
-    public class MapImage {
-        public final int x;
-        public final int y;
-        public final String file;
-        public final boolean resize;
-
-        public MapImage(int x, int y, String file, boolean resize) {
-            this.x = x;
-            this.y = y;
-            this.file = file;
-            this.resize = resize;
         }
     }
 
