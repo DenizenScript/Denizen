@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -12,6 +12,7 @@ public class EscapeTags implements Listener {
 
     public EscapeTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     // <--[language]
@@ -90,7 +91,7 @@ public class EscapeTags implements Listener {
                 .replace("&amp", "&");
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void escapeTags(ReplaceableTagEvent event) {
         // <--[tag]
         // @attribute <escape:<text to escape>>

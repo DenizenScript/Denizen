@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -26,6 +27,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
     @Override
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        TagManager.registerTagEvents(this);
     }
 
     Map<String, YamlConfiguration> yamls = new HashMap<String, YamlConfiguration>();
@@ -417,7 +419,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void yaml(ReplaceableTagEvent event) {
 
         if (!event.matches("yaml")) return;

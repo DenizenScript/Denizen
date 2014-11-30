@@ -1,10 +1,11 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -17,9 +18,10 @@ public class ConstantTags implements Listener {
 
     public ConstantTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void constantTags(ReplaceableTagEvent event) {
         if (!event.matches("cons")) return;
 

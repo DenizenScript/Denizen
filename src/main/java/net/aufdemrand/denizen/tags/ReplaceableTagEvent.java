@@ -1,22 +1,15 @@
-package net.aufdemrand.denizen.events.bukkit;
+package net.aufdemrand.denizen.tags;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.tags.Attribute;
 
-import net.aufdemrand.denizen.tags.TagManager;
-import org.apache.commons.lang3.StringUtils;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
-/**
- * Bukkit event that fires on the finding of a replaceable tag, as indicated by surrounding < >'s.
- */
-public class ReplaceableTagEvent extends Event {
+import java.util.List;
 
-    private static final HandlerList handlers = new HandlerList();
+public class ReplaceableTagEvent {
 
     private final dPlayer player;
     private final dNPC npc;
@@ -147,7 +140,7 @@ public class ReplaceableTagEvent extends Event {
 
     // TODO: Remove in 1.0!
     public boolean matches(String tagName) {
-        String[] tagNames = StringUtils.split(tagName, ',');
+        List<String> tagNames = CoreUtilities.Split(tagName, ',');
         String name = getName();
         for (String string: tagNames)
             if (name.equalsIgnoreCase(string.trim())) return true;
@@ -275,14 +268,6 @@ public class ReplaceableTagEvent extends Event {
     }
 
     // Other internal mechanics
-
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 
     public dNPC getNPC() {
         return npc;

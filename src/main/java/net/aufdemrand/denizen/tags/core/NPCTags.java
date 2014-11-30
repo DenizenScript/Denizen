@@ -2,11 +2,12 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.events.core.NPCNavigationSmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -29,11 +30,13 @@ import java.util.Map;
 public class NPCTags implements Listener {
 
     public NPCTags(Denizen denizen) {
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             denizen.getServer().getPluginManager().registerEvents(this, denizen);
+            TagManager.registerTagEvents(this);
+        }
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void npcTags(ReplaceableTagEvent event) {
 
         if (!event.matches("npc") || event.replaced()) return;
