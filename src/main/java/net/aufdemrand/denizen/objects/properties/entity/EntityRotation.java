@@ -77,7 +77,7 @@ public class EntityRotation implements Property {
         // @group properties
         // @description
         // If the entity can have a rotation, returns the entity's rotation.
-        // Currently, only Hanging-type entities can have professions.
+        // Currently, only Hanging-type entities can have rotations.
         // -->
         if (attribute.startsWith("rotation"))
             return new Element(getRotation().name().toLowerCase())
@@ -95,7 +95,7 @@ public class EntityRotation implements Property {
         // @input Element
         // @description
         // Changes the entity's rotation.
-        // Currently, only Hanging-type entities can have professions.
+        // Currently, only Hanging-type entities can have rotations.
         // @tags
         // <e@entity.rotation>
         // -->

@@ -57,16 +57,12 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player breaks block
-    // player breaks block in <notable cuboid>
-    // player breaks <material>
-    // player breaks <material> in <notable cuboid>
-    // player breaks block with <item>
-    // player breaks <material> with <item>
-    // player breaks <material> with <item> in <notable cuboid>
-    // player breaks block with <material>
-    // player breaks <material> with <material>
-    // player breaks <material> with <material> in <notable cuboid>
+    // player breaks block (in <notable cuboid>)
+    // player breaks <material> (in <notable cuboid>)
+    // player breaks block with <item> (in <notable cuboid>)
+    // player breaks <material> with <item> (in <notable cuboid>)
+    // player breaks block with <material> (in <notable cuboid>)
+    // player breaks <material> with <material> (in <notable cuboid>)
     //
     // @Triggers when a player breaks a block.
     // @Context
