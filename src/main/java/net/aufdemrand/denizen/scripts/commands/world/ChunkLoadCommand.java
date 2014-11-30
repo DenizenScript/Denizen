@@ -3,8 +3,10 @@ package net.aufdemrand.denizen.scripts.commands.world;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -22,7 +24,11 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     @Override
     public void onEnable() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        Denizen denizen = DenizenAPI.getCurrentInstance();
+        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        if (Depends.citizens != null) {
+            denizen.getServer().getPluginManager().registerEvents(new ChunkLoadCommandNPCEvents(), denizen);
+        }
     }
 
     /*
@@ -127,21 +133,23 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         }
     }
 
-    @EventHandler
-    public void stopDespawn(NPCDespawnEvent e) {
-        if (e.getNPC() == null || !e.getNPC().isSpawned())
-            return;
-        Chunk chnk = e.getNPC().getEntity().getLocation().getChunk();
-        String chunkString = chnk.getX()+", "+ chnk.getZ();
-        if(chunkDelays.containsKey(chunkString)) {
-            if(chunkDelays.get(chunkString) == 0)
-                e.setCancelled(true);
+    public class ChunkLoadCommandNPCEvents implements Listener {
+        @EventHandler
+        public void stopDespawn(NPCDespawnEvent e) {
+            if (e.getNPC() == null || !e.getNPC().isSpawned())
+                return;
+            Chunk chnk = e.getNPC().getEntity().getLocation().getChunk();
+            String chunkString = chnk.getX()+", "+ chnk.getZ();
+            if(chunkDelays.containsKey(chunkString)) {
+                if(chunkDelays.get(chunkString) == 0)
+                    e.setCancelled(true);
 
-            else if(System.currentTimeMillis() < chunkDelays.get(chunkString))
-                e.setCancelled(true);
+                else if(System.currentTimeMillis() < chunkDelays.get(chunkString))
+                    e.setCancelled(true);
 
-            else
-                chunkDelays.remove(chunkString);
+                else
+                    chunkDelays.remove(chunkString);
+            }
         }
     }
 }
