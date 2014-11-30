@@ -9,10 +9,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.lang.annotation.Annotation;
+import java.lang.annotation.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +62,11 @@ public class TagManager implements Listener {
         new NotableLocationTags(denizen);
 
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        registerTagEvents(this);
     }
 
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
     public static @interface TagEvents {
     }
 
@@ -73,20 +75,13 @@ public class TagManager implements Listener {
 
     public static void registerTagEvents(Object o) {
         for (Method method: o.getClass().getMethods()) {
-            boolean has = false;
-            for (Annotation annotation: method.getAnnotations()) {
-                if (annotation.getClass() == TagEvents.class) {
-                    has = true;
-                    break;
-                }
+            if (!method.isAnnotationPresent(TagManager.TagEvents.class)) {
+                continue;
             }
-            /*if (!has) {
-                break;
-            }*/
             Class[] parameters = method.getParameterTypes();
             if (parameters.length != 1 || parameters[0] != ReplaceableTagEvent.class) {
-                //dB.echoError("Class " + o.getClass().getCanonicalName() + " has a method "
-                //        + method.getName() + " that is targeted at the event manager but has invalid parameters.");
+                dB.echoError("Class " + o.getClass().getCanonicalName() + " has a method "
+                        + method.getName() + " that is targeted at the event manager but has invalid parameters.");
                 break;
             }
             registerMethod(method, o);
@@ -230,7 +225,7 @@ public class TagManager implements Listener {
         return new String(data);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void fetchObject(ReplaceableTagEvent event) {
         if (!event.getName().contains("@")) return;
 
