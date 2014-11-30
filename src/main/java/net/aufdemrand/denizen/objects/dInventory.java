@@ -21,7 +21,7 @@ import org.bukkit.block.BrewingStand;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
-import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -1384,7 +1384,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns -1 if there's no match.
         // Will match item script to item script, even if one is edited.
         // -->
-        if (attribute.startsWith("find")
+        if (attribute.startsWith("find_imperfect")
                 && attribute.hasContext(1)
                 && dItem.matches(attribute.getContext(1))) {
             dItem item = dItem.valueOf(attribute.getContext(1),

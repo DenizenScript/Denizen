@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R4.CraftChunk;
+import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -543,6 +543,7 @@ public class dWorld implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether it is currently thundering in this world.
+        // -->
         if (attribute.startsWith("thundering"))
             return new Element(getWorld().isThundering())
                     .getAttribute(attribute.fulfill(1));

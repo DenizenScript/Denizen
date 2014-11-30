@@ -12,14 +12,16 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_7_R4.EntityHuman;
-import net.minecraft.server.v1_7_R4.EntityLiving;
+import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftAnimals;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -29,6 +31,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,11 +124,14 @@ public class dEntity implements dObject, Adjustable {
 
             // Assume entity
             else {
-                if (aH.matchesInteger(m.group(2))) {
-                    int entityID = Integer.valueOf(m.group(2));
+                try {
+                    UUID entityID = UUID.fromString(m.group(2));
                     Entity entity = getEntityForID(entityID);
                     if (entity != null) return new dEntity(entity);
                     return null;
+                }
+                catch (Exception ex) {
+                    ex.getCause(); // DO NOTHING
                 }
 
 //                else if (isSaved(m.group(2)))
@@ -175,9 +181,10 @@ public class dEntity implements dObject, Adjustable {
         return null;
     }
 
-    public static Entity getEntityForID(int ID) {
+    @Deprecated
+    public static Entity getEntityForID(UUID ID) {
         for (World world : Bukkit.getWorlds()) {
-            net.minecraft.server.v1_7_R4.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(ID);
+            net.minecraft.server.v1_8_R1.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(ID);
 
             // Make sure the nmsEntity is valid, to prevent unpleasant errors
             if (nmsEntity != null) {
@@ -1009,7 +1016,7 @@ public class dEntity implements dObject, Adjustable {
                 //    return "e@" + getSaved(this);
 
             else if (isSpawned())
-                return "e@" + entity.getEntityId();
+                return "e@" + entity.getUniqueId().toString();
         }
 
         // Try to identify as an entity script
@@ -2161,9 +2168,9 @@ public class dEntity implements dObject, Adjustable {
             dList list = dList.valueOf(value.asString());
             if (list.size() > 1) {
                 if (list.get(0).equalsIgnoreCase("true"))
-                    ((CraftAnimals)getLivingEntity()).getHandle().f((EntityHuman) null);
+                    ((CraftAnimals)getLivingEntity()).getHandle().a((EntityHuman) null);
                 else
-                    ((CraftAnimals)getLivingEntity()).getHandle().cf();
+                    ((CraftAnimals)getLivingEntity()).getHandle().cq();
             }
         }
 

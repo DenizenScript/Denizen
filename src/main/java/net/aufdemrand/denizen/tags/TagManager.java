@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.util.org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -94,7 +93,7 @@ public class TagManager implements Listener {
                 case 0x07:
                     data[i] = '[';
                     break;
-                case 0x06:
+                case 0x09:
                     data[i] = ']';
                     break;
                 case dList.internal_escape_char:
@@ -137,7 +136,7 @@ public class TagManager implements Listener {
                 case 0x07:
                     data[i] = '[';
                     break;
-                case 0x06:
+                case 0x09:
                     data[i] = ']';
                     break;
                 case dList.internal_escape_char:
@@ -165,7 +164,7 @@ public class TagManager implements Listener {
                     data[i] = 0x07;
                     break;
                 case ']':
-                    data[i] = 0x06;
+                    data[i] = 0x09;
                     break;
                 case '|':
                     data[i] = dList.internal_escape_char;

@@ -155,7 +155,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void onEnable() {
         try {
-            net.minecraft.server.v1_7_R4.Block.getById(0);
+            net.minecraft.server.v1_8_R1.Block.getById(0);
         }
         catch (NoClassDefFoundError e) {
             getLogger().warning("-------------------------------------");

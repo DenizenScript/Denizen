@@ -133,8 +133,19 @@ public class CommandExecuter {
                     m = definition_pattern.matcher(arg.raw_value);
                     sb = new StringBuffer();
                     while (m.find()) {
-                        String definition = TagManager.escapeOutput(scriptEntry.getResidingQueue().getDefinition(m.group(1)));
-                        if (definition == null) {
+                        String def = m.group(1);
+                        boolean dynamic = false;
+                        if (def.startsWith("|")) {
+                            def = def.substring(1, def.length() - 1);
+                            dynamic = true;
+                        }
+                        String definition;
+                        String defval = scriptEntry.getResidingQueue().getDefinition(def);
+                        if (dynamic)
+                            definition = scriptEntry.getResidingQueue().getDefinition(def);
+                        else
+                            definition = TagManager.escapeOutput(scriptEntry.getResidingQueue().getDefinition(def));
+                        if (defval == null) {
                             dB.echoError("Unknown definition %" + m.group(1) + "%.");
                             definition = "null";
                         }
