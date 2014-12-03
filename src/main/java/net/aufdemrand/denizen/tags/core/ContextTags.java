@@ -62,7 +62,7 @@ public class ContextTags implements Listener {
 
 
     // Get a saved script entry!
-    @EventHandler
+    @TagManager.TagEvents
     public void savedEntryTags(ReplaceableTagEvent event) {
         if (!event.matches("entry", "e")
                 || event.getScriptEntry() == null
