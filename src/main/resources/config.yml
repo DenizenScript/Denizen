@@ -102,6 +102,9 @@ Tags:
   Block tags:
     # How many blocks can be read, max, before stopping the tag in place
     Max blocks: 1000000
+  Path finding:
+    # How far away the path finder can search before giving up
+    Max distance: 100
 
 
 # The version of this configuration file, used to check if your
