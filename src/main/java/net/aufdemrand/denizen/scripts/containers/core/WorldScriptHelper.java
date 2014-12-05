@@ -1912,11 +1912,12 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when an entity decides to explode.
     // @Context
     // <context.entity> returns the dEntity.
-    // <context.origin> returns an Element of the explosion's radius.
+    // <context.radius> returns an Element of the explosion's radius.
     // <context.fire> returns an Element with a value of "true" if the explosion will create fire and "false" otherwise.
     //
     // @Determine
     // "CANCELLED" to stop the entity from deciding to explode.
+    // TODO: Set radius, set fire-state (mulitple-determinations)
     //
     // -->
     @EventHandler
