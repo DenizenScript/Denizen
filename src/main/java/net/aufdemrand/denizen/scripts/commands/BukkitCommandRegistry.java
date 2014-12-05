@@ -2698,7 +2698,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Trigger
-        // @Syntax trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<#.#>) (radius:<#>)
+        // @Syntax trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)
         // @Required 1
         // @Stable stable
         // @Short Enables or disables a trigger.
@@ -2709,10 +2709,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <n@npc.has_trigger[<trigger>]>
         // @Usage
+        // Use to enable the click trigger.
+        // - trigger name:click state:true
+        // @Usage
+        // Use to enable the chat trigger with a 10-second cooldown and a radius of 5 blocks.
+        // - trigger name:chat state:ture cooldown:10s radius:5
+        // @Usage
         // TODO: Document Command Details
         // -->
         registerCoreMember(TriggerCommand.class,
-                "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<#.#>) (radius:<#>)", 1);
+                "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)", 1);
 
         // <--[command]
         // @Name Viewer
