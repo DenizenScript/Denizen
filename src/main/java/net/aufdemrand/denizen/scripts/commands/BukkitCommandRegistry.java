@@ -1864,7 +1864,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Required 2
         // @Stable stable
         // @Short Plays a visible or audible effect at the location.
-        // @Author David Cernat
+        // @Author David Cernat, mcmonkey
         // @Group world
         // @Description
         // TODO: Document Command Details

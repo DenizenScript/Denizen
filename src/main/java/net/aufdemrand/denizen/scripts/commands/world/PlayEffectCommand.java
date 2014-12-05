@@ -20,25 +20,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Lets you play a Bukkit effect or a ParticleEffect from the
- * ParticleEffect Library at a certain location.
- *
- * Arguments: [] - Required, () - Optional
- * [location:<x,y,z,world>] specifies location of the effect
- * [effect:<name>] sets the name of effect to be played
- * (data:<#>) sets the special data value of the effect
- * (visibility:<#>) adjusts the radius within which players can observe the effect
- * (qty:<#>) sets the number of times the effect will be played
- * (offset:<#>) sets the offset of ParticleEffects.
- *
- * Example Usage:
- * playeffect location:123,65,765,world effect:record_play data:2259 radius:7
- * playeffect location:<npc.location> e:smoke r:3
- * playeffect location:<npc.location> effect:heart radius:7 qty:1000 offset:20
- *
- * @author David Cernat
- */
+
+// <--[language]
+// @name Particle Effects
+// @group Useful Lists
+// @description
+// All of the effects listed here can be used by <@link command PlayEffect> to display visual effects or play sounds
+//
+// Sounds:
+// - BLAZE_SHOOT, BOW_FIRE, CLICK1, CLICK2, DOOR_TOGGLE, EXTINGUISH, GHAST_SHOOT, GHAST_SHRIEK,
+//   RECORD_PLAY, STEP_SOUND, ZOMBIE_CHEW_IRON_DOOR, ZOMBIE_CHEW_WOODEN_DOOR, ZOMBIE_DESTROY_DOOR
+//
+// Visual effects:
+// - iconcrack_[id] (item break effect - examples: iconcrack_7, iconcrack_268)
+// - ENDER_SIGNAL, MOBSPAWNER_FLAMES, POTION_BREAK, SMOKE
+// - HUGE_EXPLOSION, LARGE_EXPLODE, FIREWORKS_SPARK, BUBBLE, SUSPEND, DEPTH_SUSPEND, TOWN_AURA,
+//   CRIT, MAGIC_CRIT, MOB_SPELL, MOB_SPELL_AMBIENT, SPELL, INSTANT_SPELL, WITCH_MAGIC, NOTE, STEP_SOUND,
+//   PORTAL, ENCHANTMENT_TABLE, EXPLODE, FLAME, LAVA, FOOTSTEP, SPLASH, LARGE_SMOKE, CLOUD, RED_DUST,
+//   SNOWBALL_POOF, DRIP_WATER, DRIP_LAVA, SNOW_SHOVEL, SLIME, HEART, ANGRY_VILLAGER, HAPPY_VILLAGER, BARRIER
+//
+// - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
+// -->
 
 public class PlayEffectCommand extends AbstractCommand {
 
