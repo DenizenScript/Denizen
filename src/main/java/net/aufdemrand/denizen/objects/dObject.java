@@ -70,11 +70,12 @@ import net.aufdemrand.denizen.tags.Attribute;
 // |   e@random - fetches a new, random entity
 //
 // + ----- dItem --------+
-// | object notation: i@    can reference unique objects: no     can be notable: no
+// | object notation: i@    can reference unique objects: no     can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   i@<material_name> - fetches a new item of the specified material
 // |   i@<material_name>,<data> - fetches a new item with the specified data
 // |   i@<item_script_name> - fetches a new custom item as specified by the referenced item script
+// |   i@<notable_name> - fetches the item that has been noted with the specified ID
 //
 // + ----- dWorld -------+
 // | object notation: w@    can reference unique objects: yes     can be notable: no
@@ -92,7 +93,13 @@ import net.aufdemrand.denizen.tags.Attribute;
 // | object notation: cu@   can reference unique objects: no      can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   cu@<position_1>|<position_2>|... - fetches a new cuboid encompassing a region from position 1 to 2, from 2 to 3, ...
-// |   cu@<notable_cuboid_name> - fetches the cuboid that has been 'noted' with the specified ID
+// |   cu@<notable_name> - fetches the cuboid that has been noted with the specified ID
+//
+// + ----- dEllipsoid ------+
+// | object notation: ellipsoid@   can reference unique objects: no      can be notable: yes
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   ellipsoid@<x>,<y>,<z>,<world>,<xrad>,<yrad>,<zrad>... - fetches a new ellispoid at the position with the given radius
+// |   cu@<notable_name> - fetches the ellipsoid that has been noted with the specified ID
 //
 // + ----- dChunk ------+
 // | object notation: ch@   can reference unique objects: yes      can be notable: no
