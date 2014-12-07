@@ -118,9 +118,9 @@ public class BossHealthBar {
     public static DataWatcher getWatcher(String text, int health) {
         DataWatcher watcher = new DataWatcher(null);
         watcher.a(0, (byte) 0x20); //Flags, 0x20 = invisible
+        watcher.a(2, text); //Entity name
+        watcher.a(3, (byte) 1); //Show name, 1 = show, 0 = don't show
         watcher.a(6, (float) health);
-        watcher.a(10, text); //Entity name
-        watcher.a(11, (byte) 1); //Show name, 1 = show, 0 = don't show
         return watcher;
     }
 
