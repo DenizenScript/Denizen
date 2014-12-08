@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.*;
@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -41,6 +42,7 @@ public class UtilTags implements Listener {
 
     public UtilTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     // <--[tag]
@@ -52,7 +54,7 @@ public class UtilTags implements Listener {
     // Since this is a 'value' tag, to get an int value, you will need to do '<math.as_int:calc>',
     // and similar for all other element tags.
     // -->
-    @EventHandler
+    @TagManager.TagEvents
     public void mathTag(ReplaceableTagEvent event) {
         if (!event.matches("math", "m")) return;
         try {
@@ -75,7 +77,7 @@ public class UtilTags implements Listener {
     // otherwise the fallback element will show.
     // Example: '<t[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
     // -->
-    @EventHandler
+    @TagManager.TagEvents
     public void ternaryTag(ReplaceableTagEvent event) {
         if (!event.matches("ternary", "tern", "t")) return;
 
@@ -91,7 +93,7 @@ public class UtilTags implements Listener {
     }
 
 
-    @EventHandler
+    @TagManager.TagEvents
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server", "svr", "global") || event.replaced()) return;
         Attribute attribute =
@@ -723,7 +725,7 @@ public class UtilTags implements Listener {
     }
 
 
-    @EventHandler
+    @TagManager.TagEvents
     public void utilTag(ReplaceableTagEvent event) {
         if (!event.matches("util", "u")) return;
 

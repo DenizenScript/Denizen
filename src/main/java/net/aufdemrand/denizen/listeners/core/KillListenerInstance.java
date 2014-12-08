@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 
@@ -166,6 +167,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         // Called after build and load methods. Perfect place to register
         // any bukkit events!
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
 
         // Report to the console
         dB.log(report());
@@ -180,7 +182,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         // can be cleanly removed from memory.
 
         EntityDeathEvent.getHandlerList().unregister(this);
-        ReplaceableTagEvent.getHandlerList().unregister(this);
+        TagManager.unregisterTagEvents(this);
     }
 
 
@@ -320,7 +322,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
     }
 
 
-    @EventHandler
+    @TagManager.TagEvents
     public void listenTag(ReplaceableTagEvent event) {
 
         if (!event.matches("LISTENER")) return;

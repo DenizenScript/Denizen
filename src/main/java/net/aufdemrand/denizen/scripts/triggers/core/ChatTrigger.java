@@ -22,9 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -200,7 +198,17 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         if (!idMap.isEmpty()) {
             // Iterate through the different id entries in the step's chat trigger
-            for (Map.Entry<String, String> entry : idMap.entrySet()) {
+            List<Map.Entry<String, String>> entries = new ArrayList<Map.Entry<String, String>>(idMap.entrySet());
+            Collections.sort(entries, new Comparator<Map.Entry<String, String>>() {
+                @Override
+                public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+                    if (o1 == null || o2 == null) {
+                        return 0;
+                    }
+                    return o1.getKey().compareToIgnoreCase(o2.getKey());
+                }
+            });
+            for (Map.Entry<String, String> entry : entries) {
 
                 // Check if the chat trigger specified in the specified id's 'trigger:' key
                 // matches the text the player has said

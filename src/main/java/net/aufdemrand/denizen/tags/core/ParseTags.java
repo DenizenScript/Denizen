@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -13,9 +13,10 @@ public class ParseTags implements Listener {
 
     public ParseTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void parseTags(ReplaceableTagEvent event) {
         // <--[tag]
         // @attribute <parse:<text to parse>>

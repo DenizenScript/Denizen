@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -87,6 +88,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
     @Override
     public void onEnable() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        TagManager.registerTagEvents(this);
     }
 
     @Override
@@ -208,7 +210,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
      *
      * @param e ReplaceableTagEvent
      */
-    @EventHandler
+    @TagManager.TagEvents
     public void paragraph(ReplaceableTagEvent e) {
         // <--[tag]
         // @attribute <P>
