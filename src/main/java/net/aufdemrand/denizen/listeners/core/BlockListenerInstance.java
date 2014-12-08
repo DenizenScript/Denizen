@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.ChatColor;
@@ -120,6 +121,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     @Override
     public void constructed() {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     @Override
@@ -127,7 +129,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         BlockBreakEvent.getHandlerList().unregister(this);
         PlayerPickupItemEvent.getHandlerList().unregister(this);
         BlockPlaceEvent.getHandlerList().unregister(this);
-        ReplaceableTagEvent.getHandlerList().unregister(this);
+        TagManager.unregisterTagEvents(this);
     }
 
     public void check() {
@@ -316,7 +318,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         }
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void listenTag(ReplaceableTagEvent event) {
 
         if (!event.matches("LISTENER")) return;

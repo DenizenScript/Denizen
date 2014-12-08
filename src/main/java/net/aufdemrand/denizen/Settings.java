@@ -351,4 +351,9 @@ public class Settings {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getInt("Tags.Block tags.Max blocks", 1000000);
     }
+
+    public static int pathfindingMaxDistance() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getInt("Tags.Path fiding.Max distance", 100);
+    }
 }

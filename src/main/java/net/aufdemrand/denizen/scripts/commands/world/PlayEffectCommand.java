@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.scripts.commands.world;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.minecraft.server.v1_8_R1.EnumParticle;
+import net.minecraft.server.v1_8_R1.PacketPlayOutWorldParticles;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 
@@ -11,32 +13,34 @@ import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.ParticleEffect;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Lets you play a Bukkit effect or a ParticleEffect from the
- * ParticleEffect Library at a certain location.
- *
- * Arguments: [] - Required, () - Optional
- * [location:<x,y,z,world>] specifies location of the effect
- * [effect:<name>] sets the name of effect to be played
- * (data:<#>) sets the special data value of the effect
- * (visibility:<#>) adjusts the radius within which players can observe the effect
- * (qty:<#>) sets the number of times the effect will be played
- * (offset:<#>) sets the offset of ParticleEffects.
- *
- * Example Usage:
- * playeffect location:123,65,765,world effect:record_play data:2259 radius:7
- * playeffect location:<npc.location> e:smoke r:3
- * playeffect location:<npc.location> effect:heart radius:7 qty:1000 offset:20
- *
- * @author David Cernat
- */
+
+// <--[language]
+// @name Particle Effects
+// @group Useful Lists
+// @description
+// All of the effects listed here can be used by <@link command PlayEffect> to display visual effects or play sounds
+//
+// Sounds:
+// - BLAZE_SHOOT, BOW_FIRE, CLICK1, CLICK2, DOOR_TOGGLE, EXTINGUISH, GHAST_SHOOT, GHAST_SHRIEK,
+//   RECORD_PLAY, STEP_SOUND, ZOMBIE_CHEW_IRON_DOOR, ZOMBIE_CHEW_WOODEN_DOOR, ZOMBIE_DESTROY_DOOR
+//
+// Visual effects:
+// - iconcrack_[id] (item break effect - examples: iconcrack_7, iconcrack_268)
+// - ENDER_SIGNAL, MOBSPAWNER_FLAMES, POTION_BREAK, SMOKE
+// - HUGE_EXPLOSION, LARGE_EXPLODE, FIREWORKS_SPARK, BUBBLE, SUSPEND, DEPTH_SUSPEND, TOWN_AURA,
+//   CRIT, MAGIC_CRIT, MOB_SPELL, MOB_SPELL_AMBIENT, SPELL, INSTANT_SPELL, WITCH_MAGIC, NOTE, STEP_SOUND,
+//   PORTAL, ENCHANTMENT_TABLE, EXPLODE, FLAME, LAVA, FOOTSTEP, SPLASH, LARGE_SMOKE, CLOUD, RED_DUST,
+//   SNOWBALL_POOF, DRIP_WATER, DRIP_LAVA, SNOW_SHOVEL, SLIME, HEART, ANGRY_VILLAGER, HAPPY_VILLAGER, BARRIER
+//
+// - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
+// -->
 
 public class PlayEffectCommand extends AbstractCommand {
 
@@ -56,16 +60,16 @@ public class PlayEffectCommand extends AbstractCommand {
                     !scriptEntry.hasObject("particleeffect") &&
                     !scriptEntry.hasObject("iconcrack")) {
 
-                if (arg.matchesEnum(ParticleEffect.values())) {
+                if (arg.matchesEnum(EnumParticle.values())) {
                     scriptEntry.addObject("particleeffect",
-                            ParticleEffect.valueOf(arg.getValue().toUpperCase()));
+                            EnumParticle.valueOf(arg.getValue().toUpperCase()));
                 }
                 else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used
-                    ParticleEffect effect = null;
+                    EnumParticle effect = null;
                     // Make sure the new effect is not an invisible effect
                     while (effect == null || effect.toString().matches("^(BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) {
-                        effect = ParticleEffect.values()[CoreUtilities.getRandom().nextInt(ParticleEffect.values().length)];
+                        effect = EnumParticle.values()[CoreUtilities.getRandom().nextInt(EnumParticle.values().length)];
                     }
                     scriptEntry.addObject("particleeffect", effect);
                 }
@@ -148,7 +152,7 @@ public class PlayEffectCommand extends AbstractCommand {
         List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("location");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
         Effect effect = (Effect) scriptEntry.getObject("effect");
-        ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("particleeffect");
+        EnumParticle particleEffect = (EnumParticle) scriptEntry.getObject("particleeffect");
         Element iconcrack = scriptEntry.getElement("iconcrack");
         Element radius = scriptEntry.getElement("radius");
         Element data = scriptEntry.getElement("data");
@@ -187,27 +191,47 @@ public class PlayEffectCommand extends AbstractCommand {
             else if (particleEffect != null) {
                 float os = offset.asFloat();
                 List<Player> players = new ArrayList<Player>();
-                if (targets == null)
-                    players = ParticleEffect.getPlayersInRange(location, radius.asDouble());
+                if (targets == null) {
+                    float rad = radius.asFloat();
+                    for (Player player: location.getWorld().getPlayers()) {
+                        if (player.getLocation().distanceSquared(location) < rad * rad) {
+                            players.add(player);
+                        }
+                    }
+                }
                 else {
                     for (dPlayer player: targets)
                         if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
                 }
-                particleEffect.display(location, os, os, os, data.asFloat(), qty.asInt(), players);
+                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(particleEffect, false, (float)location.getX(),
+                        (float)location.getY(), (float)location.getZ(), os, os, os, data.asFloat(), qty.asInt());
+                for (Player player: players) {
+                    ((CraftPlayer)player).getHandle().playerConnection.sendPacket(o);
+                }
             }
 
             // Play an iconcrack (item break) effect
             else {
                 float os = offset.asFloat();
                 List<Player> players = new ArrayList<Player>();
-                if (targets == null)
-                    players = ParticleEffect.getPlayersInRange(location, radius.asDouble());
+                if (targets == null) {
+                    float rad = radius.asFloat();
+                    for (Player player: location.getWorld().getPlayers()) {
+                        if (player.getLocation().distanceSquared(location) < rad * rad) {
+                            players.add(player);
+                        }
+                    }
+                }
                 else {
                     for (dPlayer player: targets)
                         if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
                 }
-                ParticleEffect.displayIconCrack(location, iconcrack.asInt(),
-                        os, os, os, data.asFloat(), qty.asInt(), players);
+                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(EnumParticle.ITEM_CRACK, false, (float)location.getX(),
+                        (float)location.getY(), (float)location.getZ(), os, os, os, data.asFloat(), qty.asInt(),
+                        iconcrack.asInt(), iconcrack.asInt()); // TODO: ???
+                for (Player player: players) {
+                    ((CraftPlayer)player).getHandle().playerConnection.sendPacket(o);
+                }
             }
         }
     }

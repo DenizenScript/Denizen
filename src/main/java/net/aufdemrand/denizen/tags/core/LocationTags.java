@@ -1,10 +1,11 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.dLocation;
 
+import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -18,9 +19,10 @@ public class LocationTags implements Listener {
 
     public LocationTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void locationTags(ReplaceableTagEvent event) {
 
         if (!event.matches("location", "l") || event.replaced()) return;

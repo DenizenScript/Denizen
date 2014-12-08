@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
@@ -268,7 +269,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
     @Override
     public int hashCode() {
-        return getBlockX() + getBlockY() + getBlockZ();
+        return (int)(Math.floor(getX()) + Math.floor(getY()) + Math.floor(getZ()));
     }
 
     @Override
@@ -276,6 +277,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (o == null) return false;
         if (!(o instanceof dLocation)) return false;
         dLocation other = (dLocation) o;
+        if ((other.getWorld() == null && getWorld() != null)
+            || (getWorld() == null && other.getWorld() != null)
+            || (getWorld() != null && other.getWorld() != null
+                && !getWorld().getName().equalsIgnoreCase(other.getWorld().getName()))) {
+            return false;
+        }
         return Math.floor(getX()) == Math.floor(other.getX())
                 && Math.floor(getY()) == Math.floor(other.getY())
                 && Math.floor(getZ()) == Math.floor(other.getZ());
@@ -699,7 +706,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         //   ENTITY AND BLOCK LIST ATTRIBUTES
         /////////////////
 
-        if (attribute.startsWith("find") || attribute.startsWith("nearest")) {
+        if (attribute.matches("find") || attribute.startsWith("nearest")) {
             attribute.fulfill(1);
 
             // <--[tag]
@@ -949,8 +956,45 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
                 return new dList(found).getAttribute(attribute);
             }
+        }
 
-            return new Element("null").getAttribute(attribute);
+        // <--[tag]
+        // @attribute <l@location.find_path[<location>]>
+        // @returns dList(dLocation)
+        // @description
+        // Returns a full list of points along the path from this location to the given location.
+        // The default radius, if unspecified, is 2.
+        // -->
+        if (attribute.startsWith("find_path")
+            && attribute.hasContext(1)) {
+            dLocation two = dLocation.valueOf(attribute.getContext(1));
+            if (two == null) {
+                return null;
+            }
+            attribute = attribute.fulfill(1);
+            int radius = 2;
+            // <--[tag]
+            // @attribute <l@location.find_path[<location>].radius[<#>]>
+            // @returns dList(dLocation)
+            // @description
+            // Returns a full list of points along the path from this location to the given location.
+            // The default radius, if unspecified, is 2.
+            // -->
+            if (attribute.startsWith("radius")
+                    && attribute.hasContext(1)) {
+                radius = new Element(attribute.getContext(1)).asInt();
+                attribute = attribute.fulfill(1);
+            }
+            PathFinder.Node node = PathFinder.findPath(this, two, radius);
+            if (node == null) {
+                return null;
+            }
+            dList list = new dList();
+            while (node != null) {
+                list.add(node.position.identify());
+                node = node.next;
+            }
+            return list.getAttribute(attribute);
         }
 
 

@@ -436,6 +436,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             newQueue.holdScriptEntry(entry.getKey(), entry.getValue());
         }
         newQueue.setLastEntryExecuted(getLastEntryExecuted());
+        newQueue.setSpeed(1);
         clear();
         if (delay != null)
             newQueue.delayFor(delay);

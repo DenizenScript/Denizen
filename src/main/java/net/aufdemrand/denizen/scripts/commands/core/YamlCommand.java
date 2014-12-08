@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -26,6 +27,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
     @Override
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        TagManager.registerTagEvents(this);
     }
 
     Map<String, YamlConfiguration> yamls = new HashMap<String, YamlConfiguration>();
@@ -417,7 +419,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void yaml(ReplaceableTagEvent event) {
 
         if (!event.matches("yaml")) return;
@@ -438,7 +440,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
 
         // YAML tag requires name context and type context.
-        if (!event.hasNameContext() || !(event.hasTypeContext() || attribute.getAttribute(2).equalsIgnoreCase("to_json"))) {
+        if ((!event.hasNameContext() || !(event.hasTypeContext() || attribute.getAttribute(2).equalsIgnoreCase("to_json")))
+                && !attribute.hasAlternative()) {
             dB.echoError("YAML tag '" + event.raw_tag + "' is missing required context. Tag replacement aborted.");
             return;
         }
@@ -448,7 +451,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
         String path = event.getTypeContext();
 
         // Check if there is a yaml file loaded with the specified id
-        if (!yamls.containsKey(id.toUpperCase())) {
+        if (!yamls.containsKey(id.toUpperCase())
+                && !attribute.hasAlternative()) {
             dB.echoError("YAML tag '" + event.raw_tag + "' has specified an invalid ID, or the specified id has already" +
                     " been closed. Tag replacement aborted. ID given: '" + id + "'.");
             return;

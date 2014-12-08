@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,9 +13,10 @@ public class TextTags implements Listener {
 
     public TextTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void foreignCharacterTags(ReplaceableTagEvent event) {
 
 
@@ -392,7 +394,7 @@ public class TextTags implements Listener {
     // -->
 
 
-    @EventHandler
+    @TagManager.TagEvents
     public void colorTags(ReplaceableTagEvent event) {
         Attribute attribute = event.getAttributes();
         int i = 0;
@@ -407,7 +409,7 @@ public class TextTags implements Listener {
     }
 
 
-    @EventHandler
+    @TagManager.TagEvents
     public void specialCharacterTags(ReplaceableTagEvent event) {
         if (!event.getName().startsWith("&")) return;
         Attribute attribute =

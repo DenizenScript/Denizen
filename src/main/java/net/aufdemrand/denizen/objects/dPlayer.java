@@ -883,7 +883,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.bed_spawn>
         // @returns dLocation
         // @description
-        // Returns the location of the player's bed spawn location, 'null' if
+        // Returns the location of the player's bed spawn location, null if
         // it doesn't exist.
         // Works with offline players.
         // -->

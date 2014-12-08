@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -16,9 +17,10 @@ public class AnchorTags implements Listener {
 
     public AnchorTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void anchorTags(ReplaceableTagEvent event) {
         if (!event.matches("ANCHOR")) return;
 

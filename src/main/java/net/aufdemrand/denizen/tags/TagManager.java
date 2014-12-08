@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.tags;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
@@ -10,10 +9,10 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.lang.annotation.*;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +62,56 @@ public class TagManager implements Listener {
         new NotableLocationTags(denizen);
 
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        registerTagEvents(this);
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public static @interface TagEvents {
+    }
+
+    private static List<Method> methods = new ArrayList<Method>();
+    private static List<Object> method_objects = new ArrayList<Object>();
+
+    public static void registerTagEvents(Object o) {
+        for (Method method: o.getClass().getMethods()) {
+            if (!method.isAnnotationPresent(TagManager.TagEvents.class)) {
+                continue;
+            }
+            Class[] parameters = method.getParameterTypes();
+            if (parameters.length != 1 || parameters[0] != ReplaceableTagEvent.class) {
+                dB.echoError("Class " + o.getClass().getCanonicalName() + " has a method "
+                        + method.getName() + " that is targeted at the event manager but has invalid parameters.");
+                break;
+            }
+            registerMethod(method, o);
+        }
+    }
+
+    public static void unregisterTagEvents(Object o) {
+        for (int i = 0; i < methods.size(); i++) {
+            if (method_objects.get(i) == o) {
+                methods.remove(i);
+                method_objects.remove(i);
+                i--;
+            }
+        }
+    }
+
+    public static void registerMethod(Method method, Object o) {
+        methods.add(method);
+        method_objects.add(o);
+    }
+
+    public static void fireEvent(ReplaceableTagEvent event) {
+        for (int i = 0; i < methods.size(); i++) {
+            try {
+                methods.get(i).invoke(method_objects.get(i), event);
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+            }
+        }
     }
 
     // INTERNAL MAPPING NOTE:
@@ -176,7 +225,7 @@ public class TagManager implements Listener {
         return new String(data);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void fetchObject(ReplaceableTagEvent event) {
         if (!event.getName().contains("@")) return;
 
@@ -225,7 +274,7 @@ public class TagManager implements Listener {
             return String.valueOf((char)0x01) + str + String.valueOf((char)0x02);
         } else {
             // Call Event
-            Bukkit.getServer().getPluginManager().callEvent(event);
+            fireEvent(event);
             if ((!event.replaced() && event.getAlternative() != null) && event.hasAlternative())
                 event.setReplaced(event.getAlternative());
             if (context.debug)

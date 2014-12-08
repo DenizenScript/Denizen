@@ -1,10 +1,11 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.flags.FlagManager.Value;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +20,7 @@ public class FlagTags implements Listener {
     public FlagTags(Denizen denizen) {
         this.denizen = denizen;
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     private enum ReplaceType { LENGTH, SIZE, ASSTRING, ABS, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASPLAYERLIST, ASNPCLIST, ASCSLIST, ISEXPIRED, EXPIRATION }
@@ -30,7 +32,7 @@ public class FlagTags implements Listener {
      *      ReplaceableTagEvent
      */
 
-    @EventHandler
+    @TagManager.TagEvents
     public void flagTag(ReplaceableTagEvent event) {
         if (!event.matches("FLAG")) return;
 

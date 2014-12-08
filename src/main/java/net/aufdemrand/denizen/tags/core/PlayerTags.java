@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
@@ -21,6 +22,7 @@ public class PlayerTags implements Listener {
 
     public PlayerTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     ///////////
@@ -53,7 +55,7 @@ public class PlayerTags implements Listener {
     //  ReplaceableTagEvent handler
     ////////
 
-    @EventHandler
+    @TagManager.TagEvents
     public void playerTags(ReplaceableTagEvent event) {
 
         if (!event.matches("player", "pl") || event.replaced()) return;
