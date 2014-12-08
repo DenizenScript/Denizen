@@ -23,6 +23,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -86,9 +87,19 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
+            else if (!scriptEntry.hasObject("force_along")
+                    && arg.matches("force_along")) {
+                scriptEntry.addObject("force_along", new Element(true));
+            }
+
             else if (!scriptEntry.hasObject("no_rotate")
                     && arg.matches("no_rotate")) {
                 scriptEntry.addObject("no_rotate", new Element(true));
+            }
+
+            else if (!scriptEntry.hasObject("precision")
+                && arg.matchesPrefix("precision")) {
+                scriptEntry.addObject("precision", arg.asElement());
             }
 
             else arg.reportUnhandled();
@@ -105,6 +116,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         scriptEntry.defaultObject("speed", new Element(1.5));
         scriptEntry.defaultObject("duration", new Duration(20));
+        scriptEntry.defaultObject("force_along", new Element(false));
+        scriptEntry.defaultObject("precision", new Element(2));
 
         // Check to make sure required arguments have been filled
 
@@ -147,7 +160,11 @@ public class PushCommand extends AbstractCommand implements Holdable {
         final dScript script = (dScript) scriptEntry.getObject("script");
 
         final double speed = scriptEntry.getElement("speed").asDouble();
-        final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
+        final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt();
+
+        Element force_along = scriptEntry.getElement("force_along");
+
+        Element precision = scriptEntry.getElement("precision");
 
         // Report to dB
         dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
@@ -156,7 +173,11 @@ public class PushCommand extends AbstractCommand implements Holdable {
                              aH.debugObj("speed", speed) +
                              aH.debugObj("max ticks", maxTicks) +
                              (script != null ? script.debug() : "") +
+                             force_along.debug() +
+                             precision.debug() +
                              (no_rotate ? aH.debugObj("no_rotate", "true"): ""));
+
+        final boolean forceAlong = force_along.asBoolean();
 
         // Keep a dList of entities that can be called using <entry[name].pushed_entities>
         // later in the script queue
@@ -193,6 +214,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
         final dEntity lastEntity = entities.get(entities.size() - 1);
 
         final Vector v2 = destination.toVector();
+        final Vector Origin = originLocation.toVector();
+
+        final int prec = precision.asInt();
 
         BukkitRunnable task = new BukkitRunnable() {
             int runs = 0;
@@ -203,20 +227,29 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 if (runs < maxTicks && lastEntity.isValid()) {
 
                     Vector v1 = lastEntity.getLocation().toVector();
-                    Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed);
+                    Vector v3 = v2.clone().subtract(v1).normalize();
+                    Vector newVel = v3.multiply(speed);
 
-                    lastEntity.setVelocity(v3);
-                    runs++;
+                    lastEntity.setVelocity(newVel);
+
+                    if (forceAlong) {
+                        Vector newDest = v2.clone().subtract(Origin).normalize().multiply(runs / 20).add(Origin);
+                        lastEntity.teleport(new Location(lastEntity.getLocation().getWorld(),
+                                newDest.getX(), newDest.getY(), newDest.getZ(),
+                                lastEntity.getLocation().getYaw(), lastEntity.getLocation().getPitch()));
+                    }
+
+                    runs += prec;
 
                     // Check if the entity is close to its destination
-                    if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
-                        && Math.abs(v2.getZ() - v1.getZ()) < 2) {
+                    if (Math.abs(v2.getX() - v1.getX()) < 1.5f && Math.abs(v2.getY() - v1.getY()) < 1.5f
+                        && Math.abs(v2.getZ() - v1.getZ()) < 1.5f) {
                         runs = maxTicks;
                     }
 
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
-                    if (lastEntity.getLocation().add(v3).getBlock().getType() != Material.AIR) {
+                    if (!lastEntity.getLocation().add(v3).getBlock().getType().isSolid()) {
                         runs = maxTicks;
                     }
 
@@ -243,6 +276,6 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 }
             }
         };
-        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 2);
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, prec);
     }
 }
