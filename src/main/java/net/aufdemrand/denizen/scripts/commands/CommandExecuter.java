@@ -58,7 +58,7 @@ public class CommandExecuter {
                     definition = "null";
                 }
                 dB.echoDebug(scriptEntry, "Filled definition %" + m.group(1) + "% with '" + definition + "'.");
-                m.appendReplacement(sb, definition.replace("$", "\\$"));
+                m.appendReplacement(sb, Matcher.quoteReplacement(definition));
             }
             m.appendTail(sb);
             scriptEntry.setCommandName(sb.toString());
@@ -150,7 +150,7 @@ public class CommandExecuter {
                             definition = "null";
                         }
                         dB.echoDebug(scriptEntry, "Filled definition %" + m.group(1) + "% with '" + definition + "'.");
-                        m.appendReplacement(sb, definition.replace("$", "\\$"));
+                        m.appendReplacement(sb, Matcher.quoteReplacement(definition));
                     }
                     m.appendTail(sb);
                     arg = aH.Argument.valueOf(sb.toString());
