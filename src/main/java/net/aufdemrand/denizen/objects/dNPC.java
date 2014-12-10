@@ -659,10 +659,15 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // returns the owner of the NPC as a dPlayer if it's a player, otherwise as just the name.
         // -->
         if (attribute.startsWith("owner")) {
-            if (dPlayer.matches(getOwner())) {
-                return dPlayer.valueOf(getOwner()).getAttribute(attribute.fulfill(1));
+            String owner = getOwner();
+            dPlayer player = null;
+            if (!owner.equalsIgnoreCase("server"))
+                player = dPlayer.valueOfInternal(owner, false);
+            if (player != null) {
+                return player.getAttribute(attribute.fulfill(1));
             }
-            else return new Element(getOwner()).getAttribute(attribute.fulfill(1));
+            else
+                return new Element(owner).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
