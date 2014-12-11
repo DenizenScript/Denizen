@@ -278,7 +278,7 @@ public class ListenerRegistry implements dRegistry, Listener {
         }
 
         // Remove all listeners from memory for Player
-        listeners.remove(player);
+        listeners.remove(player); // TODO: this seems invalid
     }
 
 

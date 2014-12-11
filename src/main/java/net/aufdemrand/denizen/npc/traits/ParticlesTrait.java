@@ -126,7 +126,7 @@ public class ParticlesTrait extends Trait {
         if (dense) world.playEffect(location.add(0, 1, 0), Effect.ENDER_SIGNAL, 0);
     }
 
-    public void playPotionEffect() {
+    public void playPotionEffect() { // TODO: Implement?
         //dw.watch(8, Integer.valueOf(2));
     }
 

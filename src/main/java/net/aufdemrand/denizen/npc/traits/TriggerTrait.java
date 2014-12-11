@@ -198,6 +198,7 @@ public class TriggerTrait extends Trait implements Listener {
             //
             // On Unavailable Action
 
+            // TODO: Should this be refactored?
             if (dNPCRegistry.getDenizen(npc).action("unavailable", player, context).equalsIgnoreCase("available")) {
                 // If determined available, continue on...
                 // else, return a 'non-triggered' state.

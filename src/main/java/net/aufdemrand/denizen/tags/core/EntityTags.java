@@ -19,17 +19,6 @@ public class EntityTags implements Listener {
         TagManager.registerTagEvents(this);
     }
 
-    ///////////
-    // Entity Spawn Handling
-    /////////
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void creatureSpawn(CreatureSpawnEvent event) {
-
-        String reason = event.getSpawnReason().name();
-        Entity entity = event.getEntity();
-    }
-
     //////////
     //  ReplaceableTagEvent handler
     ////////
@@ -48,7 +37,7 @@ public class EntityTags implements Listener {
         if (attribute.hasContext(1))
             // Check if this is a valid entity and update the dEntity object reference.
             if (attribute.getIntContext(1) >= 1)
-               e = dEntity.valueOf("e@" + attribute.getContext(1));
+               e = dEntity.valueOf("e@" + attribute.getContext(1)); // TODO: Is the e@ needed here? If so, why? Should it be?
 
         if (e == null || !e.isValid()) {
             if (!event.hasAlternative()) dB.echoError("Invalid or missing entity for tag <" + event.raw_tag + ">!");
