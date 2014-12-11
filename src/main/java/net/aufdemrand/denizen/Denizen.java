@@ -148,6 +148,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     private WorldScriptHelper ws_helper;
 
+    public final static long startTime = System.currentTimeMillis();
+
 
     /*
      * Sets up Denizen on start of the CraftBukkit server.

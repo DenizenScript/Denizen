@@ -195,6 +195,17 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.start_time>
+        // @returns Duration
+        // @description
+        // Returns the time the server started as a duration time.
+        // -->
+        if (attribute.startsWith("start_time")) {
+            event.setReplaced(new Duration(Denizen.startTime / 50)
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.current_time_millis>
         // @returns Element(Number)
         // @description
