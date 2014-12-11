@@ -1,61 +1,54 @@
 package net.aufdemrand.denizen.utilities.maps;
 
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.entity.Player;
-import org.bukkit.map.*;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 
-import java.awt.Image;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DenizenMapRenderer extends MapRenderer {
 
-    private final List<MapText> textList = new ArrayList<MapText>();
-    private final List<MapImage> imageList = new ArrayList<MapImage>();
-    private final List<MapRenderer> oldRenderers;
+    private final List<MapObject> mapObjects = new ArrayList<MapObject>();
+    private final List<MapRenderer> oldMapRenderers;
+    private final boolean autoUpdate;
 
-    public DenizenMapRenderer(List<MapRenderer> oldRenderers) {
+    public DenizenMapRenderer(List<MapRenderer> oldMapRenderers, boolean autoUpdate) {
         super(true);
-        this.oldRenderers = oldRenderers;
+        this.oldMapRenderers = oldMapRenderers;
+        this.autoUpdate = autoUpdate;
     }
 
-    public void addText(int x, int y, String text) {
-        textList.add(new MapText(x, y, text));
-    }
-
-    public void addImage(int x, int y, String file, boolean resize) {
-        if (file.toLowerCase().endsWith(".gif"))
-            imageList.add(new MapAnimatedImage(x, y, file, resize));
-        else
-            imageList.add(new MapImage(x, y, file, resize));
+    public void addObject(MapObject object) {
+        mapObjects.add(object);
     }
 
     public List<MapRenderer> getOldRenderers() {
-        return oldRenderers;
+        return oldMapRenderers;
+    }
+
+    public Map<String, Object> getSaveData() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> objects = new HashMap<String, Object>();
+        for (int i = 0; i < mapObjects.size(); i++) {
+            Map<String, Object> objectData = mapObjects.get(i).getSaveData();
+            objects.put(String.valueOf(i), objectData);
+        }
+        data.put("objects", objects);
+        data.put("auto update", autoUpdate);
+        return data;
     }
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
-        dPlayer pl = dPlayer.mirrorBukkitPlayer(player);
-        for (MapImage image : imageList) {
-            // Use custom function to draw image to allow transparency
-            this.drawImage(image.getX(), image.getY(), image.getImage(), mapCanvas);
-        }
-        for (MapText text : textList) {
-            mapCanvas.drawText(text.getX(), text.getY(),
-                    MinecraftFont.Font, TagManager.tag(pl, pl.getSelectedNPC(), text.getText()));
-        }
-    }
-
-    private void drawImage(int x, int y, Image image, MapCanvas canvas) {
-        byte[] bytes = MapPalette.imageToBytes(image);
-        for (int x2 = 0; x2 < image.getWidth(null); ++x2) {
-            for (int y2 = 0; y2 < image.getHeight(null); ++y2) {
-                byte p = bytes[y2 * image.getWidth(null) + x2];
-                if (p != MapPalette.TRANSPARENT)
-                    canvas.setPixel(x + x2, y + y2, p);
-            }
+        UUID uuid = player.getUniqueId();
+        dPlayer p = dPlayer.mirrorBukkitPlayer(player);
+        for (MapObject object : mapObjects) {
+            if (autoUpdate)
+                object.update(p, uuid);
+            if (object.isVisibleTo(p, uuid))
+                object.render(mapView, mapCanvas, p, uuid);
         }
     }
 

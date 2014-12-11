@@ -1,22 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dWorld;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.maps.DenizenMapRenderer;
+import net.aufdemrand.denizen.scripts.containers.core.MapScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
+import net.aufdemrand.denizen.utilities.maps.DenizenMapRenderer;
+import net.aufdemrand.denizen.utilities.maps.MapAnimatedImage;
+import net.aufdemrand.denizen.utilities.maps.MapImage;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
-
-import java.io.File;
-import java.util.List;
 
 public class MapCommand extends AbstractCommand {
 
@@ -31,10 +28,16 @@ public class MapCommand extends AbstractCommand {
                 scriptEntry.addObject("new", arg.asType(dWorld.class));
             }
 
-            else if (!scriptEntry.hasObject("reset")
+            else if (!scriptEntry.hasObject("reset-loc")
                     && arg.matchesPrefix("r", "reset")
                     && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("reset", arg.asType(dLocation.class));
+                scriptEntry.addObject("reset-loc", arg.asType(dLocation.class));
+                scriptEntry.addObject("reset", Element.TRUE);
+            }
+
+            else if (!scriptEntry.hasObject("reset")
+                    && arg.matches("reset")) {
+                scriptEntry.addObject("reset", Element.TRUE);
             }
 
             else if (!scriptEntry.hasObject("image")
@@ -47,9 +50,10 @@ public class MapCommand extends AbstractCommand {
                 scriptEntry.addObject("resize", Element.TRUE);
             }
 
-            else if (!scriptEntry.hasObject("text")
-                    && arg.matchesPrefix("t", "text")) {
-                scriptEntry.addObject("text", arg.asElement());
+            else if (!scriptEntry.hasObject("script")
+                    && arg.matchesPrefix("s", "script")
+                    && arg.matchesArgumentType(dScript.class)) {
+                scriptEntry.addObject("script", arg.asType(dScript.class));
             }
 
             else if (!scriptEntry.hasObject("x-value")
@@ -75,12 +79,13 @@ public class MapCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a map ID or create a new map!");
 
         if (!scriptEntry.hasObject("reset")
+                && !scriptEntry.hasObject("reset-loc")
                 && !scriptEntry.hasObject("image")
-                && !scriptEntry.hasObject("text"))
-            throw new InvalidArgumentsException("Must specify value to modify!");
+                && !scriptEntry.hasObject("script"))
+            throw new InvalidArgumentsException("Must specify a valid action to perform!");
 
-        scriptEntry.defaultObject("x-value", new Element(0)).defaultObject("y-value", new Element(0))
-                .defaultObject("resize", Element.FALSE);
+        scriptEntry.defaultObject("reset", Element.FALSE).defaultObject("resize", Element.FALSE)
+                .defaultObject("x-value", new Element(0)).defaultObject("y-value", new Element(0));
 
     }
 
@@ -89,16 +94,17 @@ public class MapCommand extends AbstractCommand {
 
         Element id = scriptEntry.getElement("map-id");
         dWorld create = scriptEntry.getdObject("new");
-        dLocation reset = scriptEntry.getdObject("reset");
+        Element reset = scriptEntry.getElement("reset");
+        dLocation resetLoc = scriptEntry.getdObject("reset-loc");
         Element image = scriptEntry.getElement("image");
+        dScript script = scriptEntry.getdObject("script");
         Element resize = scriptEntry.getElement("resize");
-        Element text = scriptEntry.getElement("text");
         Element x = scriptEntry.getElement("x-value");
         Element y = scriptEntry.getElement("y-value");
 
         dB.report(scriptEntry, getName(), (id != null ? id.debug() : "") + (create != null ? create.debug() : "")
-                + (reset != null ? reset.debug() : "") + (image != null ? image.debug() : "") + resize.debug()
-                + (text != null ? text.debug() : "") + x.debug() + y.debug());
+                + reset.debug() + (resetLoc != null ? resetLoc.debug() : "") + (image != null ? image.debug() : "")
+                + (script != null ? script.debug() : "") + resize.debug() + x.debug() + y.debug());
 
         MapView map = null;
         if (create != null) {
@@ -114,36 +120,33 @@ public class MapCommand extends AbstractCommand {
             throw new CommandExecutionException("The map command failed somehow! Report this to a developer!");
         }
 
-        if (reset != null) {
+        if (reset.asBoolean()) {
             for (MapRenderer renderer : map.getRenderers()) {
                 if (renderer instanceof DenizenMapRenderer) {
                     map.removeRenderer(renderer);
                     for (MapRenderer oldRenderer : ((DenizenMapRenderer) renderer).getOldRenderers())
                         map.addRenderer(oldRenderer);
-                    map.setCenterX(reset.getBlockX());
-                    map.setCenterZ(reset.getBlockZ());
-                    map.setWorld(reset.getWorld());
+                    if (resetLoc != null) {
+                        map.setCenterX(resetLoc.getBlockX());
+                        map.setCenterZ(resetLoc.getBlockZ());
+                        map.setWorld(resetLoc.getWorld());
+                    }
                 }
             }
         }
+        else if (script != null) {
+            ((MapScriptContainer) script.getContainer()).applyTo(map);
+        }
         else {
-            DenizenMapRenderer dmr = null;
-            List<MapRenderer> oldRendererList = map.getRenderers();
-            for (MapRenderer renderer : oldRendererList) {
-                if (!(renderer instanceof DenizenMapRenderer) || dmr != null)
-                    map.removeRenderer(renderer);
+            DenizenMapRenderer dmr = DenizenMapManager.getDenizenRenderer(map);
+            if (image != null) {
+                if (image.asString().toLowerCase().endsWith(".gif"))
+                    dmr.addObject(new MapAnimatedImage(x.asString(), y.asString(), "true", false, image.asString(),
+                            resize.asBoolean() ? 128 : 0, resize.asBoolean() ? 128 : 0));
                 else
-                    dmr = (DenizenMapRenderer) renderer;
+                    dmr.addObject(new MapImage(x.asString(), y.asString(), "true", false, image.asString(),
+                        resize.asBoolean() ? 128 : 0, resize.asBoolean() ? 128 : 0));
             }
-            if (dmr == null) {
-                dmr = new DenizenMapRenderer(oldRendererList);
-                map.addRenderer(dmr);
-            }
-            if (image != null)
-                dmr.addImage(x.asInt(), y.asInt(), new File(DenizenAPI.getCurrentInstance().getDataFolder(),
-                        image.asString()).getPath(), resize.asBoolean());
-            else if (text != null)
-                dmr.addText(x.asInt(), y.asInt(), text.asString());
         }
 
     }
