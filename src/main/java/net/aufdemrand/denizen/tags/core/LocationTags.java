@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.dLocation;
 
 import net.aufdemrand.denizen.tags.TagManager;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 

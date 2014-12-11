@@ -6,12 +6,6 @@ import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.tags.core.EscapeTags;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Material;
-import org.bukkit.inventory.meta.BookMeta;
-
-import java.util.ArrayList;
 
 public class BukkitScriptProperties implements Property {
 

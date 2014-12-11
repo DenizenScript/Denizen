@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class QueueTags implements Listener {
