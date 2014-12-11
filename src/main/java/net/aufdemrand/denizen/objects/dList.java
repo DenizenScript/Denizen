@@ -203,11 +203,11 @@ public class dList extends ArrayList<String> implements dObject {
      * @param arraySize the size of the new array
      * @return the array copy
      */
-    public String[] toArray(int arraySize) {
+    public String[] toArray(int arraySize) { // TODO: Why does this exist?
         List<String> list = new ArrayList<String>();
 
         for (String string : this) {
-            list.add(string);
+            list.add(string); // TODO: Why is this a manual copy?
         }
 
         return list.toArray(new String[arraySize]);

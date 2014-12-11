@@ -103,11 +103,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      */
 
     //
-    // Default to 25, but dynamically set by checkMaxProximities().
+    // Default to 75, but dynamically set by checkMaxProximities().
     // If a Player is further than this distance from an NPC, less
     // logic is run in checking.
     //
-    private static int maxProximityDistance = 50;
+    private static int maxProximityDistance = 75; // TODO: is this reasonable to have?
 
 
     // <--[action]
@@ -337,7 +337,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param event dScriptReloadEvent, fired upon server startup or '/denizen reload scripts'
      *
      */
-    @EventHandler
+    @EventHandler // TODO: Does this have any point?
     public void checkMaxProximities(ScriptReloadEvent event) {
 
         for (String script : ScriptRegistry._getScriptNames()) {

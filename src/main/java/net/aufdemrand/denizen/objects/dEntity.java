@@ -647,8 +647,9 @@ public class dEntity implements dObject, Adjustable {
             if (entity_type != null) {
                 if (despawned_entity != null) {
                     // If entity had a custom_script, use the script to rebuild the base entity.
-                    if (despawned_entity.custom_script != null)
-                    { } // TODO: Build entity from custom script
+                    if (despawned_entity.custom_script != null) {
+                        // TODO: Build entity from custom script
+                    }
                     // Else, use the entity_type specified/remembered
                     else entity = location.getWorld().spawnEntity(location, entity_type);
 

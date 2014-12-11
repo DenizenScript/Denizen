@@ -425,7 +425,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         ItemStack[] oldContents = inventory.getContents();
         ItemStack[] newContents = new ItemStack[size];
         if (oldSize > size)
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < size; i++) // TODO: Why is this a manual copy?
                 newContents[i] = oldContents[i];
         else
             newContents = oldContents;

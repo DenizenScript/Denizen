@@ -30,8 +30,6 @@ import org.bukkit.entity.Player;
 
 /**
  * This class has utility methods for various tasks.
- *
- * @author aufdemrand, dbixler, AgentK
  */
 public class Utilities {
 
@@ -53,28 +51,12 @@ public class Utilities {
 
     // TODO: Javadocs, comments
     //
-    public static boolean isWalkable(Location location) {
+    public static boolean isWalkable(Location location) { // TODO: Why does this exist - surely it can be written better
         return ((location.getBlock().getType() == Material.AIR
                 || location.getBlock().getType() == Material.GRASS)
                 && (location.add(0, 1, 0).getBlock().getType() == Material.AIR));
     }
 
-
-    // TODO: Javadocs, comments
-    //
-    public static String arrayToString(String[] input, String glue) {
-        String output="";
-        int length = input.length;
-        int i = 1;
-        for(String s : input) { // TODO: Should this be? : output = output.concat(s);
-            output.concat(s);
-            i++;
-            if(i!=length){
-                output.concat(glue); // TODO: Same as above
-            }
-        }
-        return output;
-    }
 
 
     // TODO: Javadocs, comments
@@ -148,142 +130,6 @@ public class Utilities {
 
 
     /**
-     * Gets the plugin version from the maven info in the jar, if available.
-     *
-     * @return the version string
-     */
-    @Deprecated // TODO: Can this be removed?
-    public String getVersionNumber() {
-        Properties props = new Properties();
-        //Set a default just in case.
-        props.put("version", "Unknown development build");
-        try { props.load(this.getClass()
-                .getResourceAsStream("/META-INF/maven/net.aufdemrand/denizen/pom.properties"));
-        } catch(Exception e) { }
-
-        return props.getProperty("version");
-    }
-
-
-    // TODO: Finish?
-    //
-    public static List<Block> getRandomSolidBlocks(Location location, int range, int count) {
-        List<Block> blocks = new ArrayList<Block>();
-
-        int x = 0;
-        int f = 0;
-
-        while (x < count) {
-
-            if (f > 1000) break;
-            f++;
-
-            Location loc = location.clone()
-                    .add(CoreUtilities.getRandom().nextInt(range * 2) - range,
-                            CoreUtilities.getRandom().nextInt(range * 2) - range,
-                            CoreUtilities.getRandom().nextInt(range * 2) - range);
-
-            if (loc.getBlock().getType().isSolid()) {
-                blocks.add(loc.getBlock());
-                x++;
-            }
-
-        }
-
-        dB.log(blocks.size() + " blocksize");
-
-        return blocks;
-    }
-
-
-    // TODO: Check why this is no longer used. Possible duplication of code?
-    //
-    /**
-     * Finds the closest Player to a particular location.
-     *
-     * @param location    The location to find the closest Player to.
-     * @param range    The maximum range to look for the Player.
-     * @return    The closest Player to the location, or null if no Player was found
-     *                     within the range specified.
-     */
-    public static Player getClosestPlayer (Location location, int range) {
-
-        Player closestPlayer = null;
-        double closestDistance = Math.pow(range, 2);
-        // TODO: Why is this manually iterating?
-        List<Player> playerList = new ArrayList<Player>(Bukkit.getOnlinePlayers());
-        Iterator<Player> it = playerList.iterator();
-        while (it.hasNext()) {
-            Player player = it.next();
-            Location loc = player.getLocation();
-            if (loc.getWorld().equals(location.getWorld())
-                    && loc.distanceSquared(location) < closestDistance) {
-                closestPlayer = player;
-                closestDistance = player.getLocation().distanceSquared(location);
-            }
-        }
-        return closestPlayer;
-    }
-
-
-    // TODO: Check why this is no longer used. Possible duplication of code?
-    //
-    /**
-     * Finds the closest Players to a particular location.
-     *
-     * @param location    The location to find the closest Player to.
-     * @param range    The maximum range to look for the Player.
-     * @return    The closest Player to the location, or null if no Player was found
-     *                     within the range specified.
-     */
-    public static List<dPlayer> getClosestPlayers(Location location, int range) {
-
-        List<dPlayer> closestPlayers = new ArrayList<dPlayer>();
-        double closestDistance = Math.pow(range, 2);
-        // TODO: Why is this manually iterating?
-        List<Player> playerList = new ArrayList<Player>(Bukkit.getOnlinePlayers());
-        Iterator<Player> it = playerList.iterator();
-        while (it.hasNext()) {
-            Player player = it.next();
-            Location loc = player.getLocation();
-            if (loc.getWorld().equals(location.getWorld())
-                    && loc.distanceSquared(location) < closestDistance) {
-                closestPlayers.add(dPlayer.mirrorBukkitPlayer(player));
-            }
-        }
-        return closestPlayers;
-    }
-
-
-    // TODO: Check why this is no longer used. Possible duplication of code?
-    //
-    /**
-     * Finds the closest NPC to a particular location.
-     *
-     * @param location    The location to find the closest NPC to.
-     * @param range    The maximum range to look for the NPC.
-     * @return    The closest NPC to the location, or null if no NPC was found
-     *                     within the range specified.
-     */
-    public static dNPC getClosestNPC (Location location, int range) {
-        dNPC closestNPC = null;
-        double closestDistance = Math.pow(range, 2);
-        // TODO: Why is this manually iterating?
-        Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
-        while (it.hasNext()) {
-            dNPC npc = it.next();
-            Location loc = npc.getLocation();
-            if (loc.getWorld().equals(location.getWorld())
-                    && loc.distanceSquared(location) < closestDistance) {
-                closestNPC = npc;
-                closestDistance = npc.getLocation().distanceSquared(location);
-            }
-        }
-        return closestNPC;
-    }
-
-
-    /**
      * Finds the closest NPC to a particular location.
      *
      * @param location    The location to find the closest NPC to.
@@ -307,30 +153,6 @@ public class Utilities {
             }
         }
         return closestNPC;
-    }
-
-
-    /**
-     * Returns a list of all NPCs within a certain range.
-     *
-     * @param location    The location to search.
-     * @param maxRange    The maximum range of the NPCs
-     *
-     * @return    The list of NPCs within the max range.
-     */
-    public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
-        maxRange = (int) Math.pow(maxRange, 2);
-        Set<dNPC> closestNPCs = new HashSet<dNPC> ();
-        // TODO: Why is this manually iterating?
-        Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
-        while (it.hasNext ()) {
-            dNPC npc = it.next ();
-            Location loc = npc.getLocation();
-            if (loc.getWorld().equals(location.getWorld()) && loc.distanceSquared(location) < maxRange) {
-                closestNPCs.add(npc);
-            }
-        }
-        return closestNPCs;
     }
 
 

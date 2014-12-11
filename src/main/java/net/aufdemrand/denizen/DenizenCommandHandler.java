@@ -182,7 +182,7 @@ public class DenizenCommandHandler {
 
         } if (args.hasValueFlag("filter")) {
             if (!dB.showDebug) dB.toggle();
-            for (String filter : args.getFlag("filter").split("\\|"))
+            for (String filter : args.getFlag("filter").split("\\|")) // TODO: addAll?
                 dB.filter.add(filter);
             Messaging.sendInfo(sender, "Denizen dBugger filter now: " + dB.filter.toString());
 

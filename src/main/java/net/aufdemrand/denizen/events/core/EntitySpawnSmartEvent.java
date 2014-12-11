@@ -122,6 +122,7 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
             events.add(entity.identifyType() + " spawns in " + cuboid.identifySimple() + " because " + reason);
             events.add(entity.identifySimple() + " spawns in " + cuboid.identifySimple());
             events.add(entity.identifySimple() + " spawns in " + cuboid.identifySimple() + " because " + reason);
+            cuboid_context.add(cuboid.identify());
         }
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);

@@ -104,6 +104,7 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
             for (dCuboid cuboid : cuboids) {
                 events.add("player steps on block in " + cuboid.identifySimple());
                 events.add("player steps on " + mat.identifySimple() + " in " + cuboid.identifySimple());
+                cuboid_context.add(cuboid.identify());
             }
             // Add in cuboids context, with either the cuboids or an empty list
             context.put("cuboids", cuboid_context);

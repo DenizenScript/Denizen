@@ -99,8 +99,10 @@ public class EntityInteractSmartEvent implements SmartEvent, Listener {
         dList cuboid_context = new dList();
         List<String> cuboidevents = new ArrayList<String>();
         for (dCuboid cuboid : cuboids) {
-            for (String evt: events)
+            for (String evt: events) {
                 cuboidevents.add(evt + " in " + cuboid.identifySimple());
+            }
+            cuboid_context.add(cuboid.identify());
         }
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
