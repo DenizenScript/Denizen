@@ -509,6 +509,7 @@ public class WorldScriptHelper implements Listener {
     // <context.location> returns the dLocation of the piston.
     // <context.material> returns the dMaterial of the piston.
     // <context.length> returns the number of blocks that will be moved by the piston.
+    // <context.blocks> returns a dList of all block locations about to be moved.
     //
     // @Determine
     // "CANCELLED" to stop the piston from extending.
@@ -523,6 +524,11 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
         context.put("length", new Element(event.getLength()));
+
+        dList blocks = new dList();
+        for (Block block: event.getBlocks())
+            blocks.add(new dLocation(block.getLocation()).identify());
+        context.put("blocks", blocks);
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("piston extends",
