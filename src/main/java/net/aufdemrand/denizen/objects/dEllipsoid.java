@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -9,7 +12,7 @@ import org.bukkit.Location;
 import java.util.List;
 
 
-public class dEllipsoid implements dObject {
+public class dEllipsoid implements dObject, Notable {
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -23,7 +26,8 @@ public class dEllipsoid implements dObject {
     @Fetchable("ellipsoid")
     public static dEllipsoid valueOf(String string) {
 
-        string = string.substring("ellipsoid@".length());
+        if (string.startsWith("ellipsoid@"))
+            string = string.substring(10);
 
         List<String> split = CoreUtilities.Split(string, ',');
 
@@ -109,6 +113,22 @@ public class dEllipsoid implements dObject {
     @Override
     public boolean isUnique() {
         return false;
+    }
+
+    @Override
+    @Note("Ellipsoids")
+    public Object getSaveObject() {
+        return identify().substring(10);
+    }
+
+    @Override
+    public void makeUnique(String id) {
+        NotableManager.saveAs(this, id);
+    }
+
+    @Override
+    public void forget() {
+        NotableManager.remove(this);
     }
 
     @Override

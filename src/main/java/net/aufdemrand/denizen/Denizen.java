@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.*;
+import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
 import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
@@ -468,6 +469,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         // Load entities from entities.yml
         EntityScriptHelper.reloadEntities();
 
+        // Load maps from maps.yml
+        DenizenMapManager.reloadMaps();
+
         Bukkit.getServer().getPluginManager().callEvent(new SavesReloadEvent());
     }
 
@@ -572,6 +576,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         ScoreboardHelper._saveScoreboards();
         // Save entities to entities.yml
         EntityScriptHelper.saveEntities();
+        // Save maps to maps.yml
+        DenizenMapManager.saveMaps();
         try {
             savesConfig.save(savesConfigFile);
         } catch (IOException ex) {
