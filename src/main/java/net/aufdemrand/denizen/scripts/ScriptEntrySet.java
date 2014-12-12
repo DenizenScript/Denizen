@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,9 @@ public class ScriptEntrySet {
                 newEntries.add(entry.clone());
             }
         }
-        catch (CloneNotSupportedException e) {}
+        catch (CloneNotSupportedException e) {
+            dB.echoError(e); // This should never happen
+        }
         return new ScriptEntrySet(newEntries);
     }
 

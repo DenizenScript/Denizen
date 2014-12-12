@@ -659,10 +659,15 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // returns the owner of the NPC as a dPlayer if it's a player, otherwise as just the name.
         // -->
         if (attribute.startsWith("owner")) {
-            if (dPlayer.matches(getOwner())) {
-                return dPlayer.valueOf(getOwner()).getAttribute(attribute.fulfill(1));
+            String owner = getOwner();
+            dPlayer player = null;
+            if (!owner.equalsIgnoreCase("server"))
+                player = dPlayer.valueOfInternal(owner, false);
+            if (player != null) {
+                return player.getAttribute(attribute.fulfill(1));
             }
-            else return new Element(getOwner()).getAttribute(attribute.fulfill(1));
+            else
+                return new Element(owner).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1066,17 +1071,14 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             switch (getEntity().getType()) {
                 case DROPPED_ITEM:
                     ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
-                    //((ItemController.ItemNPC) getEntity()).setType(mat, data);
-                    // TODO: 1.8 UPDATE
+                    ((ItemController.ItemNPC) getEntity()).setType(mat, data);
                     break;
                 case ITEM_FRAME:
                     ((ItemFrame) getEntity()).getItem().setType(mat);
-                    //((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
-                    // TODO: 1.8 UPDATE
+                    ((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
                     break;
                 case FALLING_BLOCK:
-                    //((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
-                    // TODO: 1.8 UPDATE
+                    ((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
                     break;
                 default:
                     dB.echoError("NPC is the not an item type!");

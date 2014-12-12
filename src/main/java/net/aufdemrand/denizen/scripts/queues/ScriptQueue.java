@@ -456,6 +456,8 @@ public abstract class ScriptQueue implements Debuggable, dObject {
 
     private Class<? extends ScriptQueue> cachedClass;
 
+    private long startTime = 0;
+
 
     /**
      * Starts the script queue.
@@ -488,16 +490,21 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         @Override
-                        public void run() { onStart(); /* Start the engine */ }
+                        public void run() {
+                            startTime = System.currentTimeMillis();
+                            onStart(); /* Start the engine */
+                        }
 
                         // Take the delay time, find out how many milliseconds away
                         // it is, turn it into seconds, then divide by 20 for ticks.
                     },
                     (long)(((double)(delay_time - System.currentTimeMillis())) / 1000 * 20));
 
-        } else
+        } else {
             // If it's not, start the engine now!
+            startTime = System.currentTimeMillis();
             onStart();
+        }
     }
 
     /**
@@ -585,7 +592,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             } else /* if empty, just stop the queue like normal */ {
                 if (_queues.get(id) == this)
                     _queues.remove(id);
-                dB.echoDebug(this, "Completing queue '" + id + "'.");
+                dB.echoDebug(this, "Completing queue '" + id + "' in " + (System.currentTimeMillis() - startTime) + "ms.");
                 if (callback != null)
                     callback.run();
                 is_started = false;
@@ -599,7 +606,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         else {
             if (_queues.get(id) == this)
                 _queues.remove(id);
-            dB.echoDebug(this, "Re-completing queue '" + id + "'.");
+            dB.echoDebug(this, "Re-completing queue '" + id + "' in " + (System.currentTimeMillis() - startTime) + "ms.");
             if (callback != null)
                 callback.run();
             is_started = false;
@@ -816,6 +823,16 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // -->
         if (attribute.startsWith("size")) {
             return new Element(script_entries.size()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <q@queue.start_time>
+        // @returns Duration
+        // @description
+        // Returns the time this queue started as a duration.
+        // -->
+        if (attribute.startsWith("start_time")) {
+            return new Duration(startTime / 50).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

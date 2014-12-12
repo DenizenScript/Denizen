@@ -23,15 +23,6 @@ import java.util.Map;
 
 public class EngageCommand extends AbstractCommand {
 
-    /* ENGAGE (# of Seconds) (NPCID:#)*/
-
-    /* Arguments: [] - Required, () - Optional
-     * (DURATION:#) Will automatically DISENGAGE after specified amount of seconds.
-     *         If not set, the Denizen will remain ENGAGEd until a DISENGAGE command is
-     *       used, or the Denizen config.yml engage_timeout_in_seconds setting.
-     * (NPCID:#) Changes the Denizen affected to the Citizens2 NPCID specified
-     */
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -47,9 +38,8 @@ public class EngageCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
-            else if (arg.matches("now")) {
-                // TODO: figure out why this is here
-            }
+            else
+                arg.reportUnhandled();
 
         }
 

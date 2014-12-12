@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.objects.ObjectFetcher;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class DefinitionTags implements Listener {

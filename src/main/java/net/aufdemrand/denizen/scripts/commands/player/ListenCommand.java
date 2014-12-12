@@ -129,7 +129,10 @@ public class ListenCommand extends AbstractCommand {
                         dB.echoError(scriptEntry.getResidingQueue(), e);
 
                     // Deconstruct the listener in case it was partially created while erroring out.
-                    try { DenizenAPI.getCurrentInstance().getListenerRegistry().getListenerFor(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), id.asString()).cancel(); }
+                    try {
+                        DenizenAPI.getCurrentInstance().getListenerRegistry().getListenerFor
+                                (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), id.asString()).cancel();
+                    }
                     catch (Exception ex) { }
                 }
                 break;

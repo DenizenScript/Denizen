@@ -947,6 +947,7 @@ public class WorldScriptHelper implements Listener {
         for (dCuboid cuboid : cuboids) {
             events.add("player changes sign in " + cuboid.identifySimple());
             events.add("player changes " + material.identifySimple() + " in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identify());
         }
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
@@ -1320,6 +1321,7 @@ public class WorldScriptHelper implements Listener {
                     + cuboid.identifySimple());
             events.add(entity.identifyType() + " changes " + oldMaterial.identifySimple() + " into "
                     + newMaterial.identifySimple() + " in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identify());
         }
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
@@ -3369,7 +3371,7 @@ public class WorldScriptHelper implements Listener {
         else interactions = new String[]{"player stands on"};
         context.put("click_type", new Element(action.name()));
 
-        for (String interaction : interactions)
+        for (String interaction : interactions) // TODO: addAll?
             events.add(interaction);
 
         if (event.hasItem()) {

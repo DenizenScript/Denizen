@@ -27,7 +27,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
@@ -193,6 +192,17 @@ public class UtilTags implements Listener {
             }
             event.setReplaced(searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.start_time>
+        // @returns Duration
+        // @description
+        // Returns the time the server started as a duration time.
+        // -->
+        if (attribute.startsWith("start_time")) {
+            event.setReplaced(new Duration(Denizen.startTime / 50)
+                    .getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]

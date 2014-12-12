@@ -3,7 +3,8 @@
 Debug:
   Show: true
   Ex command help: true
-  Console width: 60
+  # Adjust to your console width minus 16. Ideally, we'd calculate this, but we currently can't.
+  Console width: 64
   Trim length: 512
 
 Scripts:

@@ -564,30 +564,7 @@ public class Duration implements dObject {
         // -->
         if (attribute.startsWith("formatted") || attribute.startsWith("value")) {
 
-            // Make sure you don't change these longs into doubles
-            // and break the code
-
-            long seconds = (long) this.seconds;
-            long days = seconds / 86400;
-            long hours = (seconds - days * 86400) / 3600;
-            long minutes = (seconds - days * 86400 - hours * 3600) / 60;
-            seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
-
-            String timeString = "";
-
-            if (days > 0)
-                timeString = String.valueOf(days) + "d ";
-            if (hours > 0)
-                timeString = timeString + String.valueOf(hours) + "h ";
-            if (minutes > 0 && days == 0)
-                timeString = timeString + String.valueOf(minutes) + "m ";
-            if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
-                timeString = timeString + String.valueOf(seconds) + "s";
-
-            if (timeString.isEmpty())
-                timeString = "forever";
-
-            return new Element(timeString.trim())
+            return new Element(formatted())
                         .getAttribute(attribute.fulfill(1));
         }
 
@@ -598,5 +575,32 @@ public class Duration implements dObject {
         }
 
         return new Element(identify()).getAttribute(attribute);
+    }
+
+    public String formatted() {
+        // Make sure you don't change these longs into doubles
+        // and break the code
+
+        long seconds = (long) this.seconds;
+        long days = seconds / 86400;
+        long hours = (seconds - days * 86400) / 3600;
+        long minutes = (seconds - days * 86400 - hours * 3600) / 60;
+        seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
+
+        String timeString = "";
+
+        if (days > 0)
+            timeString = String.valueOf(days) + "d ";
+        if (hours > 0)
+            timeString = timeString + String.valueOf(hours) + "h ";
+        if (minutes > 0 && days == 0)
+            timeString = timeString + String.valueOf(minutes) + "m ";
+        if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
+            timeString = timeString + String.valueOf(seconds) + "s";
+
+        if (timeString.isEmpty())
+            timeString = "forever";
+
+        return timeString.trim();
     }
 }

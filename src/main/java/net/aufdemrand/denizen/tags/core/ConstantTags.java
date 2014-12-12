@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 @Deprecated

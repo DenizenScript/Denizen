@@ -9,7 +9,6 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Anchors;
 
 import org.bukkit.Location;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 @Deprecated

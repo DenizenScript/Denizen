@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.objects.Duration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -73,6 +75,7 @@ public class DebugSubmit extends Thread {
             uc.getOutputStream().write(("postid=pastetext&pastetype=log"
                         + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
                         + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
+                        + "\nUp-time: " + new Duration((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
                         + "\nCraftBukkit Version: " + Bukkit.getServer().getVersion()
                         + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
                         + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)

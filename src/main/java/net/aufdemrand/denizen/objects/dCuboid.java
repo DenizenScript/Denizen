@@ -889,7 +889,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     return cuboid.getAttribute(attribute.fulfill(1));
                 }
             }
-            catch (CloneNotSupportedException ex) { }
+            catch (CloneNotSupportedException ex) {
+                dB.echoError(ex); // This should never happen
+            }
         }
 
         // <--[tag]

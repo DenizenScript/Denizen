@@ -93,6 +93,7 @@ public class BlockPhysicsSmartEvent implements SmartEvent, Listener {
         for (dCuboid cuboid : cuboids) {
             events.add("block physics in " + cuboid.identifySimple());
             events.add(mat.identifySimple() + " physics in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identify());
         }
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);

@@ -94,7 +94,7 @@ public class InventoryMenu implements InventoryHolder {
 
     /* -------- General override functions -------- */
     @Override
-    protected InventoryMenu clone() {
+    protected InventoryMenu clone() { // TODO: if not using super.clone, should this be a separate method?
         InventoryMenu c = new InventoryMenu(title, size);
         c.setMenuCloseBehaviour(closeBehaviour);
 

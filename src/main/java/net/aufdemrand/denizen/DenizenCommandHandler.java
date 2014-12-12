@@ -31,7 +31,36 @@ public class DenizenCommandHandler {
 
     private final Denizen denizen;
 
-    public DenizenCommandHandler(Denizen denizen) { this.denizen = denizen; }
+    public DenizenCommandHandler(Denizen denizen) {
+        this.denizen = denizen;
+    }
+
+    // <--[language]
+    // @name denizen permissions
+    // @group Console Commands
+    // @description
+    // The following is a list of all permission nodes Denizen uses within Bukkit.
+    //
+    // denizen.basic         # use the basics of the /denizen command
+    // denizen.notable       # use the /notable command
+    // denizen.notable.basic # functionality within the /notable command, such as add or list
+    // denizen.flag          # use the /flag command
+    // denizen.dscript       # use the /dscript command
+    // denizen.ex            # use the /ex command
+    // denizen.debug         # use the /denizen debug command
+    // denizen.submit        # use the /denizen submit command
+    //
+    // Additionally:
+    // denizen.npc.health, denizen.npc.sneak,
+    // denizen.npc.effect, denizen.npc.fish, denizen.npc.sleep, denizen.npc.stand,
+    // denizen.npc.sit, denizen.npc.nameplate, denizen.npc.nickname, denizen.npc.trigger,
+    // denizen.npc.assign, denizen.npc.constants, denizen.npc.pushable
+    //
+    // However, we recommend just giving op to whoever needs to access Denizen - they can
+    // op themselves through Denizen anyway, why not save the trouble?
+    // ( EG, /ex execute as_server "op <player.name>" )
+    //
+    // -->
 
     // <--[language]
     // @name /denizen submit command
@@ -182,7 +211,7 @@ public class DenizenCommandHandler {
 
         } if (args.hasValueFlag("filter")) {
             if (!dB.showDebug) dB.toggle();
-            for (String filter : args.getFlag("filter").split("\\|"))
+            for (String filter : args.getFlag("filter").split("\\|")) // TODO: addAll?
                 dB.filter.add(filter);
             Messaging.sendInfo(sender, "Denizen dBugger filter now: " + dB.filter.toString());
 

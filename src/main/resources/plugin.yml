@@ -39,6 +39,7 @@ permissions:
       denizen.dscript: true
       denizen.ex: true
       denizen.debug: true
+      denizen.submit: true
       denizen.npc.health: true
       denizen.npc.sneak: true
       denizen.npc.effect: true

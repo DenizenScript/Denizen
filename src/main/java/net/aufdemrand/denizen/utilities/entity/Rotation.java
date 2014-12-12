@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.entity;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R1.EntityHuman;
 import net.minecraft.server.v1_8_R1.EntityLiving;
 import org.bukkit.Location;
@@ -55,11 +56,11 @@ public class Rotation {
 
     // Taken from C2 NMS class for less dependency on C2
     private static void look(Entity entity, float yaw, float pitch) {
-        net.minecraft.server.v1_8_R1.Entity handle = !(entity instanceof CraftEntity)?null:((CraftEntity)entity).getHandle();
+        net.minecraft.server.v1_8_R1.Entity handle = ((CraftEntity)entity).getHandle();
         if (handle != null) {
             handle.yaw = yaw;
-            if(entity instanceof EntityLiving) {
-                EntityLiving livingHandle = (EntityLiving) entity;
+            if(handle instanceof EntityLiving) {
+                EntityLiving livingHandle = (EntityLiving) handle;
                 while (yaw < -180.0F) {
                     yaw += 360.0F;
                 }
@@ -72,6 +73,9 @@ public class Rotation {
                 livingHandle.aJ = yaw;
             }
             handle.pitch = pitch;
+        }
+        else {
+            dB.echoError("Rotation.jav#look: NPC has null handle!");
         }
     }
 

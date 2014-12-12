@@ -30,7 +30,7 @@ public class DenizenSpeechController implements SpeechController {
             if (event.isCancelled())
                 return;
         }
-        ((DenizenChat) CitizensAPI.getSpeechFactory().getVocalChord("denizen_chat")).talk(context);
+        (CitizensAPI.getSpeechFactory().getVocalChord("denizen_chat")).talk(context);
     }
 
     @Override
