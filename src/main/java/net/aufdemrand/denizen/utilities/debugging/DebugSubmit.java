@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities.debugging;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -79,7 +80,9 @@ public class DebugSubmit extends Thread {
                         + "\nCraftBukkit Version: " + Bukkit.getServer().getVersion()
                         + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
                         + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
-                        + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2) + "\n\n") + recording)
+                        + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
+                        + "\nOffline Players: " + dPlayer.getAllPlayers().size()
+                        + "\n\n") + recording)
                         .getBytes("UTF-8"));
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
