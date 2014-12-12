@@ -248,7 +248,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
-                    if (!lastEntity.getLocation().add(v3).getBlock().getType().isSolid()) {
+                    if (lastEntity.getLocation().add(newVel).getBlock().getType().isSolid()) {
                         runs = maxTicks;
                     }
 
