@@ -24,6 +24,7 @@ public class NotableManager {
 
     public NotableManager() {
         registerWithNotableManager(dCuboid.class);
+        registerWithNotableManager(dEllipsoid.class);
         registerWithNotableManager(dInventory.class);
         registerWithNotableManager(dItem.class);
         registerWithNotableManager(dLocation.class);

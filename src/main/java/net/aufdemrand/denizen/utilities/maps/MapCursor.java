@@ -23,12 +23,7 @@ public class MapCursor extends MapObject {
     }
 
     public byte getDirection(dPlayer player) {
-        double direction = aH.getDoubleFrom(tag(directionTag, player));
-        if (direction >= 0 && direction <= 360)
-            return yawToDirection(direction);
-        else
-            dB.echoError("Cursor directions must be between 0 and 360! Until this is fixed, the direction will be 0!");
-        return 0;
+        return yawToDirection(aH.getDoubleFrom(tag(directionTag, player)));
     }
 
     public org.bukkit.map.MapCursor.Type getType(dPlayer player) {
@@ -36,7 +31,6 @@ public class MapCursor extends MapObject {
     }
 
     private byte yawToDirection(double yaw) {
-        //return (byte) Math.floor(((yaw + 11.25) % 348.75) / 22.5);
         return (byte) (Math.floor((yaw / 22.5) + 0.5) % 16);
     }
 
