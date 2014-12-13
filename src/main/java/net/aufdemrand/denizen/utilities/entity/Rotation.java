@@ -98,6 +98,7 @@ public class Rotation {
         Vector endVec = startVec.clone().add(new Vector(nx, -ny, nz).multiply(range));
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, endVec);
         if (l == null || l.pos == null) return null;
+        Vector finalVec = new Vector(l.pos.a, l.pos.b, l.pos.c);
         double yaw = start.getYaw();
         double angleX = -1;
         double angleY = 0;
@@ -115,9 +116,9 @@ public class Rotation {
                 angleX = -yaw+90;
                 break;
         }
-        if (angleX < 0 || angleY < 0) return null;
-        // TODO: calculate and return the actual location of the map (should be distance between original start/end minus 0.072)
-        Vector hit = startVec.normalize().multiply((0.072/angleX)*(180-angleX));
+        // wallPosition - ((end - start).normalize() * 0.072)
+        // TODO: Increase accuracy using trigonometry (forward.norm*length is imperfect)
+        Vector hit = finalVec.clone().subtract((endVec.clone().subtract(startVec)).normalize().multiply(0.072));
         return new Location(start.getWorld(), hit.getX(), hit.getY(), hit.getZ());
     }
 

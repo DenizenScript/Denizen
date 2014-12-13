@@ -168,6 +168,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 radius.debug() +
                 data.debug() +
                 qty.debug() +
+                offset.debug() +
                 (effect != null ? "" : offset.debug()));
 
         for (dLocation location: locations) {

@@ -1394,9 +1394,10 @@ public class dEntity implements dObject, Adjustable {
         // TODO: meta
         if (attribute.startsWith("map_trace")) {
             Location location = Rotation.mapTrace(getLivingEntity(), 200);
-            if (location != null)
+            if (location != null) {
                 // TODO: make this return the point (between 0,0 and 128,128) on the map
-                return new dLocation(null, location.getX(), location.getY()).getAttribute(attribute.fulfill(1));
+                return new dLocation(location).getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
