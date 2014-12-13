@@ -243,8 +243,10 @@ public class ReplaceableTagEvent {
         if (value_tagged)
             return value;
         value_tagged = true;
-        value = TagManager.cleanOutputFully(TagManager.tag(
-                getPlayer(), getNPC(), value, false, getScriptEntry()));
+        value = TagManager.cleanOutputFully(TagManager.tag(value,
+                new BukkitTagContext(getPlayer(), getNPC(), false, getScriptEntry(),
+                        getScriptEntry() != null ? getScriptEntry().shouldDebug() : true,
+                        getScript())));
         return value;
     }
 
@@ -258,8 +260,10 @@ public class ReplaceableTagEvent {
         if (alternative_tagged)
             return alternative;
         alternative_tagged = true;
-        alternative = TagManager.cleanOutputFully(TagManager.tag(
-                getPlayer(), getNPC(), alternative, false, getScriptEntry()));
+        alternative = TagManager.cleanOutputFully(TagManager.tag(alternative,
+                new BukkitTagContext(getPlayer(), getNPC(), false, getScriptEntry(),
+                        getScriptEntry() != null ? getScriptEntry().shouldDebug(): true,
+                        getScript())));
         return alternative;
     }
 

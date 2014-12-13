@@ -143,10 +143,8 @@ public class Attribute {
 
             if (contextMatcher.find()) {
                 String tagged = TagManager.cleanOutputFully(TagManager.tag(
-                        scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null,
-                        scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null,
-                        text.substring(contextMatcher.start() + 1,
-                        contextMatcher.end() - 1), false, getScriptEntry()));
+                                text.substring(contextMatcher.start() + 1, contextMatcher.end() - 1),
+                        new BukkitTagContext(scriptEntry, false)));
                 contexts.set(attribute - 1, tagged);
                 original_contexts.set(attribute - 1 + fulfilled, tagged);
                 return tagged;

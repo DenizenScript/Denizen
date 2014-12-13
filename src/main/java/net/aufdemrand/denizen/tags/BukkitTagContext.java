@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.tags;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
@@ -17,5 +18,13 @@ public class BukkitTagContext extends TagContext {
         this.npc = npc;
         this.entry = entry;
         this.script = script;
+    }
+
+    public BukkitTagContext(ScriptEntry entry, boolean instant) {
+        super(instant, entry != null ? entry.shouldDebug(): true);
+        this.entry = entry;
+        player = entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null;
+        npc = entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null;
+        script = entry != null ? entry.getScript(): null;
     }
 }

@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -99,8 +100,14 @@ public class CommandExecuter {
             // Throw exception if arguments are required for this command, but not supplied.
             if (command.getOptions().REQUIRED_ARGS > scriptEntry.getArguments().size()) throw new InvalidArgumentsException("");
 
-            if (scriptEntry.has_tags)
-                scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
+            if (scriptEntry.has_tags) {
+                scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(),
+                        new BukkitTagContext(scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null,
+                                scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null,
+                                true, scriptEntry, scriptEntry != null ? scriptEntry.shouldDebug(): true,
+                                scriptEntry != null ? scriptEntry.getScript(): null
+                                ))); // Replace tags
+            }
 
             /*  If using NPC:# or PLAYER:Name arguments, these need to be changed out immediately because...
              *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
@@ -201,7 +208,12 @@ public class CommandExecuter {
             scriptEntry.setArguments(newArgs);
 
             // Now process non-instant tags.
-            scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, false));
+            scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(),
+                    new BukkitTagContext(scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null,
+                            scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null,
+                            false, scriptEntry, scriptEntry != null ? scriptEntry.shouldDebug(): true,
+                            scriptEntry != null ? scriptEntry.getScript(): null
+                    ))); // Replace tags
 
             // Parse the rest of the arguments for execution.
             command.parseArgs(scriptEntry);

@@ -298,11 +298,6 @@ public class TagManager implements Listener {
         }
     }
 
-    @Deprecated // TODO: Delete all usages
-    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug, dScript script) {
-        return tag(arg, new BukkitTagContext(player, npc, instant, scriptEntry, debug, script));
-    }
-
     public static String tag(String arg, TagContext context) {
         if (arg == null) return null;
 
@@ -360,11 +355,7 @@ public class TagManager implements Listener {
         else return null;
     }
 
-    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {
-        return fillArguments(args, scriptEntry, false);
-    }
-
-    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry, boolean instant) {
+    public static List<String> fillArguments(List<String> args, TagContext context) {
         List<String> filledArgs = new ArrayList<String>();
 
         int nested_level = 0;
@@ -375,9 +366,11 @@ public class TagManager implements Listener {
                 if (argument.equals("}")) nested_level--;
                 // If this argument isn't nested, fill the tag.
                 if (nested_level < 1) {
-                    filledArgs.add(tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), argument, instant, scriptEntry));
+                    filledArgs.add(tag(argument, context));
                 }
-                    else filledArgs.add(argument);
+                else {
+                    filledArgs.add(argument);
+                }
             }
         }
         return filledArgs;
