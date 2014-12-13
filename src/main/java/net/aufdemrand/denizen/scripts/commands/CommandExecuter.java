@@ -172,7 +172,7 @@ public class CommandExecuter {
                 // Fill player/off-line player
                 if (arg.matchesPrefix("player") && !if_ignore) {
                     dB.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
-                    String value = TagManager.tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), arg.getValue(), false, scriptEntry);
+                    String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
                     dPlayer player = dPlayer.valueOf(value);
                     if (player == null || !player.isValid()) {
                         dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
@@ -184,7 +184,7 @@ public class CommandExecuter {
                 // Fill NPCID/NPC argument
                 else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
                     dB.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
-                    String value = TagManager.tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), arg.getValue(), false, scriptEntry);
+                    String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
                     dNPC npc = dNPC.valueOf(value);
                     if (npc == null || !npc.isValid()) {
                         dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
@@ -195,8 +195,7 @@ public class CommandExecuter {
 
                 // Save the scriptentry if needed later for fetching scriptentry context
                 else if (arg.matchesPrefix("save") && !if_ignore) {
-                    String saveName = TagManager.tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
-                            ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), arg.getValue(), false, scriptEntry);
+                    String saveName = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
                     dB.echoDebug(scriptEntry, "...remembering this script entry as '" + saveName + "'!");
                     scriptEntry.getResidingQueue().holdScriptEntry(saveName, scriptEntry);
                 }

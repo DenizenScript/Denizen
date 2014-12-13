@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.tags;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -284,17 +282,6 @@ public class TagManager implements Listener {
                 dB.echoError(((BukkitTagContext)context).entry != null ? ((BukkitTagContext)context).entry.getResidingQueue(): null,
                         "Tag <" + event.toString() + "> is invalid!");
             return escapeOutput(event.getReplaced());
-        }
-    }
-
-    @Deprecated // TODO: Delete all usages
-    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
-        try {
-            return tag(arg, new BukkitTagContext(player, npc, instant, scriptEntry, scriptEntry.shouldDebug(), null));
-        }
-        catch (Exception e) {
-            dB.echoError(e);
-            return null;
         }
     }
 
