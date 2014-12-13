@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitScriptProperties;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
@@ -909,10 +911,10 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         if (attribute.startsWith("npc")) {
             dNPC npc = null;
             if (getLastEntryExecuted() != null) {
-                npc = getLastEntryExecuted().getNPC();
+                npc = ((BukkitScriptEntryData)getLastEntryExecuted().entryData).getNPC();
             }
             else if (script_entries.size() > 0) {
-                npc = script_entries.get(0).getNPC();
+                npc = ((BukkitScriptEntryData)script_entries.get(0).entryData).getNPC();
             }
             else {
                 dB.echoError(this, "Can't determine a linked NPC.");
@@ -932,10 +934,10 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         if (attribute.startsWith("player")) {
             dPlayer player = null;
             if (getLastEntryExecuted() != null) {
-                player = getLastEntryExecuted().getPlayer();
+                player = ((BukkitScriptEntryData)getLastEntryExecuted().entryData).getPlayer();
             }
             else if (script_entries.size() > 0) {
-                player = script_entries.get(0).getPlayer();
+                player = ((BukkitScriptEntryData)script_entries.get(0).entryData).getPlayer();
             }
             else {
                 dB.echoError(this, "Can't determine a linked player.");

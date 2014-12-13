@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects.properties.bukkit;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
@@ -40,7 +41,7 @@ public class BukkitScriptProperties implements Property {
         // -->
         if (attribute.startsWith("cooled_down")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
+                    : ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid())
                 return new Element(CooldownCommand.checkCooldown(player, script.getContainer().getName()))
                         .getAttribute(attribute.fulfill(1));
@@ -56,10 +57,10 @@ public class BukkitScriptProperties implements Property {
         // -->
         if (attribute.startsWith("requirements.check")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
+                    : ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer());
             if (attribute.hasContext(2))
                 return new Element(((InteractScriptContainer)script.getContainer()).checkRequirements(player,
-                        attribute.getScriptEntry().getNPC(),
+                        ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC(),
                         attribute.getContext(2)))
                         .getAttribute(attribute.fulfill(2));
         }
@@ -72,7 +73,7 @@ public class BukkitScriptProperties implements Property {
         // -->
         if (attribute.startsWith("cooldown")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
+                    : ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer());
             return CooldownCommand.getCooldownDuration(player, script.getName())
                     .getAttribute(attribute.fulfill(1));
 
@@ -88,7 +89,7 @@ public class BukkitScriptProperties implements Property {
         // -->
         if (attribute.startsWith("step")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
+                    : ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer());
 
             if (player != null && player.isValid())
                 return new Element(InteractScriptHelper.getCurrentStep(player, script.getContainer().getName()))

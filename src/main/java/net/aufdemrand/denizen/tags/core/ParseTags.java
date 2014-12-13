@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.tags.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.Element;
@@ -31,8 +32,8 @@ public class ParseTags implements Listener {
                 return;
             }
             ScriptEntry se = event.getAttributes().getScriptEntry();
-            String read = TagManager.tag((se != null ?se.getPlayer(): null),
-                    (se != null ?se.getNPC(): null), TagManager.cleanOutputFully(event.getValue()), false, se);
+            String read = TagManager.tag((se != null ?((BukkitScriptEntryData)se.entryData).getPlayer(): null),
+                    (se != null ?((BukkitScriptEntryData)se.entryData).getNPC(): null), TagManager.cleanOutputFully(event.getValue()), false, se);
             event.setReplaced(new Element(read).getAttribute(event.getAttributes().fulfill(1)));
         }
     }

@@ -78,7 +78,7 @@ public class CommandExecuter {
         }
 
         if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() && ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen() == null)
-            scriptEntry.setNPC(null);
+            ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(null);
 
         // Debugger information
         if (scriptEntry.getOriginalArguments() == null ||
@@ -171,7 +171,7 @@ public class CommandExecuter {
                         dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
                         return false;
                     }
-                    scriptEntry.setPlayer(player);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(player);
                 }
 
                 // Fill NPCID/NPC argument
@@ -183,7 +183,7 @@ public class CommandExecuter {
                         dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
                         return false;
                     }
-                    scriptEntry.setNPC(npc);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(npc);
                 }
 
                 // Save the scriptentry if needed later for fetching scriptentry context

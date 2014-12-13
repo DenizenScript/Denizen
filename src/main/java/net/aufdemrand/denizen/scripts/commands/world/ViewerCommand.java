@@ -34,6 +34,7 @@ import org.bukkit.event.block.BlockBreakEvent;
  * - viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in)
  * @author Morphan1
  */
+// TODO: should this command exist?
 public class ViewerCommand extends AbstractCommand implements Listener {
 
     private enum Action { CREATE, MODIFY, REMOVE }
@@ -104,9 +105,12 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         Type type = scriptEntry.hasObject("type") ? (Type) scriptEntry.getObject("type") : null;
         Display display = scriptEntry.hasObject("display") ? (Display) scriptEntry.getObject("display") : null;
         final String id = scriptEntry.getObject("id").toString();
-        if (viewers.containsKey(id)) scriptEntry.setPlayer(dPlayer.valueOf(viewers.get(id).getContent().split("; ")[1]));
+        if (viewers.containsKey(id)) {
+            ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(dPlayer.valueOf(viewers.get(id).getContent().split("; ")[1]));
+        }
         dLocation location = scriptEntry.hasObject("location") ? (dLocation) scriptEntry.getObject("location") : null;
-        String content = scriptEntry.hasObject("display") ? display.toString() + "; " + ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getOfflinePlayer().getUniqueId() : null;
+        String content = scriptEntry.hasObject("display") ? display.toString() + "; " +
+                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getOfflinePlayer().getUniqueId() : null;
 
         switch (action) {
 

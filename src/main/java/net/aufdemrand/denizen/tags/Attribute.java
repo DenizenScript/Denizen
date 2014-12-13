@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.tags;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
@@ -142,7 +143,8 @@ public class Attribute {
 
             if (contextMatcher.find()) {
                 String tagged = TagManager.cleanOutputFully(TagManager.tag(
-                        scriptEntry != null ? scriptEntry.getPlayer(): null, scriptEntry != null ? scriptEntry.getNPC(): null,
+                        scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null,
+                        scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null,
                         text.substring(contextMatcher.start() + 1,
                         contextMatcher.end() - 1), false, getScriptEntry()));
                 contexts.set(attribute - 1, tagged);

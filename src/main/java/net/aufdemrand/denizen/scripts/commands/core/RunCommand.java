@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
@@ -100,13 +101,13 @@ public class RunCommand extends AbstractCommand implements Holdable {
 
             else if (arg.matchesPrefix("a", "as")
                     && arg.matchesArgumentType(dPlayer.class)) {
-                scriptEntry.setPlayer(arg.asType(dPlayer.class));
+                ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(arg.asType(dPlayer.class));
                 dB.echoError(scriptEntry.getResidingQueue(), "Run as:<player> is outdated, use player:<player>");
             }
 
             else if (arg.matchesPrefix("a", "as")
                     && arg.matchesArgumentType(dNPC.class)) {
-                scriptEntry.setNPC(arg.asType(dNPC.class));
+                ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
                 dB.echoError(scriptEntry.getResidingQueue(), "Run as:<npc> is outdated, use npc:<npc>");
             }
 

@@ -39,6 +39,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.DenizenImplementation;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -744,6 +745,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError(e);
         }
         return files;
+    }
+
+    @Override
+    public ScriptEntryData getEmptyScriptEntryData() {
+        return new BukkitScriptEntryData(null, null);
     }
 }
 

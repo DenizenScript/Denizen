@@ -2,14 +2,11 @@ package net.aufdemrand.denizen.scripts;
 
 import java.util.*;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
@@ -87,7 +84,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
         if (command == null)
             throw new ScriptEntryCreationException("dCommand 'name' cannot be null!");
 
-        entryData = new BukkitScriptEntryData(null, null); // TODO: Make version-cross-compatible
+        entryData = DenizenCore.getImplementation().getEmptyScriptEntryData();
 
         this.command = command.toUpperCase();
 
@@ -260,8 +257,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     }
 
     public void copyFrom(ScriptEntry entry) {
-        setPlayer(((BukkitScriptEntryData)entry.entryData).getPlayer());
-        setNPC(((BukkitScriptEntryData)entry.entryData).getNPC());
+        entryData = entry.entryData.clone();
         setSendingQueue(entry.getResidingQueue());
     }
 
@@ -293,20 +289,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         } catch (Exception e) { return null; }
     }
 
-    @Deprecated
-    public <T extends dObject> T getdObjectAs(String key, Class<T> type) {
-        try {
-            // If an ENUM, return as an Element
-            Object gotten = objects.get(key.toLowerCase());
-            if (gotten instanceof Enum)
-                return (T) new Element(((Enum) gotten).name());
-            // Otherwise, just return the stored dObject
-            return (T) gotten;
-            // If not a dObject, return null
-        } catch (Exception e) { return null; }
-    }
-
-
     public Element getElement(String key) {
         try {
             return (Element) objects.get(key.toLowerCase());
@@ -321,46 +303,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
     /////////////
     // CORE LINKED OBJECTS
     ///////
-
-    /**
-     * Gets a dNPC reference to any linked NPC set by the CommandExecuter.
-     *
-     * @return the NPC linked to this script entry
-     */
-    @Deprecated
-    public dNPC getNPC() {
-        return ((BukkitScriptEntryData)entryData).getNPC();
-    }
-
-    @Deprecated
-    public boolean hasNPC() {
-        return ((BukkitScriptEntryData)entryData).hasNPC();
-    }
-
-
-    @Deprecated
-    public ScriptEntry setNPC(dNPC dNPC) {
-        ((BukkitScriptEntryData)entryData).setNPC(dNPC);
-        return this;
-    }
-
-
-    @Deprecated
-    public dPlayer getPlayer() {
-        return ((BukkitScriptEntryData)entryData).getPlayer();
-    }
-
-    @Deprecated
-    public boolean hasPlayer() {
-        return ((BukkitScriptEntryData)entryData).hasPlayer();
-    }
-
-    @Deprecated
-    public ScriptEntry setPlayer(dPlayer player) {
-        ((BukkitScriptEntryData)entryData).setPlayer(player);
-        return this;
-    }
-
 
     public dScript getScript() {
         return script;
@@ -415,6 +357,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     // so that IF can inject them into new entries.
     // This is ugly, but it will keep from breaking
     // previous versions of Denizen.
+    // TODO: Get rid of this
     public List<String> tracked_objects = new ArrayList<String>();
     public ScriptEntry trackObject(String key) {
         tracked_objects.add(key.toLowerCase());
@@ -436,21 +379,5 @@ public class ScriptEntry implements Cloneable, Debuggable {
     @Override
     public boolean shouldFilter(String criteria) throws Exception {
         return script.getName().equalsIgnoreCase(criteria.replace("s@", ""));
-    }
-
-    public String reportObject(String id) {
-        // If this script entry doesn't have the object being reported,
-        // just return nothing.
-        if (!hasObject(id))
-            return "";
-
-        // If the object is a dObject, there's a method for reporting them
-        // in the proper format.
-        if (getObject(id) instanceof dObject)
-            return getdObject(id).debug();
-
-            // If all else fails, fall back on the toString() method with the id of the
-            // object being passed to aH.report(...)
-        else return aH.debugObj(id, getObject(id));
     }
 }
