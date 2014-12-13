@@ -75,7 +75,7 @@ public class Rotation {
             handle.pitch = pitch;
         }
         else {
-            dB.echoError("Rotation.jav#look: NPC has null handle!");
+            dB.echoError("Rotation.java#look: NPC has null handle!");
         }
     }
 
