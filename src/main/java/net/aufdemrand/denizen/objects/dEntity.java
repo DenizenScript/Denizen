@@ -1421,7 +1421,7 @@ public class dEntity implements dObject, Adjustable {
                     x = 128f - (basez * 128f);
                 }
                 y = 128f - (basey * 128f);
-                return new dLocation(null, x, y).getAttribute(attribute.fulfill(1));
+                return new dLocation(null, Math.round(x), Math.round(y)).getAttribute(attribute.fulfill(1));
             }
         }
 

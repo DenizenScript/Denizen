@@ -105,30 +105,22 @@ public class Rotation {
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, endVec);
         if (l == null || l.pos == null) return null;
         Vector finalVec = new Vector(l.pos.a, l.pos.b, l.pos.c);
-        double yaw = start.getYaw();
-        double angleX = -1;
-        double angleY = 0;
         MapTraceResult mtr = new MapTraceResult();
         switch (l.direction) {
             case NORTH:
                 mtr.angle = BlockFace.NORTH;
-                angleX = -yaw;
                 break;
             case SOUTH:
                 mtr.angle = BlockFace.SOUTH;
-                angleX = -yaw+180;
                 break;
             case EAST:
                 mtr.angle = BlockFace.EAST;
-                angleX = -yaw-90;
                 break;
             case WEST:
                 mtr.angle = BlockFace.WEST;
-                angleX = -yaw+90;
                 break;
         }
         // wallPosition - ((end - start).normalize() * 0.072)
-        // TODO: Increase accuracy using trigonometry (forward.norm*length is imperfect)
         Vector hit = finalVec.clone().subtract((endVec.clone().subtract(startVec)).normalize().multiply(0.072));
         mtr.hitLocation = new Location(start.getWorld(), hit.getX(), hit.getY(), hit.getZ());
         return mtr;
