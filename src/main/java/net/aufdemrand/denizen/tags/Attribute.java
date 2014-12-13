@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.tags;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 

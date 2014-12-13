@@ -2,12 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;

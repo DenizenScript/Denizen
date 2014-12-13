@@ -14,14 +14,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Calls a bukkit event for replaceable tags.
- *
- * @author Jeremy Schroeder
- *
- */
-
-public class TagManager implements Listener {
+public class TagManager {
 
     public Denizen denizen;
 
