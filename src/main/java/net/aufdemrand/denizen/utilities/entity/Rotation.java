@@ -7,6 +7,7 @@ import net.minecraft.server.v1_8_R1.MovingObjectPosition;
 import net.minecraft.server.v1_8_R1.Vec3D;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftEntity;
 import org.bukkit.entity.EnderDragon;
@@ -88,7 +89,12 @@ public class Rotation {
                 new Vec3D(end.getX(), end.getY(), end.getZ()));
     }
 
-    public static Location mapTrace(LivingEntity from, double range) {
+    public static class MapTraceResult {
+        public Location hitLocation;
+        public BlockFace angle;
+    }
+
+    public static MapTraceResult mapTrace(LivingEntity from, double range) {
         Location start = from.getEyeLocation();
         Vector startVec = start.toVector();
         double xzLen = Math.cos((start.getPitch() % 360) * (Math.PI / 180));
@@ -102,24 +108,30 @@ public class Rotation {
         double yaw = start.getYaw();
         double angleX = -1;
         double angleY = 0;
+        MapTraceResult mtr = new MapTraceResult();
         switch (l.direction) {
             case NORTH:
+                mtr.angle = BlockFace.NORTH;
                 angleX = -yaw;
                 break;
             case SOUTH:
+                mtr.angle = BlockFace.SOUTH;
                 angleX = -yaw+180;
                 break;
             case EAST:
+                mtr.angle = BlockFace.EAST;
                 angleX = -yaw-90;
                 break;
             case WEST:
+                mtr.angle = BlockFace.WEST;
                 angleX = -yaw+90;
                 break;
         }
         // wallPosition - ((end - start).normalize() * 0.072)
         // TODO: Increase accuracy using trigonometry (forward.norm*length is imperfect)
         Vector hit = finalVec.clone().subtract((endVec.clone().subtract(startVec)).normalize().multiply(0.072));
-        return new Location(start.getWorld(), hit.getX(), hit.getY(), hit.getZ());
+        mtr.hitLocation = new Location(start.getWorld(), hit.getX(), hit.getY(), hit.getZ());
+        return mtr;
     }
 
     /**
