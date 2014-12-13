@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.dItem;
@@ -107,7 +108,9 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                 // Iterate through the different id entries in the step's click trigger
                 for (Map.Entry<String, String> entry : idMap.entrySet()) {
                     // Tag the entry value to account for replaceables
-                    String entry_value = TagManager.tag(player, npc, entry.getValue());
+                    // TODO: script arg?
+                    String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext
+                            (player, npc, false, null, false, null));
                     // Check if the item specified in the specified id's 'trigger:' key
                     // matches the item that the player is holding.
                     dItem item = dItem.valueOf(entry_value);

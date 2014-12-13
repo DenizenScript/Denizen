@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
@@ -116,11 +117,13 @@ public class CommandScriptContainer extends ScriptContainer {
         // Replace new lines with a space and a new line, to allow full brief descriptions in /help.
         // Without this, "line<n>line"s brief description would be "lin", because who doesn't like
         // random cutoff-
-        return TagManager.tag(null, null, getString("DESCRIPTION", "")).replace("\n", " \n");
+        return TagManager.tag((getString("DESCRIPTION", "")).replace("\n", " \n"), new BukkitTagContext
+                (null, null, false, null, false, new dScript(this)));
     }
 
     public String getUsage() {
-        return TagManager.tag(null, null, getString("USAGE", ""));
+        return TagManager.tag((getString("USAGE", "")), new BukkitTagContext
+                (null, null, false, null, false, new dScript(this)));
     }
 
     public List<String> getAliases() {

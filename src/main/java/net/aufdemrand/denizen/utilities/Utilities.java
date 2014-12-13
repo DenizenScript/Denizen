@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -89,9 +90,9 @@ public class Utilities {
         String bystanderFormat = Settings.chatToNpcOverheardFormat()
                 .replaceAll("(?i)<TEXT>", replacer);
 
-        // Fill in tags
-        talkFormat = TagManager.tag(player, npc, talkFormat, false).replace(replacer, message);
-        bystanderFormat = TagManager.tag(player, npc, bystanderFormat, false).replace(replacer, message);
+        // Fill in tags // TODO: Debug option?
+        talkFormat = TagManager.tag(talkFormat, new BukkitTagContext(player, npc, false, null, true, null)).replace(replacer, message);
+        bystanderFormat = TagManager.tag(bystanderFormat, new BukkitTagContext(player, npc, false, null, true, null)).replace(replacer, message);
 
         // Send message to player
         player.getPlayerEntity().sendMessage(talkFormat);

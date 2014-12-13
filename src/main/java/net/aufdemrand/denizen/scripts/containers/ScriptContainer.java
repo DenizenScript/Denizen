@@ -244,7 +244,7 @@ public class ScriptContainer implements Debuggable {
     private Boolean shouldDebug = null;
 
     @Override
-    public boolean shouldDebug() throws Exception {
+    public boolean shouldDebug() {
         if (shouldDebug == null)
             shouldDebug = (!(contents.contains("DEBUG") && contents.getString("DEBUG").equalsIgnoreCase("false")));
         return shouldDebug;

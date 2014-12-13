@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.CitizensAPI;
@@ -116,7 +117,9 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                     // Iterate through the different id entries in the step's click trigger
                     for (Map.Entry<String, String> entry : idMap.entrySet()) {
                         // Tag the entry value to account for replaceables
-                        String entry_value = TagManager.tag(dplayer, npc, entry.getValue());
+                        // TODO: script arg?
+                        String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext
+                                (dplayer, npc, false, null, false, null));
                         // Check if the item specified in the specified id's 'trigger:' key
                         // matches the item that the player is holding.
                         if (dItem.valueOf(entry_value).comparesTo(dplayer.getPlayerEntity().getItemInHand()) >= 0
