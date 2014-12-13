@@ -3,25 +3,28 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.objects.properties.entity.*;
+import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
+import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
+import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.*;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_8_R1.*;
+import net.minecraft.server.v1_8_R1.EntityHuman;
+import net.minecraft.server.v1_8_R1.EntityLiving;
 import org.bukkit.*;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftAnimals;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -1388,6 +1391,39 @@ public class dEntity implements dObject, Adjustable {
         /////////////////////
         //   LOCATION ATTRIBUTES
         /////////////////
+
+        // <--[tag]
+        // @attribute <e@entity.map_trace>
+        // @returns dLocation
+        // @group inventory
+        // @description
+        // returns a 2D location indicating where on the map the entity's looking at.
+        // Each coordinate is in the range of 0 to 128.
+        // -->
+        if (attribute.startsWith("map_trace")) {
+            Rotation.MapTraceResult mtr  = Rotation.mapTrace(getLivingEntity(), 200);
+            if (mtr != null) {
+                double x = 0;
+                double y = 0;
+                double basex = mtr.hitLocation.getX() - Math.floor(mtr.hitLocation.getX());
+                double basey = mtr.hitLocation.getY() - Math.floor(mtr.hitLocation.getY());
+                double basez = mtr.hitLocation.getZ() - Math.floor(mtr.hitLocation.getZ());
+                if (mtr.angle == BlockFace.NORTH) {
+                    x = 128f - (basex * 128f);
+                }
+                else if (mtr.angle == BlockFace.SOUTH) {
+                    x = basex * 128f;
+                }
+                else if (mtr.angle == BlockFace.WEST) {
+                    x = basez * 128f;
+                }
+                else if (mtr.angle == BlockFace.EAST) {
+                    x = 128f - (basez * 128f);
+                }
+                y = 128f - (basey * 128f);
+                return new dLocation(null, Math.round(x), Math.round(y)).getAttribute(attribute.fulfill(1));
+            }
+        }
 
         // <--[tag]
         // @attribute <e@entity.can_see[<entity>]>

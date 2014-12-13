@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.objects.dItem;
 
@@ -66,7 +67,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("TITLE")) {
             String title = getString("TITLE");
-            title = TagManager.tag(player, npc, title, false, null, dB.shouldDebug(this), new dScript(this));
+            title = TagManager.tag(title, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
             bookInfo.setTitle(title);
         }
 
@@ -78,7 +79,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("AUTHOR")) {
             String author = getString("AUTHOR");
-            author = TagManager.tag(player, npc, author, false);
+            author = TagManager.tag(author, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
             bookInfo.setAuthor(author);
         }
 
@@ -86,7 +87,7 @@ public class BookScriptContainer extends ScriptContainer {
             List<String> pages = getStringList("TEXT");
 
             for (String page : pages) {
-                page = TagManager.tag(player, npc, page, false, null, dB.shouldDebug(this), new dScript(this));
+                page = TagManager.tag(page, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
                 bookInfo.addPage(page);
             }
         }

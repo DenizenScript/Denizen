@@ -122,10 +122,27 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Split values
         String[] split = StringUtils.split(string.startsWith("l@") ? string.substring(2) : string, ',');
 
-        if (split.length == 3)
-            // If 4 values, standard dScript location format
-            // x,y,z,world
+        if (split.length == 2)
+            // If 4 values, wordless 2D location format
+            // x,y
             try {
+                return new dLocation(null,
+                        Double.valueOf(split[0]),
+                        Double.valueOf(split[1]));
+            } catch (Exception e) {
+                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                return null;
+            }
+        if (split.length == 3)
+            // If 3 values, either worldless location format
+            // x,y,z or 2D location format x,y,world
+            try {
+                World world = Bukkit.getWorld(split[2]);
+                if (world != null) {
+                    return new dLocation(world,
+                            Double.valueOf(split[0]),
+                            Double.valueOf(split[1]));
+                }
                 return new dLocation(null,
                         Double.valueOf(split[0]),
                         Double.valueOf(split[1]),
@@ -182,15 +199,16 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             return true;
 
         String[] data = string.split(",");
-        return data.length >= 3 && new Element(data[0]).isDouble()
-                && new Element(data[1]).isDouble()
-                && new Element(data[2]).isDouble();
+        return data.length >= 2 && new Element(data[0]).isDouble()
+                && new Element(data[1]).isDouble();
     }
 
 
     /////////////////////
     //   CONSTRUCTORS
     //////////////////
+
+    private boolean is2D = false;
 
     /**
      * Turns a Bukkit Location into a Location, which has some helpful methods
@@ -204,6 +222,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // negative values
         super(location.getWorld(), location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
+    }
+
+    public dLocation(World world, double x, double y) {
+        this(world, x, y, 0);
+        this.is2D = true;
     }
 
     /**
@@ -327,19 +350,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (isUnique())
             return "l@" + getSaved(this);
         else if (getWorld() == null)
-            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ();
+            return "l@" + getBlockX() + "," + getBlockY() + (!is2D ? "," + getBlockZ() : "");
         else
-            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
+            return "l@" + getBlockX() + "," + getBlockY() + (!is2D ? "," + getBlockZ() : "")
                 + "," + getWorld().getName();
     }
 
     public String identifyRaw() {
         if (getYaw() != 0.0 || getPitch() != 0.0)
-            return "l@" + getX() + "," + getY()
-                    + "," + getZ() + "," + getPitch() + "," + getYaw() + (getWorld() != null ? "," + getWorld().getName(): "");
+            return "l@" + getX() + "," + getY() + "," + getZ() + "," + getPitch() + "," + getYaw()
+                    + (getWorld() != null ? "," + getWorld().getName(): "");
         else
-            return "l@" + getX() + "," + getY()
-                    + "," + getZ() + (getWorld() != null ? "," + getWorld().getName(): "");
+            return "l@" + getX() + "," + getY() + (!is2D ? "," + getZ() : "")
+                    + (getWorld() != null ? "," + getWorld().getName(): "");
     }
 
     @Override
@@ -518,6 +541,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         /////////////////////
         //   DIRECTION ATTRIBUTES
         /////////////////
+
+        // <--[tag]
+        // @attribute <l@location.precise_cursor_on>
+        // @returns dLocation
+        // @description
+        // Returns the exact location this location is pointing at.
+        // -->
+        if (attribute.startsWith("precise_cursor_on")) {
+            double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
+            double nx = xzLen * Math.sin(-getYaw() * (Math.PI/180));
+            double ny = Math.sin(getPitch() * (Math.PI/180));
+            double nz = xzLen * Math.cos(getYaw() * (Math.PI/180));
+            return new dLocation(Rotation.rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), 200)).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <l@location.direction.vector>

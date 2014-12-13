@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.core.CommandScriptContainer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.CitizensAPI;
@@ -73,8 +74,9 @@ public class DenizenCommand extends Command {
                     npc = dNPC.mirrorCitizensNPC(citizen);
             }
             // <permission> is built into Bukkit... let's keep it here
-            for (String line : TagManager.tag(player, npc, permissionMessage.replace("<permission>", getPermission()))
-                    .split("\n")) {
+            // TODO: script arg?
+            for (String line : TagManager.tag(permissionMessage.replace("<permission>", getPermission()),
+                    new BukkitTagContext(player, npc, false, null, false, null)).split("\n")) {
                 target.sendMessage(line);
             }
         }

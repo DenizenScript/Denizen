@@ -287,21 +287,10 @@ public class TagManager implements Listener {
         }
     }
 
-
-    @Deprecated
-    public static String tag(dPlayer player, dNPC npc, String arg) {
-        return tag(player, npc, arg, false, null);
-    }
-
-    @Deprecated
-    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant) {
-        return tag(player, npc, arg, instant, null);
-    }
-
-    @Deprecated
+    @Deprecated // TODO: Delete all usages
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
         try {
-            return tag(player, npc, arg, instant, scriptEntry, dB.shouldDebug(scriptEntry));
+            return tag(arg, new BukkitTagContext(player, npc, instant, scriptEntry, scriptEntry.shouldDebug(), null));
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -309,13 +298,7 @@ public class TagManager implements Listener {
         }
     }
 
-
-    @Deprecated
-    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug) {
-        return tag(arg, new BukkitTagContext(player, npc, instant, scriptEntry, debug, scriptEntry != null ? scriptEntry.getScript(): null));
-    }
-
-    @Deprecated
+    @Deprecated // TODO: Delete all usages
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug, dScript script) {
         return tag(arg, new BukkitTagContext(player, npc, instant, scriptEntry, debug, script));
     }

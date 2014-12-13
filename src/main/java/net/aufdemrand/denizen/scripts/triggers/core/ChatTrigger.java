@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -212,12 +213,16 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
                 // Check if the chat trigger specified in the specified id's 'trigger:' key
                 // matches the text the player has said
-                String triggerText = TagManager.tag(denizenPlayer, npc, entry.getValue());
+                // TODO: script arg?
+                String triggerText = TagManager.tag(entry.getValue(), new BukkitTagContext
+                        (denizenPlayer, npc, false, null, false, null));
                 Matcher matcher = triggerPattern.matcher(triggerText);
                 while (matcher.find ()) {
                     if (!script.checkSpecificTriggerScriptRequirementsFor(ChatTrigger.class,
                             denizenPlayer, npc, entry.getKey())) continue;
-                    String keyword = TagManager.tag(denizenPlayer, npc, matcher.group().replace("/", ""));
+                    // TODO: script arg?
+                    String keyword = TagManager.tag(matcher.group().replace("/", ""), new BukkitTagContext
+                            (denizenPlayer, npc, false, null, false, null));
                     String[] split = keyword.split("\\\\\\+REPLACE:", 2);
                     String replace = null;
                     if (split.length == 2) {

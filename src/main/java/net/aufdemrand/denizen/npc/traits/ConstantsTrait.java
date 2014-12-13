@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -44,10 +45,12 @@ public class ConstantsTrait extends Trait {
 
         getAssignmentConstants();
 
-        if (constants.containsKey(name.toLowerCase()))
-            return TagManager.tag(null, DenizenAPI.getDenizenNPC(npc), constants.get(name.toLowerCase()), false);
+        if (constants.containsKey(name.toLowerCase())) // TODO: shouldDebug
+            return TagManager.tag(constants.get(name.toLowerCase()),
+                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
         else if (getAssignmentConstants().containsKey(name.toLowerCase()))
-            return TagManager.tag(null, DenizenAPI.getDenizenNPC(npc), assignmentConstants.get(name.toLowerCase()), false);
+            return TagManager.tag(assignmentConstants.get(name.toLowerCase()),
+        new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
         return null;
     }
 

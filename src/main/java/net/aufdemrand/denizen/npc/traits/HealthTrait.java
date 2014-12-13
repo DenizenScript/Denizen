@@ -2,8 +2,10 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
@@ -72,7 +74,8 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public Location getRespawnLocation() {
-        return dLocation.valueOf(TagManager.tag(null, dNPC.mirrorCitizensNPC(npc), respawnLocation));
+        return dLocation.valueOf(TagManager.tag(respawnLocation, new BukkitTagContext(null,
+                dNPC.mirrorCitizensNPC(npc), false, null, false, null)));
     }
 
     public void setRespawnable(boolean respawnable) {
@@ -288,9 +291,8 @@ public class HealthTrait extends Trait implements Listener {
         if (npc.getBukkitEntity() == null)
             return;
 
-        loc = dLocation.valueOf(TagManager.tag(null,
-                DenizenAPI.getDenizenNPC(npc),
-                respawnLocation, false));
+        loc = dLocation.valueOf(TagManager.tag(respawnLocation, // TODO: debug option?
+                new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null)));
 
         if (loc == null) loc = npc.getBukkitEntity().getLocation();
 

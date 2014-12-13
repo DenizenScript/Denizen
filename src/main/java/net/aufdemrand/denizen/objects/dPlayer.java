@@ -104,7 +104,7 @@ public class dPlayer implements dObject, Adjustable {
                 UUID uuid = UUID.fromString(string);
                 if (uuid != null) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                    if (player != null) {
+                    if (player != null && player.hasPlayedBefore()) {
                         return new dPlayer(player);
                     }
                 }
@@ -141,7 +141,7 @@ public class dPlayer implements dObject, Adjustable {
                 UUID uuid = UUID.fromString(arg);
                 if (uuid != null) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                    if (player != null) {
+                    if (player != null && player.hasPlayedBefore()) {
                         return true;
                     }
                 }

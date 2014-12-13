@@ -5,12 +5,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
@@ -134,7 +131,8 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
 
                     inventory = new dInventory(size,
-                            contains("TITLE") ? TagManager.tag(player, npc, getString("TITLE")) : "Chest");
+                            contains("TITLE") ? TagManager.tag(getString("TITLE"),
+                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");
                     inventory.setIdentifiers("script", getName());
                 }
             }
@@ -142,7 +140,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 ItemStack[] finalItems = new ItemStack[getSize()];
                 int itemsAdded = 0;
                 for (String items : getStringList("SLOTS")) {
-                    items = TagManager.tag(player, npc, items);
+                    items = TagManager.tag(items, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
                     String[] itemsInLine = items.split(" ");
                     for (String item : itemsInLine) {
                         Matcher m = fromPattern.matcher(item);
@@ -153,11 +151,13 @@ public class InventoryScriptContainer extends ScriptContainer {
                         if (contains("DEFINITIONS." + m.group(2)) &&
                                 dItem.matches(getString("DEFINITIONS." + m.group(2)))) {
                             finalItems[itemsAdded] = dItem.valueOf(TagManager.tag
-                                    (player, npc, getString("DEFINITIONS." + m.group(2))))
+                                    (getString("DEFINITIONS." + m.group(2)),
+                                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))))
                                         .getItemStack();
                         }
                         else if (dItem.matches(m.group(2))) {
-                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(player, npc, m.group(2)))
+                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(m.group(2),
+                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))))
                                     .getItemStack();
                         }
                         else {
@@ -173,7 +173,8 @@ public class InventoryScriptContainer extends ScriptContainer {
                 if (inventory == null) {
                     int size = finalItems.length%9==0?finalItems.length:Math.round(finalItems.length/9)*9;
                     inventory = new dInventory(size==0?9:size,
-                            contains("TITLE") ? TagManager.tag(player, npc, getString("TITLE")) : "Chest");
+                            contains("TITLE") ? TagManager.tag(getString("TITLE"),
+                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");
                 }
                 inventory.setContents(finalItems);
             }
