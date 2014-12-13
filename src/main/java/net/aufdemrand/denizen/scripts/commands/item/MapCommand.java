@@ -50,6 +50,18 @@ public class MapCommand extends AbstractCommand {
                 scriptEntry.addObject("resize", Element.TRUE);
             }
 
+            else if (!scriptEntry.hasObject("width")
+                    && arg.matchesPrefix("width")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("width", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("height")
+                    && arg.matchesPrefix("height")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("height", arg.asElement());
+            }
+
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesPrefix("s", "script")
                     && arg.matchesArgumentType(dScript.class)) {
@@ -58,13 +70,13 @@ public class MapCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("x-value")
                     && arg.matchesPrefix("x")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("x-value", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("y-value")
                     && arg.matchesPrefix("y")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("y-value", arg.asElement());
             }
 
@@ -99,12 +111,15 @@ public class MapCommand extends AbstractCommand {
         Element image = scriptEntry.getElement("image");
         dScript script = scriptEntry.getdObject("script");
         Element resize = scriptEntry.getElement("resize");
+        Element width = scriptEntry.getElement("width");
+        Element height = scriptEntry.getElement("height");
         Element x = scriptEntry.getElement("x-value");
         Element y = scriptEntry.getElement("y-value");
 
         dB.report(scriptEntry, getName(), (id != null ? id.debug() : "") + (create != null ? create.debug() : "")
                 + reset.debug() + (resetLoc != null ? resetLoc.debug() : "") + (image != null ? image.debug() : "")
-                + (script != null ? script.debug() : "") + resize.debug() + x.debug() + y.debug());
+                + (script != null ? script.debug() : "") + resize.debug() + (width != null ? width.debug() : "")
+                + (height != null ? height.debug() : "") + x.debug() + y.debug());
 
         MapView map = null;
         if (create != null) {
@@ -140,12 +155,14 @@ public class MapCommand extends AbstractCommand {
         else {
             DenizenMapRenderer dmr = DenizenMapManager.getDenizenRenderer(map);
             if (image != null) {
+                int wide = width != null ? width.asInt() : resize.asBoolean() ? 128 : 0;
+                int high = height != null ? height.asInt() : resize.asBoolean() ? 128 : 0;
                 if (image.asString().toLowerCase().endsWith(".gif"))
                     dmr.addObject(new MapAnimatedImage(x.asString(), y.asString(), "true", false, image.asString(),
-                            resize.asBoolean() ? 128 : 0, resize.asBoolean() ? 128 : 0));
+                            wide, high));
                 else
                     dmr.addObject(new MapImage(x.asString(), y.asString(), "true", false, image.asString(),
-                        resize.asBoolean() ? 128 : 0, resize.asBoolean() ? 128 : 0));
+                            wide, high));
             }
         }
 

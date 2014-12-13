@@ -29,14 +29,14 @@ public abstract class MapObject {
     }
 
     public void update(dPlayer player, UUID uuid) {
-        currentX.put(uuid, aH.getIntegerFrom(tag(xTag, player)));
-        currentY.put(uuid, aH.getIntegerFrom(tag(yTag, player)));
+        currentX.put(uuid, (int) aH.getDoubleFrom(tag(xTag, player)));
+        currentY.put(uuid, (int) aH.getDoubleFrom(tag(yTag, player)));
         currentVisibility.put(uuid, aH.getBooleanFrom(tag(visibilityTag, player)));
     }
 
     public int getX(dPlayer player, UUID uuid) {
         if (!currentX.containsKey(uuid)) {
-            int x = aH.getIntegerFrom(tag(xTag, player));
+            int x = (int) aH.getDoubleFrom(tag(xTag, player));
             currentX.put(uuid, x);
         }
         return currentX.get(uuid);
@@ -44,7 +44,7 @@ public abstract class MapObject {
 
     public int getY(dPlayer player, UUID uuid) {
         if (!currentY.containsKey(uuid)) {
-            int y = aH.getIntegerFrom(tag(yTag, player));
+            int y = (int) aH.getDoubleFrom(tag(yTag, player));
             currentY.put(uuid, y);
         }
         return currentY.get(uuid);
