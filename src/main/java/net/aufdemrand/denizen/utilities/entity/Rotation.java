@@ -3,7 +3,11 @@ package net.aufdemrand.denizen.utilities.entity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R1.EntityHuman;
 import net.minecraft.server.v1_8_R1.EntityLiving;
+import net.minecraft.server.v1_8_R1.MovingObjectPosition;
+import net.minecraft.server.v1_8_R1.Vec3D;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftEntity;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
@@ -77,6 +81,77 @@ public class Rotation {
         else {
             dB.echoError("Rotation.jav#look: NPC has null handle!");
         }
+    }
+
+    private static MovingObjectPosition rayTrace(World world, Vector start, Vector end) {
+        return ((CraftWorld) world).getHandle().rayTrace(new Vec3D(start.getX(), start.getY(), start.getZ()),
+                new Vec3D(end.getX(), end.getY(), end.getZ()));
+    }
+
+    public static Location mapTrace(LivingEntity from, double range) {
+        Location start = from.getEyeLocation();
+        Vector startVec = start.toVector();
+        double xzLen = Math.cos((start.getPitch() % 360) * (Math.PI / 180));
+        double nx = xzLen * Math.sin(-start.getYaw() * (Math.PI/180));
+        double ny = Math.sin(start.getPitch() * (Math.PI / 180));
+        double nz = xzLen * Math.cos(start.getYaw() * (Math.PI/180));
+        Vector endVec = startVec.clone().add(new Vector(nx, -ny, nz).multiply(range));
+        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, endVec);
+        if (l == null || l.pos == null) return null;
+        double yaw = start.getYaw();
+        double angleX = -1;
+        double angleY = 0;
+        switch (l.direction) {
+            case NORTH:
+                angleX = -yaw;
+                break;
+            case SOUTH:
+                angleX = -yaw+180;
+                break;
+            case EAST:
+                angleX = -yaw-90;
+                break;
+            case WEST:
+                angleX = -yaw+90;
+                break;
+        }
+        if (angleX < 0 || angleY < 0) return null;
+        // TODO: calculate and return the actual location of the map (should be distance between original start/end minus 0.072)
+        Vector hit = startVec.normalize().multiply((0.072/angleX)*(180-angleX));
+        return new Location(start.getWorld(), hit.getX(), hit.getY(), hit.getZ());
+    }
+
+    /**
+     * Gets the precise location in the specified direction.
+     *
+     * @param start The location to start the check from.
+     * @param direction The one-length vector to use as a direction.
+     * @param range The maximum distance between the start and end.
+     * @return The location, or null if it isn't in range.
+     */
+    public static Location rayTrace(Location start, Vector direction, double range) {
+        Vector startVec = start.toVector();
+        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
+        if (l != null && l.pos != null) {
+            return new Location(start.getWorld(), l.pos.a, l.pos.b, l.pos.c);
+        }
+        return null;
+    }
+
+    /**
+     * Gets the precise location a LivingEntity is looking at.
+     *
+     * @param from The LivingEntity to start the trace from.
+     * @param range The maximum distance between the LivingEntity and the location.
+     * @return The location, or null if it isn't in range.
+     */
+    public static Location eyeTrace(LivingEntity from, double range) {
+        Location start = from.getEyeLocation();
+        double xzLen = Math.cos((start.getPitch() % 360) * (Math.PI / 180));
+        double nx = xzLen * Math.sin(-start.getYaw() * (Math.PI/180));
+        double ny = Math.sin(start.getPitch() * (Math.PI/180));
+        double nz = xzLen * Math.cos(start.getYaw() * (Math.PI/180));
+        return rayTrace(start, new Vector(nx, -ny, nz), range);
     }
 
 
