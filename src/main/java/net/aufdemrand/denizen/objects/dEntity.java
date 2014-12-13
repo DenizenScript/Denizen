@@ -3,25 +3,27 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.objects.properties.entity.*;
+import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
+import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
+import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.*;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_8_R1.*;
+import net.minecraft.server.v1_8_R1.EntityHuman;
+import net.minecraft.server.v1_8_R1.EntityLiving;
 import org.bukkit.*;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftAnimals;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -1388,6 +1390,14 @@ public class dEntity implements dObject, Adjustable {
         /////////////////////
         //   LOCATION ATTRIBUTES
         /////////////////
+
+        // TODO: meta
+        if (attribute.startsWith("map_trace")) {
+            Location location = Rotation.mapTrace(getLivingEntity(), 200);
+            if (location != null)
+                // TODO: make this return the point (between 0,0 and 128,128) on the map
+                return new dLocation(null, location.getX(), location.getY()).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.can_see[<entity>]>
