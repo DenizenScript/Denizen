@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.events.core.NPCNavigationSmartEvent;
 import net.aufdemrand.denizen.objects.*;
@@ -44,8 +45,8 @@ public class NPCTags implements Listener {
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
 
-        // PlayerTags require a... dPlayer!
-        dNPC n = event.getNPC();
+        // NPCTags require a... dNPC!
+        dNPC n = ((BukkitTagContext)event.getContext()).npc;
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1))

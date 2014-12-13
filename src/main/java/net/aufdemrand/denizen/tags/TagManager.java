@@ -258,8 +258,7 @@ public class TagManager {
     }
 
     public static String readSingleTag(String str, TagContext context) {
-        ReplaceableTagEvent event = new ReplaceableTagEvent(((BukkitTagContext)context).player,
-                ((BukkitTagContext)context).npc, str, ((BukkitTagContext)context).entry, ((BukkitTagContext)context).script);
+        ReplaceableTagEvent event = new ReplaceableTagEvent(str, context);
         if (event.isInstant() != context.instant) {
             // Not the right type of tag, escape the brackets so it doesn't get parsed again
             return String.valueOf((char)0x01) + str + String.valueOf((char)0x02);

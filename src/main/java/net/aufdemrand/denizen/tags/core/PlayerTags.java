@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.*;
@@ -64,7 +65,7 @@ public class PlayerTags implements Listener {
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
 
         // PlayerTags require a... dPlayer!
-        dPlayer p = event.getPlayer();
+        dPlayer p = ((BukkitTagContext)event.getContext()).player;
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1))

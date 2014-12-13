@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.tags;
 
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 
@@ -32,17 +30,6 @@ public class ReplaceableTagEvent {
 
     ////////////
     // Constructors
-
-    @Deprecated
-    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) {
-        this(player, npc, tag, null, null);
-    }
-
-    @Deprecated
-    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry, dScript script) {
-        this(tag, new BukkitTagContext(player, npc, false, scriptEntry,
-                scriptEntry != null ? scriptEntry.shouldDebug(): true, script));
-    }
 
     public ReplaceableTagEvent(String tag, TagContext context) {
 
@@ -285,14 +272,8 @@ public class ReplaceableTagEvent {
 
     // Other internal mechanics
 
-    @Deprecated
-    public dNPC getNPC() {
-        return ((BukkitTagContext)context).npc;
-    }
-
-    @Deprecated
-    public dPlayer getPlayer() {
-        return ((BukkitTagContext)context).player;
+    public TagContext getContext() {
+        return context;
     }
 
     public String getReplaced() {

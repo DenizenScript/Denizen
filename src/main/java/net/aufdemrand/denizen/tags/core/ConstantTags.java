@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -35,8 +36,8 @@ public class ConstantTags implements Listener {
         NPC npc = null;
         if (event.getType() != null && event.getType().matches("\\d+"))
             npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
-        else if (event.getNPC() != null)
-            npc = event.getNPC().getCitizen();
+        else if (((BukkitTagContext)event.getContext()).npc != null)
+            npc = ((BukkitTagContext)event.getContext()).npc.getCitizen();
 
         if (npc == null) {
             dB.echoError("Constant tag '" + event.raw_tag + " does not contain a valid NPC! " +

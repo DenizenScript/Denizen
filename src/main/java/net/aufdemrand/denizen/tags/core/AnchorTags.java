@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -28,8 +29,8 @@ public class AnchorTags implements Listener {
         if (event.getType() != null
                 && event.getType().matches("\\d+"))
             npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
-        else if (event.getNPC() != null)
-            npc = event.getNPC().getCitizen();
+        else if (((BukkitTagContext)event.getContext()).npc != null)
+            npc = ((BukkitTagContext)event.getContext()).npc.getCitizen();
         if (npc == null) return;
 
         if (npc.getTrait(Anchors.class).getAnchor(event.getValue()) != null) {
