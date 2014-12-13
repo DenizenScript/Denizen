@@ -543,6 +543,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         /////////////////
 
         // <--[tag]
+        // @attribute <l@location.precise_cursor_on>
+        // @returns dLocation
+        // @description
+        // Returns the exact location this location is pointing at.
+        // -->
+        if (attribute.startsWith("precise_cursor_on")) {
+            double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
+            double nx = xzLen * Math.sin(-getYaw() * (Math.PI/180));
+            double ny = Math.sin(getPitch() * (Math.PI/180));
+            double nz = xzLen * Math.cos(getYaw() * (Math.PI/180));
+            return new dLocation(Rotation.rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), 200)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.direction.vector>
         // @returns dLocation
         // @description
