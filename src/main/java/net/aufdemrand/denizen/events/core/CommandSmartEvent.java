@@ -43,7 +43,7 @@ public class CommandSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on ([^\\s]+) command(in \\w+)?", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on( ([^\\s]+))? command(in \\w+)?", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {
