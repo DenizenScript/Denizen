@@ -65,6 +65,8 @@ public class FinishCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(),
                 player.debug() + script.debug());
 
+        dB.echoError(scriptEntry.getResidingQueue(), "Finish is outdated, use flags instead!");
+
         finishScript(player.getName(), script.getName());
     }
 
