@@ -77,6 +77,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
             else if (!scriptEntry.hasObject("action") &&
                     arg.matchesPrefix("WRITE")) {
+                dB.echoError(scriptEntry.getResidingQueue(), "YAML write is deprecated, use YAML set!");
                 scriptEntry.addObject("action", new Element("WRITE"));
                 scriptEntry.addObject("key", arg.asElement());
             }
