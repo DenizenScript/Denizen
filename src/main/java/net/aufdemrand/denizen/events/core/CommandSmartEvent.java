@@ -48,9 +48,11 @@ public class CommandSmartEvent implements SmartEvent, Listener {
 
             if (m.matches()) {
                 String cmd = m.group(1);
-                dList split = dList.valueOf(cmd);
-                for (String str: split) {
-                    cmds.add(new CommandHandlerData(str.toLowerCase(), cmd));
+                if (cmd != null) {
+                    dList split = dList.valueOf(cmd);
+                    for (String str : split) {
+                        cmds.add(new CommandHandlerData(str.toLowerCase(), cmd));
+                    }
                 }
                 pass = true;
             }
