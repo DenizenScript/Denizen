@@ -52,7 +52,6 @@ public class TagManager {
         new FlagTags(denizen);
         new NotableLocationTags(denizen);
 
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
         registerTagEvents(this);
     }
 
