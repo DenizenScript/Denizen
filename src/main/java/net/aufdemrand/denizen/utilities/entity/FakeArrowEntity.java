@@ -16,7 +16,7 @@ public class FakeArrowEntity extends EntityArrow {
     }
 
     @Override
-    public void h() {
+    public void s_() {
         // Do nothing
     }
 }
