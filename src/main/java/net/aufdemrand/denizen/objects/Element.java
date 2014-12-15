@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -1266,8 +1267,8 @@ public class Element implements dObject {
             }
             else {
                 return new Element(format.getFormattedText(element,
-                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getNPC(): null,
-                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getPlayer(): null))
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC(): null,
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer(): null))
                         .getAttribute(attribute.fulfill(1));
             }
         }

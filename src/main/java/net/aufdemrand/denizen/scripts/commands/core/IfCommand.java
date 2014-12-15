@@ -295,10 +295,12 @@ public class IfCommand extends AbstractCommand {
 
             try {
                 ScriptEntry entry = new ScriptEntry(command, arguments,
-                        (scriptEntry.getScript() == null ? null : scriptEntry.getScript().getContainer()))
-                        .setPlayer(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer())
-                        .setNPC(((BukkitScriptEntryData)scriptEntry.entryData).getNPC()).setInstant(true)
-                        .addObject("reqId", scriptEntry.getObject("reqId"));
+                        (scriptEntry.getScript() == null ? null : scriptEntry.getScript().getContainer()));
+                // TODO: should this be cloning entryData?
+                ((BukkitScriptEntryData)entry.entryData).setPlayer(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+                ((BukkitScriptEntryData)entry.entryData).setNPC(((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
+                entry.setInstant(true);
+                entry.addObject("reqId", scriptEntry.getObject("reqId"));
 
                 entries.add(entry);
 

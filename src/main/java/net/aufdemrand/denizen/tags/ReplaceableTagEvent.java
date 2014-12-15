@@ -1,18 +1,16 @@
 package net.aufdemrand.denizen.tags;
 
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 import java.util.List;
 
 public class ReplaceableTagEvent {
 
-    private final dPlayer player;
-    private final dNPC npc;
+    private final TagContext context;
 
     private boolean instant = false;
     private boolean wasReplaced = false;
@@ -33,19 +31,14 @@ public class ReplaceableTagEvent {
     ////////////
     // Constructors
 
-    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) {
-        this(player, npc, tag, null, null);
-    }
-
-    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry, dScript script) {
+    public ReplaceableTagEvent(String tag, TagContext context) {
 
         // Reference ScriptEntry if available
-        this.scriptEntry = scriptEntry;
-        this.script = script;
+        this.scriptEntry = ((BukkitTagContext)context).entry;
+        this.script = ((BukkitTagContext)context).script;
 
-        // Reference player/npc
-        this.player = player;
-        this.npc = npc;
+        // Reference context
+        this.context = context;
 
         // If tag is not replaced, return the tag
         // TODO: Possibly make this return "null" ... might break some
@@ -185,54 +178,66 @@ public class ReplaceableTagEvent {
 
     // Type
 
+    @Deprecated
     public String getType() {
         return StripContext(core_attributes.getAttribute(2));
     }
 
+    @Deprecated
     public boolean hasType() {
         return core_attributes.getAttribute(2).length() > 0;
     }
 
+    @Deprecated
     public String getTypeContext() {
         return core_attributes.getContext(2);
     }
 
+    @Deprecated
     public boolean hasTypeContext() {
         return core_attributes.hasContext(2);
     }
 
     // Subtype
 
+    @Deprecated
     public String getSubType() {
         return StripContext(core_attributes.getAttribute(3));
     }
 
+    @Deprecated
     public boolean hasSubType() {
         return core_attributes.getAttribute(3).length() > 0;
     }
 
+    @Deprecated
     public String getSubTypeContext() {
         return core_attributes.getContext(3);
     }
 
+    @Deprecated
     public boolean hasSubTypeContext() {
         return core_attributes.hasContext(3);
     }
 
     // Specifier
 
+    @Deprecated
     public String getSpecifier() {
         return StripContext(core_attributes.getAttribute(4));
     }
 
+    @Deprecated
     public boolean hasSpecifier() {
         return core_attributes.getAttribute(4).length() > 0;
     }
 
+    @Deprecated
     public String getSpecifierContext() {
         return core_attributes.getContext(4);
     }
 
+    @Deprecated
     public boolean hasSpecifierContext() {
         return core_attributes.hasContext(4);
     }
@@ -243,8 +248,7 @@ public class ReplaceableTagEvent {
         if (value_tagged)
             return value;
         value_tagged = true;
-        value = TagManager.cleanOutputFully(TagManager.tag(
-                getPlayer(), getNPC(), value, false, getScriptEntry()));
+        value = TagManager.cleanOutputFully(TagManager.tag(value, context));
         return value;
     }
 
@@ -258,8 +262,7 @@ public class ReplaceableTagEvent {
         if (alternative_tagged)
             return alternative;
         alternative_tagged = true;
-        alternative = TagManager.cleanOutputFully(TagManager.tag(
-                getPlayer(), getNPC(), alternative, false, getScriptEntry()));
+        alternative = TagManager.cleanOutputFully(TagManager.tag(alternative, context));
         return alternative;
     }
 
@@ -269,12 +272,8 @@ public class ReplaceableTagEvent {
 
     // Other internal mechanics
 
-    public dNPC getNPC() {
-        return npc;
-    }
-
-    public dPlayer getPlayer() {
-        return player;
+    public TagContext getContext() {
+        return context;
     }
 
     public String getReplaced() {

@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.objects.dItem;
 
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;

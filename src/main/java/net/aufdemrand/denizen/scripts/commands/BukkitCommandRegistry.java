@@ -987,6 +987,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax fail (script:<name>)
         // @Required 0
         // @Stable stable
+        // @deprecated This command is outdated, use flags instead!
         // @Short Marks a script as having failed.
         // @Author aufdemrand
         // @Group core
@@ -1026,6 +1027,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax finish (script:<name>)
         // @Required 0
         // @Stable stable
+        // @deprecated This command is outdated, use flags instead!
         // @Short Marks a script as having been completed successfully.
         // @Author aufdemrand
         // @Group core
@@ -1478,6 +1480,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
         // @Required 2
         // @Stable unstable
+        // @deprecated This command may become unsupported in the future.
         // @Short Listens for the player achieving various actions and runs a script when they are completed.
         // @Author aufdemrand, Jeebiss
         // @Group player

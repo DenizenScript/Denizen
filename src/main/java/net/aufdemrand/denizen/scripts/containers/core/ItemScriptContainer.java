@@ -8,6 +8,7 @@ import java.util.Map;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
@@ -109,7 +110,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Process all tags in list
             for (int n = 0; n < recipeList.size(); n++) {
-                recipeList.set(n, TagManager.tag(player, npc, recipeList.get(n), false, null, dB.shouldDebug(this), new dScript(this)));
+                recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(player, npc, false, null, dB.shouldDebug(this), new dScript(this))));
             }
 
             // Store every ingredient in a dList
@@ -162,7 +163,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
             // Check validity of material
             if (contains("MATERIAL")){
-                String material = TagManager.tag(player, npc, getString("MATERIAL"), false, null, debug, new dScript(this));
+                String material = TagManager.tag(getString("MATERIAL"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
                 if (material.startsWith("m@"))
                     material = material.substring(2);
                 stack = dItem.valueOf(material);
@@ -184,20 +185,20 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set Display Name
             if (contains("DISPLAY NAME")){
-                String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"), false, null, debug, new dScript(this));
+                String displayName = TagManager.tag(getString("DISPLAY NAME"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
                 meta.setDisplayName(displayName);
             }
 
             // Set if the object is bound to the player
             if (contains("BOUND")) {
-                bound = Boolean.valueOf(TagManager.tag(player, npc, getString("BOUND"), false, null, debug, new dScript(this)));
+                bound = Boolean.valueOf(TagManager.tag(getString("BOUND"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this))));
             }
 
             // Set Lore
             if (contains("LORE")) {
 
                 for (String l : getStringList("LORE")){
-                     l = TagManager.tag(player, npc, l, false, null, debug, new dScript(this));
+                     l = TagManager.tag(l, new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
                      lore.add(l);
                 }
             }
@@ -209,7 +210,7 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("ENCHANTMENTS")) {
                 for (String enchantment : getStringList("ENCHANTMENTS")) {
 
-                    enchantment = TagManager.tag(player, npc, enchantment, false, null, debug, new dScript(this));
+                    enchantment = TagManager.tag(enchantment, new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
                     try {
                         // Build enchantment context
                         int level = 1;
@@ -232,14 +233,14 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set Color
             if (contains("COLOR"))
             {
-                String color = TagManager.tag(player, npc, getString("COLOR"), false, null, debug, new dScript(this));
+                String color = TagManager.tag(getString("COLOR"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
                 LeatherColorer.colorArmor(stack, color);
             }
 
             // Set Book
             if (contains("BOOK")) {
                 BookScriptContainer book = ScriptRegistry
-                        .getScriptContainer(TagManager.tag(player, npc, getString("BOOK"), false, null, debug, new dScript(this)).replace("s@", ""));
+                        .getScriptContainer(TagManager.tag(getString("BOOK"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this))).replace("s@", ""));
 
                 stack = book.writeBookTo(stack, player, npc);
             }

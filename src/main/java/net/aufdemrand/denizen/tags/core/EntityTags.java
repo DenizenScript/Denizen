@@ -6,16 +6,10 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 
-public class EntityTags implements Listener {
+public class EntityTags{
 
     public EntityTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
         TagManager.registerTagEvents(this);
     }
 

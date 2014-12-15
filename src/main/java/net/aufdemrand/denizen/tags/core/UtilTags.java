@@ -728,6 +728,30 @@ public class UtilTags implements Listener {
             }
         }
 
+        // <--[mechanism]
+        // @object server
+        // @name redirect_logging
+        // @input Element
+        // @description
+        // Tells the server to redirect logging to a world event or not.
+        // Note that this redirects *all console output* not just Denizen output.
+        // Note: don't enable /denizen debug -e while this is active.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
+            if (!Settings.allowConsoleRedirection()) {
+                dB.echoError("Console redirection disabled by administrator.");
+                return;
+            }
+            if (mechanism.getValue().asBoolean()) {
+                Denizen.logInterceptor.redirectOutput();
+            }
+            else {
+                Denizen.logInterceptor.standardOutput();
+            }
+        }
+
         // TODO: Properties somehow?
 
         if (!mechanism.fulfilled())

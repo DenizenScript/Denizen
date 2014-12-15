@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.*;
+import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
 import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
@@ -39,6 +40,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.DenizenImplementation;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -57,9 +59,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Denizen extends JavaPlugin implements DenizenImplementation {
-    public final static int configVersion = 7;
+    public final static int configVersion = 9;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
+
+    public static final LogInterceptor logInterceptor = new LogInterceptor();
 
 
     private CommandManager commandManager;
@@ -269,9 +273,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         try {
             // Warn if configuration is outdated / too new
             if (!getConfig().isSet("Config.Version") ||
-                    getConfig().getInt("Config.Version", 0) != configVersion) {
+                    getConfig().getInt("Config.Version", 0) < configVersion) {
 
-                dB.echoError("Your Denizen config file is from a different version. " +
+                dB.echoError("Your Denizen config file is from an older version. " +
                         "Some settings will not be available unless you generate a new one. " +
                         "This is easily done by stopping the server, deleting the current config.yml file in the Denizen folder " +
                         "and restarting the server.");
@@ -391,6 +395,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void onDisable() {
         if(!startedSuccessful) return;
+
+        // Disable the log interceptor... otherwise bad things on /reload
+        logInterceptor.standardOutput();
 
         // Save notables
         notableManager.saveNotables();
@@ -744,6 +751,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError(e);
         }
         return files;
+    }
+
+    @Override
+    public ScriptEntryData getEmptyScriptEntryData() {
+        return new BukkitScriptEntryData(null, null);
     }
 }
 

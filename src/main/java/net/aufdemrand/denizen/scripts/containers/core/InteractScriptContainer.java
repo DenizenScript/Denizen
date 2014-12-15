@@ -23,6 +23,8 @@ public class InteractScriptContainer extends ScriptContainer {
             Set<String> keys;
             keys = getConfigurationSection("STEPS").getKeys(false);
 
+            // TODO: Throw a warning if 'requirements' section exists
+
             if (keys.isEmpty())
                 throw new ExceptionInInitializerError("Could not find any STEPS in " + getName() + "! Is the type on this script correct?");
 

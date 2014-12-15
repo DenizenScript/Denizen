@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -292,13 +293,11 @@ public class dScript implements dObject {
             if (obj instanceof List) {
                 dList list = new dList();
                 for (Object each : (List<Object>) obj)
-                    list.add(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
-                            attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), each.toString(), false, attribute.getScriptEntry()));
+                    list.add(TagManager.tag(each.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)));
                 return list.getAttribute(attribute.fulfill(1));
 
             }
-            else return new Element(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
-                    attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
+            else return new Element(TagManager.tag(obj.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -326,13 +325,11 @@ public class dScript implements dObject {
             if (obj instanceof List) {
                 dList list = new dList();
                 for (Object each : (List<Object>) obj)
-                    list.add(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
-                            attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), each.toString(), false, attribute.getScriptEntry()));
+                    list.add(TagManager.tag(each.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)));
                 return list.getAttribute(attribute.fulfill(1));
 
             }
-            else return new Element(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
-                    attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
+            else return new Element(TagManager.tag(obj.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)))
                     .getAttribute(attribute.fulfill(1));
         }
 

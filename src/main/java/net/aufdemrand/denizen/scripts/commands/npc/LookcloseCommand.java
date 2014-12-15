@@ -34,8 +34,8 @@ public class LookcloseCommand extends AbstractCommand {
             else if (arg.matchesPrimitive(aH.PrimitiveType.Boolean))
                 scriptEntry.addObject("toggle", arg.asElement());
 
-            else if (arg.matchesArgumentType(dNPC.class))
-                scriptEntry.setNPC(arg.asType(dNPC.class));
+            else if (arg.matchesArgumentType(dNPC.class)) // TODO: better way of handling this?
+                ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
 
             else arg.reportUnhandled();
         }
@@ -51,9 +51,9 @@ public class LookcloseCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         dB.report(scriptEntry, getName(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().debug()
-                + scriptEntry.reportObject("realistic")
-                + scriptEntry.reportObject("range")
-                + scriptEntry.reportObject("toggle"));
+                + aH.debugObj("realistic", scriptEntry.getObject("realistic"))
+                + aH.debugObj("range", scriptEntry.getObject("range"))
+                + aH.debugObj("toggle", scriptEntry.getObject("toggle")));
 
         // Get the instance of the trait that belongs to the target NPC
         LookClose trait = ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen().getTrait(LookClose.class);

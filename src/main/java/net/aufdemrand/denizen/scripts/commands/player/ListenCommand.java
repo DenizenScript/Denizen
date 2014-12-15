@@ -86,6 +86,9 @@ public class ListenCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), action.debug() + (type != null ? type.debug() : "")
                 + id.debug() + (finish_script != null ? finish_script.debug() : ""));
 
+        // TODO: Fully deprecate
+        dB.echoDebug(scriptEntry, "Warning: Listen is outdated and may become unsupported in the future.");
+
         List<aH.Argument> arguments = (ArrayList<aH.Argument>) scriptEntry.getObject("args");
 
         switch (Action.valueOf(action.asString().toUpperCase())) {

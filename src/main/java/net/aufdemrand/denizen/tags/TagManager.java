@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.tags;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -16,14 +14,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Calls a bukkit event for replaceable tags.
- *
- * @author Jeremy Schroeder
- *
- */
-
-public class TagManager implements Listener {
+public class TagManager {
 
     public Denizen denizen;
 
@@ -61,7 +52,6 @@ public class TagManager implements Listener {
         new FlagTags(denizen);
         new NotableLocationTags(denizen);
 
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
         registerTagEvents(this);
     }
 
@@ -267,8 +257,7 @@ public class TagManager implements Listener {
     }
 
     public static String readSingleTag(String str, TagContext context) {
-        ReplaceableTagEvent event = new ReplaceableTagEvent(((BukkitTagContext)context).player,
-                ((BukkitTagContext)context).npc, str, ((BukkitTagContext)context).entry, ((BukkitTagContext)context).script);
+        ReplaceableTagEvent event = new ReplaceableTagEvent(str, context);
         if (event.isInstant() != context.instant) {
             // Not the right type of tag, escape the brackets so it doesn't get parsed again
             return String.valueOf((char)0x01) + str + String.valueOf((char)0x02);
@@ -285,22 +274,6 @@ public class TagManager implements Listener {
                         "Tag <" + event.toString() + "> is invalid!");
             return escapeOutput(event.getReplaced());
         }
-    }
-
-    @Deprecated // TODO: Delete all usages
-    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
-        try {
-            return tag(arg, new BukkitTagContext(player, npc, instant, scriptEntry, scriptEntry.shouldDebug(), null));
-        }
-        catch (Exception e) {
-            dB.echoError(e);
-            return null;
-        }
-    }
-
-    @Deprecated // TODO: Delete all usages
-    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug, dScript script) {
-        return tag(arg, new BukkitTagContext(player, npc, instant, scriptEntry, debug, script));
     }
 
     public static String tag(String arg, TagContext context) {
@@ -360,11 +333,7 @@ public class TagManager implements Listener {
         else return null;
     }
 
-    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {
-        return fillArguments(args, scriptEntry, false);
-    }
-
-    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry, boolean instant) {
+    public static List<String> fillArguments(List<String> args, TagContext context) {
         List<String> filledArgs = new ArrayList<String>();
 
         int nested_level = 0;
@@ -375,9 +344,11 @@ public class TagManager implements Listener {
                 if (argument.equals("}")) nested_level--;
                 // If this argument isn't nested, fill the tag.
                 if (nested_level < 1) {
-                    filledArgs.add(tag(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), argument, instant, scriptEntry));
+                    filledArgs.add(tag(argument, context));
                 }
-                    else filledArgs.add(argument);
+                else {
+                    filledArgs.add(argument);
+                }
             }
         }
         return filledArgs;

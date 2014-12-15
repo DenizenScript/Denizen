@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.utilities.debugging;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.DenizenCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -78,10 +80,12 @@ public class DebugSubmit extends Thread {
                         + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
                         + "\nUp-time: " + new Duration((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
                         + "\nCraftBukkit Version: " + Bukkit.getServer().getVersion()
+                        + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + DenizenAPI.getCurrentInstance().getImplementationVersion()
                         + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
                         + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
                         + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
                         + "\nOffline Players: " + (dPlayer.getAllPlayers().size() - playerCount)
+                        + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online": "offline")
                         + "\n\n") + recording)
                         .getBytes("UTF-8"));
             // Wait for a response from the server

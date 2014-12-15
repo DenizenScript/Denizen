@@ -132,12 +132,13 @@ public class dB {
                 + trimMessage(report), caller);
 
         if (caller instanceof ScriptEntry) {
-            if (((ScriptEntry) caller).hasPlayer()) {
-                if (FlagManager.playerHasFlag(((ScriptEntry) caller).getPlayer(), "show_command_reports")) {
+            if (((BukkitScriptEntryData)((ScriptEntry) caller).entryData).hasPlayer()) {
+                if (FlagManager.playerHasFlag(((BukkitScriptEntryData)((ScriptEntry) caller).entryData)
+                        .getPlayer(), "show_command_reports")) {
                     String message = "<Y>+> <G>Executing '<Y>" + name + "<G>': "
                             + trimMessage(report);
 
-                    ((ScriptEntry) caller).getPlayer().getPlayerEntity()
+                    ((BukkitScriptEntryData)((ScriptEntry) caller).entryData).getPlayer().getPlayerEntity()
                             .sendRawMessage(message.replace("<Y>", ChatColor.YELLOW.toString())
                                     .replace("<G>", ChatColor.DARK_GRAY.toString())
                                     .replace("<A>", ChatColor.AQUA.toString()));

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.objects.aH.PrimitiveType;
 import net.aufdemrand.denizen.objects.notable.Notable;
@@ -1388,8 +1389,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 && attribute.hasContext(1)
                 && dItem.matches(attribute.getContext(1))) {
             dItem item = dItem.valueOf(attribute.getContext(1),
-                    attribute.getScriptEntry() != null ? attribute.getScriptEntry().getPlayer(): null,
-                    attribute.getScriptEntry() != null ? attribute.getScriptEntry().getNPC(): null);
+                    attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer(): null,
+                    attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC(): null);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
@@ -1416,8 +1417,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 && attribute.hasContext(1)
                 && dItem.matches(attribute.getContext(1))) {
                 dItem item = dItem.valueOf(attribute.getContext(1),
-                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getPlayer(): null,
-                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getNPC(): null);
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer(): null,
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC(): null);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
@@ -1478,8 +1479,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-                return new Element(count
-                        (dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(), attribute.getScriptEntry().getNPC()).getItemStack(), false))
+                return new Element(count // TODO: Handle no-script-entry cases
+                        (dItem.valueOf(attribute.getContext(1),
+                                ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer(),
+                                ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC()).getItemStack(), false))
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(count(null, false))
@@ -1494,8 +1497,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("stacks"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-                return new Element(count
-                        (dItem.valueOf(attribute.getContext(1), attribute.getScriptEntry().getPlayer(), attribute.getScriptEntry().getNPC()).getItemStack(), true))
+                return new Element(count // TODO: Handle no-script-entry cases
+                        (dItem.valueOf(attribute.getContext(1),
+                                ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer(),
+                                ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC()).getItemStack(), true))
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(count(null, true))
