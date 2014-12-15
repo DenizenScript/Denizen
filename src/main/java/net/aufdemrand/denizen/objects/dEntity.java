@@ -15,15 +15,18 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_8_R1.EntityHuman;
-import net.minecraft.server.v1_8_R1.EntityLiving;
+import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.*;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftAnimals;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -2286,6 +2289,29 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("velocity") && mechanism.requireObject(dLocation.class)) {
             setVelocity(value.asType(dLocation.class).toVector());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name interact_with
+        // @input dLocation
+        // @description
+        // Makes a player-type entity interact with a block.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("interact_with") && mechanism.requireObject(dLocation.class)) {
+            dLocation interactLocation = value.asType(dLocation.class);
+            CraftPlayer craftPlayer = (CraftPlayer)getPlayer();
+            BlockPosition pos =
+                    new BlockPosition(interactLocation.getBlockX(),
+                            interactLocation.getBlockY(),
+                            interactLocation.getBlockZ());
+            Block.getById(interactLocation.getBlock().getType().getId())
+                    .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
+                            pos,
+                            ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
+                            craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
         }
 
         // Iterate through this object's properties' mechanisms
