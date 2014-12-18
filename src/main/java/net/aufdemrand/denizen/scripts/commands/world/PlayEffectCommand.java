@@ -33,6 +33,7 @@ import java.util.List;
 //
 // Visual effects:
 // - iconcrack_[id] (item break effect - examples: iconcrack_7, iconcrack_268)
+// - TODO: Update the below list. Mojang chamged some of 'em!
 // - ENDER_SIGNAL, MOBSPAWNER_FLAMES, POTION_BREAK, SMOKE
 // - HUGE_EXPLOSION, LARGE_EXPLODE, FIREWORKS_SPARK, BUBBLE, SUSPEND, DEPTH_SUSPEND, TOWN_AURA,
 //   CRIT, MAGIC_CRIT, MOB_SPELL, MOB_SPELL_AMBIENT, SPELL, INSTANT_SPELL, WITCH_MAGIC, NOTE, STEP_SOUND,
