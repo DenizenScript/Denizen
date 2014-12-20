@@ -33,8 +33,7 @@ import java.util.List;
 //
 // Visual effects:
 // - iconcrack_[id] (item break effect - examples: iconcrack_7, iconcrack_268)
-// - TODO: Update the below list. Mojang chamged some of 'em!
-// - ENDER_SIGNAL, MOBSPAWNER_FLAMES, POTION_BREAK, SMOKE
+// - ENDER_SIGNAL, MOBSPAWNER_FLAMES, POTION_BREAK, SMOKE,
 // - HUGE_EXPLOSION, LARGE_EXPLODE, FIREWORKS_SPARK, BUBBLE, SUSPEND, DEPTH_SUSPEND, TOWN_AURA,
 //   CRIT, MAGIC_CRIT, MOB_SPELL, MOB_SPELL_AMBIENT, SPELL, INSTANT_SPELL, WITCH_MAGIC, NOTE, STEP_SOUND,
 //   PORTAL, ENCHANTMENT_TABLE, EXPLODE, FLAME, LAVA, FOOTSTEP, SPLASH, LARGE_SMOKE, CLOUD, RED_DUST,
@@ -44,6 +43,52 @@ import java.util.List;
 // -->
 
 public class PlayEffectCommand extends AbstractCommand {
+
+    public static enum ParticleEffect {
+        ENDER_SIGNAL(EnumParticle.HEART), // TODO
+        MOBSPAWNER_FLAMES(EnumParticle.HEART), // TODO
+        POTION_BREAK(EnumParticle.HEART), // TODO
+        SMOKE(EnumParticle.HEART), // TODO
+        HUGE_EXPLOSION(EnumParticle.HEART), // TODO
+        // LARGE_EXPLODE(EnumParticle.HEART), // TODO
+        FIREWORKS_SPARK(EnumParticle.HEART), // TODO
+        BUBBLE(EnumParticle.HEART), // TODO
+        // SUSPEND(EnumParticle.HEART), // TODO
+        DEPTH_SUSPEND(EnumParticle.HEART), // TODO
+        TOWN_AURA(EnumParticle.HEART), // TODO
+        CRIT(EnumParticle.HEART), // TODO
+        MAGIC_CRIT(EnumParticle.HEART), // TODO
+        MOB_SPELL(EnumParticle.HEART), // TODO
+        MOB_SPELL_AMBIENT(EnumParticle.HEART), // TODO
+        SPELL(EnumParticle.HEART), // TODO
+        INSTANT_SPELL(EnumParticle.HEART), // TODO
+        WITCH_MAGIC(EnumParticle.HEART), // TODO
+        NOTE(EnumParticle.HEART), // TODO
+        STEP_SOUND(EnumParticle.HEART), // TODO
+        PORTAL(EnumParticle.HEART), // TODO
+        ENCHANTMENT_TABLE(EnumParticle.HEART), // TODO
+        EXPLODE(EnumParticle.HEART), // TODO
+        FLAME(EnumParticle.HEART), // TODO
+        LAVA(EnumParticle.HEART), // TODO
+        FOOTSTEP(EnumParticle.HEART), // TODO
+        SPLASH(EnumParticle.HEART), // TODO
+        LARGE_SMOKE(EnumParticle.HEART), // TODO
+        CLOUD(EnumParticle.HEART), // TODO
+        RED_DUST(EnumParticle.HEART), // TODO
+        SNOWBALL_POOF(EnumParticle.HEART), // TODO
+        DRIP_WATER(EnumParticle.HEART), // TODO
+        DRIP_LAVA(EnumParticle.HEART), // TODO
+        SNOW_SHOVEL(EnumParticle.HEART), // TODO
+        SLIME(EnumParticle.HEART), // TODO
+        HEART(EnumParticle.HEART), // TODO
+        ANGRY_VILLAGER(EnumParticle.HEART), // TODO
+        HAPPY_VILLAGER(EnumParticle.HEART), // TODO
+        BARRIER(EnumParticle.HEART);// TODO
+        public EnumParticle effect;
+        ParticleEffect(EnumParticle eff) {
+            effect = eff;
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -61,16 +106,16 @@ public class PlayEffectCommand extends AbstractCommand {
                     !scriptEntry.hasObject("particleeffect") &&
                     !scriptEntry.hasObject("iconcrack")) {
 
-                if (arg.matchesEnum(EnumParticle.values())) {
+                if (arg.matchesEnum(ParticleEffect.values())) {
                     scriptEntry.addObject("particleeffect",
-                            EnumParticle.valueOf(arg.getValue().toUpperCase()));
+                            ParticleEffect.valueOf(arg.getValue().toUpperCase()));
                 }
                 else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used
-                    EnumParticle effect = null;
+                    ParticleEffect effect = null;
                     // Make sure the new effect is not an invisible effect
-                    while (effect == null || effect.toString().matches("^(BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) {
-                        effect = EnumParticle.values()[CoreUtilities.getRandom().nextInt(EnumParticle.values().length)];
+                    while (effect == null || effect.toString().matches("^(BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) { // TODO: Don't use regex for this?
+                        effect = ParticleEffect.values()[CoreUtilities.getRandom().nextInt(ParticleEffect.values().length)];
                     }
                     scriptEntry.addObject("particleeffect", effect);
                 }
@@ -153,7 +198,7 @@ public class PlayEffectCommand extends AbstractCommand {
         List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("location");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
         Effect effect = (Effect) scriptEntry.getObject("effect");
-        EnumParticle particleEffect = (EnumParticle) scriptEntry.getObject("particleeffect");
+        ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("particleeffect");
         Element iconcrack = scriptEntry.getElement("iconcrack");
         Element radius = scriptEntry.getElement("radius");
         Element data = scriptEntry.getElement("data");
@@ -205,7 +250,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     for (dPlayer player: targets)
                         if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
                 }
-                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(particleEffect, false, (float)location.getX(),
+                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(particleEffect.effect, false, (float)location.getX(),
                         (float)location.getY(), (float)location.getZ(), os, os, os, data.asFloat(), qty.asInt());
                 for (Player player: players) {
                     ((CraftPlayer)player).getHandle().playerConnection.sendPacket(o);
