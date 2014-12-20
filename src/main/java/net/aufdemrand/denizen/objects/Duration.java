@@ -431,7 +431,7 @@ public class Duration implements dObject {
         }
 
         // <--[tag]
-        // @attribute <d@duration.sub[<duration>]>
+        // @attribute <d@duration.add[<duration>]>
         // @returns Element(Number)
         // @description
         // returns this duration plus another.
