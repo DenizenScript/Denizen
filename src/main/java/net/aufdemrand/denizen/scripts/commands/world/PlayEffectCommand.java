@@ -46,44 +46,44 @@ public class PlayEffectCommand extends AbstractCommand {
 
     public static enum ParticleEffect {
         ENDER_SIGNAL(EnumParticle.HEART), // TODO
-        MOBSPAWNER_FLAMES(EnumParticle.HEART), // TODO
+        MOBSPAWNER_FLAMES(EnumParticle.MOB_APPEARANCE),
         POTION_BREAK(EnumParticle.HEART), // TODO
-        SMOKE(EnumParticle.HEART), // TODO
-        HUGE_EXPLOSION(EnumParticle.HEART), // TODO
-        // LARGE_EXPLODE(EnumParticle.HEART), // TODO
-        FIREWORKS_SPARK(EnumParticle.HEART), // TODO
-        BUBBLE(EnumParticle.HEART), // TODO
-        // SUSPEND(EnumParticle.HEART), // TODO
-        DEPTH_SUSPEND(EnumParticle.HEART), // TODO
-        TOWN_AURA(EnumParticle.HEART), // TODO
-        CRIT(EnumParticle.HEART), // TODO
-        MAGIC_CRIT(EnumParticle.HEART), // TODO
-        MOB_SPELL(EnumParticle.HEART), // TODO
-        MOB_SPELL_AMBIENT(EnumParticle.HEART), // TODO
-        SPELL(EnumParticle.HEART), // TODO
-        INSTANT_SPELL(EnumParticle.HEART), // TODO
-        WITCH_MAGIC(EnumParticle.HEART), // TODO
-        NOTE(EnumParticle.HEART), // TODO
+        SMOKE(EnumParticle.SMOKE_NORMAL),
+        HUGE_EXPLOSION(EnumParticle.EXPLOSION_HUGE),
+        LARGE_EXPLODE(EnumParticle.EXPLOSION_LARGE),
+        FIREWORKS_SPARK(EnumParticle.FIREWORKS_SPARK),
+        BUBBLE(EnumParticle.WATER_BUBBLE),
+        SUSPEND(EnumParticle.SUSPENDED),
+        DEPTH_SUSPEND(EnumParticle.SUSPENDED_DEPTH),
+        TOWN_AURA(EnumParticle.TOWN_AURA),
+        CRIT(EnumParticle.CRIT),
+        MAGIC_CRIT(EnumParticle.CRIT_MAGIC),
+        MOB_SPELL(EnumParticle.SPELL_MOB),
+        MOB_SPELL_AMBIENT(EnumParticle.SPELL_MOB_AMBIENT),
+        SPELL(EnumParticle.SPELL),
+        INSTANT_SPELL(EnumParticle.SPELL_INSTANT),
+        WITCH_MAGIC(EnumParticle.SPELL_WITCH),
+        NOTE(EnumParticle.NOTE),
         STEP_SOUND(EnumParticle.HEART), // TODO
-        PORTAL(EnumParticle.HEART), // TODO
-        ENCHANTMENT_TABLE(EnumParticle.HEART), // TODO
-        EXPLODE(EnumParticle.HEART), // TODO
-        FLAME(EnumParticle.HEART), // TODO
-        LAVA(EnumParticle.HEART), // TODO
-        FOOTSTEP(EnumParticle.HEART), // TODO
-        SPLASH(EnumParticle.HEART), // TODO
-        LARGE_SMOKE(EnumParticle.HEART), // TODO
-        CLOUD(EnumParticle.HEART), // TODO
-        RED_DUST(EnumParticle.HEART), // TODO
-        SNOWBALL_POOF(EnumParticle.HEART), // TODO
-        DRIP_WATER(EnumParticle.HEART), // TODO
-        DRIP_LAVA(EnumParticle.HEART), // TODO
-        SNOW_SHOVEL(EnumParticle.HEART), // TODO
-        SLIME(EnumParticle.HEART), // TODO
-        HEART(EnumParticle.HEART), // TODO
-        ANGRY_VILLAGER(EnumParticle.HEART), // TODO
-        HAPPY_VILLAGER(EnumParticle.HEART), // TODO
-        BARRIER(EnumParticle.HEART);// TODO
+        PORTAL(EnumParticle.PORTAL),
+        ENCHANTMENT_TABLE(EnumParticle.ENCHANTMENT_TABLE),
+        EXPLODE(EnumParticle.EXPLOSION_NORMAL),
+        FLAME(EnumParticle.FLAME),
+        LAVA(EnumParticle.LAVA),
+        FOOTSTEP(EnumParticle.FOOTSTEP),
+        SPLASH(EnumParticle.WATER_SPLASH),
+        LARGE_SMOKE(EnumParticle.SMOKE_LARGE),
+        CLOUD(EnumParticle.CLOUD),
+        RED_DUST(EnumParticle.REDSTONE),
+        SNOWBALL_POOF(EnumParticle.SNOWBALL),
+        DRIP_WATER(EnumParticle.DRIP_WATER),
+        DRIP_LAVA(EnumParticle.DRIP_LAVA),
+        SNOW_SHOVEL(EnumParticle.SNOW_SHOVEL),
+        SLIME(EnumParticle.SLIME),
+        HEART(EnumParticle.HEART),
+        ANGRY_VILLAGER(EnumParticle.VILLAGER_ANGRY),
+        HAPPY_VILLAGER(EnumParticle.VILLAGER_HAPPY),
+        BARRIER(EnumParticle.BARRIER);
         public EnumParticle effect;
         ParticleEffect(EnumParticle eff) {
             effect = eff;
