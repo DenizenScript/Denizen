@@ -228,4 +228,8 @@ public class NotableManager {
         else
             return null;
     }
+
+    public static Map<String, Class> getReverseClassIdMap() {
+        return reverse_objects;
+    }
 }
