@@ -44,7 +44,6 @@ public class DenizenCommandHandler {
     // denizen.basic         # use the basics of the /denizen command
     // denizen.notable       # use the /notable command
     // denizen.notable.basic # functionality within the /notable command, such as add or list
-    // denizen.flag          # use the /flag command
     // denizen.dscript       # use the /dscript command
     // denizen.ex            # use the /ex command
     // denizen.debug         # use the /denizen debug command
