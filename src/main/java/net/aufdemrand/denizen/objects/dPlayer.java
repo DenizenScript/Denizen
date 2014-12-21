@@ -104,7 +104,7 @@ public class dPlayer implements dObject, Adjustable {
                 UUID uuid = UUID.fromString(string);
                 if (uuid != null) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                    if (player != null && player.hasPlayedBefore()) {
+                    if (player != null) {
                         return new dPlayer(player);
                     }
                 }
