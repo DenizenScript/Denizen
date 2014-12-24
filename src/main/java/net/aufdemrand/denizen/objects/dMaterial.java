@@ -681,6 +681,12 @@ public class dMaterial implements dObject {
         return "m@" + material.name().toLowerCase();
     }
 
+    public String identifyFull() {
+        if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase() + (getData() != null ? "," +  getData(): "");
+        if (getData() != null) return "m@" + material.name().toLowerCase() + "," + getData();
+        return "m@" + material.name().toLowerCase();
+    }
+
     @Override
     public String identifySimple() {
         if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase();
@@ -871,7 +877,7 @@ public class dMaterial implements dObject {
         // -->
         if (attribute.startsWith("full")) {
             if (hasData())
-                return new Element(identify() + "," + getData())
+                return new Element(identifyFull())
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(identify())
