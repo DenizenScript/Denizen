@@ -2612,7 +2612,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Take
-        // @Syntax take [money/iteminhand/bydisplay:<name>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)
+        // @Syntax take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.
@@ -2627,7 +2627,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(TakeCommand.class,
-                "TAKE", "take [money/iteminhand/bydisplay:<name>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
+                "TAKE", "take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
 
         // <--[command]
         // @Name Teleport

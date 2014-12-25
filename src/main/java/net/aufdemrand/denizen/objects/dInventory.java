@@ -949,46 +949,43 @@ public class dInventory implements dObject, Notable, Adjustable {
      * Denizen support for updatable quest journals
      * and their like
      *
-     * @param   book  The itemStack of the book
+     * @param   title  The title of the book
+     * @param   author The author of the book
+     * @param   quantity The number of books to remove
      * @return  The resulting dInventory
      *
      */
 
-    public dInventory removeBook(ItemStack book) {
+    public dInventory removeBook(String title, String author, int quantity) {
 
-        if (inventory == null || book == null) return this;
-
-        // We have to manually keep track of the quantity
-        // we are removing, because we are not relying on
-        // Bukkit methods to find matching itemStacks
-        int qty = book.getAmount();
-
-        // Store the book's meta information in a variable
-        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        if (inventory == null || (title == null && author == null)) return this;
 
         for (ItemStack invStack : inventory) {
 
-            if (qty == 0) break;
+            if (quantity == 0) break;
 
             if (invStack != null && invStack.getItemMeta() instanceof BookMeta) {
 
                 BookMeta invMeta = (BookMeta) invStack.getItemMeta();
 
-                if (invMeta.getAuthor().equalsIgnoreCase(bookMeta.getAuthor())
-                        && invMeta.getTitle().equalsIgnoreCase(bookMeta.getTitle())) {
+                String invTitle = invMeta.getTitle();
+                String invAuthor = invMeta.getAuthor();
 
+                if ((invTitle == null && title != null) || (invAuthor == null && author != null))
+                    continue;
+                else if (invTitle == null || invAuthor == null)
+                    continue;
+
+                if (invAuthor.equalsIgnoreCase(author) && invTitle.equalsIgnoreCase(title)) {
                     // Make sure we don't remove more books than we
                     // need to
-                    if (qty - invStack.getAmount() < 0) {
-
-                        invStack.setAmount((qty - invStack.getAmount()) * -1);
+                    if (quantity - invStack.getAmount() < 0) {
+                        invStack.setAmount((quantity - invStack.getAmount()) * -1);
                     }
                     else {
-
                         inventory.removeItem(invStack);
-
                         // Update the quantity we still have to remove
-                        qty = qty - invStack.getAmount();
+                        quantity -= invStack.getAmount();
                     }
                 }
             }

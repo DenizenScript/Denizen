@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.objects.notable.*;
-import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -11,7 +10,8 @@ import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
