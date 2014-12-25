@@ -18,15 +18,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.block.Sign;
+import org.bukkit.block.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.block.Skull;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -1464,7 +1461,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             return new Element(getBlock().getBlockPower())
                     .getAttribute(attribute.fulfill(1));
 
-
         // <--[tag]
         // @attribute <l@location.type>
         // @returns Element
@@ -1475,6 +1471,33 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("type")) {
             return new Element("Location").getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <l@location.command_block_name>
+        // @returns Element
+        // @mechanism command_block_name
+        // @description
+        // Returns the name a command block is set to.
+        // -->
+        if (attribute.startsWith("command_block_name")
+                && getBlock().getType() == Material.COMMAND) {
+            return new Element(((CommandBlock)getBlock().getState()).getName())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.command_block>
+        // @returns Element
+        // @mechanism command_block
+        // @description
+        // Returns the command a command block is set to.
+        // -->
+        if (attribute.startsWith("command_block")
+                && getBlock().getType() == Material.COMMAND) {
+            return new Element(((CommandBlock)getBlock().getState()).getCommand())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
@@ -1577,6 +1600,40 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (!state.setOwner(value.asString()))
                 dB.echoError("Failed to set skull_skin!");
             state.update(true);
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name command_block_name
+        // @input Element
+        // @description
+        // Sets the name of a command block.
+        // @tags
+        // <l@location.command_block_name>
+        // -->
+        if (mechanism.matches("command_block_name")) {
+            if (getBlock().getType() == Material.COMMAND) {
+                CommandBlock block = ((CommandBlock)getBlock().getState());
+                block.setName(value.asString());
+                block.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name command_block
+        // @input Element
+        // @description
+        // Sets the command of a command block.
+        // @tags
+        // <l@location.command_block>
+        // -->
+        if (mechanism.matches("command_block")) {
+            if (getBlock().getType() == Material.COMMAND) {
+                CommandBlock block = ((CommandBlock)getBlock().getState());
+                block.setCommand(value.asString());
+                block.update();
+            }
         }
 
         if (!mechanism.fulfilled())

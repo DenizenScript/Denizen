@@ -17,10 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -349,14 +346,14 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         }
     }
 
-    private static Map<Player, Set<Integer>> proximityTracker = new ConcurrentHashMap<Player, Set<Integer>>(8, 0.9f, 1);
+    private static Map<UUID, Set<Integer>> proximityTracker = new ConcurrentHashMap<UUID, Set<Integer>>(8, 0.9f, 1);
 
     //
     // Ensures that a Player who has entered proximity of an NPC also fires Exit Proximity.
     //
     private boolean hasExitedProximityOf(Player player, dNPC npc) {
         // If Player hasn't entered proximity, it's not in the Map. Return true, must be exited.
-        Set<Integer> existing = proximityTracker.get(player);
+        Set<Integer> existing = proximityTracker.get(player.getUniqueId());
         if (existing == null) return true;
         // If Player has no entry for this NPC, return true.
         if (!existing.contains(npc.getId())) return true;
@@ -372,10 +369,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc the NPC
      */
     private void enterProximityOf(Player player, dNPC npc) {
-        Set<Integer> npcs = proximityTracker.get(player);
+        Set<Integer> npcs = proximityTracker.get(player.getUniqueId());
         if (npcs == null) {
             npcs = new HashSet<Integer>();
-            proximityTracker.put(player, npcs);
+            proximityTracker.put(player.getUniqueId(), npcs);
         }
         npcs.add(npc.getId());
     }
@@ -388,10 +385,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc the NPC
      */
     private void exitProximityOf(Player player, dNPC npc) {
-        Set<Integer> npcs = proximityTracker.get(player);
+        Set<Integer> npcs = proximityTracker.get(player.getUniqueId());
         if (npcs == null) {
             npcs = new HashSet<Integer>();
-            proximityTracker.put(player, npcs);
+            proximityTracker.put(player.getUniqueId(), npcs);
         }
         npcs.remove(npc.getId());
     }

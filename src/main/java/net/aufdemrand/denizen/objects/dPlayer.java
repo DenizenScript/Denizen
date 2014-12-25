@@ -104,7 +104,7 @@ public class dPlayer implements dObject, Adjustable {
                 UUID uuid = UUID.fromString(string);
                 if (uuid != null) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                    if (player != null && player.hasPlayedBefore()) {
+                    if (player != null) {
                         return new dPlayer(player);
                     }
                 }
@@ -1550,7 +1550,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.time>
-        // @returns Duration
+        // @returns Element(Number)
         // @description
         // returns the time the player is currently experiencing. This time could differ from
         // the time that the rest of the world is currently experiencing if a 'time' or 'freeze_time'

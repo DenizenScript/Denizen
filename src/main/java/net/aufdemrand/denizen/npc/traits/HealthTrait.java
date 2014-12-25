@@ -143,7 +143,8 @@ public class HealthTrait extends Trait implements Listener {
      * information for this trait.
      *
      */
-    @Override public void onSpawn() {
+    @Override
+    public void onSpawn() {
         dying = false;
         setHealth();
 

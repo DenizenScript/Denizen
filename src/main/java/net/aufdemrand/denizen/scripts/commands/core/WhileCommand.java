@@ -60,7 +60,7 @@ public class WhileCommand extends BracedCommand {
             }
 
             else if (!scriptEntry.hasObject("value")) {
-                scriptEntry.addObject("value", new Element(original.raw_value).setPrefix("comparison_value"));
+                scriptEntry.addObject("value", new Element(original.raw_value));
                 break;
             }
 
@@ -198,7 +198,7 @@ public class WhileCommand extends BracedCommand {
             // Report to dB
             dB.report(scriptEntry, getName(), value.debug());
 
-            if (TagManager.tag(value.asString(), new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
+            if (!TagManager.tag(value.asString(), new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
                 return;
             }
 
