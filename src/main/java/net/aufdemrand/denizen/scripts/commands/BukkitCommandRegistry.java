@@ -1960,7 +1960,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Push
-        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>) (force_along) (precision:<#>)
+        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>) (force_along) (precision:<#>) (no_rotate)
         // @Required 1
         // @Stable stable
         // @Short Pushes entities through the air in a straight line.
@@ -1980,7 +1980,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // -->
         registerCoreMember(PushCommand.class,
-                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>) (force_along) (precision:<#>)", 1);
+                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>) (force_along) (precision:<#>) (no_rotate)", 1);
 
 
         // <--[command]
@@ -2449,7 +2449,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax sit (<location>)
         // @Required 0
         // @Stable unstable
-        // @Short Causes the NPC to sit.
+        // @Short Causes the NPC to sit. To make them stand, see <@link command Stand>.
         // @Author Jeebiss, mcmonkey
         // @Group npc
         // @Description
@@ -2539,7 +2539,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax stand
         // @Required 0
         // @Stable unstable
-        // @Short Causes the NPC to stand.
+        // @Short Causes the NPC to stand. To make them sit, see <@link command Sit>.
         // @Author Jeebiss
         // @Group npc
         // @Description
