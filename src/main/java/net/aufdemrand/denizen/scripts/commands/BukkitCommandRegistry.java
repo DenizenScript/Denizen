@@ -549,7 +549,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name CopyBlock
-        // @Syntax copyblock [location:<location>] [to:<location>]
+        // @Syntax copyblock [<location>/<cuboid>] [to:<location>] (remove_original)
         // @Required 1
         // @Stable unstable
         // @Short Copies a block to another location, keeping all metadata.
@@ -563,7 +563,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(CopyBlockCommand.class,
-                "COPYBLOCK", "copyblock [location:<location>] [to:<location>]", 1);
+                "COPYBLOCK", "copyblock [<location>/<cuboid>] [to:<location>] (remove_original)", 1);
 
 
         // <--[command]
