@@ -54,7 +54,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    final static Pattern cuboid_by_saved = Pattern.compile("(cu@)(.+)");
+    final static Pattern cuboid_by_saved = Pattern.compile("(cu@)?(.+)");
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
      * or a dScript argument (location:)x,y,z,world. If including an Id,
