@@ -186,7 +186,7 @@ public class EntityColor implements Property {
                         .setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
 
             else if (type == EntityType.RABBIT
-                    && mechanism.getValue().matchesEnum(Rabbit.Type.values()))
+                    && mechanism.getValue().matchesEnum(RabbitType.values()))
                 RabbitType.setRabbitType((Rabbit) colored.getBukkitEntity(),
                         RabbitType.valueOf(mechanism.getValue().asString().toUpperCase()));
 
