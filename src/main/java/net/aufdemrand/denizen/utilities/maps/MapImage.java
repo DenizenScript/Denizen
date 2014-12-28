@@ -16,9 +16,6 @@ import java.util.UUID;
 
 public class MapImage extends MapObject {
 
-    // TODO: allow per-player images?
-    //protected Map<UUID, Image> images = new HashMap<UUID, Image>();
-    //protected Map<UUID, ImageIcon> imageIcons = new HashMap<UUID, ImageIcon>();
     protected Image image;
     protected ImageIcon imageIcon;
     protected int width = 0;
@@ -35,30 +32,8 @@ public class MapImage extends MapObject {
         }
     }
 
-    //public Image getImage(UUID uuid) {
-    //    return resizeImage(images.get(uuid), width, height);
-    //}
-
     protected void setImage(Image image) {
         this.image = image;
-    }
-
-    //protected void setImage(UUID uuid, Image image) {
-    //    images.put(uuid, image);
-    //}
-
-    protected Image resizeImage(Image image, int width, int height) {
-        if (width <= 0 && height <= 0)
-            return image;
-        if (width <= 0)
-            width = image.getWidth(null);
-        if (height <= 0)
-            height = image.getHeight(null);
-        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = result.createGraphics();
-        graphics.drawImage(image, 0, 0, width, height, null);
-        graphics.dispose();
-        return result;
     }
 
     @Override
@@ -73,22 +48,25 @@ public class MapImage extends MapObject {
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, dPlayer player, UUID uuid) {
-        if (actualFile == null) { //if (!images.containsKey(uuid)) {
-            String file = fileTag; // tag(fileTag, player);
+        if (actualFile == null) {
+            String file = fileTag;
             actualFile = DenizenMapManager.getActualFile(file);
             imageIcon = new ImageIcon(actualFile);
             image = imageIcon.getImage();
-            //imageIcons.put(uuid, icon);
-            //images.put(uuid, icon.getImage());
+            if (width == 0) {
+                width = image.getWidth(null);
+            }
+            if (height == 0) {
+                height = image.getHeight(null);
+            }
         }
         // Use custom functions to draw image to allow transparency and reduce lag intensely
-        Image image = resizeImage(this.image, width, height);
-        byte[] bytes = imageToBytes(image);
+        byte[] bytes = imageToBytes(image, width, height);
         int x = getX(player, uuid);
         int y = getY(player, uuid);
-        for (int x2 = 0; x2 < image.getWidth(null); ++x2) {
-            for (int y2 = 0; y2 < image.getHeight(null); ++y2) {
-                byte p = bytes[y2 * image.getWidth(null) + x2];
+        for (int x2 = 0; x2 < width; ++x2) {
+            for (int y2 = 0; y2 < height; ++y2) {
+                byte p = bytes[y2 * width + x2];
                 if (p != MapPalette.TRANSPARENT)
                     mapCanvas.setPixel(x + x2, y + y2, p);
             }
@@ -99,7 +77,7 @@ public class MapImage extends MapObject {
     // Since color conversions will never change, remember them instead of using a bunch of math every single time
     private final static Map<Integer, Byte> colorCache = new HashMap<Integer, Byte>();
 
-    private static byte[] imageToBytes(Image image) {
+    private static byte[] imageToBytes(Image image, int width, int height) {
         if (bukkitColors == null) {
             try {
                 Field field = MapPalette.class.getDeclaredField("colors");
@@ -111,11 +89,11 @@ public class MapImage extends MapObject {
         }
         BufferedImage temp = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = temp.createGraphics();
-        graphics.drawImage(image, 0, 0, null);
+        graphics.drawImage(image, 0, 0, width, height, null);
         graphics.dispose();
-        int[] pixels = new int[temp.getWidth() * temp.getHeight()];
-        temp.getRGB(0, 0, temp.getWidth(), temp.getHeight(), pixels, 0, temp.getWidth());
-        byte[] result = new byte[temp.getWidth() * temp.getHeight()];
+        int[] pixels = new int[width * height];
+        temp.getRGB(0, 0, width, height, pixels, 0, width);
+        byte[] result = new byte[width * height];
         for (int i = 0; i < pixels.length; i++) {
             int pixel = pixels[i];
             if (colorCache.containsKey(pixel)) {

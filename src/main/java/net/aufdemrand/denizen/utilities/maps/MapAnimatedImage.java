@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class MapAnimatedImage extends MapImage {
 
-    //private final Map<UUID, AnimationObserver> observers = new HashMap<UUID, AnimationObserver>();
+    protected AnimationObserver observer = null;
 
     public MapAnimatedImage(String xTag, String yTag, String visibilityTag, boolean debug, String fileTag, int width, int height) {
         super(xTag, yTag, visibilityTag, debug, fileTag, width, height);
@@ -19,24 +19,15 @@ public class MapAnimatedImage extends MapImage {
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, dPlayer player, UUID uuid) {
         super.render(mapView, mapCanvas, player, uuid);
-        //if (!observers.containsKey(uuid)) {
-            //AnimationObserver observer = new AnimationObserver(uuid, this);
-            //imageIcons.get(uuid).setImageObserver(observer);
-            AnimationObserver observer = new AnimationObserver(this);
+        if (observer == null) {
+            observer = new AnimationObserver(this);
             imageIcon.setImageObserver(observer);
-            //observers.put(uuid, observer);
-        //}
+        }
     }
 
     public class AnimationObserver implements ImageObserver {
 
-        //private final UUID player;
         private final MapAnimatedImage image;
-
-        //AnimationObserver(UUID player, MapAnimatedImage image) {
-        //    this.player = player;
-        //    this.image = image;
-        //}
 
         AnimationObserver(MapAnimatedImage image) {
             this.image = image;
@@ -44,7 +35,6 @@ public class MapAnimatedImage extends MapImage {
 
         @Override
         public boolean imageUpdate(Image gif, int infoflags, int x, int y, int width, int height) {
-            //image.setImage(player, gif);
             image.setImage(gif);
             return true;
         }
