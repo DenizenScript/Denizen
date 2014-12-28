@@ -1960,7 +1960,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Push
-        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>) (force_along) (precision:<#>) (no_rotate)
+        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>) (force_along) (precision:<#>) (no_rotate) (no_damage)
         // @Required 1
         // @Stable stable
         // @Short Pushes entities through the air in a straight line.
@@ -1980,7 +1980,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // -->
         registerCoreMember(PushCommand.class,
-                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>) (force_along) (precision:<#>) (no_rotate)", 1);
+                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>) (force_along) (precision:<#>) (no_rotate) (no_damage)", 1);
 
 
         // <--[command]
