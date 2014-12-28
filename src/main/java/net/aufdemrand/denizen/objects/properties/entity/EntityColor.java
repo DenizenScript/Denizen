@@ -3,14 +3,10 @@ package net.aufdemrand.denizen.objects.properties.entity;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.entity.Rabbit;
+import net.aufdemrand.denizen.utilities.entity.RabbitType;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.DyeColor;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Wolf;
-import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.*;
 
 public class EntityColor implements Property {
 
@@ -60,7 +56,7 @@ public class EntityColor implements Property {
             return ((Ocelot) colored.getBukkitEntity()).getCatType().name();
 
         else if (type == EntityType.RABBIT)
-            return Rabbit.getRabbitType((org.bukkit.entity.Rabbit) colored.getBukkitEntity()).name();
+            return RabbitType.getRabbitType((Rabbit) colored.getBukkitEntity()).name();
 
         else // Should never happen
             return null;
@@ -105,10 +101,8 @@ public class EntityColor implements Property {
     // @name Rabbit Types
     // @group Properties
     // @description
-    // Currently, there are no official names for rabbit types in Bukkit, so
-    // Denizen includes its own user-friendly list of names. However, once Bukkit
-    // has an official list, Denizen will most likely switch to that list.
-    // Therefore, please be aware that these names could possibly change in the future.
+    // Denizen includes its own user-friendly list of rabbit type names, instead
+    // of relying on Bukkit names which did not exist at the time of writing.
     //
     // Types currently available:
     // BROWN, WHITE, BLACK, WHITE_SPLOTCHED, GOLD, SALT, KILLER.
@@ -133,7 +127,7 @@ public class EntityColor implements Property {
         // Currently, only Horse, Wolf, Ocelot, Sheep, and Rabbit type entities can have a color.
         // For horses, the output is COLOR|STYLE|VARIANT, see <@link language horse types>.
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
-        // For rabbits types, see <@link language rabbit types>.
+        // For rabbit types, see <@link language rabbit types>.
         // -->
         if (attribute.startsWith("color"))
             return new Element(getColor().toLowerCase())
@@ -151,10 +145,10 @@ public class EntityColor implements Property {
         // @input Element
         // @description
         // Changes the entity's color.
-        // Currently, only Horse, Wolf, Ocelot, and Sheep type entities can have a color.
+        // Currently, only Horse, Wolf, Ocelot, Sheep, and Rabbit type entities can have a color.
         // For horses, the input is COLOR|STYLE|VARIANT, see <@link language horse types>
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
-        // For rabbits types, see <@link language rabbit types>.
+        // For rabbit types, see <@link language rabbit types>.
         // @tags
         // <e@entity.color>
         // <e@entity.is_colorable>
@@ -193,8 +187,8 @@ public class EntityColor implements Property {
 
             else if (type == EntityType.RABBIT
                     && mechanism.getValue().matchesEnum(Rabbit.Type.values()))
-                Rabbit.setRabbitType((org.bukkit.entity.Rabbit) colored.getBukkitEntity(),
-                        Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+                RabbitType.setRabbitType((Rabbit) colored.getBukkitEntity(),
+                        RabbitType.valueOf(mechanism.getValue().asString().toUpperCase()));
 
         }
     }
