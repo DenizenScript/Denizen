@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
@@ -15,7 +16,6 @@ import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -247,13 +247,10 @@ public class PushCommand extends AbstractCommand implements Holdable {
                         runs = maxTicks;
                     }
 
-                    org.bukkit.Material m1 = lastEntity.getLocation().add(v3).getBlock().getType();
-                    org.bukkit.Material m2 = lastEntity.getLocation().add(newVel).getBlock().getType();
-
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
-                    if ((m1.isSolid() && m1 != Material.SIGN_POST && m1 != Material.WALL_SIGN)
-                            || (m2.isSolid() && m2 != Material.SIGN_POST && m2 != Material.WALL_SIGN)) {
+                    if (!SafeBlock.blockIsSafe(lastEntity.getLocation().add(v3).getBlock().getType())
+                            || !SafeBlock.blockIsSafe(lastEntity.getLocation().add(newVel).getBlock().getType())) {
                         runs = maxTicks;
                     }
 
