@@ -83,7 +83,9 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
     // -->
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        onPlayerMove(new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo()));
+        PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
+        onPlayerMove(evt);
+        event.setCancelled(evt.isCancelled());
     }
 
     @EventHandler

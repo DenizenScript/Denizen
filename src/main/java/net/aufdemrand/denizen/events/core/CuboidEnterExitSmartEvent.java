@@ -108,7 +108,9 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     // -->
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        playerMoveEvent(new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo()));
+        PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
+        playerMoveEvent(evt);
+        event.setCancelled(evt.isCancelled());
     }
 
     @EventHandler
