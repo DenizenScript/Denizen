@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -53,6 +54,7 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
     @Override
     public void breakDown() {
         PlayerMoveEvent.getHandlerList().unregister(this);
+        PlayerTeleportEvent.getHandlerList().unregister(this);
     }
 
     //////////////
@@ -79,6 +81,11 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
     // "CANCELLED" to move the player back off the block (useless if the player jumped onto it!)
     //
     // -->
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        onPlayerMove(new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo()));
+    }
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         // Check that the block position changed (X/Y/Z)
