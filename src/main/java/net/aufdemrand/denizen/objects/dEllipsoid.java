@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -83,10 +84,26 @@ public class dEllipsoid implements dObject, Notable {
                 .getBlocks_internal(materials);
         dList list = new dList();
         for (dLocation loc: initial) {
-            if (contains(loc))
+            if (contains(loc)) {
                 list.add(loc.identify());
+            }
         }
         return list;
+    }
+
+    public List<dLocation> getBlockLocations() {
+        List<dLocation> initial = new dCuboid(new Location(loc.getWorld(),
+                loc.getX() - size.getX(), loc.getY() - size.getY(), loc.getZ() - size.getZ()),
+                new Location(loc.getWorld(),
+                        loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
+                .getBlocks_internal(null);
+        List<dLocation> locations = new ArrayList<dLocation>();
+        for (dLocation loc: initial) {
+            if (contains(loc)) {
+                locations.add(loc);
+            }
+        }
+        return locations;
     }
 
     public boolean contains(dLocation test) {

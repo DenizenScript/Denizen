@@ -43,8 +43,16 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         // Parse arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesArgumentList(dLocation.class)){
+            if (arg.matchesArgumentList(dLocation.class)) {
                 scriptEntry.addObject("locations", arg.asType(dList.class).filter(dLocation.class));
+            }
+
+            else if (arg.matchesArgumentType(dCuboid.class)) {
+                scriptEntry.addObject("locations", arg.asType(dCuboid.class).getBlockLocations());
+            }
+
+            else if (arg.matchesArgumentType(dEllipsoid.class)) {
+                scriptEntry.addObject("locations", arg.asType(dEllipsoid.class).getBlockLocations());
             }
 
             else if (!scriptEntry.hasObject("materials")
