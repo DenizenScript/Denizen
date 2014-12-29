@@ -225,7 +225,6 @@ public class dNPCRegistry implements Listener {
             denizenNPCs.remove(npc.getId());
             npcInventories.remove(npc.getId());
         }
-        dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + npc.getName() + "/" + npc.getId());
         FlagManager.clearNPCFlags(npc.getId());
     }
 
