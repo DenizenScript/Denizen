@@ -2444,8 +2444,11 @@ public class WorldScriptHelper implements Listener {
     // <context.location> returns the dLocation of the enchanting table.
     // <context.inventory> returns the dInventory of the enchanting table.
     // <context.item> returns the dItem to be enchanted.
+    // <context.button> returns which button was pressed to initiate the enchanting.
+    // <context.cost> returns the experience level cost of the enchantment.
     //
     // @Determine
+    // Element(Number) to set the experience level cost of the enchantment.
     // "CANCELLED" to stop the item from being enchanted.
     //
     // -->
@@ -2460,6 +2463,7 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getEnchantBlock().getLocation()));
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("item", item);
+        context.put("button", new Element(event.whichButton()));
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("item enchanted",
@@ -2468,6 +2472,8 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+        else if (Argument.valueOf(determination).matchesPrimitive(PrimitiveType.Integer))
+            event.setExpLevelCost(Integer.valueOf(determination));
     }
 
     // <--[language]
