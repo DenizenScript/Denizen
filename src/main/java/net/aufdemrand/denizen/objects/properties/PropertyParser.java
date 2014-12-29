@@ -53,8 +53,8 @@ public class PropertyParser {
 
         // register core dInventory properties
         registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
+        registerProperty(InventorySize.class, dInventory.class); // Same with size...(Too small for contents)
         registerProperty(InventoryContents.class, dInventory.class);
-        registerProperty(InventorySize.class, dInventory.class);
         registerProperty(InventoryTitle.class, dInventory.class);
 
         // register core dItem properties

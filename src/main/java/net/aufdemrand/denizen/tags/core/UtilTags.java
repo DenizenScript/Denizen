@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
@@ -192,6 +194,35 @@ public class UtilTags implements Listener {
             }
             event.setReplaced(searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_notables[<type>]>
+        // @returns dList(Notable)
+        // @description
+        // Lists all saved Notables currently on the server.
+        // Optionally, specify a type to search for.
+        // Valid types: locations, cuboids, ellipsoids, items, inventories
+        // -->
+        if (attribute.startsWith("list_notables")) {
+            dList allNotables = new dList();
+            if (attribute.hasContext(1)) {
+                String type = CoreUtilities.toLowerCase(attribute.getContext(1));
+                types: for (Map.Entry<String, Class> typeClass : NotableManager.getReverseClassIdMap().entrySet()) {
+                    if (type.equals(CoreUtilities.toLowerCase(typeClass.getKey()))) {
+                        for (Object notable : NotableManager.getAllType(typeClass.getValue())) {
+                            allNotables.add(((dObject) notable).identify());
+                        }
+                        break types;
+                    }
+                }
+            }
+            else {
+                for (Notable notable : NotableManager.notableObjects.values()) {
+                    allNotables.add(((dObject) notable).identify());
+                }
+            }
+            event.setReplaced(allNotables.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]

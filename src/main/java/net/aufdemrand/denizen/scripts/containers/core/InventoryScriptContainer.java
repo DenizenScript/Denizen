@@ -74,11 +74,6 @@ public class InventoryScriptContainer extends ScriptContainer {
 
     public Map<String, dItem> definitions = new HashMap<String, dItem>();
 
-    public int getSize() {
-        InventoryType invType = getInventoryType();
-        return aH.getIntegerFrom(getString("SIZE", String.valueOf(invType.getDefaultSize())));
-    }
-
     public InventoryType getInventoryType() {
         String typeStr = getString("inventory", "CHEST");
 
@@ -110,16 +105,17 @@ public class InventoryScriptContainer extends ScriptContainer {
                     dB.echoError("Invalid inventory type specified. Assuming \"CHEST\"");
                 }
             }
+            int size = 0;
             if (contains("SIZE")) {
                 if (inventory != null && !getInventoryType().name().equalsIgnoreCase("CHEST")) {
                     dB.echoError("You can only set the size of chest inventories!");
                 }
                 else {
-                    int size = aH.getIntegerFrom(getString("SIZE"));
+                    size = aH.getIntegerFrom(TagManager.tag(getString("SIZE"),
+                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))));
 
                     if (size == 0) {
-                        size = 27;
-                        dB.echoError("Inventory size can't be 0. Assuming default of 27...");
+                        dB.echoError("Inventory size can't be 0. Assuming default of inventory type...");
                     }
                     if (size % 9 != 0) {
                         size = (int) Math.ceil(size/9)*9;
@@ -136,11 +132,16 @@ public class InventoryScriptContainer extends ScriptContainer {
                     inventory.setIdentifiers("script", getName());
                 }
             }
+            if (size == 0) {
+                size = getInventoryType().getDefaultSize();
+            }
             if (contains("SLOTS")) {
-                ItemStack[] finalItems = new ItemStack[getSize()];
+                ItemStack[] finalItems = new ItemStack[size];
                 int itemsAdded = 0;
                 for (String items : getStringList("SLOTS")) {
-                    items = TagManager.tag(items, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
+                    items = TagManager.tag(items, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))).trim();
+                    if (items.isEmpty())
+                        continue;
                     String[] itemsInLine = items.split(" ");
                     for (String item : itemsInLine) {
                         Matcher m = fromPattern.matcher(item);
@@ -171,7 +172,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
                 }
                 if (inventory == null) {
-                    int size = finalItems.length%9==0?finalItems.length:Math.round(finalItems.length/9)*9;
+                    size = finalItems.length%9==0?finalItems.length:Math.round(finalItems.length/9)*9;
                     inventory = new dInventory(size==0?9:size,
                             contains("TITLE") ? TagManager.tag(getString("TITLE"),
                                     new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");

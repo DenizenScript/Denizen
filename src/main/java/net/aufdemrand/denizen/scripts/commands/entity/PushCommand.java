@@ -1,31 +1,25 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.Conversion;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
-
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import java.util.List;
 
 /**
  * Moves entities through the air from an origin to a destination.
@@ -101,6 +95,11 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("precision", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("no_damage")
+                && arg.matches("no_damage")) {
+                scriptEntry.addObject("no_damage", new Element(true));
+            }
+
             else arg.reportUnhandled();
         }
 
@@ -138,6 +137,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                                                .add(originEntity.getEyeLocation().getDirection())
                                                .subtract(0, 0.4, 0));
         boolean no_rotate = scriptEntry.hasObject("no_rotate") && scriptEntry.getElement("no_rotate").asBoolean();
+        final boolean no_damage = scriptEntry.hasObject("no_damage") && scriptEntry.getElement("no_damage").asBoolean();
 
         // If there is no destination set, but there is a shooter, get a point
         // in front of the shooter and set it as the destination
@@ -174,7 +174,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
                              (script != null ? script.debug() : "") +
                              force_along.debug() +
                              precision.debug() +
-                             (no_rotate ? aH.debugObj("no_rotate", "true"): ""));
+                             (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
+                             (no_damage ? aH.debugObj("no_damage", "true") : ""));
 
         final boolean forceAlong = force_along.asBoolean();
 
@@ -248,9 +249,13 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
-                    if (lastEntity.getLocation().add(v3).getBlock().getType().isSolid()
-                            || lastEntity.getLocation().add(newVel).getBlock().getType().isSolid()) {
+                    if (!SafeBlock.blockIsSafe(lastEntity.getLocation().add(v3).getBlock().getType())
+                            || !SafeBlock.blockIsSafe(lastEntity.getLocation().add(newVel).getBlock().getType())) {
                         runs = maxTicks;
+                    }
+
+                    if (no_damage && lastEntity.isLivingEntity()) {
+                        lastEntity.getLivingEntity().setFallDistance(0);
                     }
 
                     // Record the location in case the entity gets lost (EG, if a pushed arrow hits a mob)

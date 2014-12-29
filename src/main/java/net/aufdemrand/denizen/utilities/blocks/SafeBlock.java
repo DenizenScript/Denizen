@@ -14,7 +14,7 @@ public class SafeBlock {
             case REDSTONE_WIRE:
             case SAPLING:
             case SIGN_POST:
-            case SIGN:
+            case WALL_SIGN:
             case SNOW:
             case TORCH:
             case DETECTOR_RAIL:

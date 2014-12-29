@@ -271,7 +271,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                                 continue;
                             // Remember that NPC has exited proximity.
                             exitProximityOf(BukkitPlayer, npc);
-                            dB.echoDebug(script, ChatColor.YELLOW + "FOUND! NPC is in EXITING range: '" + npc.getName() + "'");
                             // Exit Proximity Action
                             npc.action("exit proximity", player);
                             // Parse Interact Script

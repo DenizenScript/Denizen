@@ -9,7 +9,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.io.*;
+import javax.imageio.stream.FileImageOutputStream;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -23,16 +27,13 @@ public class DenizenMapManager {
     private final static File imageDownloads = new File(imagesFolder, "downloaded");
     private final static File mapsFile = new File(DenizenAPI.getCurrentInstance().getDataFolder(), "maps.yml");
 
-    private static int downloadCount = (imageDownloads.exists() ? imageDownloads.listFiles(new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-            return !dir.isDirectory();
-        }
-    }).length : 0) + 1;
+    private static int downloadCount = (imageDownloads.exists() ? imageDownloads.listFiles().length : 0) + 1;
 
     private static YamlConfiguration mapsConfig;
 
     public static void reloadMaps() {
+        mapRenderers.clear();
+        downloadedByUrl.clear();
         mapsConfig = YamlConfiguration.loadConfiguration(mapsFile);
         ConfigurationSection mapsSection = mapsConfig.getConfigurationSection("MAPS");
         if (mapsSection == null)
@@ -154,8 +155,8 @@ public class DenizenMapManager {
             int lastDot = urlString.lastIndexOf('.');
             String fileName = String.format("%0" + (6-String.valueOf(downloadCount).length()) + "d", downloadCount)
                     + (lastDot > 0 ? urlString.substring(lastDot) : "");
-            String output = new File(imageDownloads, fileName).getPath();
-            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(output));
+            File output = new File(imageDownloads, fileName);
+            FileImageOutputStream out = new FileImageOutputStream(output);
             int i;
             while ((i = in.read()) != -1) {
                 out.write(i);
@@ -165,7 +166,7 @@ public class DenizenMapManager {
             in.close();
             downloadedByUrl.put(urlString, fileName);
             downloadCount++;
-            return output;
+            return output.getPath();
         } catch (IOException e) {
             dB.echoError(e);
         }

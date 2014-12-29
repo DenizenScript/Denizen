@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.objects.properties.entity;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.entity.RabbitType;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.*;
 
@@ -10,11 +12,13 @@ public class EntityColor implements Property {
 
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity &&
-                (((dEntity) entity).getEntityType() == EntityType.SHEEP
-                || ((dEntity) entity).getEntityType() == EntityType.HORSE
-                || ((dEntity) entity).getEntityType() == EntityType.WOLF
-                || ((dEntity) entity).getEntityType() == EntityType.OCELOT);
+        if (!(entity instanceof dEntity)) return false;
+        EntityType type = ((dEntity) entity).getEntityType();
+        return type == EntityType.SHEEP ||
+                type == EntityType.HORSE ||
+                type == EntityType.WOLF ||
+                type == EntityType.OCELOT ||
+                type == EntityType.RABBIT;
     }
 
     public static EntityColor getFrom(dObject entity) {
@@ -35,19 +39,24 @@ public class EntityColor implements Property {
     dEntity colored;
 
     private String getColor() {
-        if (colored.getEntityType() == EntityType.HORSE)
+        EntityType type = colored.getEntityType();
+
+        if (type == EntityType.HORSE)
           return ((Horse) colored.getBukkitEntity()).getColor().name() + "|" +
                   ((Horse) colored.getBukkitEntity()).getStyle().name() + "|" +
                   ((Horse) colored.getBukkitEntity()).getVariant().name();
 
-        else if (colored.getEntityType() == EntityType.SHEEP)
+        else if (type == EntityType.SHEEP)
           return ((Sheep) colored.getBukkitEntity()).getColor().name();
 
-        else if (colored.getEntityType() == EntityType.WOLF)
+        else if (type == EntityType.WOLF)
             return ((Wolf) colored.getBukkitEntity()).getCollarColor().name();
 
-        else if (colored.getEntityType() == EntityType.OCELOT)
+        else if (type == EntityType.OCELOT)
             return ((Ocelot) colored.getBukkitEntity()).getCatType().name();
+
+        else if (type == EntityType.RABBIT)
+            return RabbitType.getRabbitType((Rabbit) colored.getBukkitEntity()).name();
 
         else // Should never happen
             return null;
@@ -59,7 +68,7 @@ public class EntityColor implements Property {
 
     @Override
     public String getPropertyString() {
-        return getColor().toLowerCase();
+        return CoreUtilities.toLowerCase(getColor());
     }
 
     @Override
@@ -88,6 +97,20 @@ public class EntityColor implements Property {
     // DONKEY, MULE, SKELETON_HORSE, UNDEAD_HORSE, or HORSE.
     // -->
 
+    // <--[language]
+    // @name Rabbit Types
+    // @group Properties
+    // @description
+    // Denizen includes its own user-friendly list of rabbit type names, instead
+    // of relying on Bukkit names which did not exist at the time of writing.
+    //
+    // Types currently available:
+    // BROWN, WHITE, BLACK, WHITE_SPLOTCHED, GOLD, SALT, KILLER.
+    //
+    // Note: The KILLER rabbit type is a hostile rabbit type. It will attempt to kill
+    //       nearby players and wolves. Use at your own risk.
+    // -->
+
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -101,9 +124,10 @@ public class EntityColor implements Property {
         // @group properties
         // @description
         // If the entity can have a color, returns the entity's color.
-        // Currently, only Horse, Wolf, Ocelot, and Sheep type entities can have a color.
+        // Currently, only Horse, Wolf, Ocelot, Sheep, and Rabbit type entities can have a color.
         // For horses, the output is COLOR|STYLE|VARIANT, see <@link language horse types>.
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
+        // For rabbit types, see <@link language rabbit types>.
         // -->
         if (attribute.startsWith("color"))
             return new Element(getColor().toLowerCase())
@@ -121,16 +145,19 @@ public class EntityColor implements Property {
         // @input Element
         // @description
         // Changes the entity's color.
-        // Currently, only Horse, Wolf, Ocelot, and Sheep type entities can have a color.
+        // Currently, only Horse, Wolf, Ocelot, Sheep, and Rabbit type entities can have a color.
         // For horses, the input is COLOR|STYLE|VARIANT, see <@link language horse types>
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
+        // For rabbit types, see <@link language rabbit types>.
         // @tags
         // <e@entity.color>
         // <e@entity.is_colorable>
         // -->
 
         if (mechanism.matches("color")) {
-            if (colored.getEntityType() == EntityType.HORSE) {
+            EntityType type = colored.getEntityType();
+
+            if (type == EntityType.HORSE) {
                     dList horse_info = mechanism.getValue().asType(dList.class);
                 if (horse_info.size() > 0 && new Element(horse_info.get(0)).matchesEnum(Horse.Color.values()))
                     ((Horse) colored.getBukkitEntity())
@@ -143,20 +170,25 @@ public class EntityColor implements Property {
                             .setVariant(Horse.Variant.valueOf(horse_info.get(2).toUpperCase()));
             }
 
-            else if (colored.getEntityType() == EntityType.SHEEP
+            else if (type == EntityType.SHEEP
                     && mechanism.getValue().matchesEnum(DyeColor.values()))
                 ((Sheep) colored.getBukkitEntity())
                         .setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
 
-            else if (colored.getEntityType() == EntityType.WOLF
+            else if (type == EntityType.WOLF
                     && mechanism.getValue().matchesEnum(DyeColor.values()))
                 ((Wolf) colored.getBukkitEntity())
                         .setCollarColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
 
-            else if (colored.getEntityType() == EntityType.OCELOT
-                && mechanism.getValue().matchesEnum(Ocelot.Type.values()))
+            else if (type == EntityType.OCELOT
+                    && mechanism.getValue().matchesEnum(Ocelot.Type.values()))
                 ((Ocelot) colored.getBukkitEntity())
                         .setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+
+            else if (type == EntityType.RABBIT
+                    && mechanism.getValue().matchesEnum(RabbitType.values()))
+                RabbitType.setRabbitType((Rabbit) colored.getBukkitEntity(),
+                        RabbitType.valueOf(mechanism.getValue().asString().toUpperCase()));
 
         }
     }

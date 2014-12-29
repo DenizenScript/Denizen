@@ -549,7 +549,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name CopyBlock
-        // @Syntax copyblock [location:<location>] [to:<location>]
+        // @Syntax copyblock [<location>/<cuboid>] [to:<location>] (remove_original)
         // @Required 1
         // @Stable unstable
         // @Short Copies a block to another location, keeping all metadata.
@@ -563,7 +563,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(CopyBlockCommand.class,
-                "COPYBLOCK", "copyblock [location:<location>] [to:<location>]", 1);
+                "COPYBLOCK", "copyblock [<location>/<cuboid>] [to:<location>] (remove_original)", 1);
 
 
         // <--[command]
@@ -1960,7 +1960,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Push
-        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>) (force_along) (precision:<#>)
+        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>) (force_along) (precision:<#>) (no_rotate) (no_damage)
         // @Required 1
         // @Stable stable
         // @Short Pushes entities through the air in a straight line.
@@ -1980,7 +1980,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // -->
         registerCoreMember(PushCommand.class,
-                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>) (force_along) (precision:<#>)", 1);
+                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>) (force_along) (precision:<#>) (no_rotate) (no_damage)", 1);
 
 
         // <--[command]
@@ -2449,7 +2449,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax sit (<location>)
         // @Required 0
         // @Stable unstable
-        // @Short Causes the NPC to sit.
+        // @Short Causes the NPC to sit. To make them stand, see <@link command Stand>.
         // @Author Jeebiss, mcmonkey
         // @Group npc
         // @Description
@@ -2539,7 +2539,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax stand
         // @Required 0
         // @Stable unstable
-        // @Short Causes the NPC to stand.
+        // @Short Causes the NPC to stand. To make them sit, see <@link command Sit>.
         // @Author Jeebiss
         // @Group npc
         // @Description
@@ -2612,7 +2612,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Take
-        // @Syntax take [money/iteminhand/bydisplay:<name>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)
+        // @Syntax take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.
@@ -2627,7 +2627,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(TakeCommand.class,
-                "TAKE", "take [money/iteminhand/bydisplay:<name>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
+                "TAKE", "take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
 
         // <--[command]
         // @Name Teleport

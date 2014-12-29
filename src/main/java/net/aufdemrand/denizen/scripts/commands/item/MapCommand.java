@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.utilities.maps.MapAnimatedImage;
 import net.aufdemrand.denizen.utilities.maps.MapImage;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
@@ -157,7 +158,7 @@ public class MapCommand extends AbstractCommand {
             if (image != null) {
                 int wide = width != null ? width.asInt() : resize.asBoolean() ? 128 : 0;
                 int high = height != null ? height.asInt() : resize.asBoolean() ? 128 : 0;
-                if (image.asString().toLowerCase().endsWith(".gif"))
+                if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif"))
                     dmr.addObject(new MapAnimatedImage(x.asString(), y.asString(), "true", false, image.asString(),
                             wide, high));
                 else

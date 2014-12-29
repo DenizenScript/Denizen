@@ -33,7 +33,7 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 
 public class TakeCommand extends AbstractCommand{
 
-    private enum Type { MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT }
+    private enum Type { MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -58,6 +58,13 @@ public class TakeCommand extends AbstractCommand{
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.BYDISPLAY);
                 scriptEntry.addObject("displayname", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("type")
+                    && !scriptEntry.hasObject("items")
+                    && arg.matchesPrefix("bycover")) {
+                scriptEntry.addObject("type", Type.BYCOVER);
+                scriptEntry.addObject("cover", arg.asType(dList.class));
             }
 
             else if (!scriptEntry.hasObject("slot")
@@ -111,6 +118,7 @@ public class TakeCommand extends AbstractCommand{
         Element qty = scriptEntry.getElement("qty");
         Element displayname = scriptEntry.getElement("displayname");
         Element slot = scriptEntry.getElement("slot");
+        dList titleAuthor = scriptEntry.getdObject("cover");
         Type type = (Type) scriptEntry.getObject("type");
 
         Object items_object = scriptEntry.getObject("items");
@@ -125,7 +133,8 @@ public class TakeCommand extends AbstractCommand{
                         + (inventory != null ? inventory.debug(): "")
                         + (displayname != null ? displayname.debug(): "")
                         + aH.debugObj("Items", items)
-                        + (slot != null ? slot.debug() : ""));
+                        + (slot != null ? slot.debug() : "")
+                        + (titleAuthor != null ? titleAuthor.debug() : ""));
 
         switch (type) {
 
@@ -170,14 +179,7 @@ public class TakeCommand extends AbstractCommand{
                     ItemStack is = item.getItemStack();
                     is.setAmount(qty.asInt());
 
-                    // Remove books with a certain title even if they
-                    // are not identical to an item script, to allow
-                    // books that update
-                    if (is.getItemMeta() instanceof BookMeta
-                        && ((BookMeta) is.getItemMeta()).hasTitle()) {
-                            inventory.removeBook(is);
-                    }
-                    else if (!inventory.removeItem(item, item.getAmount()))
+                    if (!inventory.removeItem(item, item.getAmount()))
                         dB.echoDebug(scriptEntry, "Inventory does not contain at least "
                                 + qty.asInt() + " of " + item.getFullString() +
                                 "... Taking as much as possible...");
@@ -208,6 +210,12 @@ public class TakeCommand extends AbstractCommand{
 
             case SLOT:
                 inventory.setSlots(slot.asInt()-1, new ItemStack(Material.AIR));
+                break;
+
+            case BYCOVER:
+                inventory.removeBook(titleAuthor.get(0),
+                        titleAuthor.size() > 1 ? titleAuthor.get(1) : null,
+                        qty.asInt());
                 break;
 
         }
