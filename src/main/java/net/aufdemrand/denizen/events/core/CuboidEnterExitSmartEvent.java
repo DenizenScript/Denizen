@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,6 +76,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     @Override
     public void breakDown() {
         PlayerMoveEvent.getHandlerList().unregister(this);
+        PlayerTeleportEvent.getHandlerList().unregister(this);
     }
 
     //////////////
@@ -104,6 +106,11 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
     //
     //
     // -->
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        playerMoveEvent(new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo()));
+    }
+
     @EventHandler
     public void playerMoveEvent(PlayerMoveEvent event) {
 
