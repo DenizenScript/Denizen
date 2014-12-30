@@ -2506,7 +2506,11 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("item", item);
         context.put("power", new Element(event.getEnchantmentBonus()));
-        context.put("offer", new Element(event.getExpLevelCostsOffered()));
+        dList offer = new dList();
+        for (String str: event.getExpLevelCostsOffered()) {
+            offer.add(EscapeTags.Escape(str)); // Deprecated
+        }
+        context.put("offer", offer);
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("item offered",
