@@ -2487,7 +2487,7 @@ public class WorldScriptHelper implements Listener {
     // <context.inventory> returns the dInventory of the enchanting table.
     // <context.item> returns the dItem to be enchanted.
     // <context.power> returns the power from surrouding bookshelves.
-    // <context.offered> returns list of offered exp level costs of the enchantment.
+    // <context.offer> returns list of offered exp level costs of the enchantment.
     //
     // @Determine
     // "CANCELLED" to stop the enchantment table from calculating enchantments.
@@ -2506,7 +2506,7 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("item", item);
         context.put("power", new Element(event.getEnchantmentBonus()));
-        context.put("offered", new Element(event.getExpLevelCostsOffered()));
+        context.put("offer", new Element(event.getExpLevelCostsOffered()));
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("item offered",
