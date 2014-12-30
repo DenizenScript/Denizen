@@ -801,7 +801,7 @@ public class dMaterial implements dObject {
         // Returns whether the material is a block that is solid (cannot be walked through).
         // -->
         if (attribute.startsWith("is_solid"))
-            return new Element(SafeBlock.blockIsSafe(material))
+            return new Element(!SafeBlock.blockIsSafe(material))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
