@@ -1147,12 +1147,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Follow
-        // @Syntax follow (stop) (lead:<#.#>) (target:<entity>)
+        // @Syntax follow (followers:<entity>|...) (stop) (lead:<#.#>) (target:<entity>)
         // @Required 0
-        // @Stable unstable
-        // @Short Causes the NPC to follow a target (Currently experiencing bugs with lead: )
-        // @Author aufdemrand
-        // @Group npc
+        // @Stable stable
+        // @Short Causes a list of entities to follow a target.
+        // @Author aufdemrand, Morphan1
+        // @Group entity
         // @Description
         // TODO: Document Command Details
         // @Tags
@@ -1160,9 +1160,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // TODO: Document Command Details
         // -->
-        if (Depends.citizens != null)
-            registerCoreMember(FollowCommand.class,
-                    "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
+        registerCoreMember(FollowCommand.class,
+                "FOLLOW", "follow (followers:<entity>|...) (stop) (lead:<#.#>) (target:<entity>)", 0);
 
 
         // <--[command]
@@ -2786,12 +2785,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Walk
-        // @Syntax walk (<npc>|...) [<location>] (speed:<#.#>) (auto_range) (radius:<#.#>)
+        // @Syntax walk (<entity>|...) [<location>] (speed:<#.#>) (auto_range) (radius:<#.#>)
         // @Required 1
         // @Stable stable
-        // @Short Causes an NPC or list of NPCs to walk to another location.
-        // @Author aufdemrand
-        // @Group npc
+        // @Short Causes an entity or list of entities to walk to another location.
+        // @Author aufdemrand, Morphan1
+        // @Group entity
         // @Description
         // TODO: Document Command Details
         // @Tags
@@ -2802,9 +2801,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // TODO: Document Command Details
         // -->
-        if (Depends.citizens != null)
-            registerCoreMember(WalkCommand.class,
-                    "WALK, WALKTO", "walk (<npc>|...) [<location>] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
+        registerCoreMember(WalkCommand.class,
+                "WALK, WALKTO", "walk (<entity>|...) [<location>] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
 
         // <--[command]
         // @Name Weather

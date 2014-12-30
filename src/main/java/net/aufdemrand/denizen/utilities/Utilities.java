@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
@@ -47,10 +48,10 @@ public class Utilities {
 
     // TODO: Javadocs, comments
     //
-    public static boolean isWalkable(Location location) { // TODO: Why does this exist - surely it can be written better
-        return ((location.getBlock().getType() == Material.AIR
-                || location.getBlock().getType() == Material.GRASS)
-                && (location.add(0, 1, 0).getBlock().getType() == Material.AIR));
+    public static boolean isWalkable(Location location) {
+        return !SafeBlock.blockIsSafe(location.subtract(0, 1, 0).getBlock().getType())
+                && SafeBlock.blockIsSafe(location.getBlock().getType())
+                && SafeBlock.blockIsSafe(location.add(0, 1, 0).getBlock().getType());
     }
 
 
