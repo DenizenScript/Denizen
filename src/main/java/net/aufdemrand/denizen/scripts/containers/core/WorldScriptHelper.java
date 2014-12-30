@@ -2486,7 +2486,7 @@ public class WorldScriptHelper implements Listener {
     // <context.location> returns the dLocation of the enchanting table.
     // <context.inventory> returns the dInventory of the enchanting table.
     // <context.item> returns the dItem to be enchanted.
-    // <context.power> returns the power from surrouding bookshelves.
+    // <context.power> returns the power from surrounding bookshelves.
     // <context.offer> returns list of offered exp level costs of the enchantment.
     //
     // @Determine
@@ -2506,11 +2506,7 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("item", item);
         context.put("power", new Element(event.getEnchantmentBonus()));
-        dList offer = new dList();
-        for (String str: event.getExpLevelCostsOffered()) {
-            offer.add(EscapeTags.Escape(str)); // Deprecated
-        }
-        context.put("offer", offer);
+        context.put("offer", new dList(Arrays.asList(event.getExpLevelCostsOffered()));
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("item offered",
