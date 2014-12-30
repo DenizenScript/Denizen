@@ -2475,46 +2475,6 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
         else if (Argument.valueOf(determination).matchesPrimitive(PrimitiveType.Integer))
             event.setExpLevelCost(Integer.valueOf(determination));
-    }
-    // <--[event]
-    // @Events
-    // item offered
-    // <item> offered
-    //
-    // @Triggers when an item is offered to an enchantment table.
-    // @Context
-    // <context.location> returns the dLocation of the enchanting table.
-    // <context.inventory> returns the dInventory of the enchanting table.
-    // <context.item> returns the dItem to be enchanted.
-    // <context.power> returns the power from surrounding bookshelves.
-    // TODO: <context.offer> returns list of offered exp level costs of the enchantment.
-    //
-    // @Determine
-    // "CANCELLED" to stop the enchantment table from calculating enchantments.
-    //
-    // -->
-    //ADD: Determine also the exp offered as well
-    @EventHandler
-    public void prepareItemEnchantEvent(PrepareItemEnchantEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dPlayer player = new dPlayer(event.getEnchanter());
-        dItem item = new dItem(event.getItem());
-
-        context.put("location", new dLocation(event.getEnchantBlock().getLocation()));
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
-        context.put("item", item);
-        context.put("power", new Element(event.getEnchantmentBonus()));
-
-        String determination = EventManager.doEvents(Arrays.asList
-                ("item offered",
-                        item.identifySimple() + " offered"),
-                null, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
 
     // <--[language]
     // @Name Inventory Actions
