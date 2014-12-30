@@ -2464,6 +2464,7 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("item", item);
         context.put("button", new Element(event.whichButton()));
+        context.put("cost", new Element(event.getExpLevelCost()));
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("item enchanted",
@@ -2475,7 +2476,7 @@ public class WorldScriptHelper implements Listener {
         else if (Argument.valueOf(determination).matchesPrimitive(PrimitiveType.Integer))
             event.setExpLevelCost(Integer.valueOf(determination));
     }
-
+    
     // <--[language]
     // @Name Inventory Actions
     // @Group Useful Lists
