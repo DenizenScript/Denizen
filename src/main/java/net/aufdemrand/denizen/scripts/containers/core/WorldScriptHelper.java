@@ -2475,7 +2475,7 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
         else if (Argument.valueOf(determination).matchesPrimitive(PrimitiveType.Integer))
             event.setExpLevelCost(Integer.valueOf(determination));
-
+    }
     // <--[language]
     // @Name Inventory Actions
     // @Group Useful Lists
