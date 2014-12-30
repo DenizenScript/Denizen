@@ -38,7 +38,8 @@ public class InventoryCommand extends AbstractCommand {
                      && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
                      && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
                          || arg.matchesArgumentList(dItem.class))) {
-                scriptEntry.addObject("origin", Conversion.getInventory(arg));
+                BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
+                scriptEntry.addObject("origin", Conversion.getInventory(arg, data.getPlayer(), data.getNPC()));
             }
 
             // Check for a destination, which can be a dInventory, dEntity
@@ -46,7 +47,8 @@ public class InventoryCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("destination")
                      && arg.matchesPrefix("destination", "dest", "d", "target", "to", "t")
                      && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
-                scriptEntry.addObject("destination", Conversion.getInventory(arg));
+                BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
+                scriptEntry.addObject("destination", Conversion.getInventory(arg, data.getPlayer(), data.getNPC()));
             }
 
             // Check for specified slot number
