@@ -2594,7 +2594,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Switch
-        // @Syntax switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)
+        // @Syntax switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)
         // @Required 1
         // @Stable stable
         // @Short Switches a lever.
@@ -2608,7 +2608,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(SwitchCommand.class,
-                "SWITCH", "switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)", 1);
+                "SWITCH", "switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)", 1);
 
         // <--[command]
         // @Name Take
