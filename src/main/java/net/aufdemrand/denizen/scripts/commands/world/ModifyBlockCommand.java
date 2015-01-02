@@ -315,6 +315,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             block_physics.add(location);
             physitick = tick;
         }
+        if (location.getY() < 0 || location.getY() > 255) {
+            dB.echoError("Invalid modifyblock location: " + new dLocation(location).toString());
+            return;
+        }
         if (natural && material.getMaterial() == Material.AIR)
             location.getBlock().breakNaturally();
         else
