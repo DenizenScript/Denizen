@@ -2,7 +2,9 @@ package net.aufdemrand.denizen.utilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
@@ -31,27 +33,45 @@ import org.bukkit.entity.Player;
 public class Utilities {
 
 
-    // TODO: Javadocs, comments
-    //
+    /**
+     * Gets a Location within a range that an entity can walk in.
+     *
+     * @param location the Location to check with
+     * @param range the range around the Location
+     * @return a random Location within range, or null if no Location within range is safe
+     */
     public static Location getWalkableLocationNear(Location location, int range) {
-        Location returnable;
+        List<Location> locations = new ArrayList<Location>();
+        location = location.getBlock().getLocation();
 
-        int selected_x = CoreUtilities.getRandom().nextInt(range * 2);
-        int selected_z = CoreUtilities.getRandom().nextInt(range * 2);
-        returnable = location.clone().add(selected_x - range, 1, selected_z - range);
+        // Loop through each location within the range
+        for (double x = -(range); x <= range; x++) {
+            for (double y = -(range); y <= range; y++) {
+                for (double z = -(range); z <= range; z++) {
+                    // Add each block location within range
+                    Location loc = location.clone().add(x, y, z);
+                    if (checkLocation(location, loc, range) && isWalkable(loc)) {
+                        locations.add(loc);
+                    }
+                }
+            }
+        }
 
-        // TODO: Handle location being underground/in a wall better than a stack overflow?
-        if (!isWalkable(returnable)) return getWalkableLocationNear(location, range);
-        else return returnable;
+        // No safe Locations found
+        if (locations.isEmpty())
+            return null;
+
+        // Return a random Location from the list
+        return locations.get(CoreUtilities.getRandom().nextInt(locations.size()));
     }
 
 
     // TODO: Javadocs, comments
     //
     public static boolean isWalkable(Location location) {
-        return !SafeBlock.blockIsSafe(location.subtract(0, 1, 0).getBlock().getType())
+        return !SafeBlock.blockIsSafe(location.clone().subtract(0, 1, 0).getBlock().getType())
                 && SafeBlock.blockIsSafe(location.getBlock().getType())
-                && SafeBlock.blockIsSafe(location.add(0, 1, 0).getBlock().getType());
+                && SafeBlock.blockIsSafe(location.clone().add(0, 1, 0).getBlock().getType());
     }
 
 

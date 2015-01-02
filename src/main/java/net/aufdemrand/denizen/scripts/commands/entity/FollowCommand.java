@@ -27,11 +27,22 @@ public class FollowCommand extends AbstractCommand {
                 scriptEntry.addObject("stop", new Element(true));
 
             else if (!scriptEntry.hasObject("lead") &&
-                    arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    arg.matchesPrimitive(aH.PrimitiveType.Double) &&
+                    arg.matchesPrefix("l", "lead"))
                 scriptEntry.addObject("lead", arg.asElement());
 
+            else if (!scriptEntry.hasObject("max") &&
+                    arg.matchesPrimitive(aH.PrimitiveType.Double) &&
+                    arg.matchesPrefix("max"))
+                scriptEntry.addObject("max", arg.asElement());
+
+            else if (!scriptEntry.hasObject("allow_wander") &&
+                    arg.matches("allow_wander"))
+                scriptEntry.addObject("allow_wander", new Element(true));
+
             else if (!scriptEntry.hasObject("speed") &&
-                    arg.matchesPrimitive(aH.PrimitiveType.Percentage))
+                    arg.matchesPrimitive(aH.PrimitiveType.Percentage) &&
+                    arg.matchesPrefix("s", "speed"))
                 scriptEntry.addObject("speed", arg.asElement());
 
             else if (!scriptEntry.hasObject("target") &&
@@ -60,7 +71,7 @@ public class FollowCommand extends AbstractCommand {
                         new dList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().identify()));
         }
 
-        scriptEntry.defaultObject("stop", new Element(false));
+        scriptEntry.defaultObject("stop", new Element(false)).defaultObject("allow_wander", new Element(false));
     }
 
     @Override
@@ -68,6 +79,8 @@ public class FollowCommand extends AbstractCommand {
         // Get objects
         Element stop = scriptEntry.getElement("stop");
         Element lead = scriptEntry.getElement("lead");
+        Element maxRange = scriptEntry.getElement("max");
+        Element allowWander = scriptEntry.getElement("allow_wander");
         Element speed = scriptEntry.getElement("speed");
         dList entities = scriptEntry.getdObject("entities");
         dEntity target = scriptEntry.getdObject("target");
@@ -77,6 +90,8 @@ public class FollowCommand extends AbstractCommand {
                         (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().debug() : "")
                         + (!stop.asBoolean() ? aH.debugObj("Action", "FOLLOW") : aH.debugObj("Action", "STOP"))
                         + (lead != null ? lead.debug() : "")
+                        + (maxRange != null ? maxRange.debug() : "")
+                        + allowWander.debug()
                         + entities.debug()
                         + target.debug());
 
@@ -99,7 +114,8 @@ public class FollowCommand extends AbstractCommand {
                     EntityMovement.stopFollowing(entity.getBukkitEntity());
                 else
                     EntityMovement.follow(target.getBukkitEntity(), entity.getBukkitEntity(),
-                            speed != null ? speed.asDouble() : 0.3, lead != null ? lead.asDouble(): 3);
+                            speed != null ? speed.asDouble() : 0.3, lead != null ? lead.asDouble(): 5,
+                            maxRange != null? maxRange.asDouble() : 8, allowWander.asBoolean());
             }
         }
 

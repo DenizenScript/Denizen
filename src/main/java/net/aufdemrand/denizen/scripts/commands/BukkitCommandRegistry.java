@@ -1147,13 +1147,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Follow
-        // @Syntax follow (followers:<entity>|...) (stop) (lead:<#.#>) (target:<entity>)
+        // @Syntax follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)
         // @Required 0
         // @Stable stable
         // @Short Causes a list of entities to follow a target.
         // @Author aufdemrand, Morphan1
         // @Group entity
         // @Description
+        // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
         // TODO: Document Command Details
         // @Tags
         // TODO: Document Command Details
@@ -1161,7 +1162,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(FollowCommand.class,
-                "FOLLOW", "follow (followers:<entity>|...) (stop) (lead:<#.#>) (target:<entity>)", 0);
+                "FOLLOW", "follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)", 0);
 
 
         // <--[command]

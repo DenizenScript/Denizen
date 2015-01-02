@@ -6,6 +6,7 @@ import net.minecraft.server.v1_8_R1.EntityInsentient;
 import net.minecraft.server.v1_8_R1.GenericAttributes;
 import net.minecraft.server.v1_8_R1.NavigationAbstract;
 import net.minecraft.server.v1_8_R1.PathEntity;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
@@ -28,7 +29,8 @@ public class EntityMovement {
             followTasks.get(uuid).cancel();
     }
 
-    public static void follow(final Entity target, final Entity follower, final double speed, final double lead) {
+    public static void follow(final Entity target, final Entity follower, final double speed, final double lead,
+                              final double maxRange, final boolean allowWander) {
         if (target == null || follower == null)
             return;
 
@@ -44,8 +46,12 @@ public class EntityMovement {
             followTasks.get(uuid).cancel();
 
         final int locationNearInt = (int) Math.floor(lead);
+        final boolean hasMax = maxRange > lead;
 
         followTasks.put(follower.getUniqueId(), new BukkitRunnable() {
+
+            private boolean inRadius = false;
+
             public void run(){
                 if (!target.isValid() || !follower.isValid()) {
                     this.cancel();
@@ -54,11 +60,21 @@ public class EntityMovement {
                 Location targetLocation = target.getLocation();
                 PathEntity path;
 
-                if (!Utilities.checkLocation(targetLocation, follower.getLocation(), 10)
+                if (hasMax && !Utilities.checkLocation(targetLocation, follower.getLocation(), maxRange)
                         && !target.isDead() && target.isOnGround()) {
-                    follower.teleport(Utilities.getWalkableLocationNear(targetLocation, locationNearInt));
+                    if (!inRadius) {
+                        follower.teleport(Utilities.getWalkableLocationNear(targetLocation, locationNearInt));
+                    }
+                    else {
+                        inRadius = false;
+                        path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ());
+                        if (path != null) {
+                            followerNavigation.a(path, 1D);
+                            followerNavigation.a(2D);
+                        }
+                    }
                 }
-                else if (!Utilities.checkLocation(targetLocation, follower.getLocation(), lead)) {
+                else if (!inRadius && !Utilities.checkLocation(targetLocation, follower.getLocation(), lead)) {
                     path = followerNavigation.a(targetLocation.getX(), targetLocation.getY(), targetLocation.getZ());
                     if (path != null) {
                         followerNavigation.a(path, 1D);
@@ -66,11 +82,14 @@ public class EntityMovement {
                     }
                 }
                 else {
+                    inRadius = true;
+                }
+                if (inRadius && !allowWander) {
                     followerNavigation.n();
                 }
                 nmsFollower.getAttributeInstance(GenericAttributes.d).setValue(speed);
             }
-        }.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 5));
+        }.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 20));
     }
 
     public static void walkTo(Entity entity, Location location, double speed) {
@@ -82,7 +101,6 @@ public class EntityMovement {
             return;
         final EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
         final NavigationAbstract followerNavigation = nmsEntity.getNavigation();
-        followerNavigation.m();
 
         PathEntity path;
         path = followerNavigation.a(location.getX(), location.getY(), location.getZ());
@@ -90,8 +108,9 @@ public class EntityMovement {
             followerNavigation.a(path, 1D);
             followerNavigation.a(2D);
         }
-        if (!Utilities.checkLocation(location, entity.getLocation(), 10)) {
-            entity.teleport(location);
+        if (!Utilities.checkLocation(location, entity.getLocation(), 20)) {
+            //entity.teleport(location);
+            Bukkit.getServer().broadcastMessage("15+");
         }
         nmsEntity.getAttributeInstance(GenericAttributes.d).setValue(speed);
     }
