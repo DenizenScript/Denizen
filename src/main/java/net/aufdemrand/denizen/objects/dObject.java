@@ -116,6 +116,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 // |   in@location[holder=<location>] - fetches the contents of a chest or other 'inventory' block
 // |   in@<notable_inventory_name> - fetches the inventory that has been 'noted' with the specified ID
 // |   in@<inventory_script_name> - fetches a new custom inventory as specified by the referenced inventory script
+// |   in@generic - represents a generic, customizable virtual inventory to be used with inventory properties (See <@link language Virtual Inventories>)
 //
 // + ----- dMaterial ----+
 // | object notation: m@    can reference unique objects: no      can be notable: no
