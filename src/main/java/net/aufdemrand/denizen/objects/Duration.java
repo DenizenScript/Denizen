@@ -442,7 +442,7 @@ public class Duration implements dObject {
         }
         // <--[tag]
         // @attribute <d@duration.time>
-        // @returns Element(Number)
+        // @returns Element
         // @description
         // returns the date-time specified by the duration object.
         // -->
@@ -507,6 +507,7 @@ public class Duration implements dObject {
             else if (attribute.startsWith("second"))
                 return new Element(currentDate.getSeconds()).getAttribute(attribute.fulfill(1));
 
+            // TODO: Custom format option
             else {
                 format.applyPattern("EEE, d MMM yyyy HH:mm:ss");
                 return new Element(format.format(currentDate))
