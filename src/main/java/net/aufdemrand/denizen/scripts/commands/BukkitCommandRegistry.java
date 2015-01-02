@@ -2406,11 +2406,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ShowFake
-        // @Syntax showfake [<material>] [<location>|...] (to:<player>|...) (d:<duration>{10s})
+        // @Syntax showfake [<material>/cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})
         // @Required 2
         // @Stable stable
         // @Short Makes the player see a block change that didn't actually happen.
-        // @Author aufdemrand
+        // @Author aufdemrand, Morphan1
         // @Group player
         // @Description
         // TODO: Document Command Details
@@ -2420,7 +2420,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ShowFakeCommand.class,
-                "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);
+                "SHOWFAKE", "showfake [<material>/cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})", 2);
 
 
         // <--[command]
