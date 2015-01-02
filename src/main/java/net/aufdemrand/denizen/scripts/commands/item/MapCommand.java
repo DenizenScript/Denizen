@@ -16,6 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
+import java.util.List;
+
 public class MapCommand extends AbstractCommand {
 
     @Override
@@ -137,20 +139,18 @@ public class MapCommand extends AbstractCommand {
         }
 
         if (reset.asBoolean()) {
-            for (MapRenderer renderer : map.getRenderers()) {
-                if (renderer instanceof DenizenMapRenderer) {
-                    map.removeRenderer(renderer);
-                    for (MapRenderer oldRenderer : ((DenizenMapRenderer) renderer).getOldRenderers())
-                        map.addRenderer(oldRenderer);
-                    if (resetLoc != null) {
-                        map.setCenterX(resetLoc.getBlockX());
-                        map.setCenterZ(resetLoc.getBlockZ());
-                        map.setWorld(resetLoc.getWorld());
-                    }
-                }
+            List<MapRenderer> oldRenderers = DenizenMapManager.removeDenizenRenderers(map);
+            for (MapRenderer renderer : oldRenderers) {
+                map.addRenderer(renderer);
+            }
+            if (resetLoc != null) {
+                map.setCenterX(resetLoc.getBlockX());
+                map.setCenterZ(resetLoc.getBlockZ());
+                map.setWorld(resetLoc.getWorld());
             }
         }
         else if (script != null) {
+            DenizenMapManager.removeDenizenRenderers(map);
             ((MapScriptContainer) script.getContainer()).applyTo(map);
         }
         else {
