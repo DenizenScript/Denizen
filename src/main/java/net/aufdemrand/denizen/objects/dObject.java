@@ -107,12 +107,13 @@ import net.aufdemrand.denizen.tags.Attribute;
 // |   ch@<x>,<y>,<world> - fetches a chunk at the given chunk location
 //
 // + ----- dInventory ---+
-// | object notation: in@   can reference unique objects: yes     can be notable: soon
+// | object notation: in@   can reference unique objects: yes     can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   in@player[<player_name/object>] - fetches the specified Player's inventory
-// |   in@npc[<npc_id/object>] - fetches the specified NPC's inventory
-// |   in@entity[<entity_object>] - fetches the specified object's inventory, such as a Player, NPC, or Mule
-// |   in@location[<location_object>] - fetches the contents of a chest or other 'inventory' block
+// |   in@player[holder=<player>] - fetches the specified Player's inventory (Works for offline players)
+// |   in@enderchest[holder=<player>] - fetches the specified Player's enderchest inventory (Works for offline players)
+// |   in@npc[holder=<npc>] - fetches the specified NPC's inventory
+// |   in@entity[holder=<entity>] - fetches the specified object's inventory, such as a Player, NPC, or Mule
+// |   in@location[holder=<location>] - fetches the contents of a chest or other 'inventory' block
 // |   in@<notable_inventory_name> - fetches the inventory that has been 'noted' with the specified ID
 // |   in@<inventory_script_name> - fetches a new custom inventory as specified by the referenced inventory script
 //

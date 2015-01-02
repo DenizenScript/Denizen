@@ -48,7 +48,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   title: custom title
     //
     //   # The size must be a multiple of 9. It is recommended not to go above 54, as it will not show
-    //   # correctly when a player looks into it.
+    //   # correctly when a player looks into it. Tags are allowed for advanced usage.
     //   size: 27
     //
     //   # You can use definitions to define items to use in the slots. These are not like normal

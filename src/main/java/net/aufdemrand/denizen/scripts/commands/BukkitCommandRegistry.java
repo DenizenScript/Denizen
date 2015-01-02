@@ -1386,6 +1386,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Using "close" closes any inventory that the currently attached player has opened.
         // @Tags
         // <p@player.inventory>
+        // <p@player.enderchest>
         // <n@npc.inventory>
         // <l@location.inventory>
         // @Usage
@@ -1397,14 +1398,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to remove all items from a chest, except any items in
         // the specified list.
-        // - inventory keep d:in@location[l@123,123,123,world] o:li@i@snow_ball|i@ItemScript
+        // - inventory keep d:in@location[holder=l@123,123,123,world] o:li@i@snow_ball|i@ItemScript
         // @Usage
         // Use to remove items specified in a chest from the current
         // player's inventory, regardless of the item count.
         // - inventory exclude origin:l@123,123,123,world
         // @Usage
         // Use to swap two players' inventories.
-        // - inventory swap d:in@player[p@mcmonkey4eva] o:<p@fullwall.inventory>
+        // - inventory swap d:in@player[holder=p@mcmonkey4eva] o:<p@fullwall.inventory>
         // -->
         registerCoreMember(InventoryCommand.class,
                 "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<#>)", 1);
