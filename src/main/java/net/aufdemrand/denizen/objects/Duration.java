@@ -350,10 +350,20 @@ public class Duration implements dObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <d@duration.in_years>
+        // @returns Element(Decimal)
+        // @description
+        // returns the number of years in the Duration.
+        // -->
+        if (attribute.startsWith("in_years") || attribute.startsWith("years"))
+            return new Element(seconds / (86400 * 365))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <d@duration.in_weeks>
         // @returns Element(Decimal)
         // @description
-        // returns the number of days in the Duration.
+        // returns the number of years in the Duration.
         // -->
         if (attribute.startsWith("in_weeks") || attribute.startsWith("weeks"))
             return new Element(seconds / 604800)
