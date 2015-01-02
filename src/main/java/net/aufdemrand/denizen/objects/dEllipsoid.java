@@ -30,6 +30,9 @@ public class dEllipsoid implements dObject, Notable {
         if (string.startsWith("ellipsoid@"))
             string = string.substring(10);
 
+        if (NotableManager.isType(string, dEllipsoid.class))
+            return (dEllipsoid) NotableManager.getSavedObject(string);
+
         List<String> split = CoreUtilities.Split(string, ',');
 
         if (split.size() != 7)
@@ -135,7 +138,7 @@ public class dEllipsoid implements dObject, Notable {
     @Override
     @Note("Ellipsoids")
     public Object getSaveObject() {
-        return identify().substring(10);
+        return identifyFull().substring(10);
     }
 
     @Override
@@ -155,13 +158,20 @@ public class dEllipsoid implements dObject, Notable {
 
     @Override
     public String identify() {
-        return "ellipsoid@" + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getWorld().getName()
-                + "," + size.getX() + "," + size.getY() + "," + size.getZ();
+        if (isUnique())
+            return "ellipsoid@" + NotableManager.getSavedId(this);
+        else
+            return identifyFull();
     }
 
     @Override
     public String identifySimple() {
         return identify();
+    }
+
+    public String identifyFull() {
+        return "ellipsoid@" + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getWorld().getName()
+                + "," + size.getX() + "," + size.getY() + "," + size.getZ();
     }
 
     @Override
