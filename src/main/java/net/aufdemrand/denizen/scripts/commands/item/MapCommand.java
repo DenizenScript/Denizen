@@ -35,12 +35,12 @@ public class MapCommand extends AbstractCommand {
                     && arg.matchesPrefix("r", "reset")
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("reset-loc", arg.asType(dLocation.class));
-                scriptEntry.addObject("reset", Element.TRUE);
+                scriptEntry.addObject("reset", new Element(true));
             }
 
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
-                scriptEntry.addObject("reset", Element.TRUE);
+                scriptEntry.addObject("reset", new Element(true));
             }
 
             else if (!scriptEntry.hasObject("image")
@@ -50,7 +50,7 @@ public class MapCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("resize")
                     && arg.matches("resize")) {
-                scriptEntry.addObject("resize", Element.TRUE);
+                scriptEntry.addObject("resize", new Element(true));
             }
 
             else if (!scriptEntry.hasObject("width")
@@ -99,7 +99,7 @@ public class MapCommand extends AbstractCommand {
                 && !scriptEntry.hasObject("script"))
             throw new InvalidArgumentsException("Must specify a valid action to perform!");
 
-        scriptEntry.defaultObject("reset", Element.FALSE).defaultObject("resize", Element.FALSE)
+        scriptEntry.defaultObject("reset", new Element(false)).defaultObject("resize", new Element(false))
                 .defaultObject("x-value", new Element(0)).defaultObject("y-value", new Element(0));
 
     }
