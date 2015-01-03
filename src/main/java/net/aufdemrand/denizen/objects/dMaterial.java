@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
@@ -800,7 +801,7 @@ public class dMaterial implements dObject {
         // Returns whether the material is a block that is solid (cannot be walked through).
         // -->
         if (attribute.startsWith("is_solid"))
-            return new Element(material.isSolid())
+            return new Element(!SafeBlock.blockIsSafe(material))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
