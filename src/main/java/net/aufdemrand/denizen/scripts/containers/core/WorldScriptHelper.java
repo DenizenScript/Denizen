@@ -492,7 +492,7 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
         if (event.getIgnitingEntity() != null) {
-            context.put("entitiy", new dEntity(event.getIgnitingEntity()));
+            context.put("entity", new dEntity(event.getIgnitingEntity()));
         }
 
         String determination = EventManager.doEvents(Arrays.asList
