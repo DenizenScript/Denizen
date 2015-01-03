@@ -176,6 +176,7 @@ public class WorldScriptHelper implements Listener {
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        context.put("material", material);
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("block burns",
