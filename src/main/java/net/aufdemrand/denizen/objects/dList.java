@@ -1071,8 +1071,12 @@ public class dList extends ArrayList<String> implements dObject {
             dList newlist = new dList();
             try {
                 for (String str: this) {
-                    if (ObjectFetcher.pickObjectFor(str).getAttribute(new Attribute(attribute.getContext(1),
-                            attribute.getScriptEntry())).equalsIgnoreCase("true")) {
+                    if (str == null) {
+                        dB.echoError("Null string in dList! (From .filter tag)");
+                    }
+                    String result = ObjectFetcher.pickObjectFor(str).getAttribute(new Attribute(attribute.getContext(1),
+                            attribute.getScriptEntry()));
+                    if (result != null && result.equalsIgnoreCase("true")) {
                         newlist.add(str);
                     }
                 }

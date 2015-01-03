@@ -350,10 +350,20 @@ public class Duration implements dObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <d@duration.in_years>
+        // @returns Element(Decimal)
+        // @description
+        // returns the number of years in the Duration.
+        // -->
+        if (attribute.startsWith("in_years") || attribute.startsWith("years"))
+            return new Element(seconds / (86400 * 365))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <d@duration.in_weeks>
         // @returns Element(Decimal)
         // @description
-        // returns the number of days in the Duration.
+        // returns the number of years in the Duration.
         // -->
         if (attribute.startsWith("in_weeks") || attribute.startsWith("weeks"))
             return new Element(seconds / 604800)
@@ -442,7 +452,7 @@ public class Duration implements dObject {
         }
         // <--[tag]
         // @attribute <d@duration.time>
-        // @returns Element(Number)
+        // @returns Element
         // @description
         // returns the date-time specified by the duration object.
         // -->
@@ -507,6 +517,7 @@ public class Duration implements dObject {
             else if (attribute.startsWith("second"))
                 return new Element(currentDate.getSeconds()).getAttribute(attribute.fulfill(1));
 
+            // TODO: Custom format option
             else {
                 format.applyPattern("EEE, d MMM yyyy HH:mm:ss");
                 return new Element(format.format(currentDate))

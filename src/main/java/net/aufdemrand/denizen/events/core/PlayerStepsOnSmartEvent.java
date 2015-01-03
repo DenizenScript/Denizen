@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -53,6 +54,7 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
     @Override
     public void breakDown() {
         PlayerMoveEvent.getHandlerList().unregister(this);
+        PlayerTeleportEvent.getHandlerList().unregister(this);
     }
 
     //////////////
@@ -80,13 +82,18 @@ public class PlayerStepsOnSmartEvent implements SmartEvent, Listener {
     //
     // -->
     @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
+        onPlayerMove(evt);
+        event.setCancelled(evt.isCancelled());
+    }
+
+    @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         // Check that the block position changed (X/Y/Z)
         if ((event.getFrom().getBlockX() != event.getTo().getBlockX()
                 || event.getFrom().getBlockY() != event.getTo().getBlockY()
-                || event.getFrom().getBlockZ() != event.getTo().getBlockZ())
-                // And the the block stood on is not air
-                && event.getTo().clone().subtract(0, 1, 0).getBlock().getType() != Material.AIR) {
+                || event.getFrom().getBlockZ() != event.getTo().getBlockZ())) {
             // Required event lists
             List<String> events = new ArrayList<String>();
             Map<String, dObject> context = new HashMap<String, dObject>();

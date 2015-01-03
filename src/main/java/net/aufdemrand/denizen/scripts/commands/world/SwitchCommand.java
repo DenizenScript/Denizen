@@ -1,14 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -42,9 +39,9 @@ public class SwitchCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException  {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("location") &&
-                    arg.matchesArgumentType(dLocation.class))
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+            if (!scriptEntry.hasObject("locations") &&
+                    arg.matchesArgumentList(dLocation.class))
+                scriptEntry.addObject("locations", arg.asType(dList.class));
 
             else if (!scriptEntry.hasObject("duration") &&
                     arg.matchesArgumentType(Duration.class))
@@ -57,7 +54,7 @@ public class SwitchCommand extends AbstractCommand {
             else arg.reportUnhandled();
         }
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("locations"))
             throw new InvalidArgumentsException("Must specify a location!");
 
         scriptEntry.defaultObject("duration", new Duration(0));
@@ -65,32 +62,34 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        final dLocation interactLocation = (dLocation)scriptEntry.getObject("location");
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+        final dList interactLocations = scriptEntry.getdObject("locations");
         long duration = ((Duration)scriptEntry.getObject("duration")).getTicks();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
 
         final Player player = ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(): null;
         // Switch the Block
-        final ScriptEntry se = scriptEntry;
-        dB.report(scriptEntry, getName(), interactLocation.debug()
+        dB.report(scriptEntry, getName(), interactLocations.debug()
                                           + aH.debugObj("duration", duration + "t")
                                           + aH.debugObj("switchstate", switchState.name()));
-        switchBlock(se, interactLocation, switchState, player);
 
-        // If duration set, schedule a delayed task.
-        if (duration > 0) {
-            // If this block already had a delayed task, cancel it.
-            if (taskMap.containsKey(interactLocation))
-                try { DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(taskMap.get(interactLocation)); } catch (Exception e) { }
-            dB.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
-            // Store new delayed task ID, for checking against, then schedule new delayed task.
-            taskMap.put(interactLocation, DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-                    new Runnable() {
-                        public void run() {
-                            switchBlock(se, interactLocation, SwitchState.TOGGLE, player);
-                        }
-                    }, duration));
+        for (final dLocation interactLocation : interactLocations.filter(dLocation.class)) {
+            switchBlock(scriptEntry, interactLocation, switchState, player);
+
+            // If duration set, schedule a delayed task.
+            if (duration > 0) {
+                // If this block already had a delayed task, cancel it.
+                if (taskMap.containsKey(interactLocation))
+                    try { DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(taskMap.get(interactLocation)); } catch (Exception e) { }
+                dB.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
+                // Store new delayed task ID, for checking against, then schedule new delayed task.
+                taskMap.put(interactLocation, DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                        new Runnable() {
+                            public void run() {
+                                switchBlock(scriptEntry, interactLocation, SwitchState.TOGGLE, player);
+                            }
+                        }, duration));
+            }
         }
 
     }

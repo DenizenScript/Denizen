@@ -43,16 +43,23 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         // Parse arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesArgumentList(dLocation.class)) {
-                scriptEntry.addObject("locations", arg.asType(dList.class).filter(dLocation.class));
-            }
 
-            else if (arg.matchesArgumentType(dCuboid.class)) {
+            if (arg.matchesArgumentType(dCuboid.class)
+                    && !scriptEntry.hasObject("locations")
+                    && !scriptEntry.hasObject("location_list")) {
                 scriptEntry.addObject("locations", arg.asType(dCuboid.class).getBlockLocations());
             }
 
-            else if (arg.matchesArgumentType(dEllipsoid.class)) {
+            else if (arg.matchesArgumentType(dEllipsoid.class)
+                    && !scriptEntry.hasObject("locations")
+                    && !scriptEntry.hasObject("location_list")) {
                 scriptEntry.addObject("locations", arg.asType(dEllipsoid.class).getBlockLocations());
+            }
+
+            else if (arg.matchesArgumentList(dLocation.class)
+                    && !scriptEntry.hasObject("locations")
+                    && !scriptEntry.hasObject("location_list")) {
+                scriptEntry.addObject("location_list", arg.asType(dList.class));
             }
 
             else if (!scriptEntry.hasObject("materials")
@@ -100,7 +107,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             throw new InvalidArgumentsException("Missing material argument!");
 
         // ..and at least one location.
-        if (!scriptEntry.hasObject("locations"))
+        if (!scriptEntry.hasObject("locations") && !scriptEntry.hasObject("location_list"))
             throw new InvalidArgumentsException("Missing location argument!");
 
         // Set some defaults
@@ -117,18 +124,20 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        final dList materials = (dList) scriptEntry.getObject("materials");
-        final List<dObject> locations = (List<dObject>) scriptEntry.getObject("locations");
+        final dList materials = scriptEntry.getdObject("materials");
+        final List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("locations");
+        final dList location_list = scriptEntry.getdObject("location_list");
         final Element physics = scriptEntry.getElement("physics");
         final Element natural = scriptEntry.getElement("natural");
         final Element delayed = scriptEntry.getElement("delayed");
         final Element radiusElement = scriptEntry.getElement("radius");
         final Element heightElement = scriptEntry.getElement("height");
         final Element depthElement = scriptEntry.getElement("depth");
-        final List<dMaterial> materialList = materials.filter(dMaterial.class);
         final dScript script = scriptEntry.getdObject("script");
 
-        dB.report(scriptEntry, getName(), aH.debugList("locations", locations)
+        final List<dMaterial> materialList = materials.filter(dMaterial.class);
+
+        dB.report(scriptEntry, getName(), (locations == null ? location_list.debug(): aH.debugList("locations", locations))
                                           + materials.debug()
                                           + physics.debug()
                                           + radiusElement.debug()
@@ -144,10 +153,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         final int height = heightElement.asInt();
         final int depth = depthElement.asInt();
 
-        if (locations.size() == 0)
-            dB.echoError("Must have a valid location!");
+        if ((locations == null || locations.size() == 0) && (location_list == null || location_list.size() == 0))
+            dB.echoError("Must specify a valid location!");
         if (materials.size() == 0)
-            dB.echoError("Must have a valid material!");
+            dB.echoError("Must specify a valid material!");
 
         no_physics = !doPhysics;
         if (delayed.asBoolean()) {
@@ -155,19 +164,31 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 int index = 0;
                 @Override
                 public void run() {
-                    boolean was_static = preSetup(locations);
                     long start = System.currentTimeMillis();
-                    Location loc = (dLocation)locations.get(0);
-                    while (locations.size() > 0) {
-                        handleLocation((dLocation) locations.get(0), index, materialList, doPhysics, isNatural, radius, height, depth);
-                        locations.remove(0);
+                    dLocation loc;
+                    if (locations != null) {
+                       loc = locations.get(0);
+                    }
+                    else {
+                        loc = dLocation.valueOf(location_list.get(0));
+                    }
+                    boolean was_static = preSetup(loc);
+                    while ((locations != null && locations.size() > index) || (location_list != null && location_list.size() > index)) {
+                        dLocation nLoc;
+                        if (locations != null) {
+                            nLoc = locations.get(index);
+                        }
+                        else {
+                            nLoc = dLocation.valueOf(location_list.get(index));
+                        }
+                        handleLocation(nLoc, index, materialList, doPhysics, isNatural, radius, height, depth);
                         index++;
                         if (System.currentTimeMillis() - start > 50) {
                             break;
                         }
                     }
                     postComplete(loc, was_static);
-                    if (locations.size() == 0) {
+                    if ((locations != null && locations.size() == index) || (location_list != null && location_list.size() == index)) {
                         if (script != null) {
                             List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
                             ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()))
@@ -181,27 +202,39 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
         }
         else {
-            boolean was_static = preSetup(locations);
-            Location loc = (dLocation)locations.get(0);
+            dLocation loc;
+            if (locations != null) {
+                loc = locations.get(0);
+            }
+            else {
+                loc = dLocation.valueOf(location_list.get(0));
+            }
+            boolean was_static = preSetup(loc);
             int index = 0;
-            for (dObject obj : locations) {
-                handleLocation((dLocation) obj, index, materialList, doPhysics, isNatural, radius, height, depth);
-                index++;
+            if (locations != null) {
+                for (dObject obj : locations) {
+                    handleLocation((dLocation) obj, index, materialList, doPhysics, isNatural, radius, height, depth);
+                    index++;
+                }
+            }
+            else {
+                for (String str : location_list) {
+                    handleLocation(dLocation.valueOf(str), index, materialList, doPhysics, isNatural, radius, height, depth);
+                    index++;
+                }
             }
             postComplete(loc, was_static);
             scriptEntry.setFinished(true);
         }
     }
 
-    boolean preSetup(List<dObject> locations) {
-        if (locations.size() == 0)
-            return false;
+    boolean preSetup(dLocation loc0) {
         // Freeze the first world in the list.
         // TODO: make this do all worlds from the locations in the list
-        CraftWorld craftWorld = (CraftWorld)((dLocation)locations.get(0)).getWorld();
+        CraftWorld craftWorld = (CraftWorld)loc0.getWorld();
         boolean was_static = craftWorld.getHandle().isStatic;
         if (no_physics)
-            setWorldIsStatic(((dLocation)locations.get(0)).getWorld(), true);
+            setWorldIsStatic(loc0.getWorld(), true);
         return was_static;
     }
 
@@ -281,6 +314,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         else {
             block_physics.add(location);
             physitick = tick;
+        }
+        if (location.getY() < 0 || location.getY() > 255) {
+            dB.echoError("Invalid modifyblock location: " + new dLocation(location).toString());
+            return;
         }
         if (natural && material.getMaterial() == Material.AIR)
             location.getBlock().breakNaturally();

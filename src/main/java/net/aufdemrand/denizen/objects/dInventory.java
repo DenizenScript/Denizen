@@ -277,7 +277,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dInventory(ImprovedOfflinePlayer offlinePlayer, boolean isEnderChest) {
         inventory = isEnderChest ? offlinePlayer.getEnderChest() : offlinePlayer.getInventory();
-        setIdentifiers("player", "p@" + offlinePlayer.getUniqueId());
+        setIdentifiers(isEnderChest ? "enderchest" : "player", "p@" + offlinePlayer.getUniqueId());
     }
 
     public dInventory(int size, String title) {

@@ -53,6 +53,10 @@ public class dWorld implements dObject, Adjustable {
 
     @Fetchable("w")
     public static dWorld valueOf(String string) {
+        return valueOf(string, true);
+    }
+
+    public static dWorld valueOf(String string, boolean announce) {
         if (string == null) return null;
 
         string = string.replace("w@", "");
@@ -71,8 +75,10 @@ public class dWorld implements dObject, Adjustable {
                 return worlds.get(returnable.getName());
             else return new dWorld(returnable);
         }
-        else dB.echoError("Invalid World! '" + string
-                + "' could not be found.");
+        else if (announce) {
+            dB.echoError("Invalid World! '" + string
+                    + "' could not be found.");
+        }
 
         return null;
     }

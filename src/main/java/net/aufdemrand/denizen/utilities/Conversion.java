@@ -3,13 +3,8 @@ package net.aufdemrand.denizen.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.aH.Argument;
-import net.aufdemrand.denizen.objects.dColor;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dLocation;
 
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;
@@ -76,16 +71,18 @@ public class Conversion {
      * @return The dInventory retrieved by parsing the argument
      */
 
-    public static dInventory getInventory(Argument arg) {
+    public static dInventory getInventory(Argument arg, dPlayer player, dNPC npc) {
         String string = arg.getValue();
 
         if (dInventory.matches(string)) {
-            return dInventory.valueOf(string);
+            return dInventory.valueOf(string, player, npc);
         }
         else if (arg.matchesArgumentList(dItem.class)) {
             List<dItem> list = dList.valueOf(string).filter(dItem.class);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
-            return new dInventory(dInventory.maxSlots).add(0, items);
+            dInventory inventory = new dInventory(dInventory.maxSlots);
+            inventory.setContents(items);
+            return inventory;
         }
         else if (dLocation.matches(string)) {
             return dLocation.valueOf(string).getInventory();
