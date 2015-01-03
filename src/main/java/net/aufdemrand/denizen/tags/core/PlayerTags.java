@@ -62,7 +62,7 @@ public class PlayerTags implements Listener {
         if (!event.matches("player", "pl") || event.replaced()) return;
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
 
         // PlayerTags require a... dPlayer!
         dPlayer p = ((BukkitTagContext)event.getContext()).player;

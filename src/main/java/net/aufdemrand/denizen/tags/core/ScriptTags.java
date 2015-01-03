@@ -42,7 +42,7 @@ public class ScriptTags implements Listener {
             script = (dScript) event.getScriptEntry().getObject("script");
 
         // Build and fill attributes
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
 
         // Check if location is null, return null if it is
         if (script == null) { return; }

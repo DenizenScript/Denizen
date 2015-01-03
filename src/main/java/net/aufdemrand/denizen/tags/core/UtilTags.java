@@ -97,8 +97,7 @@ public class UtilTags implements Listener {
     @TagManager.TagEvents
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server", "svr", "global") || event.replaced()) return;
-        Attribute attribute =
-                new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+        Attribute attribute = event.getAttributes().fulfill(1);
 
         // <--[tag]
         // @attribute <server.has_flag[<flag_name>]>
@@ -800,7 +799,7 @@ public class UtilTags implements Listener {
         String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";
         String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+        Attribute attribute = event.getAttributes().fulfill(1);
 
         if (type.equalsIgnoreCase("RANDOM")) {
 

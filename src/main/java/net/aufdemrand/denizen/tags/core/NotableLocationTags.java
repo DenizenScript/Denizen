@@ -40,7 +40,7 @@ public class NotableLocationTags implements Listener {
 
         dLocation location = (dLocation) NotableManager.getSavedObject(id);
 
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
         attribute.fulfill(1);
         tag = location.getAttribute(attribute);
 
