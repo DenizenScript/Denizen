@@ -476,6 +476,7 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.location> returns the dLocation the block was set on fire at.
     // <context.material> returns the dMaterial of the block that was set on fire.
+    // <context.entity> returns the dEntity of the entity that ignited the block.
     //
     // @Determine
     // "CANCELLED" to stop the block from being ignited.
@@ -489,6 +490,9 @@ public class WorldScriptHelper implements Listener {
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
+        if (event.getIgnitingEntity() != null) {
+            context.put("entitiy", new dEntity(event.getIgnitingEntity()));
+        }
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("block ignites",
