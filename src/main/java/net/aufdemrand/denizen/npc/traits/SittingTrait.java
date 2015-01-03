@@ -65,7 +65,7 @@ public class SittingTrait extends Trait implements Listener  {
         }
 
         sitInternal();
-        chairLocation = npc.getBukkitEntity().getLocation().clone().add(0, 0.5, 0);
+        chairLocation = npc.getBukkitEntity().getLocation().clone();
     }
 
     private void sitInternal() {
