@@ -12,7 +12,6 @@ import org.bukkit.map.MapView;
 import javax.imageio.stream.FileImageOutputStream;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,6 +31,12 @@ public class DenizenMapManager {
     private static YamlConfiguration mapsConfig;
 
     public static void reloadMaps() {
+        Map<Short, List<MapRenderer>> oldMapRenderers = new HashMap<Short, List<MapRenderer>>();
+        for (Map.Entry<Short, DenizenMapRenderer> entry : mapRenderers.entrySet()) {
+            DenizenMapRenderer renderer = entry.getValue();
+            oldMapRenderers.put(entry.getKey(), renderer.getOldRenderers());
+            renderer.deactivate();
+        }
         mapRenderers.clear();
         downloadedByUrl.clear();
         mapsConfig = YamlConfiguration.loadConfiguration(mapsFile);
@@ -47,7 +52,15 @@ public class DenizenMapManager {
                 continue;
             }
             ConfigurationSection objectsData = mapsSection.getConfigurationSection(key + ".objects");
-            List<MapRenderer> oldRenderers = mapView.getRenderers();
+            List<MapRenderer> oldRenderers;
+            if (oldMapRenderers.containsKey(mapId)) {
+                oldRenderers = oldMapRenderers.get(mapId);
+            }
+            else {
+                oldRenderers = mapView.getRenderers();
+                for (MapRenderer oldRenderer : oldRenderers)
+                    mapView.removeRenderer(oldRenderer);
+            }
             DenizenMapRenderer renderer = new DenizenMapRenderer(oldRenderers,
                     mapsSection.getBoolean(key + ".auto update", false));
             List<String> objects = new ArrayList<String>(objectsData.getKeys(false));
@@ -80,10 +93,19 @@ public class DenizenMapManager {
                 if (object != null)
                     renderer.addObject(object);
             }
-            for (MapRenderer oldRenderer : oldRenderers)
-                mapView.removeRenderer(oldRenderer);
             mapView.addRenderer(renderer);
             mapRenderers.put(mapId, renderer);
+        }
+        for (Map.Entry<Short, List<MapRenderer>> entry : oldMapRenderers.entrySet()) {
+            short id = entry.getKey();
+            if (!mapRenderers.containsKey(id)) {
+                MapView mapView = Bukkit.getServer().getMap(id);
+                if (mapView != null) {
+                    for (MapRenderer renderer : entry.getValue())
+                        mapView.addRenderer(renderer);
+                }
+                // If it's null, the server no longer has the map - don't do anything about it
+            }
         }
         ConfigurationSection downloadedImages = mapsConfig.getConfigurationSection("DOWNLOADED");
         if (downloadedImages == null)
@@ -94,8 +116,10 @@ public class DenizenMapManager {
     }
 
     public static void saveMaps() {
-        for (Map.Entry<Short, DenizenMapRenderer> entry : mapRenderers.entrySet())
-            mapsConfig.set("MAPS." + entry.getKey(), entry.getValue().getSaveData());
+        for (Map.Entry<Short, DenizenMapRenderer> entry : mapRenderers.entrySet()) {
+            if (entry.getValue().isActive())
+                mapsConfig.set("MAPS." + entry.getKey(), entry.getValue().getSaveData());
+        }
         for (Map.Entry<String, String> entry : downloadedByUrl.entrySet())
             mapsConfig.set("DOWNLOADED." + entry.getValue().replace(".", "DOT"), entry.getKey());
         try {
@@ -116,7 +140,7 @@ public class DenizenMapManager {
 
     public static DenizenMapRenderer getDenizenRenderer(MapView map) {
         short mapId = map.getId();
-        DenizenMapRenderer dmr = null;
+        DenizenMapRenderer dmr;
         if (!mapRenderers.containsKey(mapId)) {
             dmr = new DenizenMapRenderer(map.getRenderers(), false);
             setMap(map, dmr);
@@ -125,6 +149,19 @@ public class DenizenMapManager {
             dmr = mapRenderers.get(mapId);
         }
         return dmr;
+    }
+
+    public static List<MapRenderer> removeDenizenRenderers(MapView map) {
+        List<MapRenderer> oldRenderers = new ArrayList<MapRenderer>();
+        for (MapRenderer renderer : map.getRenderers()) {
+            if (renderer instanceof DenizenMapRenderer) {
+                map.removeRenderer(renderer);
+                oldRenderers.addAll(((DenizenMapRenderer) renderer).getOldRenderers());
+                ((DenizenMapRenderer) renderer).deactivate();
+                mapRenderers.remove(map.getId());
+            }
+        }
+        return oldRenderers;
     }
 
     public static String getActualFile(String file) {

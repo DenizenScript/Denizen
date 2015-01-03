@@ -26,7 +26,7 @@ public class ShowFakeCommand extends AbstractCommand {
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesPrefix("to", "e", "entities")) {
+            if (arg.matchesPrefix("to", "players")) {
                 for (String entity : dList.valueOf(arg.getValue()))
                     if (dPlayer.matches(entity)) entities.add(entity);
                 added_entities = true; // TODO: handle lists properly
@@ -47,6 +47,9 @@ public class ShowFakeCommand extends AbstractCommand {
             else if (arg.matchesArgumentType(dMaterial.class))
                 scriptEntry.addObject("material", arg.asType(dMaterial.class));
 
+            else if (arg.matches("cancel"))
+                scriptEntry.addObject("cancel", new Element(true));
+
             else
                 arg.reportUnhandled();
 
@@ -58,38 +61,46 @@ public class ShowFakeCommand extends AbstractCommand {
         if (locations.isEmpty())
             throw new InvalidArgumentsException("Must specify at least one valid location!");
 
-        if (!added_entities && (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() == null || !((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isOnline()))
+        if (!added_entities && (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer()
+                || !((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isOnline()))
             throw new InvalidArgumentsException("Must have a valid, online player attached!");
 
         if (entities.isEmpty() && added_entities)
             throw new InvalidArgumentsException("Must specify valid targets!");
 
-        if (!scriptEntry.hasObject("material"))
+        if (!scriptEntry.hasObject("material") && !scriptEntry.hasObject("cancel"))
             throw new InvalidArgumentsException("Must specify a valid material!");
 
         scriptEntry.addObject("entities", entities);
         scriptEntry.addObject("locations", locations);
+
+        scriptEntry.defaultObject("duration", new Duration(10)).defaultObject("cancel", new Element(false));
     }
 
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        Duration duration = (!scriptEntry.hasObject("duration")) ? new Duration(10) :
-                (Duration) scriptEntry.getObject("duration");
-        dMaterial material = (dMaterial) scriptEntry.getObject("material");
-        dList list = (dList) scriptEntry.getObject("locations");
-        dList players = (dList) scriptEntry.getObject("entities");
+        Duration duration = scriptEntry.getdObject("duration");
+        dMaterial material = scriptEntry.getdObject("material");
+        dList list = scriptEntry.getdObject("locations");
+        dList players = scriptEntry.getdObject("entities");
+        Element cancel = scriptEntry.getElement("cancel");
 
-        dB.report(scriptEntry, getName(), material.debug()
-                + list.debug() + players.debug() + duration.debug());
+        dB.report(scriptEntry, getName(), (material != null ? material.debug() : "")
+                + list.debug() + players.debug() + duration.debug() + cancel.debug());
 
-        for (dObject plr : players.filter(dPlayer.class)) {
+        boolean shouldCancel = cancel.asBoolean();
 
-            if (plr == null || !((dPlayer) plr).isOnline()) continue;
+        for (dPlayer plr : players.filter(dPlayer.class)) {
 
-            for (dObject obj : list.filter(dLocation.class)) {
-                new FakeBlock((dPlayer) plr, (dLocation) obj, material, duration);
+            if (plr == null || !plr.isOnline()) continue;
+
+            for (dLocation loc : list.filter(dLocation.class)) {
+                if (!shouldCancel)
+                    FakeBlock.showFakeBlockTo(plr, loc, material, duration);
+                else
+                    FakeBlock.stopShowingTo(plr, loc);
             }
 
         }

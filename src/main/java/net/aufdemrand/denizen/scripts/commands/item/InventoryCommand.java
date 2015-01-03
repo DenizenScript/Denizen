@@ -19,6 +19,38 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class InventoryCommand extends AbstractCommand {
 
+    // <--[language]
+    // @name Virtual Inventories
+    // @group Inventory System
+    // @description
+    // Virtual inventories are inventories that have no attachment to anything within the world of Minecraft. They can
+    // be used for a wide range of purposes - from looting fallen enemies to serving as interactive menus with item
+    // 'buttons'.
+    //
+    // In Denizen, all Notable dInventories (saved by the Note command) are automatically converted into a
+    // virtual copy of the saved inventory. This enables you to open and edit the items inside freely, with automatic
+    // saving, as if it were a normal inventory.
+    //
+    // Notables are not the only way to create virtual inventories, however. Using in@generic along with inventory
+    // properties will allow you to create temporary custom inventories to do with as you please. The properties that
+    // can be used like this are:
+    //
+    // size=<size>
+    // contents=<item>|...
+    // title=<title>
+    // holder=<inventory type>
+    //
+    // For example, the following task script opens a virtual inventory with 18 slots, of which the second slot is a
+    // snowball, all the rest are empty, and the title is "My Awesome Inventory" with some colors in it.
+    // <code>
+    // open random inventory:
+    //   type: task
+    //   script:
+    //   - inventory open "d:in@generic[size=18;title=<red>My <green>Awesome <blue>Inventory;contents=li@i@air|i@snow_ball]"
+    // </code>
+    //
+    // -->
+
     private enum Action { OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE }
 
     @SuppressWarnings("unchecked")
@@ -38,7 +70,8 @@ public class InventoryCommand extends AbstractCommand {
                      && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
                      && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
                          || arg.matchesArgumentList(dItem.class))) {
-                scriptEntry.addObject("origin", Conversion.getInventory(arg));
+                BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
+                scriptEntry.addObject("origin", Conversion.getInventory(arg, data.getPlayer(), data.getNPC()));
             }
 
             // Check for a destination, which can be a dInventory, dEntity
@@ -46,7 +79,8 @@ public class InventoryCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("destination")
                      && arg.matchesPrefix("destination", "dest", "d", "target", "to", "t")
                      && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
-                scriptEntry.addObject("destination", Conversion.getInventory(arg));
+                BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
+                scriptEntry.addObject("destination", Conversion.getInventory(arg, data.getPlayer(), data.getNPC()));
             }
 
             // Check for specified slot number

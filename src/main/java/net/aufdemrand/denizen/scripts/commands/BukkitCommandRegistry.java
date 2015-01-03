@@ -1147,22 +1147,22 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Follow
-        // @Syntax follow (stop) (lead:<#.#>) (target:<entity>)
+        // @Syntax follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)
         // @Required 0
-        // @Stable unstable
-        // @Short Causes the NPC to follow a target (Currently experiencing bugs with lead: )
-        // @Author aufdemrand
-        // @Group npc
+        // @Stable stable
+        // @Short Causes a list of entities to follow a target.
+        // @Author aufdemrand, Morphan1
+        // @Group entity
         // @Description
+        // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
         // TODO: Document Command Details
         // @Tags
         // TODO: Document Command Details
         // @Usage
         // TODO: Document Command Details
         // -->
-        if (Depends.citizens != null)
-            registerCoreMember(FollowCommand.class,
-                    "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
+        registerCoreMember(FollowCommand.class,
+                "FOLLOW", "follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)", 0);
 
 
         // <--[command]
@@ -1386,25 +1386,29 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Using "close" closes any inventory that the currently attached player has opened.
         // @Tags
         // <p@player.inventory>
+        // <p@player.enderchest>
         // <n@npc.inventory>
         // <l@location.inventory>
         // @Usage
         // Use to open a chest inventory, at a location.
         // - inventory open d:l@123,123,123,world
         // @Usage
+        // Use to open a virtual inventory with a title and some items.
+        // - inventory open d:in@generic[size=27;title=BestInventory;contents=li@i@snow_ball;i@clay_brick]
+        // @Usage
         // Use to open another player's inventory.
         // - inventory open d:<p@calico-kid.inventory>
         // @Usage
         // Use to remove all items from a chest, except any items in
         // the specified list.
-        // - inventory keep d:in@location[l@123,123,123,world] o:li@i@snow_ball|i@ItemScript
+        // - inventory keep d:in@location[holder=l@123,123,123,world] o:li@i@snow_ball|i@ItemScript
         // @Usage
         // Use to remove items specified in a chest from the current
         // player's inventory, regardless of the item count.
         // - inventory exclude origin:l@123,123,123,world
         // @Usage
         // Use to swap two players' inventories.
-        // - inventory swap d:in@player[p@mcmonkey4eva] o:<p@fullwall.inventory>
+        // - inventory swap d:in@player[holder=p@mcmonkey4eva] o:<p@fullwall.inventory>
         // -->
         registerCoreMember(InventoryCommand.class,
                 "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<#>)", 1);
@@ -2413,11 +2417,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ShowFake
-        // @Syntax showfake [<material>] [<location>|...] (to:<player>|...) (d:<duration>{10s})
+        // @Syntax showfake [<material>/cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})
         // @Required 2
         // @Stable stable
         // @Short Makes the player see a block change that didn't actually happen.
-        // @Author aufdemrand
+        // @Author aufdemrand, Morphan1
         // @Group player
         // @Description
         // TODO: Document Command Details
@@ -2427,7 +2431,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ShowFakeCommand.class,
-                "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);
+                "SHOWFAKE", "showfake [<material>/cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})", 2);
 
 
         // <--[command]
@@ -2601,7 +2605,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Switch
-        // @Syntax switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)
+        // @Syntax switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)
         // @Required 1
         // @Stable stable
         // @Short Switches a lever.
@@ -2615,7 +2619,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(SwitchCommand.class,
-                "SWITCH", "switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)", 1);
+                "SWITCH", "switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)", 1);
 
         // <--[command]
         // @Name Take
@@ -2793,12 +2797,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Walk
-        // @Syntax walk (<npc>|...) [<location>] (speed:<#.#>) (auto_range) (radius:<#.#>)
+        // @Syntax walk (<entity>|...) [<location>] (speed:<#.#>) (auto_range) (radius:<#.#>)
         // @Required 1
         // @Stable stable
-        // @Short Causes an NPC or list of NPCs to walk to another location.
-        // @Author aufdemrand
-        // @Group npc
+        // @Short Causes an entity or list of entities to walk to another location.
+        // @Author aufdemrand, Morphan1
+        // @Group entity
         // @Description
         // TODO: Document Command Details
         // @Tags
@@ -2809,9 +2813,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // TODO: Document Command Details
         // -->
-        if (Depends.citizens != null)
-            registerCoreMember(WalkCommand.class,
-                    "WALK, WALKTO", "walk (<npc>|...) [<location>] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
+        registerCoreMember(WalkCommand.class,
+                "WALK, WALKTO", "walk (<entity>|...) [<location>] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
 
         // <--[command]
         // @Name Weather
