@@ -109,8 +109,7 @@ public class EntityMovement {
             followerNavigation.a(2D);
         }
         if (!Utilities.checkLocation(location, entity.getLocation(), 20)) {
-            //entity.teleport(location);
-            Bukkit.getServer().broadcastMessage("15+");
+            entity.teleport(location);
         }
         nmsEntity.getAttributeInstance(GenericAttributes.d).setValue(speed);
     }
