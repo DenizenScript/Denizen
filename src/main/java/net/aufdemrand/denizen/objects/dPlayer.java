@@ -11,10 +11,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
-import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
-import net.aufdemrand.denizen.utilities.packets.EntityEquipment;
-import net.aufdemrand.denizen.utilities.packets.ItemChangeMessage;
-import net.aufdemrand.denizen.utilities.packets.PlayerBars;
+import net.aufdemrand.denizen.utilities.packets.*;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R1.PacketPlayOutGameStateChange;
@@ -2195,6 +2192,20 @@ public class dPlayer implements dObject, Adjustable {
             ((CraftPlayer)getPlayerEntity()).getHandle().viewingCredits = true;
             ((CraftPlayer)getPlayerEntity()).getHandle().playerConnection
                     .sendPacket(new PacketPlayOutGameStateChange(4, 0.0F));
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name spectate
+        // @input dEntity
+        // @description
+        // Forces the player to spectate from the entity's point of view.
+        // Note: They cannot cancel the spectating without a re-log -- you
+        // must make them spectate themselves to cancel the effect.
+        // (i.e. - adjust <player> "spectate:<player>")
+        // -->
+        if (mechanism.matches("spectate") && mechanism.requireObject(dEntity.class)) {
+            PlayerSpectateEntity.setSpectating(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
         }
 
         // Iterate through this object's properties' mechanisms
