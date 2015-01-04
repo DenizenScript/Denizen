@@ -889,7 +889,7 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("bed_spawn"))
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
-                    .getAttribute(attribute.fulfill(2));
+                    .getAttribute(attribute.fulfill(1));
 
         // If online, let dEntity handle location tags since there are more options
         // for online Players
