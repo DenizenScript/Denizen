@@ -2221,6 +2221,18 @@ public class dPlayer implements dObject, Adjustable {
             OpenBook.openBook(getPlayerEntity());
         }
 
+        // <--[mechanism]
+        // @object dPlayer
+        // @name edit_sign
+        // @input dLocation
+        // @description
+        // Allows the player to edit an existing sign. To create a
+        // sign, see <@link command Sign>.
+        // -->
+        if (mechanism.matches("edit_sign") && mechanism.requireObject(dLocation.class)) {
+            SignEditor.editSign(getPlayerEntity(), value.asType(dLocation.class));
+        }
+
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
