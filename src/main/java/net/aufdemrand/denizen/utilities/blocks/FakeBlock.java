@@ -82,11 +82,14 @@ public class FakeBlock {
             currentTask = null;
         }
         cancelTime = -1;
+        material = null;
         location.getBlock().getState().update();
     }
 
     private void updateBlock() {
-        updateBlock(material, cancelTime == -1 ? 0 : cancelTime - location.getWorld().getFullTime());
+        if (material != null) {
+            updateBlock(material, cancelTime == -1 ? 0 : cancelTime - location.getWorld().getFullTime());
+        }
     }
 
     private void updateBlock(dMaterial material, long ticks) {
