@@ -2208,6 +2208,19 @@ public class dPlayer implements dObject, Adjustable {
             PlayerSpectateEntity.setSpectating(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
         }
 
+        // <--[mechanism]
+        // @object dPlayer
+        // @name open_book
+        // @input None
+        // @description
+        // Forces the player to open the written book in their hand.
+        // The book can safely be removed from the player's hand
+        // without the player closing the book.
+        // -->
+        if (mechanism.matches("open_book")) {
+            OpenBook.openBook(getPlayerEntity());
+        }
+
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
