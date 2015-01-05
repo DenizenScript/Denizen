@@ -30,7 +30,7 @@ public class ContextTags implements Listener {
 
         // First, check queue object context.
         if (event.getScriptEntry().getResidingQueue().hasContext(object)) {
-            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            Attribute attribute = event.getAttributes();
             event.setReplaced(event.getScriptEntry().getResidingQueue()
                     .getContext(object).getAttribute(attribute.fulfill(2)));
             return;
@@ -73,7 +73,7 @@ public class ContextTags implements Listener {
             // Get the entry_id from name context
             String id = event.getNameContext();
 
-            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            Attribute attribute = event.getAttributes();
             ScriptEntry held = event.getScriptEntry().getResidingQueue().getHeldScriptEntry(id);
             if (held == null) { // Check if the ID is bad
                 dB.echoDebug(event.getScriptEntry(), "Bad saved entry ID '" + id + "'");

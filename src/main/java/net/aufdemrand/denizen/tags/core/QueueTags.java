@@ -26,7 +26,7 @@ public class QueueTags implements Listener {
 
         if (!event.matches("queue", "q")) return;
 
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+        Attribute attribute = event.getAttributes().fulfill(1);
 
         // Handle <queue[id]. ...> tags
 

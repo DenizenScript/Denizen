@@ -20,8 +20,7 @@ public class TextTags implements Listener {
 
 
         if (!event.getName().startsWith("&")) return;
-        Attribute attribute =
-                new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
 
         // <--[tag]
         // @attribute <&auml>
@@ -411,8 +410,7 @@ public class TextTags implements Listener {
     @TagManager.TagEvents
     public void specialCharacterTags(ReplaceableTagEvent event) {
         if (!event.getName().startsWith("&")) return;
-        Attribute attribute =
-                new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
 
         // <--[tag]
         // @attribute <&nl>

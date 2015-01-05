@@ -43,7 +43,7 @@ public class NPCTags implements Listener {
         if (!event.matches("npc") || event.replaced()) return;
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
 
         // NPCTags require a... dNPC!
         dNPC n = ((BukkitTagContext)event.getContext()).npc;

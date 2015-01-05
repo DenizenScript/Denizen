@@ -176,6 +176,7 @@ public class WorldScriptHelper implements Listener {
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        context.put("material", material);
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("block burns",
@@ -476,6 +477,8 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.location> returns the dLocation the block was set on fire at.
     // <context.material> returns the dMaterial of the block that was set on fire.
+    // <context.entity> returns the dEntity of the entity that ignited the block.
+    // <context.cause> returns an Element of the cause of the event: ENDER_CRYSTAL, EXPLOSION, FIREBALL, FLINT_AND_STEEL, LAVA, or SPREAD.
     //
     // @Determine
     // "CANCELLED" to stop the block from being ignited.
@@ -489,6 +492,10 @@ public class WorldScriptHelper implements Listener {
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
+        context.put("cause", new Element(event.getCause().name()));
+        if (event.getIgnitingEntity() != null) {
+            context.put("entity", new dEntity(event.getIgnitingEntity()));
+        }
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("block ignites",
@@ -2464,6 +2471,7 @@ public class WorldScriptHelper implements Listener {
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("item", item);
         context.put("button", new Element(event.whichButton()));
+        context.put("cost", new Element(event.getExpLevelCost()));
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("item enchanted",

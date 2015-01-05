@@ -83,7 +83,7 @@ public class _templateTag {
             // code to handle each situation. A full list of attributes can be found
             // in Denizen's documentation. First you need to turn the tag into an
             // attribute object.
-            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            Attribute attribute = event.getAttributes();
 
             // Now to catch up, 2 attributes have been handled already...
             // Fulfilling 2 attributes, skills and .for, in <skills.for[player].get[1]>

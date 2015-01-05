@@ -1104,8 +1104,9 @@ public class dPlayer implements dObject, Adjustable {
             String permission = attribute.getContext(1);
 
             if (Depends.permissions == null) {
-                if (!attribute.hasAlternative())
+                if (!attribute.hasAlternative()) {
                     dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                }
                 return null;
             }
 
