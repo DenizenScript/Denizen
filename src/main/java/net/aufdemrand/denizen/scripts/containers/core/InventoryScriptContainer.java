@@ -153,13 +153,13 @@ public class InventoryScriptContainer extends ScriptContainer {
                                 dItem.matches(getString("DEFINITIONS." + m.group(2)))) {
                             finalItems[itemsAdded] = dItem.valueOf(TagManager.tag
                                     (getString("DEFINITIONS." + m.group(2)),
-                                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))))
-                                        .getItemStack();
+                                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
+                                    player, npc).getItemStack();
                         }
                         else if (dItem.matches(m.group(2))) {
                             finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(m.group(2),
-                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))))
-                                    .getItemStack();
+                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
+                                    player, npc).getItemStack();
                         }
                         else {
                             finalItems[itemsAdded] = new ItemStack(Material.AIR);
