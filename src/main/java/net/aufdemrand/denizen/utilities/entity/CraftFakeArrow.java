@@ -9,6 +9,12 @@ import org.bukkit.craftbukkit.v1_8_R1.entity.CraftArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.Plugin;
+
+import java.util.Set;
 
 public class CraftFakeArrow extends CraftArrow implements Vehicle {
     public CraftFakeArrow(CraftServer craftServer, EntityArrow entityArrow) {
@@ -57,5 +63,55 @@ public class CraftFakeArrow extends CraftArrow implements Vehicle {
     public void setOp(boolean op) {
     }
 
-    
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin) {
+        return null;
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
+        return null;
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+        return null;
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+        return null;
+    }
+
+    @Override
+    public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+        return null;
+    }
+
+    @Override
+    public boolean hasPermission(Permission perm) {
+        return false;
+    }
+
+    @Override
+    public boolean hasPermission(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isPermissionSet(Permission perm) {
+        return false;
+    }
+
+    @Override
+    public boolean isPermissionSet(String name) {
+        return false;
+    }
+
+    @Override
+    public void recalculatePermissions() {
+    }
+
+    public void removeAttachment(PermissionAttachment attachment) {
+    }
 }
