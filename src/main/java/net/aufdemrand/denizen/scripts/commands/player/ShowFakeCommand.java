@@ -92,17 +92,11 @@ public class ShowFakeCommand extends AbstractCommand {
 
         boolean shouldCancel = cancel.asBoolean();
 
-        for (dPlayer plr : players.filter(dPlayer.class)) {
-
-            if (plr == null || !plr.isOnline()) continue;
-
-            for (dLocation loc : list.filter(dLocation.class)) {
-                if (!shouldCancel)
-                    FakeBlock.showFakeBlockTo(plr, loc, material, duration);
-                else
-                    FakeBlock.stopShowingTo(plr, loc);
-            }
-
+        for (dLocation loc : list.filter(dLocation.class)) {
+            if (!shouldCancel)
+                FakeBlock.showFakeBlockTo(players.filter(dPlayer.class), loc, material, duration);
+            else
+                FakeBlock.stopShowingTo(players.filter(dPlayer.class), loc);
         }
     }
 }

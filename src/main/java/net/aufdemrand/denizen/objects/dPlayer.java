@@ -11,10 +11,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
-import net.aufdemrand.denizen.utilities.packets.BossHealthBar;
-import net.aufdemrand.denizen.utilities.packets.EntityEquipment;
-import net.aufdemrand.denizen.utilities.packets.ItemChangeMessage;
-import net.aufdemrand.denizen.utilities.packets.PlayerBars;
+import net.aufdemrand.denizen.utilities.packets.*;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R1.PacketPlayOutGameStateChange;
@@ -889,7 +886,7 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("bed_spawn"))
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
-                    .getAttribute(attribute.fulfill(2));
+                    .getAttribute(attribute.fulfill(1));
 
         // If online, let dEntity handle location tags since there are more options
         // for online Players
@@ -2196,6 +2193,45 @@ public class dPlayer implements dObject, Adjustable {
             ((CraftPlayer)getPlayerEntity()).getHandle().viewingCredits = true;
             ((CraftPlayer)getPlayerEntity()).getHandle().playerConnection
                     .sendPacket(new PacketPlayOutGameStateChange(4, 0.0F));
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name spectate
+        // @input dEntity
+        // @description
+        // Forces the player to spectate from the entity's point of view.
+        // Note: They cannot cancel the spectating without a re-log -- you
+        // must make them spectate themselves to cancel the effect.
+        // (i.e. - adjust <player> "spectate:<player>")
+        // -->
+        if (mechanism.matches("spectate") && mechanism.requireObject(dEntity.class)) {
+            PlayerSpectateEntity.setSpectating(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name open_book
+        // @input None
+        // @description
+        // Forces the player to open the written book in their hand.
+        // The book can safely be removed from the player's hand
+        // without the player closing the book.
+        // -->
+        if (mechanism.matches("open_book")) {
+            OpenBook.openBook(getPlayerEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name edit_sign
+        // @input dLocation
+        // @description
+        // Allows the player to edit an existing sign. To create a
+        // sign, see <@link command Sign>.
+        // -->
+        if (mechanism.matches("edit_sign") && mechanism.requireObject(dLocation.class)) {
+            SignEditor.editSign(getPlayerEntity(), value.asType(dLocation.class));
         }
 
         // Iterate through this object's properties' mechanisms
