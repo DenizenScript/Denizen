@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.entity;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R1.EntityArrow;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
@@ -14,6 +15,7 @@ public class CraftFakeArrow extends CraftArrow implements Vehicle {
         super(craftServer, entityArrow);
     }
 
+    @Override
     public void setShooter (LivingEntity livingEntity) {
     }
 
@@ -29,5 +31,20 @@ public class CraftFakeArrow extends CraftArrow implements Vehicle {
         CraftWorld world = (CraftWorld) location.getWorld();
         EntityArrow arrow = new FakeArrowEntity(world, location);
         return (Arrow) arrow.getBukkitEntity();
+    }
+
+    @Override
+    public String getName() {
+        return "FakeArrow";
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        dB.log("Message sent to FakeArrow: " + message);
+    }
+
+    @Override
+    public void sendMessage(String[] messages) {
+        dB.log("Messages sent to FakeArrow: " + messages);
     }
 }
