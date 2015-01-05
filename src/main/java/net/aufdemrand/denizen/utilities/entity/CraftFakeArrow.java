@@ -47,4 +47,15 @@ public class CraftFakeArrow extends CraftArrow implements Vehicle {
     public void sendMessage(String[] messages) {
         dB.log("Messages sent to FakeArrow: " + messages);
     }
+
+    @Override
+    public boolean isOp() {
+        return false;
+    }
+
+    @Override
+    public void setOp(boolean op) {
+    }
+
+    
 }
