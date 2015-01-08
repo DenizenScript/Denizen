@@ -5,7 +5,9 @@ import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
 import net.aufdemrand.denizen.scripts.commands.npc.*;
 import net.aufdemrand.denizen.scripts.commands.player.*;
-import net.aufdemrand.denizen.scripts.commands.server.*;
+import net.aufdemrand.denizen.scripts.commands.server.AnnounceCommand;
+import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
+import net.aufdemrand.denizen.scripts.commands.server.ScoreboardCommand;
 import net.aufdemrand.denizen.scripts.commands.world.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -2688,6 +2690,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(TimeCommand.class,
                 "TIME", "time [{global}/player] [<time duration>] (<world>)", 1);
+
+        // <--[command]
+        // @Name Title
+        // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>{1s}) (stay:<duration>{3s}) (fade_out:<duration>{1s}) (targets:<player>|...)
+        // @Required 1
+        // @Stable stable
+        // @Short Displays a title to specified players.
+        // @Author Morphan1
+        // @Group player
+        // @Description
+        // Shows the players a large, noticeable wall of text in the center of the screen.
+        // You may add timings for fading in, staying there, and fading out.
+        // The defaults for these are: 1 second, 3 seconds, and 1 second, respectively.
+        // @Tags
+        // None
+        // @Usage
+        // Use to alert players of impending server restart.
+        // - title "title:<red>Server Restarting" "subtitle:<red>In 1 minute!" stay:1m targets:<server.list_online_players>
+        // @Usage
+        // Use to inform the player about the area they have just entered.
+        // - title "title:<green>Tatooine" "subtitle:<gold>What a desolate place this is."
+        // -->
+        registerCoreMember(TitleCommand.class,
+                "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>{1s}) (stay:<duration>{3s}) (fade_out:<duration>{1s}) (targets:<player>|...)", 1);
 
         // <--[command]
         // @Name Trait
