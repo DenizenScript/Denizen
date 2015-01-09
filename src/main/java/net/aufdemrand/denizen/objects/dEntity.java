@@ -2314,6 +2314,19 @@ public class dEntity implements dObject, Adjustable {
                             craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
         }
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name play_death
+        // @input None
+        // @description
+        // Animates the entity dying.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("play_death")) {
+            getLivingEntity().playEffect(EntityEffect.DEATH);
+        }
+
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
