@@ -741,6 +741,7 @@ public class UtilTags implements Listener {
         // @input Element
         // @description
         // Deletes the given file from the server.
+        // Require config setting 'Commands.Delete.Allow file deletion'.
         // @tags
         // <server.has_file[<file>]>
         // -->
@@ -756,6 +757,24 @@ public class UtilTags implements Listener {
             catch (Exception e) {
                 dB.echoError("Failed to delete file: " + e.getMessage());
             }
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name run_java
+        // @input Element
+        // @description
+        // Executes an arbitrary Java string. Warning: EXTREMELY DANGEROUS.
+        // Require config setting 'Commands.Java.Allow Running java'.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("run_java") && mechanism.hasValue()) {
+            if (!Settings.allowRunningJava()) {
+                dB.echoError("Java execution disabled by administrator.");
+                return;
+            }
+            DenizenAPI.getCurrentInstance().runtimeCompiler.runString(mechanism.getValue().asString());
         }
 
         // <--[mechanism]

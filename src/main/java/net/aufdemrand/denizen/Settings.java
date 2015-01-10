@@ -2,6 +2,7 @@ package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class Settings {
 
@@ -201,6 +202,11 @@ public class Settings {
     public static boolean allowDelete() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Commands.Delete.Allow file deletion", true);
+    }
+
+    public static boolean allowRunningJava() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.Java.Allow running java", false);
     }
 
     public static boolean allowLogging() {
