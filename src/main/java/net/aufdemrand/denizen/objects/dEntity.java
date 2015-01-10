@@ -1551,6 +1551,17 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <e@entity.fallingblock_material>
+        // @returns dMaterial
+        // @group attributes
+        // @description
+        // Returns the material of a fallingblock-type entity.
+        // -->
+        if (attribute.startsWith("fallingblock_material"))
+            return dMaterial.getMaterialFrom(((FallingBlock) entity).getMaterial())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <e@entity.fall_distance>
         // @returns Element(Decimal)
         // @group attributes
