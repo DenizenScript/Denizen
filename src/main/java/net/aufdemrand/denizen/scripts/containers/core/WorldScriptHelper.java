@@ -494,7 +494,7 @@ public class WorldScriptHelper implements Listener {
         context.put("material", material);
         context.put("cause", new Element(event.getCause().name()));
         if (event.getIgnitingEntity() != null) {
-            context.put("entity", new dEntity(event.getIgnitingEntity()));
+            context.put("entity", new dEntity(event.getIgnitingEntity()).getDenizenObject());
         }
 
         String determination = EventManager.doEvents(Arrays.asList
@@ -4265,7 +4265,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when lightning strikes in a world.
     // @Context
     // <context.world> returns the dWorld the lightning struck in.
-    // <context.reason> returns the dLocation where the lightning struck.
+    // <context.location> returns the dLocation where the lightning struck.
     //
     // @Determine
     // "CANCELLED" to stop the lightning from striking.
