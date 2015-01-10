@@ -292,8 +292,12 @@ public class dScript implements dObject {
 
             if (obj instanceof List) {
                 dList list = new dList();
-                for (Object each : (List<Object>) obj)
+                for (Object each : (List<Object>) obj) {
+                    if (each == null) {
+                        each = "null";
+                    }
                     list.add(TagManager.tag(each.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)));
+                }
                 return list.getAttribute(attribute.fulfill(1));
 
             }
@@ -324,8 +328,12 @@ public class dScript implements dObject {
 
             if (obj instanceof List) {
                 dList list = new dList();
-                for (Object each : (List<Object>) obj)
+                for (Object each : (List<Object>) obj) {
+                    if (each == null) {
+                        each = "null";
+                    }
                     list.add(TagManager.tag(each.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)));
+                }
                 return list.getAttribute(attribute.fulfill(1));
 
             }
