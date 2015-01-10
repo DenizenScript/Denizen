@@ -181,7 +181,7 @@ public class FlagManager {
      */
     public Set<String> listNPCFlags(int npcid) {
         ConfigurationSection section = denizen.getSaves().getConfigurationSection("NPCs." + npcid + ".Flags");
-        return section != null ? section.getValues(true).keySet() : null;
+        return section!= null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
 
     /**
@@ -189,7 +189,7 @@ public class FlagManager {
      */
     public Set<String> listGlobalFlags() {
         ConfigurationSection section = denizen.getSaves().getConfigurationSection("Global.Flags");
-        return section != null ? section.getValues(true).keySet() : null;
+        return section!= null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
 
     /**
@@ -197,8 +197,17 @@ public class FlagManager {
      */
     public Set<String> listPlayerFlags(dPlayer player) {
         ConfigurationSection section = denizen.getSaves().getConfigurationSection("Players." + player.getSaveName() + ".Flags");
-        return section!= null ? section.getValues(true).keySet() : null;
+        return section!= null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
+
+    public Set<String> _filterExpirations(Set<String> flagKeys) {
+        for (Iterator<String> iter = flagKeys.iterator(); iter.hasNext();) {
+            if (iter.next().endsWith("-expiration"))
+                iter.remove();
+        }
+        return flagKeys;
+    }
+
 
 
     /**
