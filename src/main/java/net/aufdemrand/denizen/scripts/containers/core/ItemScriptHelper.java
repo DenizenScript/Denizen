@@ -347,6 +347,11 @@ public class ItemScriptHelper implements Listener {
             event.setCancelled(true);
             return;
         }
+
+        if (!((Player)event.getInventory().getHolder()).getName().equalsIgnoreCase(event.getWhoClicked().getName())) {
+            event.setCancelled(true);
+            return;
+        }
     }
 
     @EventHandler
