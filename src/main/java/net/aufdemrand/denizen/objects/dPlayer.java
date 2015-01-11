@@ -1464,6 +1464,17 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <p@player.ping>
+        // @returns Element(Number)
+        // @description
+        // returns the player's current ping.
+        // -->
+        if (attribute.startsWith("ping")) {
+            return new Element(((CraftPlayer)getPlayerEntity()).getHandle().ping)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <p@player.is_flying>
         // @returns Element(Boolean)
         // @description
