@@ -8,15 +8,14 @@ import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dScript;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
+import net.aufdemrand.denizencore.scripts.commands.BaseAbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 
 
 /**
@@ -31,7 +30,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
 
     // The name of the command that will be executed
     private String command;
-    private AbstractCommand actualCommand;
+    private BaseAbstractCommand actualCommand;
 
     // Command Arguments
     private List<String> args;
@@ -105,15 +104,15 @@ public class ScriptEntry implements Cloneable, Debuggable {
             else if (command.charAt(0) == '~') {
                 this.command = command.substring(1).toUpperCase();
                 // Make sure this command can be 'waited for'
-                if (DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command)
+                if (DenizenCore.getCommandRegistry().get(this.command)
                         instanceof Holdable) {
                     waitfor = true;
                 }
                 else {
-                    dB.echoError(null, "The command '" + this.command + "' cannot be waited for!");
+                    dB.echoError("The command '" + this.command + "' cannot be waited for!");
                 }
             }
-            actualCommand = (AbstractCommand)DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command);
+            actualCommand = DenizenCore.getCommandRegistry().get(this.command);
         }
         else {
             actualCommand = null;
@@ -221,7 +220,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
         return command;
     }
 
-    public AbstractCommand getCommand() {
+    public BaseAbstractCommand getCommand() {
         return actualCommand;
     }
 

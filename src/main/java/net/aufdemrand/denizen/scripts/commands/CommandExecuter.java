@@ -18,6 +18,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
+import net.aufdemrand.denizencore.scripts.commands.BaseAbstractCommand;
 import org.bukkit.ChatColor;
 
 public class CommandExecuter {
@@ -66,9 +67,9 @@ public class CommandExecuter {
         }
 
         // Get the command instance ready for the execution of the scriptEntry
-        AbstractCommand command = scriptEntry.getCommand();
+        BaseAbstractCommand command = scriptEntry.getCommand();
         if (command == null) {
-            command = (AbstractCommand)DenizenAPI.getCurrentInstance().getCommandRegistry().get(scriptEntry.getCommandName());
+            command = DenizenAPI.getCurrentInstance().getCommandRegistry().get(scriptEntry.getCommandName());
         }
 
         if (command == null) {
@@ -215,7 +216,7 @@ public class CommandExecuter {
                     ))); // Replace tags
 
             // Parse the rest of the arguments for execution.
-            command.parseArgs(scriptEntry);
+            ((AbstractCommand)command).parseArgs(scriptEntry);
 
         } catch (InvalidArgumentsException e) {
 
@@ -241,7 +242,7 @@ public class CommandExecuter {
             if (keepGoing)
                 try {
                     // Run the execute method in the command
-                    command.execute(scriptEntry);
+                    ((AbstractCommand)command).execute(scriptEntry);
                 } catch (Exception e) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Woah!! An exception has been called with this command!");
                     dB.echoError(scriptEntry.getResidingQueue(), e);
