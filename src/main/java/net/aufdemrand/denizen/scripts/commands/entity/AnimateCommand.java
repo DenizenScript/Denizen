@@ -78,22 +78,15 @@ public class AnimateCommand extends AbstractCommand {
             if (entity.isSpawned()) {
 
                 try {
-                    if (animation != null && entity.getBukkitEntity() instanceof Player) {
+                    if (entity.getBukkitEntity() instanceof Player) {
 
                         Player player = (Player) entity.getBukkitEntity();
 
-                        // Go through Citizens' PlayerAnimations and find the one
-                        // that matches
-                        PlayerAnimation[] animationArray = PlayerAnimation.class.getEnumConstants();
-
-                        for (PlayerAnimation current : animationArray) {
-
-                            if (current.equals(animation)) {
-                                current.play(player);
-                                break;
-                            }
-                        }
-                    } else entity.getBukkitEntity().playEffect(effect);
+                        animation.play(player);
+                    }
+                    else {
+                        entity.getBukkitEntity().playEffect(effect);
+                    }
 
                 } catch (Exception e) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Error playing that animation!");
