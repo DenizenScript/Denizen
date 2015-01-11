@@ -392,7 +392,8 @@ public class dInventory implements dObject, Notable, Adjustable {
             is = is.clone();
             int count = is.getAmount();
             is.setAmount(1);
-            String newItem = CoreUtilities.toLowerCase(new dItem(is).getFullString());
+            // Note: this double-parsing is intentional, as part of a hotfix for a larger issue
+            String newItem = CoreUtilities.toLowerCase(dItem.valueOf(new dItem(is).getFullString()).getFullString());
             if (myItem.equals(newItem)) {
                 if (count <= amount) {
                     inventory.setItem(i, null);
