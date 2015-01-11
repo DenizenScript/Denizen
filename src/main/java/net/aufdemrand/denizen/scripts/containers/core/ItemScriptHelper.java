@@ -39,6 +39,7 @@ public class ItemScriptHelper implements Listener {
     // Remove all recipes stored by Denizen
     public static void removeDenizenRecipes() {
         ItemScriptContainer.specialrecipesMap.clear();
+        ItemScriptContainer.shapelessRecipesMap.clear();
     }
 
     public static boolean isBound(ItemStack item) {
@@ -95,7 +96,8 @@ public class ItemScriptHelper implements Listener {
     public void specialRecipeClick(InventoryClickEvent event) {
 
         // Proceed only if at least one special recipe has been stored
-        if (ItemScriptContainer.specialrecipesMap.isEmpty())
+        if (ItemScriptContainer.specialrecipesMap.isEmpty()
+                && ItemScriptContainer.shapelessRecipesMap.isEmpty())
             return;
 
         // Proceed only if this is a CraftingInventory
@@ -132,7 +134,8 @@ public class ItemScriptHelper implements Listener {
     public void specialRecipeDrag(InventoryDragEvent event) {
 
         // Proceed only if at least one special recipe has been stored
-        if (ItemScriptContainer.specialrecipesMap.isEmpty())
+        if (ItemScriptContainer.specialrecipesMap.isEmpty()
+                && ItemScriptContainer.shapelessRecipesMap.isEmpty())
             return;
 
         // Proceed only if this is a CraftingInventory
@@ -242,7 +245,27 @@ public class ItemScriptHelper implements Listener {
             return entry.getKey();
         }
 
+        primary: for (Map.Entry<dItem, dList> entry :
+                ItemScriptContainer.shapelessRecipesMap.entrySet()) {
+            for (int i = 0; i < entry.getValue().size(); i++) {
+                if (!contains_any(dItem.valueOf(entry.getValue().get(i)), matrix)) {
+                    continue primary;
+                }
+            }
+            return entry.getKey();
+        }
+
         return null;
+    }
+
+    public boolean contains_any(dItem item, ItemStack[] matrix) {
+        String full = item.getFullString();
+        for (int i = 0; i < matrix.length; i++) {
+            if (full.equalsIgnoreCase(new dItem(matrix[i]).getFullString())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Because Denizen special recipes are basically fake recipes,
