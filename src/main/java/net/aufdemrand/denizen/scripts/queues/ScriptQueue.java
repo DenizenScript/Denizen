@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.properties.Property;
+import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
@@ -24,9 +25,6 @@ import net.aufdemrand.denizencore.utilities.scheduling.OneTimeSchedulable;
 /**
  * ScriptQueues hold/control ScriptEntries while being sent
  * to the CommandExecuter
- *
- * @version 1.0
- * @author Jeremy Schroeder
  */
 
 public abstract class ScriptQueue implements Debuggable, dObject {
@@ -61,10 +59,11 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         else return _queues.get(id);
     }
 
-
+    /*
     private static String randomEntry(String[] strings) {
         return strings[CoreUtilities.getRandom().nextInt(strings.length)];
-    }
+    }*/
+
     /**
      * Gets a random id for use in creating a 'nameless' queue.
      *
@@ -902,52 +901,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         }
 
         // <--[tag]
-        // @attribute <q@queue.npc>
-        // @returns dNPC
-        // @description
-        // Returns the dNPC linked to a queue.
-        // -->
-        if (attribute.startsWith("npc")) {
-            dNPC npc = null;
-            if (getLastEntryExecuted() != null) {
-                npc = ((BukkitScriptEntryData)getLastEntryExecuted().entryData).getNPC();
-            }
-            else if (script_entries.size() > 0) {
-                npc = ((BukkitScriptEntryData)script_entries.get(0).entryData).getNPC();
-            }
-            else {
-                dB.echoError(this, "Can't determine a linked NPC.");
-            }
-            if (npc == null)
-                return null;
-            else
-                return npc.getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <q@queue.player>
-        // @returns dNPC
-        // @description
-        // Returns the dNPC linked to a queue.
-        // -->
-        if (attribute.startsWith("player")) {
-            dPlayer player = null;
-            if (getLastEntryExecuted() != null) {
-                player = ((BukkitScriptEntryData)getLastEntryExecuted().entryData).getPlayer();
-            }
-            else if (script_entries.size() > 0) {
-                player = ((BukkitScriptEntryData)script_entries.get(0).entryData).getPlayer();
-            }
-            else {
-                dB.echoError(this, "Can't determine a linked player.");
-            }
-            if (player == null)
-                return null;
-            else
-                return player.getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <q@queue.determination>
         // @returns dObject
         // @description
@@ -960,6 +913,12 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                 return null;
             else
                 return ObjectFetcher.pickObjectFor(DetermineCommand.readOutcome(reqId)).getAttribute(attribute.fulfill(1));
+        }
+
+        // Iterate through this object's properties' attributes
+        for (Property property : PropertyParser.getProperties(this)) {
+            String returned = property.getAttribute(attribute);
+            if (returned != null) return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
