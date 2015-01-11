@@ -78,7 +78,7 @@ public class AnimateCommand extends AbstractCommand {
             if (entity.isSpawned()) {
 
                 try {
-                    if (entity.getBukkitEntity() instanceof Player) {
+                    if (animation != null && entity.getBukkitEntity() instanceof Player) {
 
                         Player player = (Player) entity.getBukkitEntity();
 

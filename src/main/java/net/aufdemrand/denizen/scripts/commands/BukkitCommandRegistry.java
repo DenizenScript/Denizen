@@ -172,15 +172,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Minecraft implements several player and entity animations which the animate command can use, just
         // specify an entity and an animation.
-
+        //
         // Player animations require a Player-type entity or NPC. Available player animations include:
         // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
         // START_USE_ITEM, STOP_USE_ITEM, EAT_FOOD
-
-        // All entities, regardless of type, can utilize the 'hurt' animation. Additionally, wolf entities
-        // and NPCs can also use: WOLF_SMOKE, WOLF_HEARTS, and WOLF_SHAKE. Sheep entities and NPCs also have
-        // available the SHEEP_EAT animation.
-
+        //
+        // All entities also have available Bukkit's entity effect list, which includes:
+        // DEATH, FIREWORK_EXPLODE, HURT, IRON_GOLEM_ROSE, SHEEP_EAT, VILLAGER_ANGRY, VILLAGER_HAPPY
+        // VILLAGER_HEART, WITCH_MAGIC, WOLF_HEARTS, WOLF_SHAKE, WOLF_SMOKE, ZOMBIE_TRANSFORM
+        //
+        // Note that the above list only applies where logical, EG 'WOLF_' animations only apply to wolves.
         // @Tags
         // None
 
