@@ -1,25 +1,19 @@
 package net.aufdemrand.denizen.scripts.queues;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.CommandExecuter;
 import net.aufdemrand.denizen.scripts.queues.core.Delayable;
-import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ScriptEngine {
 
 
-    final private Denizen denizen;
-    final private RequirementChecker requirementChecker;
     final private CommandExecuter commandExecuter;
 
 
-    public ScriptEngine(Denizen denizenPlugin) {
-        denizen  = denizenPlugin;
-        // Create Denizen CommandExecuter and RequirementChecker
-        commandExecuter = new CommandExecuter(denizen);
-        requirementChecker = new RequirementChecker(denizen);
+    public ScriptEngine() {
+        // Create Denizen CommandExecuter
+        commandExecuter = new CommandExecuter();
     }
 
 
@@ -85,17 +79,6 @@ public class ScriptEngine {
             else
                 break;
         }
-    }
-
-
-    /**
-     * Gets the currently loaded instance of the RequirementChecker
-     *
-     * @return  ScriptHelper
-     *
-     */
-    public RequirementChecker getRequirementChecker() {
-        return requirementChecker;
     }
 
     /**

@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
 import net.aufdemrand.denizen.utilities.*;
 import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
@@ -76,7 +77,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     /*
      * Denizen Engines
      */
-    private ScriptEngine scriptEngine = new ScriptEngine(this);
+    private ScriptEngine scriptEngine;
 
     public ScriptEngine getScriptEngine() {
         return scriptEngine;
@@ -155,6 +156,17 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     public final static long startTime = System.currentTimeMillis();
 
+    private RequirementChecker requirementChecker;
+
+    /**
+     * Gets the currently loaded instance of the RequirementChecker
+     *
+     * @return  ScriptHelper
+     *
+     */
+    public RequirementChecker getRequirementChecker() {
+        return requirementChecker;
+    }
 
     /*
      * Sets up Denizen on start of the CraftBukkit server.
@@ -188,6 +200,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 //return;
             }
             startedSuccessful = true;
+
+            scriptEngine = new ScriptEngine();
+            requirementChecker = new RequirementChecker();
 
             // Startup procedure
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");

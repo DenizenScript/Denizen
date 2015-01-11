@@ -23,12 +23,10 @@ import org.bukkit.ChatColor;
 
 public class CommandExecuter {
 
-    private final Denizen plugin;
     private static final Pattern definition_pattern = Pattern.compile("%(.+?)%");
 
 
-    public CommandExecuter(Denizen denizen) {
-        plugin = denizen;
+    public CommandExecuter() {
     }
 
     /*

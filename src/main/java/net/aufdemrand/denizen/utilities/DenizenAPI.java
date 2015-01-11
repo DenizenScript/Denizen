@@ -19,6 +19,8 @@ import java.util.Collection;
  */
 public class DenizenAPI {
 
+    public static Denizen denizen;
+
     /**
      * Returns a dNPC object when given a valid NPC. DenizenNPCs have some methods
      * specific to Denizen functionality as well as easy access to the attached NPC and LivingEntity.
@@ -49,7 +51,10 @@ public class DenizenAPI {
      * @return Denizen instance
      */
     public static Denizen getCurrentInstance() {
-        return (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+        if (denizen == null) {
+            denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+        }
+        return denizen;
     }
 
     public static BukkitCommandRegistry _commandRegistry() {

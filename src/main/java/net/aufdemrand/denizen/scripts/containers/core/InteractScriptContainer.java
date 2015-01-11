@@ -275,6 +275,6 @@ public class InteractScriptContainer extends ScriptContainer {
         RequirementsContext context = new RequirementsContext(new RequirementsMode(mode), requirements, this);
         context.attachPlayer(player);
         context.attachNPC(npc);
-        return DenizenAPI.getCurrentInstance().getScriptEngine().getRequirementChecker().check(context);
+        return DenizenAPI.getCurrentInstance().getRequirementChecker().check(context);
     }
 }
