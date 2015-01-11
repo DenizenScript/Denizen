@@ -474,8 +474,10 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // Else, return the material name
-        return "i@" + dMaterial.getMaterialFrom(item.getType(),
-                item.getData().getData()).identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
+        if (item.getDurability() >= 16 || item.getDurability() < 0) {
+            return "i@" + getMaterial().realName() + "," + item.getDurability()  + PropertyParser.getPropertiesString(this);
+        }
+        return "i@" + getMaterial().identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
 
 
@@ -507,7 +509,7 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public String getFullString() {
-        return "i@" + (isItemscript() ? getScriptName(): getMaterial().name()) + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
+        return "i@" + (isItemscript() ? getScriptName(): getMaterial().realName()) + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
     }
 
 

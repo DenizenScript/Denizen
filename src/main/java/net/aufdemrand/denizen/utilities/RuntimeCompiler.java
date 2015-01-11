@@ -43,15 +43,13 @@ public class RuntimeCompiler {
     };
 
     public static ArrayList<dExternal> loadedExternals = new ArrayList<dExternal>();
+    List<String> dependencies;
 
     @SuppressWarnings("unchecked")
     public void loader() {
 
-        if (!externalsFolder.exists() || externalsFolder.list().length == 0)
-            return;
-
-        List<String> dependencies = new ArrayList<String>();
         dB.log("Loading external dependencies for run-time compiler.");
+        dependencies = new ArrayList<String>();
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals" + File.separator + "dependencies");
             for (File f : file.listFiles(jarFilter)){
@@ -59,7 +57,7 @@ public class RuntimeCompiler {
                 dB.log("Loaded  " + f.getName());
             }
         } catch (Exception error) {
-            dB.log("No dependencies to load.");
+            dB.log("No dependencies to load or error loading dependencies: " + error.getMessage());
         }
         dB.log("Loading plugins as dependencies for run-time compiler.");
         for (File f : pluginsFolder.listFiles(jarFilter)) {
@@ -74,9 +72,11 @@ public class RuntimeCompiler {
                 dB.log("Loaded  " + f.getName());
             }
         } catch (Exception error) {
-            dB.log("Could not find CraftBukkit jar.");
+            dB.log("Could not find CraftBukkit jar or error reading it: " + error.getMessage());
         }
 
+        if (!externalsFolder.exists() || externalsFolder.list().length == 0)
+            return;
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals");
             File[] files = file.listFiles(javaFilter);
@@ -112,6 +112,31 @@ public class RuntimeCompiler {
             }
         } catch (Exception error) {
             dB.echoError(error);
+        }
+    }
+
+    public int i = 0;
+
+    public void runString(String input) {
+        try {
+            i++;
+            JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
+            JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
+            if (!dependencies.isEmpty()) compilationUnit.addClassPathEntries(dependencies);
+            String complete = "import net.aufdemrand.denizen.utilities.debugging.dB;\npublic class CodeTester" + i +
+                    " extends net.aufdemrand.denizen.utilities.dExternalRunnable {\n"
+                    + "public void unload() {}\npublic void load() {}\n"
+                    + "public void run() {\n" + input + "\n}\n}";
+            compilationUnit.addJavaSource("CodeTester" + i, complete);
+            ClassLoader classLoader = javaSourceCompiler.compile(compilationUnit);
+            Class<? extends dExternalRunnable> load = (Class<? extends dExternalRunnable>) classLoader.loadClass("CodeTester" + i);
+            dExternalRunnable loadedClass = load.newInstance();
+            loadedClass.load();
+            loadedClass.run();
+            loadedClass.unload();
+        }
+        catch (Exception e) {
+            dB.echoError(e);
         }
     }
 

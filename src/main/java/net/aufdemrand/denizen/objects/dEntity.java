@@ -1551,6 +1551,17 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <e@entity.fallingblock_material>
+        // @returns dMaterial
+        // @group attributes
+        // @description
+        // Returns the material of a fallingblock-type entity.
+        // -->
+        if (attribute.startsWith("fallingblock_material"))
+            return dMaterial.getMaterialFrom(((FallingBlock) entity).getMaterial())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <e@entity.fall_distance>
         // @returns Element(Decimal)
         // @group attributes
@@ -2312,6 +2323,19 @@ public class dEntity implements dObject, Adjustable {
                             pos,
                             ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
                             craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name play_death
+        // @input None
+        // @description
+        // Animates the entity dying.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("play_death")) {
+            getLivingEntity().playEffect(EntityEffect.DEATH);
         }
 
         // Iterate through this object's properties' mechanisms

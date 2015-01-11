@@ -1636,6 +1636,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
         }
 
+        // <--[mechanism]
+        // @object dLocation
+        // @name data
+        // @input Element(Number)
+        // @description
+        // Sets the data-value of a block.
+        // @tags
+        // <l@location.material.data>
+        // -->
+        if (mechanism.matches("data") && mechanism.hasValue()) {
+            getBlock().setData((byte)value.asInt());
+        }
+
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
     }

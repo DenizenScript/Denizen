@@ -21,9 +21,9 @@ public class CraftFakeArrow extends CraftArrow implements Vehicle {
         super(craftServer, entityArrow);
     }
 
-    @Override
+    /*@Override
     public void setShooter (LivingEntity livingEntity) {
-    }
+    }*/
 
     @Override
     public void remove() {

@@ -5,7 +5,9 @@ import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
 import net.aufdemrand.denizen.scripts.commands.npc.*;
 import net.aufdemrand.denizen.scripts.commands.player.*;
-import net.aufdemrand.denizen.scripts.commands.server.*;
+import net.aufdemrand.denizen.scripts.commands.server.AnnounceCommand;
+import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
+import net.aufdemrand.denizen.scripts.commands.server.ScoreboardCommand;
 import net.aufdemrand.denizen.scripts.commands.world.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -145,8 +147,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to add and remove anchors to a npc.
         // - define location_name <context.message>
-        // - chat "I have saved this location as %location_name%.'
-        // - anchor add <npc.location> "id:%location_name%"
+        // - chat "I have saved this location as <def[location_name]>.'
+        // - anchor add <npc.location> "id:<def[location_name]>"
 
         // @Usage
         // Use to make a NPC walk to or walk near a saved anchor.
@@ -447,8 +449,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to have a NPC talk to a group of individuals.
         // - flag <npc> talk_targets:!
         // - foreach <npc.location.find.living_entities.within[6]> {
-        //     - if <%value%.is_player> && <%value%.flag[clan_initiate]>
-        //       flag <npc> talk_targets:->:%value%
+        //     - if <def[value].is_player> && <def[value].flag[clan_initiate]>
+        //       flag <npc> talk_targets:->:<def[value]>
         //   }
         // - chat targets:<npc.flag[talk_targets].as_list> "Welcome, initiate!"
 
@@ -635,27 +637,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // attribute. ie. <%player%.name>
 
         // @Tags
-        // %id% to get the value assigned to an ID
+        // %<ID>% to get the value assign to an ID
+        // <def[<ID>]> to get the value assigned to an ID
 
         // @Usage
         // Use to make complex tags look less complex, and scripts more readable.
         // - narrate 'You invoke your power of notice...'
         // - define range '<player.flag[range_level].mul[3]>'
         // - define blocks '<player.flag[noticeable_blocks]>'
-        // - narrate '[NOTICE] You have noticed <player.location.find.blocks[%blocks%].within[%range%].size>
+        // - narrate '[NOTICE] You have noticed <player.location.find.blocks[<def[blocks]>].within[<def[range]>].size>
         // blocks in the area that may be of interest.'
 
         // @Usage
         // Use to keep the value of a replaceable tag that you might use many times within a single script. Definitions
         // can be faster and cleaner than reusing a replaceable tag over and over.
         // - define arg1 <c.args.get[1]>
-        // - if %arg1% == hello narrate 'Hello!'
-        // - if %arg1% == goodbye narrate 'Goodbye!'
+        // - if <def[arg1]> == hello narrate 'Hello!'
+        // - if <def[arg1]> == goodbye narrate 'Goodbye!'
 
         // @Usage
         // Use to pass some important information (arguments) on to another queue.
         // - run 'new_task' d:hello|world
-        // 'new_task' now has some definitions, %1% and %2%, that contains the contents specified, 'hello' and 'world'.
+        // 'new_task' now has some definitions, <def[1]> and <def[2]>, that contains the contents specified, 'hello' and 'world'.
 
         // @Usage
         // Use to remove a definition
@@ -1166,7 +1169,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
-        // @Name ForEach
+        // @Name Foreach
         // @Syntax foreach [stop/next/<object>|...] [<commands>]
         // @Required 1
         // @Stable stable
@@ -1177,27 +1180,27 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Description
         // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
-        // that list entry. To call the value of the entry while in the loop, you can use %value%.
+        // that list entry. To call the value of the entry while in the loop, you can use <def[value]>.
         //
         // To end a foreach loop, do - foreach stop
         //
         // To jump immediately to the next entry in the loop, do - foreach next
 
         // @Tags
-        // %value% to get the current item in the loop
-        // %loop_index% to get the current loop iteration number
+        // <def[value]> to get the current item in the loop
+        // <def[loop_index]> to get the current loop iteration number
 
         // @Usage
         // Use to run commands for 'each entry' in a list of objects/elements.
         // - foreach li@e@123|n@424|p@BobBarker {
-        //     - announce "There's something at <%value%.location>!"
+        //     - announce "There's something at <def[value].location>!"
         //   }
 
         // @Usage
         // Use to iterate through entries in any tag that returns a list
         // - foreach <server.list_online_players> {
         //     - narrate "Thanks for coming to our server! Here's a bonus $50.00!"
-        //     - give %value% money qty:50
+        //     - give <def[value]> money qty:50
         //   }
 
         // -->
@@ -2120,19 +2123,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Description
         // Loops through a series of braced commands a specified number of times.
-        // To get the number of loops so far, you can use %value%.
+        // To get the number of loops so far, you can use <def[value]>.
         //
         // To stop a repeat loop, do - repeat stop
         //
         // To jump immediately to the next number in the loop, do - repeat next
 
         // @Tags
-        // %value% to get the number of loops so far
+        // <def[value]> to get the number of loops so far
 
         // @Usage
         // Use loop through a command several times
         // - repeat 5 {
-        //     - announce "Announce Number %value%"
+        //     - announce "Announce Number <def[value]>"
         //   }
         // -->
         registerCoreMember(RepeatCommand.class,
@@ -2397,9 +2400,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Normally, a list of entities will spawn mounted on top of each other. To have them instead fire separately and spread out,
         // specify the 'spread' argument with a decimal number indicating how wide to spread the entities.
         // In the script ran when the arrow lands, the following definitions will be available:
-        // %shot_entities% for all shot entities, %last_entity% for the last one (The controlling entity),
-        // %location% for the last known location of the last shot entity, and
-        // %hit_entities% for a list of any entities that were hit by fired projectiles.
+        // <def[shot_entities]> for all shot entities, <def[last_entity]> for the last one (The controlling entity),
+        // <def[location]> for the last known location of the last shot entity, and
+        // <def[hit_entities]> for a list of any entities that were hit by fired projectiles.
         // Optionally, specify a speed and 'lead' value to use the experimental arrow-aiming system.
         // Optionally, add 'no_rotate' to prevent the shoot command from rotating launched entities.
         // @Tags
@@ -2690,6 +2693,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
                 "TIME", "time [{global}/player] [<time duration>] (<world>)", 1);
 
         // <--[command]
+        // @Name Title
+        // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>{1s}) (stay:<duration>{3s}) (fade_out:<duration>{1s}) (targets:<player>|...)
+        // @Required 1
+        // @Stable stable
+        // @Short Displays a title to specified players.
+        // @Author Morphan1
+        // @Group player
+        // @Description
+        // Shows the players a large, noticeable wall of text in the center of the screen.
+        // You may add timings for fading in, staying there, and fading out.
+        // The defaults for these are: 1 second, 3 seconds, and 1 second, respectively.
+        // @Tags
+        // None
+        // @Usage
+        // Use to alert players of impending server restart.
+        // - title "title:<red>Server Restarting" "subtitle:<red>In 1 minute!" stay:1m targets:<server.list_online_players>
+        // @Usage
+        // Use to inform the player about the area they have just entered.
+        // - title "title:<green>Tatooine" "subtitle:<gold>What a desolate place this is."
+        // -->
+        registerCoreMember(TitleCommand.class,
+                "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>{1s}) (stay:<duration>{3s}) (fade_out:<duration>{1s}) (targets:<player>|...)", 1);
+
+        // <--[command]
         // @Name Trait
         // @Syntax trait (state:true/false/{toggle}) [<trait>]
         // @Required 1
@@ -2848,13 +2875,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
 
         // @Tags
-        // %loop_index% to get the number of loops so far
+        // <def[loop_index]> to get the number of loops so far
 
         // @Usage
         // Use loop through a command several times
         // - define value 1
         // - while <def[value].is[OR_LESS].than[5]> {
-        //     - announce "Loop %loop_index% value %value%"
+        //     - announce "Loop <def[loop_index]> value <def[value]>"
         //     - define value <def[value].add[1]>
         //   }
         // @Usage

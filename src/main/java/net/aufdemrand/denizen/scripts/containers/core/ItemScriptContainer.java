@@ -69,6 +69,10 @@ public class ItemScriptContainer extends ScriptContainer {
     //   # Additional note: This does not support datavalues currently, only specific material types can be used as a recipe.
     //   furnace_recipe: i@item
     //
+    //   # You can specify a list of materials that make up a shapeless recipe.
+    //   # Note: This can overwrite existing shapeless recipes.
+    //   shapeless_recipe: i@item|...
+    //
     //   # Set to true to not store the scriptID on the item, treating it as an item dropped by any other plugin.
     //   # NOTE: THIS IS NOT RECOMMENDED UNLESS YOU HAVE A SPECIFIC REASON TO USE IT.
     //   no_id: true/false
@@ -90,6 +94,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
     // A map storing special recipes that use itemscripts as ingredients
     public static Map<dItem, dList> specialrecipesMap = new HashMap<dItem, dList>();
+    public static Map<dItem, dList> shapelessRecipesMap = new HashMap<dItem, dList>();
 
     dNPC npc = null;
     dPlayer player = null;
@@ -128,6 +133,12 @@ public class ItemScriptContainer extends ScriptContainer {
             // will be checked manually inside ItemScriptHelper
             specialrecipesMap.put(getItemFrom(), ingredients);
 
+        }
+
+        if (contains("SHAPELESS_RECIPE")) {
+            String list = TagManager.tag(getString("SHAPELESS_RECIPE"), new BukkitTagContext(player, npc, false, null, dB.shouldDebug(this), new dScript(this)));
+            dList actual_list = dList.valueOf(list);
+            shapelessRecipesMap.put(getItemFrom(), actual_list);
         }
 
         if (contains("FURNACE_RECIPE")) {

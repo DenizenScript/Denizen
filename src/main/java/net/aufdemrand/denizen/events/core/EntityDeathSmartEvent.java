@@ -104,7 +104,7 @@ public class EntityDeathSmartEvent implements SmartEvent, Listener {
         // remove it from the entityKillers map
         EntityDamageEvent lastDamage = entity.getBukkitEntity().getLastDamageCause();
         if (lastDamage != null && lastDamage instanceof EntityDamageByEntityEvent) {
-            context.put("damager", new dEntity(((EntityDamageByEntityEvent) lastDamage).getDamager()));
+            context.put("damager", new dEntity(((EntityDamageByEntityEvent) lastDamage).getDamager()).getDenizenObject());
         }
 
         PlayerDeathEvent subEvent = null;

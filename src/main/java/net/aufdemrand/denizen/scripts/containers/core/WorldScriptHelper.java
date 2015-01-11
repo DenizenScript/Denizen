@@ -23,6 +23,7 @@ import net.aufdemrand.denizen.utilities.entity.Position;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
@@ -494,7 +495,7 @@ public class WorldScriptHelper implements Listener {
         context.put("material", material);
         context.put("cause", new Element(event.getCause().name()));
         if (event.getIgnitingEntity() != null) {
-            context.put("entity", new dEntity(event.getIgnitingEntity()));
+            context.put("entity", new dEntity(event.getIgnitingEntity()).getDenizenObject());
         }
 
         String determination = EventManager.doEvents(Arrays.asList
@@ -4265,7 +4266,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when lightning strikes in a world.
     // @Context
     // <context.world> returns the dWorld the lightning struck in.
-    // <context.reason> returns the dLocation where the lightning struck.
+    // <context.location> returns the dLocation where the lightning struck.
     //
     // @Determine
     // "CANCELLED" to stop the lightning from striking.
@@ -4405,6 +4406,7 @@ public class WorldScriptHelper implements Listener {
     // <context.world> returns the dWorld the structure grew in.
     // <context.location> returns the dLocation the structure grew at.
     // <context.structure> returns an Element of the structure's type.
+    // <context.blocks> returns a list of all block locations to be modified.
     //
     // @Determine
     // "CANCELLED" to stop the structure from growing.
@@ -4420,6 +4422,12 @@ public class WorldScriptHelper implements Listener {
         context.put("world", world);
         context.put("location", new dLocation(event.getLocation()));
         context.put("structure", new Element(treeType));
+
+        dList structure = new dList();
+        for (BlockState state: event.getBlocks()) {
+            structure.add(new dLocation(state.getLocation()).identify());
+        }
+        context.put("blocks", structure);
 
         List<String> events = new ArrayList<String>();
         events.add("structure grows");

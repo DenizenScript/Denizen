@@ -83,16 +83,21 @@ Commands:
       To target: "[<def[talker].name>] -> You: <def[message]>"
       With target to bystanders: "[<def[talker].name>] -> <def[target].name>: <def[message]>"
       With targets to bystanders: "[<def[talker].name>] -> [<def[targets]>]: <def[message]>"
-    Delete:
+  Delete:
         # Whether scripts are allowed to delete files from your server
         # This is mostly to clean up saves, but could potentially be abused.
         # Set to 'false' if you're worried about security.
         Allow file deletion: true
-    log:
+  Java:
+        # Whether scripts are allowed to run arbitrary Java code.
+        # This is extremely dangerous and should be kept off unless monitored carefully.
+        # Set to 'false' if you're worried about security.
+        Allow running java: false
+  log:
         # The log command writes to file, which is potentially dangerous
         # Set to 'false' if you're worried about security.
         Allow logging: true
-    yaml:
+  yaml:
         # Whether the YAML command is allowed to save outside the minecraft folder.
         # Set to 'false' if you're worried about security.
         Allow saving outside folder: false
@@ -113,4 +118,4 @@ Tags:
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 9
+  Version: 10

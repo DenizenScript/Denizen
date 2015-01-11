@@ -190,7 +190,6 @@
                     <!-- put your configurations here -->
                 </configuration>
             </plugin>
-
 			<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
