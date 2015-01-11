@@ -386,6 +386,13 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 }
             }
         }, 1);
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
+            }
+        }, 1, 1);
     }
 
 

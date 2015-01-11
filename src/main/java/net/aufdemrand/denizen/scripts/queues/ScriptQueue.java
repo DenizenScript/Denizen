@@ -14,12 +14,12 @@ import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.QueueWordList;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
-import org.bukkit.Bukkit;
+import net.aufdemrand.denizencore.utilities.scheduling.OneTimeSchedulable;
 
 /**
  * ScriptQueues hold/control ScriptEntries while being sent
@@ -488,7 +488,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
 
         // If it's delayed, schedule it for later
         if (is_delayed) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+            DenizenCore.schedule(new OneTimeSchedulable(
                     new Runnable() {
                         @Override
                         public void run() {
@@ -499,7 +499,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
                         // Take the delay time, find out how many milliseconds away
                         // it is, turn it into seconds, then divide by 20 for ticks.
                     },
-                    (long)(((double)(delay_time - System.currentTimeMillis())) / 1000 * 20));
+                    ((float)(delay_time - System.currentTimeMillis())) / 1000));
 
         } else {
             // If it's not, start the engine now!
