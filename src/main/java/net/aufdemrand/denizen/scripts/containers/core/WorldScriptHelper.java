@@ -3361,8 +3361,9 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.item> returns the dItem the player is clicking with.
     // <context.location> returns the dLocation the player is clicking on.
-    // <context.cuboids> returns a list of the notable cuboids that contain the clicked block.
-    // <context.click_type> returns an element of the click type.
+    // <context.cuboids> returns a dList of the notable cuboids that contain the clicked block.
+    // <context.click_type> returns an Element of the click type.
+    // <context.relative> returns a dLocation of the air block in front of the click block.
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
@@ -3378,6 +3379,10 @@ public class WorldScriptHelper implements Listener {
         dPlayer player = new dPlayer(event.getPlayer());
 
         List<String> events = new ArrayList<String>();
+
+        if (event.getBlockFace() != null && event.getClickedBlock() != null) {
+            context.put("relative", new dLocation(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()));
+        }
 
         String[] interactions;
 
