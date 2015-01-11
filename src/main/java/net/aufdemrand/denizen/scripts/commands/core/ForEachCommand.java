@@ -13,9 +13,10 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
 
-public class ForEachCommand extends BracedCommand {
+public class ForeachCommand extends BracedCommand {
 
     private class ForeachData {
         public int index;
@@ -146,7 +147,7 @@ public class ForEachCommand extends BracedCommand {
                 ForeachData data = (ForeachData)scriptEntry.getOwner().getData();
                 data.index++;
                 if (data.index <= data.list.size()) {
-                    dB.echoDebug(scriptEntry, dB.DebugElement.Header, "Foreach loop " + data.index);
+                    dB.echoDebug(scriptEntry, DebugElement.Header, "Foreach loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
                     scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(data.list.get(data.index - 1)));
                     ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("FOREACH");

@@ -1204,7 +1204,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //   }
 
         // -->
-        registerCoreMember(ForEachCommand.class,
+        registerCoreMember(ForeachCommand.class,
                 "FOREACH", "foreach [stop/next/<object>|...] [<commands>]", 1);
 
 

@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
 public class RepeatCommand extends BracedCommand {
 
@@ -139,7 +140,7 @@ public class RepeatCommand extends BracedCommand {
                 RepeatData data = (RepeatData)scriptEntry.getOwner().getData();
                 data.index++;
                 if (data.index <= data.target) {
-                    dB.echoDebug(scriptEntry, dB.DebugElement.Header, "Repeat loop " + data.index);
+                    dB.echoDebug(scriptEntry, DebugElement.Header, "Repeat loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(data.index));
                     ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("REPEAT");
                     ScriptEntry callbackEntry = null;

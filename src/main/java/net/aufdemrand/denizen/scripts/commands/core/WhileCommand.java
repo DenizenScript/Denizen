@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -157,7 +158,7 @@ public class WhileCommand extends BracedCommand {
                 }
                 data.LastChecked = System.currentTimeMillis();
                 if (TagManager.tag(data.value, new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
-                    dB.echoDebug(scriptEntry, dB.DebugElement.Header, "While loop " + data.index);
+                    dB.echoDebug(scriptEntry, DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
                     ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("WHILE");
                     ScriptEntry callbackEntry = null;

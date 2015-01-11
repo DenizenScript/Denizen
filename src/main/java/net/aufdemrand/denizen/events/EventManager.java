@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
@@ -336,7 +337,7 @@ public class EventManager implements Listener {
                                         + (player != null ? aH.debugObj("Player", player.getName()) : "")
                                         + (context != null ? aH.debugObj("Context", context.toString()) : ""));
 
-                        dB.echoDebug(script, dB.DebugElement.Header, "Building event 'ON " + eventName.toUpperCase()
+                        dB.echoDebug(script, DebugElement.Header, "Building event 'ON " + eventName.toUpperCase()
                                 + "' for " + script.getName());
 
                         // Create new ID -- this is what we will look for when determining an outcome

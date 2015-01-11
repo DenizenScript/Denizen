@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
 /**
  * Preferred method of outputting debugger information with Denizen and
@@ -77,21 +78,8 @@ public class dB {
     public static boolean shouldTrim = true;
     public static boolean record = false;
     public static StringBuilder Recording = new StringBuilder();
-    public static void toggle() { showDebug = !showDebug; }
-
-
-    /**
-     * Can be used with echoDebug(...) to output a header, footer,
-     * or a spacer.
-     *
-     * DebugElement.Header = +- string description ------+
-     * DebugElement.Spacer =
-     * DebugElement.Footer = +--------------+
-     *
-     * Also includes color.
-     */
-    public static enum DebugElement {
-        Header, Footer, Spacer
+    public static void toggle() {
+        showDebug = !showDebug;
     }
 
     ////////////

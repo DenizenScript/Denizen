@@ -13,7 +13,7 @@ import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
 import java.util.List;
 import java.util.Map;
