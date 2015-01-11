@@ -27,7 +27,6 @@ import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.scripts.*;
 import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
@@ -152,7 +151,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     public RuntimeCompiler runtimeCompiler;
 
-    private WorldScriptHelper ws_helper;
+    private BukkitWorldScriptHelper ws_helper;
 
     public final static long startTime = System.currentTimeMillis();
 
@@ -297,7 +296,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             }
 
             // Create the command script handler for listener
-            ws_helper = new WorldScriptHelper();
+            ws_helper = new BukkitWorldScriptHelper();
             ItemScriptHelper is_helper = new ItemScriptHelper();
             InventoryScriptHelper in_helper = new InventoryScriptHelper();
             EntityScriptHelper es_helper = new EntityScriptHelper();

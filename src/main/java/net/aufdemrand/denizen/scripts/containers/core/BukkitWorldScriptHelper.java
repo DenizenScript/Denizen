@@ -9,10 +9,10 @@ import java.util.Map;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.objects.aH.Argument;
-import net.aufdemrand.denizen.objects.aH.PrimitiveType;
+import net.aufdemrand.denizencore.objects.aH.Argument;
+import net.aufdemrand.denizencore.objects.aH.PrimitiveType;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.tags.core.EscapeTags;
+import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
@@ -42,10 +42,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockIterator;
 
-@SuppressWarnings("deprecation")
-public class WorldScriptHelper implements Listener {
+public class BukkitWorldScriptHelper implements Listener {
 
-    public WorldScriptHelper() {
+    public BukkitWorldScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
