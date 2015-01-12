@@ -4,12 +4,12 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -29,11 +29,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-/**
- * Creates special signs that auto-update with information.
- * - viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in)
- * @author Morphan1
- */
 // TODO: should this command exist?
 public class ViewerCommand extends AbstractCommand implements Listener {
 
@@ -98,6 +93,9 @@ public class ViewerCommand extends AbstractCommand implements Listener {
 
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+
+        dB.echoError(scriptEntry.getResidingQueue(), "This command is deprecated! If you use this, please "
+                + "contact Morphan1 or mcmonkey on irc.esper.net#denizen-dev");
 
         // Get objects
         String direction = scriptEntry.hasObject("direction") ? ((Element) scriptEntry.getObject("direction")).asString() : null;

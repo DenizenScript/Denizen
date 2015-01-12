@@ -1,22 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-/**
- *
- * Set the time in the world to a number of ticks.
- *
- * @author David Cernat
- */
 public class TimeCommand extends AbstractCommand {
 
     private enum Type { GLOBAL, PLAYER }

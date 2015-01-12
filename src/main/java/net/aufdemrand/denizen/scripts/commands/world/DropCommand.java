@@ -4,8 +4,9 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.entity.EntityType;
@@ -14,35 +15,9 @@ import org.bukkit.entity.ExperienceOrb;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Drops things into the world.
- *
- * Usage: - drop [item, entity, or 'experience'] (quantity) [location]
- *
- * @author Jeremy Schroeder
- */
-
 public class DropCommand extends AbstractCommand {
 
-
-    // TODO: This should be meta info
-    public String getHelp() {
-        return  "Drops things into the world. Must specify something to drop," +
-                "such as 'experience', an item, or an entity. Must also" +
-                "specify a location, and if more than 1, a quantity. \n" +
-                " \n" +
-                "Use to drop items, even custom item_scripts. \n" +
-                "- drop iron_helmet <npc.location> \n" +
-                "- drop butter 5 <notable.location[churn]> \n" +
-                "Use to reward the player with some experience. \n" +
-                "- drop experience 1000 <player.location> \n" +
-                "Use to drop entities, such as boats or minecarts. \n" +
-                "- drop e@boat <player.flag[dock_location]>";
-    }
-
-
     enum Action { DROP_ITEM, DROP_EXP, DROP_ENTITY }
-
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

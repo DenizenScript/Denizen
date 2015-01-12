@@ -3,12 +3,12 @@ package net.aufdemrand.denizen.scripts.commands.world;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
@@ -16,13 +16,6 @@ import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Copies a block to another location, keeping all special
- * data all about it.
- *
- * @author aufdemrand, David Cernat
- */
 
 public class CopyBlockCommand extends AbstractCommand{
 
