@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.block.Block;
 
@@ -20,7 +21,7 @@ public class PoweredRequirement extends AbstractRequirement{
         for (String thisArg : args) {
 
             if (aH.matchesLocation(thisArg)) {
-                blockToCheck = aH.getLocationFrom(thisArg).getBlock();
+                blockToCheck = dLocation.valueOf(thisArg).getBlock();
                 if (blockToCheck != null)
                     dB.echoDebug(context.getScriptContainer(), "...block to check is type '" + blockToCheck.getType().toString() + "'");
             }

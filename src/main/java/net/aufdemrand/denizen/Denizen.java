@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
@@ -263,6 +264,21 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
+            ScriptRegistry._registerType("interact", InteractScriptContainer.class);
+            ScriptRegistry._registerType("book", BookScriptContainer.class);
+            ScriptRegistry._registerType("item", ItemScriptContainer.class);
+            ScriptRegistry._registerType("entity", EntityScriptContainer.class);
+            ScriptRegistry._registerType("assignment", AssignmentScriptContainer.class);
+            ScriptRegistry._registerType("format", FormatScriptContainer.class);
+            ScriptRegistry._registerType("inventory", InventoryScriptContainer.class);
+            ScriptRegistry._registerType("command", CommandScriptContainer.class);
+            ScriptRegistry._registerType("map", MapScriptContainer.class);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+
+        try {
             // Ensure the Scripts and Midi folder exist
             new File(getDataFolder() + "/scripts").mkdirs();
             new File(getDataFolder() + "/midi").mkdirs();
@@ -351,6 +367,22 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         try {
             tagManager().registerCoreTags();
+
+            new CuboidTags(this);
+            new EntityTags(this);
+            new LocationTags(this);
+            new PlayerTags(this);
+            new UtilTags(this);
+            new TextTags(this);
+            new ParseTags(this);
+            if (Depends.citizens != null) {
+                new NPCTags(this);
+                new AnchorTags(this);
+                new ConstantTags(this);
+            }
+            new FlagTags(this);
+            new NotableLocationTags(this);
+
             eventManager = new OldEventManager();
             eventManager().registerCoreMembers();
 

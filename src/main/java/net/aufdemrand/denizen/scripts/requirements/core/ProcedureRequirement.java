@@ -14,7 +14,7 @@ public class ProcedureRequirement extends AbstractRequirement{
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 
         // Deprecated
-         dB.log("This command is deprecated! Use instead: valueof <proc:name_of_procedure_script>");
+         dB.log("This requirement is deprecated! Use instead: valueof <proc[name_of_procedure_script]>");
 
         return false;
     }

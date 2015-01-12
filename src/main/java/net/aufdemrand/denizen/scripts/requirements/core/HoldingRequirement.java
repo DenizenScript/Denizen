@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class HoldingRequirement extends AbstractRequirement{
                 exact = true;
             }
 
-            else itemToCheck = aH.getItemFrom(thisArg);
+            else itemToCheck = dItem.valueOf(thisArg);
         }
 
         if (itemToCheck != null)
