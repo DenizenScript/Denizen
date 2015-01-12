@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
@@ -574,7 +575,7 @@ public class dPlayer implements dObject, Adjustable {
                 return new Element(0).getAttribute(attribute.fulfill(2));
             if (FlagManager.playerHasFlag(this, flag_name))
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
-                        .getPlayerFlag(this, flag_name))
+                        .getPlayerFlag(this, flag_name).toString(), true)
                         .getAttribute(attribute.fulfill(1));
             return new Element(identify()).getAttribute(attribute);
         }

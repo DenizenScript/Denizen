@@ -3,10 +3,10 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.Listener;
 

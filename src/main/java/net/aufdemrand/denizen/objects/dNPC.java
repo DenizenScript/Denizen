@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.examiners.PathBlockExaminer;
 import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
@@ -545,7 +546,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                 return new Element(0).getAttribute(attribute.fulfill(2));
             if (FlagManager.npcHasFlag(this, flag_name))
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
-                        .getNPCFlag(getId(), flag_name))
+                        .getNPCFlag(getId(), flag_name).toString(), true)
                         .getAttribute(attribute.fulfill(1));
              return new Element(identify()).getAttribute(attribute);
         }

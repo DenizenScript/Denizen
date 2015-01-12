@@ -1,14 +1,17 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizencore.events.EventManager;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.events.core.NPCNavigationSmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -106,7 +109,7 @@ public class NPCTags implements Listener {
 
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive())
-            EventManager.doEvents(Arrays.asList
+            OldEventManager.doEvents(Arrays.asList
                     ("npc completes navigation"), npc, null, null);
 
         // Do the assignment script action
@@ -145,7 +148,7 @@ public class NPCTags implements Listener {
 
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive())
-            EventManager.doEvents(Arrays.asList
+            OldEventManager.doEvents(Arrays.asList
                     ("npc begins navigation"), npc, null, null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
@@ -201,7 +204,7 @@ public class NPCTags implements Listener {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         if (NPCNavigationSmartEvent.IsActive())
-            EventManager.doEvents(Arrays.asList
+            OldEventManager.doEvents(Arrays.asList
                     ("npc cancels navigation"), npc, null, null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
@@ -248,7 +251,7 @@ public class NPCTags implements Listener {
 
         // Do world script event 'On NPC stuck'
         if (NPCNavigationSmartEvent.IsActive()) {
-            String determination = EventManager.doEvents(Arrays.asList
+            String determination = OldEventManager.doEvents(Arrays.asList
                     ("npc stuck"), npc, null, context);
             if (determination.equalsIgnoreCase("none"))
                 event.setAction(null);
