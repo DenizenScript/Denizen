@@ -396,13 +396,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Usage
         // Use to apply an effect to an entity
-        // - potion jump <player> d:120 p:3
+        // - cast jump <player> d:120 p:3
         // - narrate "You have been given the temporary ability to jump like a kangaroo."
 
         // @Usage
         // Use to remove an effect from an entity
         // - if <player.has_effect[jump]> {
-        //   - potion jump remove <player>
+        //   - cast jump remove <player>
         //   }
         //
         // -->
