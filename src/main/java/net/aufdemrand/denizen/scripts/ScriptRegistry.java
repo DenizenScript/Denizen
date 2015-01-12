@@ -4,8 +4,9 @@ import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import net.aufdemrand.denizencore.DenizenCore;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 import java.util.*;
 
@@ -37,6 +38,7 @@ public class ScriptRegistry {
         _registerType("player listener", PlayerListenerScriptContainer.class);
         _registerType("command", CommandScriptContainer.class);
         _registerType("yaml data", YamlDataScriptContainer.class);
+        _registerType("map", MapScriptContainer.class);
     }
 
     public static boolean containsScript(String id) {
@@ -54,7 +56,7 @@ public class ScriptRegistry {
         return type != null && (script.getContainerType().equalsIgnoreCase(type));
     }
 
-    public static void _buildCoreYamlScriptContainers(FileConfiguration yamlScripts) {
+    public static void _buildCoreYamlScriptContainers(YamlConfiguration yamlScripts) {
         scriptContainers.clear();
         EventManager.world_scripts.clear();
         EventManager.events.clear();
@@ -64,7 +66,7 @@ public class ScriptRegistry {
         // Get a set of key names in concatenated Denizen Scripts
         Set<String> scripts = yamlScripts.getKeys(false);
         // Iterate through set
-        for (String scriptName : scripts)
+        for (String scriptName : scripts) {
         // Make sure the script has a type
             if (yamlScripts.contains(scriptName + ".TYPE")) {
                 String type = yamlScripts.getString(scriptName + ".TYPE");
@@ -76,17 +78,23 @@ public class ScriptRegistry {
                 }
                 // Instantiate a new scriptContainer of specified type.
                 Class typeClass = scriptContainerTypes.get(type.toUpperCase());
+                dB.log("Adding script " + scriptName + " as type " + type.toUpperCase());
                 try {
-                    scriptContainers.put(scriptName, typeClass.getConstructor(ConfigurationSection.class, String.class)
+                    scriptContainers.put(scriptName, typeClass.getConstructor(YamlConfiguration.class, String.class)
                             .newInstance(ScriptHelper._gs().getConfigurationSection(scriptName), scriptName));
                 } catch (Exception e) {
                     dB.echoError(e);
                     ScriptHelper.setHadError();
                 }
             }
+            else {
+                dB.echoError("Found type-less container: '" + scriptName + "'.");
+                ScriptHelper.setHadError();
+            }
+        }
     }
 
-    public static List<FileConfiguration> outside_scripts = new ArrayList<FileConfiguration>();
+    public static List<net.aufdemrand.denizencore.utilities.YamlConfiguration> outside_scripts = new ArrayList<net.aufdemrand.denizencore.utilities.YamlConfiguration>();
 
     /**
      * Adds a YAML FileConfiguration to the list of scripts to be loaded. Adding a new
@@ -95,9 +103,8 @@ public class ScriptRegistry {
      * @param yaml_script  the FileConfiguration containing the script
      *
      */
-    public static void addYamlScriptContainer(FileConfiguration yaml_script) {
+    public static void addYamlScriptContainer(net.aufdemrand.denizencore.utilities.YamlConfiguration yaml_script) {
         outside_scripts.add(yaml_script);
-        ScriptHelper.reloadScripts();
     }
 
     /**
@@ -107,9 +114,9 @@ public class ScriptRegistry {
      * @param yaml_script  the FileConfiguration containing the script
      *
      */
-    public static void removeYamlScriptContainer(FileConfiguration yaml_script) {
+    public static void removeYamlScriptContainer(YamlConfiguration yaml_script) {
         outside_scripts.remove(yaml_script);
-        ScriptHelper.reloadScripts();
+        DenizenCore.reloadScripts();
     }
 
     public static <T extends ScriptContainer> T getScriptContainerAs(String name, Class<T> type) {

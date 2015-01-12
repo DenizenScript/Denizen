@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -41,8 +42,8 @@ public class ActionCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a list of action names!");
 
         if (!scriptEntry.hasObject("npcs")) {
-            if (scriptEntry.hasNPC())
-                scriptEntry.addObject("npcs", Arrays.asList(scriptEntry.getNPC()));
+            if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
+                scriptEntry.addObject("npcs", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC()));
             else
                 throw new InvalidArgumentsException("Must specify an NPC to use!");
         }
@@ -73,7 +74,7 @@ public class ActionCommand extends AbstractCommand {
 
         for (dNPC npc: npcs) {
             for (String action: actions) {
-                npc.action(action, scriptEntry.getPlayer(), context_map);
+                npc.action(action, ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), context_map);
             }
         }
     }

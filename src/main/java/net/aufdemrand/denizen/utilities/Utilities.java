@@ -1,23 +1,21 @@
 package net.aufdemrand.denizen.utilities;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Set;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -31,59 +29,51 @@ import org.bukkit.entity.Player;
 
 /**
  * This class has utility methods for various tasks.
- *
- * @author aufdemrand, dbixler, AgentK
  */
 public class Utilities {
 
-    // TODO: Javadocs, comments
-    //
-    static Random random = new Random();
 
-    public static Random getRandom() {
-        return random;
-    }
-
-
-    // TODO: Javadocs, comments
-    //
+    /**
+     * Gets a Location within a range that an entity can walk in.
+     *
+     * @param location the Location to check with
+     * @param range the range around the Location
+     * @return a random Location within range, or null if no Location within range is safe
+     */
     public static Location getWalkableLocationNear(Location location, int range) {
-        Location returnable;
+        List<Location> locations = new ArrayList<Location>();
+        location = location.getBlock().getLocation();
 
-        int selected_x = random.nextInt(range * 2);
-        int selected_z = random.nextInt(range * 2);
-        returnable = location.clone().add(selected_x - range, 1, selected_z - range);
+        // Loop through each location within the range
+        for (double x = -(range); x <= range; x++) {
+            for (double y = -(range); y <= range; y++) {
+                for (double z = -(range); z <= range; z++) {
+                    // Add each block location within range
+                    Location loc = location.clone().add(x, y, z);
+                    if (checkLocation(location, loc, range) && isWalkable(loc)) {
+                        locations.add(loc);
+                    }
+                }
+            }
+        }
 
-        // TODO: Handle location being underground/in a wall better than a stack overflow?
-        if (!isWalkable(returnable)) return getWalkableLocationNear(location, range);
-        else return returnable;
+        // No safe Locations found
+        if (locations.isEmpty())
+            return null;
+
+        // Return a random Location from the list
+        return locations.get(CoreUtilities.getRandom().nextInt(locations.size()));
     }
 
 
     // TODO: Javadocs, comments
     //
     public static boolean isWalkable(Location location) {
-        return ((location.getBlock().getType() == Material.AIR
-                || location.getBlock().getType() == Material.GRASS)
-                && (location.add(0, 1, 0).getBlock().getType() == Material.AIR));
+        return !SafeBlock.blockIsSafe(location.clone().subtract(0, 1, 0).getBlock().getType())
+                && SafeBlock.blockIsSafe(location.getBlock().getType())
+                && SafeBlock.blockIsSafe(location.clone().add(0, 1, 0).getBlock().getType());
     }
 
-
-    // TODO: Javadocs, comments
-    //
-    public static String arrayToString(String[] input, String glue) {
-        String output="";
-        int length = input.length;
-        int i = 1;
-        for(String s : input) { // TODO: Should this be? : output = output.concat(s);
-            output.concat(s);
-            i++;
-            if(i!=length){
-                output.concat(glue); // TODO: Same as above
-            }
-        }
-        return output;
-    }
 
 
     // TODO: Javadocs, comments
@@ -111,14 +101,14 @@ public class Utilities {
     public static void talkToNPC(String message, dPlayer player, dNPC npc, double range) {
         String replacer = String.valueOf((char)0x04);
         // Get formats from Settings, and fill in <TEXT>
-        String talkFormat = Settings.ChatToNpcFormat()
+        String talkFormat = Settings.chatToNpcFormat()
                 .replaceAll("(?i)<TEXT>", replacer);
-        String bystanderFormat = Settings.ChatToNpcOverheardFormat()
+        String bystanderFormat = Settings.chatToNpcOverheardFormat()
                 .replaceAll("(?i)<TEXT>", replacer);
 
-        // Fill in tags
-        talkFormat = TagManager.tag(player, npc, talkFormat, false).replace(replacer, message);
-        bystanderFormat = TagManager.tag(player, npc, bystanderFormat, false).replace(replacer, message);
+        // Fill in tags // TODO: Debug option?
+        talkFormat = TagManager.tag(talkFormat, new BukkitTagContext(player, npc, false, null, true, null)).replace(replacer, message);
+        bystanderFormat = TagManager.tag(bystanderFormat, new BukkitTagContext(player, npc, false, null, true, null)).replace(replacer, message);
 
         // Send message to player
         player.getPlayerEntity().sendMessage(talkFormat);
@@ -157,142 +147,6 @@ public class Utilities {
 
 
     /**
-     * Gets the plugin version from the maven info in the jar, if available.
-     *
-     * @return the version string
-     */
-    @Deprecated // TODO: Can this be removed?
-    public String getVersionNumber() {
-        Properties props = new Properties();
-        //Set a default just in case.
-        props.put("version", "Unknown development build");
-        try { props.load(this.getClass()
-                .getResourceAsStream("/META-INF/maven/net.aufdemrand/denizen/pom.properties"));
-        } catch(Exception e) { }
-
-        return props.getProperty("version");
-    }
-
-
-    // TODO: Finish?
-    //
-    public static List<Block> getRandomSolidBlocks(Location location, int range, int count) {
-        List<Block> blocks = new ArrayList<Block>();
-
-        int x = 0;
-        int f = 0;
-
-        while (x < count) {
-
-            if (f > 1000) break;
-            f++;
-
-            Location loc = location.clone()
-                    .add(Utilities.getRandom().nextInt(range * 2) - range,
-                            Utilities.getRandom().nextInt(range * 2) - range,
-                            Utilities.getRandom().nextInt(range * 2) - range);
-
-            if (loc.getBlock().getType().isSolid()) {
-                blocks.add(loc.getBlock());
-                x++;
-            }
-
-        }
-
-        dB.log(blocks.size() + " blocksize");
-
-        return blocks;
-    }
-
-
-    // TODO: Check why this is no longer used. Possible duplication of code?
-    //
-    /**
-     * Finds the closest Player to a particular location.
-     *
-     * @param location    The location to find the closest Player to.
-     * @param range    The maximum range to look for the Player.
-     * @return    The closest Player to the location, or null if no Player was found
-     *                     within the range specified.
-     */
-    public static Player getClosestPlayer (Location location, int range) {
-
-        Player closestPlayer = null;
-        double closestDistance = Math.pow(range, 2);
-        // TODO: Why is this manually iterating?
-        List<Player> playerList = new ArrayList<Player>(Bukkit.getOnlinePlayers());
-        Iterator<Player> it = playerList.iterator();
-        while (it.hasNext()) {
-            Player player = it.next();
-            Location loc = player.getLocation();
-            if (loc.getWorld().equals(location.getWorld())
-                    && loc.distanceSquared(location) < closestDistance) {
-                closestPlayer = player;
-                closestDistance = player.getLocation().distanceSquared(location);
-            }
-        }
-        return closestPlayer;
-    }
-
-
-    // TODO: Check why this is no longer used. Possible duplication of code?
-    //
-    /**
-     * Finds the closest Players to a particular location.
-     *
-     * @param location    The location to find the closest Player to.
-     * @param range    The maximum range to look for the Player.
-     * @return    The closest Player to the location, or null if no Player was found
-     *                     within the range specified.
-     */
-    public static List<dPlayer> getClosestPlayers(Location location, int range) {
-
-        List<dPlayer> closestPlayers = new ArrayList<dPlayer>();
-        double closestDistance = Math.pow(range, 2);
-        // TODO: Why is this manually iterating?
-        List<Player> playerList = new ArrayList<Player>(Bukkit.getOnlinePlayers());
-        Iterator<Player> it = playerList.iterator();
-        while (it.hasNext()) {
-            Player player = it.next();
-            Location loc = player.getLocation();
-            if (loc.getWorld().equals(location.getWorld())
-                    && loc.distanceSquared(location) < closestDistance) {
-                closestPlayers.add(dPlayer.mirrorBukkitPlayer(player));
-            }
-        }
-        return closestPlayers;
-    }
-
-
-    // TODO: Check why this is no longer used. Possible duplication of code?
-    //
-    /**
-     * Finds the closest NPC to a particular location.
-     *
-     * @param location    The location to find the closest NPC to.
-     * @param range    The maximum range to look for the NPC.
-     * @return    The closest NPC to the location, or null if no NPC was found
-     *                     within the range specified.
-     */
-    public static dNPC getClosestNPC (Location location, int range) {
-        dNPC closestNPC = null;
-        double closestDistance = Math.pow(range, 2);
-        // TODO: Why is this manually iterating?
-        Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
-        while (it.hasNext()) {
-            dNPC npc = it.next();
-            Location loc = npc.getLocation();
-            if (loc.getWorld().equals(location.getWorld())
-                    && loc.distanceSquared(location) < closestDistance) {
-                closestNPC = npc;
-                closestDistance = npc.getLocation().distanceSquared(location);
-            }
-        }
-        return closestNPC;
-    }
-
-
-    /**
      * Finds the closest NPC to a particular location.
      *
      * @param location    The location to find the closest NPC to.
@@ -316,30 +170,6 @@ public class Utilities {
             }
         }
         return closestNPC;
-    }
-
-
-    /**
-     * Returns a list of all NPCs within a certain range.
-     *
-     * @param location    The location to search.
-     * @param maxRange    The maximum range of the NPCs
-     *
-     * @return    The list of NPCs within the max range.
-     */
-    public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
-        maxRange = (int) Math.pow(maxRange, 2);
-        Set<dNPC> closestNPCs = new HashSet<dNPC> ();
-        // TODO: Why is this manually iterating?
-        Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
-        while (it.hasNext ()) {
-            dNPC npc = it.next ();
-            Location loc = npc.getLocation();
-            if (loc.getWorld().equals(location.getWorld()) && loc.distanceSquared(location) < maxRange) {
-                closestNPCs.add(npc);
-            }
-        }
-        return closestNPCs;
     }
 
 
@@ -381,50 +211,6 @@ public class Utilities {
 
         return baseLocation.distanceSquared(theLocation) < theLeeway * theLeeway;
     }
-
-
-    // TODO: Javadocs, comments
-    //
-    protected static FilenameFilter scriptsFilter;
-
-    static {
-        scriptsFilter = new FilenameFilter() {
-            public boolean accept(File file, String fileName) {
-                if(fileName.startsWith(".")) return false;
-
-                String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
-                return ext.equalsIgnoreCase("YML") || ext.equalsIgnoreCase("DSCRIPT");
-            }
-        };
-    }
-
-
-    /**
-     * Lists all files in the given directory.
-     *
-     * @param dir The directory to search in
-     * @param recursive If true subfolders will also get checked
-     * @return A {@link File} collection
-     */
-    public static List<File> listDScriptFiles(File dir, boolean recursive) {
-        List<File> files = new ArrayList<File>();
-        File[] entries = dir.listFiles();
-
-        for (File file : entries) {
-            // Add file
-            if (scriptsFilter == null || scriptsFilter.accept(dir, file.getName())) {
-                files.add(file);
-            }
-
-            // Add subdirectories
-            if (recursive && file.isDirectory()) {
-                files.addAll(listDScriptFiles(file, recursive));
-            }
-        }
-
-        return files;
-    }
-
 
     /**
      * Set the lines on a sign to the strings in a string array
@@ -552,7 +338,7 @@ public class Utilities {
     public static String generateRandomColors(int count) {
         String ret = "";
         for (int i = 0; i < count; i++) {
-            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(random.nextInt(34));
+            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(CoreUtilities.getRandom().nextInt(34));
         }
         return ret;
     }

@@ -1,14 +1,11 @@
 package net.aufdemrand.denizen.tags.core;
 
-import java.io.File;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import java.sql.Connection;
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.*;
@@ -18,13 +15,12 @@ import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
-
-
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -33,14 +29,21 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class UtilTags implements Listener {
 
     public UtilTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     // <--[tag]
@@ -52,7 +55,7 @@ public class UtilTags implements Listener {
     // Since this is a 'value' tag, to get an int value, you will need to do '<math.as_int:calc>',
     // and similar for all other element tags.
     // -->
-    @EventHandler
+    @TagManager.TagEvents
     public void mathTag(ReplaceableTagEvent event) {
         if (!event.matches("math", "m")) return;
         try {
@@ -74,9 +77,8 @@ public class UtilTags implements Listener {
     // the outcome of the condition. First element will show in a result of 'true',
     // otherwise the fallback element will show.
     // Example: '<t[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
-    // or '<t[<player.health.is[less].than[<player.health.max>]:You look healthy! || Got some bruises, eh?>'.
     // -->
-    @EventHandler
+    @TagManager.TagEvents
     public void ternaryTag(ReplaceableTagEvent event) {
         if (!event.matches("ternary", "tern", "t")) return;
 
@@ -92,11 +94,10 @@ public class UtilTags implements Listener {
     }
 
 
-    @EventHandler
+    @TagManager.TagEvents
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server", "svr", "global") || event.replaced()) return;
-        Attribute attribute =
-                new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+        Attribute attribute = event.getAttributes().fulfill(1);
 
         // <--[tag]
         // @attribute <server.has_flag[<flag_name>]>
@@ -144,7 +145,6 @@ public class UtilTags implements Listener {
                 event.setReplaced(new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getGlobalFlag(flag_name))
                         .getAttribute(attribute));
-            else event.setReplaced("null");
             return;
         }
 
@@ -162,7 +162,7 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
-        // @attribute <server.list_flags[<search>]>
+        // @attribute <server.list_flags[(regex:)<search>]>
         // @returns dList
         // @description
         // Returns a list of the server's flag names, with an optional search for
@@ -173,12 +173,66 @@ public class UtilTags implements Listener {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                for (String flag : allFlags)
-                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
-                        searchFlags.add(flag);
+                String search = attribute.getContext(1).toLowerCase();
+                if (search.startsWith("regex:")) {
+                    String regex = search.substring(6);
+                    try {
+                        Pattern pattern = Pattern.compile(search.substring(6));
+                        for (String flag : allFlags)
+                            if (pattern.matcher(flag).matches())
+                                searchFlags.add(flag);
+                    } catch (Exception e) {
+                        dB.echoError(e);
+                    }
+                }
+                else {
+                    for (String flag : allFlags)
+                        if (flag.toLowerCase().contains(search))
+                            searchFlags.add(flag);
+                }
             }
             event.setReplaced(searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_notables[<type>]>
+        // @returns dList(Notable)
+        // @description
+        // Lists all saved Notables currently on the server.
+        // Optionally, specify a type to search for.
+        // Valid types: locations, cuboids, ellipsoids, items, inventories
+        // -->
+        if (attribute.startsWith("list_notables")) {
+            dList allNotables = new dList();
+            if (attribute.hasContext(1)) {
+                String type = CoreUtilities.toLowerCase(attribute.getContext(1));
+                types: for (Map.Entry<String, Class> typeClass : NotableManager.getReverseClassIdMap().entrySet()) {
+                    if (type.equals(CoreUtilities.toLowerCase(typeClass.getKey()))) {
+                        for (Object notable : NotableManager.getAllType(typeClass.getValue())) {
+                            allNotables.add(((dObject) notable).identify());
+                        }
+                        break types;
+                    }
+                }
+            }
+            else {
+                for (Notable notable : NotableManager.notableObjects.values()) {
+                    allNotables.add(((dObject) notable).identify());
+                }
+            }
+            event.setReplaced(allNotables.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.start_time>
+        // @returns Duration
+        // @description
+        // Returns the time the server started as a duration time.
+        // -->
+        if (attribute.startsWith("start_time")) {
+            event.setReplaced(new Duration(Denizen.startTime / 50)
+                    .getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -201,8 +255,8 @@ public class UtilTags implements Listener {
         // -->
         if (attribute.startsWith("has_event")
                 && attribute.hasContext(1)) {
-            event.setReplaced(new Element(EventManager.EventExists(attribute.getContext(1))
-                    || EventManager.EventExists(EventManager.StripIdentifiers(attribute.getContext(1))))
+            event.setReplaced(new Element(EventManager.eventExists(attribute.getContext(1))
+                    || EventManager.eventExists(EventManager.StripIdentifiers(attribute.getContext(1))))
                     .getAttribute(attribute.fulfill(1)));
         }
 
@@ -249,7 +303,7 @@ public class UtilTags implements Listener {
             NPC npc = ((Citizens) Bukkit.getPluginManager().getPlugin("Citizens"))
                     .getNPCSelector().getSelected(Bukkit.getConsoleSender());
             if (npc == null)
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
+                return;
             else
                 event.setReplaced(new dNPC(npc).getAttribute(attribute.fulfill(1)));
             return;
@@ -261,7 +315,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of NPCs with a certain name.
         // -->
-        if (attribute.startsWith("get_npcs_named") && attribute.hasContext(1)) {
+        if (attribute.startsWith("get_npcs_named") && Depends.citizens != null && attribute.hasContext(1)) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
             for (NPC npc : CitizensAPI.getNPCRegistry())
                 if (npc.getName().equalsIgnoreCase(attribute.getContext(1)))
@@ -446,7 +500,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of all NPCs assigned to a specified script.
         // -->
-        if (attribute.startsWith("get_npcs_assigned")
+        if (attribute.startsWith("get_npcs_assigned") && Depends.citizens != null
                 && attribute.hasContext(1)) {
             dScript script = dScript.valueOf(attribute.getContext(1));
             if (script == null || !(script.getContainer() instanceof AssignmentScriptContainer)) {
@@ -506,7 +560,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of all spawned NPCs with a specified flag set.
         // -->
-        if (attribute.startsWith("get_spawned_npcs_flagged")
+        if (attribute.startsWith("get_spawned_npcs_flagged") && Depends.citizens != null
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
@@ -525,7 +579,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of all NPCs with a specified flag set.
         // -->
-        if (attribute.startsWith("get_npcs_flagged")
+        if (attribute.startsWith("get_npcs_flagged") && Depends.citizens != null
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
@@ -544,7 +598,7 @@ public class UtilTags implements Listener {
         // @description
         // Returns a list of all NPCs.
         // -->
-        if (attribute.startsWith("list_npcs")) {
+        if (attribute.startsWith("list_npcs") && Depends.citizens != null) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
             for (NPC npc : CitizensAPI.getNPCRegistry())
                 npcs.add(dNPC.mirrorCitizensNPC(npc));
@@ -678,8 +732,83 @@ public class UtilTags implements Listener {
 
     }
 
+    public static void adjustServer(Mechanism mechanism) {
+        Element value = mechanism.getValue();
 
-    @EventHandler
+        // <--[mechanism]
+        // @object server
+        // @name delete_file
+        // @input Element
+        // @description
+        // Deletes the given file from the server.
+        // Require config setting 'Commands.Delete.Allow file deletion'.
+        // @tags
+        // <server.has_file[<file>]>
+        // -->
+        if (mechanism.matches("delete_file") && mechanism.hasValue()) {
+            if (!Settings.allowDelete()) {
+                dB.echoError("File deletion disabled by administrator.");
+                return;
+            }
+            File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), value.asString());
+            try {
+                file.delete();
+            }
+            catch (Exception e) {
+                dB.echoError("Failed to delete file: " + e.getMessage());
+            }
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name run_java
+        // @input Element
+        // @description
+        // Executes an arbitrary Java string. Warning: EXTREMELY DANGEROUS.
+        // Require config setting 'Commands.Java.Allow Running java'.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("run_java") && mechanism.hasValue()) {
+            if (!Settings.allowRunningJava()) {
+                dB.echoError("Java execution disabled by administrator.");
+                return;
+            }
+            DenizenAPI.getCurrentInstance().runtimeCompiler.runString(mechanism.getValue().asString());
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name redirect_logging
+        // @input Element
+        // @description
+        // Tells the server to redirect logging to a world event or not.
+        // Note that this redirects *all console output* not just Denizen output.
+        // Note: don't enable /denizen debug -e while this is active.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
+            if (!Settings.allowConsoleRedirection()) {
+                dB.echoError("Console redirection disabled by administrator.");
+                return;
+            }
+            if (mechanism.getValue().asBoolean()) {
+                Denizen.logInterceptor.redirectOutput();
+            }
+            else {
+                Denizen.logInterceptor.standardOutput();
+            }
+        }
+
+        // TODO: Properties somehow?
+
+        if (!mechanism.fulfilled())
+            mechanism.reportInvalid();
+    }
+
+
+    @TagManager.TagEvents
     public void utilTag(ReplaceableTagEvent event) {
         if (!event.matches("util", "u")) return;
 
@@ -689,7 +818,7 @@ public class UtilTags implements Listener {
         String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";
         String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+        Attribute attribute = event.getAttributes().fulfill(1);
 
         if (type.equalsIgnoreCase("RANDOM")) {
 
@@ -714,7 +843,7 @@ public class UtilTags implements Listener {
                         }
 
                         event.setReplaced(new Element(
-                                String.valueOf(Utilities.getRandom().nextInt(max - min + 1) + min))
+                                String.valueOf(CoreUtilities.getRandom().nextInt(max - min + 1) + min))
                                 .getAttribute(attribute.fulfill(3)));
                     }
                 }
@@ -727,7 +856,7 @@ public class UtilTags implements Listener {
             // Returns a random decimal number from 0 to 1
             // -->
             else if (subType.equalsIgnoreCase("DECIMAL"))
-                event.setReplaced(new Element(Utilities.getRandom().nextDouble())
+                event.setReplaced(new Element(CoreUtilities.getRandom().nextDouble())
                         .getAttribute(attribute.fulfill(2)));
 
                 // <--[tag]
@@ -738,7 +867,7 @@ public class UtilTags implements Listener {
                 // 70% of all results will be within the range of -1 to 1.
                 // -->
             else if (subType.equalsIgnoreCase("GAUSS"))
-                event.setReplaced(new Element(Utilities.getRandom().nextGaussian())
+                event.setReplaced(new Element(CoreUtilities.getRandom().nextGaussian())
                         .getAttribute(attribute.fulfill(2)));
 
             // TODO: Delete (Deprecated in favor of li@list.random)
@@ -762,11 +891,11 @@ public class UtilTags implements Listener {
             // @attribute <util.random.duuid>
             // @returns Element
             // @description
-            // Returns a random 'denizen' unique ID, which resolves to a 10-character long
-            // randomly generated string using the letters 'D E N I Z E N'.
+            // Returns a random 'denizen' unique ID, which is made of a randomly generated sentence.
             // -->
             else if (subType.equalsIgnoreCase("DUUID"))
-                event.setReplaced(new Element(ScriptQueue._getNextId())
+                event.setReplaced(new Element(ScriptQueue
+                        .getNextId(event.hasSubTypeContext() ? event.getSubTypeContext(): "DUUID"))
                         .getAttribute(attribute.fulfill(2)));
         }
 

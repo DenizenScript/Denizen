@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -64,7 +65,9 @@ public class ScriptBuilder {
                 String[] args = aH.buildArgs(scriptEntry[1]);
                 if (dB.showScriptBuilder)
                     dB.echoDebug(parent, "Adding '" + scriptEntry[0] + "'  Args: " + Arrays.toString(args));
-                ScriptEntry newEntry = new ScriptEntry(scriptEntry[0], args, parent).setPlayer(player).setNPC(npc);
+                ScriptEntry newEntry = new ScriptEntry(scriptEntry[0], args, parent);
+                ((BukkitScriptEntryData)newEntry.entryData).setPlayer(player);
+                ((BukkitScriptEntryData)newEntry.entryData).setNPC(npc);
                 scriptCommands.add(newEntry);
             } catch (Exception e) {
                 dB.echoError(e);

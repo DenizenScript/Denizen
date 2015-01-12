@@ -14,8 +14,10 @@ import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.*;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_8_R1.PacketPlayOutGameStateChange;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -24,9 +26,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.map.MapView;
 import org.bukkit.util.BlockIterator;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class dPlayer implements dObject, Adjustable {
 
@@ -134,7 +138,7 @@ public class dPlayer implements dObject, Adjustable {
                 UUID uuid = UUID.fromString(arg);
                 if (uuid != null) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                    if (player != null) {
+                    if (player != null && player.hasPlayedBefore()) {
                         return true;
                     }
                 }
@@ -143,7 +147,7 @@ public class dPlayer implements dObject, Adjustable {
                 // Nothing
             }
         }
-        return playerNames.containsKey(arg.toLowerCase());
+        return false;
     }
 
     public static boolean playerNameIsValid(String name) {
@@ -258,17 +262,20 @@ public class dPlayer implements dObject, Adjustable {
 
     public CraftingInventory getBukkitWorkbench() {
         if (isOnline()) {
-            if (getPlayerEntity().getOpenInventory().getType() != InventoryType.WORKBENCH
-                    && getPlayerEntity().getOpenInventory().getType() != InventoryType.CRAFTING)
-                getPlayerEntity().openWorkbench(null, true);
-            return (CraftingInventory) getPlayerEntity().getOpenInventory().getTopInventory();
+            if (getPlayerEntity().getOpenInventory().getType() == InventoryType.WORKBENCH
+                    || getPlayerEntity().getOpenInventory().getType() == InventoryType.CRAFTING)
+                return (CraftingInventory) getPlayerEntity().getOpenInventory().getTopInventory();
         }
-        else return null;
+        return null;
     }
 
     public dInventory getWorkbench() {
-        if (isOnline()) return new dInventory(getBukkitWorkbench(), getPlayerEntity());
-        else return null;
+        if (isOnline()) {
+            CraftingInventory workbench = getBukkitWorkbench();
+            if (workbench != null)
+                return new dInventory(workbench, getPlayerEntity());
+        }
+        return null;
     }
 
     public Inventory getBukkitEnderChest() {
@@ -448,7 +455,7 @@ public class dPlayer implements dObject, Adjustable {
             return "null";
 
         if (offlinePlayer == null)
-            return Element.NULL.getAttribute(attribute);
+            return null;
 
         /////////////////////
         //   OFFLINE ATTRIBUTES
@@ -468,6 +475,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Debugs the player in the log and returns true.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("debug.log")) {
             dB.log(debug());
@@ -480,6 +488,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element
         // @description
         // Returns the player's debug with no color.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("debug.no_color")) {
             return new Element(ChatColor.stripColor(debug()))
@@ -491,6 +500,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element
         // @description
         // Returns the player's debug.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("debug")) {
             return new Element(debug())
@@ -502,6 +512,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element
         // @description
         // Returns the dObject's prefix.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
@@ -518,6 +529,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Returns a list of the last 10 things the player has said, less
         // if the player hasn't said all that much.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("chat_history_list"))
             return new dList(PlayerTags.playerChatHistory.get(getName())) // TODO: UUID?
@@ -529,6 +541,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // returns the last thing the player said.
         // If a number is specified, returns an earlier thing the player said.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("chat_history")) {
             int x = 1;
@@ -536,7 +549,7 @@ public class dPlayer implements dObject, Adjustable {
                 x = attribute.getIntContext(1);
             // No playerchathistory? Return null.
             if (!PlayerTags.playerChatHistory.containsKey(getName())) // TODO: UUID?
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(PlayerTags.playerChatHistory.get(getName()).get(x - 1)) // TODO: UUID?
                         .getAttribute(attribute.fulfill(1));
@@ -547,23 +560,23 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Flag dList
         // @description
         // returns the specified flag from the player.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return Element.NULL.getAttribute(attribute.fulfill(1));
-            attribute.fulfill(1);
-            if (attribute.startsWith("is_expired")
+            else return null;
+            if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired"))
                 return new Element(!FlagManager.playerHasFlag(this, flag_name))
-                        .getAttribute(attribute.fulfill(1));
-            if (attribute.startsWith("size") && !FlagManager.playerHasFlag(this, flag_name))
-                return new Element(0).getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(2));
+            if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.playerHasFlag(this, flag_name))
+                return new Element(0).getAttribute(attribute.fulfill(2));
             if (FlagManager.playerHasFlag(this, flag_name))
                 return new dList(DenizenAPI.getCurrentInstance().flagManager()
                         .getPlayerFlag(this, flag_name))
-                        .getAttribute(attribute);
-            else return Element.NULL.getAttribute(attribute);
+                        .getAttribute(attribute.fulfill(1));
+            return new Element(identify()).getAttribute(attribute);
         }
 
         // <--[tag]
@@ -571,29 +584,44 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns true if the Player has the specified flag, otherwise returns false.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("has_flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return Element.NULL.getAttribute(attribute.fulfill(1));
+            else return null;
             return new Element(FlagManager.playerHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <p@player.list_flags[<search>]>
+        // @attribute <p@player.list_flags[(regex:)<search>]>
         // @returns dList
         // @description
         // Returns a list of a player's flag names, with an optional search for
         // names containing a certain pattern.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("list_flags")) {
             dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listPlayerFlags(this));
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                for (String flag : allFlags)
-                    if (flag.toLowerCase().contains(attribute.getContext(1).toLowerCase()))
-                        searchFlags.add(flag);
+                String search = attribute.getContext(1).toLowerCase();
+                if (search.startsWith("regex:")) {
+                    try {
+                        Pattern pattern = Pattern.compile(search.substring(6));
+                        for (String flag : allFlags)
+                            if (pattern.matcher(flag).matches())
+                                searchFlags.add(flag);
+                    } catch (Exception e) {
+                        dB.echoError(e);
+                    }
+                }
+                else {
+                    for (String flag : allFlags)
+                        if (flag.toLowerCase().contains(search))
+                            searchFlags.add(flag);
+                }
             }
             return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1));
@@ -623,6 +651,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Decimal)
         // @description
         // returns the amount of money the player has with the registered Economy system.
+        // May work offline depending on economy plugin.
         // -->
 
         if (attribute.startsWith("money")) {
@@ -654,8 +683,9 @@ public class dPlayer implements dObject, Adjustable {
                         .getAttribute(attribute.fulfill(1));
 
             } else {
-                dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                if (!attribute.hasAlternative())
+                    dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                return null;
             }
         }
 
@@ -705,13 +735,14 @@ public class dPlayer implements dObject, Adjustable {
                         for (String ent: context.split("\\|")) {
                             boolean valid = false;
 
-                            if (ent.equalsIgnoreCase("npc") && CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                            if (ent.equalsIgnoreCase("npc") && Depends.citizens != null
+                                    && CitizensAPI.getNPCRegistry().isNPC(entity)) {
                                 valid = true;
                             }
                             else if (dEntity.matches(ent)) {
                                 // only accept generic entities that are not NPCs
                                 if (dEntity.valueOf(ent).isGeneric()) {
-                                    if (!CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                                    if (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(entity)) {
                                         valid = true;
                                     }
                                 }
@@ -734,7 +765,7 @@ public class dPlayer implements dObject, Adjustable {
                 bi = new BlockIterator(getPlayerEntity(), range);
             }
             catch (IllegalStateException e) {
-                return Element.NULL.getAttribute(attribute.fulfill(attribs));
+                return null;
             }
             Block b;
             Location l;
@@ -769,7 +800,7 @@ public class dPlayer implements dObject, Adjustable {
                     }
                 }
             }
-            return Element.NULL.getAttribute(attribute.fulfill(attribs));
+            return null;
         }
 
         // <--[tag]
@@ -835,6 +866,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element
         // @description
         // returns the ID used to save the player in Denizen's saves.yml file.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("save_name"))
             return new Element(getSaveName()).getAttribute(attribute.fulfill(1));
@@ -848,12 +880,13 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.bed_spawn>
         // @returns dLocation
         // @description
-        // Returns the location of the player's bed spawn location, 'null' if
+        // Returns the location of the player's bed spawn location, null if
         // it doesn't exist.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("bed_spawn"))
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
-                    .getAttribute(attribute.fulfill(2));
+                    .getAttribute(attribute.fulfill(1));
 
         // If online, let dEntity handle location tags since there are more options
         // for online Players
@@ -872,6 +905,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Duration
         // @description
         // returns the millisecond time of when the player first logged on to this server.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("first_played")) {
             attribute = attribute.fulfill(1);
@@ -888,6 +922,8 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player has played before.
+        // Works with offline players.
+        // Note: This will just always return true.
         // -->
         if (attribute.startsWith("has_played_before"))
             return new Element(true)
@@ -935,6 +971,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player is currently online.
+        // Works with offline players (returns false in that case).
         // -->
         if (attribute.startsWith("is_online"))
             return new Element(isOnline()).getAttribute(attribute.fulfill(1));
@@ -944,6 +981,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player is a full server operator.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("is_op"))
             return new Element(getOfflinePlayer().isOp())
@@ -954,6 +992,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // returns whether the player is whitelisted.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("is_whitelisted"))
             return new Element(getOfflinePlayer().isWhitelisted())
@@ -963,8 +1002,8 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.last_played>
         // @returns Duration
         // @description
-        // returns the millisecond time of when the player
-        // was last seen.
+        // returns the millisecond time of when the player was last seen.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("last_played")) {
             attribute = attribute.fulfill(1);
@@ -981,11 +1020,13 @@ public class dPlayer implements dObject, Adjustable {
         // @returns dList
         // @description
         // returns a list of all groups the player is in.
+        // May work with offline players, depending on permission plugin.
         // -->
         if (attribute.startsWith("groups")) {
             if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                if (!attribute.hasAlternative())
+                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                return null;
             }
             dList list = new dList();
             for (String group: Depends.permissions.getGroups()) {
@@ -1004,8 +1045,9 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                if (!attribute.hasAlternative())
+                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                return null;
             }
 
             String group = attribute.getContext(1);
@@ -1059,7 +1101,9 @@ public class dPlayer implements dObject, Adjustable {
             String permission = attribute.getContext(1);
 
             if (Depends.permissions == null) {
-                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                if (!attribute.hasAlternative()) {
+                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                }
                 return null;
             }
 
@@ -1107,6 +1151,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns dInventory
         // @description
         // returns a dInventory of the player's current inventory.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("inventory")) {
             return getInventory().getAttribute(attribute.fulfill(1));
@@ -1117,6 +1162,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns dInventory
         // @description
         // Gets the player's enderchest inventory.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("enderchest"))
             return getEnderChest().getAttribute(attribute.fulfill(1));
@@ -1178,7 +1224,7 @@ public class dPlayer implements dObject, Adjustable {
             if (getPlayerEntity().hasMetadata("selected"))
                 return getSelectedNPC()
                         .getAttribute(attribute.fulfill(1));
-            else return Element.NULL.getAttribute(attribute.fulfill(1));
+            else return null;
         }
 
 
@@ -1474,7 +1520,7 @@ public class dPlayer implements dObject, Adjustable {
             // specified qualifier, which can be either an entity or material.
             // -->
             if (attribute.getAttribute(2).startsWith("qualifier")) {
-                if (statistic == null) return Element.NULL.getAttribute(attribute.fulfill(2));
+                if (statistic == null) return null;
                 dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2));
                 if (obj instanceof dMaterial)
                     return new Element(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
@@ -1483,10 +1529,10 @@ public class dPlayer implements dObject, Adjustable {
                     return new Element(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getEntityType()))
                             .getAttribute(attribute.fulfill(2));
                 else
-                    return Element.NULL.getAttribute(attribute.fulfill(2));
+                    return null;
             }
 
-            if (statistic == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (statistic == null) return null;
             return new Element(getPlayerEntity().getStatistic(statistic)).getAttribute(attribute.fulfill(1));
         }
 
@@ -1502,7 +1548,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.time>
-        // @returns Duration
+        // @returns Element(Number)
         // @description
         // returns the time the player is currently experiencing. This time could differ from
         // the time that the rest of the world is currently experiencing if a 'time' or 'freeze_time'
@@ -1536,7 +1582,7 @@ public class dPlayer implements dObject, Adjustable {
                 return new Element(getPlayerEntity().getPlayerWeather().name())
                         .getAttribute(attribute.fulfill(1));
             else
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
         }
 
         // <--[tag]
@@ -1578,6 +1624,17 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("xp"))
             return new Element(getPlayerEntity().getExp() * 100)
                     .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.type>
+        // @returns Element
+        // @description
+        // Always returns 'Player' for dPlayer objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Player").getAttribute(attribute.fulfill(1));
+        }
 
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
@@ -1699,6 +1756,23 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("saturation") && mechanism.requireFloat()) {
             getPlayerEntity().setSaturation(value.asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name send_map
+        // @input Element(Number)
+        // @description
+        // Forces a player to receive the entirety of the specified map ID instantly.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("send_map") && mechanism.requireInteger()) {
+            MapView map = Bukkit.getServer().getMap((short) value.asInt());
+            if (map != null)
+                getPlayerEntity().sendMap(map);
+            else
+                dB.echoError("No map found for ID " + value.asInt() + "!");
         }
 
         // <--[mechanism]
@@ -2106,6 +2180,58 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("item_message")) {
             ItemChangeMessage.sendMessage(getPlayerEntity(), value.asString());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name show_endcredits
+        // @input None
+        // @description
+        // Shows the player the end credits.
+        // -->
+        if (mechanism.matches("show_endcredits")) {
+            ((CraftPlayer)getPlayerEntity()).getHandle().viewingCredits = true;
+            ((CraftPlayer)getPlayerEntity()).getHandle().playerConnection
+                    .sendPacket(new PacketPlayOutGameStateChange(4, 0.0F));
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name spectate
+        // @input dEntity
+        // @description
+        // Forces the player to spectate from the entity's point of view.
+        // Note: They cannot cancel the spectating without a re-log -- you
+        // must make them spectate themselves to cancel the effect.
+        // (i.e. - adjust <player> "spectate:<player>")
+        // -->
+        if (mechanism.matches("spectate") && mechanism.requireObject(dEntity.class)) {
+            PlayerSpectateEntity.setSpectating(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name open_book
+        // @input None
+        // @description
+        // Forces the player to open the written book in their hand.
+        // The book can safely be removed from the player's hand
+        // without the player closing the book.
+        // -->
+        if (mechanism.matches("open_book")) {
+            OpenBook.openBook(getPlayerEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name edit_sign
+        // @input dLocation
+        // @description
+        // Allows the player to edit an existing sign. To create a
+        // sign, see <@link command Sign>.
+        // -->
+        if (mechanism.matches("edit_sign") && mechanism.requireObject(dLocation.class)) {
+            SignEditor.editSign(getPlayerEntity(), value.asType(dLocation.class));
         }
 
         // Iterate through this object's properties' mechanisms

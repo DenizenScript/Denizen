@@ -2,8 +2,9 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.List;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
@@ -57,8 +58,8 @@ public class LeashCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("cancel")) {
 
             scriptEntry.defaultObject("holder",
-                    scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() : null,
-                    scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity() : null,
+                    ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
         }
     }
 

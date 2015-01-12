@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.CitizensAPI;
@@ -29,15 +30,57 @@ import java.util.Map;
 
 public class HealthTrait extends Trait implements Listener {
 
+// <--[language]
+// @name Health Trait
+// @group NPC Traits
+// @description
+// By default, NPCs are invulnerable, unable to be damaged. If you want your NPC 
+// to be able to take damage, or use the left click as an interaction, it must
+// have the health trait. The Health trait is automatically enabled if you set
+// the damage trigger state to true.
+//
+// You can use the denizen vulnerable command to make your NPCs react to left
+// click, but not take damage. - vulnerable state:false
+//
+// Enable Damage trigger via dScript: - trigger name:damage state:true
+// Enable Health trait via dScript: - trait state:true health
+// Enable Health trait via npc command: /npc health --set # (-r)
+//
+// Enable automatic respawn (default delay 300t): /npc respawn [delay in ticks]
+// Set respawn location: - flag <npc> respawn_location:<location>
+//
+// Related Tags
+// <@link tag npc.health>
+// <@link tag npc.health.formatted>
+// <@link tag npc.health.max>
+// <@link tag npc.health.percentage>
+// <@link tag npc.has_trait[health]>
+//
+// Related Mechanisms
+// <@link mechanism health>
+// <@link mechanism max_health>
+//
+// Related Commands
+// <@link command heal>
+// <@link command health>
+// <@link command vulnerable>
+//
+// Related Actions
+// <@link action on damage>
+// <@link action on damaged>
+// <@link action on no damage trigger>
+//
+// -->
+
     // Saved to the C2 saves.yml
     @Persist("animatedeath")
-    private boolean animatedeath = Settings.HealthTraitAnimatedDeathEnabled();
+    private boolean animatedeath = Settings.healthTraitAnimatedDeathEnabled();
 
     @Persist("respawnondeath")
-    private boolean respawn = Settings.HealthTraitRespawnEnabled();
+    private boolean respawn = Settings.healthTraitRespawnEnabled();
 
     @Persist("respawndelayinseconds")
-    private String respawnDelay = Settings.HealthTraitRespawnDelay();
+    private String respawnDelay = Settings.healthTraitRespawnDelay();
 
     @Persist("respawnlocation")
     private String respawnLocation =  "<npc.flag[respawn_location] || <npc.location>>";
@@ -72,7 +115,8 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public Location getRespawnLocation() {
-        return dLocation.valueOf(TagManager.tag(null, dNPC.mirrorCitizensNPC(npc), respawnLocation));
+        return dLocation.valueOf(TagManager.tag(respawnLocation, new BukkitTagContext(null,
+                dNPC.mirrorCitizensNPC(npc), false, null, false, null)));
     }
 
     public void setRespawnable(boolean respawnable) {
@@ -99,7 +143,8 @@ public class HealthTrait extends Trait implements Listener {
      * information for this trait.
      *
      */
-    @Override public void onSpawn() {
+    @Override
+    public void onSpawn() {
         dying = false;
         setHealth();
 
@@ -288,9 +333,8 @@ public class HealthTrait extends Trait implements Listener {
         if (npc.getBukkitEntity() == null)
             return;
 
-        loc = dLocation.valueOf(TagManager.tag(null,
-                DenizenAPI.getDenizenNPC(npc),
-                respawnLocation, false));
+        loc = dLocation.valueOf(TagManager.tag(respawnLocation, // TODO: debug option?
+                new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null)));
 
         if (loc == null) loc = npc.getBukkitEntity().getLocation();
 
@@ -326,14 +370,14 @@ public class HealthTrait extends Trait implements Listener {
 //        dMaterial mat = new dMaterial(Material.WOOL, 14);
 //
 //        for (dPlayer player : Utilities.getClosestPlayers(entity.getLocation(), 10)) {
-//            for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 3, 65))
+//            for (Block block : CoreUtilities.getRandomSolidBlocks(entity.getLocation(), 3, 65))
 //                new FakeBlock(player, new dLocation(block.getLocation()),
 //                        mat, Duration.valueOf("10-20s"));
 //        }
 //
 //        ParticleEffect.CRIT.play(entity.getEyeLocation(), .2f, .2f, .2f, 0, 3500);
 //
-//        for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 2, 5)) {
+//        for (Block block : CoreUtilities.getRandomSolidBlocks(entity.getLocation(), 2, 5)) {
 //            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.BONE)).setPickupDelay(Integer.MAX_VALUE);
 //            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE, 1, (short) 14)).setPickupDelay(Integer.MAX_VALUE);
 //        }

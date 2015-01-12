@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 
 import net.aufdemrand.denizen.events.EventManager;
@@ -17,6 +18,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 
 /**
  * Preferred method of outputting debugger information with Denizen and
@@ -63,16 +65,16 @@ import org.bukkit.command.CommandSender;
  */
 public class dB {
 
-    public static boolean showDebug = Settings.ShowDebug();
+    public static boolean showDebug = Settings.showDebug();
     public static boolean showStackTraces = true;
     public static boolean showScriptBuilder = false;
     public static boolean showColor = true;
     public static boolean showEventsTrimming = false;
+    public static boolean debugOverride = false;
 
     public static List<String> filter = new ArrayList<String>();
 
     public static boolean shouldTrim = true;
-    public static int trimSize = 512;
     public static boolean record = false;
     public static StringBuilder Recording = new StringBuilder();
     public static void toggle() { showDebug = !showDebug; }
@@ -130,12 +132,13 @@ public class dB {
                 + trimMessage(report), caller);
 
         if (caller instanceof ScriptEntry) {
-            if (((ScriptEntry) caller).hasPlayer()) {
-                if (FlagManager.playerHasFlag(((ScriptEntry) caller).getPlayer(), "show_command_reports")) {
+            if (((BukkitScriptEntryData)((ScriptEntry) caller).entryData).hasPlayer()) {
+                if (FlagManager.playerHasFlag(((BukkitScriptEntryData)((ScriptEntry) caller).entryData)
+                        .getPlayer(), "show_command_reports")) {
                     String message = "<Y>+> <G>Executing '<Y>" + name + "<G>': "
                             + trimMessage(report);
 
-                    ((ScriptEntry) caller).getPlayer().getPlayerEntity()
+                    ((BukkitScriptEntryData)((ScriptEntry) caller).entryData).getPlayer().getPlayerEntity()
                             .sendRawMessage(message.replace("<Y>", ChatColor.YELLOW.toString())
                                     .replace("<G>", ChatColor.DARK_GRAY.toString())
                                     .replace("<A>", ChatColor.AQUA.toString()));
@@ -246,7 +249,9 @@ public class dB {
             events.add("script generates error");
             if (script != null)
                 events.add(script.identifySimple() + " generates error");
-            String Determination = EventManager.doEvents(events, null, null, context, true);
+            ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
+            String Determination = EventManager.doEvents(events, (entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null),
+                    (entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null), context, true);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
                 return;
@@ -287,7 +292,9 @@ public class dB {
             context.put("message", new Element(thrown.getMessage()));
             context.put("type", new Element(thrown.getClass().getSimpleName()));
             context.put("queue", source);
-            String Determination = EventManager.doEvents(Arrays.asList("server generates exception"), null, null, context);
+            ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
+            String Determination = EventManager.doEvents(Arrays.asList("server generates exception"),
+                    (entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null), (entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null), context);
             ThrowErrorEvent = true;
             if (Determination.equalsIgnoreCase("CANCELLED"))
                 return;
@@ -359,6 +366,7 @@ public class dB {
     // Some debug methods trim to keep super-long messages from hitting the console.
     private static String trimMessage(String message) {
         if (!shouldTrim) return message;
+        int trimSize = Settings.trimLength();
         if (message.length() > trimSize)
             message = message.substring(0, trimSize - 1) + "... * snip! *";
         return message;
@@ -366,6 +374,9 @@ public class dB {
 
 
     public static boolean shouldDebug(Debuggable caller) {
+        if (debugOverride) {
+            return true;
+        }
         boolean should_send = true;
 
         // Attempt to see if the debug should even be sent by checking the
@@ -417,7 +428,7 @@ public class dB {
 
             // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
             // than having a bunch of ChatColor.XXXX
-            string = TagManager.CleanOutputFully(string
+            string = TagManager.cleanOutputFully(string
                     .replace("<Y>", ChatColor.YELLOW.toString())
                     .replace("<G>", ChatColor.DARK_GRAY.toString())
                     .replace("<A>", ChatColor.AQUA.toString()));
@@ -432,9 +443,10 @@ public class dB {
             String[] words = string.split(" ");
             StringBuilder buffer = new StringBuilder();
             int length = 0;
+            int width = Settings.consoleWidth();
             for (String word : words) { // # of total chars * # of lines - timestamp
                 int strippedLength = ChatColor.stripColor(word).length() + 1;
-                if (length + strippedLength  < Settings.ConsoleWidth()) {
+                if (length + strippedLength  < width) {
                     buffer.append(word).append(" ");
                     length = length + strippedLength;
                 } else {
@@ -442,7 +454,7 @@ public class dB {
                     length = strippedLength;
                     // Leave spaces to account for timestamp and indent
                     buffer.append("\n                   ").append(word).append(" ");
-                }                          // 16:05:06 [INFO]
+                }                 // [01:02:03 INFO]:
             }
 
             String result = buffer.toString();

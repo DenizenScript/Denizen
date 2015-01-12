@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -151,22 +151,16 @@ public class InjectCommand extends AbstractCommand {
         List<ScriptEntry> entries;
         // If it's local
         if (scriptEntry.hasObject("local"))
-            entries = scriptEntry.getScript().getContainer().getEntries(
-                    scriptEntry.getPlayer(),
-                    scriptEntry.getNPC(),
+            entries = scriptEntry.getScript().getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
 
         // If it has a path
         else if (scriptEntry.hasObject("path"))
-            entries = script.getContainer().getEntries(
-                    scriptEntry.getPlayer(),
-                    scriptEntry.getNPC(),
+            entries = script.getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
 
         // Else, assume standard path
-        else entries = script.getContainer().getBaseEntries(
-                    scriptEntry.getPlayer(),
-                    scriptEntry.getNPC());
+        else entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
 
         // For determine
         ScriptBuilder.addObjectToEntries(entries, "ReqId", scriptEntry.getObject("ReqId"));

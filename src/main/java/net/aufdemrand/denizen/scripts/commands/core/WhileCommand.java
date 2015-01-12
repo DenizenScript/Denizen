@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -59,7 +60,7 @@ public class WhileCommand extends BracedCommand {
             }
 
             else if (!scriptEntry.hasObject("value")) {
-                scriptEntry.addObject("value", new Element(original.raw_value).setPrefix("comparison_value"));
+                scriptEntry.addObject("value", new Element(original.raw_value));
                 break;
             }
 
@@ -147,13 +148,15 @@ public class WhileCommand extends BracedCommand {
                 data.index++;
                 if (System.currentTimeMillis() - data.LastChecked < 50) {
                     data.instaTicks++;
-                    int max = Settings.WhileMaxLoops();
+                    int max = Settings.whileMaxLoops();
                     if (data.instaTicks > max && max != 0)
                         return;
                 }
+                else {
+                    data.instaTicks = 0;
+                }
                 data.LastChecked = System.currentTimeMillis();
-                if (TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(),
-                        data.value, false, scriptEntry).equalsIgnoreCase("true")) {
+                if (TagManager.tag(data.value, new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
                     dB.echoDebug(scriptEntry, dB.DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
                     ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("WHILE");
@@ -195,9 +198,9 @@ public class WhileCommand extends BracedCommand {
             // Report to dB
             dB.report(scriptEntry, getName(), value.debug());
 
-            if (!TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(),
-                    value.asString(), false, scriptEntry).equalsIgnoreCase("true"))
+            if (!TagManager.tag(value.asString(), new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
                 return;
+            }
 
             WhileData datum = new WhileData();
             datum.index = 1;

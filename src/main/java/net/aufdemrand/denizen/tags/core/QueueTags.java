@@ -1,18 +1,19 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
-import org.bukkit.event.EventHandler;
+import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.event.Listener;
 
 public class QueueTags implements Listener {
 
     public QueueTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
 
@@ -20,18 +21,18 @@ public class QueueTags implements Listener {
     //  ReplaceableTagEvent handler
     ////////
 
-    @EventHandler
+    @TagManager.TagEvents
     public void queueTag(ReplaceableTagEvent event) {
 
         if (!event.matches("queue", "q")) return;
 
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+        Attribute attribute = event.getAttributes().fulfill(1);
 
         // Handle <queue[id]. ...> tags
 
         if (event.hasNameContext()) {
-            if (ScriptQueue._queueExists(event.getNameContext()))
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
+            if (!ScriptQueue._queueExists(event.getNameContext()))
+                return;
             else
                 event.setReplaced(ScriptQueue._getExistingQueue(event.getNameContext())
                         .getAttribute(attribute.fulfill(1)));

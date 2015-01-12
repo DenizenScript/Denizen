@@ -1,11 +1,7 @@
 package net.aufdemrand.denizen.tags;
 
-
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.util.org.apache.commons.lang3.StringUtils;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,14 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- *
- * @author Jeremy Schroeder
- *
- */
-
 public class Attribute {
-
 
     private static List<String> separate_attributes(String attributes) {
 
@@ -45,7 +34,7 @@ public class Attribute {
             }
 
             else if (chr == '.'
-                    && !StringUtils.isNumeric(Character.toString(attributes.charAt(x + 1)))
+                    && !(attributes.charAt(x + 1) >= '0' && attributes.charAt(x + 1) <= '9')
                     && braced == 0)
                 x2 = x;
 
@@ -105,15 +94,13 @@ public class Attribute {
     }
 
     public boolean startsWith(String string) {
-        string = string.toLowerCase();
+        string = CoreUtilities.toLowerCase(string);
         if (attributes.isEmpty()) return false;
-        return raw_tag.toLowerCase().startsWith(string);
+        return CoreUtilities.toLowerCase(raw_tag).startsWith(string);
     }
 
     public boolean startsWith(String string, int attribute) {
-        if (attributes.isEmpty()) return false;
-        if (attributes.size() < attribute) return false;
-        return getAttribute(attribute).startsWith(string);
+        return CoreUtilities.toLowerCase(getAttribute(attribute)).startsWith(string);
     }
 
     int fulfilled = 0;
@@ -144,18 +131,6 @@ public class Attribute {
         return text.endsWith("]") && text.contains("[");
     }
 
-    private dPlayer getPlayer() {
-        if (getScriptEntry() == null)
-            return null;
-        return getScriptEntry().getPlayer();
-    }
-
-    private dNPC getNPC() {
-        if (getScriptEntry() == null)
-            return null;
-        return getScriptEntry().getNPC();
-    }
-
     public String getContext(int attribute) {
         if (attribute <= attributes.size() && attribute > 0 && hasContext(attribute)) {
 
@@ -166,9 +141,9 @@ public class Attribute {
             Matcher contextMatcher = CONTEXT_PATTERN.matcher(text);
 
             if (contextMatcher.find()) {
-                String tagged = TagManager.CleanOutputFully(TagManager.tag(
-                        getPlayer(), getNPC(), text.substring(contextMatcher.start() + 1,
-                        contextMatcher.end() - 1), false, getScriptEntry()));
+                String tagged = TagManager.cleanOutputFully(TagManager.tag(
+                                text.substring(contextMatcher.start() + 1, contextMatcher.end() - 1),
+                        new BukkitTagContext(scriptEntry, false)));
                 contexts.set(attribute - 1, tagged);
                 original_contexts.set(attribute - 1 + fulfilled, tagged);
                 return tagged;

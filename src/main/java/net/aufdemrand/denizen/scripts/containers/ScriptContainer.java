@@ -1,18 +1,14 @@
 package net.aufdemrand.denizen.scripts.containers;
 
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptEntrySet;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
-import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
-import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.Debuggable;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,21 +56,21 @@ public class ScriptContainer implements Debuggable {
     // -->
 
 
-    public ScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public ScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         contents = configurationSection;
         this.name = scriptContainerName.toUpperCase();
     }
 
 
     // The contents of the script container
-    ConfigurationSection contents;
+    YamlConfiguration contents;
 
     /**
      * Gets the contents of the container.
      *
      * @return a ConfigurationSection object
      */
-    public ConfigurationSection getContents() {
+    public YamlConfiguration getContents() {
         return contents;
     }
 
@@ -126,6 +122,10 @@ public class ScriptContainer implements Debuggable {
 
     public String getFileName() {
         return ScriptHelper.getSource(getName());
+    }
+
+    public String getOriginalName() {
+        return ScriptHelper.getOriginalName(getName());
     }
 
 
@@ -194,7 +194,9 @@ public class ScriptContainer implements Debuggable {
     }
 
 
-    public ConfigurationSection getConfigurationSection(String path) {
+    public YamlConfiguration getConfigurationSection(String path) {
+        if (path.length() == 0)
+                return contents;
         return contents.getConfigurationSection(path.toUpperCase());
     }
 
@@ -204,35 +206,18 @@ public class ScriptContainer implements Debuggable {
     }
 
 
-    public boolean checkBaseRequirements(dPlayer player, dNPC npc) {
-        return checkRequirements(player, npc, "");
+    public List<ScriptEntry> getBaseEntries(ScriptEntryData data) {
+        return getEntries(data, "script");
     }
 
-    public boolean checkRequirements(dPlayer player, dNPC npc, String path) {
-        if (path == null) path = "";
-        if (path.length() > 0) path = path + ".";
-        // Get requirements
-        List<String> requirements = contents.getStringList(path + "REQUIREMENTS.LIST");
-        String mode = contents.getString(path + "REQUIREMENTS.MODE", "ALL");
-        // No requirements? Meets requirements!
-        if (requirements == null || requirements.isEmpty()) return true;
-        // Return new RequirementsContext built with info extracted from the ScriptContainer
-        RequirementsContext context = new RequirementsContext(new RequirementsMode(mode), requirements, this);
-        context.attachPlayer(player);
-        context.attachNPC(npc);
-        return DenizenAPI.getCurrentInstance().getScriptEngine().getRequirementChecker().check(context);
-    }
-
-    public List<ScriptEntry> getBaseEntries(dPlayer player, dNPC npc) {
-        return getEntries(player, npc, "script");
-    }
-
-    public List<ScriptEntry> getEntries(dPlayer player, dNPC npc, String path) {
+    public List<ScriptEntry> getEntries(ScriptEntryData data, String path) {
         if (path == null) path = "script";
         ScriptEntrySet set = getSetFor(path.toUpperCase());
         if (set == null)
             return new ArrayList<ScriptEntry>();
-        set.setPlayerAndNPC(player, npc);
+        for (ScriptEntry entry: set.getEntries()) {
+            entry.entryData = data.clone();
+        }
         return set.getEntries();
     }
 
@@ -251,10 +236,6 @@ public class ScriptContainer implements Debuggable {
 
     private Map<String, ScriptEntrySet> scriptsMap = new HashMap<String, ScriptEntrySet>();
 
-    public boolean checkCooldown(dPlayer player) {
-        return CooldownCommand.checkCooldown(player, name);
-    }
-
     /////////////
     // DEBUGGABLE
     /////////
@@ -263,7 +244,7 @@ public class ScriptContainer implements Debuggable {
     private Boolean shouldDebug = null;
 
     @Override
-    public boolean shouldDebug() throws Exception {
+    public boolean shouldDebug() {
         if (shouldDebug == null)
             shouldDebug = (!(contents.contains("DEBUG") && contents.getString("DEBUG").equalsIgnoreCase("false")));
         return shouldDebug;
@@ -276,6 +257,6 @@ public class ScriptContainer implements Debuggable {
 
     @Override
     public String toString() {
-        return "s@" + getName().toLowerCase();
+        return "s@" + CoreUtilities.toLowerCase(getName());
     }
 }

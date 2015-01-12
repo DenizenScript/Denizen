@@ -13,10 +13,6 @@ commands:
     description: Lists notable commands.
     usage: /notable help
     permission: denizen.notable
-  flag:
-    description: Lists flag commands.
-    usage: /flag help
-    permission: denizen.flag
   dscript:
     description: Lists dScript commands.
     usage: /dScript help
@@ -35,10 +31,10 @@ permissions:
       denizen.basic: true
       denizen.notable: true
       denizen.notable.basic: true
-      denizen.flag: true
       denizen.dscript: true
       denizen.ex: true
       denizen.debug: true
+      denizen.submit: true
       denizen.npc.health: true
       denizen.npc.sneak: true
       denizen.npc.effect: true

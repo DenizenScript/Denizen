@@ -31,10 +31,22 @@ public class Comparable {
     // their name or symbol. Using a '!' in front of the operator will also reverse logic, effectively
     // turning 'EQUALS' into 'DOES NOT EQUAL', for example.
     //
+    // == <= >= > < all compare arguments as text or numbers.
+    //
+    // CONTAINS checks whether a list contains an element, or an element contains another element.
+    //
+    // IS_EMPTY checks whether a list is empty. (This exists for back-support).
+    //
+    // MATCHES checks whether the first element matches a given type.
+    // EG, "if 1 matches number" or "if p@bob matches player".
+    // Match types: location, material, materiallist, script, entity, spawnedentity, entitytype,
+    // npc, player, offlineplayer, onlineplayer, item, pose, duration, cuboid, decimal,
+    // number, even number, odd number, boolean.
+    //
     // Note: When using an operator in a replaceable tag (such as <el@element.is[...].than[...]>),
     // keep in mind that < and >, and even >= and <= must be either escaped, or referred to by name.
-    // Example: <player.health.is[\<].than[10]> can alternatively be <player.health.is[LESS].than[10],
-    // but <player.health.is[<].than[10]> will produce undesired results. <>'s must be escaped since
+    // Example: "<player.health.is[<&lt>].than[10]>" or "<player.health.is[LESS].than[10]>",
+    // but <player.health.is[<].than[10]> will produce undesired results. <>'s must be escaped or replaced since
     // they are normally notation for a replaceable tag. Escaping is not necessary when the argument
     // contains no replaceable tags.
     //
@@ -77,13 +89,13 @@ public class Comparable {
     public void setComparable(String arg) {
 
         // If a Number
-        if (aH.matchesInteger(arg))
+        if (arg.length() > 0 && aH.matchesInteger(arg))
             comparable = aH.getLongFrom(arg);
-        else if (aH.matchesDouble(arg))
+        else if (arg.length() > 0 && aH.matchesDouble(arg))
             comparable = aH.getDoubleFrom(arg);
 
             // If a List<Object>
-        else if (dList.matches(arg)) {
+        else if (arg.length() > 0 && dList.matches(arg)) {
             comparable = dList.valueOf(arg);
         }
 
@@ -111,8 +123,9 @@ public class Comparable {
                 comparedto = aH.getDoubleFrom(arg);
             else {
                 if (!arg.equalsIgnoreCase("null"))
-                    dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
-                            + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
+                    // TODO: echoDebug instead of log
+                 //   dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
+                 //           + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
                 comparedto = Double.NaN;
             }
         }
@@ -341,6 +354,9 @@ public class Comparable {
 
                 else if (comparedto.equalsIgnoreCase("material"))
                     outcome = dMaterial.matches(comparable);
+
+                else if (comparedto.equalsIgnoreCase("materiallist"))
+                    outcome = dList.valueOf(comparable).containsObjectsFrom(dMaterial.class);
 
                 else if (comparedto.equalsIgnoreCase("script"))
                     outcome = dScript.matches(comparable);

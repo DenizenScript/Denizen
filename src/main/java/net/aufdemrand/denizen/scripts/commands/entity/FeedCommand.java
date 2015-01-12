@@ -1,11 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.HungerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -42,14 +43,14 @@ public class FeedCommand extends AbstractCommand {
             else if (arg.matches("NPC")
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")
-                    && scriptEntry.hasNPC())
-                scriptEntry.addObject("targetnpc", scriptEntry.getNPC());
+                    && ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
+                scriptEntry.addObject("targetnpc", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
 
             else if (arg.matches("PLAYER")
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")
-                    && scriptEntry.hasPlayer())
-                scriptEntry.addObject("targetplayer", scriptEntry.getPlayer());
+                    && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("targetplayer", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
 
             else arg.reportUnhandled();
 
@@ -57,10 +58,10 @@ public class FeedCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("targetplayer") &&
                 !scriptEntry.hasObject("targetnpc")) {
-            if (scriptEntry.hasPlayer())
-                scriptEntry.addObject("targetplayer", scriptEntry.getPlayer());
-            else if (scriptEntry.hasNPC())
-                scriptEntry.addObject("targetnpc", scriptEntry.getNPC());
+            if (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("targetplayer", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+            else if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
+                scriptEntry.addObject("targetnpc", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
             else
                 throw new InvalidArgumentsException("Must specify a player!");
         }

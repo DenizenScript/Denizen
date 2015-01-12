@@ -1,13 +1,16 @@
-package net.aufdemrand.denizen.scripts.commands.npc;
+package net.aufdemrand.denizen.scripts.commands.entity;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.commands.Holdable;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.EntityMovement;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.ai.event.NavigationEvent;
@@ -55,9 +58,9 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                     && arg.matchesPrefix("radius"))
                 scriptEntry.addObject("radius", arg.asElement());
 
-            else if (!scriptEntry.hasObject("npcs")
-                    && arg.matchesArgumentList(dNPC.class))
-                scriptEntry.addObject("npcs", arg.asType(dList.class).filter(dNPC.class));
+            else if (!scriptEntry.hasObject("entities")
+                    && arg.matchesArgumentList(dEntity.class))
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
 
             else
                 arg.reportUnhandled();
@@ -69,13 +72,13 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException("Must specify a location!");
 
-        if (!scriptEntry.hasObject("npcs")) {
-            if (scriptEntry.getNPC() == null
-                    || !scriptEntry.getNPC().isValid()
-                    || !scriptEntry.getNPC().isSpawned())
+        if (!scriptEntry.hasObject("entities")) {
+            if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() == null
+                    || !((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isValid()
+                    || !((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isSpawned())
                 throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
             else
-                scriptEntry.addObject("npcs", Arrays.asList(scriptEntry.getNPC()));
+                scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC()));
         }
 
 
@@ -91,7 +94,7 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
         Element speed = scriptEntry.getElement("speed");
         Element auto_range = scriptEntry.getElement("auto_range");
         Element radius = scriptEntry.getElement("radius");
-        List<dNPC> npcs = (List<dNPC>) scriptEntry.getObject("npcs");
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 
 
         // Debug the execution
@@ -100,39 +103,48 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                 + (speed != null ? speed.debug() : "")
                 + (auto_range != null ? auto_range.debug() : "")
                 + (radius != null ? radius.debug(): "")
-                + (aH.debugObj("npcs", npcs)));
+                + (aH.debugObj("entities", entities)));
 
         // Do the execution
 
-        for (dNPC npc: npcs) {
-            if (!npc.isSpawned()) {
-                dB.echoError(scriptEntry.getResidingQueue(), "NPC " + npc.identify() + " is not spawned!");
-                continue;
+        List<dNPC> npcs = new ArrayList<dNPC>();
+        for (dEntity entity : entities) {
+            if (entity.isNPC()) {
+                dNPC npc = entity.getDenizenNPC();
+                npcs.add(npc);
+                if (!npc.isSpawned()) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "NPC " + npc.identify() + " is not spawned!");
+                    continue;
+                }
+                if (auto_range != null
+                        && auto_range == Element.TRUE) {
+                    double distance = npc.getLocation().distance(loc);
+                    if (npc.getNavigator().getLocalParameters().range() < distance + 10)
+                        npc.getNavigator().getDefaultParameters().range((float) distance + 10);
+                    // TODO: Should be using local params rather than default?
+                }
+
+                npc.getNavigator().setTarget(loc);
+
+                if (speed != null)
+                    npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
+
+                if (radius != null) {
+                    NPCFlock flock = new RadiusNPCFlock(radius.asDouble());
+                    Flocker flocker = new Flocker(npc.getCitizen(), flock, new SeparationBehavior(Flocker.LOW_INFLUENCE),
+                            new CohesionBehavior(Flocker.LOW_INFLUENCE), new AlignmentBehavior(Flocker.HIGH_INFLUENCE));
+                    npc.getNavigator().getLocalParameters().addRunCallback(flocker);
+                }
             }
-            if (auto_range != null
-                    && auto_range == Element.TRUE) {
-                double distance = npc.getLocation().distance(loc);
-                if (npc.getNavigator().getLocalParameters().range() < distance + 10)
-                    npc.getNavigator().getDefaultParameters().range((float) distance + 10);
-                // TODO: Should be using local params rather than default?
-            }
-
-            npc.getNavigator().setTarget(loc);
-
-            if (speed != null)
-                npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
-
-            if (radius != null) {
-                NPCFlock flock = new RadiusNPCFlock(radius.asDouble());
-                Flocker flocker = new Flocker(npc.getCitizen(), flock, new SeparationBehavior(Flocker.LOW_INFLUENCE),
-                        new CohesionBehavior(Flocker.LOW_INFLUENCE), new AlignmentBehavior(Flocker.HIGH_INFLUENCE));
-                npc.getNavigator().getLocalParameters().addRunCallback(flocker);
+            else {
+                EntityMovement.walkTo(entity.getBukkitEntity(), loc, speed != null ? speed.asDouble() : 0.3);
             }
         }
 
         if (scriptEntry.shouldWaitFor()) {
             held.add(scriptEntry);
-            scriptEntry.addObject("tally", new ArrayList<dNPC>(npcs));
+            scriptEntry.addObject("tally", npcs);
+            // TODO: make non-NPC entities waitable
         }
 
     }
@@ -186,7 +198,9 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
     @Override
     public void onEnable() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                .registerEvents(this, DenizenAPI.getCurrentInstance());
+        if (Depends.citizens != null) {
+            DenizenAPI.getCurrentInstance().getServer().getPluginManager()
+                    .registerEvents(this, DenizenAPI.getCurrentInstance());
+        }
     }
 }

@@ -2,8 +2,9 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.List;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
@@ -54,8 +55,8 @@ public class MountCommand extends AbstractCommand {
         // Use the NPC or player's locations as the location if one is not specified
 
         scriptEntry.defaultObject("location",
-                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null,
-                scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null);
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation() : null,
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getLocation() : null);
 
         // Check to make sure required arguments have been filled
 

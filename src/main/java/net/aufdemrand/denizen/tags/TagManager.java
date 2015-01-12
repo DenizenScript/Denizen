@@ -1,43 +1,20 @@
 package net.aufdemrand.denizen.tags;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
+import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.Listener;
 
+import java.lang.annotation.*;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-/**
- * Calls a bukkit event for replaceable tags.
- *
- * @author Jeremy Schroeder
- *
- */
-
-public class TagManager implements Listener {
-
-    private static class TagContext {
-        public final dPlayer player;
-        public final dNPC npc;
-        public final boolean instant;
-        public final ScriptEntry entry;
-        public final boolean debug;
-        public TagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug) {
-            this.player = player;
-            this.npc = npc;
-            this.instant = instant;
-            this.entry = entry;
-            this.debug = debug;
-        }
-    }
+public class TagManager {
 
     public Denizen denizen;
 
@@ -52,7 +29,8 @@ public class TagManager implements Listener {
         new EntityTags(denizen);
         new ListTags(denizen);
         new LocationTags(denizen);
-        new NPCTags(denizen);
+        if (Depends.citizens != null)
+            new NPCTags(denizen);
         new PlayerTags(denizen);
         new QueueTags(denizen);
         new ScriptTags(denizen);
@@ -67,12 +45,63 @@ public class TagManager implements Listener {
         new ParseTags(denizen);
 
         // For compatibility
-        new AnchorTags(denizen);
+        if (Depends.citizens != null) {
+            new AnchorTags(denizen);
+            new ConstantTags(denizen);
+        }
         new FlagTags(denizen);
-        new ConstantTags(denizen);
         new NotableLocationTags(denizen);
 
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        registerTagEvents(this);
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public static @interface TagEvents {
+    }
+
+    private static List<Method> methods = new ArrayList<Method>();
+    private static List<Object> method_objects = new ArrayList<Object>();
+
+    public static void registerTagEvents(Object o) {
+        for (Method method: o.getClass().getMethods()) {
+            if (!method.isAnnotationPresent(TagManager.TagEvents.class)) {
+                continue;
+            }
+            Class[] parameters = method.getParameterTypes();
+            if (parameters.length != 1 || parameters[0] != ReplaceableTagEvent.class) {
+                dB.echoError("Class " + o.getClass().getCanonicalName() + " has a method "
+                        + method.getName() + " that is targeted at the event manager but has invalid parameters.");
+                break;
+            }
+            registerMethod(method, o);
+        }
+    }
+
+    public static void unregisterTagEvents(Object o) {
+        for (int i = 0; i < methods.size(); i++) {
+            if (method_objects.get(i) == o) {
+                methods.remove(i);
+                method_objects.remove(i);
+                i--;
+            }
+        }
+    }
+
+    public static void registerMethod(Method method, Object o) {
+        methods.add(method);
+        method_objects.add(o);
+    }
+
+    public static void fireEvent(ReplaceableTagEvent event) {
+        for (int i = 0; i < methods.size(); i++) {
+            try {
+                methods.get(i).invoke(method_objects.get(i), event);
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+            }
+        }
     }
 
     // INTERNAL MAPPING NOTE:
@@ -89,14 +118,31 @@ public class TagManager implements Listener {
      * @param input the potentially escaped input string.
      * @return the cleaned output string.
      */
-    public static String CleanOutput(String input) {
+    public static String cleanOutput(String input) {
         if (input == null) return null;
-        return input.replace((char)0x01, '<')
-                    .replace((char)0x02, '>')
-                    .replace((char)0x03, '[')
-                    .replace((char)0x06, ']')
-                    /*.replace((char)0x2011, ';')*/
-                    .replace(dList.internal_escape_char, '|');
+        char[] data = input.toCharArray();
+        for (int i = 0; i < data.length; i++) {
+            switch (data[i]) {
+                case 0x01:
+                    data[i] = '<';
+                    break;
+                case 0x02:
+                    data[i] = '>';
+                    break;
+                case 0x07:
+                    data[i] = '[';
+                    break;
+                case 0x09:
+                    data[i] = ']';
+                    break;
+                case dList.internal_escape_char:
+                    data[i] = '|';
+                    break;
+                default:
+                    break;
+            }
+        }
+        return new String(data);
     }
 
     /**
@@ -109,31 +155,71 @@ public class TagManager implements Listener {
      * @param input the potentially escaped input string.
      * @return the cleaned output string.
      */
-    public static String CleanOutputFully(String input) {
+    public static String cleanOutputFully(String input) {
         if (input == null) return null;
-        return input.replace((char)0x01, '<')
-                    .replace((char)0x02, '>')
-                    .replace((char)0x2011, ';')
-                    .replace(dList.internal_escape_char, '|')
-                    .replace((char)0x00A0, ' ')
-                    .replace((char)0x03, '[')
-                    .replace((char)0x06, ']');
+        char[] data = input.toCharArray();
+        for (int i = 0; i < data.length; i++) {
+            switch (data[i]) {
+                case 0x01:
+                    data[i] = '<';
+                    break;
+                case 0x02:
+                    data[i] = '>';
+                    break;
+                case 0x2011:
+                    data[i] = ';';
+                    break;
+                case 0x00A0:
+                    data[i] = ' ';
+                    break;
+                case 0x07:
+                    data[i] = '[';
+                    break;
+                case 0x09:
+                    data[i] = ']';
+                    break;
+                case dList.internal_escape_char:
+                    data[i] = '|';
+                    break;
+                default:
+                    break;
+            }
+        }
+        return new String(data);
     }
 
-    public static String EscapeOutput(String input) {
+    public static String escapeOutput(String input) {
         if (input == null) return null;
-        return input.replace('|', dList.internal_escape_char)
-                    .replace('<', (char)0x01)
-                    .replace('>', (char)0x02)
-                    .replace('[', (char)0x03)
-                    .replace(']', (char)0x06);
+        char[] data = input.toCharArray();
+        for (int i = 0; i < data.length; i++) {
+            switch (data[i]) {
+                case '<':
+                    data[i] = 0x01;
+                    break;
+                case '>':
+                    data[i] = 0x02;
+                    break;
+                case '[':
+                    data[i] = 0x07;
+                    break;
+                case ']':
+                    data[i] = 0x09;
+                    break;
+                case '|':
+                    data[i] = dList.internal_escape_char;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return new String(data);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void fetchObject(ReplaceableTagEvent event) {
         if (!event.getName().contains("@")) return;
 
-        String object_type = event.getName().split("@")[0].toLowerCase();
+        String object_type = CoreUtilities.toLowerCase(CoreUtilities.Split(event.getName(), '@').get(0));
         Class object_class = ObjectFetcher.getObjectClass(object_type);
 
         if (object_class == null) {
@@ -170,77 +256,53 @@ public class TagManager implements Listener {
         }
     }
 
-
-    public static String tag(dPlayer player, dNPC npc, String arg) {
-        return tag(player, npc, arg, false, null);
-    }
-
-    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant) {
-        return tag(player, npc, arg, instant, null);
-    }
-
-    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
-        try {
-            return tag(player, npc, arg, instant, scriptEntry, dB.shouldDebug(scriptEntry));
+    public static String readSingleTag(String str, TagContext context) {
+        ReplaceableTagEvent event = new ReplaceableTagEvent(str, context);
+        if (event.isInstant() != context.instant) {
+            // Not the right type of tag, escape the brackets so it doesn't get parsed again
+            return String.valueOf((char)0x01) + str + String.valueOf((char)0x02);
+        } else {
+            // Call Event
+            fireEvent(event);
+            if ((!event.replaced() && event.getAlternative() != null) && event.hasAlternative())
+                event.setReplaced(event.getAlternative());
+            if (context.debug)
+                dB.echoDebug(((BukkitTagContext)context).entry, "Filled tag <" + event.toString() + "> with '" +
+                        event.getReplaced() + "'.");
+            if (!event.replaced())
+                dB.echoError(((BukkitTagContext)context).entry != null ? ((BukkitTagContext)context).entry.getResidingQueue(): null,
+                        "Tag <" + event.toString() + "> is invalid!");
+            return escapeOutput(event.getReplaced());
         }
-        catch (Exception e) {
-            dB.echoError(e);
-            return null;
-        }
-    }
-
-
-    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry, boolean debug) {
-        return tag(arg, new TagContext(player, npc, instant, scriptEntry, debug));
     }
 
     public static String tag(String arg, TagContext context) {
         if (arg == null) return null;
 
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
-        if (arg.indexOf('>') == -1 || arg.length() < 3) return CleanOutput(arg);
-
-        // Parse \escaping down to internal escaping.
-        if (!context.instant) arg = arg.replace("\\<", String.valueOf((char)0x01)).replace("\\>", String.valueOf((char)0x02));
+        if (arg.indexOf('>') == -1 || arg.length() < 3) return cleanOutput(arg);
 
         // Find location of the first tag
         int[] positions = locateTag(arg);
         if (positions == null) {
-            return CleanOutput(arg);
+            return cleanOutput(arg);
         }
 
         int failsafe = 0;
         do {
             // Just in case, do-loops make me nervous, but does implement a limit of 25 tags per argument.
             failsafe++;
-            ReplaceableTagEvent event;
             if (positions == null) break;
             else {
                 String oriarg = arg.substring(positions[0] + 1, positions[1]);
-                event = new ReplaceableTagEvent(context.player, context.npc, oriarg, context.entry);
-                if (event.isInstant() != context.instant) {
-                    // Not the right type of tag, escape the brackets so it doesn't get parsed again
-                    arg = arg.substring(0, positions[0]) + String.valueOf((char)0x01)
-                            + EscapeOutput(event.getReplaced()) + String.valueOf((char)0x02) + arg.substring(positions[1] + 1, arg.length());
-                } else {
-                    // Call Event
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-                    if ((!event.replaced() && event.getAlternative() != null)
-                            || (event.getReplaced().equals("null") && event.hasAlternative()))
-                        event.setReplaced(event.getAlternative());
-                    if (context.debug)
-                        dB.echoDebug(context.entry, "Filled tag <" + event.toString() + "> with '" +
-                                event.getReplaced() + "'.");
-                    if (!event.replaced())
-                        dB.echoError("Tag '" + event.getReplaced() + "' is invalid!");
-                    arg = arg.substring(0, positions[0]) + EscapeOutput(event.getReplaced()) + arg.substring(positions[1] + 1, arg.length());
-                }
+                String replaced = readSingleTag(oriarg, context);
+                arg = arg.substring(0, positions[0]) + replaced + arg.substring(positions[1] + 1, arg.length());
             }
             // Find new tag
             positions = locateTag(arg);
         } while (positions != null || failsafe < 50);
 
-        return CleanOutput(arg);
+        return cleanOutput(arg);
     }
 
     private static int[] locateTag(String arg) {
@@ -271,11 +333,7 @@ public class TagManager implements Listener {
         else return null;
     }
 
-    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {
-        return fillArguments(args, scriptEntry, false);
-    }
-
-    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry, boolean instant) {
+    public static List<String> fillArguments(List<String> args, TagContext context) {
         List<String> filledArgs = new ArrayList<String>();
 
         int nested_level = 0;
@@ -286,19 +344,21 @@ public class TagManager implements Listener {
                 if (argument.equals("}")) nested_level--;
                 // If this argument isn't nested, fill the tag.
                 if (nested_level < 1) {
-                    filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
+                    filledArgs.add(tag(argument, context));
                 }
-                    else filledArgs.add(argument);
+                else {
+                    filledArgs.add(argument);
+                }
             }
         }
         return filledArgs;
     }
 
-    public static List<String> fillArguments(String[] args, dPlayer player, dNPC npc) {
+    public static List<String> fillArguments(String[] args, TagContext context) {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {
             for (String argument : args) {
-                filledArgs.add(tag(player, npc, argument, false));
+                filledArgs.add(tag(argument, context));
             }
         }
         return filledArgs;

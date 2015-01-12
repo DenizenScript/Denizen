@@ -1,16 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
-import net.minecraft.server.v1_7_R4.PacketPlayOutBlockAction;
+import net.minecraft.server.v1_8_R1.Block;
+import net.minecraft.server.v1_8_R1.PacketPlayOutBlockAction;
+import net.minecraft.server.v1_8_R1.BlockPosition;
 import org.bukkit.Sound;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,8 +58,8 @@ public class AnimateChestCommand extends AbstractCommand {
             scriptEntry.addObject("sound", Element.TRUE);
 
         if (!scriptEntry.hasObject("players")) {
-            if (scriptEntry.hasPlayer())
-                scriptEntry.addObject("players", Arrays.asList(scriptEntry.getPlayer()));
+            if (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("players", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()));
             else // TODO: Perhaps instead add all players in sight range?
                 throw new InvalidArgumentsException("Missing 'players' argument!");
         }
@@ -75,13 +78,15 @@ public class AnimateChestCommand extends AbstractCommand {
                                           + sound.debug()
                                           + aH.debugObj("players", players.toString()));
 
+        BlockPosition blockPosition = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        Block block = ((CraftWorld) location.getWorld()).getHandle().getType(blockPosition).getBlock();
+
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
             case OPEN:
                 for (dPlayer player: players) {
                     if (sound.asBoolean()) player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
                     ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
-                            new PacketPlayOutBlockAction(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
-                            ((CraftWorld) location.getWorld()).getHandle().getType(location.getBlockX(), location.getBlockY(), location.getBlockZ()), 1, 1));
+                            new PacketPlayOutBlockAction(blockPosition, block, 1, 1));
                 }
                 break;
 
@@ -89,8 +94,7 @@ public class AnimateChestCommand extends AbstractCommand {
                 for (dPlayer player: players) {
                     if (sound.asBoolean()) player.getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
                     ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
-                            new PacketPlayOutBlockAction(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
-                            ((CraftWorld)location.getWorld()).getHandle().getType(location.getBlockX(), location.getBlockY(), location.getBlockZ()), 1, 0));
+                            new PacketPlayOutBlockAction(blockPosition, block, 1, 0));
                 }
                 break;
         }

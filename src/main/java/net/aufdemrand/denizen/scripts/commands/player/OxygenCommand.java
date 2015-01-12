@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -39,7 +40,7 @@ public class OxygenCommand extends AbstractCommand {
 
         }
 
-        if (!scriptEntry.hasPlayer() || !scriptEntry.getPlayer().isValid())
+        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isValid())
             throw new InvalidArgumentsException("Must have player context!");
 
         if (!scriptEntry.hasObject("amount"))
@@ -58,7 +59,7 @@ public class OxygenCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(), type.debug() + mode.debug() + amount.debug());
 
-        dPlayer player = scriptEntry.getPlayer();
+        dPlayer player = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer();
 
         switch (Type.valueOf(type.asString().toUpperCase())) {
             case MAXIMUM:

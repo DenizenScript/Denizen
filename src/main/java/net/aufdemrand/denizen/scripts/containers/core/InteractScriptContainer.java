@@ -1,31 +1,36 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import java.util.*;
 
 public class InteractScriptContainer extends ScriptContainer {
 
-    public InteractScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public InteractScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
 
         try {
             // Find steps/default step in the script
-            Set<String> keys = new HashSet<String>();
+            Set<String> keys;
             keys = getConfigurationSection("STEPS").getKeys(false);
+
+            // TODO: Throw a warning if 'requirements' section exists
 
             if (keys.isEmpty())
                 throw new ExceptionInInitializerError("Could not find any STEPS in " + getName() + "! Is the type on this script correct?");
 
             for (String step : keys) {
                 if (step.contains("*")) {
-                    ConfigurationSection defaultStepSection = getConfigurationSection("STEPS." + step);
+                    YamlConfiguration defaultStepSection = getConfigurationSection("STEPS." + step);
                     step = step.replace("*", "");
                     set("STEPS." + step, defaultStepSection);
                     set("STEPS." + step + "*", null);
@@ -38,7 +43,7 @@ public class InteractScriptContainer extends ScriptContainer {
             }
 
         } catch (Exception e) {
-            dB.echoError("Could not find any STEPS in " + getName() + "! Is the type on this script correct?");
+            dB.echoError(e);
         }
 
         // Make default step the only step if there is only one step
@@ -135,6 +140,10 @@ public class InteractScriptContainer extends ScriptContainer {
      */
     public List<ScriptEntry> getEntriesFor(Class<? extends AbstractTrigger> trigger,
                                            dPlayer player, dNPC npc, String id) {
+        return getEntriesFor(trigger, player, npc, id, false);
+    }
+    public List<ScriptEntry> getEntriesFor(Class<? extends AbstractTrigger> trigger,
+                                           dPlayer player, dNPC npc, String id, boolean quiet) {
         // Get the trigger name
         String triggerName = DenizenAPI.getCurrentInstance()
                 .getTriggerRegistry().get(trigger).getName().toUpperCase();
@@ -143,12 +152,17 @@ public class InteractScriptContainer extends ScriptContainer {
                 + triggerName + " TRIGGER."
                 + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT"))) {
             // Entries exist, so get them and return the list of ScriptEntries
-            return getEntries(player, npc,
+            return getEntries(new BukkitScriptEntryData(player, npc),
                     "STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
                             + triggerName + " TRIGGER."
                             + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT"));
             // No entries, so just return an empty list to avoid NPEs
         } else {
+            if (!quiet)
+                dB.echoDebug(this, "No entries in script for " +
+                        ("STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
+                        + triggerName + " TRIGGER."
+                        + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT")));
             return Collections.emptyList();
         }
     }
@@ -244,5 +258,23 @@ public class InteractScriptContainer extends ScriptContainer {
         String step = InteractScriptHelper.getCurrentStep(player, getName());
         return contains("STEPS." + step + "." + triggerName + " TRIGGER"
                 + (id == null ? "" : "." + id.toUpperCase()) + "." + option.toUpperCase());
+    }
+    public boolean checkBaseRequirements(dPlayer player, dNPC npc) {
+        return checkRequirements(player, npc, "");
+    }
+
+    public boolean checkRequirements(dPlayer player, dNPC npc, String path) {
+        if (path == null) path = "";
+        if (path.length() > 0) path = path + ".";
+        // Get requirements
+        List<String> requirements = getContents().getStringList(path + "REQUIREMENTS.LIST");
+        String mode = getContents().getString(path + "REQUIREMENTS.MODE", "ALL");
+        // No requirements? Meets requirements!
+        if (requirements == null || requirements.isEmpty()) return true;
+        // Return new RequirementsContext built with info extracted from the ScriptContainer
+        RequirementsContext context = new RequirementsContext(new RequirementsMode(mode), requirements, this);
+        context.attachPlayer(player);
+        context.attachNPC(npc);
+        return DenizenAPI.getCurrentInstance().getScriptEngine().getRequirementChecker().check(context);
     }
 }

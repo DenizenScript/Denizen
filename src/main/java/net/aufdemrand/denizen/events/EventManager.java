@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.events;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.objects.aH;
@@ -14,10 +15,10 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -60,48 +61,58 @@ public class EventManager implements Listener {
 
     @EventHandler
     public void scanWorldEvents(ScriptReloadEvent event) {
-        // Build a Map of scripts keyed by 'world events name'.
+        try {
+            // Build a Map of scripts keyed by 'world events name'.
 
-        // Loop through each world script
-        for (WorldScriptContainer script : world_scripts.values()) {
-            if (script == null) continue;
+            // Loop through each world script
+            dB.log("Scanning " + world_scripts.size() + " world scripts...");
+            for (WorldScriptContainer script : world_scripts.values()) {
+                if (script == null) {
+                    dB.echoError("Null world script?!");
+                    continue;
+                }
 
-            // ...and through each event inside the script.
-            if (script.contains("EVENTS")) {
-                ConfigurationSection configSection = script.getConfigurationSection("EVENTS");
-                if (configSection == null) {
-                    dB.echoError("Script '" + script.getName() + "' has an invalid events block!");
-                    break;
+                // ...and through each event inside the script.
+                if (script.contains("EVENTS")) {
+                    YamlConfiguration configSection = script.getConfigurationSection("EVENTS");
+                    if (configSection == null) {
+                        dB.echoError("Script '" + script.getName() + "' has an invalid events block!");
+                        break;
+                    }
+                    Set<String> keys = configSection.getKeys(false);
+                    if (keys == null) {
+                        dB.echoError("Script '" + script.getName() + "' has an empty events block!");
+                        break;
+                    }
+                    for (String eventName : keys) {
+                        List<WorldScriptContainer> list;
+                        if (events.containsKey(eventName))
+                            list = events.get(eventName);
+                        else
+                            list = new ArrayList<WorldScriptContainer>();
+                        list.add(script);
+                        events.put(eventName, list);
+                    }
                 }
-                Set<String> keys = configSection.getKeys(false);
-                if (keys == null) {
-                    dB.echoError("Script '" + script.getName() + "' has an empty events block!");
-                    break;
-                }
-                for (String eventName : keys) {
-                    List<WorldScriptContainer> list;
-                    if (events.containsKey(eventName))
-                        list = events.get(eventName);
-                    else
-                        list = new ArrayList<WorldScriptContainer>();
-                    list.add(script);
-                    events.put(eventName, list);
+                else {
+                    dB.echoError("Script '" + script.getName() + "' does not have an events block!");
                 }
             }
-            else
-                dB.echoError("Script '" + script.getName() + "' does not have an events block!");
-        }
-        // dB.echoApproval("Built events map: " + events);
+            // dB.echoApproval("Built events map: " + events);
 
-        // Breakdown all SmartEvents (if still being used, they will reinitialize next)
-        for (SmartEvent smartEvent : smart_events)
+            // Breakdown all SmartEvents (if still being used, they will reinitialize next)
+            for (SmartEvent smartEvent : smart_events)
                 smartEvent.breakDown();
 
-        // Pass these along to each SmartEvent so they can determine whether they can be enabled or not
-        for (SmartEvent smartEvent : smart_events) {
-            // If it should initialize, run _initialize!
-            if (smartEvent.shouldInitialize(events.keySet()))
-                smartEvent._initialize();
+            // Pass these along to each SmartEvent so they can determine whether they can be enabled or not
+            for (SmartEvent smartEvent : smart_events) {
+                // If it should initialize, run _initialize!
+                if (smartEvent.shouldInitialize(events.keySet()))
+                    smartEvent._initialize();
+            }
+        }
+        catch (Exception e) {
+            dB.echoError(e);
         }
     }
 
@@ -184,7 +195,7 @@ public class EventManager implements Listener {
     }
 
 
-    public static boolean EventExists(String original) {
+    public static boolean eventExists(String original) {
         return events.containsKey("ON " + original.toUpperCase());
     }
 
@@ -208,6 +219,7 @@ public class EventManager implements Listener {
                 npc, player, context);
     }
 
+    @Deprecated
     public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context,
                                   boolean usesIdentifiers) {
 
@@ -215,6 +227,16 @@ public class EventManager implements Listener {
         // with their identifiers stripped
         return doEvents(usesIdentifiers ? addAlternates(eventNames)
                 : eventNames,
+                npc, player, context);
+    }
+
+    public static List<String> doEvents1(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context,
+                                  boolean usesIdentifiers) {
+
+        // If a list of events uses identifiers, also add those events to the list
+        // with their identifiers stripped
+        return doEvents1(usesIdentifiers ? addAlternates(eventNames)
+                        : eventNames,
                 npc, player, context);
     }
 
@@ -277,61 +299,76 @@ public class EventManager implements Listener {
         return doEvents(eventNames, npc, player, context);
     }
 
+    @Deprecated
     public static String doEvents(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context) {
+        List<String> strs = doEvents1(eventNames, npc, player, context);
+        if (strs.isEmpty())
+            return DetermineCommand.DETERMINE_NONE;
+        else
+            return strs.get(0);
+    }
 
-        String determination = "none";
+    public static List<String> doEvents1(List<String> eventNames, dNPC npc, dPlayer player, Map<String, dObject> context) {
 
-        // Trim again to catch events that don't trim internally.
-        eventNames = trimEvents(eventNames);
+        try {
+            List<String> determinations = new ArrayList<String>();
 
-        for (String eventName : eventNames) {
+            // Trim again to catch events that don't trim internally.
+            eventNames = trimEvents(eventNames);
 
-            if (events.containsKey("ON " + eventName.toUpperCase()))
+            for (String eventName : eventNames) {
 
-                for (WorldScriptContainer script : events.get("ON " + eventName.toUpperCase())) {
+                if (events.containsKey("ON " + eventName.toUpperCase()))
 
-                    if (script == null) continue;
+                    for (WorldScriptContainer script : events.get("ON " + eventName.toUpperCase())) {
 
-                    // Fetch script from Event
-                    List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
+                        if (script == null) continue;
 
-                    if (entries.isEmpty()) continue;
+                        // Fetch script from Event
+                        List<ScriptEntry> entries = script.getEntries(new BukkitScriptEntryData(player, npc), "events.on " + eventName);
 
-                    dB.report(script, "Event",
-                            aH.debugObj("Type", "on " + eventName)
-                                    + script.getAsScriptArg().debug()
-                                    + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
-                                    + (player != null ? aH.debugObj("Player", player.getName()) : "")
-                                    + (context != null ? aH.debugObj("Context", context.toString()) : ""));
+                        if (entries.isEmpty()) continue;
 
-                    dB.echoDebug(script, dB.DebugElement.Header, "Building event 'ON " + eventName.toUpperCase()
-                            + "' for " + script.getName());
+                        dB.report(script, "Event",
+                                aH.debugObj("Type", "on " + eventName)
+                                        + script.getAsScriptArg().debug()
+                                        + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
+                                        + (player != null ? aH.debugObj("Player", player.getName()) : "")
+                                        + (context != null ? aH.debugObj("Context", context.toString()) : ""));
 
-                    // Create new ID -- this is what we will look for when determining an outcome
-                    long id = DetermineCommand.getNewId();
+                        dB.echoDebug(script, dB.DebugElement.Header, "Building event 'ON " + eventName.toUpperCase()
+                                + "' for " + script.getName());
 
-                    // Add the reqId to each of the entries for the determine command
-                    ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+                        // Create new ID -- this is what we will look for when determining an outcome
+                        long id = DetermineCommand.getNewId();
 
-                    // Add entries and context to the queue
-                    ScriptQueue queue = InstantQueue.getQueue(null).addEntries(entries).setReqId(id);
+                        // Add the reqId to each of the entries for the determine command
+                        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
-                    if (context != null) {
-                        for (Map.Entry<String, dObject> entry : context.entrySet()) {
-                            queue.addContext(entry.getKey(), entry.getValue());
+                        // Add entries and context to the queue
+                        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getName())).addEntries(entries).setReqId(id);
+
+                        if (context != null) {
+                            for (Map.Entry<String, dObject> entry : context.entrySet()) {
+                                queue.addContext(entry.getKey(), entry.getValue());
+                            }
                         }
+
+                        // Start the queue!
+                        queue.start();
+
+                        // Check the determination
+                        if (DetermineCommand.hasOutcome(id))
+                            determinations =  DetermineCommand.getOutcome(id);
                     }
+            }
 
-                    // Start the queue!
-                    queue.start();
-
-                    // Check the determination
-                    if (DetermineCommand.hasOutcome(id))
-                        determination =  DetermineCommand.getOutcome(id);
-                }
+            return determinations;
         }
-
-        return determination;
+        catch (Exception e) {
+            dB.echoError(e);
+            return new ArrayList<String>();
+        }
     }
 
     ////////////////////
@@ -346,6 +383,7 @@ public class EventManager implements Listener {
         registerSmartEvent(new BlockFallsSmartEvent());
         registerSmartEvent(new BlockPhysicsSmartEvent());
         registerSmartEvent(new ChunkLoadSmartEvent());
+        registerSmartEvent(new ChunkUnloadSmartEvent());
         registerSmartEvent(new CommandSmartEvent());
         registerSmartEvent(new CuboidEnterExitSmartEvent());
         registerSmartEvent(new EntityCombustSmartEvent());

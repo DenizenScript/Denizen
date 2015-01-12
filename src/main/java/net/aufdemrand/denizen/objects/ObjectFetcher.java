@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.minecraft.util.org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -73,6 +73,7 @@ public class ObjectFetcher {
         registerWithObjectFetcher(dChunk.class);     // ch@
         registerWithObjectFetcher(dPlugin.class);    // pl@
         registerWithObjectFetcher(ScriptQueue.class);// q@
+        registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
 
         _initialize();
 
@@ -105,10 +106,12 @@ public class ObjectFetcher {
 
     final static Pattern PROPERTIES_PATTERN = Pattern.compile("([^\\[]+)\\[(.+=.+)\\]", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-    final static Pattern DESCRIBED_PATTERN =
+    public final static Pattern DESCRIBED_PATTERN =
             Pattern.compile("[^\\[]+\\[.+=.+\\]", Pattern.DOTALL | Pattern.MULTILINE);
 
     public static boolean checkMatch(Class<? extends dObject> dClass, String value) {
+        if (value == null || dClass == null)
+            return false;
         Matcher m = PROPERTIES_PATTERN.matcher(value);
         try {
             return (Boolean) matches.get(dClass).invoke(null, m.matches() ? m.group(1): value);
@@ -124,7 +127,7 @@ public class ObjectFetcher {
         return getObjectFrom(dClass, value, null, null);
     }
 
-    public static List<String> SeparateProperties(String input) {
+    public static List<String> separateProperties(String input) {
         if (input.indexOf('[') == -1 || input.lastIndexOf(']') != input.length() - 1)
             return null;
         ArrayList<String> output = new ArrayList<String>();
@@ -153,7 +156,7 @@ public class ObjectFetcher {
 
     public static <T extends dObject> T getObjectFrom(Class<T> dClass, String value, dPlayer player, dNPC npc) {
         try {
-            List<String> matches = SeparateProperties(value);
+            List<String> matches = separateProperties(value);
             boolean matched = matches != null && Adjustable.class.isAssignableFrom(dClass);
             T gotten = (T) ((dClass.equals(dItem.class)) ? dItem.valueOf(matched ? matches.get(0): value, player, npc):
                     valueof.get(dClass).invoke(null, matched ? matches.get(0): value));

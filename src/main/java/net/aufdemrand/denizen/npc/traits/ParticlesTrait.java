@@ -10,7 +10,7 @@ import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftWolf;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftWolf;
 import org.bukkit.entity.Wolf;
 
 public class ParticlesTrait extends Trait {
@@ -126,7 +126,7 @@ public class ParticlesTrait extends Trait {
         if (dense) world.playEffect(location.add(0, 1, 0), Effect.ENDER_SIGNAL, 0);
     }
 
-    public void playPotionEffect() {
+    public void playPotionEffect() { // TODO: Implement?
         //dw.watch(8, Integer.valueOf(2));
     }
 

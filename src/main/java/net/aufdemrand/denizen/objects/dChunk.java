@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_7_R4.CraftChunk;
+import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -85,6 +85,10 @@ public class dChunk implements dObject, Adjustable {
      */
     public dChunk(Location location) {
         this((CraftChunk) location.getChunk());
+    }
+
+    public dLocation getCenter() {
+        return new dLocation(getWorld(), getX() * 16 + 8, 128, getZ() * 16 + 8);
     }
 
     public int getX() {
@@ -303,6 +307,31 @@ public class dChunk implements dObject, Adjustable {
             return surface_blocks.getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <ch@chunk.spawn_slimes>
+        // @returns dList(dLocation)
+        // @description
+        // returns whether the chunk is a specially located 'slime spawner' chunk.
+        // -->
+        if (attribute.startsWith("spawn_slimes")) {
+            Random random = new Random(getWorld().getSeed() +
+                    getX() * getX() * 4987142 +
+                    getX() * 5947611 +
+                    getZ() * getZ() * 4392871L +
+                    getZ() * 389711 ^ 0x3AD8025F);
+            return new Element(random.nextInt(10) == 0).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <ch@chunk.type>
+        // @returns Element
+        // @description
+        // Always returns 'Chunk' for dChunk objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Chunk").getAttribute(attribute.fulfill(1));
+        }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

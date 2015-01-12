@@ -39,6 +39,7 @@ public class ItemScriptHelper implements Listener {
     // Remove all recipes stored by Denizen
     public static void removeDenizenRecipes() {
         ItemScriptContainer.specialrecipesMap.clear();
+        ItemScriptContainer.shapelessRecipesMap.clear();
     }
 
     public static boolean isBound(ItemStack item) {
@@ -95,7 +96,8 @@ public class ItemScriptHelper implements Listener {
     public void specialRecipeClick(InventoryClickEvent event) {
 
         // Proceed only if at least one special recipe has been stored
-        if (ItemScriptContainer.specialrecipesMap.isEmpty())
+        if (ItemScriptContainer.specialrecipesMap.isEmpty()
+                && ItemScriptContainer.shapelessRecipesMap.isEmpty())
             return;
 
         // Proceed only if this is a CraftingInventory
@@ -132,7 +134,8 @@ public class ItemScriptHelper implements Listener {
     public void specialRecipeDrag(InventoryDragEvent event) {
 
         // Proceed only if at least one special recipe has been stored
-        if (ItemScriptContainer.specialrecipesMap.isEmpty())
+        if (ItemScriptContainer.specialrecipesMap.isEmpty()
+                && ItemScriptContainer.shapelessRecipesMap.isEmpty())
             return;
 
         // Proceed only if this is a CraftingInventory
@@ -242,7 +245,27 @@ public class ItemScriptHelper implements Listener {
             return entry.getKey();
         }
 
+        primary: for (Map.Entry<dItem, dList> entry :
+                ItemScriptContainer.shapelessRecipesMap.entrySet()) {
+            for (int i = 0; i < entry.getValue().size(); i++) {
+                if (!contains_any(dItem.valueOf(entry.getValue().get(i)), matrix)) {
+                    continue primary;
+                }
+            }
+            return entry.getKey();
+        }
+
         return null;
+    }
+
+    public boolean contains_any(dItem item, ItemStack[] matrix) {
+        String full = item.getFullString();
+        for (int i = 0; i < matrix.length; i++) {
+            if (full.equalsIgnoreCase(new dItem(matrix[i]).getFullString())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Because Denizen special recipes are basically fake recipes,
@@ -320,9 +343,9 @@ public class ItemScriptHelper implements Listener {
         if (item == null || !isBound(item))
             return;
 
-        // If they're trying to use the item as an ingredient, cancel it!
-        if (event.getSlotType() == SlotType.CRAFTING) {
-            removeBoundItems((CraftingInventory) event.getInventory(), (Player) event.getWhoClicked(), item);
+        if (event.getInventory().getType() != InventoryType.PLAYER) {
+            event.setCancelled(true);
+            return;
         }
     }
 
@@ -337,46 +360,10 @@ public class ItemScriptHelper implements Listener {
         if (item == null || !isBound(item))
             return;
 
-        // If they're trying to use the item as an ingredient, cancel it!
-        // Manually check if the slot numbers are the same. If they are, then the player clicked
-        // in the crafting matrix. If not, that means they clicked in their inventory and we should
-        // ignore it.
-        if (event.getInventorySlots().toArray()[0] == event.getRawSlots().toArray()[0]) {
-            removeBoundItems((CraftingInventory) event.getInventory(), (Player) event.getWhoClicked(), item);
-            // Manually set cursor to null to prevent empty-handed
-            // duplication with event.getOldCursor()
-            event.setCursor(null);
+        if (event.getInventory().getType() != InventoryType.PLAYER) {
+            event.setCancelled(true);
+            return;
         }
-    }
-
-    public void removeBoundItems(final CraftingInventory inventory, final Player player, final ItemStack oldCursor) {
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        // Store the crafting matrix
-                        ItemStack[] matrix = inventory.getMatrix();
-
-                        // Loop through items in the matrix
-                        boolean removedItems = false;
-                        for (int i = 0; i < matrix.length-1; i++) {
-                            if (isBound(matrix[i])) {
-                                matrix[i] = null;
-                                removedItems = true;
-                            }
-                        }
-
-                        // Add the edited matrix back to the inventory
-                        inventory.setMatrix(matrix);
-                        if (removedItems) {
-                            player.getInventory().addItem(oldCursor);
-                        }
-                        player.updateInventory();
-
-                    }
-        }, 1);
-
     }
 
     @EventHandler
@@ -384,7 +371,6 @@ public class ItemScriptHelper implements Listener {
         // If the item is bound, don't let them drop it!
         if (isBound(event.getItemDrop().getItemStack())) {
             event.setCancelled(true);
-            event.getPlayer().updateInventory();
         }
     }
 }

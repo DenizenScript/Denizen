@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -50,7 +50,7 @@ public class NoteCommand extends AbstractCommand {
         if (remove.asBoolean()) {
             if (NotableManager.isSaved(id.asString())) {
                 NotableManager.remove(id.asString());
-                dB.echoDebug(scriptEntry, id.asString() + " removed");
+                dB.echoDebug(scriptEntry, "notable '" + id.asString() + "' removed");
             }
             else {
                 dB.echoDebug(scriptEntry, id.asString() + " is not saved");

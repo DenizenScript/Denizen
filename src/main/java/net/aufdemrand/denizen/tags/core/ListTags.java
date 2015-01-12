@@ -1,11 +1,10 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.tags.Attribute;
-import org.bukkit.event.EventHandler;
+import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.event.Listener;
 
 
@@ -18,10 +17,11 @@ public class ListTags implements Listener {
 
     public ListTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
-    @EventHandler
-    public void locationTags(ReplaceableTagEvent event) {
+    @TagManager.TagEvents
+    public void listTags(ReplaceableTagEvent event) {
 
         if (!event.matches("list") || event.replaced()) return;
 
@@ -32,7 +32,6 @@ public class ListTags implements Listener {
 
         // Check if list is null, return null if it is
         if (list == null) {
-            event.setReplaced("null");
             return;
         }
 

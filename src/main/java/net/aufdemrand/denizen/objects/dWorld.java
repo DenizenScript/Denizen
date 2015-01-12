@@ -3,15 +3,16 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R4.CraftChunk;
+import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -52,6 +53,10 @@ public class dWorld implements dObject, Adjustable {
 
     @Fetchable("w")
     public static dWorld valueOf(String string) {
+        return valueOf(string, true);
+    }
+
+    public static dWorld valueOf(String string, boolean announce) {
         if (string == null) return null;
 
         string = string.replace("w@", "");
@@ -70,8 +75,10 @@ public class dWorld implements dObject, Adjustable {
                 return worlds.get(returnable.getName());
             else return new dWorld(returnable);
         }
-        else dB.echoError("Invalid World! '" + string
-                + "' could not be found.");
+        else if (announce) {
+            dB.echoError("Invalid World! '" + string
+                    + "' could not be found.");
+        }
 
         return null;
     }
@@ -228,7 +235,7 @@ public class dWorld implements dObject, Adjustable {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
 
             for (Player player : getWorld().getPlayers()) {
-                if (!CitizensAPI.getNPCRegistry().isNPC(player))
+                if (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(player))
                     players.add(new dPlayer(player));
             }
 
@@ -272,7 +279,7 @@ public class dWorld implements dObject, Adjustable {
         // returns a random loaded chunk.
         // -->
         if (attribute.startsWith("random_loaded_chunk")) {
-            int random = Utilities.getRandom().nextInt(getWorld().getLoadedChunks().length);
+            int random = CoreUtilities.getRandom().nextInt(getWorld().getLoadedChunks().length);
             return new dChunk((CraftChunk) getWorld().getLoadedChunks()[random])
                     .getAttribute(attribute.fulfill(1));
         }
@@ -542,6 +549,7 @@ public class dWorld implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether it is currently thundering in this world.
+        // -->
         if (attribute.startsWith("thundering"))
             return new Element(getWorld().isThundering())
                     .getAttribute(attribute.fulfill(1));
@@ -556,6 +564,16 @@ public class dWorld implements dObject, Adjustable {
             return new Duration((long) getWorld().getWeatherDuration())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <w@world.type>
+        // @returns Element
+        // @description
+        // Always returns 'World' for dWorld objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("World").getAttribute(attribute.fulfill(1));
+        }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

@@ -70,11 +70,12 @@ import net.aufdemrand.denizen.tags.Attribute;
 // |   e@random - fetches a new, random entity
 //
 // + ----- dItem --------+
-// | object notation: i@    can reference unique objects: no     can be notable: no
+// | object notation: i@    can reference unique objects: no     can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   i@<material_name> - fetches a new item of the specified material
 // |   i@<material_name>,<data> - fetches a new item with the specified data
 // |   i@<item_script_name> - fetches a new custom item as specified by the referenced item script
+// |   i@<notable_name> - fetches the item that has been noted with the specified ID
 //
 // + ----- dWorld -------+
 // | object notation: w@    can reference unique objects: yes     can be notable: no
@@ -92,17 +93,30 @@ import net.aufdemrand.denizen.tags.Attribute;
 // | object notation: cu@   can reference unique objects: no      can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   cu@<position_1>|<position_2>|... - fetches a new cuboid encompassing a region from position 1 to 2, from 2 to 3, ...
-// |   cu@<notable_cuboid_name> - fetches the cuboid that has been 'noted' with the specified ID
+// |   cu@<notable_name> - fetches the cuboid that has been noted with the specified ID
+//
+// + ----- dEllipsoid ------+
+// | object notation: ellipsoid@   can reference unique objects: no      can be notable: yes
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   ellipsoid@<x>,<y>,<z>,<world>,<xrad>,<yrad>,<zrad>... - fetches a new ellispoid at the position with the given radius
+// |   cu@<notable_name> - fetches the ellipsoid that has been noted with the specified ID
+//
+// + ----- dChunk ------+
+// | object notation: ch@   can reference unique objects: yes      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   ch@<x>,<y>,<world> - fetches a chunk at the given chunk location
 //
 // + ----- dInventory ---+
-// | object notation: in@   can reference unique objects: yes     can be notable: soon
+// | object notation: in@   can reference unique objects: yes     can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   in@player[<player_name/object>] - fetches the specified Player's inventory
-// |   in@npc[<npc_id/object>] - fetches the specified NPC's inventory
-// |   in@entity[<entity_object>] - fetches the specified object's inventory, such as a Player, NPC, or Mule
-// |   in@location[<location_object>] - fetches the contents of a chest or other 'inventory' block
+// |   in@player[holder=<player>] - fetches the specified Player's inventory (Works for offline players)
+// |   in@enderchest[holder=<player>] - fetches the specified Player's enderchest inventory (Works for offline players)
+// |   in@npc[holder=<npc>] - fetches the specified NPC's inventory
+// |   in@entity[holder=<entity>] - fetches the specified object's inventory, such as a Player, NPC, or Mule
+// |   in@location[holder=<location>] - fetches the contents of a chest or other 'inventory' block
 // |   in@<notable_inventory_name> - fetches the inventory that has been 'noted' with the specified ID
 // |   in@<inventory_script_name> - fetches a new custom inventory as specified by the referenced inventory script
+// |   in@generic - represents a generic, customizable virtual inventory to be used with inventory properties (See <@link language Virtual Inventories>)
 //
 // + ----- dMaterial ----+
 // | object notation: m@    can reference unique objects: no      can be notable: no
@@ -141,6 +155,11 @@ import net.aufdemrand.denizen.tags.Attribute;
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   el@<value> - fetches an element with the specified value
 // |   el@val[<value>] - slightly more verbose, but tag friendly way to fetch a new element (allows periods)
+//
+// + ----- Queue ------+
+// | object notation: q@   can reference unique objects: yes      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   q@<id> - fetches the queue with the given ID
 //
 // -->
 

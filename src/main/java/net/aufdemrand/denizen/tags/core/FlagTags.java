@@ -1,12 +1,13 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.flags.FlagManager.Value;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.text.DecimalFormat;
@@ -19,6 +20,7 @@ public class FlagTags implements Listener {
     public FlagTags(Denizen denizen) {
         this.denizen = denizen;
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     private enum ReplaceType { LENGTH, SIZE, ASSTRING, ABS, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASPLAYERLIST, ASNPCLIST, ASCSLIST, ISEXPIRED, EXPIRATION }
@@ -30,7 +32,7 @@ public class FlagTags implements Listener {
      *      ReplaceableTagEvent
      */
 
-    @EventHandler
+    @TagManager.TagEvents
     public void flagTag(ReplaceableTagEvent event) {
         if (!event.matches("FLAG")) return;
 
@@ -75,17 +77,17 @@ public class FlagTags implements Listener {
             }
 
         } else if (event.getType().toUpperCase().startsWith("D") || event.getType().toUpperCase().startsWith("N")) {
-            if (denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index).isEmpty()) {
+            if (denizen.flagManager().getNPCFlag(((BukkitTagContext)event.getContext()).npc.getId(), flagName).get(index).isEmpty()) {
                 // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
             } else {
-                FlagManager.Flag flag = denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName);
+                FlagManager.Flag flag = denizen.flagManager().getNPCFlag(((BukkitTagContext)event.getContext()).npc.getId(), flagName);
                 event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
                 // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
             }
 
         } else if (event.getType().toUpperCase().startsWith("P")) {
             // Separate name since subType context may specify a different (or offline) player
-            dPlayer player = event.getPlayer();
+            dPlayer player = ((BukkitTagContext)event.getContext()).player;
 
             // No name? No flag replacement!
             if (player == null) return;

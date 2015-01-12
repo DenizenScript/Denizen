@@ -2,24 +2,21 @@ package net.aufdemrand.denizen.scripts;
 
 import java.util.*;
 
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
+import net.aufdemrand.denizencore.DenizenCore;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.commands.BracedCommand;
-import net.aufdemrand.denizen.scripts.commands.Holdable;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.Debuggable;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.citizensnpcs.api.CitizensAPI;
 
 
 /**
@@ -45,8 +42,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     private boolean waitfor = false;
 
     // 'Attached' core context
-    private dPlayer player = null;
-    private dNPC npc = null;
+    public ScriptEntryData entryData;
     private dScript script = null;
     private ScriptQueue queue = null;
 
@@ -69,6 +65,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     public ScriptEntry clone() throws CloneNotSupportedException {
         ScriptEntry se = (ScriptEntry) super.clone();
         se.objects = new HashMap<String, Object>();
+        se.entryData = entryData.clone();
         return se;
     }
 
@@ -80,12 +77,14 @@ public class ScriptEntry implements Cloneable, Debuggable {
      * @param command  the name of the command this entry will be handed to
      * @param arguments  an array of the arguments
      * @param script  optional ScriptContainer reference
-     * @throws ScriptEntryCreationException  let's hope this never happens!
+     * @throws ScriptEntryCreationException if 'command' is null
      */
     public ScriptEntry(String command, String[] arguments, ScriptContainer script) throws ScriptEntryCreationException {
 
         if (command == null)
             throw new ScriptEntryCreationException("dCommand 'name' cannot be null!");
+
+        entryData = DenizenCore.getImplementation().getEmptyScriptEntryData();
 
         this.command = command.toUpperCase();
 
@@ -114,7 +113,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
                     dB.echoError(null, "The command '" + this.command + "' cannot be waited for!");
                 }
             }
-            actualCommand = DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command);
+            actualCommand = (AbstractCommand)DenizenAPI.getCurrentInstance().getCommandRegistry().get(this.command);
         }
         else {
             actualCommand = null;
@@ -128,6 +127,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
             this.pre_tagged_args = Arrays.asList(arguments);
         } else {
             this.args = new ArrayList<String>();
+            this.pre_tagged_args = new ArrayList<String>();
         }
 
         // Check for replaceable tags. We'll try not to make a habit of checking for tags/doing
@@ -257,8 +257,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     }
 
     public void copyFrom(ScriptEntry entry) {
-        setPlayer(entry.getPlayer());
-        setNPC(entry.getNPC());
+        entryData = entry.entryData.clone();
         setSendingQueue(entry.getResidingQueue());
     }
 
@@ -290,20 +289,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
         } catch (Exception e) { return null; }
     }
 
-    @Deprecated
-    public <T extends dObject> T getdObjectAs(String key, Class<T> type) {
-        try {
-            // If an ENUM, return as an Element
-            Object gotten = objects.get(key.toLowerCase());
-            if (gotten instanceof Enum)
-                return (T) new Element(((Enum) gotten).name());
-            // Otherwise, just return the stored dObject
-            return (T) gotten;
-            // If not a dObject, return null
-        } catch (Exception e) { return null; }
-    }
-
-
     public Element getElement(String key) {
         try {
             return (Element) objects.get(key.toLowerCase());
@@ -318,55 +303,6 @@ public class ScriptEntry implements Cloneable, Debuggable {
     /////////////
     // CORE LINKED OBJECTS
     ///////
-
-    /**
-     * Gets a dNPC reference to any linked NPC set by the CommandExecuter.
-     *
-     * @return the NPC linked to this script entry
-     */
-    public dNPC getNPC() {
-        return npc;
-    }
-
-
-    public boolean hasNPC() {
-        return (npc != null);
-    }
-
-
-    private boolean dontFixMe = false;
-
-    public ScriptEntry setNPC(dNPC dNPC) {
-        if (dNPC == null && dontFixMe) {
-            dontFixMe = false;
-            return this;
-        }
-        this.npc = dNPC;
-        return this;
-    }
-
-
-    public dPlayer getPlayer() {
-        return player;
-    }
-
-
-    public boolean hasPlayer() {
-        return (player != null);
-    }
-
-
-    public ScriptEntry setPlayer(dPlayer player) {
-        if (player != null && player.isOnline() && Depends.citizens != null
-                && CitizensAPI.getNPCRegistry().isNPC(player.getPlayerEntity())) {
-            dontFixMe = true;
-            this.npc = new dNPC(CitizensAPI.getNPCRegistry().getNPC(player.getPlayerEntity()));
-        }
-        else
-            this.player = player;
-        return this;
-    }
-
 
     public dScript getScript() {
         return script;
@@ -421,6 +357,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     // so that IF can inject them into new entries.
     // This is ugly, but it will keep from breaking
     // previous versions of Denizen.
+    // TODO: Get rid of this
     public List<String> tracked_objects = new ArrayList<String>();
     public ScriptEntry trackObject(String key) {
         tracked_objects.add(key.toLowerCase());
@@ -432,7 +369,7 @@ public class ScriptEntry implements Cloneable, Debuggable {
     /////////
 
     @Override
-    public boolean shouldDebug() throws Exception {
+    public boolean shouldDebug() {
         if (script != null && script.getContainer() != null)
             return script.getContainer().shouldDebug();
         else
@@ -442,21 +379,5 @@ public class ScriptEntry implements Cloneable, Debuggable {
     @Override
     public boolean shouldFilter(String criteria) throws Exception {
         return script.getName().equalsIgnoreCase(criteria.replace("s@", ""));
-    }
-
-    public String reportObject(String id) {
-        // If this script entry doesn't have the object being reported,
-        // just return nothing.
-        if (!hasObject(id))
-            return "";
-
-        // If the object is a dObject, there's a method for reporting them
-        // in the proper format.
-        if (getObject(id) instanceof dObject)
-            return getdObject(id).debug();
-
-            // If all else fails, fall back on the toString() method with the id of the
-            // object being passed to aH.report(...)
-        else return aH.debugObj(id, getObject(id));
     }
 }

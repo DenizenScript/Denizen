@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Element;
@@ -47,7 +48,7 @@ public class GiveCommand  extends AbstractCommand {
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
-                scriptEntry.addObject("set_quantity", Element.TRUE);
+                scriptEntry.addObject("set_quantity",  new Element(true));
             }
 
             else if (!scriptEntry.hasObject("type")
@@ -60,16 +61,17 @@ public class GiveCommand  extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("engrave")
                         && arg.matches("engrave"))
-                scriptEntry.addObject("engrave", Element.TRUE);
+                scriptEntry.addObject("engrave",  new Element(true));
 
             else if (!scriptEntry.hasObject("unlimit_stack_size")
                     && arg.matches("unlimit_stack_size"))
-                scriptEntry.addObject("unlimit_stack_size", Element.TRUE);
+                scriptEntry.addObject("unlimit_stack_size", new Element(true));
 
             else if (!scriptEntry.hasObject("items")
                         && !scriptEntry.hasObject("type")
-                        && arg.matchesArgumentList(dItem.class))
+                        && arg.matchesArgumentList(dItem.class)) {
                 scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
+            }
 
             else if (!scriptEntry.hasObject("inventory")
                         && arg.matchesPrefix("t", "to")
@@ -81,18 +83,21 @@ public class GiveCommand  extends AbstractCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("slot", arg.asElement());
 
+            else
+                arg.reportUnhandled();
+
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
-                .defaultObject("engrave", Element.FALSE)
-                .defaultObject("unlimit_stack_size", Element.FALSE)
+                .defaultObject("engrave",  new Element(false))
+                .defaultObject("unlimit_stack_size", new Element(false))
                 .defaultObject("qty", new Element(1))
                 .defaultObject("slot", new Element(1));
 
         Type type = (Type) scriptEntry.getObject("type");
 
         if (type != Type.MONEY && scriptEntry.getObject("inventory") == null)
-            scriptEntry.addObject("inventory", scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory(): null);
+            scriptEntry.addObject("inventory", ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getInventory(): null);
 
         if (!scriptEntry.hasObject("inventory") && type != Type.MONEY)
             throw new InvalidArgumentsException("Must specify an inventory to give to!");
@@ -131,13 +136,13 @@ public class GiveCommand  extends AbstractCommand {
 
             case MONEY:
                 if(Depends.economy != null)
-                    Depends.economy.depositPlayer(scriptEntry.getPlayer().getName(), qty.asDouble());
+                    Depends.economy.depositPlayer(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName(), qty.asDouble());
                 else
                     dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 break;
 
             case EXP:
-                scriptEntry.getPlayer().getPlayerEntity().giveExp(qty.asInt());
+                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().giveExp(qty.asInt());
                 break;
 
             case ITEM:
@@ -151,7 +156,7 @@ public class GiveCommand  extends AbstractCommand {
                     }
                     if (set_quantity)
                         is.setAmount(qty.asInt());
-                    if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
+                    if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName());
 
                     List<ItemStack> leftovers = inventory.addWithLeftovers(slot.asInt()-1, limited, is);
 

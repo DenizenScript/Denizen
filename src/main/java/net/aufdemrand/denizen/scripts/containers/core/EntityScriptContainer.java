@@ -2,11 +2,13 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 public class EntityScriptContainer extends ScriptContainer {
 
@@ -38,7 +40,7 @@ public class EntityScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public EntityScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public EntityScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
 
@@ -50,7 +52,8 @@ public class EntityScriptContainer extends ScriptContainer {
         dEntity entity = null;
         try {
             if (contains("ENTITY_TYPE")) {
-                String entityType = TagManager.tag(player, npc, getString("ENTITY_TYPE"));
+                String entityType = TagManager.tag((getString("ENTITY_TYPE", "")), new BukkitTagContext
+                        (player, npc, false, null, shouldDebug(), new dScript(this)));
                 entity = dEntity.valueOf(entityType);
             }
 

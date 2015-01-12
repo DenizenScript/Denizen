@@ -72,7 +72,7 @@ public class AssignmentTrait extends Trait {
             // Add Constants/Trigger trait if not already added to the NPC.
             if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
             if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
-            if (Settings.HealthTraitEnabledByDefault())
+            if (Settings.healthTraitEnabledByDefault())
                 if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
             // Reset Constants
             npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();

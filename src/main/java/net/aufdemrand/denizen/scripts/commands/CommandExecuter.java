@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -35,8 +37,13 @@ public class CommandExecuter {
     public boolean execute(ScriptEntry scriptEntry) {
         StringBuilder output = new StringBuilder();
         output.append(scriptEntry.getCommandName());
-        for (String arg: scriptEntry.getOriginalArguments())
-            output.append(' ').append(arg);
+        if (scriptEntry.getOriginalArguments() == null) {
+            dB.echoError("Original Arguments null for " + scriptEntry.getCommandName());
+        }
+        else {
+            for (String arg: scriptEntry.getOriginalArguments())
+                output.append(" \"").append(arg).append("\"");
+        }
 
         dB.echoDebug(scriptEntry, "Queue '" + scriptEntry.getResidingQueue().id + "' Executing: " + output.toString());
 
@@ -52,7 +59,7 @@ public class CommandExecuter {
                     definition = "null";
                 }
                 dB.echoDebug(scriptEntry, "Filled definition %" + m.group(1) + "% with '" + definition + "'.");
-                m.appendReplacement(sb, definition.replace("$", "\\$"));
+                m.appendReplacement(sb, Matcher.quoteReplacement(definition));
             }
             m.appendTail(sb);
             scriptEntry.setCommandName(sb.toString());
@@ -61,7 +68,7 @@ public class CommandExecuter {
         // Get the command instance ready for the execution of the scriptEntry
         AbstractCommand command = scriptEntry.getCommand();
         if (command == null) {
-            command = DenizenAPI.getCurrentInstance().getCommandRegistry().get(scriptEntry.getCommandName());
+            command = (AbstractCommand)DenizenAPI.getCurrentInstance().getCommandRegistry().get(scriptEntry.getCommandName());
         }
 
         if (command == null) {
@@ -71,18 +78,18 @@ public class CommandExecuter {
             return false;
         }
 
-        if (scriptEntry.hasNPC() && scriptEntry.getNPC().getCitizen() == null)
-            scriptEntry.setNPC(null);
+        if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() && ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen() == null)
+            ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(null);
 
         // Debugger information
         if (scriptEntry.getOriginalArguments() == null ||
                 scriptEntry.getOriginalArguments().size() == 0 ||
                 !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
-            if (scriptEntry.getPlayer() != null)
-                dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" + scriptEntry.getPlayer().getName());
+            if (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null)
+                dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" + ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName());
             else
                 dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " +
-                    scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/n@" + scriptEntry.getNPC().getName() : ""));
+                    scriptEntry.getCommandName() + (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() != null ? "/n@" + ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getName() : ""));
         }
 
         // Don't execute() if problems arise in parseArgs()
@@ -93,8 +100,14 @@ public class CommandExecuter {
             // Throw exception if arguments are required for this command, but not supplied.
             if (command.getOptions().REQUIRED_ARGS > scriptEntry.getArguments().size()) throw new InvalidArgumentsException("");
 
-            if (scriptEntry.has_tags)
-                scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
+            if (scriptEntry.has_tags) {
+                scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(),
+                        new BukkitTagContext(scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null,
+                                scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null,
+                                true, scriptEntry, scriptEntry != null ? scriptEntry.shouldDebug(): true,
+                                scriptEntry != null ? scriptEntry.getScript(): null
+                                ))); // Replace tags
+            }
 
             /*  If using NPC:# or PLAYER:Name arguments, these need to be changed out immediately because...
              *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
@@ -127,13 +140,24 @@ public class CommandExecuter {
                     m = definition_pattern.matcher(arg.raw_value);
                     sb = new StringBuffer();
                     while (m.find()) {
-                        String definition = TagManager.EscapeOutput(scriptEntry.getResidingQueue().getDefinition(m.group(1)));
-                        if (definition == null) {
+                        String def = m.group(1);
+                        boolean dynamic = false;
+                        if (def.startsWith("|")) {
+                            def = def.substring(1, def.length() - 1);
+                            dynamic = true;
+                        }
+                        String definition;
+                        String defval = scriptEntry.getResidingQueue().getDefinition(def);
+                        if (dynamic)
+                            definition = scriptEntry.getResidingQueue().getDefinition(def);
+                        else
+                            definition = TagManager.escapeOutput(scriptEntry.getResidingQueue().getDefinition(def));
+                        if (defval == null) {
                             dB.echoError("Unknown definition %" + m.group(1) + "%.");
                             definition = "null";
                         }
                         dB.echoDebug(scriptEntry, "Filled definition %" + m.group(1) + "% with '" + definition + "'.");
-                        m.appendReplacement(sb, definition.replace("$", "\\$"));
+                        m.appendReplacement(sb, Matcher.quoteReplacement(definition));
                     }
                     m.appendTail(sb);
                     arg = aH.Argument.valueOf(sb.toString());
@@ -148,31 +172,30 @@ public class CommandExecuter {
                 // Fill player/off-line player
                 if (arg.matchesPrefix("player") && !if_ignore) {
                     dB.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
-                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false, scriptEntry);
+                    String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
                     dPlayer player = dPlayer.valueOf(value);
                     if (player == null || !player.isValid()) {
                         dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
                         return false;
                     }
-                    scriptEntry.setPlayer(player);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(player);
                 }
 
                 // Fill NPCID/NPC argument
                 else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
                     dB.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
-                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false, scriptEntry);
+                    String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
                     dNPC npc = dNPC.valueOf(value);
                     if (npc == null || !npc.isValid()) {
                         dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
                         return false;
                     }
-                    scriptEntry.setNPC(npc);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(npc);
                 }
 
                 // Save the scriptentry if needed later for fetching scriptentry context
                 else if (arg.matchesPrefix("save") && !if_ignore) {
-                    String saveName = TagManager.tag(scriptEntry.getPlayer(),
-                            scriptEntry.getNPC(), arg.getValue(), false, scriptEntry);
+                    String saveName = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
                     dB.echoDebug(scriptEntry, "...remembering this script entry as '" + saveName + "'!");
                     scriptEntry.getResidingQueue().holdScriptEntry(saveName, scriptEntry);
                 }
@@ -184,7 +207,12 @@ public class CommandExecuter {
             scriptEntry.setArguments(newArgs);
 
             // Now process non-instant tags.
-            scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, false));
+            scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(),
+                    new BukkitTagContext(scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null,
+                            scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null,
+                            false, scriptEntry, scriptEntry != null ? scriptEntry.shouldDebug(): true,
+                            scriptEntry != null ? scriptEntry.getScript(): null
+                    ))); // Replace tags
 
             // Parse the rest of the arguments for execution.
             command.parseArgs(scriptEntry);

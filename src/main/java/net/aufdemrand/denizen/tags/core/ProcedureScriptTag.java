@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.tags.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.ObjectFetcher;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dScript;
@@ -11,8 +13,8 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public class ProcedureScriptTag implements Listener {
 
     public ProcedureScriptTag(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     // <--[example]
@@ -101,11 +104,11 @@ public class ProcedureScriptTag implements Listener {
     //
     // -->
 
-    @EventHandler
+    @TagManager.TagEvents
     public void procedureTag(ReplaceableTagEvent event) {
 
         // <--[tag]
-        // @attribute <proc[ProcedureScript].Context[<element>|...]>
+        // @attribute <proc[ProcedureScript].context[<element>|...]>
         // @returns dObject
         // @description
         // Returns the 'determine' result of a procedure script with the given context.
@@ -151,9 +154,9 @@ public class ProcedureScriptTag implements Listener {
         // Build script entries
         List<ScriptEntry> entries;
         if (path != null)
-            entries = script.getContainer().getEntries(event.getPlayer(), event.getNPC(), path);
+            entries = script.getContainer().getEntries(new BukkitScriptEntryData(((BukkitTagContext)event.getContext()).player, ((BukkitTagContext)event.getContext()).npc), path);
         else
-            entries = script.getContainer().getBaseEntries(event.getPlayer(), event.getNPC());
+            entries = script.getContainer().getBaseEntries(new BukkitScriptEntryData(((BukkitTagContext)event.getContext()).player, ((BukkitTagContext)event.getContext()).npc));
 
         // Return if no entries built
         if (entries.isEmpty()) return;
@@ -164,7 +167,7 @@ public class ProcedureScriptTag implements Listener {
         // Add the reqId to each of the entries for referencing
         ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
-        InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
+        InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()));
         queue.addEntries(entries);
         queue.setReqId(id);
         if (event.hasType() &&
@@ -190,7 +193,7 @@ public class ProcedureScriptTag implements Listener {
         queue.start();
 
         if (DetermineCommand.hasOutcome(id)) {
-            event.setReplaced(ObjectFetcher.pickObjectFor(DetermineCommand.getOutcome(id))
+            event.setReplaced(ObjectFetcher.pickObjectFor(DetermineCommand.getOutcome(id).get(0))
                     .getAttribute(attr.fulfill(attribs)));
         }
     }

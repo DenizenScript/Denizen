@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
@@ -21,6 +23,7 @@ public class PlayerTags implements Listener {
 
     public PlayerTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     ///////////
@@ -53,30 +56,23 @@ public class PlayerTags implements Listener {
     //  ReplaceableTagEvent handler
     ////////
 
-    @EventHandler
+    @TagManager.TagEvents
     public void playerTags(ReplaceableTagEvent event) {
 
         if (!event.matches("player", "pl") || event.replaced()) return;
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+        Attribute attribute = event.getAttributes();
 
         // PlayerTags require a... dPlayer!
-        dPlayer p = event.getPlayer();
+        dPlayer p = ((BukkitTagContext)event.getContext()).player;
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1))
-            // Check if this is a valid player and update the dPlayer object reference.
-            if (dPlayer.matches(attribute.getContext(1)))
-                p = dPlayer.valueOf(attribute.getContext(1));
-            else {
-                if (!event.hasAlternative()) dB.echoError("Could not match '" + attribute.getContext(1) + "' to a valid player!");
-                return;
-            }
+            p = dPlayer.valueOf(attribute.getContext(1));
 
         if (p == null || !p.isValid()) {
             if (!event.hasAlternative()) dB.echoError("Invalid or missing player for tag <" + event.raw_tag + ">!");
-            event.setReplaced("null");
             return;
         }
 

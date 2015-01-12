@@ -19,6 +19,7 @@ public class _templateTrait extends Trait {
 
     public _templateTrait() {
         super("mytrait");
+        // Note: Don't register events, that's done for you.
     }
 
     @Override
@@ -29,8 +30,8 @@ public class _templateTrait extends Trait {
     @EventHandler
     public void leftClick(NPCLeftClickEvent event)
     {
-        if (event.getNPC() == this.getNPC()) {
+        // if (event.getNPC() == this.getNPC()) {
 
-        }
+        // }
     }
 }

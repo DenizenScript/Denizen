@@ -181,7 +181,7 @@ public class FlagManager {
      */
     public Set<String> listNPCFlags(int npcid) {
         ConfigurationSection section = denizen.getSaves().getConfigurationSection("NPCs." + npcid + ".Flags");
-        return section != null ? section.getValues(true).keySet() : null;
+        return section!= null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
 
     /**
@@ -189,7 +189,7 @@ public class FlagManager {
      */
     public Set<String> listGlobalFlags() {
         ConfigurationSection section = denizen.getSaves().getConfigurationSection("Global.Flags");
-        return section != null ? section.getValues(true).keySet() : null;
+        return section!= null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
 
     /**
@@ -197,8 +197,17 @@ public class FlagManager {
      */
     public Set<String> listPlayerFlags(dPlayer player) {
         ConfigurationSection section = denizen.getSaves().getConfigurationSection("Players." + player.getSaveName() + ".Flags");
-        return section!= null ? section.getValues(true).keySet() : null;
+        return section!= null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
+
+    public Set<String> _filterExpirations(Set<String> flagKeys) {
+        for (Iterator<String> iter = flagKeys.iterator(); iter.hasNext();) {
+            if (iter.next().endsWith("-expiration"))
+                iter.remove();
+        }
+        return flagKeys;
+    }
+
 
 
     /**
@@ -388,17 +397,21 @@ public class FlagManager {
         /**
          * Sets a specific value in the flag. Adds the value to the flag if
          * the index doesn't exist. If the index is less than 0, it instead
-         * works with the most recent value added to the flag. If the flag is
+         * clears the flag and works as if setting a blank flag. If the flag is
          * currently empty, the value is added.
          *
          */
         public void set(Object obj, int index) {
             checkExpired();
 
-            // No index? Work with last item in the Flag.
-            if (index < 0) index = size();
-
-            if (size() == 0) value.values.add((String) obj);
+            // No index? Clear the flag and set the whole thing.
+            if (index < 0) {
+                value.values.clear();
+                value.values.add((String) obj);
+            }
+            else if (size() == 0) {
+                value.values.add((String) obj);
+            }
             else if (index > 0) {
                 if (value.values.size() > index - 1) {
                     value.values.remove(index - 1);

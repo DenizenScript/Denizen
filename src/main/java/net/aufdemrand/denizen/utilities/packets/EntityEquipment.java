@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_7_R4.PacketPlayOutEntityEquipment;
-import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
+import net.minecraft.server.v1_8_R1.PacketPlayOutEntityEquipment;
+import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -58,5 +58,4 @@ public class EntityEquipment {
         PacketHelper.sendPacket(player, getEquipmentPacket(entity, 3, equipment.getChestplate()));
         PacketHelper.sendPacket(player, getEquipmentPacket(entity, 4, equipment.getHelmet()));
     }
-
 }

@@ -8,8 +8,9 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
@@ -492,7 +493,7 @@ public class dMaterial implements dObject {
                 || string.toLowerCase().matches("m@random")) {
 
             // Get a random material
-            return new dMaterial(Material.values()[Utilities.getRandom().nextInt(Material.values().length)]);
+            return new dMaterial(Material.values()[CoreUtilities.getRandom().nextInt(Material.values().length)]);
         }
 
         Matcher m = materialPattern.matcher(string);
@@ -577,8 +578,6 @@ public class dMaterial implements dObject {
     }
 
     /**
-     * TODO: Needs testing.
-     *
      * @param object object-fetchable String of a valid dMaterial, or a dMaterial object
      * @return true if the dMaterials are the same.
      */
@@ -586,8 +585,10 @@ public class dMaterial implements dObject {
     public boolean equals(Object object) {
         if (object instanceof dMaterial)
             return ((dMaterial) object).identify().equals(this.identify());
-        else
-            return valueOf(object.toString()) != null && valueOf(object.toString()).identify().equals(this.identify());
+        else {
+            dMaterial parsed = valueOf(object.toString());
+            return parsed != null && parsed.identify().equals(this.identify());
+        }
     }
 
 
@@ -678,6 +679,12 @@ public class dMaterial implements dObject {
     public String identify() {
         if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase();
         if (getData() != null && getData() > 0) return "m@" + material.name().toLowerCase() + "," + getData();
+        return "m@" + material.name().toLowerCase();
+    }
+
+    public String identifyFull() {
+        if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase() + (getData() != null ? "," +  getData(): "");
+        if (getData() != null) return "m@" + material.name().toLowerCase() + "," + getData();
         return "m@" + material.name().toLowerCase();
     }
 
@@ -794,7 +801,7 @@ public class dMaterial implements dObject {
         // Returns whether the material is a block that is solid (cannot be walked through).
         // -->
         if (attribute.startsWith("is_solid"))
-            return new Element(material.isSolid())
+            return new Element(!SafeBlock.blockIsSafe(material))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -871,7 +878,7 @@ public class dMaterial implements dObject {
         // -->
         if (attribute.startsWith("full")) {
             if (hasData())
-                return new Element(identify() + "," + getData())
+                return new Element(identifyFull())
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(identify())
@@ -900,6 +907,16 @@ public class dMaterial implements dObject {
             return new dItem(this, 1)
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <m@material.type>
+        // @returns Element
+        // @description
+        // Always returns 'Material' for dMaterial objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Material").getAttribute(attribute.fulfill(1));
+        }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

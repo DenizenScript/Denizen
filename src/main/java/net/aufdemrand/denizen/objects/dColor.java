@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Color;
 
 import net.aufdemrand.denizen.tags.Attribute;
@@ -36,9 +36,9 @@ public class dColor implements dObject {
         if (string.matches("RANDOM")) {
 
             // Get a color using random RGB values
-            return new dColor(Utilities.getRandom().nextInt(256),
-                    Utilities.getRandom().nextInt(256),
-                    Utilities.getRandom().nextInt(256));
+            return new dColor(CoreUtilities.getRandom().nextInt(256),
+                    CoreUtilities.getRandom().nextInt(256),
+                    CoreUtilities.getRandom().nextInt(256));
         }
 
         Matcher m = rgbPattern.matcher(string);
@@ -280,6 +280,17 @@ public class dColor implements dObject {
                 return new dColor(color.mixColors(mixed_with.getColor())).getAttribute(attribute.fulfill(1));
             else
                 dB.echoError("'" + attribute.getContext(1) + "' is not a valid color!");
+        }
+
+        // <--[tag]
+        // @attribute <co@color.type>
+        // @returns Element
+        // @description
+        // Always returns 'Color' for dColor objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Color").getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes

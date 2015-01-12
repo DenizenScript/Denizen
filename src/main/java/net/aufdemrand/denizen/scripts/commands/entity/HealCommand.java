@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
@@ -55,10 +56,10 @@ public class HealCommand extends AbstractCommand {
 
         if (!specified_targets) {
             List<dEntity> entities = new ArrayList<dEntity>();
-            if (scriptEntry.getPlayer() != null)
-                entities.add(scriptEntry.getPlayer().getDenizenEntity());
-            else if (scriptEntry.getNPC() != null)
-                entities.add(scriptEntry.getNPC().getDenizenEntity());
+            if (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null)
+                entities.add(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity());
+            else if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() != null)
+                entities.add(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity());
             else
                 throw new InvalidArgumentsException("No valid target entities found.");
             scriptEntry.addObject("entities", entities);

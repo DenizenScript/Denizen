@@ -3,10 +3,11 @@ package net.aufdemrand.denizen.scripts.commands.player;
 import java.util.Arrays;
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -50,7 +51,7 @@ public class NarrateCommand extends AbstractCommand {
 
             // Use raw_value as to not accidentally strip a value before any :'s.
             else if (!scriptEntry.hasObject("text"))
-                    scriptEntry.addObject("text", new Element(TagManager.CleanOutputFully(arg.raw_value)));
+                    scriptEntry.addObject("text", new Element(TagManager.cleanOutputFully(arg.raw_value)));
 
             else
                 arg.reportUnhandled();
@@ -61,7 +62,7 @@ public class NarrateCommand extends AbstractCommand {
         // to the targets
         if (!scriptEntry.hasObject("targets"))
             scriptEntry.addObject("targets",
-                    (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer()) : null));
+                    (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()) : null));
 
         if (!scriptEntry.hasObject("text"))
             throw new InvalidArgumentsException("Missing any text!");

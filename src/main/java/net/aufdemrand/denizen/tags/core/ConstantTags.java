@@ -1,15 +1,16 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 @Deprecated
@@ -17,9 +18,10 @@ public class ConstantTags implements Listener {
 
     public ConstantTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void constantTags(ReplaceableTagEvent event) {
         if (!event.matches("cons")) return;
 
@@ -34,8 +36,8 @@ public class ConstantTags implements Listener {
         NPC npc = null;
         if (event.getType() != null && event.getType().matches("\\d+"))
             npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
-        else if (event.getNPC() != null)
-            npc = event.getNPC().getCitizen();
+        else if (((BukkitTagContext)event.getContext()).npc != null)
+            npc = ((BukkitTagContext)event.getContext()).npc.getCitizen();
 
         if (npc == null) {
             dB.echoError("Constant tag '" + event.raw_tag + " does not contain a valid NPC! " +

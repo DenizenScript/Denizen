@@ -2,12 +2,14 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.objects.dItem;
 
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.List;
@@ -45,7 +47,7 @@ public class BookScriptContainer extends ScriptContainer {
     // </code>
     //
     // -->
-    public BookScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public BookScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
 
@@ -64,7 +66,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("TITLE")) {
             String title = getString("TITLE");
-            title = TagManager.tag(player, npc, title, false);
+            title = TagManager.tag(title, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
             bookInfo.setTitle(title);
         }
 
@@ -76,7 +78,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("AUTHOR")) {
             String author = getString("AUTHOR");
-            author = TagManager.tag(player, npc, author, false);
+            author = TagManager.tag(author, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
             bookInfo.setAuthor(author);
         }
 
@@ -84,7 +86,7 @@ public class BookScriptContainer extends ScriptContainer {
             List<String> pages = getStringList("TEXT");
 
             for (String page : pages) {
-                page = TagManager.tag(player, npc, page, false);
+                page = TagManager.tag(page, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
                 bookInfo.addPage(page);
             }
         }

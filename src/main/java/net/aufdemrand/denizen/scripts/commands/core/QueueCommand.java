@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -29,8 +29,10 @@ public class QueueCommand extends AbstractCommand {
             }
 
             // No prefix required to specify the queue
-            else if (ScriptQueue._getExistingQueue(arg.getValue()) != null) {
-                scriptEntry.addObject("queue", ScriptQueue._getExistingQueue(arg.getValue()));
+            else if ((arg.matchesArgumentType(ScriptQueue.class)
+                    || arg.matchesPrefix("queue"))
+                    && !scriptEntry.hasObject("queue")) {
+                scriptEntry.addObject("queue", arg.asType(ScriptQueue.class));
             }
 
             // ...but we also need to error out this command if the queue was not found.
@@ -58,7 +60,7 @@ public class QueueCommand extends AbstractCommand {
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debugger
-        dB.report(scriptEntry, getName(), aH.debugObj("Queue", queue.id)
+        dB.report(scriptEntry, getName(), queue.debug()
                 + aH.debugObj("Action", action.toString())
                 + (action == Action.DELAY ? delay.debug() : ""));
 

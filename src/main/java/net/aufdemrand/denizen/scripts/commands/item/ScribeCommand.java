@@ -1,8 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -11,7 +14,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -84,7 +86,8 @@ public class ScribeCommand extends AbstractCommand implements Listener {
 
     @Override
     public void onEnable() {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        TagManager.registerTagEvents(this);
     }
 
     @Override
@@ -133,7 +136,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
 
         BookScriptContainer bookScript = (BookScriptContainer) script.getContainer();
 
-        book = bookScript.writeBookTo(book, scriptEntry.getPlayer(), scriptEntry.getNPC());
+        book = bookScript.writeBookTo(book, ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
 
         // Post-write action? Can be NONE.
         switch (action) {
@@ -142,15 +145,15 @@ public class ScribeCommand extends AbstractCommand implements Listener {
                 break;
 
             case GIVE:
-                giveBook(scriptEntry.getPlayer().getPlayerEntity(), book.getItemStack());
+                giveBook(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
                 // Update player's inventory
-                scriptEntry.getPlayer().getPlayerEntity().updateInventory();
+                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
                 break;
 
             case EQUIP:
-                equipBook(scriptEntry.getPlayer().getPlayerEntity(), book.getItemStack());
+                equipBook(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
                 // Update player's inventory
-                scriptEntry.getPlayer().getPlayerEntity().updateInventory();
+                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
                 break;
 
             case NONE:
@@ -206,7 +209,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
      *
      * @param e ReplaceableTagEvent
      */
-    @EventHandler
+    @TagManager.TagEvents
     public void paragraph(ReplaceableTagEvent e) {
         // <--[tag]
         // @attribute <P>

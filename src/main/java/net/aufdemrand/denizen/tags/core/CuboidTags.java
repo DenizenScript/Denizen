@@ -1,11 +1,10 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.tags.Attribute;
-import org.bukkit.event.EventHandler;
+import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.event.Listener;
 
 
@@ -18,9 +17,10 @@ public class CuboidTags implements Listener {
 
     public CuboidTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void locationTags(ReplaceableTagEvent event) {
 
         if (!event.matches("cuboid") || event.replaced()) return;
@@ -28,12 +28,11 @@ public class CuboidTags implements Listener {
         dCuboid cuboid = null;
 
         String context = event.getNameContext();
-        if (event.hasNameContext() && dCuboid.matches(context))
+        if (event.hasNameContext())
             cuboid = dCuboid.valueOf(context);
 
         // Check if cuboid is null, return null if it is
         if (cuboid == null) {
-            event.setReplaced("null");
             return;
         }
 

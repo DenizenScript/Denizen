@@ -3,23 +3,30 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.objects.properties.entity.*;
+import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
+import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
+import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
-import net.minecraft.server.v1_7_R4.EntityHuman;
-import net.minecraft.server.v1_7_R4.EntityLiving;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftAnimals;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -82,7 +89,7 @@ public class dEntity implements dObject, Adjustable {
                             "|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LEASH_HITCH|LIGHTNING" +
                             "|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$")) {
 
-                randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
+                randomType = EntityType.values()[CoreUtilities.getRandom().nextInt(EntityType.values().length)];
             }
 
             return new dEntity(randomType, "RANDOM");
@@ -121,11 +128,14 @@ public class dEntity implements dObject, Adjustable {
 
             // Assume entity
             else {
-                if (aH.matchesInteger(m.group(2))) {
-                    int entityID = Integer.valueOf(m.group(2));
+                try {
+                    UUID entityID = UUID.fromString(m.group(2));
                     Entity entity = getEntityForID(entityID);
                     if (entity != null) return new dEntity(entity);
                     return null;
+                }
+                catch (Exception ex) {
+                    ex.getCause(); // DO NOTHING
                 }
 
 //                else if (isSaved(m.group(2)))
@@ -175,9 +185,10 @@ public class dEntity implements dObject, Adjustable {
         return null;
     }
 
-    public static Entity getEntityForID(int ID) {
+    @Deprecated
+    public static Entity getEntityForID(UUID ID) {
         for (World world : Bukkit.getWorlds()) {
-            net.minecraft.server.v1_7_R4.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(ID);
+            net.minecraft.server.v1_8_R1.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(ID);
 
             // Make sure the nmsEntity is valid, to prevent unpleasant errors
             if (nmsEntity != null) {
@@ -520,7 +531,7 @@ public class dEntity implements dObject, Adjustable {
             if (customName != null)
                 return customName;
         }
-        return entity.getType().getName();
+        return entity_type.name();
     }
 
     /**
@@ -641,8 +652,9 @@ public class dEntity implements dObject, Adjustable {
             if (entity_type != null) {
                 if (despawned_entity != null) {
                     // If entity had a custom_script, use the script to rebuild the base entity.
-                    if (despawned_entity.custom_script != null)
-                    { } // TODO: Build entity from custom script
+                    if (despawned_entity.custom_script != null) {
+                        // TODO: Build entity from custom script
+                    }
                     // Else, use the entity_type specified/remembered
                     else entity = location.getWorld().spawnEntity(location, entity_type);
 
@@ -903,7 +915,7 @@ public class dEntity implements dObject, Adjustable {
 
         if (value.equalsIgnoreCase("RANDOM")) {
 
-            entityClass.getMethod(method, typeClass).invoke(entity, types[Utilities.getRandom().nextInt(types.length)]);
+            entityClass.getMethod(method, typeClass).invoke(entity, types[CoreUtilities.getRandom().nextInt(types.length)]);
         }
         else {
             for (Object type : types) {
@@ -1009,7 +1021,7 @@ public class dEntity implements dObject, Adjustable {
                 //    return "e@" + getSaved(this);
 
             else if (isSpawned())
-                return "e@" + entity.getEntityId();
+                return "e@" + entity.getUniqueId().toString();
         }
 
         // Try to identify as an entity script
@@ -1063,6 +1075,12 @@ public class dEntity implements dObject, Adjustable {
         else return "e@" + entity_type.name();
     }
 
+    public String identifySimpleType() {
+        if (isNPC()) return "npc";
+        else if (isPlayer()) return "player";
+        else return entity_type.name();
+    }
+
     @Override
     public String toString() {
         return identify();
@@ -1083,7 +1101,7 @@ public class dEntity implements dObject, Adjustable {
                 return new Element(identify()).getAttribute(attribute);
             }
             dB.echoError("dEntity has returned null.");
-            return Element.NULL.getAttribute(attribute);
+            return null;
         }
 
         /////////////////////
@@ -1141,13 +1159,12 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.type>
         // @returns Element
-        // @group debug
         // @description
-        // Returns 'Entity', the type of this dObject.
+        // Always returns 'Entity' for dEntity objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
         // -->
         if (attribute.startsWith("type")) {
-            return new Element(getObjectType())
-                    .getAttribute(attribute.fulfill(1));
+            return new Element("Entity").getAttribute(attribute.fulfill(1));
         }
 
         /////////////////////
@@ -1194,6 +1211,7 @@ public class dEntity implements dObject, Adjustable {
         // @group data
         // @description
         // Returns the permanent unique ID of the entity.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("uuid"))
             return new Element(getUUID().toString())
@@ -1248,7 +1266,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("custom_name")) {
             if (!isLivingEntity() || getLivingEntity().getCustomName() == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(1));
         }
 
@@ -1261,7 +1279,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("custom_name.visible")) {
             if (!isLivingEntity())
-                return Element.NULL.getAttribute(attribute.fulfill(2));
+                return null;
             return new Element(getLivingEntity().isCustomNameVisible())
                     .getAttribute(attribute.fulfill(2));
         }
@@ -1273,6 +1291,7 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the name of the entity.
         // This can be a player name, an NPC name, a custom_name, or the entity type.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("name")) {
             return new Element(getName()).getAttribute(attribute.fulfill(1));
@@ -1376,6 +1395,39 @@ public class dEntity implements dObject, Adjustable {
         /////////////////
 
         // <--[tag]
+        // @attribute <e@entity.map_trace>
+        // @returns dLocation
+        // @group inventory
+        // @description
+        // returns a 2D location indicating where on the map the entity's looking at.
+        // Each coordinate is in the range of 0 to 128.
+        // -->
+        if (attribute.startsWith("map_trace")) {
+            Rotation.MapTraceResult mtr  = Rotation.mapTrace(getLivingEntity(), 200);
+            if (mtr != null) {
+                double x = 0;
+                double y = 0;
+                double basex = mtr.hitLocation.getX() - Math.floor(mtr.hitLocation.getX());
+                double basey = mtr.hitLocation.getY() - Math.floor(mtr.hitLocation.getY());
+                double basez = mtr.hitLocation.getZ() - Math.floor(mtr.hitLocation.getZ());
+                if (mtr.angle == BlockFace.NORTH) {
+                    x = 128f - (basex * 128f);
+                }
+                else if (mtr.angle == BlockFace.SOUTH) {
+                    x = basex * 128f;
+                }
+                else if (mtr.angle == BlockFace.WEST) {
+                    x = basez * 128f;
+                }
+                else if (mtr.angle == BlockFace.EAST) {
+                    x = 128f - (basez * 128f);
+                }
+                y = 128f - (basey * 128f);
+                return new dLocation(null, Math.round(x), Math.round(y)).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
         // @attribute <e@entity.can_see[<entity>]>
         // @returns Element(Boolean)
         // @group location
@@ -1438,6 +1490,7 @@ public class dEntity implements dObject, Adjustable {
         // @group location
         // @description
         // Returns the location of what the entity is standing on.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("location.standing_on"))
             return new dLocation(entity.getLocation().clone().add(0, -0.5f, 0))
@@ -1449,6 +1502,7 @@ public class dEntity implements dObject, Adjustable {
         // @group location
         // @description
         // Returns the location of the entity.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("location")) {
             return new dLocation(entity.getLocation())
@@ -1494,6 +1548,17 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("can_pickup_items"))
             return new Element(getLivingEntity().getCanPickupItems())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <e@entity.fallingblock_material>
+        // @returns dMaterial
+        // @group attributes
+        // @description
+        // Returns the material of a fallingblock-type entity.
+        // -->
+        if (attribute.startsWith("fallingblock_material"))
+            return dMaterial.getMaterialFrom(((FallingBlock) entity).getMaterial())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1801,6 +1866,7 @@ public class dEntity implements dObject, Adjustable {
         // @group attributes
         // @description
         // Returns the maximum duration of oxygen the entity can have.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("oxygen.max"))
             return new Duration((long) getLivingEntity().getMaximumAir())
@@ -1812,6 +1878,7 @@ public class dEntity implements dObject, Adjustable {
         // @group attributes
         // @description
         // Returns the duration of oxygen the entity has left.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("oxygen"))
             return new Duration((long) getLivingEntity().getRemainingAir())
@@ -1887,6 +1954,7 @@ public class dEntity implements dObject, Adjustable {
         // @group data
         // @description
         // Returns whether the entity is a player.
+        // Works with offline players.
         // -->
         if (attribute.startsWith("is_player")) {
             return new Element(isPlayer())
@@ -2149,9 +2217,9 @@ public class dEntity implements dObject, Adjustable {
             dList list = dList.valueOf(value.asString());
             if (list.size() > 1) {
                 if (list.get(0).equalsIgnoreCase("true"))
-                    ((CraftAnimals)getLivingEntity()).getHandle().f((EntityHuman) null);
+                    ((CraftAnimals)getLivingEntity()).getHandle().a((EntityHuman) null);
                 else
-                    ((CraftAnimals)getLivingEntity()).getHandle().cf();
+                    ((CraftAnimals)getLivingEntity()).getHandle().cq();
             }
         }
 
@@ -2232,6 +2300,42 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("velocity") && mechanism.requireObject(dLocation.class)) {
             setVelocity(value.asType(dLocation.class).toVector());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name interact_with
+        // @input dLocation
+        // @description
+        // Makes a player-type entity interact with a block.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("interact_with") && mechanism.requireObject(dLocation.class)) {
+            dLocation interactLocation = value.asType(dLocation.class);
+            CraftPlayer craftPlayer = (CraftPlayer)getPlayer();
+            BlockPosition pos =
+                    new BlockPosition(interactLocation.getBlockX(),
+                            interactLocation.getBlockY(),
+                            interactLocation.getBlockZ());
+            Block.getById(interactLocation.getBlock().getType().getId())
+                    .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
+                            pos,
+                            ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
+                            craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name play_death
+        // @input None
+        // @description
+        // Animates the entity dying.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("play_death")) {
+            getLivingEntity().playEffect(EntityEffect.DEATH);
         }
 
         // Iterate through this object's properties' mechanisms

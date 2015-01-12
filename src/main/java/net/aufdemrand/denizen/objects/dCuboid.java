@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.notable.Note;
@@ -17,6 +18,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -52,7 +54,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    final static Pattern item_by_saved = Pattern.compile("(cu@)(.+)");
+    final static Pattern cuboid_by_saved = Pattern.compile("(cu@)?(.+)");
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
      * or a dScript argument (location:)x,y,z,world. If including an Id,
@@ -106,7 +108,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // Match @object format for Notable dCuboids
         Matcher m;
 
-        m = item_by_saved.matcher(string);
+        m = cuboid_by_saved.matcher(string);
 
         if (m.matches() && NotableManager.isType(m.group(2), dCuboid.class))
             return (dCuboid) NotableManager.getSavedObject(m.group(2));
@@ -116,10 +118,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         return null;
     }
 
-    // regex patterns used for matching
-    final static Pattern location_by_saved = Pattern.compile("(cu@)?(.+)");
     // The regex below: optional-"|" + "<#.#>," x3 + <text> + "|" + "<#.#>," x3 + <text> -- repeating
-    final static Pattern location =
+    final static Pattern cuboidLocations =
             Pattern.compile("(\\|?([\\d\\.]+,){3}[\\w\\s]+\\|([\\d\\.]+,){3}[\\w\\s]+)+",
                     Pattern.CASE_INSENSITIVE);
 
@@ -131,11 +131,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         Matcher m;
 
         // Check for named cuboid: cu@notable_cuboid
-        m = location_by_saved.matcher(string);
+        m = cuboid_by_saved.matcher(string);
         if (m.matches() && NotableManager.isType(m.group(2), dCuboid.class)) return true;
 
         // Check for standard cuboid format: cu@x,y,z,world|x,y,z,world|...
-        m = location.matcher(string.replace("cu@", ""));
+        m = cuboidLocations.matcher(string.replace("cu@", ""));
         return m.matches();
     }
 
@@ -289,6 +289,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         //  | +---|-+
         //  |/    |/
         //  1-----+
+        int max = Settings.blockTagsMaxBlocks();
+        int index = 0;
 
         dList list = new dList();
 
@@ -320,6 +322,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         loc_2.getBlockX(),
                         y,
                         loc_1.getBlockZ()).identify());
+                index++;
+                if (index > max)
+                    return list;
             }
 
             for (int x = loc_1.getBlockX(); x <= loc_1.getBlockX() + x_distance; x++) {
@@ -342,6 +347,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         x,
                         loc_2.getBlockY(),
                         loc_1.getBlockZ()).identify());
+                index++;
+                if (index > max)
+                    return list;
             }
 
             for (int z = loc_1.getBlockZ(); z <= loc_1.getBlockZ() + z_distance; z++) {
@@ -364,6 +372,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         loc_2.getBlockX(),
                         loc_1.getBlockY(),
                         z).identify());
+                index++;
+                if (index > max)
+                    return list;
             }
         }
 
@@ -372,8 +383,35 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
 
     public dList getBlocks() {
-        dLocation loc;
+        return getBlocks(null);
+    }
+
+    private boolean matchesMaterialList(Location loc, List<dMaterial> materials) {
+        if (materials == null)
+            return true;
+        dMaterial mat = dMaterial.getMaterialFrom(loc.getBlock().getType(), loc.getBlock().getData());
+        for (dMaterial material: materials) {
+            if (mat.equals(material)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public dList getBlocks(List<dMaterial> materials) {
+        List<dLocation> locs = getBlocks_internal(materials);
         dList list = new dList();
+        for (dLocation loc: locs) {
+            list.add(loc.identify());
+        }
+        return list;
+    }
+
+    public List<dLocation> getBlocks_internal(List<dMaterial> materials) {
+        int max = Settings.blockTagsMaxBlocks();
+        dLocation loc;
+        List<dLocation> list = new ArrayList<dLocation>();
+        int index = 0;
 
         for (LocationPair pair : pairs) {
 
@@ -385,16 +423,26 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             for (int x = 0; x != x_distance + 1; x++) {
                 for (int z = 0; z != z_distance + 1; z++) {
                     for (int y = 0; y != y_distance + 1; y++) {
-                        loc = new dLocation(loc_1.clone()
-                                .add(x, y, z));
+                        loc = new dLocation(loc_1.clone().add(x, y, z));
                         if (!filter.isEmpty()) {
                             // Check filter
-                            for (dObject material : filter)
+                            for (dObject material : filter) {
                                 if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
-                                        .getMaterial().name()))
-                                    list.add(loc.identify());
-                        } else
-                            list.add(loc.identify());
+                                        .getMaterial().name())) {
+                                    if (matchesMaterialList(loc, materials)) {
+                                        list.add(loc);
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            if (matchesMaterialList(loc, materials)) {
+                                list.add(loc);
+                            }
+                        }
+                        index++;
+                        if (index > max)
+                            return list;
                     }
                 }
             }
@@ -405,8 +453,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     public List<dLocation> getBlockLocations() {
+        int max = Settings.blockTagsMaxBlocks();
         dLocation loc;
         List<dLocation> list = new ArrayList<dLocation>();
+        int index = 0;
 
         for (LocationPair pair : pairs) {
 
@@ -426,8 +476,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                                 if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
                                         .getMaterial().name()))
                                     list.add(loc);
-                        } else
+                        }
+                        else
                             list.add(loc);
+                        index++;
+                        if (index > max)
+                            return list;
                     }
                 }
             }
@@ -438,6 +492,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
 
+    public dList getSpawnableBlocks() {
+        return getSpawnableBlocks(null);
+    }
+
     /**
      * Returns a dList of dLocations with 2 vertical blocks of air
      * that are safe for players and similar entities to spawn in,
@@ -446,9 +504,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
      * @return  The dList
      */
 
-    public dList getSpawnableBlocks() {
+    public dList getSpawnableBlocks(List<dMaterial> mats) {
+        int max = Settings.blockTagsMaxBlocks();
         dLocation loc;
         dList list = new dList();
+        int index = 0;
 
         for (LocationPair pair : pairs) {
 
@@ -466,12 +526,16 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
                         if (SafeBlock.blockIsSafe(loc.getBlock().getType())
                                 && SafeBlock.blockIsSafe(loc.clone().add(0, 1, 0).getBlock().getType())
-                                && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()) {
+                                && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()
+                                && matchesMaterialList(loc.clone().add(0, -1, 0), mats)) {
                             // Get the center of the block, so the entity won't suffocate
                             // inside the edges for a couple of seconds
                             loc.add(0.5, 0, 0.5);
                             list.add(loc.identify());
                         }
+                        index++;
+                        if (index > max)
+                            return list;
                     }
                 }
             }
@@ -613,14 +677,21 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_blocks>
+        // @attribute <cu@cuboid.get_blocks[<material>...]>
         // @returns dList(dLocation)
         // @description
         // Returns each block location within the dCuboid.
+        // Optionally, specify a list of materials to only return locations
+        // with that block type.
         // -->
-        if (attribute.startsWith("get_blocks"))
-            return new dList(getBlocks())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("get_blocks")) {
+            if (attribute.hasContext(1))
+                return new dList(getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new dList(getBlocks())
+                        .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <cu@cuboid.members_size>
@@ -649,15 +720,22 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_spawnable_blocks>
+        // @attribute <cu@cuboid.get_spawnable_blocks[<Material>|...]>
         // @returns dList(dLocation)
         // @description
         // Returns each dLocation within the dCuboid that is
         // safe for players or similar entities to spawn in.
+        // Optionally, specify a list of materials to only return locations
+        // with that block type.
         // -->
-        if (attribute.startsWith("get_spawnable_blocks"))
-            return new dList(getSpawnableBlocks())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("get_spawnable_blocks")) {
+            if (attribute.hasContext(1))
+                return new dList(getSpawnableBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new dList(getSpawnableBlocks())
+                        .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <cu@cuboid.get_outline>
@@ -784,9 +862,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <cu@cuboid.include[<location>]>
-        // @returns dLocation
+        // @returns dCuboid
         // @description
-        // Expands the first member of the dCuboid to contain the given location.
+        // Expands the first member of the dCuboid to contain the given location, and returns the expanded cuboid.
         // -->
         if (attribute.startsWith("include")
                 && attribute.hasContext(1)) {
@@ -809,7 +887,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     return cuboid.getAttribute(attribute.fulfill(1));
                 }
             }
-            catch (CloneNotSupportedException ex) { }
+            catch (CloneNotSupportedException ex) {
+                dB.echoError(ex); // This should never happen
+            }
         }
 
         // <--[tag]
@@ -832,11 +912,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @description
         // Gets a list of all NPCs currently within the dCuboid.
         // -->
-        if (attribute.startsWith("list_npcs")) {
+        if (attribute.startsWith("list_npcs") && Depends.citizens != null) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                if (npc.isSpawned() && isInsideCuboid(npc.getEntity().getLocation()))
-                    npcs.add(dNPC.mirrorCitizensNPC(npc));
+                dNPC dnpc = dNPC.mirrorCitizensNPC(npc);
+                if (isInsideCuboid(dnpc.getLocation()))
+                    npcs.add(dnpc);
             }
             return new dList(npcs).getAttribute(attribute.fulfill(1));
         }
@@ -852,18 +933,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
             dList types = new dList();
             if (attribute.hasContext(1)) {
-                for (String type : dList.valueOf(attribute.getContext(1))) {
-                    if (dEntity.matches(type))
-                        types.add(type.toUpperCase());
-                }
+                types = dList.valueOf(attribute.getContext(1));
             }
             for (Entity ent : getWorld().getEntities()) {
                 dEntity current = new dEntity(ent);
                 if (ent.isValid() && isInsideCuboid(ent.getLocation())) {
                     if (!types.isEmpty()) {
                         for (String type : types) {
-                            if ((ent.getType().name().equals(type) ||
-                                    current.identify().equalsIgnoreCase(type)) && ent.isValid()) {
+                            if (current.identifySimpleType().equalsIgnoreCase(type)) {
                                 entities.add(current);
                                 break;
                             }
@@ -885,7 +962,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute.startsWith("list_living_entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
             for (Entity ent : getWorld().getLivingEntities()) {
-                if (ent.isValid() && isInsideCuboid(ent.getLocation()))
+                if (ent.isValid() && isInsideCuboid(ent.getLocation())
+                        && (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(ent)))
                     entities.add(new dEntity(ent));
             }
             return new dList(entities).getAttribute(attribute.fulfill(1));
@@ -967,6 +1045,16 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute.startsWith("full"))
             return new Element(identifyFull()).getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <cu@cuboid.type>
+        // @returns Element
+        // @description
+        // Always returns 'Cuboid' for dCuboid objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Cuboid").getAttribute(attribute.fulfill(1));
+        }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
@@ -984,6 +1072,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public void adjust(Mechanism mechanism) {
 
         Element value = mechanism.getValue();
+
+        // TODO: Should cuboids have mechanisms? Aren't tags sufficient?
 
         // <--[mechanism]
         // @object dCuboid

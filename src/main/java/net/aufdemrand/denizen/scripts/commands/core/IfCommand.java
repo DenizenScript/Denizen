@@ -2,9 +2,11 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.*;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
@@ -107,7 +109,7 @@ public class IfCommand extends AbstractCommand {
 
                 // Check if filling comparables are done by checking the command registry for valid commands.
                 // If using an operator though, skip on to compared-to!
-                else if (!usedOperator && denizen.getCommandRegistry()
+                else if (!usedOperator && DenizenAPI.getCurrentInstance().getCommandRegistry()
                         .get(arg.replace("^", "")) != null) {
                     buildingComparables = false;
                 }
@@ -293,10 +295,12 @@ public class IfCommand extends AbstractCommand {
 
             try {
                 ScriptEntry entry = new ScriptEntry(command, arguments,
-                        (scriptEntry.getScript() == null ? null : scriptEntry.getScript().getContainer()))
-                        .setPlayer(scriptEntry.getPlayer())
-                        .setNPC(scriptEntry.getNPC()).setInstant(true)
-                        .addObject("reqId", scriptEntry.getObject("reqId"));
+                        (scriptEntry.getScript() == null ? null : scriptEntry.getScript().getContainer()));
+                // TODO: should this be cloning entryData?
+                ((BukkitScriptEntryData)entry.entryData).setPlayer(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+                ((BukkitScriptEntryData)entry.entryData).setNPC(((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
+                entry.setInstant(true);
+                entry.addObject("reqId", scriptEntry.getObject("reqId"));
 
                 entries.add(entry);
 

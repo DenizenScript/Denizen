@@ -5,10 +5,8 @@ import net.aufdemrand.denizen.events.SmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 
 import java.util.*;
@@ -71,7 +69,7 @@ public class ItemMoveSmartEvent implements SmartEvent, Listener {
     // <item> moves from inventory (to <inventory type>)
     // <item> moves from <inventory type> (to <inventory type>)
     //
-    // @Triggers when an entity or block moves an item from one inventory to another.
+    // @Triggers when an entity or block moves an item from one inventory to another. (Hopper-style movement, not player-induced movement).
     // @Context
     // <context.origin> returns the origin dInventory.
     // <context.destination> returns the destination dInventory.

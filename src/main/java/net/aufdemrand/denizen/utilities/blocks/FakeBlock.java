@@ -1,9 +1,19 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
 
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import org.bukkit.Bukkit;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.util.*;
 
 /**
  * Creates a temporary fake block and shows it to a dPlayer.
@@ -11,29 +21,111 @@ import org.bukkit.Bukkit;
  */
 public class FakeBlock {
 
-    public FakeBlock(final dPlayer player, final dLocation location,
-                     final dMaterial material, final Duration duration) {
+    private final static Map<UUID, Map<dLocation, FakeBlock>> blocks = new HashMap<UUID, Map<dLocation, FakeBlock>>();
 
-        // Send the block to the player
-        player.getPlayerEntity().sendBlockChange(
-                location,
-                material.getMaterial(),
+    private final dPlayer player;
+    private final dLocation location;
+    private dMaterial material;
+    private long cancelTime = -1;
+    private BukkitTask currentTask = null;
+
+    private FakeBlock(dPlayer player, dLocation location) {
+        this.player = player;
+        this.location = location;
+    }
+
+    public static void showFakeBlockTo(List<dPlayer> players, dLocation location, dMaterial material, Duration duration) {
+        for (dPlayer player : players) {
+            if (!player.isOnline() || !player.isValid())
+                continue;
+            UUID uuid = player.getPlayerEntity().getUniqueId();
+            if (!blocks.containsKey(uuid))
+                blocks.put(uuid, new HashMap<dLocation, FakeBlock>());
+            Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
+            if (!playerBlocks.containsKey(location)) {
+                playerBlocks.put(location, new FakeBlock(player, location));
+            }
+            playerBlocks.get(location).updateBlock(material, duration.getTicks());
+        }
+    }
+
+    public static void stopShowingTo(List<dPlayer> players, final dLocation location) {
+        final List<UUID> uuids = new ArrayList<UUID>();
+        for (dPlayer player : players) {
+            if (!player.isOnline() || !player.isValid())
+                continue;
+            UUID uuid = player.getPlayerEntity().getUniqueId();
+            uuids.add(uuid);
+            if (blocks.containsKey(uuid)) {
+                Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
+                if (playerBlocks.containsKey(location))
+                    playerBlocks.get(location).cancelBlock();
+            }
+        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (UUID uuid : blocks.keySet()) {
+                    if (uuids.contains(uuid))
+                        continue;
+                    Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
+                    if (playerBlocks.containsKey(location))
+                        playerBlocks.get(location).updateBlock();
+                }
+            }
+        }.runTaskLater(DenizenAPI.getCurrentInstance(), 2);
+    }
+
+    private void cancelBlock() {
+        if (currentTask != null) {
+            currentTask.cancel();
+            currentTask = null;
+        }
+        cancelTime = -1;
+        material = null;
+        location.getBlock().getState().update();
+    }
+
+    private void updateBlock() {
+        if (material != null) {
+            updateBlock(material, cancelTime == -1 ? 0 : cancelTime - location.getWorld().getFullTime());
+        }
+    }
+
+    private void updateBlock(dMaterial material, long ticks) {
+        if (currentTask != null)
+            currentTask.cancel();
+        this.material = material;
+        player.getPlayerEntity().sendBlockChange(location, material.getMaterial(),
                 material.getMaterialData().getData());
+        if (ticks > 0) {
+            cancelTime = location.getWorld().getFullTime() + ticks;
+            currentTask = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    currentTask = null;
+                    if (player.isValid() && player.isOnline())
+                        cancelBlock();
+                }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), ticks);
+        }
+    }
 
-        if (duration.getTicks() > 0)
-        {
-            // Schedule removal of the block (and show the original block again)
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (player.isValid() && player.isOnline())
-                            player.getPlayerEntity().sendBlockChange(
-                                    location,
-                                    location.getBlock().getType(),
-                                    location.getBlock().getData());
-                    }
-                }, duration.getTicks());
+    static {
+        final FakeBlockListeners listeners = new FakeBlockListeners();
+    }
+
+    public static class FakeBlockListeners implements Listener {
+        public FakeBlockListeners() {
+            DenizenAPI.getCurrentInstance().getServer().getPluginManager()
+                    .registerEvents(this, DenizenAPI.getCurrentInstance());
+        }
+
+        @EventHandler
+        public void playerQuit(PlayerQuitEvent event) {
+            UUID uuid = event.getPlayer().getUniqueId();
+            if (blocks.containsKey(uuid))
+                blocks.remove(uuid);
         }
     }
 }

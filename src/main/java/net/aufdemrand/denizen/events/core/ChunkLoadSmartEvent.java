@@ -31,7 +31,7 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
         for (String event : events) {
 
             // Use a regex pattern to narrow down matches
-            Matcher m = Pattern.compile("on chunk loads for the first time", Pattern.CASE_INSENSITIVE)
+            Matcher m = Pattern.compile("on chunk loads for the first time( in (w@)?\\w+)?", Pattern.CASE_INSENSITIVE)
                     .matcher(event);
 
             if (m.matches()) {
@@ -70,7 +70,6 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
     // @Triggers when a new chunk is loaded
     // @Context
     // <context.chunk> returns the loading chunk.
-    // <context.world> returns the world the chunk is loading in.
     //
     // -->
     @EventHandler
@@ -79,7 +78,7 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         dWorld world = new dWorld(event.getWorld());
         context.put("chunk", new dChunk(event.getChunk()));
-        context.put("world", world);
+        context.put("world", world); // Deprecated in favor of context.chunk.world
         String determination = EventManager.doEvents(Arrays.asList("chunk loads for the first time",
                 "chunk loads for the first time in " + world.identify()), null, null, context, true);
         // TODO: Find way to cancel this?... may not be reasonably possible.

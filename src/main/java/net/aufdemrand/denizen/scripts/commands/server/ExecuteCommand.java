@@ -1,14 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.DenizenCommandSender;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
@@ -30,21 +32,21 @@ public class ExecuteCommand extends AbstractCommand {
 
             if (arg.matches("ASPLAYER", "AS_PLAYER", "PLAYER")
                     && !scriptEntry.hasObject("type")) {
-                if (!scriptEntry.hasPlayer())
+                if (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
                     throw new InvalidArgumentsException("Must have a Player link when using AS_PLAYER.");
                 scriptEntry.addObject("type", new Element("AS_PLAYER"));
             }
 
             else if (arg.matches("ASOPPLAYER", "ASOP", "AS_OP", "AS_OP_PLAYER", "OP")
                     && !scriptEntry.hasObject("type")) {
-                if (!scriptEntry.hasPlayer())
+                if (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
                     throw new InvalidArgumentsException("Must have a Player link when using AS_OP.");
                 scriptEntry.addObject("type", new Element("AS_OP"));
             }
 
             else if (arg.matches("ASNPC", "AS_NPC", "NPC")
                     && !scriptEntry.hasObject("type")) {
-                if (!scriptEntry.hasNPC())
+                if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
                     throw new InvalidArgumentsException("Must have a NPC link when using AS_NPC.");
                 scriptEntry.addObject("type", new Element("AS_NPC"));
             }
@@ -52,6 +54,10 @@ public class ExecuteCommand extends AbstractCommand {
             else if (arg.matches("ASSERVER", "AS_SERVER", "SERVER")
                     && !scriptEntry.hasObject("type"))
                 scriptEntry.addObject("type", new Element("AS_SERVER"));
+
+            else if (!scriptEntry.hasObject("silent")
+                    && arg.matches("silent"))
+                scriptEntry.addObject("silent", new Element("true"));
 
             else if (!scriptEntry.hasObject("command"))
                 scriptEntry.addObject("command", new Element(arg.raw_value));
@@ -66,6 +72,8 @@ public class ExecuteCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("command"))
             throw new InvalidArgumentsException("Missing command text!");
 
+        scriptEntry.defaultObject("silent", new Element("false"));
+
     }
 
     @Override
@@ -73,11 +81,13 @@ public class ExecuteCommand extends AbstractCommand {
 
         Element cmd = scriptEntry.getElement("command");
         Element type = scriptEntry.getElement("type");
+        Element silent = scriptEntry.getElement("silent");
 
         // Report to dB
         dB.report(scriptEntry, getName(),
                 type.debug()
-                + cmd.debug());
+                + cmd.debug()
+                + silent.debug());
 
         String command = cmd.asString();
 
@@ -85,10 +95,10 @@ public class ExecuteCommand extends AbstractCommand {
 
         case AS_PLAYER:
             try {
-                PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(scriptEntry.getPlayer().getPlayerEntity(), "/" + command);
+                PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), "/" + command);
                 Bukkit.getPluginManager().callEvent(pcpe);
                 if (!pcpe.isCancelled())
-                    scriptEntry.getPlayer().getPlayerEntity().performCommand(
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().performCommand(
                             pcpe.getMessage().startsWith("/") ? pcpe.getMessage().substring(1): pcpe.getMessage());
             }
             catch (Throwable e) {
@@ -98,47 +108,48 @@ public class ExecuteCommand extends AbstractCommand {
             return;
 
         case AS_OP:
-            boolean isOp = scriptEntry.getPlayer().getPlayerEntity().isOp();
-            if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(true);
+            boolean isOp = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().isOp();
+            if (!isOp) ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().setOp(true);
             try {
-                PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(scriptEntry.getPlayer().getPlayerEntity(), "/" + command);
+                PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), "/" + command);
                 Bukkit.getPluginManager().callEvent(pcpe);
                 if (!pcpe.isCancelled())
-                    scriptEntry.getPlayer().getPlayerEntity().performCommand(
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().performCommand(
                             pcpe.getMessage().startsWith("/") ? pcpe.getMessage().substring(1): pcpe.getMessage());
             }
             catch (Throwable e) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as OP.");
                 dB.echoError(scriptEntry.getResidingQueue(), e);
             }
-            if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(false);
+            if (!isOp) ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().setOp(false);
             return;
 
         case AS_NPC:
-            if (!scriptEntry.getNPC().isSpawned()) {
+            if (!((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isSpawned()) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Spawned.");
                 return;
             }
-            if (scriptEntry.getNPC().getEntity().getType() != EntityType.PLAYER) {
+            if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getEntity().getType() != EntityType.PLAYER) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
                 return;
             }
-            ((Player) scriptEntry.getNPC().getEntity()).setOp(true);
+            ((Player) ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getEntity()).setOp(true);
             try {
-                ((Player) scriptEntry.getNPC().getEntity()).performCommand(command);
+                ((Player) ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getEntity()).performCommand(command);
             }
             catch (Throwable e) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as NPC-OP.");
                 dB.echoError(scriptEntry.getResidingQueue(), e);
             }
-            ((Player) scriptEntry.getNPC().getEntity()).setOp(false);
+            ((Player) ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getEntity()).setOp(false);
             return;
 
         case AS_SERVER:
             dcs.clearOutput();
+            dcs.silent = silent.asBoolean();
             ServerCommandEvent sce = new ServerCommandEvent(dcs, command);
             Bukkit.getPluginManager().callEvent(sce);
-            denizen.getServer().dispatchCommand(dcs, sce.getCommand());
+            DenizenAPI.getCurrentInstance().getServer().dispatchCommand(dcs, sce.getCommand());
             scriptEntry.addObject("output", new dList(dcs.getOutput()));
         }
     }

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -14,24 +15,18 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.NaturalOrderComparator;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
+import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class dList extends ArrayList<String> implements dObject {
 
-    final static Pattern flag_by_id =
-            Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
-                    Pattern.CASE_INSENSITIVE);
-
     public final static char internal_escape_char = (char)0x05;
     public final static String internal_escape = String.valueOf(internal_escape_char);
-    final static Pattern identifier = Pattern.compile("li@", Pattern.CASE_INSENSITIVE);
 
     @Fetchable("li, fl")
     public static dList valueOf(String string) {
@@ -40,45 +35,67 @@ public class dList extends ArrayList<String> implements dObject {
         ///////
         // Match @object format
 
-        // Make sure string matches what this interpreter can accept.
-        Matcher m;
-        m = flag_by_id.matcher(string);
-
-        if (m.matches()) {
+        if (string.startsWith("fl")) {
             FlagManager flag_manager = DenizenAPI.getCurrentInstance().flagManager();
-
-            try {
-                // Global
-                if (m.group(1).equalsIgnoreCase("fl@")) {
-                    if (FlagManager.serverHasFlag(m.group(4)))
-                        return new dList(flag_manager.getGlobalFlag(m.group(4)));
-
-                } else if (m.group(2).toLowerCase().startsWith("p@")) {
-                    if (FlagManager.playerHasFlag(dPlayer.valueOf(m.group(3)), m.group(4)))
-                        return new dList(flag_manager.getPlayerFlag(dPlayer.valueOf(m.group(3)), m.group(4)));
-
-                } else if (m.group(2).toLowerCase().startsWith("n@")) {
-                    if (FlagManager.npcHasFlag(dNPC.valueOf(m.group(3)), m.group(4)))
-                        return new dList(flag_manager.getNPCFlag(Integer.valueOf(m.group(3)), m.group(4)));
+            if (string.indexOf('[') == 2) {
+                int cb = string.indexOf(']');
+                if (cb > 4 && string.indexOf('@') == (cb + 1)) {
+                    String owner = string.substring(3, cb);
+                    String flag = string.substring(cb + 2);
+                    if (dPlayer.matches(owner)) {
+                        dPlayer player = dPlayer.valueOf(owner);
+                        if (FlagManager.playerHasFlag(player, flag))
+                            return new dList(flag_manager.getPlayerFlag(player, flag));
+                        else
+                            dB.echoError("Player '" + owner + "' flag '" + flag + "' not found.");
+                    }
+                    else if (Depends.citizens != null && dNPC.matches(owner)) {
+                        dNPC npc = dNPC.valueOf(owner);
+                        if (FlagManager.npcHasFlag(npc, flag))
+                            return new dList(flag_manager.getNPCFlag(npc.getId(), flag));
+                        else
+                            dB.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
+                    }
                 }
-
-            } catch (Exception e) {
-                dB.echoError("Flag '" + m.group() + "' could not be found!");
-                return null;
+                else
+                    dB.echoError("Invalid dFlag format: " + string);
+            }
+            else if (string.indexOf('@') == 2) {
+                String flag = string.substring(3);
+                if (FlagManager.serverHasFlag(flag))
+                    return new dList(flag_manager.getGlobalFlag(flag));
+                else
+                    dB.echoError("Global flag '" + flag + "' not found.");
+            }
+            else {
+                return new dList(string);
             }
         }
 
         // Use value of string, which will separate values by the use of a pipe '|'
-        return new dList(string.replaceFirst(identifier.pattern(), ""));
+        return new dList(string.startsWith("li@") ? string.substring(3) : string);
     }
 
 
     public static boolean matches(String arg) {
 
-        Matcher m;
-        m = flag_by_id.matcher(arg);
+        boolean flag = false;
 
-        return m.matches() || arg.contains("|") || arg.contains(internal_escape) || arg.toLowerCase().startsWith("li@");
+        if (arg.startsWith("fl")) {
+            if (arg.indexOf('[') == 2) {
+                int cb = arg.indexOf(']');
+                if (cb > 4 && arg.indexOf('@') == (cb + 1)) {
+                    String owner = arg.substring(3, cb);
+                    flag = arg.substring(cb + 2).length() > 0 && (dPlayer.matches(owner)
+                            || (Depends.citizens != null && dNPC.matches(owner)));
+                }
+            }
+            else if (arg.indexOf('@') == 2) {
+                flag = arg.substring(3).length() > 0;
+            }
+        }
+
+        return flag || arg.contains("|") || arg.contains(internal_escape) || arg.startsWith("li@");
     }
 
 
@@ -186,11 +203,11 @@ public class dList extends ArrayList<String> implements dObject {
      * @param arraySize the size of the new array
      * @return the array copy
      */
-    public String[] toArray(int arraySize) {
+    public String[] toArray(int arraySize) { // TODO: Why does this exist?
         List<String> list = new ArrayList<String>();
 
         for (String string : this) {
-            list.add(string);
+            list.add(string); // TODO: Why is this a manual copy?
         }
 
         return list.toArray(new String[arraySize]);
@@ -246,8 +263,8 @@ public class dList extends ArrayList<String> implements dObject {
                 if (ObjectFetcher.checkMatch(dClass, element)) {
 
                     T object = ObjectFetcher.getObjectFrom(dClass, element,
-                            (entry != null ? entry.getPlayer(): null),
-                            (entry != null ? entry.getNPC(): null));
+                            (entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null),
+                            (entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null));
 
                     // Only add the object if it is not null, thus filtering useless
                     // list items
@@ -261,8 +278,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
         }
 
-        if (results.size() > 0) return results;
-        else return null;
+        return results;
     }
 
 
@@ -369,7 +385,7 @@ public class dList extends ArrayList<String> implements dObject {
             }
 
             if (index < 0)
-                return Element.NULL.getAttribute(attribute);
+                return null;
 
             dList sub_list = new dList();
 
@@ -383,6 +399,46 @@ public class dList extends ArrayList<String> implements dObject {
             return sub_list.getAttribute(attribute);
         }
 
+        // <--[tag]
+        // @attribute <li@list.map_get[<element>]>
+        // @returns dList
+        // @description
+        // Returns the sub-list split by the / symbol's
+        // value for the matching input element.
+        // TODO: Clarify
+        // EG: li@one/a|two/b.map_get[one] returns a.
+        // -->
+
+        if (attribute.startsWith("map_get")
+                && attribute.hasContext(1)) {
+            String input = attribute.getContext(1);
+            attribute.fulfill(1);
+
+
+            // <--[tag]
+            // @attribute <li@list.map_get[<element>].split_by[<element>]>
+            // @returns dList
+            // @description
+            // Returns the sub-list split by the given symbol's
+            // value for the matching input element.
+            // TODO: Clarify
+            // EG: li@one/a|two/b.map_get[one] returns a.
+            // -->
+
+            String split = "/";
+            if (attribute.startsWith("split_by")) {
+                if (attribute.hasContext(1) && attribute.getContext(1).length() > 0)
+                    split = attribute.getContext(1);
+                attribute.fulfill(1);
+            }
+
+            for (String item : this) {
+                String[] strings = item.split(Pattern.quote(split), 2);
+                if (strings.length > 1 && strings[0].equalsIgnoreCase(input)) {
+                    return new Element(strings[1]).getAttribute(attribute);
+                }
+            }
+        }
 
         // <--[tag]
         // @attribute <li@list.comma_separated>
@@ -453,7 +509,16 @@ public class dList extends ArrayList<String> implements dObject {
             StringBuilder dScriptArg = new StringBuilder();
 
             for (int n = 0; n < this.size(); n++) {
-                if (dEntity.matches(get(n))) {
+                if (get(n).startsWith("p@")) {
+                    dPlayer gotten = dPlayer.valueOf(get(n));
+                    if (gotten != null) {
+                        dScriptArg.append(gotten.getName());
+                    }
+                    else {
+                        dScriptArg.append(get(n).replaceAll("\\w+@", ""));
+                    }
+                }
+                else if (get(n).startsWith("e@") || get(n).startsWith("n@")) {
                     dEntity gotten = dEntity.valueOf(get(n));
                     if (gotten != null) {
                         dScriptArg.append(gotten.getName());
@@ -542,8 +607,42 @@ public class dList extends ArrayList<String> implements dObject {
                 return result.getAttribute(attribute.fulfill(1));
             }
             else {
-                dB.echoError("The tag li@list.insert[...] requires an at[#] tag follow it!");
-                return Element.NULL.getAttribute(attribute);
+                dB.echoError("The tag li@list.insert[...] must be followed by .at[#]!");
+                return null;
+            }
+        }
+
+        // <--[tag]
+        // @attribute <li@list.set[...|...].at[<#>]>
+        // @returns dList
+        // @description
+        // returns a new dList with the items specified inserted to the specified location, replacing the element
+        // already at that location.
+        // EG, .set[potato].at[2] on a list of "one|two|three" will return "one|potato|three".
+        // -->
+        if (attribute.startsWith("set") &&
+                attribute.hasContext(1)) {
+            if (this.size() == 0)
+                return null;
+            dList items = dList.valueOf(attribute.getContext(1));
+            attribute = attribute.fulfill(1);
+            if (attribute.startsWith("at")
+                    && attribute.hasContext(1)) {
+                dList result = new dList(this);
+                int index = new Element(attribute.getContext(1)).asInt() - 1;
+                if (index < 0)
+                    index = 0;
+                if (index > result.size() - 1)
+                    index = result.size() - 1;
+                result.remove(index);
+                for (int i = 0; i < items.size(); i++) {
+                    result.add(index + i, items.get(i));
+                }
+                return result.getAttribute(attribute.fulfill(1));
+            }
+            else {
+                dB.echoError("The tag li@list.set[...] must be followed by .at[#]!");
+                return null;
             }
         }
 
@@ -587,7 +686,7 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.remove[<#>]>
+        // @attribute <li@list.remove[<#>|...]>
         // @returns dList
         // @description
         // returns a new dList excluding the items at the specified index.
@@ -595,10 +694,17 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("remove") &&
                 attribute.hasContext(1)) {
-            int remove = new Element(attribute.getContext(1)).asInt() - 1;
+            dList indices = dList.valueOf(attribute.getContext(1));
             dList list = new dList(this);
-            if (remove >= 0 && remove < list.size()) {
-                list.remove(remove);
+            for (String index: indices) {
+                int remove = new Element(index).asInt() - 1;
+                if (remove >= 0 && remove < list.size()) {
+                    list.set(remove, "\0");
+                }
+            }
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).equals("\0"))
+                    list.remove(i--);
             }
             return list.getAttribute(attribute.fulfill(1));
         }
@@ -645,43 +751,112 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.get[<#>]>
+        // @attribute <li@list.get[<#>|...]>
         // @returns dObject
         // @description
         // returns an element of the value specified by the supplied context.
         // EG, .get[1] on a list of "one|two" will return "one", and .get[2] will return "two"
+        // Specify more than one index to get a list of results.
         // -->
         if (attribute.startsWith("get") &&
                 attribute.hasContext(1)) {
-            if (isEmpty()) return "null";
-            int index = attribute.getIntContext(1);
-            if (index > size()) return "null";
-            if (index < 1) index = 1;
-            attribute = attribute.fulfill(1);
-
-            // <--[tag]
-            // @attribute <li@list.get[<#>].to[<#>]>
-            // @returns dList
-            // @description
-            // returns all elements in the range from the first index to the second.
-            // EG, .get[1].to[3] on a list of "one|two|three|four" will return "one|two|three"
-            // -->
-            if (attribute.startsWith("to") &&
-                    attribute.hasContext(1)) {
-                int index2 = attribute.getIntContext(1);
-                if (index2 > size()) index2 = size();
-                if (index2 < 1) index2 = 1;
-                String item = "";
-                for (int i = index; i <= index2; i++) {
-                    item += get(i - 1) + (i < index2 ? "|": "");
+            if (isEmpty()) return null;
+            dList indices = dList.valueOf(attribute.getContext(1));
+            if (indices.size() > 1) {
+                dList results = new dList();
+                for (String index: indices) {
+                    int ind = aH.getIntegerFrom(index);
+                    if (ind > 0 && ind <= size())
+                        results.add(get(ind - 1));
                 }
-                return new dList(item).getAttribute(attribute.fulfill(1));
+                return results.getAttribute(attribute.fulfill(1));
             }
-            else {
-                String item;
-                item = get(index - 1);
-                return ObjectFetcher.pickObjectFor(item).getAttribute(attribute);
+            if (indices.size() > 0) {
+                int index = aH.getIntegerFrom(indices.get(0));
+                if (index > size()) return null;
+                if (index < 1) index = 1;
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <li@list.get[<#>].to[<#>]>
+                // @returns dList
+                // @description
+                // returns all elements in the range from the first index to the second.
+                // EG, .get[1].to[3] on a list of "one|two|three|four" will return "one|two|three"
+                // -->
+                if (attribute.startsWith("to") &&
+                        attribute.hasContext(1)) {
+                    int index2 = attribute.getIntContext(1);
+                    if (index2 > size()) index2 = size();
+                    if (index2 < 1) index2 = 1;
+                    String item = "";
+                    for (int i = index; i <= index2; i++) {
+                        item += get(i - 1) + (i < index2 ? "|": "");
+                    }
+                    return new dList(item).getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    String item;
+                    item = get(index - 1);
+                    return ObjectFetcher.pickObjectFor(item).getAttribute(attribute);
+                }
             }
+        }
+
+        // <--[tag]
+        // @attribute <li@list.find_all_partial[<element>]>
+        // @returns dList(Element(Number))
+        // @description
+        // returns all the numbered locations of elements that contain the text within a list,
+        // or an empty list if the list does not contain that item.
+        // EG, .find_all_partial[tw] on a list of "one|two|three|two" will return "2|4".
+        // TODO: Take multiple inputs? Or a regex?
+        // -->
+        if (attribute.startsWith("find_all_partial") &&
+                attribute.hasContext(1)) {
+            dList positions = new dList();
+            for (int i = 0; i < size(); i++) {
+                if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
+                    positions.add(String.valueOf(i + 1));
+            }
+            return positions.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.find_all[<element>]>
+        // @returns dList(Element(Number))
+        // @description
+        // returns all the numbered locations of elements that match the text within a list,
+        // or an empty list if the list does not contain that item.
+        // EG, .find[two] on a list of "one|two|three|two" will return "2|4".
+        // TODO: Take multiple inputs? Or a regex?
+        // -->
+        if (attribute.startsWith("find_all") &&
+                attribute.hasContext(1)) {
+            dList positions = new dList();
+            for (int i = 0; i < size(); i++) {
+                if (get(i).equalsIgnoreCase(attribute.getContext(1)))
+                    positions.add(String.valueOf(i + 1));
+            }
+            return positions.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.find_partial[<element>]>
+        // @returns Element(Number)
+        // @description
+        // returns the numbered location of the first partially matching element within a list,
+        // or -1 if the list does not contain that item.
+        // EG, .find[two] on a list of "one|two|three" will return "2".
+        // TODO: Take multiple inputs? Or a regex?
+        // -->
+        if (attribute.startsWith("find_partial") &&
+                attribute.hasContext(1)) {
+            for (int i = 0; i < size(); i++) {
+                if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
+                    return new Element(i + 1).getAttribute(attribute.fulfill(1));
+            }
+            return new Element(-1).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -691,6 +866,7 @@ public class dList extends ArrayList<String> implements dObject {
         // returns the numbered location of an element within a list,
         // or -1 if the list does not contain that item.
         // EG, .find[two] on a list of "one|two|three" will return "2".
+        // TODO: Take multiple inputs? Or a regex?
         // -->
         if (attribute.startsWith("find") &&
                 attribute.hasContext(1)) {
@@ -698,11 +874,13 @@ public class dList extends ArrayList<String> implements dObject {
                 if (get(i).equalsIgnoreCase(attribute.getContext(1)))
                     return new Element(i + 1).getAttribute(attribute.fulfill(1));
             }
-            // TODO: Why does this loop twice?
+            // TODO: This should be find_partial or something
+            /*
             for (int i = 0; i < size(); i++) {
                 if (get(i).toUpperCase().contains(attribute.getContext(1).toUpperCase()))
                     return new Element(i + 1).getAttribute(attribute.fulfill(1));
             }
+            */
             return new Element(-1).getAttribute(attribute.fulfill(1));
         }
 
@@ -735,7 +913,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("first")) {
             if (size() == 0)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(get(0)).getAttribute(attribute.fulfill(1));
         }
@@ -747,11 +925,11 @@ public class dList extends ArrayList<String> implements dObject {
         // returns the last element in the list.
         // If the list is empty, returns null instead.
         // EG, a list of "one|two|three" will return "three".
-        // Effectively equivalent to .get[9999]
+        // Effectively equivalent to .get[999999]
         // -->
         if (attribute.startsWith("last")) {
             if (size() == 0)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
         }
@@ -840,13 +1018,13 @@ public class dList extends ArrayList<String> implements dObject {
                 Collections.sort(list, new Comparator<String>() {
                     @Override
                     public int compare(String o1, String o2) {
-                        List<ScriptEntry> entries = script.getBaseEntries(entry.getPlayer(), entry.getNPC());
+                        List<ScriptEntry> entries = script.getBaseEntries(entry.entryData.clone());
                         if (entries.isEmpty()) {
                             return 0;
                         }
                         long id = DetermineCommand.getNewId();
                         ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
-                        InstantQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId());
+                        InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId("DLIST_SORT"));
                         queue.addEntries(entries);
                         queue.setReqId(id);
                         int x = 1;
@@ -865,7 +1043,7 @@ public class dList extends ArrayList<String> implements dObject {
                         queue.start();
                         int res = 0;
                         if (DetermineCommand.hasOutcome(id))
-                            res = new Element(DetermineCommand.getOutcome(id)).asInt();
+                            res = new Element(DetermineCommand.getOutcome(id).get(0)).asInt();
                         if (res < 0)
                             return -1;
                         else if (res > 0)
@@ -879,6 +1057,56 @@ public class dList extends ArrayList<String> implements dObject {
                 dB.echoError("list.sort[...] tag failed - procedure returned unreasonable valid - internal error: " + e.getMessage());
             }
             return new dList(list).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.filter[<tag>]>
+        // @returns dList
+        // @description
+        // returns a copy of the list with all its contents parsed through the given tag and only including ones that returned 'true'.
+        // For example, a list of '1|2|3|4|5' .filter[is[or_more].than[3]] returns a list of '3|4|5'.
+        // -->
+        if (attribute.startsWith("filter")
+                && attribute.hasContext(1)) {
+            dList newlist = new dList();
+            try {
+                for (String str: this) {
+                    if (str == null) {
+                        dB.echoError("Null string in dList! (From .filter tag)");
+                    }
+                    String result = ObjectFetcher.pickObjectFor(str).getAttribute(new Attribute(attribute.getContext(1),
+                            attribute.getScriptEntry()));
+                    if (result != null && result.equalsIgnoreCase("true")) {
+                        newlist.add(str);
+                    }
+                }
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+            }
+            return newlist.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <li@list.parse[<tag>]>
+        // @returns dList
+        // @description
+        // returns a copy of the list with all its contents parsed through the given tag.
+        // For example, a list of 'one|two' .parse[to_uppercase] returns a list of 'ONE|TWO'.
+        // -->
+        if (attribute.startsWith("parse")
+                && attribute.hasContext(1)) {
+            dList newlist = new dList();
+            try {
+                for (String str: this) {
+                    newlist.add(ObjectFetcher.pickObjectFor(str).getAttribute(new Attribute(attribute.getContext(1),
+                            attribute.getScriptEntry())));
+                }
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+            }
+            return newlist.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -985,24 +1213,26 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--[tag]
-        // @attribute <li@list.contains[<element>]>
+        // @attribute <li@list.contains[<element>|...]>
         // @returns Element(Boolean)
         // @description
-        // returns whether the list contains a given element.
+        // returns whether the list contains all of the given elements.
         // -->
-        if (attribute.matches("contains")) {
-            if (attribute.hasContext(1)) {
-                boolean state = false;
+        if (attribute.matches("contains")
+                && attribute.hasContext(1)) {
+            dList needed = dList.valueOf(attribute.getContext(1));
+            int gotten = 0;
 
+            for (String check: needed) {
                 for (String element : this) {
-                    if (element.equalsIgnoreCase(attribute.getContext(1))) {
-                        state = true;
+                    if (element.equalsIgnoreCase(check)) {
+                        gotten++;
                         break;
                     }
                 }
-
-                return new Element(state).getAttribute(attribute.fulfill(1));
             }
+
+            return new Element(gotten == needed.size()).getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("prefix"))
@@ -1025,14 +1255,20 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("identify")) {
+        if (attribute.startsWith("identify")) { // TODO: ???
             return new Element(identify())
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <li@list.type>
+        // @returns Element
+        // @description
+        // Always returns 'List' for dList objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
         if (attribute.startsWith("type")) {
-            return new Element(getObjectType())
-                    .getAttribute(attribute.fulfill(1));
+            return new Element("List").getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1055,7 +1291,7 @@ public class dList extends ArrayList<String> implements dObject {
                     available.addAll(this);
                     dList toReturn = new dList();
                     while (!available.isEmpty() && times < count) {
-                        int random = Utilities.getRandom().nextInt(available.size());
+                        int random = CoreUtilities.getRandom().nextInt(available.size());
                         toReturn.add(available.get(random));
                         available.remove(random);
                         times++;
@@ -1063,7 +1299,7 @@ public class dList extends ArrayList<String> implements dObject {
                     return toReturn.getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new Element(this.get(Utilities.getRandom().nextInt(this.size())))
+                    return ObjectFetcher.pickObjectFor(this.get(CoreUtilities.getRandom().nextInt(this.size())))
                             .getAttribute(attribute.fulfill(1));
                 }
             }

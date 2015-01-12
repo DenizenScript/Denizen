@@ -23,6 +23,7 @@ import net.aufdemrand.denizen.utilities.entity.Position;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
@@ -57,16 +58,12 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player breaks block
-    // player breaks block in <notable cuboid>
-    // player breaks <material>
-    // player breaks <material> in <notable cuboid>
-    // player breaks block with <item>
-    // player breaks <material> with <item>
-    // player breaks <material> with <item> in <notable cuboid>
-    // player breaks block with <material>
-    // player breaks <material> with <material>
-    // player breaks <material> with <material> in <notable cuboid>
+    // player breaks block (in <notable cuboid>)
+    // player breaks <material> (in <notable cuboid>)
+    // player breaks block with <item> (in <notable cuboid>)
+    // player breaks <material> with <item> (in <notable cuboid>)
+    // player breaks block with <material> (in <notable cuboid>)
+    // player breaks <material> with <material> (in <notable cuboid>)
     //
     // @Triggers when a player breaks a block.
     // @Context
@@ -180,6 +177,7 @@ public class WorldScriptHelper implements Listener {
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        context.put("material", material);
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("block burns",
@@ -480,6 +478,8 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.location> returns the dLocation the block was set on fire at.
     // <context.material> returns the dMaterial of the block that was set on fire.
+    // <context.entity> returns the dEntity of the entity that ignited the block.
+    // <context.cause> returns an Element of the cause of the event: ENDER_CRYSTAL, EXPLOSION, FIREBALL, FLINT_AND_STEEL, LAVA, or SPREAD.
     //
     // @Determine
     // "CANCELLED" to stop the block from being ignited.
@@ -493,6 +493,10 @@ public class WorldScriptHelper implements Listener {
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
+        context.put("cause", new Element(event.getCause().name()));
+        if (event.getIgnitingEntity() != null) {
+            context.put("entity", new dEntity(event.getIgnitingEntity()).getDenizenObject());
+        }
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("block ignites",
@@ -513,6 +517,7 @@ public class WorldScriptHelper implements Listener {
     // <context.location> returns the dLocation of the piston.
     // <context.material> returns the dMaterial of the piston.
     // <context.length> returns the number of blocks that will be moved by the piston.
+    // <context.blocks> returns a dList of all block locations about to be moved.
     //
     // @Determine
     // "CANCELLED" to stop the piston from extending.
@@ -527,6 +532,11 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
         context.put("length", new Element(event.getLength()));
+
+        dList blocks = new dList();
+        for (Block block: event.getBlocks())
+            blocks.add(new dLocation(block.getLocation()).identify());
+        context.put("blocks", blocks);
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("piston extends",
@@ -951,6 +961,7 @@ public class WorldScriptHelper implements Listener {
         for (dCuboid cuboid : cuboids) {
             events.add("player changes sign in " + cuboid.identifySimple());
             events.add("player changes " + material.identifySimple() + " in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identify());
         }
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
@@ -988,13 +999,14 @@ public class WorldScriptHelper implements Listener {
     // -->
     public void serverStartEvent() {
         // Start the 'timeEvent'
+        long ticks = Settings.worldScriptTimeEventFrequency().getTicks();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
                 new Runnable() {
                     @Override
                     public void run() {
                         timeEvent();
                     }
-                }, Settings.WorldScriptTimeEventFrequency().getTicks(), Settings.WorldScriptTimeEventFrequency().getTicks());
+                }, ticks, ticks);
 
         // Fire the 'Server Start' event
         String determination = EventManager.doEvents(Arrays.asList("server start"),
@@ -1244,7 +1256,7 @@ public class WorldScriptHelper implements Listener {
 
         dPlayer player = null;
         dNPC npc = null;
-        if (CitizensAPI.getNPCRegistry().isNPC(entity.getBukkitEntity())) {
+        if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(entity.getBukkitEntity())) {
             npc = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(entity.getBukkitEntity()));
         }
         else if (entity.getBukkitEntity() instanceof Player) {
@@ -1323,6 +1335,7 @@ public class WorldScriptHelper implements Listener {
                     + cuboid.identifySimple());
             events.add(entity.identifyType() + " changes " + oldMaterial.identifySimple() + " into "
                     + newMaterial.identifySimple() + " in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identify());
         }
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
@@ -1915,11 +1928,12 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when an entity decides to explode.
     // @Context
     // <context.entity> returns the dEntity.
-    // <context.origin> returns an Element of the explosion's radius.
+    // <context.radius> returns an Element of the explosion's radius.
     // <context.fire> returns an Element with a value of "true" if the explosion will create fire and "false" otherwise.
     //
     // @Determine
     // "CANCELLED" to stop the entity from deciding to explode.
+    // TODO: Set radius, set fire-state (mulitple-determinations)
     //
     // -->
     @EventHandler
@@ -2222,9 +2236,11 @@ public class WorldScriptHelper implements Listener {
             events.add("entity shoots block");
             events.add("entity shoots block with " + projectile.identifyType());
             events.add("entity shoots " + material.identifySimple() + " with " + projectile.identifyType());
+            events.add("entity shoots " + material.identifySimple());
             events.add(shooter.identifyType() + " shoots block");
             events.add(shooter.identifyType() + " shoots block with " + projectile.identifyType());
             events.add(shooter.identifyType() + " shoots " + material.identifySimple() + " with " + projectile.identifyType());
+            events.add(shooter.identifyType() + " shoots " + material.identifySimple());
         }
 
         EventManager.doEvents(events, npc, player, context, true);
@@ -2436,8 +2452,11 @@ public class WorldScriptHelper implements Listener {
     // <context.location> returns the dLocation of the enchanting table.
     // <context.inventory> returns the dInventory of the enchanting table.
     // <context.item> returns the dItem to be enchanted.
+    // <context.button> returns which button was pressed to initiate the enchanting.
+    // <context.cost> returns the experience level cost of the enchantment.
     //
     // @Determine
+    // Element(Number) to set the experience level cost of the enchantment.
     // "CANCELLED" to stop the item from being enchanted.
     //
     // -->
@@ -2452,6 +2471,8 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getEnchantBlock().getLocation()));
         context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
         context.put("item", item);
+        context.put("button", new Element(event.whichButton()));
+        context.put("cost", new Element(event.getExpLevelCost()));
 
         String determination = EventManager.doEvents(Arrays.asList
                 ("item enchanted",
@@ -2460,6 +2481,8 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+        else if (Argument.valueOf(determination).matchesPrimitive(PrimitiveType.Integer))
+            event.setExpLevelCost(Integer.valueOf(determination));
     }
 
     // <--[language]
@@ -2539,11 +2562,13 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void inventoryClickEvent(InventoryClickEvent event) {
 
+        // TODO: make this a smart event...
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = null;
         dItem holding;
 
-        Inventory inventory = event.getInventory();
+        dInventory inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         final dPlayer player = new dPlayer((Player) event.getWhoClicked());
         String type = event.getInventory().getType().name();
         String click = event.getClick().name();
@@ -2552,11 +2577,13 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("player clicks in inventory");
         events.add("player clicks in " + type);
+        events.add("player clicks in " + inventory.identifySimple());
 
         String interaction = "player " + click + " clicks ";
 
         events.add(interaction + "in inventory");
         events.add(interaction + "in " + type);
+        events.add(interaction + "in " + inventory.identifySimple());
 
         if (event.getCursor() != null) {
             holding = new dItem(event.getCursor());
@@ -2564,12 +2591,16 @@ public class WorldScriptHelper implements Listener {
 
             events.add(interaction + "in inventory with " + holding.identifySimple());
             events.add(interaction + "in " + type + " with " + holding.identifySimple());
+            events.add(interaction + "in " + inventory.identifySimple() + " with " + holding.identifySimple());
             events.add(interaction + "in inventory with " + holding.identifyMaterial());
             events.add(interaction + "in " + type + " with " + holding.identifyMaterial());
+            events.add(interaction + "in " + inventory.identifySimple() + " with " + holding.identifyMaterial());
             events.add("player clicks in inventory with " + holding.identifySimple());
             events.add("player clicks in " + type + " with " + holding.identifySimple());
+            events.add("player clicks in " + inventory.identifySimple() + " with " + holding.identifySimple());
             events.add("player clicks in inventory with " + holding.identifyMaterial());
             events.add("player clicks in " + type + " with " + holding.identifyMaterial());
+            events.add("player clicks in " + inventory.identifySimple() + " with " + holding.identifyMaterial());
         }
 
         if (event.getCurrentItem() != null) {
@@ -2584,6 +2615,10 @@ public class WorldScriptHelper implements Listener {
             events.add(interaction +
                     item.identifySimple() + " in " + type);
             events.add("player clicks " +
+                    item.identifySimple() + " in " + inventory.identifySimple());
+            events.add(interaction +
+                    item.identifySimple() + " in " + inventory.identifySimple());
+            events.add("player clicks " +
                     item.identifyMaterial() + " in inventory");
             events.add(interaction +
                     item.identifyMaterial() + " in inventory");
@@ -2591,39 +2626,42 @@ public class WorldScriptHelper implements Listener {
                     item.identifyMaterial() + " in " + type);
             events.add(interaction +
                     item.identifyMaterial() + " in " + type);
+            events.add("player clicks " +
+                    item.identifyMaterial() + " in " + inventory.identifySimple());
+            events.add(interaction +
+                    item.identifyMaterial() + " in " + inventory.identifySimple());
 
             if (event.getCursor() != null) {
                 holding = new dItem(event.getCursor());
 
-                events.add("player clicks " +
-                        item.identifySimple() + " in inventory with " + holding.identifySimple());
-                events.add(interaction +
-                        item.identifySimple() + " in inventory with " + holding.identifySimple());
-                events.add(interaction +
-                        item.identifySimple() + " in " + type + " with " + holding.identifySimple());
-                events.add("player clicks " +
-                        item.identifySimple() + " in inventory with " + holding.identifyMaterial());
-                events.add(interaction +
-                        item.identifySimple() + " in inventory with " + holding.identifyMaterial());
-                events.add(interaction +
-                        item.identifySimple() + " in " + type + " with " + holding.identifyMaterial());
-                events.add("player clicks " +
-                        item.identifyMaterial() + " in inventory with " + holding.identifyMaterial());
-                events.add(interaction +
-                        item.identifyMaterial() + " in inventory with " + holding.identifyMaterial());
-                events.add(interaction +
-                        item.identifyMaterial() + " in " + type + " with " + holding.identifyMaterial());
-                events.add("player clicks " +
-                        item.identifyMaterial() + " in inventory with " + holding.identifySimple());
-                events.add(interaction +
-                        item.identifyMaterial() + " in inventory with " + holding.identifySimple());
-                events.add(interaction +
-                        item.identifyMaterial() + " in " + type + " with " + holding.identifySimple());
+                final String[] itemStrings = new String[] {
+                        item.identifySimple(),
+                        item.identifyMaterial()
+                };
+                final String[] inventoryStrings = new String[] {
+                        "inventory",
+                        type,
+                        inventory.identifySimple()
+                };
+                final String[] holdingStrings = new String[] {
+                        holding.identifySimple(),
+                        holding.identifyMaterial()
+                };
+
+                for (String itemString : itemStrings) {
+                    for (String inventoryString : inventoryStrings) {
+                        for (String holdingString : holdingStrings) {
+                            String fullString = itemString + " in " + inventoryString + " with " + holdingString;
+                            events.add("player clicks " + fullString);
+                            events.add(interaction + fullString);
+                        }
+                    }
+                }
             }
         }
 
         context.put("item", item);
-        context.put("inventory", dInventory.mirrorBukkitInventory(inventory));
+        context.put("inventory", inventory);
         context.put("click", new Element(click));
         context.put("slot_type", new Element(slotType));
         context.put("slot", new Element(event.getSlot() + 1));
@@ -2635,7 +2673,7 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);
-            final InventoryHolder holder = inventory.getHolder();
+            final InventoryHolder holder = event.getInventory().getHolder();
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -2654,7 +2692,7 @@ public class WorldScriptHelper implements Listener {
     // npc closes inventory
     // npc closes <inventory type>
     //
-    // @Triggers when a player closes an inventory.
+    // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
     // @Context
     // <context.inventory> returns the dInventory.
     //
@@ -2690,6 +2728,8 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.item> returns the dItem the player has dragged.
     // <context.inventory> returns the dInventory.
+    // <context.slots> returns a dList of the slot numbers dragged through.
+    // <context.raw_slots> returns a dList of the raw slot numbers dragged through.
     //
     // @Determine
     // "CANCELLED" to stop the player from dragging.
@@ -2730,6 +2770,16 @@ public class WorldScriptHelper implements Listener {
 
         context.put("item", item);
         context.put("inventory", dInventory.mirrorBukkitInventory(inventory));
+        dList slots = new dList();
+        for (Integer slot : event.getInventorySlots()) {
+            slots.add(slot.toString());
+        }
+        context.put("slots", slots);
+        dList raw_slots = new dList();
+        for (Integer raw_slot : event.getRawSlots()) {
+            raw_slots.add(raw_slot.toString());
+        }
+        context.put("raw_slots", raw_slots);
 
         String determination = EventManager.doEvents(events, null, player, context, true);
 
@@ -2752,7 +2802,7 @@ public class WorldScriptHelper implements Listener {
     // player opens inventory
     // player opens <inventory type>
     //
-    // @Triggers when a player opens an inventory.
+    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
     // @Context
     // <context.inventory> returns the dInventory.
     //
@@ -3311,7 +3361,8 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.item> returns the dItem the player is clicking with.
     // <context.location> returns the dLocation the player is clicking on.
-    // <context.cuboids> returns the notable cuboids that contain the clicked block
+    // <context.cuboids> returns a list of the notable cuboids that contain the clicked block.
+    // <context.click_type> returns an element of the click type.
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
@@ -3339,8 +3390,9 @@ public class WorldScriptHelper implements Listener {
         // The only other action is PHYSICAL, which is triggered when a player
         // stands on a pressure plate
         else interactions = new String[]{"player stands on"};
+        context.put("click_type", new Element(action.name()));
 
-        for (String interaction : interactions)
+        for (String interaction : interactions) // TODO: addAll?
             events.add(interaction);
 
         if (event.hasItem()) {
@@ -3387,11 +3439,14 @@ public class WorldScriptHelper implements Listener {
                     events.add(interaction + " block in notable cuboid");
                     events.add(interaction + ' ' + blockMaterial.identifySimple() + " in notable cuboid");
                 }
+                // TODO: Add all events + in <cuboid>
                 for (dCuboid cuboid : cuboids) {
                     events.add(interaction + " block in " + cuboid.identifySimple());
                     events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());
-                    cuboid_context.add(cuboid.identifySimple());
                 }
+            }
+            for (dCuboid cuboid : cuboids) {
+                cuboid_context.add(cuboid.identifySimple());
             }
             // Add in cuboids context, with either the cuboids or an empty list
             context.put("cuboids", cuboid_context);
@@ -4211,7 +4266,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when lightning strikes in a world.
     // @Context
     // <context.world> returns the dWorld the lightning struck in.
-    // <context.reason> returns the dLocation where the lightning struck.
+    // <context.location> returns the dLocation where the lightning struck.
     //
     // @Determine
     // "CANCELLED" to stop the lightning from striking.
@@ -4351,6 +4406,7 @@ public class WorldScriptHelper implements Listener {
     // <context.world> returns the dWorld the structure grew in.
     // <context.location> returns the dLocation the structure grew at.
     // <context.structure> returns an Element of the structure's type.
+    // <context.blocks> returns a list of all block locations to be modified.
     //
     // @Determine
     // "CANCELLED" to stop the structure from growing.
@@ -4366,6 +4422,12 @@ public class WorldScriptHelper implements Listener {
         context.put("world", world);
         context.put("location", new dLocation(event.getLocation()));
         context.put("structure", new Element(treeType));
+
+        dList structure = new dList();
+        for (BlockState state: event.getBlocks()) {
+            structure.add(new dLocation(state.getLocation()).identify());
+        }
+        context.put("blocks", structure);
 
         List<String> events = new ArrayList<String>();
         events.add("structure grows");

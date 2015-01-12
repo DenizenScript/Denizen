@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.objects.notable.*;
-import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
@@ -11,8 +10,9 @@ import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -371,16 +371,6 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     /**
-     * Check whether this item is some form of armor.
-     *
-     * @return  True if it is, otherwise false.
-     */
-    public boolean isArmor() {
-        int type = item.getTypeId();
-        return type >= 298 && type <= 317;
-    }
-
-    /**
      * Check whether this item contains the lore specific
      * to item scripts.
      *
@@ -484,8 +474,10 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // Else, return the material name
-        return "i@" + dMaterial.getMaterialFrom(item.getType(),
-                item.getData().getData()).identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
+        if (item.getDurability() >= 16 || item.getDurability() < 0) {
+            return "i@" + getMaterial().realName() + "," + item.getDurability()  + PropertyParser.getPropertiesString(this);
+        }
+        return "i@" + getMaterial().identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
 
 
@@ -517,7 +509,7 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public String getFullString() {
-        return "i@" + (isItemscript() ? getScriptName(): getMaterial().name()) + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
+        return "i@" + (isItemscript() ? getScriptName(): getMaterial().realName()) + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
     }
 
 
@@ -730,8 +722,8 @@ public class dItem implements dObject, Notable, Adjustable {
         // {'text':'Item','color':'white','hoverEvent':{'action':'show_item','value':'{<player.item_in_hand.json>}'}}]}"
         // -->
         if (attribute.startsWith("json")) {
-            String JSON = CraftItemStack.asNMSCopy(item).E().getChatModifier().toString();
-            return new Element(JSON.substring(176, JSON.length() - 154))
+            String JSON = CraftItemStack.asNMSCopy(item).C().getChatModifier().toString();
+            return new Element(JSON.substring(176, JSON.length() - 186))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -744,6 +736,16 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("full"))
             return new Element(getFullString()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <i@item.simple>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns a simple reusable item identification for this item, with minimal extra data.
+        // -->
+        if (attribute.startsWith("simple"))
+            return new Element(identifySimple()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <i@item.notable_name>
@@ -789,6 +791,16 @@ public class dItem implements dObject, Notable, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <i@item.type>
+        // @returns Element
+        // @description
+        // Always returns 'Item' for dItem objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Item").getAttribute(attribute.fulfill(1));
+        }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

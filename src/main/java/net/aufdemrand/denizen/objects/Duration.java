@@ -8,9 +8,9 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 
 import com.google.common.primitives.Ints;
@@ -109,7 +109,7 @@ public class Duration implements dObject {
             // and that 'low' is less time than 'high'.
             if (low != null && high != null
                     && low.getSecondsAsInt() < high.getSecondsAsInt()) {
-                int seconds = Utilities.getRandom()
+                int seconds = CoreUtilities.getRandom()
                         .nextInt((high.getSecondsAsInt() - low.getSecondsAsInt() + 1))
                                 + low.getSecondsAsInt();
                 // dB.log("Getting random duration between " + low.identify()
@@ -314,7 +314,7 @@ public class Duration implements dObject {
      */
     @Override
     public String identify() {
-        return getTicks() + "t";
+        return "d@" + getTicks() + "t";
     }
 
     @Override
@@ -350,10 +350,20 @@ public class Duration implements dObject {
         /////////////////
 
         // <--[tag]
+        // @attribute <d@duration.in_years>
+        // @returns Element(Decimal)
+        // @description
+        // returns the number of years in the Duration.
+        // -->
+        if (attribute.startsWith("in_years") || attribute.startsWith("years"))
+            return new Element(seconds / (86400 * 365))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <d@duration.in_weeks>
         // @returns Element(Decimal)
         // @description
-        // returns the number of days in the Duration.
+        // returns the number of years in the Duration.
         // -->
         if (attribute.startsWith("in_weeks") || attribute.startsWith("weeks"))
             return new Element(seconds / 604800)
@@ -396,7 +406,7 @@ public class Duration implements dObject {
         // returns the number of seconds in the Duration.
         // -->
         if (attribute.startsWith("in_seconds") || attribute.startsWith("seconds"))
-            return new Element(seconds)
+            return new Element(getTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -406,7 +416,7 @@ public class Duration implements dObject {
         // returns the number of milliseconds in the Duration.
         // -->
         if (attribute.startsWith("in_milliseconds") || attribute.startsWith("milliseconds"))
-            return new Element(seconds * 1000)
+            return new Element(getTicks() * (1000 / 20))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -420,8 +430,29 @@ public class Duration implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <d@duration.time>
+        // @attribute <d@duration.sub[<duration>]>
         // @returns Element(Number)
+        // @description
+        // returns this duration minus another.
+        // -->
+        if (attribute.startsWith("sub") && attribute.hasContext(1)) {
+            return new Duration(getTicks() - Duration.valueOf(attribute.getContext(1)).getTicks())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <d@duration.add[<duration>]>
+        // @returns Element(Number)
+        // @description
+        // returns this duration plus another.
+        // -->
+        if (attribute.startsWith("add") && attribute.hasContext(1)) {
+            return new Duration(getTicks() + Duration.valueOf(attribute.getContext(1)).getTicks())
+                    .getAttribute(attribute.fulfill(1));
+        }
+        // <--[tag]
+        // @attribute <d@duration.time>
+        // @returns Element
         // @description
         // returns the date-time specified by the duration object.
         // -->
@@ -439,7 +470,7 @@ public class Duration implements dObject {
             // Returns the current year of the time specified by the duration object.
             // -->
             if (attribute.startsWith("year"))
-                return new Element(currentDate.getYear()).getAttribute(attribute.fulfill(1));
+                return new Element(currentDate.getYear() + 1900 /* ??? */).getAttribute(attribute.fulfill(1));
 
                 // <--[tag]
                 // @attribute <d@duration.time.month>
@@ -486,6 +517,7 @@ public class Duration implements dObject {
             else if (attribute.startsWith("second"))
                 return new Element(currentDate.getSeconds()).getAttribute(attribute.fulfill(1));
 
+            // TODO: Custom format option
             else {
                 format.applyPattern("EEE, d MMM yyyy HH:mm:ss");
                 return new Element(format.format(currentDate))
@@ -517,6 +549,16 @@ public class Duration implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <d@duration.type>
+        // @returns Element
+        // @description
+        // Always returns 'Duration' for Duration objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Duration").getAttribute(attribute.fulfill(1));
+        }
 
         /////////////////////
         //   FORMAT ATTRIBUTES
@@ -533,30 +575,7 @@ public class Duration implements dObject {
         // -->
         if (attribute.startsWith("formatted") || attribute.startsWith("value")) {
 
-            // Make sure you don't change these longs into doubles
-            // and break the code
-
-            long seconds = (long) this.seconds;
-            long days = seconds / 86400;
-            long hours = (seconds - days * 86400) / 3600;
-            long minutes = (seconds - days * 86400 - hours * 3600) / 60;
-            seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
-
-            String timeString = "";
-
-            if (days > 0)
-                timeString = String.valueOf(days) + "d ";
-            if (hours > 0)
-                timeString = timeString + String.valueOf(hours) + "h ";
-            if (minutes > 0 && days == 0)
-                timeString = timeString + String.valueOf(minutes) + "m ";
-            if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
-                timeString = timeString + String.valueOf(seconds) + "s";
-
-            if (timeString.isEmpty())
-                timeString = "forever";
-
-            return new Element(timeString.trim())
+            return new Element(formatted())
                         .getAttribute(attribute.fulfill(1));
         }
 
@@ -567,5 +586,32 @@ public class Duration implements dObject {
         }
 
         return new Element(identify()).getAttribute(attribute);
+    }
+
+    public String formatted() {
+        // Make sure you don't change these longs into doubles
+        // and break the code
+
+        long seconds = (long) this.seconds;
+        long days = seconds / 86400;
+        long hours = (seconds - days * 86400) / 3600;
+        long minutes = (seconds - days * 86400 - hours * 3600) / 60;
+        seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
+
+        String timeString = "";
+
+        if (days > 0)
+            timeString = String.valueOf(days) + "d ";
+        if (hours > 0)
+            timeString = timeString + String.valueOf(hours) + "h ";
+        if (minutes > 0 && days == 0)
+            timeString = timeString + String.valueOf(minutes) + "m ";
+        if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
+            timeString = timeString + String.valueOf(seconds) + "s";
+
+        if (timeString.isEmpty())
+            timeString = "forever";
+
+        return timeString.trim();
     }
 }

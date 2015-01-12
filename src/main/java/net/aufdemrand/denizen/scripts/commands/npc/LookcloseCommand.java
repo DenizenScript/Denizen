@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -33,15 +34,15 @@ public class LookcloseCommand extends AbstractCommand {
             else if (arg.matchesPrimitive(aH.PrimitiveType.Boolean))
                 scriptEntry.addObject("toggle", arg.asElement());
 
-            else if (arg.matchesArgumentType(dNPC.class))
-                scriptEntry.setNPC(arg.asType(dNPC.class));
+            else if (arg.matchesArgumentType(dNPC.class)) // TODO: better way of handling this?
+                ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
 
             else arg.reportUnhandled();
         }
 
         // Only required thing is a valid NPC. This may be an already linked
         // NPC, or one specified by arguments
-        if (scriptEntry.getNPC() == null)
+        if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() == null)
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
 
     }
@@ -49,13 +50,13 @@ public class LookcloseCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dB.report(scriptEntry, getName(), scriptEntry.getNPC().debug()
-                + scriptEntry.reportObject("realistic")
-                + scriptEntry.reportObject("range")
-                + scriptEntry.reportObject("toggle"));
+        dB.report(scriptEntry, getName(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().debug()
+                + aH.debugObj("realistic", scriptEntry.getObject("realistic"))
+                + aH.debugObj("range", scriptEntry.getObject("range"))
+                + aH.debugObj("toggle", scriptEntry.getObject("toggle")));
 
         // Get the instance of the trait that belongs to the target NPC
-        LookClose trait = scriptEntry.getNPC().getCitizen().getTrait(LookClose.class);
+        LookClose trait = ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen().getTrait(LookClose.class);
 
         // Handle toggle
         if (scriptEntry.hasObject("toggle"))

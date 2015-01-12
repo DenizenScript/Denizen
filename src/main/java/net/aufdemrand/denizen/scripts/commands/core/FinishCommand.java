@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.bukkit.ScriptFinishEvent;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -50,7 +51,7 @@ public class FinishCommand extends AbstractCommand {
         }
 
         // Check for required args
-        scriptEntry.defaultObject("player", scriptEntry.getPlayer());
+        scriptEntry.defaultObject("player", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
         scriptEntry.defaultObject("script", scriptEntry.getScript());
     }
 
@@ -63,6 +64,8 @@ public class FinishCommand extends AbstractCommand {
         // Report to dB
         dB.report(scriptEntry, getName(),
                 player.debug() + script.debug());
+
+        dB.echoError(scriptEntry.getResidingQueue(), "Finish is outdated, use flags instead!");
 
         finishScript(player.getName(), script.getName());
     }

@@ -3,7 +3,11 @@
 Debug:
   Show: true
   Ex command help: true
-  Console width: 60
+  # Adjust to your console width minus 16. Ideally, we'd calculate this, but we currently can't.
+  Console width: 64
+  Trim length: 512
+  # Whether to permit the "server.redirect_logging" mechanism
+  Allow console redirection: false
 
 Scripts:
   World:
@@ -17,7 +21,6 @@ Scripts:
   Scripts location:
     Use default script folder: true
     Alternative folder path: 'plugins/Denizen'
-  Load scripts in subfolders: true
 
 # The default options for new Denizen NPCs
 
@@ -80,8 +83,39 @@ Commands:
       To target: "[<def[talker].name>] -> You: <def[message]>"
       With target to bystanders: "[<def[talker].name>] -> <def[target].name>: <def[message]>"
       With targets to bystanders: "[<def[talker].name>] -> [<def[targets]>]: <def[message]>"
+  Delete:
+        # Whether scripts are allowed to delete files from your server
+        # This is mostly to clean up saves, but could potentially be abused.
+        # Set to 'false' if you're worried about security.
+        Allow file deletion: true
+  Java:
+        # Whether scripts are allowed to run arbitrary Java code.
+        # This is extremely dangerous and should be kept off unless monitored carefully.
+        # Set to 'false' if you're worried about security.
+        Allow running java: false
+  log:
+        # The log command writes to file, which is potentially dangerous
+        # Set to 'false' if you're worried about security.
+        Allow logging: true
+  yaml:
+        # Whether the YAML command is allowed to save outside the minecraft folder.
+        # Set to 'false' if you're worried about security.
+        Allow saving outside folder: false
+    # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
+    # Otherwise, a bad script or plugin could potentially damage things
+    # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...
+
+Tags:
+  # Settings for tags like cuboid.get_blocks, location.find.blocks, ...
+  Block tags:
+    # How many blocks can be read, max, before stopping the tag in place
+    Max blocks: 1000000
+  Path finding:
+    # How far away the path finder can search before giving up
+    Max distance: 100
+
 
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 7
+  Version: 10

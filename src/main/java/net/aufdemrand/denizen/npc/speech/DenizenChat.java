@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
@@ -51,14 +52,14 @@ public class DenizenChat implements VocalChord {
 
         // Chat to the world using Denizen chat settings
         if (!context.hasRecipients()) {
-            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.ChatNoTargetFormat(), false, entry);
+            String text = TagManager.tag(Settings.chatNoTargetFormat(), new BukkitTagContext(entry, false));
             talkToBystanders(talker, text, context);
         }
 
         // Single recipient
         else if (context.size() <= 1) {
             // Send chat to target
-            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.ChatToTargetFormat(), false, entry);
+            String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry, false));
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
             }
@@ -68,8 +69,7 @@ public class DenizenChat implements VocalChord {
                 if (queue.hasDefinition("target"))
                     defTarget = queue.getDefinition("target");
                 queue.addDefinition("target", new dEntity(context.iterator().next().getEntity()).identify());
-                String bystanderText = TagManager.tag(entry.getPlayer(), entry.getNPC(),
-                        Settings.ChatWithTargetToBystandersFormat(), false, entry);
+                String bystanderText = TagManager.tag(Settings.chatWithTargetToBystandersFormat(), new BukkitTagContext(entry, false));
                 talkToBystanders(talker, bystanderText, context);
                 if (defTarget != null)
                     queue.addDefinition("target", defTarget);
@@ -79,12 +79,12 @@ public class DenizenChat implements VocalChord {
         // Multiple recipients
         else {
             // Send chat to targets
-            String text = TagManager.tag(entry.getPlayer(), entry.getNPC(), Settings.ChatToTargetFormat(), false, entry);
+            String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry, false));
             for (Talkable entity : context) {
                 entity.talkTo(context, text, this);
             }
             if (context.isBystandersEnabled()) {
-                String[] format = Settings.ChatMultipleTargetsFormat().split("%target%");
+                String[] format = Settings.chatMultipleTargetsFormat().split("%target%");
                 if (format.length <= 1)
                     dB.echoError("Invalid 'Commands.Chat.Options.Multiple targets format' in config.yml! Must have at least 1 %target%");
                 StringBuilder parsed = new StringBuilder();
@@ -98,15 +98,14 @@ public class DenizenChat implements VocalChord {
                     parsed.append(format[i]).append(new dEntity(iter.next().getEntity()).getName());
                     i++;
                 }
-                String targets = TagManager.tag(entry.getPlayer(), entry.getNPC(), parsed.toString(), false, entry);
+                String targets = TagManager.tag(parsed.toString(), new BukkitTagContext(entry, false));
 
                 String defTargets = null;
                 if (queue.hasDefinition("targets"))
                     defTargets = queue.getDefinition("targets");
                 queue.addDefinition("targets", targets);
 
-                String bystanderText = TagManager.tag(entry.getPlayer(), entry.getNPC(),
-                        Settings.ChatWithTargetsToBystandersFormat(), false, entry);
+                String bystanderText = TagManager.tag(Settings.chatWithTargetsToBystandersFormat(), new BukkitTagContext(entry, false));
                 talkToBystanders(talker, bystanderText, context);
 
                 if (defTargets != null)

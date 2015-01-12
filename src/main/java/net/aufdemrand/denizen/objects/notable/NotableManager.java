@@ -24,6 +24,7 @@ public class NotableManager {
 
     public NotableManager() {
         registerWithNotableManager(dCuboid.class);
+        registerWithNotableManager(dEllipsoid.class);
         registerWithNotableManager(dInventory.class);
         registerWithNotableManager(dItem.class);
         registerWithNotableManager(dLocation.class);
@@ -226,5 +227,9 @@ public class NotableManager {
             return objects.get(notable);
         else
             return null;
+    }
+
+    public static Map<String, Class> getReverseClassIdMap() {
+        return reverse_objects;
     }
 }

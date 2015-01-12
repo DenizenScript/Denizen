@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -105,7 +106,7 @@ public class AnnounceCommand extends AbstractCommand {
 
         // Use Bukkit to broadcast the message to everybody in the server.
         if (type == AnnounceType.ALL) {
-            denizen.getServer().broadcastMessage(message);
+            DenizenAPI.getCurrentInstance().getServer().broadcastMessage(message);
         }
 
         else if (type == AnnounceType.TO_OPS) {

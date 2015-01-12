@@ -1,13 +1,11 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,15 +13,17 @@ import java.util.List;
 /**
  * Example replaceable tag class.
  *
+ * TODO: Update me!
+ *
  */
-public class _templateTag implements Listener {
+public class _templateTag {
 
     public _templateTag(Denizen denizen) {
-        // Register this class with bukkit's plugin manager events.
-        // Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+        // Register this class with the TagManager event handler.
+        // TagManager.registerTagEvents(this);
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void constantTags(ReplaceableTagEvent event) {
         // Since this event will be called each time Denizen comes across a
         // replaceable tag, something needs to tell Denizen if this is the
@@ -73,14 +73,6 @@ public class _templateTag implements Listener {
         // For this example, let's process a tag in the format of: <skills.for[player_name]>
         // and return a dList dObject object to fulfill any additional attributes of the tag.
         if (type.equalsIgnoreCase("for")) {
-            // Check if type_context is a valid player...
-            if (dPlayer.matches(type_context)) {
-                dB.echoDebug(event.getScriptEntry(), "This tag requires a player! Has this player logged off? Aborting replacement...");
-                return;
-            }
-
-            // At this point, the player specified is valid, so let's return a list of skills in dList format.
-
             // Returning the results as another object allows for other attributes on the tag
             // to be filled.Returning a dList object, for example, allows attributes such as
             // .get[#] or .ascslist, but should at the very least return an Element, which
@@ -91,7 +83,7 @@ public class _templateTag implements Listener {
             // code to handle each situation. A full list of attributes can be found
             // in Denizen's documentation. First you need to turn the tag into an
             // attribute object.
-            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            Attribute attribute = event.getAttributes();
 
             // Now to catch up, 2 attributes have been handled already...
             // Fulfilling 2 attributes, skills and .for, in <skills.for[player].get[1]>
@@ -108,7 +100,8 @@ public class _templateTag implements Listener {
         }
 
         // Got here? No attributes were handled! Probably should let the dBugger know.
-        dB.echoError("Example skills tag '" + event.raw_tag + "' was unable to match an attribute. Replacement has been cancelled...");
+        dB.echoError("Example skills tag '" + event.raw_tag
+                + "' was unable to match an attribute. Replacement has been cancelled...");
 
     }
 }

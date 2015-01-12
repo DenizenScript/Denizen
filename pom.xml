@@ -13,9 +13,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <craftbukkit.version>1.7.10-R0.1-SNAPSHOT</craftbukkit.version>
+        <craftbukkit.version>1.8-R0.1-SNAPSHOT</craftbukkit.version>
         <json.version>20090211</json.version>
-        <citizens.version>2.0.13-SNAPSHOT</citizens.version>
+        <citizens.version>2.0.14-SNAPSHOT</citizens.version>
         <build.number>Unknown</build.number>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>
@@ -64,10 +64,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>denizencore</artifactId>
+            <version>LATEST</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${json.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -78,7 +84,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>LATEST</version>
+            <version>1.4.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -98,7 +104,7 @@
             <groupId>org.alicebot</groupId>
             <artifactId>ab</artifactId>
             <version>0.0.4.3</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -140,7 +146,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
+                <version>2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -148,22 +154,15 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.abstractmeta</include>
-                                    <include>org.json</include>
-                                </includes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.abstractmeta</pattern>
-                                    <shadedPattern>org.shade.abstractmeta</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.json</pattern>
-                                    <shadedPattern>org.shade.json</shadedPattern>
-                                </relocation>
-                            </relocations>
+<minimizeJar>true</minimizeJar>
+<filters>
+<filter>
+<artifact>net.aufdemrand:denizencore</artifact>
+<includes>
+<include>**</include>
+</includes>
+</filter>
+</filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -191,7 +190,7 @@
                     <!-- put your configurations here -->
                 </configuration>
             </plugin>
-
+			<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -206,7 +205,7 @@
                     </links>
                 </configuration>
             </plugin>
-
+			-->
         </plugins>
     </build>
 

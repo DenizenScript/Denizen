@@ -1,15 +1,18 @@
 package net.aufdemrand.denizen.objects;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -17,7 +20,7 @@ import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.SQLEscaper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import org.apache.commons.lang.StringUtils;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 
 // <--[language]
@@ -92,10 +95,11 @@ public class Element implements dObject {
      * @param type The type of object expected, for debugging. (EG: 'dNPC')
      * @return The object or Element.NULL if the object is null.
      */
-    public static dObject HandleNull(String tag, dObject object, String type) {
+    public static dObject handleNull(String tag, dObject object, String type, boolean has_fallback) {
         if (object == null) {
-            dB.echoError("'" + tag + "' is an invalid " + type + "!");
-            return Element.NULL;
+            if (!has_fallback)
+                dB.echoError("'" + tag + "' is an invalid " + type + "!");
+            return null;
         }
         return object;
     }
@@ -107,7 +111,7 @@ public class Element implements dObject {
         if (string == null)
             this.element = "null";
         else
-            this.element = TagManager.CleanOutputFully(string);
+            this.element = TagManager.cleanOutputFully(string);
     }
 
     public Element(Boolean bool) {
@@ -148,7 +152,15 @@ public class Element implements dObject {
     public Element(String prefix, String string) {
         if (prefix == null) this.prefix = "element";
         else this.prefix = prefix;
-        this.element = TagManager.CleanOutputFully(string);
+        this.element = TagManager.cleanOutputFully(string);
+    }
+
+    private BigDecimal getBD(String text) {
+        return new BigDecimal(text);
+    }
+
+    public BigDecimal asBigDecimal() {
+        return getBD(element.replaceAll("%", ""));
     }
 
     public double asDouble() {
@@ -422,8 +434,11 @@ public class Element implements dObject {
         // Returns the element as a chunk. Note: the value must be a valid chunk.
         // -->
         if (attribute.startsWith("aschunk")
-                || attribute.startsWith("as_chunk"))
-            return HandleNull(element, dChunk.valueOf(element), "dChunk").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_chunk")) {
+            dObject object = handleNull(element, dChunk.valueOf(element), "dChunk", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_color>
@@ -433,8 +448,11 @@ public class Element implements dObject {
         // Returns the element as a dColor. Note: the value must be a valid color.
         // -->
         if (attribute.startsWith("ascolor")
-                || attribute.startsWith("as_color"))
-            return HandleNull(element, dColor.valueOf(element), "dColor").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_color")) {
+            dObject object = handleNull(element, dColor.valueOf(element), "dColor", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_cuboid>
@@ -444,8 +462,11 @@ public class Element implements dObject {
         // Returns the element as a cuboid. Note: the value must be a valid cuboid.
         // -->
         if (attribute.startsWith("ascuboid")
-                || attribute.startsWith("as_cuboid"))
-            return HandleNull(element, dCuboid.valueOf(element), "dCuboid").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_cuboid")) {
+            dObject object = handleNull(element, dCuboid.valueOf(element), "dCuboid", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_entity>
@@ -455,8 +476,11 @@ public class Element implements dObject {
         // Returns the element as an entity. Note: the value must be a valid entity.
         // -->
         if (attribute.startsWith("asentity")
-                || attribute.startsWith("as_entity"))
-            return HandleNull(element, dEntity.valueOf(element), "dEntity").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_entity")) {
+            dObject object = handleNull(element, dEntity.valueOf(element), "dEntity", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_inventory>
@@ -466,8 +490,11 @@ public class Element implements dObject {
         // Returns the element as an inventory. Note: the value must be a valid inventory.
         // -->
         if (attribute.startsWith("asinventory")
-                || attribute.startsWith("as_inventory"))
-            return HandleNull(element, dInventory.valueOf(element), "dInventory").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_inventory")) {
+            dObject object = handleNull(element, dInventory.valueOf(element), "dInventory", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_item>
@@ -478,8 +505,11 @@ public class Element implements dObject {
         // Note: the value must be a valid item.
         // -->
         if (attribute.startsWith("asitem")
-                || attribute.startsWith("as_item"))
-            return HandleNull(element, dItem.valueOf(element), "dItem").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_item")) {
+            dObject object = handleNull(element, dItem.valueOf(element), "dItem", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_list>
@@ -489,8 +519,11 @@ public class Element implements dObject {
         // Returns the element as a list.
         // -->
         if (attribute.startsWith("aslist")
-                || attribute.startsWith("as_list"))
-            return HandleNull(element, dList.valueOf(element), "dList").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_list")) {
+            dObject object = handleNull(element, dList.valueOf(element), "dList", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_location>
@@ -500,8 +533,11 @@ public class Element implements dObject {
         // Returns the element as a location. Note: the value must be a valid location.
         // -->
         if (attribute.startsWith("aslocation")
-                || attribute.startsWith("as_location"))
-            return HandleNull(element, dLocation.valueOf(element), "dLocation").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_location")) {
+            dObject object = handleNull(element, dLocation.valueOf(element), "dLocation", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_material>
@@ -511,8 +547,11 @@ public class Element implements dObject {
         // Returns the element as a material. Note: the value must be a valid material.
         // -->
         if (attribute.startsWith("asmaterial")
-                || attribute.startsWith("as_material"))
-            return HandleNull(element, dMaterial.valueOf(element), "dMaterial").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_material")) {
+            dObject object = handleNull(element, dMaterial.valueOf(element), "dMaterial", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_npc>
@@ -522,8 +561,11 @@ public class Element implements dObject {
         // Returns the element as an NPC. Note: the value must be a valid NPC.
         // -->
         if (attribute.startsWith("asnpc")
-                || attribute.startsWith("as_npc"))
-            return HandleNull(element, dNPC.valueOf(element), "dNPC").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_npc")) {
+            dObject object = handleNull(element, dNPC.valueOf(element), "dNPC", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_player>
@@ -533,8 +575,11 @@ public class Element implements dObject {
         // Returns the element as a player. Note: the value must be a valid player. Can be online or offline.
         // -->
         if (attribute.startsWith("asplayer")
-                || attribute.startsWith("as_player"))
-            return HandleNull(element, dPlayer.valueOf(element), "dPlayer").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_player")) {
+            dObject object = handleNull(element, dPlayer.valueOf(element), "dPlayer", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_plugin>
@@ -544,8 +589,11 @@ public class Element implements dObject {
         // Returns the element as a plugin. Note: the value must be a valid plugin.
         // -->
         if (attribute.startsWith("asplugin")
-                || attribute.startsWith("as_plugin"))
-            return HandleNull(element, dPlugin.valueOf(element), "dPlugin").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_plugin")) {
+            dObject object = handleNull(element, dPlugin.valueOf(element), "dPlugin", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_script>
@@ -555,8 +603,11 @@ public class Element implements dObject {
         // Returns the element as a script. Note: the value must be a valid script.
         // -->
         if (attribute.startsWith("asscript")
-                || attribute.startsWith("as_script"))
-            return HandleNull(element, dScript.valueOf(element), "dScript").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_script")) {
+            dObject object = handleNull(element, dScript.valueOf(element), "dScript", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_duration>
@@ -566,8 +617,11 @@ public class Element implements dObject {
         // Returns the element as a duration.
         // -->
         if (attribute.startsWith("asduration")
-                || attribute.startsWith("as_duration"))
-            return HandleNull(element, Duration.valueOf(element), "Duration").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_duration")) {
+            dObject object = handleNull(element, Duration.valueOf(element), "Duration", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_world>
@@ -577,8 +631,11 @@ public class Element implements dObject {
         // Returns the element as a world.
         // -->
         if (attribute.startsWith("asworld")
-                || attribute.startsWith("as_world"))
-            return HandleNull(element, dWorld.valueOf(element), "dWorld").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_world")) {
+            dObject object = handleNull(element, dWorld.valueOf(element), "dWorld", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.as_queue>
@@ -588,8 +645,11 @@ public class Element implements dObject {
         // Returns the element as a queue.
         // -->
         if (attribute.startsWith("asqueue")
-                || attribute.startsWith("as_queue"))
-            return HandleNull(element, ScriptQueue.valueOf(element), "dQueue").getAttribute(attribute.fulfill(1));
+                || attribute.startsWith("as_queue")) {
+            dObject object = handleNull(element, ScriptQueue.valueOf(element), "dQueue", attribute.hasAlternative());
+            if (object != null)
+                return object.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.escaped>
@@ -836,7 +896,7 @@ public class Element implements dObject {
             String regex = attribute.getContext(1);
             Matcher m = Pattern.compile(regex).matcher(element);
             if (!m.matches()) {
-                return Element.NULL.getAttribute(attribute.fulfill(2));
+                return null;
             }
             int group = new Element(attribute.getContext(2)).asInt();
             if (group < 0)
@@ -983,7 +1043,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             int index = attribute.getIntContext(1) - 1;
             if (index < 0 || index >= element.length())
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return new Element(String.valueOf(element.charAt(index)))
                         .getAttribute(attribute.fulfill(1));
@@ -1005,7 +1065,7 @@ public class Element implements dObject {
         if (attribute.startsWith("after_last")
                 && attribute.hasContext(1)) {
             String delimiter = attribute.getContext(1);
-            if (element.contains(delimiter))
+            if (element.toLowerCase().contains(delimiter.toLowerCase()))
                 return new Element(element.substring
                         (element.toLowerCase().lastIndexOf(delimiter.toLowerCase()) + delimiter.length()))
                         .getAttribute(attribute.fulfill(1));
@@ -1025,7 +1085,7 @@ public class Element implements dObject {
         if (attribute.startsWith("after")
                 && attribute.hasContext(1)) {
             String delimiter = attribute.getContext(1);
-            if (element.contains(delimiter))
+            if (element.toLowerCase().contains(delimiter.toLowerCase()))
                 return new Element(element.substring
                     (element.toLowerCase().indexOf(delimiter.toLowerCase()) + delimiter.length()))
                     .getAttribute(attribute.fulfill(1));
@@ -1045,7 +1105,7 @@ public class Element implements dObject {
         if (attribute.startsWith("before_last")
                 && attribute.hasContext(1)) {
             String delimiter = attribute.getContext(1);
-            if (element.contains(delimiter))
+            if (element.toLowerCase().contains(delimiter.toLowerCase()))
                 return new Element(element.substring
                         (0, element.toLowerCase().lastIndexOf(delimiter.toLowerCase())))
                         .getAttribute(attribute.fulfill(1));
@@ -1065,7 +1125,7 @@ public class Element implements dObject {
         if (attribute.startsWith("before")
                 && attribute.hasContext(1)) {
             String delimiter = attribute.getContext(1);
-            if (element.contains(delimiter))
+            if (element.toLowerCase().contains(delimiter.toLowerCase()))
                 return new Element(element.substring
                     (0, element.toLowerCase().indexOf(delimiter.toLowerCase())))
                     .getAttribute(attribute.fulfill(1));
@@ -1130,10 +1190,10 @@ public class Element implements dObject {
             Integer limit = (attribute.hasContext(2) ? attribute.getIntContext(2) : 1);
             if (split_string.toLowerCase().startsWith("regex:"))
                 return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1], limit)))
-                        .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(2));
             else
                 return new dList(Arrays.asList(element.split("(?i)" + Pattern.quote(split_string), limit)))
-                        .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -1203,12 +1263,12 @@ public class Element implements dObject {
             FormatScriptContainer format = ScriptRegistry.getScriptContainer(attribute.getContext(1));
             if (format == null) {
                 dB.echoError("Could not find format script matching '" + attribute.getContext(1) + "'");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             else {
                 return new Element(format.getFormattedText(element,
-                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getNPC(): null,
-                        attribute.getScriptEntry() != null ? attribute.getScriptEntry().getPlayer(): null))
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC(): null,
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer(): null))
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -1266,7 +1326,7 @@ public class Element implements dObject {
         // Returns the value of an element in all lowercase letters.
         // -->
         if (attribute.startsWith("to_lowercase") || attribute.startsWith("lower"))
-            return new Element(element.toLowerCase()).getAttribute(attribute.fulfill(1));
+            return new Element(CoreUtilities.toLowerCase(element)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.to_titlecase>
@@ -1397,7 +1457,7 @@ public class Element implements dObject {
         if (attribute.startsWith("abs")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.abs(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1414,7 +1474,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asLong() + aH.getLongFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1431,7 +1491,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asLong() / aH.getLongFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1448,7 +1508,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asLong() * aH.getLongFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1465,7 +1525,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asLong() - aH.getLongFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1482,9 +1542,9 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
-            return new Element(asDouble() + aH.getDoubleFrom(attribute.getContext(1)))
+            return new Element(asBigDecimal().add(getBD(attribute.getContext(1))).toString())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1499,10 +1559,16 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
-            return new Element(asDouble() / aH.getDoubleFrom(attribute.getContext(1)))
-                    .getAttribute(attribute.fulfill(1));
+            try {
+                return new Element(asBigDecimal().divide(getBD(attribute.getContext(1))).toString())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            catch (Exception e) {
+                return new Element(asDouble() / (aH.getDoubleFrom(attribute.getContext(1))))
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -1516,7 +1582,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(asDouble() % aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
@@ -1533,10 +1599,16 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
-            return new Element(asDouble() * aH.getDoubleFrom(attribute.getContext(1)))
-                    .getAttribute(attribute.fulfill(1));
+            try {
+                return new Element(asBigDecimal().multiply(getBD(attribute.getContext(1))).toString())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            catch (Exception e) {
+                return new Element(asDouble() * (aH.getDoubleFrom(attribute.getContext(1))))
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -1550,9 +1622,9 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
-            return new Element(asDouble() - aH.getDoubleFrom(attribute.getContext(1)))
+            return new Element(asBigDecimal().subtract(getBD(attribute.getContext(1))).toString())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1566,7 +1638,7 @@ public class Element implements dObject {
         if (attribute.startsWith("sqrt")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.sqrt(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1589,7 +1661,7 @@ public class Element implements dObject {
                 && attribute.hasContext(1)) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.pow(asDouble(), aH.getDoubleFrom(attribute.getContext(1))))
                     .getAttribute(attribute.fulfill(1));
@@ -1611,7 +1683,7 @@ public class Element implements dObject {
         if (attribute.startsWith("asin")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.asin(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1627,7 +1699,7 @@ public class Element implements dObject {
         if (attribute.startsWith("acos")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.acos(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1643,7 +1715,7 @@ public class Element implements dObject {
         if (attribute.startsWith("atan")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.atan(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1659,7 +1731,7 @@ public class Element implements dObject {
         if (attribute.startsWith("cos")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.cos(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1675,7 +1747,7 @@ public class Element implements dObject {
         if (attribute.startsWith("sin")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.sin(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1691,7 +1763,7 @@ public class Element implements dObject {
         if (attribute.startsWith("tan")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.tan(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1707,7 +1779,7 @@ public class Element implements dObject {
         if (attribute.startsWith("to_degrees")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.toDegrees(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1723,7 +1795,7 @@ public class Element implements dObject {
         if (attribute.startsWith("to_radians")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element(Math.toRadians(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1739,7 +1811,7 @@ public class Element implements dObject {
         if (attribute.startsWith("round_up")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element((int)Math.ceil(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1755,7 +1827,7 @@ public class Element implements dObject {
         if (attribute.startsWith("round_down")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element((int)Math.floor(asDouble()))
                     .getAttribute(attribute.fulfill(1));
@@ -1771,12 +1843,35 @@ public class Element implements dObject {
         if (attribute.startsWith("round")) {
             if (!isDouble()) {
                 dB.echoError("Element '" + element + "' is not a valid decimal number!");
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             }
             return new Element((int)Math.round(asDouble()))
                     .getAttribute(attribute.fulfill(1));
         }
 
+
+        // <--[tag]
+        // @attribute <el@element.to_itemscript_hash>
+        // @returns Element(Number)
+        // @group conversion
+        // @description
+        // Shortens the element down to an itemscript hash ID, made of invisible color codes.
+        // -->
+        if (attribute.startsWith("to_itemscript_hash")) {
+            return new Element(ItemScriptHelper.createItemScriptID(element))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.type>
+        // @returns Element
+        // @description
+        // Always returns 'Element' for Element objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Element").getAttribute(attribute.fulfill(1));
+        }
         // Unfilled attributes past this point probably means the tag is spelled
         // incorrectly. So instead of just passing through what's been resolved
         // so far, 'null' shall be returned with a debug message.
@@ -1785,7 +1880,7 @@ public class Element implements dObject {
             if (!attribute.hasAlternative())
                 dB.echoDebug(attribute.getScriptEntry(), "Unfilled attributes '" + attribute.attributes.toString() +
                         "' for tag <" + attribute.getOrigin() + ">!");
-            return "null";
+            return null;
 
         } else {
             return element;

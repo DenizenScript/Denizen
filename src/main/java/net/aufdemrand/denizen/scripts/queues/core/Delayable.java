@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts.queues.core;
 
 import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 
 public interface Delayable {
 

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.notable.Note;
@@ -8,6 +9,7 @@ import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
@@ -16,9 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.block.Sign;
+import org.bukkit.block.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -119,10 +119,27 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Split values
         String[] split = StringUtils.split(string.startsWith("l@") ? string.substring(2) : string, ',');
 
-        if (split.length == 3)
-            // If 4 values, standard dScript location format
-            // x,y,z,world
+        if (split.length == 2)
+            // If 4 values, wordless 2D location format
+            // x,y
             try {
+                return new dLocation(null,
+                        Double.valueOf(split[0]),
+                        Double.valueOf(split[1]));
+            } catch (Exception e) {
+                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                return null;
+            }
+        if (split.length == 3)
+            // If 3 values, either worldless location format
+            // x,y,z or 2D location format x,y,world
+            try {
+                World world = Bukkit.getWorld(split[2]);
+                if (world != null) {
+                    return new dLocation(world,
+                            Double.valueOf(split[0]),
+                            Double.valueOf(split[1]));
+                }
                 return new dLocation(null,
                         Double.valueOf(split[0]),
                         Double.valueOf(split[1]),
@@ -179,15 +196,16 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             return true;
 
         String[] data = string.split(",");
-        return data.length >= 3 && new Element(data[0]).isDouble()
-                && new Element(data[1]).isDouble()
-                && new Element(data[2]).isDouble();
+        return data.length >= 2 && new Element(data[0]).isDouble()
+                && new Element(data[1]).isDouble();
     }
 
 
     /////////////////////
     //   CONSTRUCTORS
     //////////////////
+
+    private boolean is2D = false;
 
     /**
      * Turns a Bukkit Location into a Location, which has some helpful methods
@@ -201,6 +219,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // negative values
         super(location.getWorld(), location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
+    }
+
+    public dLocation(World world, double x, double y) {
+        this(world, x, y, 0);
+        this.is2D = true;
     }
 
     /**
@@ -255,7 +278,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         return hasInventory() ? new dInventory(getBukkitInventory()) : null;
     }
 
-    int Compare(dLocation loc1, dLocation loc2) {
+    public int compare(Location loc1, Location loc2) {
         if (loc1 == null || loc2 == null || loc1.equals(loc2))
             return 0;
         else {
@@ -266,14 +289,23 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
     @Override
     public int hashCode() {
-        return getBlockX() + getBlockY() + getBlockZ();
+        return (int)(Math.floor(getX()) + Math.floor(getY()) + Math.floor(getZ()));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
         if (!(o instanceof dLocation)) return false;
-        return getBlock().getLocation().equals(((dLocation) o).getBlock().getLocation());
+        dLocation other = (dLocation) o;
+        if ((other.getWorld() == null && getWorld() != null)
+            || (getWorld() == null && other.getWorld() != null)
+            || (getWorld() != null && other.getWorld() != null
+                && !getWorld().getName().equalsIgnoreCase(other.getWorld().getName()))) {
+            return false;
+        }
+        return Math.floor(getX()) == Math.floor(other.getX())
+                && Math.floor(getY()) == Math.floor(other.getY())
+                && Math.floor(getZ()) == Math.floor(other.getZ());
     }
 
     String prefix = "Location";
@@ -315,19 +347,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (isUnique())
             return "l@" + getSaved(this);
         else if (getWorld() == null)
-            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ();
+            return "l@" + getBlockX() + "," + getBlockY() + (!is2D ? "," + getBlockZ() : "");
         else
-            return "l@" + getBlockX() + "," + getBlockY() + "," + getBlockZ()
+            return "l@" + getBlockX() + "," + getBlockY() + (!is2D ? "," + getBlockZ() : "")
                 + "," + getWorld().getName();
     }
 
     public String identifyRaw() {
         if (getYaw() != 0.0 || getPitch() != 0.0)
-            return "l@" + getX() + "," + getY()
-                    + "," + getZ() + "," + getPitch() + "," + getYaw() + (getWorld() != null ? "," + getWorld().getName(): "");
+            return "l@" + getX() + "," + getY() + "," + getZ() + "," + getPitch() + "," + getYaw()
+                    + (getWorld() != null ? "," + getWorld().getName(): "");
         else
-            return "l@" + getX() + "," + getY()
-                    + "," + getZ() + (getWorld() != null ? "," + getWorld().getName(): "");
+            return "l@" + getX() + "," + getY() + (!is2D ? "," + getZ() : "")
+                    + (getWorld() != null ? "," + getWorld().getName(): "");
     }
 
     @Override
@@ -405,7 +437,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // block is not a container, returns null.
         // -->
         if (attribute.startsWith("inventory")) {
-            return Element.HandleNull(identify() + ".inventory", getInventory(), "dInventory").getAttribute(attribute.fulfill(1));
+            return Element.handleNull(identify() + ".inventory", getInventory(), "dInventory", attribute.hasAlternative()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -459,6 +491,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.skull_skin>
+        // @returns Element
+        // @mechanism dLocation.skull_skin
+        // @description
+        // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object.
+        // -->
+        if (attribute.startsWith("skull_skin")) {
+            if (getBlock().getState() instanceof Skull) {
+                return new Element(((Skull) getBlock().getState()).getOwner())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else return "null";
+        }
+
+        // <--[tag]
         // @attribute <l@location.simple.formatted>
         // @returns Element
         // @description
@@ -493,6 +540,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         /////////////////
 
         // <--[tag]
+        // @attribute <l@location.precise_cursor_on>
+        // @returns dLocation
+        // @description
+        // Returns the exact location this location is pointing at.
+        // -->
+        if (attribute.startsWith("precise_cursor_on")) {
+            double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
+            double nx = xzLen * Math.sin(-getYaw() * (Math.PI/180));
+            double ny = Math.sin(getPitch() * (Math.PI/180));
+            double nz = xzLen * Math.cos(getYaw() * (Math.PI/180));
+            return new dLocation(Rotation.rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), 200)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.direction.vector>
         // @returns dLocation
         // @description
@@ -512,6 +573,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the compass direction between two locations.
         // If no second location is specified, returns the direction of the location.
+        // Example returns include "north", "southwest", ...
         // -->
         if (attribute.startsWith("direction")) {
             // Get the cardinal direction from this location to another
@@ -678,7 +740,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         //   ENTITY AND BLOCK LIST ATTRIBUTES
         /////////////////
 
-        if (attribute.startsWith("find") || attribute.startsWith("nearest")) {
+        if (attribute.matches("find") || attribute.startsWith("nearest")) {
             attribute.fulfill(1);
 
             // <--[tag]
@@ -696,33 +758,44 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
                 // Avoid NPE from invalid materials
-                if (materials == null) return Element.NULL.getAttribute(attribute.fulfill(2));
+                if (materials == null) return null;
+                int max = Settings.blockTagsMaxBlocks();
+                int index = 0;
 
                 // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
                 Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
 
-                for (double x = -(radius); x <= radius; x++)
-                    for (double y = -(radius); y <= radius; y++)
-                        for (double z = -(radius); z <= radius; z++)
-                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius))
+                fullloop:
+                for (double x = -(radius); x <= radius; x++) {
+                    for (double y = -(radius); y <= radius; y++) {
+                        for (double z = -(radius); z <= radius; z++) {
+                            index++;
+                            if (index > max)
+                                break fullloop;
+                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius)) {
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {
                                         if (material.hasData() && material.getData() != 0) {
                                             if (material.matchesMaterialData(getBlock()
-                                                    .getLocation().add(x,y,z).getBlock().getType().getNewData(getBlock()
-                                                            .getLocation().add(x,y,z).getBlock().getData())))
+                                                    .getLocation().add(x, y, z).getBlock().getType().getNewData(getBlock()
+                                                            .getLocation().add(x, y, z).getBlock().getData())))
                                                 found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
-                                        }
-                                        else if (material.getMaterial() == getBlock().getLocation().add(x,y,z).getBlock().getType())
+                                        } else if (material.getMaterial() == getBlock().getLocation().add(x, y, z).getBlock().getType())
                                             found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                    }
+                                } else {
+                                    found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
                                 }
-                            } else found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                            }
+                        }
+                    }
+                }
 
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
                     public int compare(dLocation loc1, dLocation loc2) {
-                        return Compare(loc1, loc2);
+                        return dLocation.this.compare(loc1, loc2);
                     }
                 });
 
@@ -744,14 +817,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
                 // Avoid NPE from invalid materials
-                if (materials == null) return Element.NULL.getAttribute(attribute.fulfill(2));
+                if (materials == null) return null;
+                int max = Settings.blockTagsMaxBlocks();
+                int index = 0;
 
                 attribute.fulfill(2);
                 Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
 
+                fullloop:
                 for (double x = -(radius); x <= radius; x++)
                     for (double y = -(radius); y <= radius; y++)
                         for (double z = -(radius); z <= radius; z++) {
+                            index++;
+                            if (index > max)
+                                break fullloop;
                             if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius)) {
                                 Location l = getBlock().getLocation().clone().add(x,y,z);
                                 if (!materials.isEmpty()) {
@@ -779,7 +858,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
                     public int compare(dLocation loc1, dLocation loc2) {
-                        return Compare(loc1, loc2);
+                        return dLocation.this.compare(loc1, loc2);
                     }
                 });
 
@@ -805,7 +884,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dPlayer>() {
                     @Override
                     public int compare(dPlayer pl1, dPlayer pl2) {
-                        return Compare(pl1.getLocation(), pl2.getLocation());
+                        return dLocation.this.compare(pl1.getLocation(), pl2.getLocation());
                     }
                 });
 
@@ -831,7 +910,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dNPC>() {
                     @Override
                     public int compare(dNPC npc1, dNPC npc2) {
-                        return Compare(npc1.getLocation(), npc2.getLocation());
+                        return dLocation.this.compare(npc1.getLocation(), npc2.getLocation());
                     }
                 });
 
@@ -878,7 +957,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dEntity>() {
                     @Override
                     public int compare(dEntity ent1, dEntity ent2) {
-                        return Compare(ent1.getLocation(), ent2.getLocation());
+                        return dLocation.this.compare(ent1.getLocation(), ent2.getLocation());
                     }
                 });
 
@@ -905,14 +984,51 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Collections.sort(found, new Comparator<dEntity>() {
                     @Override
                     public int compare(dEntity ent1, dEntity ent2) {
-                        return Compare(ent1.getLocation(), ent2.getLocation());
+                        return dLocation.this.compare(ent1.getLocation(), ent2.getLocation());
                     }
                 });
 
                 return new dList(found).getAttribute(attribute);
             }
+        }
 
-            return new Element("null").getAttribute(attribute);
+        // <--[tag]
+        // @attribute <l@location.find_path[<location>]>
+        // @returns dList(dLocation)
+        // @description
+        // Returns a full list of points along the path from this location to the given location.
+        // The default radius, if unspecified, is 2.
+        // -->
+        if (attribute.startsWith("find_path")
+            && attribute.hasContext(1)) {
+            dLocation two = dLocation.valueOf(attribute.getContext(1));
+            if (two == null) {
+                return null;
+            }
+            attribute = attribute.fulfill(1);
+            int radius = 2;
+            // <--[tag]
+            // @attribute <l@location.find_path[<location>].radius[<#>]>
+            // @returns dList(dLocation)
+            // @description
+            // Returns a full list of points along the path from this location to the given location.
+            // The default radius, if unspecified, is 2.
+            // -->
+            if (attribute.startsWith("radius")
+                    && attribute.hasContext(1)) {
+                radius = new Element(attribute.getContext(1)).asInt();
+                attribute = attribute.fulfill(1);
+            }
+            PathFinder.Node node = PathFinder.findPath(this, two, radius);
+            if (node == null) {
+                return null;
+            }
+            dList list = new dList();
+            while (node != null) {
+                list.add(node.position.identify());
+                node = node.next;
+            }
+            return list.getAttribute(attribute);
         }
 
 
@@ -1131,6 +1247,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 && attribute.hasContext(1)) {
             if (dLocation.matches(attribute.getContext(1))) {
                 dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
+                if (!getWorld().getName().equalsIgnoreCase(toLocation.getWorld().getName())) {
+                    if (!attribute.hasAlternative()) dB.echoError("Can't measure distance between two different worlds!");
+                    return null;
+                }
                 return new Element(this.distanceSquared(toLocation))
                         .getAttribute(attribute.fulfill(1));
             }
@@ -1195,23 +1315,35 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                                 .getAttribute(attribute.fulfill(2));
                 }
 
+                if (!getWorld().getName().equalsIgnoreCase(toLocation.getWorld().getName())) {
+                    if (!attribute.hasAlternative()) dB.echoError("Can't measure distance between two different worlds!");
+                    return null;
+                }
                 else return new Element(this.distance(toLocation))
                             .getAttribute(attribute.fulfill(1));
             }
         }
 
         // <--[tag]
-        // @attribute <l@location.is_within[<cuboid>]>
+        // @attribute <l@location.is_within[<cuboid>/<ellipsoid>]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the location is within the cuboid.
+        // Returns whether the location is within the cuboid or ellipsoid.
         // -->
         if (attribute.startsWith("is_within")
                 && attribute.hasContext(1)) {
-            dCuboid cuboid = dCuboid.valueOf(attribute.getContext(1));
-            if (cuboid != null)
-                return new Element(cuboid.isInsideCuboid(this))
-                        .getAttribute(attribute.fulfill(1));
+            if (dEllipsoid.matches(attribute.getContext(1))) {
+                dEllipsoid ellipsoid = dEllipsoid.valueOf(attribute.getContext(1));
+                if (ellipsoid != null)
+                    return new Element(ellipsoid.contains(this))
+                            .getAttribute(attribute.fulfill(1));
+            }
+            else {
+                dCuboid cuboid = dCuboid.valueOf(attribute.getContext(1));
+                if (cuboid != null)
+                    return new Element(cuboid.isInsideCuboid(this))
+                            .getAttribute(attribute.fulfill(1));
+            }
         }
 
 
@@ -1329,6 +1461,42 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             return new Element(getBlock().getBlockPower())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <l@location.type>
+        // @returns Element
+        // @description
+        // Always returns 'Location' for dLocation objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Location").getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.command_block_name>
+        // @returns Element
+        // @mechanism command_block_name
+        // @description
+        // Returns the name a command block is set to.
+        // -->
+        if (attribute.startsWith("command_block_name")
+                && getBlock().getType() == Material.COMMAND) {
+            return new Element(((CommandBlock)getBlock().getState()).getName())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.command_block>
+        // @returns Element
+        // @mechanism command_block
+        // @description
+        // Returns the command a command block is set to.
+        // -->
+        if (attribute.startsWith("command_block")
+                && getBlock().getType() == Material.COMMAND) {
+            return new Element(((CommandBlock)getBlock().getState()).getCommand())
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
@@ -1415,6 +1583,70 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 }
             }
             state.update();
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name skull_skin
+        // @input Element
+        // @description
+        // Sets the skin of a skull block.
+        // Takes a username.
+        // @tags
+        // <l@location.skull_skin>
+        // -->
+        if (mechanism.matches("skull_skin") && getBlock().getState() instanceof Skull) {
+            Skull state = ((Skull)getBlock().getState());
+            if (!state.setOwner(value.asString()))
+                dB.echoError("Failed to set skull_skin!");
+            state.update(true);
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name command_block_name
+        // @input Element
+        // @description
+        // Sets the name of a command block.
+        // @tags
+        // <l@location.command_block_name>
+        // -->
+        if (mechanism.matches("command_block_name")) {
+            if (getBlock().getType() == Material.COMMAND) {
+                CommandBlock block = ((CommandBlock)getBlock().getState());
+                block.setName(value.asString());
+                block.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name command_block
+        // @input Element
+        // @description
+        // Sets the command of a command block.
+        // @tags
+        // <l@location.command_block>
+        // -->
+        if (mechanism.matches("command_block")) {
+            if (getBlock().getType() == Material.COMMAND) {
+                CommandBlock block = ((CommandBlock)getBlock().getState());
+                block.setCommand(value.asString());
+                block.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name data
+        // @input Element(Number)
+        // @description
+        // Sets the data-value of a block.
+        // @tags
+        // <l@location.material.data>
+        // -->
+        if (mechanism.matches("data") && mechanism.hasValue()) {
+            getBlock().setData((byte)value.asInt());
         }
 
         if (!mechanism.fulfilled())

@@ -3,17 +3,18 @@ package net.aufdemrand.denizen.scripts.commands.world;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,7 +24,11 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     @Override
     public void onEnable() {
+        Denizen denizen = DenizenAPI.getCurrentInstance();
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        if (Depends.citizens != null) {
+            denizen.getServer().getPluginManager().registerEvents(new ChunkLoadCommandNPCEvents(), denizen);
+        }
     }
 
     /*
@@ -37,8 +42,15 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (arg.matchesEnum(Action.values())
-                    && !scriptEntry.hasObject("action"))
+                    && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", new Element(arg.getValue().toUpperCase()));
+                if (arg.getValue().equalsIgnoreCase("removeall"))
+                    scriptEntry.addObject("location", new dLocation(Bukkit.getWorlds().get(0), 0, 0, 0));
+            }
+
+            else if (arg.matchesArgumentType(dChunk.class)
+                    && !scriptEntry.hasObject("location"))
+                scriptEntry.addObject("location", arg.asType(dChunk.class).getCenter());
 
             else if (arg.matchesArgumentType(dLocation.class)
                     && !scriptEntry.hasObject("location"))
@@ -121,21 +133,23 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         }
     }
 
-    @EventHandler
-    public void stopDespawn(NPCDespawnEvent e) {
-        if (e.getNPC() == null || !e.getNPC().isSpawned())
-            return;
-        Chunk chnk = e.getNPC().getEntity().getLocation().getChunk();
-        String chunkString = chnk.getX()+", "+ chnk.getZ();
-        if(chunkDelays.containsKey(chunkString)) {
-            if(chunkDelays.get(chunkString) == 0)
-                e.setCancelled(true);
+    public class ChunkLoadCommandNPCEvents implements Listener {
+        @EventHandler
+        public void stopDespawn(NPCDespawnEvent e) {
+            if (e.getNPC() == null || !e.getNPC().isSpawned())
+                return;
+            Chunk chnk = e.getNPC().getEntity().getLocation().getChunk();
+            String chunkString = chnk.getX()+", "+ chnk.getZ();
+            if(chunkDelays.containsKey(chunkString)) {
+                if(chunkDelays.get(chunkString) == 0)
+                    e.setCancelled(true);
 
-            else if(System.currentTimeMillis() < chunkDelays.get(chunkString))
-                e.setCancelled(true);
+                else if(System.currentTimeMillis() < chunkDelays.get(chunkString))
+                    e.setCancelled(true);
 
-            else
-                chunkDelays.remove(chunkString);
+                else
+                    chunkDelays.remove(chunkString);
+            }
         }
     }
 }

@@ -7,16 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.Debuggable;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.QueueWordList;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 
 /**
@@ -56,18 +58,36 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      */
     public static ScriptQueue _getExistingQueue(String id) {
         if (!_queueExists(id)) return null;
-        else return _queues.get(id.toUpperCase());
+        else return _queues.get(id);
     }
 
 
+    private static String randomEntry(String[] strings) {
+        return strings[CoreUtilities.getRandom().nextInt(strings.length)];
+    }
     /**
      * Gets a random id for use in creating a 'nameless' queue.
      *
+     * @param prefix the name of the script running the new queue.
      * @return String value of a random id
      */
-    public static String _getNextId() {
-        String id = RandomStringUtils.random(10, "DENIZEN");
-        return _queues.containsKey(id) ? _getNextId() : id;
+    public static String getNextId(String prefix) {
+        // DUUIDs v2.1
+        int size = QueueWordList.FinalWordList.size();
+        String id = prefix + "_"
+                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
+                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size))
+                + QueueWordList.FinalWordList.get(CoreUtilities.getRandom().nextInt(size));
+        // DUUIDs v3.1
+        /*
+        String id = prefix.replace(' ', '_')
+                + "_"
+                + randomEntry(QueueWordList.Pronouns)
+                + randomEntry(QueueWordList.Verbs)
+                + randomEntry(QueueWordList.Modifiers)
+                + randomEntry(QueueWordList.Adjectives)
+                + randomEntry(QueueWordList.Nouns);*/
+        return _queues.containsKey(id) ? getNextId(prefix) : id;
     }
 
 
@@ -80,7 +100,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      *               doesn't exist or does not match
      */
     public static boolean _matchesType(String queue, Class type) {
-        return (_queueExists(queue.toUpperCase())) && _queues.get(queue.toUpperCase()).getClass() == type;
+        return (_queueExists(queue)) && _queues.get(queue).getClass() == type;
     }
 
 
@@ -106,7 +126,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      * @return  true if it exists.
      */
     public static boolean _queueExists(String id) {
-        return _queues.containsKey(id.toUpperCase());
+        return _queues.containsKey(id);
     }
 
     /////////////////////
@@ -179,9 +199,9 @@ public abstract class ScriptQueue implements Debuggable, dObject {
      */
     protected ScriptQueue(String id) {
         // Remember the 'id'
-        this.id = id.toUpperCase();
+        this.id = id;
         // Save the instance to the _queues static map
-        _queues.put(id.toUpperCase(), this);
+        _queues.put(id, this);
         // Increment the stats
         total_queues++;
     }
@@ -342,8 +362,6 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         definitions.remove(definition.toLowerCase());
     }
 
-
-
     /**
      * Returns a Map of all the current definitions
      * stored in the queue, keyed by 'definition id'
@@ -419,6 +437,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             newQueue.holdScriptEntry(entry.getKey(), entry.getValue());
         }
         newQueue.setLastEntryExecuted(getLastEntryExecuted());
+        newQueue.setSpeed(1);
         clear();
         if (delay != null)
             newQueue.delayFor(delay);
@@ -437,6 +456,8 @@ public abstract class ScriptQueue implements Debuggable, dObject {
     protected boolean is_started;
 
     private Class<? extends ScriptQueue> cachedClass;
+
+    private long startTime = 0;
 
 
     /**
@@ -470,16 +491,21 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         @Override
-                        public void run() { onStart(); /* Start the engine */ }
+                        public void run() {
+                            startTime = System.currentTimeMillis();
+                            onStart(); /* Start the engine */
+                        }
 
                         // Take the delay time, find out how many milliseconds away
                         // it is, turn it into seconds, then divide by 20 for ticks.
                     },
                     (long)(((double)(delay_time - System.currentTimeMillis())) / 1000 * 20));
 
-        } else
+        } else {
             // If it's not, start the engine now!
+            startTime = System.currentTimeMillis();
             onStart();
+        }
     }
 
     /**
@@ -528,11 +554,11 @@ public abstract class ScriptQueue implements Debuggable, dObject {
 
     private String breakMe = null;
 
-    public void BreakLoop(String toBreak) {
+    public void breakLoop(String toBreak) {
         breakMe = toBreak;
     }
 
-    public String IsLoopBroken() {
+    public String isLoopBroken() {
         return breakMe;
     }
 
@@ -559,8 +585,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             List<ScriptEntry> entries =
                     (lastEntryExecuted != null && lastEntryExecuted.getScript() != null ?
                             lastEntryExecuted.getScript().getContainer()
-                                    .getEntries(lastEntryExecuted.getPlayer(),
-                                            lastEntryExecuted.getNPC(), "on queue completes") : new ArrayList<ScriptEntry>());
+                                    .getEntries(lastEntryExecuted.entryData.clone(), "on queue completes") : new ArrayList<ScriptEntry>());
             // Add the 'finishing' entries back into the queue (if not empty)
             if (!entries.isEmpty()) {
                 script_entries.addAll(entries);
@@ -568,7 +593,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
             } else /* if empty, just stop the queue like normal */ {
                 if (_queues.get(id) == this)
                     _queues.remove(id);
-                dB.echoDebug(this, "Completing queue '" + id + "'.");
+                dB.echoDebug(this, "Completing queue '" + id + "' in " + (System.currentTimeMillis() - startTime) + "ms.");
                 if (callback != null)
                     callback.run();
                 is_started = false;
@@ -582,7 +607,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         else {
             if (_queues.get(id) == this)
                 _queues.remove(id);
-            dB.echoDebug(this, "Re-completing queue '" + id + "'.");
+            dB.echoDebug(this, "Re-completing queue '" + id + "' in " + (System.currentTimeMillis() - startTime) + "ms.");
             if (callback != null)
                 callback.run();
             is_started = false;
@@ -802,6 +827,16 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         }
 
         // <--[tag]
+        // @attribute <q@queue.start_time>
+        // @returns Duration
+        // @description
+        // Returns the time this queue started as a duration.
+        // -->
+        if (attribute.startsWith("start_time")) {
+            return new Duration(startTime / 50).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <q@queue.state>
         // @returns Element
         // @description
@@ -875,16 +910,16 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         if (attribute.startsWith("npc")) {
             dNPC npc = null;
             if (getLastEntryExecuted() != null) {
-                npc = getLastEntryExecuted().getNPC();
+                npc = ((BukkitScriptEntryData)getLastEntryExecuted().entryData).getNPC();
             }
             else if (script_entries.size() > 0) {
-                npc = script_entries.get(0).getNPC();
+                npc = ((BukkitScriptEntryData)script_entries.get(0).entryData).getNPC();
             }
             else {
                 dB.echoError(this, "Can't determine a linked NPC.");
             }
             if (npc == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return npc.getAttribute(attribute.fulfill(1));
         }
@@ -898,16 +933,16 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         if (attribute.startsWith("player")) {
             dPlayer player = null;
             if (getLastEntryExecuted() != null) {
-                player = getLastEntryExecuted().getPlayer();
+                player = ((BukkitScriptEntryData)getLastEntryExecuted().entryData).getPlayer();
             }
             else if (script_entries.size() > 0) {
-                player = script_entries.get(0).getPlayer();
+                player = ((BukkitScriptEntryData)script_entries.get(0).entryData).getPlayer();
             }
             else {
                 dB.echoError(this, "Can't determine a linked player.");
             }
             if (player == null)
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return player.getAttribute(attribute.fulfill(1));
         }
@@ -922,7 +957,7 @@ public abstract class ScriptQueue implements Debuggable, dObject {
         // -->
         if (attribute.startsWith("determination")) {
             if (reqId < 0 || !DetermineCommand.hasOutcome(reqId))
-                return Element.NULL.getAttribute(attribute.fulfill(1));
+                return null;
             else
                 return ObjectFetcher.pickObjectFor(DetermineCommand.readOutcome(reqId)).getAttribute(attribute.fulfill(1));
         }

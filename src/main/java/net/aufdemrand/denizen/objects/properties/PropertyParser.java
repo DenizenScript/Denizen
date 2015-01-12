@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.objects.properties;
 
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitScriptProperties;
 import net.aufdemrand.denizen.objects.properties.entity.*;
 import net.aufdemrand.denizen.objects.properties.inventory.*;
 import net.aufdemrand.denizen.objects.properties.item.*;
@@ -29,6 +27,9 @@ public class PropertyParser {
         describes.clear();
         getFrom.clear();
 
+        // register properties that add Bukkit code to core objects
+        registerProperty(BukkitScriptProperties.class, dScript.class);
+
         // register core dEntity properties
         registerProperty(EntityAge.class, dEntity.class);
         registerProperty(EntityAngry.class, dEntity.class);
@@ -44,6 +45,7 @@ public class PropertyParser {
         registerProperty(EntityPotion.class, dEntity.class);
         registerProperty(EntityPowered.class, dEntity.class);
         registerProperty(EntityProfession.class, dEntity.class);
+        registerProperty(EntityRotation.class, dEntity.class);
         registerProperty(EntitySitting.class, dEntity.class);
         registerProperty(EntitySize.class, dEntity.class);
         registerProperty(EntitySkeleton.class, dEntity.class);
@@ -51,8 +53,8 @@ public class PropertyParser {
 
         // register core dInventory properties
         registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
+        registerProperty(InventorySize.class, dInventory.class); // Same with size...(Too small for contents)
         registerProperty(InventoryContents.class, dInventory.class);
-        registerProperty(InventorySize.class, dInventory.class);
         registerProperty(InventoryTitle.class, dInventory.class);
 
         // register core dItem properties

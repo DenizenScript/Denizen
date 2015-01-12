@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -39,8 +39,7 @@ public class CreateCommand extends AbstractCommand {
                 scriptEntry.addObject("name", arg.asElement());
 
             else if (!scriptEntry.hasObject("traits")
-                    && arg.matchesPrefix("t", "trait", "traits")
-                    && arg.matchesArgumentType(dList.class))
+                    && arg.matchesPrefix("t", "trait", "traits"))
                 scriptEntry.addObject("traits", arg.asType(dList.class));
 
             else arg.reportUnhandled();

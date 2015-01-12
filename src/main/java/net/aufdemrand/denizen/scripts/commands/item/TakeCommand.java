@@ -2,13 +2,14 @@ package net.aufdemrand.denizen.scripts.commands.item;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -32,7 +33,7 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 
 public class TakeCommand extends AbstractCommand{
 
-    private enum Type { MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT }
+    private enum Type { MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -59,6 +60,13 @@ public class TakeCommand extends AbstractCommand{
                 scriptEntry.addObject("displayname", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("type")
+                    && !scriptEntry.hasObject("items")
+                    && arg.matchesPrefix("bycover")) {
+                scriptEntry.addObject("type", Type.BYCOVER);
+                scriptEntry.addObject("cover", arg.asType(dList.class));
+            }
+
             else if (!scriptEntry.hasObject("slot")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesPrefix("slot")
@@ -83,7 +91,7 @@ public class TakeCommand extends AbstractCommand{
 
             else if (!scriptEntry.hasObject("inventory")
                         && arg.matches("npc"))
-                scriptEntry.addObject("inventory", scriptEntry.getNPC().getDenizenEntity().getInventory());
+                scriptEntry.addObject("inventory", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity().getInventory());
 
         }
 
@@ -93,7 +101,7 @@ public class TakeCommand extends AbstractCommand{
         Type type = (Type) scriptEntry.getObject("type");
 
         if (type != Type.MONEY && scriptEntry.getObject("inventory") == null)
-            scriptEntry.addObject("inventory", scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getInventory(): null);
+            scriptEntry.addObject("inventory", ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getInventory(): null);
 
         if (!scriptEntry.hasObject("inventory") && type != Type.MONEY)
             throw new InvalidArgumentsException("Must specify an inventory to take from!");
@@ -110,6 +118,7 @@ public class TakeCommand extends AbstractCommand{
         Element qty = scriptEntry.getElement("qty");
         Element displayname = scriptEntry.getElement("displayname");
         Element slot = scriptEntry.getElement("slot");
+        dList titleAuthor = scriptEntry.getdObject("cover");
         Type type = (Type) scriptEntry.getObject("type");
 
         Object items_object = scriptEntry.getObject("items");
@@ -124,7 +133,8 @@ public class TakeCommand extends AbstractCommand{
                         + (inventory != null ? inventory.debug(): "")
                         + (displayname != null ? displayname.debug(): "")
                         + aH.debugObj("Items", items)
-                        + (slot != null ? slot.debug() : ""));
+                        + (slot != null ? slot.debug() : "")
+                        + (titleAuthor != null ? titleAuthor.debug() : ""));
 
         switch (type) {
 
@@ -133,32 +143,32 @@ public class TakeCommand extends AbstractCommand{
                 break;
 
             case ITEMINHAND:
-                int inHandAmt = scriptEntry.getPlayer().getPlayerEntity().getItemInHand().getAmount();
+                int inHandAmt = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().getItemInHand().getAmount();
                 int theAmount = (int)qty.asDouble();
                 ItemStack newHandItem = new ItemStack(0);
                 if (theAmount > inHandAmt) {
                     dB.echoDebug(scriptEntry, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
-                    scriptEntry.getPlayer().getPlayerEntity().setItemInHand(newHandItem);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().setItemInHand(newHandItem);
                 }
                 else {
 
                     // amount is just right!
                     if (theAmount == inHandAmt) {
-                        scriptEntry.getPlayer().getPlayerEntity().setItemInHand(newHandItem);
+                        ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().setItemInHand(newHandItem);
                     } else {
                         // amount is less than what's in hand, need to make a new itemstack of what's left...
-                        newHandItem = new ItemStack(scriptEntry.getPlayer().getPlayerEntity().getItemInHand().getType(),
-                                inHandAmt - theAmount, scriptEntry.getPlayer().getPlayerEntity().getItemInHand().getData().getData());
-                        newHandItem.setItemMeta(scriptEntry.getPlayer().getPlayerEntity().getItemInHand().getItemMeta());
-                        scriptEntry.getPlayer().getPlayerEntity().setItemInHand(newHandItem);
-                        scriptEntry.getPlayer().getPlayerEntity().updateInventory();
+                        newHandItem = new ItemStack(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().getItemInHand().getType(),
+                                inHandAmt - theAmount, ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().getItemInHand().getData().getData());
+                        newHandItem.setItemMeta(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().getItemInHand().getItemMeta());
+                        ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().setItemInHand(newHandItem);
+                        ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
                     }
                 }
                 break;
 
             case MONEY:
                 if(Depends.economy != null) {
-                    Depends.economy.withdrawPlayer(scriptEntry.getPlayer().getName(), qty.asDouble());
+                    Depends.economy.withdrawPlayer(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName(), qty.asDouble());
                 } else {
                     dB.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
@@ -167,17 +177,11 @@ public class TakeCommand extends AbstractCommand{
             case ITEM:
                 for (dItem item : items) {
                     ItemStack is = item.getItemStack();
-                    is.setAmount((int)qty.asDouble());
+                    is.setAmount(qty.asInt());
 
-                    // Remove books with a certain title even if they
-                    // are not identical to an item script, to allow
-                    // books that update
-                    if (is.getItemMeta() instanceof BookMeta
-                        && ((BookMeta) is.getItemMeta()).hasTitle()) {
-                            inventory.removeBook(is);
-                    }
-                    else if (!inventory.getInventory().removeItem(is).isEmpty())
-                        dB.echoError(scriptEntry.getResidingQueue(), "Inventory does not contain at least " + qty.asInt() + " of " + item.identify() +
+                    if (!inventory.removeItem(item, item.getAmount()))
+                        dB.echoDebug(scriptEntry, "Inventory does not contain at least "
+                                + qty.asInt() + " of " + item.getFullString() +
                                 "... Taking as much as possible...");
                 }
                 break;
@@ -206,6 +210,12 @@ public class TakeCommand extends AbstractCommand{
 
             case SLOT:
                 inventory.setSlots(slot.asInt()-1, new ItemStack(Material.AIR));
+                break;
+
+            case BYCOVER:
+                inventory.removeBook(titleAuthor.get(0),
+                        titleAuthor.size() > 1 ? titleAuthor.get(1) : null,
+                        qty.asInt());
                 break;
 
         }

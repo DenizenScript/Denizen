@@ -2,8 +2,9 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.List;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
@@ -11,9 +12,9 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 
 /**
@@ -65,8 +66,8 @@ public class SpawnCommand extends AbstractCommand {
 
         // Use the NPC or player's locations as the location if one is not specified
         scriptEntry.defaultObject("location",
-                scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
-                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getLocation() : null,
+                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation() : null);
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities"))
@@ -105,9 +106,9 @@ public class SpawnCommand extends AbstractCommand {
         for (dEntity entity : entities) {
             Location loc = location.clone();
             if (spread != null) {
-                loc.add(Utilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt(),
+                loc.add(CoreUtilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt(),
                         0,
-                        Utilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt());
+                        CoreUtilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt());
             }
 
             entity.spawnAt(loc);

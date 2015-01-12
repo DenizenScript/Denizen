@@ -8,7 +8,8 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.DenizenCore;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -30,7 +31,35 @@ public class DenizenCommandHandler {
 
     private final Denizen denizen;
 
-    public DenizenCommandHandler(Denizen denizen) { this.denizen = denizen; }
+    public DenizenCommandHandler(Denizen denizen) {
+        this.denizen = denizen;
+    }
+
+    // <--[language]
+    // @name denizen permissions
+    // @group Console Commands
+    // @description
+    // The following is a list of all permission nodes Denizen uses within Bukkit.
+    //
+    // denizen.basic         # use the basics of the /denizen command
+    // denizen.notable       # use the /notable command
+    // denizen.notable.basic # functionality within the /notable command, such as add or list
+    // denizen.dscript       # use the /dscript command
+    // denizen.ex            # use the /ex command
+    // denizen.debug         # use the /denizen debug command
+    // denizen.submit        # use the /denizen submit command
+    //
+    // Additionally:
+    // denizen.npc.health, denizen.npc.sneak,
+    // denizen.npc.effect, denizen.npc.fish, denizen.npc.sleep, denizen.npc.stand,
+    // denizen.npc.sit, denizen.npc.nameplate, denizen.npc.nickname, denizen.npc.trigger,
+    // denizen.npc.assign, denizen.npc.constants, denizen.npc.pushable
+    //
+    // However, we recommend just giving op to whoever needs to access Denizen - they can
+    // op themselves through Denizen anyway, why not save the trouble?
+    // ( EG, /ex execute as_server "op <player.name>" )
+    //
+    // -->
 
     // <--[language]
     // @name /denizen submit command
@@ -127,7 +156,7 @@ public class DenizenCommandHandler {
     @Command(
             aliases = { "denizen" }, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db", "dbug" },
-            min = 1, max = 5, permission = "denizen.debug", flags = "scebrx")
+            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxo")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
             if (!dB.showDebug) dB.toggle();
@@ -135,13 +164,22 @@ public class DenizenCommandHandler {
             Messaging.sendInfo(sender, (dB.showStackTraces ? "Denizen dBugger is now showing caught " +
                     "exception stack traces." : "Denizen dBugger is now hiding caught stacktraces."));
 
-        } if (args.hasFlag('c')) {
+        }
+        if (args.hasFlag('c')) {
             if (!dB.showDebug) dB.toggle();
             dB.showColor = !dB.showColor;
             Messaging.sendInfo(sender, (dB.showColor ? "Denizen dBugger is now showing color."
                     : "Denizen dBugger color has been disabled."));
 
-        } if (args.hasFlag('e')) {
+        }
+        if (args.hasFlag('o')) {
+            if (!dB.showDebug) dB.toggle();
+            dB.debugOverride = !dB.debugOverride;
+            Messaging.sendInfo(sender, (dB.debugOverride ? "Denizen dBugger is now overriding 'debug: false'."
+                    : "Denizen dBugger override has been disabled."));
+
+        }
+        if (args.hasFlag('e')) {
             if (!dB.showDebug) dB.toggle();
             dB.showEventsTrimming = !dB.showEventsTrimming;
             Messaging.sendInfo(sender, (dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
@@ -172,7 +210,7 @@ public class DenizenCommandHandler {
 
         } if (args.hasValueFlag("filter")) {
             if (!dB.showDebug) dB.toggle();
-            for (String filter : args.getFlag("filter").split("\\|"))
+            for (String filter : args.getFlag("filter").split("\\|")) // TODO: addAll?
                 dB.filter.add(filter);
             Messaging.sendInfo(sender, "Denizen dBugger filter now: " + dB.filter.toString());
 
@@ -206,7 +244,7 @@ public class DenizenCommandHandler {
         Messaging.sendInfo(sender, " _/_ _  ._  _ _  ");
         Messaging.sendInfo(sender, "(/(-/ )/ /_(-/ ) " + "<7> scriptable NPCs"); // TODO: "It's Scriptable!"?
                 Messaging.send(sender, "");
-        Messaging.send(sender, "<7>by: <f>aufdemrand");
+        Messaging.send(sender, "<7>by: <f>aufdemrand and mcmonkey");
         Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag);
     }
 
@@ -320,8 +358,7 @@ public class DenizenCommandHandler {
         if (args.hasFlag('a')) {
             denizen.reloadConfig();
             denizen.runtimeCompiler.reload();
-            ScriptHelper.resetError();
-            ScriptHelper.reloadScripts();
+            DenizenCore.reloadScripts();
             denizen.notableManager().reloadNotables();
             denizen.reloadSaves();
             Messaging.send(sender, "Denizen/saves.yml, Denizen/notables.yml, Denizen/config.yml, Denizen/scripts/..., and Denizen/externals/... reloaded from disk to memory.");
@@ -352,8 +389,7 @@ public class DenizenCommandHandler {
                 Messaging.send(sender, "Denizen/config.yml reloaded from disk to memory.");
                 return;
             } else if (args.getString(1).equalsIgnoreCase("scripts")) {
-                ScriptHelper.resetError();
-                ScriptHelper.reloadScripts();
+                DenizenCore.reloadScripts();
                 Messaging.send(sender, "Denizen/scripts/... reloaded from disk to memory.");
                 if (ScriptHelper.hadError()) {
                     Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
@@ -387,7 +423,7 @@ public class DenizenCommandHandler {
      * DENIZEN SCRIPTS
      */
     @Command(
-            aliases = { "denizen" }, usage = "scripts (--type assignment|task|activity|interact) (--filter string)",
+            aliases = { "denizen" }, usage = "scripts (--type assignment|task|...) (--filter string)",
             desc = "Lists currently loaded dScripts.", modifiers = { "scripts" },
             min = 1, max = 4, permission = "denizen.basic")
     public void scripts(CommandContext args, CommandSender sender) throws CommandException {

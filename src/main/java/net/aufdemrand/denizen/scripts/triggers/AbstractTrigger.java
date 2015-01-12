@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.triggers;
 
-import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dObject;
@@ -91,12 +91,12 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script, String id, Map<String, dObject> context) {
         if (npc == null || player == null || script == null) return false;
 
-        List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id);
+        List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id, true);
         if (entries.isEmpty()) return false;
 
         dB.echoDebug(script, DebugElement.Header, "Parsing " + name + " trigger: n@" + npc.getName() + "/p@" + player.getName());
         // Create Queue
-        TimedQueue queue = TimedQueue.getQueue(ScriptQueue._getNextId());
+        TimedQueue queue = TimedQueue.getQueue(ScriptQueue.getNextId(script.getName()));
         // Add all entries to set it up
         queue.addEntries(entries);
         // Add context
@@ -120,6 +120,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
      *
      * @return    The Set of NPCs that are
      */
+    // TODO: Delete?
     public Set<NPC> getActiveNPCsWithinRangeWithTrigger (Location location, int maxRange) {
         Set<NPC> closestNPCs = new HashSet<NPC> ();
 

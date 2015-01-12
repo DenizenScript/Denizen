@@ -2,8 +2,9 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.List;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
@@ -13,7 +14,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.commands.Holdable;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
@@ -99,16 +100,20 @@ public class RunCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("id", arg.asElement());
 
             else if (arg.matchesPrefix("a", "as")
-                    && arg.matchesArgumentType(dPlayer.class))
-                scriptEntry.setPlayer(arg.asType(dPlayer.class));
+                    && arg.matchesArgumentType(dPlayer.class)) {
+                ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(arg.asType(dPlayer.class));
+                dB.echoError(scriptEntry.getResidingQueue(), "Run as:<player> is outdated, use player:<player>");
+            }
 
             else if (arg.matchesPrefix("a", "as")
-                    && arg.matchesArgumentType(dNPC.class))
-                scriptEntry.setNPC(arg.asType(dNPC.class));
+                    && arg.matchesArgumentType(dNPC.class)) {
+                ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
+                dB.echoError(scriptEntry.getResidingQueue(), "Run as:<npc> is outdated, use npc:<npc>");
+            }
 
             // Catch invalid entry for 'as' argument
             else if (arg.matchesPrefix("a", "as"))
-                dB.echoDebug(scriptEntry, "Specified target was not attached. Value must contain a valid PLAYER or NPC object.");
+                dB.echoError(scriptEntry.getResidingQueue(), "Specified target was not attached. Value must contain a valid PLAYER or NPC object.");
 
             else if (arg.matchesPrefix("d", "def", "define", "c", "context"))
                 scriptEntry.addObject("definitions", arg.asType(dList.class));
@@ -161,28 +166,22 @@ public class RunCommand extends AbstractCommand implements Holdable {
         List<ScriptEntry> entries;
         // If it's local
         if (scriptEntry.hasObject("local")) {
-            entries = scriptEntry.getScript().getContainer().getEntries(
-                    scriptEntry.getPlayer(),
-                    scriptEntry.getNPC(),
+            entries = scriptEntry.getScript().getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
             script = scriptEntry.getScript();
         }
 
             // If it has a path
         else if (scriptEntry.hasObject("path") && scriptEntry.getObject("path") != null)
-            entries = script.getContainer().getEntries(
-                    scriptEntry.getPlayer(),
-                    scriptEntry.getNPC(),
+            entries = script.getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
 
             // Else, assume standard path
-        else entries = script.getContainer().getBaseEntries(
-                    scriptEntry.getPlayer(),
-                    scriptEntry.getNPC());
+        else entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
 
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?
-                (scriptEntry.getElement("id")).asString() : ScriptQueue._getNextId());
+                (scriptEntry.getElement("id")).asString() : ScriptQueue.getNextId(script.getContainer().getName()));
 
         // Build the queue
         ScriptQueue queue;

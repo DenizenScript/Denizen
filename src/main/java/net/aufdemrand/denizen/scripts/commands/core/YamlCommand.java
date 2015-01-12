@@ -1,39 +1,32 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.*;
-
-/**
- *
- * - yaml load:filename.yml    ...
- * - yaml create:filename.yml    ...
- * - yaml read:filename.yml key:yaml-key     ...
- * - yaml write:filename.yml key:yaml-key value:value    ...
- * - yaml savefile:filename.yml
- *
- */
 
 public class YamlCommand extends AbstractCommand implements Listener {
 
     @Override
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+        TagManager.registerTagEvents(this);
     }
 
     Map<String, YamlConfiguration> yamls = new HashMap<String, YamlConfiguration>();
@@ -84,6 +77,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
             else if (!scriptEntry.hasObject("action") &&
                     arg.matchesPrefix("WRITE")) {
+                dB.echoError(scriptEntry.getResidingQueue(), "YAML write is deprecated, use YAML set!");
                 scriptEntry.addObject("action", new Element("WRITE"));
                 scriptEntry.addObject("key", arg.asElement());
             }
@@ -103,7 +97,12 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
             else if (!scriptEntry.hasObject("split") &&
                     arg.matches("split_list")) {
-                scriptEntry.addObject("split", Element.TRUE);
+                scriptEntry.addObject("split", new Element("true"));
+            }
+
+            else if (!scriptEntry.hasObject("fix_formatting") &&
+                    arg.matches("fix_formatting")) {
+                scriptEntry.addObject("fix_formatting", new Element("true"));
             }
 
             // Check for key:value/action
@@ -189,6 +188,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             throw new InvalidArgumentsException("Must specify a key!");
 
         scriptEntry.defaultObject("value", new Element(""));
+        scriptEntry.defaultObject("fix_formatting", new Element("false"));
     }
 
 
@@ -202,6 +202,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         YAML_Action yaml_action = (YAML_Action) scriptEntry.getObject("yaml_action");
         Element actionElement = scriptEntry.getElement("action");
         Element idElement = scriptEntry.getElement("id");
+        Element fixFormatting = scriptEntry.getElement("fix_formatting");
 
         YamlConfiguration yamlConfiguration;
 
@@ -212,7 +213,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         + (yaml_action != null ? aH.debugObj("yaml_action", yaml_action.name()): "")
                         + (key != null ? key.debug() : "")
                         + (value != null ? value.debug() : "")
-                        + (split != null ? split.debug() : ""));
+                        + (split != null ? split.debug() : "")
+                        + fixFormatting.debug());
 
         // Do action
         Action action = Action.valueOf(actionElement.asString().toUpperCase());
@@ -226,7 +228,18 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     dB.echoError("File cannot be found!");
                     return;
                 }
-                yamlConfiguration = YamlConfiguration.loadConfiguration(file);
+                try {
+                    FileInputStream fis = new FileInputStream(file);
+                    String str = ScriptHelper.convertStreamToString(fis);
+                    if (fixFormatting.asBoolean())
+                        str = ScriptHelper.ClearComments("", str, false);
+                    yamlConfiguration = YamlConfiguration.load(str);
+                    fis.close();
+                }
+                catch (Exception e) {
+                    dB.echoError(e);
+                    return;
+                }
                 if (yamls.containsKey(id))
                     yamls.remove(id);
                 if (yamlConfiguration != null)
@@ -243,7 +256,24 @@ public class YamlCommand extends AbstractCommand implements Listener {
             case SAVE:
                 if (yamls.containsKey(id)) {
                     try {
-                        yamls.get(id).save(new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename.asString()));
+                        if (!Settings.allowStrangeYAMLSaves()) {
+                            File fileObj = new File(DenizenAPI.getCurrentInstance().
+                                    getDataFolder().getAbsolutePath() + "/" + filename.asString());
+                            String directory = URLDecoder.decode(System.getProperty("user.dir"));
+                            if (!fileObj.getCanonicalPath().startsWith(directory)) {
+                                dB.echoError("Outside-the-main-folder YAML saves disabled by administrator.");
+                                return;
+                            }
+                        }
+                        File fileObj = new File(DenizenAPI.getCurrentInstance().
+                                getDataFolder().getAbsolutePath() + "/" + filename.asString());
+                        fileObj.getParentFile().mkdirs();
+                        FileWriter fw = new FileWriter(DenizenAPI.getCurrentInstance()
+                                .getDataFolder().getAbsolutePath() + "/" + filename.asString());
+                        BufferedWriter writer = new BufferedWriter(fw);
+                        writer.write(yamls.get(id).saveToString());
+                        writer.close();
+                        fw.close();
                     } catch (IOException e) {
                         dB.echoError(e);
                     }
@@ -268,7 +298,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             case SET:
                 if (yamls.containsKey(id)) {
                     if (yaml_action == null || key == null || value == null) {
-                        dB.echoError("Must specify a flag action and value!");
+                        dB.echoError("Must specify a YAML action and value!");
                         return;
                     }
                     YamlConfiguration yaml = yamls.get(id);
@@ -306,6 +336,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         case INSERT:
                         {
                             List<String> list = yaml.getStringList(keyStr);
+                            if (list == null)
+                                list = new ArrayList<String>();
                             list.add(valueStr);
                             yaml.set(keyStr, list);
                             break;
@@ -313,6 +345,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         case REMOVE:
                         {
                             List<String> list = yaml.getStringList(keyStr);
+                            if (list == null)
+                                break;
                             if (index > -1 && index < list.size()) {
                                 list.remove(index);
                             }
@@ -330,6 +364,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         case SPLIT:
                         {
                             List<String> list = yaml.getStringList(keyStr);
+                            if (list == null)
+                                list = new ArrayList<String>();
                             list.addAll(dList.valueOf(valueStr));
                             yaml.set(keyStr, list);
                             break;
@@ -383,7 +419,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void yaml(ReplaceableTagEvent event) {
 
         if (!event.matches("yaml")) return;
@@ -404,7 +440,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
 
         // YAML tag requires name context and type context.
-        if (!event.hasNameContext() || !event.hasTypeContext()) {
+        if ((!event.hasNameContext() || !(event.hasTypeContext() || attribute.getAttribute(2).equalsIgnoreCase("to_json")))
+                && !attribute.hasAlternative()) {
             dB.echoError("YAML tag '" + event.raw_tag + "' is missing required context. Tag replacement aborted.");
             return;
         }
@@ -414,7 +451,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
         String path = event.getTypeContext();
 
         // Check if there is a yaml file loaded with the specified id
-        if (!yamls.containsKey(id.toUpperCase())) {
+        if (!yamls.containsKey(id.toUpperCase())
+                && !attribute.hasAlternative()) {
             dB.echoError("YAML tag '" + event.raw_tag + "' has specified an invalid ID, or the specified id has already" +
                     " been closed. Tag replacement aborted. ID given: '" + id + "'.");
             return;
@@ -466,7 +504,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 List<String> value = getYaml(id).getStringList(path);
                 if (value == null) {
                     // If value is null, the key at the specified path didn't exist.
-                    event.setReplaced(Element.NULL.getAttribute(attribute));
                     return;
                 }
                 else {
@@ -478,7 +515,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 String value = getYaml(id).getString(path);
                 if (value == null) {
                     // If value is null, the key at the specified path didn't exist.
-                    event.setReplaced(Element.NULL.getAttribute(attribute));
                     return;
                 }
                 else {
@@ -497,9 +533,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
         if (attribute.startsWith("list_deep_keys")) {
             Set<String> keys;
             if (path != null && path.length() > 0) {
-                ConfigurationSection section = getYaml(id).getConfigurationSection(path);
+                YamlConfiguration section = getYaml(id).getConfigurationSection(path);
                 if (section == null) {
-                    event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                     return;
                 }
                 keys = section.getKeys(true);
@@ -508,7 +543,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 keys = getYaml(id).getKeys(true);
             }
             if (keys == null) {
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                 return;
 
             } else {
@@ -528,9 +562,8 @@ public class YamlCommand extends AbstractCommand implements Listener {
         if (attribute.startsWith("list_keys")) {
             Set<String> keys;
             if (path != null && path.length() > 0) {
-                ConfigurationSection section = getYaml(id).getConfigurationSection(path);
+                YamlConfiguration section = getYaml(id).getConfigurationSection(path);
                 if (section == null) {
-                    event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                     return;
                 }
                 keys = section.getKeys(false);
@@ -539,7 +572,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 keys = getYaml(id).getKeys(false);
             }
             if (keys == null) {
-                event.setReplaced(Element.NULL.getAttribute(attribute.fulfill(1)));
                 return;
 
             } else {
@@ -550,5 +582,16 @@ public class YamlCommand extends AbstractCommand implements Listener {
             }
         }
 
+        // <--[tag]
+        // @attribute <yaml[<id>].to_json>
+        // @returns dList
+        // @description
+        // Converts the YAML container to a JSON array.
+        // -->
+        if (attribute.startsWith("to_json")) {
+            JSONObject jsobj = new JSONObject(getYaml(id).getMap());
+            event.setReplaced(new Element(jsobj.toString()).getAttribute(attribute.fulfill(1)));
+            return;
+        }
     }
 }

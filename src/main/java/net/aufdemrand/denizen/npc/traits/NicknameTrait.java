@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.npc.traits;
 
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
@@ -54,7 +55,8 @@ public class NicknameTrait extends Trait implements Listener {
      */
     public String getNickname() {
         if (nickname == null || nickname.equals("")) return npc.getName();
-        else return TagManager.tag(null, DenizenAPI.getDenizenNPC(npc), nickname, false);
+        else return TagManager.tag(nickname, // TODO: debug option?
+                new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
     }
 
     /**

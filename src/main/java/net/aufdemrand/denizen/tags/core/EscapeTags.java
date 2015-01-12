@@ -1,17 +1,17 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.bukkit.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class EscapeTags implements Listener {
 
     public EscapeTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        TagManager.registerTagEvents(this);
     }
 
     // <--[language]
@@ -38,6 +38,7 @@ public class EscapeTags implements Listener {
     // \ = &bs
     // ' = &sq
     // " = &quo
+    // ! = &exc
     //
     // Also, you can input a non-breaking space via &sp
     //
@@ -56,14 +57,15 @@ public class EscapeTags implements Listener {
     public static String Escape(String input) {
         if (input == null)
             return null;
-        return TagManager.CleanOutputFully(input)
+        return TagManager.cleanOutputFully(input)
                 .replace("&", "&amp").replace("|", "&pipe")
                 .replace(">", "&gt").replace("<", "&lt")
                 .replace("\n", "&nl").replace(";", "&sc")
                 .replace("[", "&lb").replace("]", "&rb")
                 .replace(":", "&co").replace("@", "&at")
                 .replace(".", "&dot").replace("\\", "&bs")
-                .replace("'", "&sq").replace("\"", "&quo");
+                .replace("'", "&sq").replace("\"", "&quo")
+                .replace("!", "&exc");
     }
 
     /**
@@ -76,7 +78,7 @@ public class EscapeTags implements Listener {
     public static String unEscape(String input) {
         if (input == null)
             return null;
-        return TagManager.CleanOutputFully(input)
+        return TagManager.cleanOutputFully(input)
                 .replace("&pipe", "|").replace("&nl", "\n")
                 .replace("&gt", ">").replace("&lt", "<")
                 .replace("&sc", ";").replace("&sq", "'")
@@ -84,10 +86,11 @@ public class EscapeTags implements Listener {
                 .replace("&sp", String.valueOf((char)0x00A0))
                 .replace("&co", ":").replace("&at", "@")
                 .replace("&dot", ".").replace("&bs", "\\")
-                .replace("&quo", "\"").replace("&amp", "&");
+                .replace("&quo", "\"").replace("&exc", "!")
+                .replace("&amp", "&");
     }
 
-    @EventHandler
+    @TagManager.TagEvents
     public void escapeTags(ReplaceableTagEvent event) {
         // <--[tag]
         // @attribute <escape:<text to escape>>

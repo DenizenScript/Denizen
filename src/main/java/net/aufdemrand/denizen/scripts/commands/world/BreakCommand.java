@@ -1,11 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.commands.Holdable;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
@@ -50,7 +51,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
 
         // Use the NPC or the Player as the default entity
         scriptEntry.defaultObject("entity",
-                (scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() : null));
+                (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity() : null));
 
         if (!scriptEntry.hasObject("entity"))
             throw new InvalidArgumentsException("Must specify an entity!");
@@ -103,7 +104,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
                 location.getBlock(), config);
         if (breaker.shouldExecute()) {
             TaskRunnable run = new TaskRunnable(breaker);
-            run.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, run, 0, 1);
+            run.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), run, 0, 1);
         }
     }
 

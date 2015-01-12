@@ -27,5 +27,4 @@ public class DenizenSpeechContext extends SpeechContext {
     public double getChatRange() {
         return chatRange;
     }
-
 }

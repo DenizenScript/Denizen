@@ -5,16 +5,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
@@ -51,7 +48,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   title: custom title
     //
     //   # The size must be a multiple of 9. It is recommended not to go above 54, as it will not show
-    //   # correctly when a player looks into it.
+    //   # correctly when a player looks into it. Tags are allowed for advanced usage.
     //   size: 27
     //
     //   # You can use definitions to define items to use in the slots. These are not like normal
@@ -70,17 +67,12 @@ public class InventoryScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public InventoryScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+    public InventoryScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         InventoryScriptHelper.inventory_scripts.put(getName(), this);
     }
 
     public Map<String, dItem> definitions = new HashMap<String, dItem>();
-
-    public int getSize() {
-        InventoryType invType = getInventoryType();
-        return aH.getIntegerFrom(getString("SIZE", String.valueOf(invType.getDefaultSize())));
-    }
 
     public InventoryType getInventoryType() {
         String typeStr = getString("inventory", "CHEST");
@@ -113,16 +105,17 @@ public class InventoryScriptContainer extends ScriptContainer {
                     dB.echoError("Invalid inventory type specified. Assuming \"CHEST\"");
                 }
             }
+            int size = 0;
             if (contains("SIZE")) {
                 if (inventory != null && !getInventoryType().name().equalsIgnoreCase("CHEST")) {
                     dB.echoError("You can only set the size of chest inventories!");
                 }
                 else {
-                    int size = aH.getIntegerFrom(getString("SIZE"));
+                    size = aH.getIntegerFrom(TagManager.tag(getString("SIZE"),
+                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))));
 
                     if (size == 0) {
-                        size = 27;
-                        dB.echoError("Inventory size can't be 0. Assuming default of 27...");
+                        dB.echoError("Inventory size can't be 0. Assuming default of inventory type...");
                     }
                     if (size % 9 != 0) {
                         size = (int) Math.ceil(size/9)*9;
@@ -134,15 +127,21 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
 
                     inventory = new dInventory(size,
-                            contains("TITLE") ? TagManager.tag(player, npc, getString("TITLE")) : "Chest");
+                            contains("TITLE") ? TagManager.tag(getString("TITLE"),
+                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");
                     inventory.setIdentifiers("script", getName());
                 }
             }
+            if (size == 0) {
+                size = getInventoryType().getDefaultSize();
+            }
             if (contains("SLOTS")) {
-                ItemStack[] finalItems = new ItemStack[getSize()];
+                ItemStack[] finalItems = new ItemStack[size];
                 int itemsAdded = 0;
                 for (String items : getStringList("SLOTS")) {
-                    items = TagManager.tag(player, npc, items);
+                    items = TagManager.tag(items, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))).trim();
+                    if (items.isEmpty())
+                        continue;
                     String[] itemsInLine = items.split(" ");
                     for (String item : itemsInLine) {
                         Matcher m = fromPattern.matcher(item);
@@ -153,12 +152,14 @@ public class InventoryScriptContainer extends ScriptContainer {
                         if (contains("DEFINITIONS." + m.group(2)) &&
                                 dItem.matches(getString("DEFINITIONS." + m.group(2)))) {
                             finalItems[itemsAdded] = dItem.valueOf(TagManager.tag
-                                    (player, npc, getString("DEFINITIONS." + m.group(2))))
-                                        .getItemStack();
+                                    (getString("DEFINITIONS." + m.group(2)),
+                                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
+                                    player, npc).getItemStack();
                         }
                         else if (dItem.matches(m.group(2))) {
-                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(player, npc, m.group(2)))
-                                    .getItemStack();
+                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(m.group(2),
+                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
+                                    player, npc).getItemStack();
                         }
                         else {
                             finalItems[itemsAdded] = new ItemStack(Material.AIR);
@@ -171,9 +172,10 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
                 }
                 if (inventory == null) {
-                    int size = finalItems.length%9==0?finalItems.length:Math.round(finalItems.length/9)*9;
+                    size = finalItems.length%9==0?finalItems.length:Math.round(finalItems.length/9)*9;
                     inventory = new dInventory(size==0?9:size,
-                            contains("TITLE") ? TagManager.tag(player, npc, getString("TITLE")) : "Chest");
+                            contains("TITLE") ? TagManager.tag(getString("TITLE"),
+                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");
                 }
                 inventory.setContents(finalItems);
             }

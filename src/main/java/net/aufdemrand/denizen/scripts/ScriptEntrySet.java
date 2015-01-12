@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts;
 
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +20,10 @@ public class ScriptEntrySet {
                 newEntries.add(entry.clone());
             }
         }
-        catch (CloneNotSupportedException e) {}
-        return new ScriptEntrySet(newEntries);
-    }
-
-    public void setPlayerAndNPC(dPlayer player, dNPC npc) {
-        for (ScriptEntry entry: entries) {
-            entry.setPlayer(player).setNPC(npc);
+        catch (CloneNotSupportedException e) {
+            dB.echoError(e); // This should never happen
         }
+        return new ScriptEntrySet(newEntries);
     }
 
     public List<ScriptEntry> getEntries() {

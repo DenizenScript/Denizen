@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechContext;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechController;
 import net.aufdemrand.denizen.objects.*;
@@ -47,8 +48,6 @@ import org.bukkit.entity.Entity;
  */
 public class ChatCommand extends AbstractCommand {
 
-    // TODO: Make this class abstract to minimize code duplication for Whisper/Shout/etc.
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -87,12 +86,12 @@ public class ChatCommand extends AbstractCommand {
         }
 
         // Add default recipient as the attached Player if no recipients set otherwise
-        if (!scriptEntry.hasObject("targets") && scriptEntry.hasPlayer() && !specified_targets)
-            scriptEntry.defaultObject("targets", new dList(scriptEntry.getPlayer().identify()));
+        if (!scriptEntry.hasObject("targets") && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() && !specified_targets)
+            scriptEntry.defaultObject("targets", new dList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().identify()));
 
         // Add default talker as the attached NPC if no recipients set otherwise
-        if (!scriptEntry.hasObject("talkers") && scriptEntry.hasNPC() && !specified_talker)
-            scriptEntry.defaultObject("talkers", new dList(scriptEntry.getNPC().identify()));
+        if (!scriptEntry.hasObject("talkers") && ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() && !specified_talker)
+            scriptEntry.defaultObject("talkers", new dList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().identify()));
 
         // Verify essential fields are set
         if (!scriptEntry.hasObject("targets"))
@@ -104,7 +103,7 @@ public class ChatCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("message"))
             throw new InvalidArgumentsException("Must specify a message!");
 
-        scriptEntry.defaultObject("range", new Element(Settings.ChatBystandersRange()));
+        scriptEntry.defaultObject("range", new Element(Settings.chatBystandersRange()));
 
     }
 
@@ -119,7 +118,7 @@ public class ChatCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug() + chatRange.debug());
 
         // Create new speech context
-        DenizenSpeechContext context = new DenizenSpeechContext(TagManager.CleanOutputFully(message.asString()),
+        DenizenSpeechContext context = new DenizenSpeechContext(TagManager.cleanOutputFully(message.asString()),
                 scriptEntry, chatRange.asDouble());
 
         if (!targets.isEmpty()) {

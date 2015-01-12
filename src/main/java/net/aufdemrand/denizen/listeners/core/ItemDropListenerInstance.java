@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.listeners.core;
 
 import java.util.List;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -14,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemDropListenerType.ItemDropType;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -203,7 +203,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         dB.log("...within region (deprecated)");
 
         dB.log("...trying to drop item");
-        if (Utilities.getRandom().nextInt(101) < dropRate) {
+        if (CoreUtilities.getRandom().nextInt(101) < dropRate) {
             dB.log("...item should drop now");
             event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), item);
             qtyDropped++;
@@ -229,7 +229,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         }
         dB.log("...within region(deprecated)");
 
-        if (Utilities.getRandom().nextInt(101) < dropRate) {
+        if (CoreUtilities.getRandom().nextInt(101) < dropRate) {
             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
             qtyDropped++;
             dB.log("...item dropped");
@@ -254,7 +254,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         }
         dB.log("...within region(deprecated)");
 
-        if (Utilities.getRandom().nextInt(101) < dropRate) {
+        if (CoreUtilities.getRandom().nextInt(101) < dropRate) {
             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
             qtyDropped++;
             dB.log("...item dropped");

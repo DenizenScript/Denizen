@@ -1,19 +1,18 @@
 package net.aufdemrand.denizen.objects;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import org.bukkit.configuration.ConfigurationSection;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import org.json.JSONObject;
 
 public class dScript implements dObject {
 
@@ -112,6 +111,12 @@ public class dScript implements dObject {
             name = scriptName.toUpperCase();
             valid = true;
         }
+    }
+
+    public dScript(ScriptContainer container) {
+        this.container = container;
+        name = container.getName().toUpperCase();
+        valid = true;
     }
 
     ///////////////////////
@@ -223,56 +228,9 @@ public class dScript implements dObject {
         // Returns the type of script container that is associated with this dScript object. For example: 'task', or
         // 'world'.
         // -->
-        if (attribute.startsWith("container_type") || attribute.startsWith("type"))
+        if (attribute.startsWith("container_type"))
             return new Element(container.getContainerType())
                     .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <s@script.cooled_down[<player>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the script is currently cooled down for the player. Any global
-        // cooldown present on the script will also be taken into account. Not specifying a player will result in
-        // using the attached player available in the script entry. Not having a valid player will result in 'null'.
-        // -->
-        if (attribute.startsWith("cooled_down")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
-            if (player != null && player.isValid())
-                return new Element(container.checkCooldown(player))
-                        .getAttribute(attribute.fulfill(1));
-            else return "null";
-        }
-
-        // <--[tag]
-        // @attribute <s@script.requirements[<player>].check[<path>]>
-        // @returns Element
-        // @description
-        // Returns whether the player specified (defaults to current) has the requirement.
-        // -->
-        if (attribute.startsWith("requirements.check")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
-            if (attribute.hasContext(2))
-                return new Element(container.checkRequirements(player,
-                        attribute.getScriptEntry().getNPC(),
-                        attribute.getContext(2)))
-                        .getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <s@script.cooldown[<player>]>
-        // @returns Duration
-        // @description
-        // Returns the time left for the player to cooldown for the script.
-        // -->
-        if (attribute.startsWith("cooldown")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
-            return CooldownCommand.getCooldownDuration(player, name)
-                    .getAttribute(attribute.fulfill(1));
-
-        }
 
         // <--[tag]
         // @attribute <s@script.name>
@@ -300,10 +258,21 @@ public class dScript implements dObject {
         // @attribute <s@script.filename>
         // @returns Element
         // @description
-        // Returns the filename that contains the script.
+        // Returns the absolute filename that contains the script.
         // -->
         if (attribute.startsWith("filename")) {
             return new Element(container.getFileName().replace("\\", "/"))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <s@script.original_name>
+        // @returns Element
+        // @description
+        // Returns the originally cased script name.
+        // -->
+        if (attribute.startsWith("original_name")) {
+            return new Element(container.getOriginalName())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -314,23 +283,25 @@ public class dScript implements dObject {
         // Returns the value of the constant as either an Element or dList.
         // -->
         if (attribute.startsWith("cons")) {
-            if (!attribute.hasContext(1)) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (!attribute.hasContext(1)) return null;
 
-            ConfigurationSection section = getContainer().getConfigurationSection("constants");
-            if (section == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            YamlConfiguration section = getContainer().getConfigurationSection("constants");
+            if (section == null) return null;
             Object obj = section.get(attribute.getContext(1).toUpperCase());
-            if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            if (obj == null) return null;
 
             if (obj instanceof List) {
                 dList list = new dList();
-                for (Object each : (List<Object>) obj)
-                    list.add(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
-                            attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), each.toString(), false, attribute.getScriptEntry()));
+                for (Object each : (List<Object>) obj) {
+                    if (each == null) {
+                        each = "null";
+                    }
+                    list.add(TagManager.tag(each.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)));
+                }
                 return list.getAttribute(attribute.fulfill(1));
 
             }
-            else return new Element(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
-                    attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
+            else return new Element(TagManager.tag(obj.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -342,19 +313,31 @@ public class dScript implements dObject {
         // -->
         if (attribute.startsWith("yaml_key")
                 && attribute.hasContext(1)) {
-            Object obj = getContainer().getConfigurationSection("").get(attribute.getContext(1).toUpperCase());
-            if (obj == null) return Element.NULL.getAttribute(attribute.fulfill(1));
+            ScriptContainer container = getContainer();
+            if (container == null) {
+                dB.echoError("Missing script container?!");
+                return new Element(identify()).getAttribute(attribute);
+            }
+            YamlConfiguration section = container.getConfigurationSection("");
+            if (section == null) {
+                dB.echoError("Missing YAML section?!");
+                return new Element(identify()).getAttribute(attribute);
+            }
+            Object obj = section.get(attribute.getContext(1).toUpperCase());
+            if (obj == null) return null;
 
             if (obj instanceof List) {
                 dList list = new dList();
-                for (Object each : (List<Object>) obj)
-                    list.add(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
-                            attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), each.toString(), false, attribute.getScriptEntry()));
+                for (Object each : (List<Object>) obj) {
+                    if (each == null) {
+                        each = "null";
+                    }
+                    list.add(TagManager.tag(each.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)));
+                }
                 return list.getAttribute(attribute.fulfill(1));
 
             }
-            else return new Element(TagManager.tag(attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getPlayer(),
-                    attribute.getScriptEntry() == null ? null: attribute.getScriptEntry().getNPC(), obj.toString(), false, attribute.getScriptEntry()))
+            else return new Element(TagManager.tag(obj.toString(), new BukkitTagContext(attribute.getScriptEntry(), false)))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -381,20 +364,17 @@ public class dScript implements dObject {
         }
 
         // <--[tag]
-        // @attribute <s@script.step[<player>]>
+        // @attribute <s@script.to_json>
         // @returns Element
         // @description
-        // Returns the name of a script step that the player is currently on.
+        // Converts the YAML Script Container to a JSON array.
+        // Best used with 'yaml data' type scripts.
         // -->
-        if (attribute.startsWith("step")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : attribute.getScriptEntry().getPlayer());
-
-            if (player != null && player.isValid())
-                return new Element(InteractScriptHelper.getCurrentStep(player, container.getName()))
-                        .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("to_json")) {
+            JSONObject jsobj = new JSONObject(container.getConfigurationSection("").getMap());
+            jsobj.remove("TYPE");
+            return new Element(jsobj.toString()).getAttribute(attribute.fulfill(1));
         }
-
 
         /////////////////
         // dObject attributes
@@ -425,14 +405,14 @@ public class dScript implements dObject {
         }
 
         // <--[tag]
-        // @attribute <s@script.object_type>
+        // @attribute <s@script.type>
         // @returns Element
         // @description
-        // Always returns 'Script' for dScript objects. All objects fetchable by the Object Fetcher will return a the
+        // Always returns 'Script' for dScript objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        if (attribute.startsWith("object_type")) {
-            return new Element(getObjectType()).getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("type")) {
+            return new Element("Script").getAttribute(attribute.fulfill(1));
         }
 
         // Iterate through this object's properties' attributes

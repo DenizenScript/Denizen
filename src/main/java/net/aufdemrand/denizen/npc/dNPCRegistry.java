@@ -33,8 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class dNPCRegistry implements Listener {
 
-    public static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<Integer, dNPC>(8, 0.9f, 1);
-    public static Map<Integer, Inventory> npcInventories = new ConcurrentHashMap<Integer, Inventory>(8, 0.9f, 1);
+    private static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<Integer, dNPC>(8, 0.9f, 1);
+    private static Map<Integer, Inventory> npcInventories = new ConcurrentHashMap<Integer, Inventory>(8, 0.9f, 1);
 
     public static dNPCRegistry getCurrentInstance() {
         return DenizenAPI.getCurrentInstance().getNPCRegistry();
@@ -60,20 +60,29 @@ public class dNPCRegistry implements Listener {
         return actionHandler;
     }
 
-    private static boolean _isRegistered (NPC npc) {
+    public static boolean _isRegistered (NPC npc) {
         return denizenNPCs.containsKey(npc.getId());
+    }
+
+    public static boolean _isRegistered(int id) {
+        return denizenNPCs.containsKey(id);
+    }
+
+    public static void _registerNPC(dNPC denizenNPC) {
+        if (denizenNPC == null || !denizenNPC.isValid()) return;
+        int id = denizenNPC.getId();
+        if (!denizenNPCs.containsKey(id)) {
+            denizenNPCs.put(id, denizenNPC);
+            Inventory npcInventory = Bukkit.getServer().createInventory(denizenNPC, InventoryType.PLAYER);
+            npcInventory.setContents(denizenNPC.getInventoryTrait().getContents());
+            npcInventories.put(id, npcInventory);
+        }
     }
 
     private static void _registerNPC(NPC npc) {
         if (npc == null) return;
         if (!denizenNPCs.containsKey(npc.getId())) {
-            dNPC denizenNPC = new dNPC(npc);
-            denizenNPCs.put(npc.getId(), denizenNPC);
-            Inventory npcInventory = Bukkit.getServer().createInventory(denizenNPC, InventoryType.PLAYER);
-            if (!npc.hasTrait(net.citizensnpcs.api.trait.trait.Inventory.class))
-                npc.addTrait(net.citizensnpcs.api.trait.trait.Inventory.class);
-            npcInventory.setContents(npc.getTrait(net.citizensnpcs.api.trait.trait.Inventory.class).getContents());
-            npcInventories.put(npc.getId(), npcInventory);
+            _registerNPC(new dNPC(npc));
         }
         // dB.log("Constructing NPC " + getDenizen(npc).toString());
     }
@@ -92,6 +101,13 @@ public class dNPCRegistry implements Listener {
         if (!denizenNPCs.containsKey(npc.getId()))
             _registerNPC(npc);
         return denizenNPCs.get(npc.getId());
+    }
+
+    public static dNPC getDenizen(int id) {
+        if (denizenNPCs.containsKey(id))
+            return denizenNPCs.get(id);
+        else
+            return null;
     }
 
     /**
@@ -176,12 +192,14 @@ public class dNPCRegistry implements Listener {
      */
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
-        dNPC npc = getDenizen(event.getNPC());
+        dNPC npc = getDenizen(event.getNPC().getId());
 
         // Do world script event 'On NPC Despawns'
-        EventManager.doEvents(Arrays.asList("npc despawns"), npc, null, null);
+        if (npc != null)
+            EventManager.doEvents(Arrays.asList("npc despawns"), npc, null, null);
 
-        npc.action("despawn", null);
+        if (npc != null)
+            npc.action("despawn", null);
     }
 
 
@@ -207,9 +225,7 @@ public class dNPCRegistry implements Listener {
             denizenNPCs.remove(npc.getId());
             npcInventories.remove(npc.getId());
         }
-        dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + npc.getName() + "/" + npc.getId());
         FlagManager.clearNPCFlags(npc.getId());
-        // TODO: Delete flags / etc.
     }
 
     @EventHandler
@@ -223,5 +239,4 @@ public class dNPCRegistry implements Listener {
                 equipment.set(i, inventory.getItem(i));
         }
     }
-
 }

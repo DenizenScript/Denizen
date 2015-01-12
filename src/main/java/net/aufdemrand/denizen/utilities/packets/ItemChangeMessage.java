@@ -2,9 +2,9 @@ package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_7_R4.PacketPlayOutSetSlot;
+import net.minecraft.server.v1_8_R1.PacketPlayOutSetSlot;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -104,5 +103,4 @@ public class ItemChangeMessage implements Listener {
         if (player != null && slotChanged.containsKey(player.getUniqueId()))
             slotChanged.remove(player.getUniqueId());
     }
-
 }

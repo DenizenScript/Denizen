@@ -1,13 +1,20 @@
 package net.aufdemrand.denizen.utilities.entity;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.minecraft.server.v1_8_R1.EntityHuman;
+import net.minecraft.server.v1_8_R1.EntityLiving;
+import net.minecraft.server.v1_8_R1.MovingObjectPosition;
+import net.minecraft.server.v1_8_R1.Vec3D;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
+import org.bukkit.World;
+import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftEntity;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import net.citizensnpcs.util.NMS;
 
 /**
  * Utilities related to entity yaws and pitches.
@@ -42,14 +49,114 @@ public class Rotation {
 
         else if (entity instanceof LivingEntity) {
             if (entity instanceof EnderDragon) yaw = normalizeYaw(yaw - 180);
-            NMS.look(entity, yaw, pitch);
+            look(entity, yaw, pitch);
         }
 
         else {
-            net.minecraft.server.v1_7_R4.Entity handle = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_8_R1.Entity handle = ((CraftEntity) entity).getHandle();
             handle.yaw = yaw;
             handle.pitch = pitch;
         }
+    }
+
+    // Taken from C2 NMS class for less dependency on C2
+    private static void look(Entity entity, float yaw, float pitch) {
+        net.minecraft.server.v1_8_R1.Entity handle = ((CraftEntity)entity).getHandle();
+        if (handle != null) {
+            handle.yaw = yaw;
+            if(handle instanceof EntityLiving) {
+                EntityLiving livingHandle = (EntityLiving) handle;
+                while (yaw < -180.0F) {
+                    yaw += 360.0F;
+                }
+                while(yaw >= 180.0F) {
+                    yaw -= 360.0F;
+                }
+                livingHandle.aI = yaw;
+                if(!(handle instanceof EntityHuman))
+                    livingHandle.aG = yaw;
+                livingHandle.aJ = yaw;
+            }
+            handle.pitch = pitch;
+        }
+        else {
+            dB.echoError("Rotation.java#look: NPC has null handle!");
+        }
+    }
+
+    private static MovingObjectPosition rayTrace(World world, Vector start, Vector end) {
+        return ((CraftWorld) world).getHandle().rayTrace(new Vec3D(start.getX(), start.getY(), start.getZ()),
+                new Vec3D(end.getX(), end.getY(), end.getZ()));
+    }
+
+    public static class MapTraceResult {
+        public Location hitLocation;
+        public BlockFace angle;
+    }
+
+    public static MapTraceResult mapTrace(LivingEntity from, double range) {
+        Location start = from.getEyeLocation();
+        Vector startVec = start.toVector();
+        double xzLen = Math.cos((start.getPitch() % 360) * (Math.PI / 180));
+        double nx = xzLen * Math.sin(-start.getYaw() * (Math.PI/180));
+        double ny = Math.sin(start.getPitch() * (Math.PI / 180));
+        double nz = xzLen * Math.cos(start.getYaw() * (Math.PI/180));
+        Vector endVec = startVec.clone().add(new Vector(nx, -ny, nz).multiply(range));
+        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, endVec);
+        if (l == null || l.pos == null) return null;
+        Vector finalVec = new Vector(l.pos.a, l.pos.b, l.pos.c);
+        MapTraceResult mtr = new MapTraceResult();
+        switch (l.direction) {
+            case NORTH:
+                mtr.angle = BlockFace.NORTH;
+                break;
+            case SOUTH:
+                mtr.angle = BlockFace.SOUTH;
+                break;
+            case EAST:
+                mtr.angle = BlockFace.EAST;
+                break;
+            case WEST:
+                mtr.angle = BlockFace.WEST;
+                break;
+        }
+        // wallPosition - ((end - start).normalize() * 0.072)
+        Vector hit = finalVec.clone().subtract((endVec.clone().subtract(startVec)).normalize().multiply(0.072));
+        mtr.hitLocation = new Location(start.getWorld(), hit.getX(), hit.getY(), hit.getZ());
+        return mtr;
+    }
+
+    /**
+     * Gets the precise location in the specified direction.
+     *
+     * @param start The location to start the check from.
+     * @param direction The one-length vector to use as a direction.
+     * @param range The maximum distance between the start and end.
+     * @return The location, or null if it isn't in range.
+     */
+    public static Location rayTrace(Location start, Vector direction, double range) {
+        Vector startVec = start.toVector();
+        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
+        if (l != null && l.pos != null) {
+            return new Location(start.getWorld(), l.pos.a, l.pos.b, l.pos.c);
+        }
+        return null;
+    }
+
+    /**
+     * Gets the precise location a LivingEntity is looking at.
+     *
+     * @param from The LivingEntity to start the trace from.
+     * @param range The maximum distance between the LivingEntity and the location.
+     * @return The location, or null if it isn't in range.
+     */
+    public static Location eyeTrace(LivingEntity from, double range) {
+        Location start = from.getEyeLocation();
+        double xzLen = Math.cos((start.getPitch() % 360) * (Math.PI / 180));
+        double nx = xzLen * Math.sin(-start.getYaw() * (Math.PI/180));
+        double ny = Math.sin(start.getPitch() * (Math.PI/180));
+        double nz = xzLen * Math.cos(start.getYaw() * (Math.PI/180));
+        return rayTrace(start, new Vector(nx, -ny, nz), range);
     }
 
 

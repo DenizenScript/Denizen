@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
@@ -15,11 +16,10 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.commands.Holdable;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.Velocity;
@@ -27,6 +27,7 @@ import net.aufdemrand.denizen.utilities.entity.Gravity;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
@@ -141,8 +142,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         if (!scriptEntry.hasObject("originLocation")) {
 
             scriptEntry.defaultObject("originEntity",
-                    scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() : null,
-                    scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null);
+                    ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity() : null,
+                    ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
         }
 
         scriptEntry.defaultObject("height", new Element(3));
@@ -294,8 +295,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             Vector base = lastEntity.getVelocity().clone();
             float sf = spread.asFloat();
             for (dEntity entity: entities) {
-                Vector newvel = Velocity.spread(base, (Utilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(Utilities.getRandom().nextDouble() * sf),
-                        (Utilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(Utilities.getRandom().nextDouble() * sf));
+                Vector newvel = Velocity.spread(base, (CoreUtilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(CoreUtilities.getRandom().nextDouble() * sf),
+                        (CoreUtilities.getRandom().nextDouble() > 0.5f ? 1: -1) * Math.toRadians(CoreUtilities.getRandom().nextDouble() * sf));
                 entity.setVelocity(newvel);
             }
         }
@@ -332,10 +333,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
                     if (script != null) {
                         // Build a queue out of the targeted script
-                        List<ScriptEntry> entries = script.getContainer().getBaseEntries
-                                (scriptEntry.getPlayer(),
-                                        scriptEntry.getNPC());
-                        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
+                        List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
+                        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()))
+                                .addEntries(entries);
 
                         // Add relevant definitions
                         queue.addDefinition("location", lastLocation.identify());
@@ -369,7 +369,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             }
         };
 
-        task.runTaskTimer(denizen, 0, 2);
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 2);
     }
 
     @EventHandler
