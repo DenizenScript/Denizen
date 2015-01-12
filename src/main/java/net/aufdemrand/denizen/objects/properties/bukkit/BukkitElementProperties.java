@@ -2,20 +2,26 @@ package net.aufdemrand.denizen.objects.properties.bukkit;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizen.scripts.commands.core.Comparable;
+import org.bukkit.ChatColor;
 
 public class BukkitElementProperties implements Property {
 
     public static boolean describes(dObject element) {
-        element script instanceof Element;
+        return element instanceof Element;
     }
 
     public static BukkitElementProperties getFrom(dObject element) {
         if (!describes(element)) return null;
-        else return new BukkitQueueProperties((Element) element);
+        else return new BukkitElementProperties((Element) element);
     }
 
 
@@ -53,7 +59,7 @@ public class BukkitElementProperties implements Property {
                 && (attribute.startsWith("to", 2) || attribute.startsWith("than", 2)) && attribute.hasContext(2)) {
 
             // Use the Comparable object as implemented for the IF command. First, a new Comparable!
-            Comparable com = new net.aufdemrand.denizen.scripts.commands.core.Comparable();
+            Comparable com = new Comparable();
 
             // Check for negative logic
             String operator;
@@ -76,7 +82,7 @@ public class BukkitElementProperties implements Property {
                 com.setOperator(comparableOperator);
 
                 // Comparable is the value of this element
-                com.setComparable(element);
+                com.setComparable(element.asString());
                 // Compared_to is the value of the .to[] context.
                 com.setComparedto(attribute.getContext(2));
 
@@ -96,7 +102,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("aschunk")
                 || attribute.startsWith("as_chunk")) {
-            dObject object = handleNull(element, dChunk.valueOf(element), "dChunk", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dChunk.valueOf(element.asString()), "dChunk", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -110,7 +116,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("ascolor")
                 || attribute.startsWith("as_color")) {
-            dObject object = handleNull(element, dColor.valueOf(element), "dColor", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dColor.valueOf(element.asString()), "dColor", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -124,7 +130,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("ascuboid")
                 || attribute.startsWith("as_cuboid")) {
-            dObject object = handleNull(element, dCuboid.valueOf(element), "dCuboid", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dCuboid.valueOf(element.asString()), "dCuboid", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -138,7 +144,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asentity")
                 || attribute.startsWith("as_entity")) {
-            dObject object = handleNull(element, dEntity.valueOf(element), "dEntity", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dEntity.valueOf(element.asString()), "dEntity", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -152,7 +158,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asinventory")
                 || attribute.startsWith("as_inventory")) {
-            dObject object = handleNull(element, dInventory.valueOf(element), "dInventory", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dInventory.valueOf(element.asString()), "dInventory", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -167,7 +173,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asitem")
                 || attribute.startsWith("as_item")) {
-            dObject object = handleNull(element, dItem.valueOf(element), "dItem", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dItem.valueOf(element.asString()), "dItem", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -181,7 +187,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("aslocation")
                 || attribute.startsWith("as_location")) {
-            dObject object = handleNull(element, dLocation.valueOf(element), "dLocation", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dLocation.valueOf(element.asString()), "dLocation", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -195,7 +201,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asmaterial")
                 || attribute.startsWith("as_material")) {
-            dObject object = handleNull(element, dMaterial.valueOf(element), "dMaterial", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dMaterial.valueOf(element.asString()), "dMaterial", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -209,7 +215,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asnpc")
                 || attribute.startsWith("as_npc")) {
-            dObject object = handleNull(element, dNPC.valueOf(element), "dNPC", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dNPC.valueOf(element.asString()), "dNPC", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -223,7 +229,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asplayer")
                 || attribute.startsWith("as_player")) {
-            dObject object = handleNull(element, dPlayer.valueOf(element), "dPlayer", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dPlayer.valueOf(element.asString()), "dPlayer", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -237,7 +243,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asworld")
                 || attribute.startsWith("as_world")) {
-            dObject object = handleNull(element, dWorld.valueOf(element), "dWorld", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dWorld.valueOf(element.asString()), "dWorld", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -251,7 +257,7 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asplugin")
                 || attribute.startsWith("as_plugin")) {
-            dObject object = handleNull(element, dPlugin.valueOf(element), "dPlugin", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dPlugin.valueOf(element.asString()), "dPlugin", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -264,7 +270,7 @@ public class BukkitElementProperties implements Property {
         // Returns a standard debug representation of the Element with colors stripped.
         // -->
         if (attribute.startsWith("debug.no_color")) {
-            return new Element(ChatColor.stripColor(debug()))
+            return new Element(ChatColor.stripColor(element.debug()))
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -276,7 +282,7 @@ public class BukkitElementProperties implements Property {
         // Returns the ChatColors used at the end of a string.
         // -->
         if (attribute.startsWith("last_color"))
-            return new Element(ChatColor.getLastColors(element)).getAttribute(attribute.fulfill(1));
+            return new Element(ChatColor.getLastColors(element.asString())).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.format[<script>]>
@@ -294,7 +300,7 @@ public class BukkitElementProperties implements Property {
                 return null;
             }
             else {
-                return new Element(format.getFormattedText(element,
+                return new Element(format.getFormattedText(element.asString(),
                         attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC(): null,
                         attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer(): null))
                         .getAttribute(attribute.fulfill(1));
@@ -309,7 +315,7 @@ public class BukkitElementProperties implements Property {
         // Returns the element with all color encoding stripped.
         // -->
         if (attribute.startsWith("strip_color"))
-            return new Element(ChatColor.stripColor(element)).getAttribute(attribute.fulfill(1));
+            return new Element(ChatColor.stripColor(element.asString())).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <el@element.to_itemscript_hash>
@@ -319,7 +325,7 @@ public class BukkitElementProperties implements Property {
         // Shortens the element down to an itemscript hash ID, made of invisible color codes.
         // -->
         if (attribute.startsWith("to_itemscript_hash")) {
-            return new Element(ItemScriptHelper.createItemScriptID(element))
+            return new Element(ItemScriptHelper.createItemScriptID(element.asString()))
                     .getAttribute(attribute.fulfill(1));
         }
 

@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Duration;
 
 /**
  * <p>Sets a 'cooldown' period on a script. Can be per-player or globally.</p>

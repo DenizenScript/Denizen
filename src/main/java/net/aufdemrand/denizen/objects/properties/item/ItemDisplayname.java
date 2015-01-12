@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.tags.core.EscapeTags;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemDisplayname implements Property {

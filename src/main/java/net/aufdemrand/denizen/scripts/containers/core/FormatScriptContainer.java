@@ -3,11 +3,11 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.objects.dScript;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 public class FormatScriptContainer extends ScriptContainer {
