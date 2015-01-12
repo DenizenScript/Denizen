@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,16 +13,10 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.trait.trait.Equipment;
-
-/**
- * Makes players or NPCs wear a specific player's head.
- *
- * @author David Cernat, aufdemrand
- */
 
 public class HeadCommand extends AbstractCommand {
 

@@ -6,19 +6,13 @@ import java.util.List;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
-/**
- * Sets a list of entities on fire.
- *
- * @author David Cernat
- */
 
 public class BurnCommand extends AbstractCommand {
 

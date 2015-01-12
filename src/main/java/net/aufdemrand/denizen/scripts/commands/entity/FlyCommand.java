@@ -7,14 +7,14 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
@@ -25,13 +25,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-/**
- * Make an entity fly where its controller is looking,
- * or - alternatively - make it fly between different destinations.
- *
- * @author David Cernat
- */
 
 public class FlyCommand extends AbstractCommand {
 

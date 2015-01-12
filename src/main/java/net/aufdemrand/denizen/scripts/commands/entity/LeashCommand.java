@@ -5,22 +5,16 @@ import java.util.List;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LeashHitch;
-
-/**
- * Leashes a list of entities to another entity.
- *
- * @author Alain Blanquet, mcmonkey
- */
 
 public class LeashCommand extends AbstractCommand {
 

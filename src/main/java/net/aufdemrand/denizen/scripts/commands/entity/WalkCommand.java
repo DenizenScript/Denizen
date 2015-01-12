@@ -2,8 +2,9 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -22,11 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Handles NPC walking with the Citizens API.
- *
- * @author Jeremy Schroeder
- */
 public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
     //                        percentage

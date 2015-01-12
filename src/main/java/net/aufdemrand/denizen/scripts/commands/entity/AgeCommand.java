@@ -5,12 +5,12 @@ import java.util.List;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
