@@ -1,14 +1,15 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Location;

@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.DenizenCommandSender;
 import org.bukkit.Bukkit;
@@ -11,9 +11,9 @@ import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;

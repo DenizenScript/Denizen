@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.item;
 import java.util.List;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.objects.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,8 +11,8 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 

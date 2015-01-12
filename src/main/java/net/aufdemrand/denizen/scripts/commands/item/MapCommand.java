@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.MapScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
