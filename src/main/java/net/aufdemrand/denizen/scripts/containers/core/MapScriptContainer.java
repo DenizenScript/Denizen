@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.utilities.NaturalOrderComparator;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.utilities.NaturalOrderComparator;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.maps.*;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;

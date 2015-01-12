@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.requirements;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 
 import java.util.HashMap;
 import java.util.List;

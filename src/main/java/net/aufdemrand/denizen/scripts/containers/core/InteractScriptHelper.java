@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;

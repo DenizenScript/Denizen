@@ -2,14 +2,15 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptBuilder;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptBuilder;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
