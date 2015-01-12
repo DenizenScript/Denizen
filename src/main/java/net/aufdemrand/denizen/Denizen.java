@@ -28,7 +28,6 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.containers.core.*;
-import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
@@ -72,15 +71,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         return commandManager;
     }
 
-
-    /*
-     * Denizen Engines
-     */
-    private ScriptEngine scriptEngine;
-
-    public ScriptEngine getScriptEngine() {
-        return scriptEngine;
-    }
 
 
     /*
@@ -200,7 +190,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             }
             startedSuccessful = true;
 
-            scriptEngine = new ScriptEngine();
             requirementChecker = new RequirementChecker();
 
             // Startup procedure

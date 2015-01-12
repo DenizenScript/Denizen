@@ -13,14 +13,14 @@ public class BukkitQueueProperties implements Property {
         return script instanceof ScriptQueue;
     }
 
-    public static BukkitQueueProperties getFrom(dObject script) {
-        if (!describes(script)) return null;
-        else return new BukkitQueueProperties((ScriptQueue) script);
+    public static BukkitQueueProperties getFrom(dObject queue) {
+        if (!describes(queue)) return null;
+        else return new BukkitQueueProperties((ScriptQueue) queue);
     }
 
 
-    private BukkitQueueProperties(ScriptQueue script) {
-        this.queue = script;
+    private BukkitQueueProperties(ScriptQueue queue) {
+        this.queue = queue;
     }
 
     ScriptQueue queue;
