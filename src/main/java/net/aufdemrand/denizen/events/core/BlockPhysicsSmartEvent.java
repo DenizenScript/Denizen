@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -13,7 +15,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BlockPhysicsSmartEvent implements SmartEvent, Listener {
+public class BlockPhysicsSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -98,7 +100,7 @@ public class BlockPhysicsSmartEvent implements SmartEvent, Listener {
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
         // Fire event
-        String Determination = EventManager.doEvents(events, null, null, context, true);
+        String Determination = BukkitWorldScriptHelper.doEvents(events, null, null, context, true);
         if (Determination.equalsIgnoreCase("CANCELLED"))
             event.setCancelled(true);
     }

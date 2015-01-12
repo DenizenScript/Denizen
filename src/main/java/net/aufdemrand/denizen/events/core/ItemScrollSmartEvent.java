@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -14,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class ItemScrollSmartEvent implements SmartEvent, Listener {
+public class ItemScrollSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -87,7 +89,7 @@ public class ItemScrollSmartEvent implements SmartEvent, Listener {
         context.put("new_slot", new Element(event.getNewSlot() + 1));
         context.put("previous_slot", new Element(event.getPreviousSlot() + 1));
 
-        String determination = EventManager.doEvents(events,
+        String determination = BukkitWorldScriptHelper.doEvents(events,
                 null, new dPlayer(event.getPlayer()), context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))

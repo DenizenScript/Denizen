@@ -1,10 +1,11 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
-import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -18,7 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RedstoneSmartEvent implements SmartEvent, Listener {
+public class RedstoneSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -82,7 +83,7 @@ public class RedstoneSmartEvent implements SmartEvent, Listener {
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("old_current", new Element(event.getOldCurrent()));
         context.put("new_current", new Element(event.getNewCurrent()));
-        String determination = EventManager.doEvents(Arrays.asList("redstone recalculated"), null, null, context, true);
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList("redstone recalculated"), null, null, context, true);
         Element det = new Element(determination);
         if (det.isInt())
             event.setNewCurrent(det.asInt());

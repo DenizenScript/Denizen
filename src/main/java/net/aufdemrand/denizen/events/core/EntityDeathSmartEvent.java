@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -16,7 +18,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EntityDeathSmartEvent implements SmartEvent, Listener {
+public class EntityDeathSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -118,14 +120,14 @@ public class EntityDeathSmartEvent implements SmartEvent, Listener {
                 context.put("inventory", player.getInventory());
         }
 
-        List<String> determinations = EventManager.doEvents1(Arrays.asList
+        List<String> determinations = OldEventManager.doEvents(Arrays.asList
                         ("entity dies",
                                 entity.identifyType() + " dies",
                                 entity.identifySimple() + " dies",
                                 entity.identifySimple() + " death",
                                 "entity death",
                                 entity.identifyType() + " death"),
-                npc, player, context, true);
+                new BukkitScriptEntryData(player, npc), context, true);
 
         for (String determination : determinations) {
             // Handle message

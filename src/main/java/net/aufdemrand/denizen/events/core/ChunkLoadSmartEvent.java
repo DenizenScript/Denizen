@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -16,7 +18,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChunkLoadSmartEvent implements SmartEvent, Listener {
+public class ChunkLoadSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -79,7 +81,7 @@ public class ChunkLoadSmartEvent implements SmartEvent, Listener {
         dWorld world = new dWorld(event.getWorld());
         context.put("chunk", new dChunk(event.getChunk()));
         context.put("world", world); // Deprecated in favor of context.chunk.world
-        String determination = EventManager.doEvents(Arrays.asList("chunk loads for the first time",
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList("chunk loads for the first time",
                 "chunk loads for the first time in " + world.identify()), null, null, context, true);
         // TODO: Find way to cancel this?... may not be reasonably possible.
     }

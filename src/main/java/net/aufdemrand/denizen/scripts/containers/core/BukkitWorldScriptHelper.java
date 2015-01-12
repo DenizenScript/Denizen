@@ -50,11 +50,11 @@ public class BukkitWorldScriptHelper implements Listener {
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
-    public String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, dObject> context) {
+    public static String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, dObject> context) {
         return doEvents(events, npc, player, context, false);
     }
 
-    public String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, dObject> context, boolean useids) {
+    public static String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, dObject> context, boolean useids) {
         List<String> determ;
         if (useids) {
             determ = OldEventManager.doEvents(events, new BukkitScriptEntryData(player, npc), context);

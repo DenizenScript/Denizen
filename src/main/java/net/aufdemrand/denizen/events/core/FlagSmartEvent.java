@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.Listener;
 
@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * Handler event, actually events are fired in FlagManager.java
  */
-public class FlagSmartEvent implements SmartEvent, Listener {
+public class FlagSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////

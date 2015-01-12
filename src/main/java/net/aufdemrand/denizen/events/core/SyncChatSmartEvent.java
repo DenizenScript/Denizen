@@ -1,12 +1,13 @@
 package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -22,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class SyncChatSmartEvent implements SmartEvent, Listener {
+public class SyncChatSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -98,7 +99,7 @@ public class SyncChatSmartEvent implements SmartEvent, Listener {
 
         dPlayer player = new dPlayer(event.getPlayer());
 
-        String determination = EventManager.doEvents(Arrays.asList("player chats"), null, player, context);
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList("player chats"), null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);

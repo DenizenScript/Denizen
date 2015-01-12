@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -14,7 +16,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EntityDamageSmartEvent implements SmartEvent, Listener {
+public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -327,7 +329,7 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
                 }
             }
 
-            determination = EventManager.doEvents(subEvents, subNPC, subPlayer, context, true);
+            determination = BukkitWorldScriptHelper.doEvents(subEvents, subNPC, subPlayer, context, true);
 
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
@@ -338,7 +340,7 @@ public class EntityDamageSmartEvent implements SmartEvent, Listener {
             }
         }
 
-        determination = EventManager.doEvents(events, npc, player, context, true);
+        determination = BukkitWorldScriptHelper.doEvents(events, npc, player, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);

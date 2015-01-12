@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -18,7 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayerWalkSmartEvent implements SmartEvent, Listener {
+public class PlayerWalkSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -80,7 +81,7 @@ public class PlayerWalkSmartEvent implements SmartEvent, Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("old_location", new dLocation(event.getFrom()));
         context.put("new_location", new dLocation(event.getTo()));
-        String determination = EventManager.doEvents(Arrays.asList("player walks"), null, new dPlayer(event.getPlayer()), context, true);
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList("player walks"), null, new dPlayer(event.getPlayer()), context, true);
         if (determination.equalsIgnoreCase("CANCELLED"))
             event.setCancelled(true);
     }
