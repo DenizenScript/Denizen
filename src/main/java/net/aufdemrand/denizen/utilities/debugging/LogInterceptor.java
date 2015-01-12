@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -43,7 +44,8 @@ public class LogInterceptor extends PrintStream {
     public void print(String s) {
         HashMap<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(cleanse(s)));
-        List<String> Determinations = EventManager.doEvents1(Arrays.asList("console output"), null, null, context);
+        List<String> Determinations = OldEventManager.doEvents(Arrays.asList("console output"),
+                new BukkitScriptEntryData(null ,null), context);
         for (String str: Determinations) {
             if (str.equalsIgnoreCase("cancelled")) {
                 return;

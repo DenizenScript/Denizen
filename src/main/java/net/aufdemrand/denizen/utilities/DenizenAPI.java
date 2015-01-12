@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
-import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
+import net.aufdemrand.denizencore.scripts.queues.ScriptEngine;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -55,14 +55,6 @@ public class DenizenAPI {
             denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
         }
         return denizen;
-    }
-
-    public static BukkitCommandRegistry _commandRegistry() {
-        return getCurrentInstance().getCommandRegistry();
-    }
-
-    public static ScriptEngine _scriptEngine() {
-        return getCurrentInstance().getScriptEngine();
     }
 
     public static FileConfiguration _saves() {

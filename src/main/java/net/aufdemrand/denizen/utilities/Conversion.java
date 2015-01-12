@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.objects.aH.Argument;
+import net.aufdemrand.denizencore.objects.aH.Argument;
 
+import net.aufdemrand.denizencore.objects.dList;
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
