@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizencore.events.EventManager;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.Element;
@@ -29,6 +29,7 @@ import org.bukkit.event.Listener;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class NPCTags implements Listener {
@@ -110,7 +111,7 @@ public class NPCTags implements Listener {
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive())
             OldEventManager.doEvents(Arrays.asList
-                    ("npc completes navigation"), npc, null, null);
+                    ("npc completes navigation"), new BukkitScriptEntryData(null, npc), null);
 
         // Do the assignment script action
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
@@ -149,7 +150,7 @@ public class NPCTags implements Listener {
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive())
             OldEventManager.doEvents(Arrays.asList
-                    ("npc begins navigation"), npc, null, null);
+                    ("npc begins navigation"), new BukkitScriptEntryData(null, npc), null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         npc.action("begin navigation", null);
@@ -205,7 +206,7 @@ public class NPCTags implements Listener {
 
         if (NPCNavigationSmartEvent.IsActive())
             OldEventManager.doEvents(Arrays.asList
-                    ("npc cancels navigation"), npc, null, null);
+                    ("npc cancels navigation"), new BukkitScriptEntryData(null, npc), null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         npc.action("cancel navigation", null);
@@ -251,12 +252,14 @@ public class NPCTags implements Listener {
 
         // Do world script event 'On NPC stuck'
         if (NPCNavigationSmartEvent.IsActive()) {
-            String determination = OldEventManager.doEvents(Arrays.asList
-                    ("npc stuck"), npc, null, context);
-            if (determination.equalsIgnoreCase("none"))
-                event.setAction(null);
-            if (determination.equalsIgnoreCase("teleport"))
-                event.setAction(TeleportStuckAction.INSTANCE);
+            List<String> determinations = OldEventManager.doEvents(Arrays.asList
+                    ("npc stuck"), new BukkitScriptEntryData(null, npc), context);
+            for (String determination: determinations) {
+                if (determination.equalsIgnoreCase("none"))
+                    event.setAction(null);
+                if (determination.equalsIgnoreCase("teleport"))
+                    event.setAction(TeleportStuckAction.INSTANCE);
+            }
         }
 
         // Do the assignment script action
