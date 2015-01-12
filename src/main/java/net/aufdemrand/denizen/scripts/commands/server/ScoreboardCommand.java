@@ -21,12 +21,6 @@ import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
-/**
- * Add or removes viewers, objectives and scores from scoreboards.
- *
- * @author David Cernat
- */
-
 public class ScoreboardCommand extends AbstractCommand {
 
     private enum Action { ADD, REMOVE }

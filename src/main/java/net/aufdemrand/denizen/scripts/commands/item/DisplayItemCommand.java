@@ -11,12 +11,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
 
-/**
- * Displays an item in the world. This item will not disappear (unless set to)
- * and cannot be picked up.
- *
- * @author aufdemrand, mcmonkey
- */
 
 public class DisplayItemCommand extends AbstractCommand {
 

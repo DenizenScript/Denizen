@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.npc.speech;
 
-import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 
 public class DenizenSpeechContext extends SpeechContext {

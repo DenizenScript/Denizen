@@ -3,17 +3,10 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
-/**
- * Unsets the Denizen from the Engage List.
- * When ENGAGEd, a Denizen will not interact with a Player until DISENGAGEd (or timed out).
- *
- * @author aufdemrand
- */
 
 public class DisengageCommand extends AbstractCommand {
 
