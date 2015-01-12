@@ -9,12 +9,17 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.objects.ObjectFetcher;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.*;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
 import net.aufdemrand.denizen.utilities.*;
 import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
@@ -26,12 +31,13 @@ import net.aufdemrand.denizen.npc.speech.DenizenChat;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.containers.core.*;
-import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.command.CommandManager;
 import net.aufdemrand.denizen.utilities.command.Injector;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
@@ -39,8 +45,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.DenizenImplementation;
-import net.aufdemrand.denizencore.scripts.ScriptEntryData;
-import net.aufdemrand.denizencore.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 
@@ -117,11 +123,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
      * Denizen Managers
      */
     private FlagManager flagManager = new FlagManager(this);
-    private TagManager tagManager = new TagManager(this);
+    private TagManager tagManager = new TagManager();
     private NotableManager notableManager = new NotableManager();
-    private EventManager eventManager;
+    private OldEventManager eventManager;
 
-    public EventManager eventManager() {
+    public OldEventManager eventManager() {
         return eventManager;
     }
 
@@ -345,7 +351,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         try {
             tagManager().registerCoreTags();
-            eventManager = new EventManager();
+            eventManager = new OldEventManager();
             eventManager().registerCoreMembers();
 
             // Register Core dObjects with the ObjectFetcher
@@ -662,7 +668,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null)
                 npc = new dNPC(Depends.citizens.getNPCSelector().getSelected(sender));
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                    (sender instanceof Player)?dPlayer.mirrorBukkitPlayer((Player) sender):null, npc);
+                    new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player)sender): null, npc));
 
             queue.addEntries(scriptEntries);
             queue.start();
@@ -724,8 +730,38 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     }
 
     @Override
+    public void debugError(ScriptQueue scriptQueue, String s) {
+        dB.echoError(scriptQueue, s);
+    }
+
+    @Override
+    public void debugError(ScriptQueue scriptQueue, Throwable throwable) {
+        dB.echoError(scriptQueue, throwable);
+    }
+
+    @Override
+    public void debugReport(Debuggable debuggable, String s, String s1) {
+        dB.report(debuggable, s, s1);
+    }
+
+    @Override
     public void debugApproval(String message) {
         dB.echoApproval(message);
+    }
+
+    @Override
+    public void debugEntry(Debuggable debuggable, String s) {
+        dB.echoDebug(debuggable, s);
+    }
+
+    @Override
+    public void debugEntry(Debuggable debuggable, DebugElement debugElement, String s) {
+        dB.echoDebug(debuggable, debugElement, s);
+    }
+
+    @Override
+    public void debugEntry(Debuggable debuggable, DebugElement debugElement) {
+        dB.echoDebug(debuggable, debugElement);
     }
 
     @Override
@@ -761,6 +797,153 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError(e);
         }
         return files;
+    }
+
+    @Override
+    public void handleCommandSpecialCases(ScriptEntry scriptEntry) {
+        if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC()
+                && ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen() == null)
+            ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(null);
+    }
+
+    @Override
+    public void debugCommandHeader(ScriptEntry scriptEntry) {
+        if (scriptEntry.getOriginalArguments() == null ||
+                scriptEntry.getOriginalArguments().size() == 0 ||
+                !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
+            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null)
+                dB.echoDebug(scriptEntry, DebugElement.Header,
+                        "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" +
+                                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName());
+            else
+                dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " +
+                        scriptEntry.getCommandName() + (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null ?
+                        "/n@" + ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getName() : ""));
+        }
+    }
+
+    @Override
+    public TagContext getTagContextFor(ScriptEntry scriptEntry, boolean b) {
+        dPlayer player = scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null;
+        dNPC npc = scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null;
+        return new BukkitTagContext(player, npc, true, scriptEntry,
+                scriptEntry != null ? scriptEntry.shouldDebug(): true,
+                scriptEntry != null ? scriptEntry.getScript(): null);
+    }
+
+    @Override
+    public boolean handleCustomArgs(ScriptEntry scriptEntry, aH.Argument arg, boolean if_ignore) {
+        // Fill player/off-line player
+        if (arg.matchesPrefix("player") && !if_ignore) {
+            dB.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
+            String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
+            dPlayer player = dPlayer.valueOf(value);
+            if (player == null || !player.isValid()) {
+                dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
+                return false;
+            }
+            ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(player);
+        }
+
+        // Fill NPCID/NPC argument
+        else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
+            dB.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
+            String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
+            dNPC npc = dNPC.valueOf(value);
+            if (npc == null || !npc.isValid()) {
+                dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
+                return false;
+            }
+            ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(npc);
+        }
+        return true;
+    }
+
+    @Override
+    public void refreshScriptContainers() {
+        ItemScriptHelper.item_scripts.clear();
+        ItemScriptHelper.item_scripts_by_hash_id.clear();
+        InventoryScriptHelper.inventory_scripts.clear();
+    }
+
+    @Override
+    public String scriptQueueSpeed() {
+        return Settings.scriptQueueSpeed();
+    }
+
+    @Override
+    public dList valueOfFlagdList(String string) {
+        FlagManager.Flag flag = getFlag(string);
+        if (flag == null) {
+            return null;
+        }
+        return new dList(flag.toString(), true);
+    }
+
+    public FlagManager.Flag getFlag(String string) {
+        if (string.startsWith("fl")) {
+            FlagManager flag_manager = DenizenAPI.getCurrentInstance().flagManager();
+            if (string.indexOf('[') == 2) {
+                int cb = string.indexOf(']');
+                if (cb > 4 && string.indexOf('@') == (cb + 1)) {
+                    String owner = string.substring(3, cb);
+                    String flag = string.substring(cb + 2);
+                    if (dPlayer.matches(owner)) {
+                        dPlayer player = dPlayer.valueOf(owner);
+                        if (FlagManager.playerHasFlag(player, flag))
+                            return flag_manager.getPlayerFlag(player, flag);
+                        else
+                            dB.echoError("Player '" + owner + "' flag '" + flag + "' not found.");
+                    }
+                    else if (Depends.citizens != null && dNPC.matches(owner)) {
+                        dNPC npc = dNPC.valueOf(owner);
+                        if (FlagManager.npcHasFlag(npc, flag))
+                            return flag_manager.getNPCFlag(npc.getId(), flag);
+                        else
+                            dB.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
+                    }
+                }
+                else
+                    dB.echoError("Invalid dFlag format: " + string);
+            }
+            else if (string.indexOf('@') == 2) {
+                String flag = string.substring(3);
+                if (FlagManager.serverHasFlag(flag))
+                    return flag_manager.getGlobalFlag(flag);
+                else
+                    dB.echoError("Global flag '" + flag + "' not found.");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean matchesFlagdList(String arg) {
+        boolean flag = false;
+        if (arg.startsWith("fl")) {
+            if (arg.indexOf('[') == 2) {
+                int cb = arg.indexOf(']');
+                if (cb > 4 && arg.indexOf('@') == (cb + 1)) {
+                    String owner = arg.substring(3, cb);
+                    flag = arg.substring(cb + 2).length() > 0 && (dPlayer.matches(owner)
+                            || (Depends.citizens != null && dNPC.matches(owner)));
+                }
+            }
+            else if (arg.indexOf('@') == 2) {
+                flag = arg.substring(3).length() > 0;
+            }
+        }
+        return flag;
+    }
+
+    @Override
+    public String getLastEntryFromFlag(String flag) {
+        return getFlag(flag).getLast().asString();
+    }
+
+    @Override
+    public TagContext getTagContext(ScriptEntry scriptEntry) {
+        return new BukkitTagContext(scriptEntry, false);
     }
 
     @Override
