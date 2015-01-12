@@ -1,17 +1,15 @@
 package net.aufdemrand.denizen;
 
 
-import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import net.aufdemrand.denizencore.DenizenCore;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.command.Command;
 import net.aufdemrand.denizen.utilities.command.CommandContext;
@@ -20,6 +18,8 @@ import net.aufdemrand.denizen.utilities.command.exceptions.CommandException;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.DebugSubmit;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -181,14 +181,14 @@ public class DenizenCommandHandler {
         }
         if (args.hasFlag('e')) {
             if (!dB.showDebug) dB.toggle();
-            dB.showEventsTrimming = !dB.showEventsTrimming;
-            Messaging.sendInfo(sender, (dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
+            net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming = !net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming;
+            Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
                     "world events." : "Denizen dBugger is now hiding world events."));
 
         } if (args.hasFlag('b')) {
             if (!dB.showDebug) dB.toggle();
-            dB.showScriptBuilder = !dB.showScriptBuilder;
-            Messaging.sendInfo(sender, (dB.showScriptBuilder ? "Denizen dBugger is now logging the " +
+            net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder = !net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder;
+            Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder ? "Denizen dBugger is now logging the " +
                     "ScriptBuilder." : "Denizen dBugger is now hiding ScriptBuilder logging."));
 
         } if (args.hasFlag('r')) {
@@ -371,7 +371,7 @@ public class DenizenCommandHandler {
             context.put("all", Element.TRUE);
             context.put("sender", new Element(sender.getName()));
             context.put("haderror", new Element(ScriptHelper.hadError()));
-            EventManager.doEvents(events, null, (sender instanceof Player) ? new dPlayer((Player) sender) : null, context);
+            BukkitWorldScriptHelper.doEvents(events, null, (sender instanceof Player) ? new dPlayer((Player) sender) : null, context);
             return;
         }
         // Reload a specific item
@@ -400,7 +400,7 @@ public class DenizenCommandHandler {
                 context.put("all", Element.FALSE);
                 context.put("haderror", new Element(ScriptHelper.hadError()));
                 context.put("sender", new Element(sender.getName()));
-                EventManager.doEvents(events, null, (sender instanceof Player) ? new dPlayer((Player) sender) : null, context);
+                BukkitWorldScriptHelper.doEvents(events, null, (sender instanceof Player) ? new dPlayer((Player) sender) : null, context);
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("externals")) {

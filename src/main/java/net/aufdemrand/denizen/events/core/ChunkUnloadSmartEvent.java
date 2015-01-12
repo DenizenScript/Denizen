@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
-import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.dChunk;
 import net.aufdemrand.denizencore.objects.dObject;

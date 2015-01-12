@@ -3,8 +3,6 @@ package net.aufdemrand.denizen.utilities;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
-import net.aufdemrand.denizencore.scripts.queues.ScriptEngine;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
