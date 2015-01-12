@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.aH.Argument;
 import net.aufdemrand.denizencore.objects.aH.PrimitiveType;
@@ -149,7 +150,8 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Handle objects with properties through the object fetcher
         Matcher m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dInventory.class, string, player, npc);
+            return ObjectFetcher.getObjectFrom(dInventory.class, string,
+                    new BukkitTagContext(player, npc, false, null, false, null));
         }
 
         // Match in@scriptName for Inventory Scripts, as well as in@notableName

@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 
@@ -251,7 +252,9 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set Book
             if (contains("BOOK")) {
                 BookScriptContainer book = ScriptRegistry
-                        .getScriptContainer(TagManager.tag(getString("BOOK"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this))).replace("s@", ""));
+                        .getScriptContainer(TagManager.tag(getString("BOOK"),
+                                new BukkitTagContext(player, npc, false, null, debug,
+                                        new dScript(this))).replace("s@", ""));
 
                 stack = book.writeBookTo(stack, player, npc);
             }

@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.ChatbotTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.objects.notable.*;
 import net.aufdemrand.denizen.objects.properties.item.*;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Note;
 import net.aufdemrand.denizencore.objects.properties.Property;
@@ -73,7 +74,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // Handle objects with properties through the object fetcher
         m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dItem.class, string, player, npc);
+            return ObjectFetcher.getObjectFrom(dItem.class,  string, new BukkitTagContext(player, npc, false, null, true, null));
         }
 
         ////////
