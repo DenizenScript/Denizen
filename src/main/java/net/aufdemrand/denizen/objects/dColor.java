@@ -10,6 +10,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Color;
 
@@ -25,6 +26,10 @@ public class dColor implements dObject {
     //    OBJECT FETCHER
     ////////////////
 
+    public static dColor valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     /**
      * Gets a Color Object from a string form.
      *
@@ -33,7 +38,7 @@ public class dColor implements dObject {
      *
      */
     @Fetchable("co")
-    public static dColor valueOf(String string) {
+    public static dColor valueOf(String string, TagContext context) {
 
         string = string.toUpperCase().replace("CO@", "");
 

@@ -6,6 +6,7 @@ import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
@@ -21,6 +22,10 @@ public class dChunk implements dObject, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    public static dChunk valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     /**
      * Gets a Chunk Object from a string form of x,z,world.
      * This is not to be confused with the 'x,y,z,world' of a
@@ -31,7 +36,7 @@ public class dChunk implements dObject, Adjustable {
      *
      */
     @Fetchable("ch")
-    public static dChunk valueOf(String string) {
+    public static dChunk valueOf(String string, TagContext context) {
         if (string == null) return null;
 
         string = string.toLowerCase().replace("ch@", "");

@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.*;
@@ -49,6 +50,10 @@ public class dEntity implements dObject, Adjustable {
     ////////////////
 
 
+    public static dEntity valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     /**
      * Gets a dEntity Object from a string form. </br>
      * </br>
@@ -66,7 +71,7 @@ public class dEntity implements dObject, Adjustable {
      * @return  a dEntity, or null
      */
     @Fetchable("e")
-    public static dEntity valueOf(String string) {
+    public static dEntity valueOf(String string, TagContext context) {
         if (string == null) return null;
 
         Matcher m;

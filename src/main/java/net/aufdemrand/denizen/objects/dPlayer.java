@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.*;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R1.PacketPlayOutGameStateChange;
@@ -84,8 +85,13 @@ public class dPlayer implements dObject, Adjustable {
     // are case insensitive.
     // -->
 
-    @Fetchable("p")
+
     public static dPlayer valueOf(String string) {
+        return valueOf(string, null);
+    }
+
+    @Fetchable("p")
+    public static dPlayer valueOf(String string, TagContext context) {
         return valueOfInternal(string, true);
     }
 

@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.objects.notable.Note;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PathFinder;
@@ -91,6 +92,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     //    OBJECT FETCHER
     ////////////////
 
+
+    public static dLocation valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     final static Pattern item_by_saved = Pattern.compile("(l@)(.+)");
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
@@ -102,7 +108,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
      *
      */
     @Fetchable("l")
-    public static dLocation valueOf(String string) {
+    public static dLocation valueOf(String string, TagContext context) {
         if (string == null) return null;
 
         ////////

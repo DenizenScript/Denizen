@@ -7,6 +7,7 @@ import net.aufdemrand.denizencore.objects.notable.Note;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 
@@ -19,6 +20,10 @@ public class dEllipsoid implements dObject, Notable {
     //    OBJECT FETCHER
     ////////////////
 
+    public static dEllipsoid valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     /**
      * Gets an Ellipsoid Object from a string form.
      *
@@ -26,7 +31,7 @@ public class dEllipsoid implements dObject, Notable {
      *
      */
     @Fetchable("ellipsoid")
-    public static dEllipsoid valueOf(String string) {
+    public static dEllipsoid valueOf(String string, TagContext context) {
 
         if (string.startsWith("ellipsoid@"))
             string = string.substring(10);

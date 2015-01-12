@@ -4,6 +4,7 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Fetchable;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.tags.TagContext;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -19,6 +20,11 @@ public class dPlugin implements dObject {
     //    Object Fetcher
     ////////////////
 
+
+    public static dPlugin valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     /**
      *
      * Gets a dPlugin from a string format.
@@ -31,7 +37,7 @@ public class dPlugin implements dObject {
      *
      */
     @Fetchable("pl")
-    public static dPlugin valueOf(String string) {
+    public static dPlugin valueOf(String string, TagContext context) {
 
         if (string == null) return null;
 

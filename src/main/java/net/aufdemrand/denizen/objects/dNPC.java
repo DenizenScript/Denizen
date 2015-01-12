@@ -15,6 +15,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.NPCTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
@@ -60,8 +61,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         return mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
     }
 
-    @Fetchable("n")
+
     public static dNPC valueOf(String string) {
+        return valueOf(string, null);
+    }
+
+    @Fetchable("n")
+    public static dNPC valueOf(String string, TagContext context) {
         if (string == null) return null;
 
         ////////

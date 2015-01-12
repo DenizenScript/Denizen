@@ -14,6 +14,7 @@ import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
@@ -483,6 +484,11 @@ public class dMaterial implements dObject {
     //    OBJECT FETCHER
     ////////////////
 
+
+    public static dMaterial valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     /**
      * Gets a Material Object from a string form.
      *
@@ -491,7 +497,7 @@ public class dMaterial implements dObject {
      *
      */
     @Fetchable("m")
-    public static dMaterial valueOf(String string) {
+    public static dMaterial valueOf(String string, TagContext context) {
 
         if (string.toLowerCase().matches("random")
                 || string.toLowerCase().matches("m@random")) {

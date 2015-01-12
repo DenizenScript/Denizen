@@ -6,6 +6,7 @@ import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 
@@ -52,8 +53,13 @@ public class dWorld implements dObject, Adjustable {
     // World names are case insensitive.
     // -->
 
-    @Fetchable("w")
+
     public static dWorld valueOf(String string) {
+        return valueOf(string, null);
+    }
+
+    @Fetchable("w")
+    public static dWorld valueOf(String string, TagContext context) {
         return valueOf(string, true);
     }
 

@@ -236,7 +236,8 @@ public class dB {
             if (script != null)
                 events.add(script.identifySimple() + " generates error");
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
-            List<String> Determinations = OldEventManager.doEvents(events, entry.entryData, context, true);
+            List<String> Determinations = OldEventManager.doEvents(events,
+                    entry != null ? entry.entryData: new BukkitScriptEntryData(null, null), context, true);
             ThrowErrorEvent = true;
             for (String Determination: Determinations) {
                 if (Determination.equalsIgnoreCase("CANCELLED"))
@@ -280,7 +281,8 @@ public class dB {
             context.put("type", new Element(thrown.getClass().getSimpleName()));
             context.put("queue", source);
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
-            List<String> Determinations = OldEventManager.doEvents(Arrays.asList("server generates exception"), entry.entryData, context);
+            List<String> Determinations = OldEventManager.doEvents(Arrays.asList("server generates exception"),
+                    entry == null ? new BukkitScriptEntryData(null, null): entry.entryData, context);
             ThrowErrorEvent = true;
             for (String Determination: Determinations) {
                 if (Determination.equalsIgnoreCase("CANCELLED"))

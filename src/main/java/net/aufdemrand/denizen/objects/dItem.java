@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.notable.Notable;
+import net.aufdemrand.denizencore.tags.TagContext;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
@@ -48,9 +49,14 @@ public class dItem implements dObject, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    @Fetchable("i")
+
     public static dItem valueOf(String string) {
-        return valueOf(string, null, null);
+        return valueOf(string, null);
+    }
+
+    @Fetchable("i")
+    public static dItem valueOf(String string, TagContext context) {
+        return valueOf(string, ((BukkitTagContext)context).player, ((BukkitTagContext) context).npc);
     }
 
     /**
