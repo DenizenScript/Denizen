@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.listeners;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ListenerCancelEvent;
 import net.aufdemrand.denizen.events.bukkit.ListenerFinishEvent;
@@ -8,8 +9,8 @@ import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.listeners.core.*;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.objects.dScript;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -140,7 +141,7 @@ public class ListenerRegistry implements dRegistry, Listener {
             try {
                 // TODO: Add context to this
                 ((TaskScriptContainer) on_finish.getContainer())
-                        .runTaskScript(player, npc, null);
+                        .runTaskScript(new BukkitScriptEntryData(player, npc), null);
             } catch (Exception e) {
                 // Hm, not a valid task script?
                 dB.echoError("Tried to run the finish task for: " + id + "/" + player.getName() + ","

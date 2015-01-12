@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.event.NPCTraitCommandAttachEvent;
 import net.citizensnpcs.api.trait.Trait;
@@ -18,11 +18,13 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+// TODO: Documenting language/tutorial files
 
 public class MobproxTrait extends Trait {
     public MobproxTrait() {
         super("Mobprox");
     }
+
     int checkTimer = 0;
     int timerBounce = 0;
     LivingEntity liveEnt;

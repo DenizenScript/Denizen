@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.npc;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -167,9 +168,9 @@ public class dNPCRegistry implements Listener {
     public void onSpawn(NPCSpawnEvent event) {
         _registerNPC(event.getNPC());
         // Do world script event 'On NPC spawns'
-        EventManager.doEvents(Arrays.asList
+        OldEventManager.doEvents(Arrays.asList
                 ("npc spawns"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
+                new BukkitScriptEntryData(null, dNPC.mirrorCitizensNPC(event.getNPC())), null);
         // On Spawn action
         getDenizen(event.getNPC()).action("spawn", null);
     }
@@ -196,7 +197,7 @@ public class dNPCRegistry implements Listener {
 
         // Do world script event 'On NPC Despawns'
         if (npc != null)
-            EventManager.doEvents(Arrays.asList("npc despawns"), npc, null, null);
+            OldEventManager.doEvents(Arrays.asList("npc despawns"), new BukkitScriptEntryData(null, npc), null);
 
         if (npc != null)
             npc.action("despawn", null);
