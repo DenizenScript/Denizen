@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands;
 
 import net.aufdemrand.denizen.scripts.commands.core.*;
+import net.aufdemrand.denizencore.scripts.commands.core.*;
 import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
 import net.aufdemrand.denizen.scripts.commands.npc.*;
@@ -911,13 +912,15 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <server.has_event[<event_name>]>
         // <server.get_event_handlers[<event_name>]>
-        // <entry[saveName].determination> returns the determined value (if any) from the event.
+        // <entry[saveName].determinations> returns a list of the determined values (if any) from the event.
         // @Usage
         // Use to trigger a custom event
         // - event "player triggers custom event"
         // @Usage
         // Use to trigger multiple custom events with context
         // - event "player triggers custom event|player causes event" context:event|custom|npc|<player.selected_npc>
+        // @Usage
+        // TODO: Document command details
         // -->
         registerCoreMember(EventCommand.class,
                 "EVENT", "event [<event name>|...] (context:<name>|<object>|...)", 1);
