@@ -1014,7 +1014,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             FlagManager flag_manager = DenizenAPI.getCurrentInstance().flagManager();
             if (string.indexOf('[') == 2) {
                 int cb = string.indexOf(']');
-                if (cb > 4 && string.indexOf('@') == (cb + 1)) {
+                if (cb > 4) {
                     String owner = string.substring(3, cb);
                     String flag = string.substring(cb + 2);
                     if (dPlayer.matches(owner)) {
@@ -1032,8 +1032,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                             dB.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
                     }
                 }
-                else
+                else {
                     dB.echoError("Invalid dFlag format: " + string);
+                }
             }
             else if (string.indexOf('@') == 2) {
                 String flag = string.substring(3);
