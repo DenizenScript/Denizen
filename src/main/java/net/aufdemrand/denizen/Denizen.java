@@ -386,8 +386,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             eventManager = new OldEventManager();
             eventManager().registerCoreMembers();
 
-            // Register Core dObjects with the ObjectFetcher
-            ObjectFetcher._registerCoreObjects();
 
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
             ObjectFetcher.registerWithObjectFetcher(dCuboid.class);    // cu@
@@ -403,6 +401,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
             ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
             ObjectFetcher.registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
+
+            // Register Core dObjects with the ObjectFetcher
+            ObjectFetcher._registerCoreObjects();
         }
         catch (Exception e) {
             dB.echoError(e);
