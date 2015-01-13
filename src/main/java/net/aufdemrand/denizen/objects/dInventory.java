@@ -134,7 +134,12 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     @Fetchable("in")
     public static dInventory valueOf(String string, TagContext context) {
-        return valueOf(string, ((BukkitTagContext)context).player, ((BukkitTagContext)context).npc);
+        if (context == null) {
+            return valueOf(string, null , null);
+        }
+        else {
+            return valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
+        }
     }
 
     /**

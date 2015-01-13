@@ -56,7 +56,12 @@ public class dItem implements dObject, Notable, Adjustable {
 
     @Fetchable("i")
     public static dItem valueOf(String string, TagContext context) {
-        return valueOf(string, ((BukkitTagContext)context).player, ((BukkitTagContext) context).npc);
+        if (context == null) {
+            return valueOf(string, null, null);
+        }
+        else {
+            return valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
+        }
     }
 
     /**

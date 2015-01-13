@@ -32,7 +32,10 @@ public class YamlCommand extends AbstractCommand implements Listener {
     Map<String, YamlConfiguration> yamls = new HashMap<String, YamlConfiguration>();
 
     private YamlConfiguration getYaml(String id) {
-        if (id == null) return null;
+        if (id == null) {
+            dB.echoError("Trying to get YAML file with NULL ID!");
+            return null;
+        }
         return yamls.get(id.toUpperCase());
     }
 
