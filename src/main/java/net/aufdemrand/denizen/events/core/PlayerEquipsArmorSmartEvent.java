@@ -156,7 +156,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
             }
         }
         else if (event.getClick().isShiftClick() && item != null && isArmor(item)) {
-            ItemStack currentItem = player.getInventory().getArmorContents()[getArmorTypeNumber(item)];
+            ItemStack currentItem = player.getInventory().getArmorContents()[3-getArmorTypeNumber(item)];
             if (currentItem == null || currentItem.getType() == Material.AIR) {
                 if (playerEquipsArmorEvent(player, item, "INVENTORY")) {
                     event.setCancelled(true);
@@ -198,7 +198,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
             if ((action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK)
                     || !isArmor(item) || (clicked != null && isInteractive(clicked.getType())))
                 return;
-            ItemStack currentItem = event.getPlayer().getInventory().getArmorContents()[getArmorTypeNumber(item)];
+            ItemStack currentItem = event.getPlayer().getInventory().getArmorContents()[3-getArmorTypeNumber(item)];
             if (currentItem == null || currentItem.getType() == Material.AIR) {
                 Player player = event.getPlayer();
                 if (playerEquipsArmorEvent(player, item, "INTERACT")) {

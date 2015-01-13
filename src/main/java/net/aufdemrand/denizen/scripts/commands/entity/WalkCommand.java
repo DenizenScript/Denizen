@@ -116,8 +116,7 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                         && auto_range == Element.TRUE) {
                     double distance = npc.getLocation().distance(loc);
                     if (npc.getNavigator().getLocalParameters().range() < distance + 10)
-                        npc.getNavigator().getDefaultParameters().range((float) distance + 10);
-                    // TODO: Should be using local params rather than default?
+                        npc.getNavigator().getLocalParameters().range((float) distance + 10);
                 }
 
                 npc.getNavigator().setTarget(loc);
@@ -133,7 +132,7 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                 }
             }
             else {
-                EntityMovement.walkTo(entity.getBukkitEntity(), loc, speed != null ? speed.asDouble() : 0.3);
+                EntityMovement.walkTo(entity.getBukkitEntity(), loc, speed != null ? speed.asDouble() : 0.2);
             }
         }
 
