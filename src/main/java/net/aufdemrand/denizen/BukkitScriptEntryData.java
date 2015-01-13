@@ -66,4 +66,20 @@ public class BukkitScriptEntryData extends ScriptEntryData {
     public TagContext getTagContext() {
         return new BukkitTagContext(player, npc, false, null, true, null);
     }
+
+    @Override
+    public String toString() {
+        if (npc == null && player == null) {
+            return "";
+        }
+        else if (npc == null) {
+            return "player=p@" + player.getName();
+        }
+        else if (player == null) {
+            return "npc=n@" + npc.getId();
+        }
+        else {
+            return "player=p@" + player.getName() + "   npc=n@" + npc.getId();
+        }
+    }
 }
