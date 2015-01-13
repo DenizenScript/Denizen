@@ -873,7 +873,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public TagContext getTagContextFor(ScriptEntry scriptEntry, boolean b) {
         dPlayer player = scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null;
         dNPC npc = scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null;
-        return new BukkitTagContext(player, npc, true, scriptEntry,
+        return new BukkitTagContext(player, npc, b, scriptEntry,
                 scriptEntry != null ? scriptEntry.shouldDebug(): true,
                 scriptEntry != null ? scriptEntry.getScript(): null);
     }
