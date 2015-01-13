@@ -54,6 +54,9 @@ public class BukkitScriptEntryData extends ScriptEntryData {
 
     @Override
     public void transferDataFrom(ScriptEntryData scriptEntryData) {
+        if (scriptEntryData == null) {
+            return;
+        }
         player = ((BukkitScriptEntryData)scriptEntryData).getPlayer();
         npc = ((BukkitScriptEntryData)scriptEntryData).getNPC();
 
