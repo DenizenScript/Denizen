@@ -21,10 +21,8 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.BrewingStand;
-import org.bukkit.block.Chest;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.block.Furnace;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -540,17 +538,11 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dLocation getLocation(InventoryHolder holder) {
         if (inventory != null && holder != null) {
-            if (holder instanceof Chest) {
-                return new dLocation(((Chest) holder).getLocation());
+            if (holder instanceof BlockState) {
+                return new dLocation(((BlockState) holder).getLocation());
             }
             else if (holder instanceof DoubleChest) {
                 return new dLocation(((DoubleChest) holder).getLocation());
-            }
-            else if (holder instanceof BrewingStand) {
-                return new dLocation(((BrewingStand) holder).getLocation());
-            }
-            else if (holder instanceof Furnace) {
-                return new dLocation(((Furnace) holder).getLocation());
             }
             else if (holder instanceof Entity) {
                 return new dLocation(((Entity) holder).getLocation());
