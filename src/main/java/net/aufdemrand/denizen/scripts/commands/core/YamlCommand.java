@@ -447,11 +447,11 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
 
         // Set id (name context) and path (type context)
-        String id = event.getNameContext();
+        String id = event.getNameContext().toUpperCase();
         String path = event.getTypeContext();
 
         // Check if there is a yaml file loaded with the specified id
-        if (!yamls.containsKey(id.toUpperCase())
+        if (!yamls.containsKey(id)
                 && !attribute.hasAlternative()) {
             dB.echoError("YAML tag '" + event.raw_tag + "' has specified an invalid ID, or the specified id has already" +
                     " been closed. Tag replacement aborted. ID given: '" + id + "'.");
