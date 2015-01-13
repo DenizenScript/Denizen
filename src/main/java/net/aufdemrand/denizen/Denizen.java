@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizencore.events.OldEventManager;
@@ -384,6 +385,32 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             new NotableLocationTags(this);
 
             eventManager = new OldEventManager();
+            // Register all the 'Core' SmartEvents.
+            OldEventManager.registerSmartEvent(new AsyncChatSmartEvent());
+            OldEventManager.registerSmartEvent(new BiomeEnterExitSmartEvent());
+            OldEventManager.registerSmartEvent(new BlockFallsSmartEvent());
+            OldEventManager.registerSmartEvent(new BlockPhysicsSmartEvent());
+            OldEventManager.registerSmartEvent(new ChunkLoadSmartEvent());
+            OldEventManager.registerSmartEvent(new ChunkUnloadSmartEvent());
+            OldEventManager.registerSmartEvent(new CommandSmartEvent());
+            OldEventManager.registerSmartEvent(new CuboidEnterExitSmartEvent());
+            OldEventManager.registerSmartEvent(new EntityCombustSmartEvent());
+            OldEventManager.registerSmartEvent(new EntityDamageSmartEvent());
+            OldEventManager.registerSmartEvent(new EntityDeathSmartEvent());
+            OldEventManager.registerSmartEvent(new EntityInteractSmartEvent());
+            OldEventManager.registerSmartEvent(new EntitySpawnSmartEvent());
+            OldEventManager.registerSmartEvent(new FlagSmartEvent());
+            OldEventManager.registerSmartEvent(new ItemMoveSmartEvent());
+            OldEventManager.registerSmartEvent(new ItemScrollSmartEvent());
+            OldEventManager.registerSmartEvent(new ListPingSmartEvent());
+            OldEventManager.registerSmartEvent(new NPCNavigationSmartEvent());
+            OldEventManager.registerSmartEvent(new PlayerEquipsArmorSmartEvent());
+            OldEventManager.registerSmartEvent(new PlayerJumpSmartEvent());
+            OldEventManager.registerSmartEvent(new PlayerStepsOnSmartEvent());
+            OldEventManager.registerSmartEvent(new PlayerWalkSmartEvent());
+            OldEventManager.registerSmartEvent(new RedstoneSmartEvent());
+            OldEventManager.registerSmartEvent(new SyncChatSmartEvent());
+            OldEventManager.registerSmartEvent(new VehicleCollisionSmartEvent());
             eventManager().registerCoreMembers();
 
 
