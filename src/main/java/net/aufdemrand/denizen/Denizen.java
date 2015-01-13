@@ -10,6 +10,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.core.*;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitElementProperties;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitQueueProperties;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitScriptProperties;
+import net.aufdemrand.denizen.objects.properties.entity.*;
+import net.aufdemrand.denizen.objects.properties.inventory.InventoryContents;
+import net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder;
+import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
+import net.aufdemrand.denizen.objects.properties.inventory.InventoryTitle;
+import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizencore.events.OldEventManager;
@@ -17,9 +26,7 @@ import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
-import net.aufdemrand.denizencore.objects.ObjectFetcher;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.scripts.*;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
@@ -442,6 +449,53 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             // Initialize Property Parser
             propertyParser = new PropertyParser();
+            // register properties that add Bukkit code to core objects
+            propertyParser.registerProperty(BukkitScriptProperties.class, dScript.class);
+            propertyParser.registerProperty(BukkitQueueProperties.class, ScriptQueue.class);
+            propertyParser.registerProperty(BukkitElementProperties.class, Element.class);
+
+            // register core dEntity properties
+            propertyParser.registerProperty(EntityAge.class, dEntity.class);
+            propertyParser.registerProperty(EntityAngry.class, dEntity.class);
+            propertyParser.registerProperty(EntityColor.class, dEntity.class);
+            propertyParser.registerProperty(EntityCritical.class, dEntity.class);
+            propertyParser.registerProperty(EntityFirework.class, dEntity.class);
+            propertyParser.registerProperty(EntityFramed.class, dEntity.class);
+            propertyParser.registerProperty(EntityInfected.class, dEntity.class);
+            propertyParser.registerProperty(EntityItem.class, dEntity.class);
+            propertyParser.registerProperty(EntityJumpStrength.class, dEntity.class);
+            propertyParser.registerProperty(EntityKnockback.class, dEntity.class);
+            propertyParser.registerProperty(EntityPainting.class, dEntity.class);
+            propertyParser.registerProperty(EntityPotion.class, dEntity.class);
+            propertyParser.registerProperty(EntityPowered.class, dEntity.class);
+            propertyParser.registerProperty(EntityProfession.class, dEntity.class);
+            propertyParser.registerProperty(EntityRotation.class, dEntity.class);
+            propertyParser.registerProperty(EntitySitting.class, dEntity.class);
+            propertyParser.registerProperty(EntitySize.class, dEntity.class);
+            propertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
+            propertyParser.registerProperty(EntityTame.class, dEntity.class);
+
+            // register core dInventory properties
+            propertyParser.registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
+            propertyParser.registerProperty(InventorySize.class, dInventory.class); // Same with size...(Too small for contents)
+            propertyParser.registerProperty(InventoryContents.class, dInventory.class);
+            propertyParser.registerProperty(InventoryTitle.class, dInventory.class);
+
+            // register core dItem properties
+            propertyParser.registerProperty(ItemApple.class, dItem.class);
+            propertyParser.registerProperty(ItemBook.class, dItem.class);
+            propertyParser.registerProperty(ItemDisplayname.class, dItem.class);
+            propertyParser.registerProperty(ItemDurability.class, dItem.class);
+            propertyParser.registerProperty(ItemDye.class, dItem.class);
+            propertyParser.registerProperty(ItemEnchantments.class, dItem.class);
+            propertyParser.registerProperty(ItemFirework.class, dItem.class);
+            propertyParser.registerProperty(ItemLore.class, dItem.class);
+            propertyParser.registerProperty(ItemMap.class, dItem.class);
+            propertyParser.registerProperty(ItemPlantgrowth.class, dItem.class);
+            propertyParser.registerProperty(ItemPotion.class, dItem.class);
+            propertyParser.registerProperty(ItemQuantity.class, dItem.class);
+            propertyParser.registerProperty(ItemSkullskin.class, dItem.class);
+            propertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
         }
         catch (Exception e) {
             dB.echoError(e);
