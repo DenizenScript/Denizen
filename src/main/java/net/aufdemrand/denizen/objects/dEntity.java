@@ -892,9 +892,6 @@ public class dEntity implements dObject, Adjustable {
         ((CraftCreature) entity).getHandle().
                 setGoalTarget(nmsTarget);
 
-        ((CraftCreature) entity).getHandle().
-                setGoalTarget(target == null ? null: ((CraftLivingEntity) target).getHandle());
-
         ((CraftCreature) entity).setTarget(target);
     }
 
