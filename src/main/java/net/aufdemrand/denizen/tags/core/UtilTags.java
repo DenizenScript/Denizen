@@ -942,9 +942,9 @@ public class UtilTags implements Listener {
 
         // TODO: Delete (Deprecated in favor of el@element.replace)
         else if (type.equalsIgnoreCase("REPLACE")) {
-            String item_to_replace = event.getTypeContext();
-            String replace = event.getSubTypeContext();
-            String replacement = event.getSpecifierContext();
+            String item_to_replace = type;
+            String replace = typeContext;
+            String replacement = specifierContext;
             event.setReplaced(new Element(item_to_replace.replace(replace, replacement))
                     .getAttribute(attribute.fulfill(3)));
         }
@@ -956,8 +956,8 @@ public class UtilTags implements Listener {
         // Returns whether an entity is spawned and valid.
         // -->
         else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")
-                && event.hasTypeContext()) {
-            dEntity ent = dEntity.valueOf(event.getTypeContext());
+                && typeContext.length() != 0) {
+            dEntity ent = dEntity.valueOf(typeContext);
             event.setReplaced(new Element((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
                     .getAttribute(attribute.fulfill(1)));
         }
@@ -969,8 +969,8 @@ public class UtilTags implements Listener {
         // Returns whether a player exists under the specified name.
         // -->
         else if (type.equalsIgnoreCase("PLAYER_IS_VALID")
-                && event.hasTypeContext()) {
-            event.setReplaced(new Element(dPlayer.playerNameIsValid(event.getTypeContext()))
+                && typeContext.length() != 0) {
+            event.setReplaced(new Element(dPlayer.playerNameIsValid(typeContext))
                     .getAttribute(attribute.fulfill(1)));
         }
 
@@ -981,8 +981,8 @@ public class UtilTags implements Listener {
         // Returns whether an NPC exists and is usable.
         // -->
         else if (type.equalsIgnoreCase("NPC_IS_VALID")
-                && event.hasTypeContext()) {
-            dNPC npc = dNPC.valueOf(event.getTypeContext());
+                && typeContext.length() != 0) {
+            dNPC npc = dNPC.valueOf(typeContext);
             event.setReplaced(new Element((npc != null && npc.isValid()))
                     .getAttribute(attribute.fulfill(1)));
         }
@@ -990,14 +990,14 @@ public class UtilTags implements Listener {
 
         // TODO: Delete (Deprecated in favor of el@element.to_uppercase)
         else if (type.equalsIgnoreCase("UPPERCASE")) {
-            String item_to_uppercase = event.getTypeContext();
+            String item_to_uppercase = typeContext;
             event.setReplaced(new Element(item_to_uppercase.toUpperCase())
                     .getAttribute(attribute.fulfill(1)));
         }
 
         // TODO: Delete (Deprecated in favor of el@element.to_lowercase)
         else if (type.equalsIgnoreCase("LOWERCASE")) {
-            String item_to_uppercase = event.getTypeContext();
+            String item_to_uppercase = typeContext;
             event.setReplaced(new Element(item_to_uppercase.toLowerCase())
                     .getAttribute(attribute.fulfill(1)));
         }
@@ -1104,11 +1104,11 @@ public class UtilTags implements Listener {
             // -->
             else if (subType.equalsIgnoreCase("FORMAT") && !subTypeContext.equalsIgnoreCase("")) {
                 try {
-                    format.applyPattern(event.getSubTypeContext());
+                    format.applyPattern(subTypeContext);
                     event.setReplaced(format.format(currentDate));
                 }
                 catch (Exception ex) {
-                    dB.echoError("Error: invalid pattern '" + event.getSubTypeContext() + "'");
+                    dB.echoError("Error: invalid pattern '" + subTypeContext + "'");
                     dB.echoError(ex);
                 }
             }
