@@ -968,9 +968,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dPlayer player = dPlayer.valueOf(value);
             if (player == null || !player.isValid()) {
                 dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
-                return false;
             }
             ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(player);
+            return true;
         }
 
         // Fill NPCID/NPC argument
@@ -983,8 +983,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 return false;
             }
             ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(npc);
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
