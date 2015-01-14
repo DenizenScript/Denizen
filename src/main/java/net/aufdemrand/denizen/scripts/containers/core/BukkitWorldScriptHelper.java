@@ -1483,7 +1483,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Context
     // <context.amount> returns the amount the entity healed.
     // <context.entity> returns the dEntity that healed.
-    // <context.reason> returns the cause of the entity healing.
+    // <context.reason> returns the cause of the entity healing. Can be: REGEN, SATIATED, EATING, ENDER_CRYSTAL,
+    // MAGIC, MAGIC_REGEN, WITHER_SPAWN, WITHER, CUSTOM
     //
     // @Determine
     // "CANCELLED" to stop the entity from healing.
