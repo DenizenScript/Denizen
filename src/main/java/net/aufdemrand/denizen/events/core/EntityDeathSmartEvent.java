@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -76,7 +77,8 @@ public class EntityDeathSmartEvent implements OldSmartEvent, Listener {
     // <context.damager> returns the dEntity damaging the other entity, if any.
     // <context.message> returns an Element of a player's death message.
     // <context.inventory> returns the dInventory of the entity if it was a player.
-    // <context.cause> returns the cause of the death.
+    // <context.cause> returns an Element of the cause of the death.
+    // <context.drops> returns a dList of all pending item drops.
     //
     // @Determine
     // Element(String) to change the death message.
@@ -98,6 +100,16 @@ public class EntityDeathSmartEvent implements OldSmartEvent, Listener {
         context.put("entity", entity.getDenizenObject());
         if (event.getEntity().getLastDamageCause() != null)
             context.put("cause", new Element(event.getEntity().getLastDamageCause().getCause().toString()));
+        dList drops = new dList();
+        for (ItemStack stack: event.getDrops()) {
+            if (stack == null) {
+                drops.add("i@air");
+            }
+            else {
+                drops.add(new dItem(stack).identify());
+            }
+        }
+        context.put("drops", drops);
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer());
