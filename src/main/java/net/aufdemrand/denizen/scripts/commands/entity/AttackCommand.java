@@ -25,7 +25,7 @@ public class AttackCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel", "stop")) {
 
-                scriptEntry.addObject("cancel", "");
+                scriptEntry.addObject("cancel", "true");
             }
 
             else if (!scriptEntry.hasObject("target")
@@ -68,10 +68,10 @@ public class AttackCommand extends AbstractCommand {
         // Get objects
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         dEntity target = (dEntity) scriptEntry.getObject("target");
-        Boolean cancel = scriptEntry.hasObject("cancel");
+        boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", "true") : "") +
                 aH.debugObj("entities", entities.toString()) +
                 (target != null ? aH.debugObj("target", target) : ""));
 
@@ -82,7 +82,7 @@ public class AttackCommand extends AbstractCommand {
             if (entity.isNPC()) {
                 Navigator nav = entity.getDenizenNPC().getCitizen().getNavigator();
 
-                if (cancel.equals(false)) {
+                if (!cancel) {
                     nav.setTarget(target.getBukkitEntity(), true);
                 }
                 else {
@@ -96,7 +96,7 @@ public class AttackCommand extends AbstractCommand {
                 }
             }
             else {
-                if (cancel.equals(false)) {
+                if (!cancel) {
                     entity.target(target.getLivingEntity());
                 }
                 else {
