@@ -1427,6 +1427,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Required 1
         // @Stable stable
         // @Short Runs a script in the current ScriptQueue.
+        // @Video /denizen/vids/Run%20And%20Inject
         // @Author aufdemrand
         // @Group core
         // @Description
@@ -2191,6 +2192,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Required 1
         // @Stable stable
         // @Short Runs a script in a new ScriptQueue.
+        // @Video /denizen/vids/Run%20And%20Inject
         // @Author aufdemrand
         // @Group core
         // @Description
