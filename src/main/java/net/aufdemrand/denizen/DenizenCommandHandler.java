@@ -156,59 +156,62 @@ public class DenizenCommandHandler {
     @Command(
             aliases = { "denizen" }, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db", "dbug" },
-            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxo")
+            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxov")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
             if (!dB.showDebug) dB.toggle();
             dB.showStackTraces = !dB.showStackTraces;
             Messaging.sendInfo(sender, (dB.showStackTraces ? "Denizen dBugger is now showing caught " +
                     "exception stack traces." : "Denizen dBugger is now hiding caught stacktraces."));
-
         }
         if (args.hasFlag('c')) {
             if (!dB.showDebug) dB.toggle();
             dB.showColor = !dB.showColor;
             Messaging.sendInfo(sender, (dB.showColor ? "Denizen dBugger is now showing color."
                     : "Denizen dBugger color has been disabled."));
-
         }
         if (args.hasFlag('o')) {
             if (!dB.showDebug) dB.toggle();
             dB.debugOverride = !dB.debugOverride;
             Messaging.sendInfo(sender, (dB.debugOverride ? "Denizen dBugger is now overriding 'debug: false'."
                     : "Denizen dBugger override has been disabled."));
-
         }
         if (args.hasFlag('e')) {
             if (!dB.showDebug) dB.toggle();
             net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming = !net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming;
             Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
                     "world events." : "Denizen dBugger is now hiding world events."));
-
-        } if (args.hasFlag('b')) {
+        }
+        if (args.hasFlag('b')) {
             if (!dB.showDebug) dB.toggle();
             net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder = !net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder;
             Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder ? "Denizen dBugger is now logging the " +
                     "ScriptBuilder." : "Denizen dBugger is now hiding ScriptBuilder logging."));
-
-        } if (args.hasFlag('r')) {
+        }
+        if (args.hasFlag('r')) {
             if (!dB.showDebug) dB.toggle();
             dB.record = !dB.record;
             dB.Recording = new StringBuilder();
             Messaging.sendInfo(sender, (dB.record ? "Denizen dBugger is now recording. Use /denizen " +
                     "submit to finish." : "Denizen dBugger recording disabled."));
-
-        } if (args.hasFlag('x')) {
+        }
+        if (args.hasFlag('r')) {
+            if (!dB.showDebug) dB.toggle();
+            dB.verbose = !dB.verbose;
+            Messaging.sendInfo(sender, (dB.record ? "Denizen dBugger is now verbose.":
+                    "Denizen dBugger verbosity disabled."));
+        }
+        if (args.hasFlag('x')) {
             dB.filter = new ArrayList<String>();
             Messaging.sendInfo(sender, "Denizen dBugger filter removed.");
-
-        } if (args.hasFlag('n')) {
+        }
+        if (args.hasFlag('n')) {
             if (!dB.showDebug) dB.toggle();
             dB.shouldTrim = !dB.shouldTrim;
             Messaging.sendInfo(sender, (dB.shouldTrim ? "Denizen dBugger is now trimming long messages."
                     : "Denizen dBugger is no longer trimming long messages."));
-
-        } if (args.hasValueFlag("filter")) {
+        }
+        if (args.hasValueFlag("filter")) {
             if (!dB.showDebug) dB.toggle();
             for (String filter : args.getFlag("filter").split("\\|")) // TODO: addAll?
                 dB.filter.add(filter);

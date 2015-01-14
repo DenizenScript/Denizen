@@ -61,8 +61,6 @@ import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
  * 16:05:05 [INFO] +---------------------+
  *
  *
- * @author Jeremy Schroeder
- *
  */
 public class dB {
 
@@ -70,6 +68,7 @@ public class dB {
     public static boolean showStackTraces = true;
     public static boolean showColor = true;
     public static boolean debugOverride = false;
+    public static boolean verbose = false;
 
     public static List<String> filter = new ArrayList<String>();
 
