@@ -319,16 +319,16 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
                     switch (yaml_action) {
                         case INCREASE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "0")) + aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "0")) + aH.getFloatFrom(valueStr)));
                             break;
                         case DECREASE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "0")) - aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "0")) - aH.getFloatFrom(valueStr)));
                             break;
                         case MULTIPLY:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "1")) * aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "1")) * aH.getFloatFrom(valueStr)));
                             break;
                         case DIVIDE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "1")) / aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "1")) / aH.getFloatFrom(valueStr)));
                             break;
                         case DELETE:
                             yaml.set(keyStr, null);
