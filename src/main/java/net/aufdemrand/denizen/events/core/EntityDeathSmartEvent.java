@@ -100,16 +100,16 @@ public class EntityDeathSmartEvent implements OldSmartEvent, Listener {
         context.put("entity", entity.getDenizenObject());
         if (event.getEntity().getLastDamageCause() != null)
             context.put("cause", new Element(event.getEntity().getLastDamageCause().getCause().toString()));
-        dList drops = new dList();
+        dList drops_dlist = new dList();
         for (ItemStack stack: event.getDrops()) {
             if (stack == null) {
-                drops.add("i@air");
+                drops_dlist.add("i@air");
             }
             else {
-                drops.add(new dItem(stack).identify());
+                drops_dlist.add(new dItem(stack).identify());
             }
         }
-        context.put("drops", drops);
+        context.put("drops", drops_dlist);
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer());
