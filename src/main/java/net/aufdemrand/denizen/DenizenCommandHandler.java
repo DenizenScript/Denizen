@@ -199,7 +199,7 @@ public class DenizenCommandHandler {
             if (!dB.showDebug) dB.toggle();
             net.aufdemrand.denizencore.utilities.debugging.dB.verbose =
                     !net.aufdemrand.denizencore.utilities.debugging.dB.verbose;
-            Messaging.sendInfo(sender, (dB.record ? "Denizen dBugger is now verbose.":
+            Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.verbose ? "Denizen dBugger is now verbose.":
                     "Denizen dBugger verbosity disabled."));
         }
         if (args.hasFlag('x')) {
