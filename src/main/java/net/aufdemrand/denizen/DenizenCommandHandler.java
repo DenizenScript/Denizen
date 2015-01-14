@@ -195,7 +195,7 @@ public class DenizenCommandHandler {
             Messaging.sendInfo(sender, (dB.record ? "Denizen dBugger is now recording. Use /denizen " +
                     "submit to finish." : "Denizen dBugger recording disabled."));
         }
-        if (args.hasFlag('r')) {
+        if (args.hasFlag('v')) {
             if (!dB.showDebug) dB.toggle();
             net.aufdemrand.denizencore.utilities.debugging.dB.verbose =
                     !net.aufdemrand.denizencore.utilities.debugging.dB.verbose;
