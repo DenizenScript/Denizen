@@ -7,7 +7,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
@@ -129,6 +129,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                     @Override
                     public void run() {
                         Connection con = null;
+                        if (dB.verbose) dB.echoDebug(scriptEntry, "Connecting to " + server.asString());
                         try {
                             con = getConnection(username.asString(), password.asString(), server.asString());
                         }
@@ -138,9 +139,11 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                                 public void run() {
                                     dB.echoError(scriptEntry.getResidingQueue(), "SQL Exception: " + e.getMessage());
                                     scriptEntry.setFinished(true);
+                                    if (dB.verbose) dB.echoError(scriptEntry.getResidingQueue(), e);
                                 }
                             }, 1);
                         }
+                        if (dB.verbose) dB.echoDebug(scriptEntry, "Connection did not error");
                         final Connection conn = con;
                         if (con != null) {
                             Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
@@ -149,6 +152,15 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                                     connections.put(sqlID.asString().toUpperCase(), conn);
                                     dB.echoDebug(scriptEntry, "Successfully connected to " + server);
                                     scriptEntry.setFinished(true);
+                                }
+                            }, 1);
+                        }
+                        else {
+                            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+                                @Override
+                                public void run() {
+                                    scriptEntry.setFinished(true);
+                                    if (dB.verbose) dB.echoDebug(scriptEntry, "Connecting errored!");
                                 }
                             }, 1);
                         }
@@ -222,6 +234,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                     }
                     rows.add(current.toString());
                 }
+                // TODO: add(count)?
                 scriptEntry.addObject("result", rows);
                 dB.echoDebug(scriptEntry, "Updated " + affected + " rows");
             }
@@ -231,6 +244,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
         }
         catch (SQLException e) {
             dB.echoError(scriptEntry.getResidingQueue(), "SQL Exception: " + e.getMessage());
+            if (dB.verbose) dB.echoError(scriptEntry.getResidingQueue(), e);
         }
     }
 

@@ -68,7 +68,6 @@ public class dB {
     public static boolean showStackTraces = true;
     public static boolean showColor = true;
     public static boolean debugOverride = false;
-    public static boolean verbose = false;
 
     public static List<String> filter = new ArrayList<String>();
 
