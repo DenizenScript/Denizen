@@ -142,10 +142,12 @@ public class UtilTags implements Listener {
                 event.setReplaced(new Element(0).getAttribute(attribute.fulfill(1)));
                 return;
             }
-            if (FlagManager.serverHasFlag(flag_name))
-                event.setReplaced(new dList(DenizenAPI.getCurrentInstance().flagManager()
-                        .getGlobalFlag(flag_name).toString(), true)
+            if (FlagManager.serverHasFlag(flag_name)) {
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
+                        .getGlobalFlag(flag_name);
+                event.setReplaced(new dList(flag.toString(), true, flag.values())
                         .getAttribute(attribute));
+            }
             return;
         }
 

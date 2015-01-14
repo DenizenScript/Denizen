@@ -579,10 +579,12 @@ public class dPlayer implements dObject, Adjustable {
                         .getAttribute(attribute.fulfill(2));
             if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.playerHasFlag(this, flag_name))
                 return new Element(0).getAttribute(attribute.fulfill(2));
-            if (FlagManager.playerHasFlag(this, flag_name))
-                return new dList(DenizenAPI.getCurrentInstance().flagManager()
-                        .getPlayerFlag(this, flag_name).toString(), true)
-                        .getAttribute(attribute.fulfill(1));
+            if (FlagManager.playerHasFlag(this, flag_name)) {
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
+                        .getPlayerFlag(this, flag_name);
+                return new dList(flag.toString(),true, flag.values())
+                .getAttribute(attribute.fulfill(1));
+            }
             return new Element(identify()).getAttribute(attribute);
         }
 

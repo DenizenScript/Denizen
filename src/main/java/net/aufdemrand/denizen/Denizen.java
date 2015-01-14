@@ -1006,7 +1006,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         if (flag == null) {
             return null;
         }
-        return new dList(flag.toString(), true);
+        return new dList(flag.toString(), true, flag.values());
     }
 
     public FlagManager.Flag getFlag(String string) {
