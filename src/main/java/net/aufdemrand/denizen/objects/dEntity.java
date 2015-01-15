@@ -1,19 +1,21 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
-import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.*;
@@ -48,6 +50,10 @@ public class dEntity implements dObject, Adjustable {
     ////////////////
 
 
+    public static dEntity valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     /**
      * Gets a dEntity Object from a string form. </br>
      * </br>
@@ -65,7 +71,7 @@ public class dEntity implements dObject, Adjustable {
      * @return  a dEntity, or null
      */
     @Fetchable("e")
-    public static dEntity valueOf(String string) {
+    public static dEntity valueOf(String string, TagContext context) {
         if (string == null) return null;
 
         Matcher m;
@@ -885,9 +891,6 @@ public class dEntity implements dObject, Adjustable {
 
         ((CraftCreature) entity).getHandle().
                 setGoalTarget(nmsTarget);
-
-        ((CraftCreature) entity).getHandle().
-                setGoalTarget(((CraftLivingEntity) target).getHandle());
 
         ((CraftCreature) entity).setTarget(target);
     }

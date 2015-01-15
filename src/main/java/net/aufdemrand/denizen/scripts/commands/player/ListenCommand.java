@@ -9,18 +9,12 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dScript;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
-/**
- * Initiates/finishes/cancels a 'quest listener'.
- *
- * @author Jeremy Schroeder
- */
 
 public class ListenCommand extends AbstractCommand {
 
@@ -86,8 +80,8 @@ public class ListenCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), action.debug() + (type != null ? type.debug() : "")
                 + id.debug() + (finish_script != null ? finish_script.debug() : ""));
 
-        // TODO: Fully deprecate
-        dB.echoDebug(scriptEntry, "Warning: Listen is outdated and may become unsupported in the future.");
+        dB.echoError(scriptEntry.getResidingQueue(),
+                "Warning: Listen is outdated and may become unsupported in the future.");
 
         List<aH.Argument> arguments = (ArrayList<aH.Argument>) scriptEntry.getObject("args");
 

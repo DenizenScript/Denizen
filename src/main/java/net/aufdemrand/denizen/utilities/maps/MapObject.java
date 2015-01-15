@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.utilities.maps;
 
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
 

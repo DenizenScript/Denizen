@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizencore.objects.dScript;
 import org.bukkit.Bukkit;
 
 import net.aufdemrand.denizen.Denizen;

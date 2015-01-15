@@ -1,10 +1,11 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
-import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -17,7 +18,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BiomeEnterExitSmartEvent implements SmartEvent, Listener {
+public class BiomeEnterExitSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -105,13 +106,15 @@ public class BiomeEnterExitSmartEvent implements SmartEvent, Listener {
             context.put("old_biome", new Element(from.name()));
             context.put("new_biome", new Element(to.name()));
 
-            String determination = EventManager.doEvents(Arrays.asList(
+           List<String> determinations = OldEventManager.doEvents(Arrays.asList(
                     "player enters biome", "player exits biome",
                     "player enters " + to.name(), "player exits " + from.name()
-                ), null, new dPlayer(event.getPlayer()), context, true);
+                ), new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null), context, true);
 
-            if (determination.toUpperCase().startsWith("CANCELLED"))
-                event.setCancelled(true);
+            for (String determination: determinations) {
+                if (determination.toUpperCase().startsWith("CANCELLED"))
+                    event.setCancelled(true);
+            }
         }
     }
 }

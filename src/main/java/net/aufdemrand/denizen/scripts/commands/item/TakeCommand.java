@@ -3,33 +3,17 @@ package net.aufdemrand.denizen.scripts.commands.item;
 import java.util.List;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.objects.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-
-/* TAKE [MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
-
-/*
- * Arguments: [] - Required, () - Optional
- * [MONEY|ITEMINHAND|[#](:#)|[MATERIAL_TYPE](:#)] specifies what to take.
- *   [MONEY] takes money using your economy.
- *   [ITEMINHAND] takes from the item the Player has in their hand.
- *   [#](:#) takes the item with the specified item ID. Optional
- *     argument (:#) can specify a specific data value.
- *   [MATERIAL_TYPE](:#) takes the item with the specified
- *     bukkit MaterialType. Optional argument (:#) can specify
- *     a specific data value.
- * (QTY:#) specifies quantity. If not specified, assumed 'QTY:1'
- *
- */
 
 public class TakeCommand extends AbstractCommand{
 

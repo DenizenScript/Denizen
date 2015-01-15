@@ -5,9 +5,9 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 import org.bukkit.entity.Player;
@@ -15,20 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Pauses/Resumes a NPC's various parts.
- *
- * @author Jeremy Schroeder
- */
-
 public class PauseCommand extends AbstractCommand {
-
-    /* PAUSE (DURATION:#) (NPCID:#) */
-
-    /*
-     * Arguments: [] - Required, () - Optional
-     *
-     */
 
     private Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
     enum PauseType { ACTIVITY, WAYPOINTS, NAVIGATION }

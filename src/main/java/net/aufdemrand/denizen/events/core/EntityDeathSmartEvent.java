@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -11,12 +13,13 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EntityDeathSmartEvent implements SmartEvent, Listener {
+public class EntityDeathSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -74,7 +77,8 @@ public class EntityDeathSmartEvent implements SmartEvent, Listener {
     // <context.damager> returns the dEntity damaging the other entity, if any.
     // <context.message> returns an Element of a player's death message.
     // <context.inventory> returns the dInventory of the entity if it was a player.
-    // <context.cause> returns the cause of the death.
+    // <context.cause> returns an Element of the cause of the death.
+    // <context.drops> returns a dList of all pending item drops.
     //
     // @Determine
     // Element(String) to change the death message.
@@ -96,6 +100,16 @@ public class EntityDeathSmartEvent implements SmartEvent, Listener {
         context.put("entity", entity.getDenizenObject());
         if (event.getEntity().getLastDamageCause() != null)
             context.put("cause", new Element(event.getEntity().getLastDamageCause().getCause().toString()));
+        dList drops_dlist = new dList();
+        for (ItemStack stack: event.getDrops()) {
+            if (stack == null) {
+                drops_dlist.add("i@air");
+            }
+            else {
+                drops_dlist.add(new dItem(stack).identify());
+            }
+        }
+        context.put("drops", drops_dlist);
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer());
@@ -118,14 +132,14 @@ public class EntityDeathSmartEvent implements SmartEvent, Listener {
                 context.put("inventory", player.getInventory());
         }
 
-        List<String> determinations = EventManager.doEvents1(Arrays.asList
+        List<String> determinations = OldEventManager.doEvents(Arrays.asList
                         ("entity dies",
                                 entity.identifyType() + " dies",
                                 entity.identifySimple() + " dies",
                                 entity.identifySimple() + " death",
                                 "entity death",
                                 entity.identifyType() + " death"),
-                npc, player, context, true);
+                new BukkitScriptEntryData(player, npc), context, true);
 
         for (String determination : determinations) {
             // Handle message

@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 

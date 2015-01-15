@@ -9,12 +9,27 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizen.events.core.*;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitElementProperties;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitQueueProperties;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitScriptProperties;
+import net.aufdemrand.denizen.objects.properties.entity.*;
+import net.aufdemrand.denizen.objects.properties.inventory.InventoryContents;
+import net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder;
+import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
+import net.aufdemrand.denizen.objects.properties.inventory.InventoryTitle;
+import net.aufdemrand.denizen.objects.properties.item.*;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.tags.core.*;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.*;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
 import net.aufdemrand.denizen.utilities.*;
 import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
@@ -25,14 +40,13 @@ import net.aufdemrand.denizen.npc.speech.DenizenChat;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.scripts.*;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.containers.core.*;
-import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
-import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.command.CommandManager;
 import net.aufdemrand.denizen.utilities.command.Injector;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
@@ -40,8 +54,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.DenizenImplementation;
-import net.aufdemrand.denizencore.scripts.ScriptEntryData;
-import net.aufdemrand.denizencore.scripts.ScriptHelper;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 
@@ -56,6 +70,167 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+
+// <--[language]
+// @name dObjects
+// @group Object System
+// @description
+// dObjects are a system put into place by Denizen that make working with things, or 'objects',
+// in Minecraft and Denizen easier. Many parts of scripts will require some kind of object as an
+// argument, identifier/type, or such as in world events, part of an event name. The dObjects notation
+// system helps both you and Denizen know what type of objects are being referenced and worked with.
+//
+// So when should you use dObjects? In arguments, event names, replaceable tags, configs, flags, and
+// more! If you're just a beginner, you've probably been using them without even realizing it!
+//
+// dObject is a broader term for a 'type' of object that more specifically represents something,
+// such as a dLocation or dScript, often times just referred to as a 'location' or 'script'. Denizen
+// employs many object types that you should be familiar with. You'll notice that many times objects
+// are reference with their 'dObject notation' which is in the format of 'x@', the x being the specific
+// notation of an object type. Example: player objects use the p@ notation, and locations use l@.
+// The use of this notation is encouraged, but not always required.
+//
+// Let's take the tag system, for example. It uses the dObjects system pretty heavily. For instance,
+// every time you use <player.name> or <npc.id>, you're using a dObject, which brings us to a simple
+// clarification: Why <player.name> and not <p@player.name>? That's because Denizen allows Players,
+// NPCs and other 'in-context objects' to be linked to certain scripts. In short, <player> already
+// contains a reference to a specific player, such as the player that died in a world event 'on player dies'.
+// <p@player.name> would incorrectly reference the player named 'player', however this format is often
+// used to help with usage of a tag, simply indicating 'any player object'.
+//
+// dObjects can be used to CREATE new instances of objects, too! Though not all types allow 'new'
+// objects to be created, many do, such as dItems. With the use of tags, it's easy to reference a specific
+// item, say -- an item in the Player's hand -- items are also able to use a constructor to make a new item,
+// and say, drop it in the world. Take the case of the command/usage '- drop i@diamond_ore'. The item object
+// used is a brand new diamond_ore, which is then dropped by the command to a location of your choice -- just
+// specify an additional location argument.
+//
+// There's a great deal more to learn about dObjects, so be sure to check out each object type for more
+// specific information. While all dObjects share some features, many contain goodies on top of that!
+//
+// Here's an overview of each object type that is implemented by the Denizen core:
+//
+// + ----- dPlayer ----- +
+// | object notation: p@    can reference unique objects: yes    can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   p@<UUID> - fetches an online or offline player with the specified UUID
+// |   p@<player_name> - Outdated constructor for back-support, fetches by name instead of UUID
+//
+// + ----- dNPC ---------+
+// | object notation: n@    can reference unique objects: yes    can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   n@<npc_id> - fetches the NPC with the specified ID
+// |   n@<npc_name> - fetches the first NPC found with the specified name
+//
+// + ----- dLocation ----+
+// | object notation: l@    can reference unique objects: no     can be notable: yes
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   l@<x>,<y>,<z>,<world_name> - fetches a specific location
+// |   l@<x>,<y>,<z>,<pitch>,<yaw>,<world_name> - fetches a specific location and direction
+// |   l@<notable_location_name> - fetches the location that has been 'noted' with the specified ID
+//
+// + ----- dEntity ------+
+// | object notation: e@    can reference unique objects: yes    can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   e@<entity_type> - fetches a new entity with the specified type as implemented by Bukkit's entity type enumeration
+// |   e@<entity_type>,<setting> - fetches a new entity of the specified type with a custom setting unique to the type
+// |   e@<entity_script_name> - fetches a new custom entity as specified by the referenced entity script (soon)
+// |   e@<entity_id> - fetches the entity that has the (temporary) entity ID set by Bukkit
+// |   e@random - fetches a new, random entity
+//
+// + ----- dItem --------+
+// | object notation: i@    can reference unique objects: no     can be notable: yes
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   i@<material_name> - fetches a new item of the specified material
+// |   i@<material_name>,<data> - fetches a new item with the specified data
+// |   i@<item_script_name> - fetches a new custom item as specified by the referenced item script
+// |   i@<notable_name> - fetches the item that has been noted with the specified ID
+//
+// + ----- dWorld -------+
+// | object notation: w@    can reference unique objects: yes     can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   w@<world_name> - fetches the world with the specified name
+//
+// + ----- dColor -------+
+// | object notation: co@    can reference unique objects: no      can be notable: soon
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   co@<color_name> - fetches a named color, as implemented by Bukkit's color enumeration
+// |   co@<r>,<g>,<b> - fetches a color made of the specified Red,Green,Blue value
+// |   co@random - fetches a random color
+//
+// + ----- dCuboid ------+
+// | object notation: cu@   can reference unique objects: no      can be notable: yes
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   cu@<position_1>|<position_2>|... - fetches a new cuboid encompassing a region from position 1 to 2, from 2 to 3, ...
+// |   cu@<notable_name> - fetches the cuboid that has been noted with the specified ID
+//
+// + ----- dEllipsoid ------+
+// | object notation: ellipsoid@   can reference unique objects: no      can be notable: yes
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   ellipsoid@<x>,<y>,<z>,<world>,<xrad>,<yrad>,<zrad>... - fetches a new ellispoid at the position with the given radius
+// |   ellipsoid@<notable_name> - fetches the ellipsoid that has been noted with the specified ID
+//
+// + ----- dChunk ------+
+// | object notation: ch@   can reference unique objects: yes      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   ch@<x>,<y>,<world> - fetches a chunk at the given chunk location
+//
+// + ----- dInventory ---+
+// | object notation: in@   can reference unique objects: yes     can be notable: yes
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   in@player[holder=<player>] - fetches the specified Player's inventory (Works for offline players)
+// |   in@enderchest[holder=<player>] - fetches the specified Player's enderchest inventory (Works for offline players)
+// |   in@npc[holder=<npc>] - fetches the specified NPC's inventory
+// |   in@entity[holder=<entity>] - fetches the specified object's inventory, such as a Player, NPC, or Mule
+// |   in@location[holder=<location>] - fetches the contents of a chest or other 'inventory' block
+// |   in@<notable_inventory_name> - fetches the inventory that has been 'noted' with the specified ID
+// |   in@<inventory_script_name> - fetches a new custom inventory as specified by the referenced inventory script
+// |   in@generic - represents a generic, customizable virtual inventory to be used with inventory properties (See <@link language Virtual Inventories>)
+//
+// + ----- dMaterial ----+
+// | object notation: m@    can reference unique objects: no      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   m@<material_name> - fetches the material as specified by Bukkit's material enumeration
+// |   m@<material_name>,<data> - fetches the material as specified by Bukkit's material enumeration with specified data
+// |   m@<data_variety_material> - fetches the material specified by Denizen's 'data variety' dMaterials
+// |   m@random - fetches a random material
+//
+// + ----- dList -------+
+// | object notation: li@,fl@  can reference unique objects: yes  can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   li@<items|...> - fetches a new list with the elements specified, separated by a pipe (|) character
+// |   li@val[<items|...>] - slightly more verbose, but tag friendly way to fetch a new list (allows periods)
+// |   fl@<server_flag_name> - fetches the flag list value of the specified server flag, as a dList
+// |   fl[<player_object/npc_object]@<flag_name> - fetches the flag list value of the specified player/NPC's flag, as a dList
+//
+// + ----- dScript -------+
+// | object notation: s@    can reference unique objects: yes     can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   s@<script_container_name> - fetches the script container with the specified name
+//
+// + ----- Duration ------+
+// | object notation: d@    can reference unique objects: no      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   d@<duration> - fetches a duration object with the specified amount of time
+// |   d@<low>|<high> - fetches a duration that is randomly selected between the specified 'low' and 'high'
+//
+// + ----- dPlugin -------+
+// | object notation: pl@    can reference unique objects: yes     can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   pl@<plugin_name> - fetches the plugin with the specified name
+//
+// + ----- Element ------+
+// | object notation: el@   can reference unique objects: no      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   el@<value> - fetches an element with the specified value
+// |   el@val[<value>] - slightly more verbose, but tag friendly way to fetch a new element (allows periods)
+//
+// + ----- Queue ------+
+// | object notation: q@   can reference unique objects: yes      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   q@<id> - fetches the queue with the given ID
+//
+// -->
 
 
 public class Denizen extends JavaPlugin implements DenizenImplementation {
@@ -72,15 +247,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         return commandManager;
     }
 
-
-    /*
-     * Denizen Engines
-     */
-    private ScriptEngine scriptEngine = new ScriptEngine(this);
-
-    public ScriptEngine getScriptEngine() {
-        return scriptEngine;
-    }
 
 
     /*
@@ -127,11 +293,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
      * Denizen Managers
      */
     private FlagManager flagManager = new FlagManager(this);
-    private TagManager tagManager = new TagManager(this);
+    private TagManager tagManager = new TagManager();
     private NotableManager notableManager = new NotableManager();
-    private EventManager eventManager;
+    private OldEventManager eventManager;
 
-    public EventManager eventManager() {
+    public OldEventManager eventManager() {
         return eventManager;
     }
 
@@ -151,10 +317,21 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     public RuntimeCompiler runtimeCompiler;
 
-    private WorldScriptHelper ws_helper;
+    private BukkitWorldScriptHelper ws_helper;
 
     public final static long startTime = System.currentTimeMillis();
 
+    private RequirementChecker requirementChecker;
+
+    /**
+     * Gets the currently loaded instance of the RequirementChecker
+     *
+     * @return  ScriptHelper
+     *
+     */
+    public RequirementChecker getRequirementChecker() {
+        return requirementChecker;
+    }
 
     /*
      * Sets up Denizen on start of the CraftBukkit server.
@@ -188,6 +365,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 //return;
             }
             startedSuccessful = true;
+
+            requirementChecker = new RequirementChecker();
 
             // Startup procedure
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
@@ -254,6 +433,21 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
+            ScriptRegistry._registerType("interact", InteractScriptContainer.class);
+            ScriptRegistry._registerType("book", BookScriptContainer.class);
+            ScriptRegistry._registerType("item", ItemScriptContainer.class);
+            ScriptRegistry._registerType("entity", EntityScriptContainer.class);
+            ScriptRegistry._registerType("assignment", AssignmentScriptContainer.class);
+            ScriptRegistry._registerType("format", FormatScriptContainer.class);
+            ScriptRegistry._registerType("inventory", InventoryScriptContainer.class);
+            ScriptRegistry._registerType("command", CommandScriptContainer.class);
+            ScriptRegistry._registerType("map", MapScriptContainer.class);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+
+        try {
             // Ensure the Scripts and Midi folder exist
             new File(getDataFolder() + "/scripts").mkdirs();
             new File(getDataFolder() + "/midi").mkdirs();
@@ -282,7 +476,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             }
 
             // Create the command script handler for listener
-            ws_helper = new WorldScriptHelper();
+            ws_helper = new BukkitWorldScriptHelper();
             ItemScriptHelper is_helper = new ItemScriptHelper();
             InventoryScriptHelper in_helper = new InventoryScriptHelper();
             EntityScriptHelper es_helper = new EntityScriptHelper();
@@ -342,8 +536,66 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         try {
             tagManager().registerCoreTags();
-            eventManager = new EventManager();
+
+            new CuboidTags(this);
+            new EntityTags(this);
+            new LocationTags(this);
+            new PlayerTags(this);
+            new UtilTags(this);
+            new TextTags(this);
+            new ParseTags(this);
+            if (Depends.citizens != null) {
+                new NPCTags(this);
+                new AnchorTags(this);
+                new ConstantTags(this);
+            }
+            new FlagTags(this);
+            new NotableLocationTags(this);
+
+            eventManager = new OldEventManager();
+            // Register all the 'Core' SmartEvents.
+            OldEventManager.registerSmartEvent(new AsyncChatSmartEvent());
+            OldEventManager.registerSmartEvent(new BiomeEnterExitSmartEvent());
+            OldEventManager.registerSmartEvent(new BlockFallsSmartEvent());
+            OldEventManager.registerSmartEvent(new BlockPhysicsSmartEvent());
+            OldEventManager.registerSmartEvent(new ChunkLoadSmartEvent());
+            OldEventManager.registerSmartEvent(new ChunkUnloadSmartEvent());
+            OldEventManager.registerSmartEvent(new CommandSmartEvent());
+            OldEventManager.registerSmartEvent(new CuboidEnterExitSmartEvent());
+            OldEventManager.registerSmartEvent(new EntityCombustSmartEvent());
+            OldEventManager.registerSmartEvent(new EntityDamageSmartEvent());
+            OldEventManager.registerSmartEvent(new EntityDeathSmartEvent());
+            OldEventManager.registerSmartEvent(new EntityInteractSmartEvent());
+            OldEventManager.registerSmartEvent(new EntitySpawnSmartEvent());
+            OldEventManager.registerSmartEvent(new FlagSmartEvent());
+            OldEventManager.registerSmartEvent(new ItemMoveSmartEvent());
+            OldEventManager.registerSmartEvent(new ItemScrollSmartEvent());
+            OldEventManager.registerSmartEvent(new ListPingSmartEvent());
+            OldEventManager.registerSmartEvent(new NPCNavigationSmartEvent());
+            OldEventManager.registerSmartEvent(new PlayerEquipsArmorSmartEvent());
+            OldEventManager.registerSmartEvent(new PlayerJumpSmartEvent());
+            OldEventManager.registerSmartEvent(new PlayerStepsOnSmartEvent());
+            OldEventManager.registerSmartEvent(new PlayerWalkSmartEvent());
+            OldEventManager.registerSmartEvent(new RedstoneSmartEvent());
+            OldEventManager.registerSmartEvent(new SyncChatSmartEvent());
+            OldEventManager.registerSmartEvent(new VehicleCollisionSmartEvent());
             eventManager().registerCoreMembers();
+
+
+            ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
+            ObjectFetcher.registerWithObjectFetcher(dCuboid.class);    // cu@
+            ObjectFetcher.registerWithObjectFetcher(dEntity.class);    // e@
+            ObjectFetcher.registerWithObjectFetcher(dInventory.class); // in@
+            ObjectFetcher.registerWithObjectFetcher(dColor.class);     // co@
+            ObjectFetcher.registerWithObjectFetcher(dLocation.class);  // l@
+            ObjectFetcher.registerWithObjectFetcher(dMaterial.class);  // m@
+            if (Depends.citizens != null)
+                ObjectFetcher.registerWithObjectFetcher(dNPC.class);   // n@
+            ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
+            ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
+            ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
+            ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
+            ObjectFetcher.registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
 
             // Register Core dObjects with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();
@@ -358,6 +610,53 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             // Initialize Property Parser
             propertyParser = new PropertyParser();
+            // register properties that add Bukkit code to core objects
+            propertyParser.registerProperty(BukkitScriptProperties.class, dScript.class);
+            propertyParser.registerProperty(BukkitQueueProperties.class, ScriptQueue.class);
+            propertyParser.registerProperty(BukkitElementProperties.class, Element.class);
+
+            // register core dEntity properties
+            propertyParser.registerProperty(EntityAge.class, dEntity.class);
+            propertyParser.registerProperty(EntityAngry.class, dEntity.class);
+            propertyParser.registerProperty(EntityColor.class, dEntity.class);
+            propertyParser.registerProperty(EntityCritical.class, dEntity.class);
+            propertyParser.registerProperty(EntityFirework.class, dEntity.class);
+            propertyParser.registerProperty(EntityFramed.class, dEntity.class);
+            propertyParser.registerProperty(EntityInfected.class, dEntity.class);
+            propertyParser.registerProperty(EntityItem.class, dEntity.class);
+            propertyParser.registerProperty(EntityJumpStrength.class, dEntity.class);
+            propertyParser.registerProperty(EntityKnockback.class, dEntity.class);
+            propertyParser.registerProperty(EntityPainting.class, dEntity.class);
+            propertyParser.registerProperty(EntityPotion.class, dEntity.class);
+            propertyParser.registerProperty(EntityPowered.class, dEntity.class);
+            propertyParser.registerProperty(EntityProfession.class, dEntity.class);
+            propertyParser.registerProperty(EntityRotation.class, dEntity.class);
+            propertyParser.registerProperty(EntitySitting.class, dEntity.class);
+            propertyParser.registerProperty(EntitySize.class, dEntity.class);
+            propertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
+            propertyParser.registerProperty(EntityTame.class, dEntity.class);
+
+            // register core dInventory properties
+            propertyParser.registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
+            propertyParser.registerProperty(InventorySize.class, dInventory.class); // Same with size...(Too small for contents)
+            propertyParser.registerProperty(InventoryContents.class, dInventory.class);
+            propertyParser.registerProperty(InventoryTitle.class, dInventory.class);
+
+            // register core dItem properties
+            propertyParser.registerProperty(ItemApple.class, dItem.class);
+            propertyParser.registerProperty(ItemBook.class, dItem.class);
+            propertyParser.registerProperty(ItemDisplayname.class, dItem.class);
+            propertyParser.registerProperty(ItemDurability.class, dItem.class);
+            propertyParser.registerProperty(ItemDye.class, dItem.class);
+            propertyParser.registerProperty(ItemEnchantments.class, dItem.class);
+            propertyParser.registerProperty(ItemFirework.class, dItem.class);
+            propertyParser.registerProperty(ItemLore.class, dItem.class);
+            propertyParser.registerProperty(ItemMap.class, dItem.class);
+            propertyParser.registerProperty(ItemPlantgrowth.class, dItem.class);
+            propertyParser.registerProperty(ItemPotion.class, dItem.class);
+            propertyParser.registerProperty(ItemQuantity.class, dItem.class);
+            propertyParser.registerProperty(ItemSkullskin.class, dItem.class);
+            propertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -386,6 +685,13 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 }
             }
         }, 1);
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
+            }
+        }, 1, 1);
     }
 
 
@@ -627,7 +933,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         // -->
 
-        // ...except this one :) /ex command
         if (cmdName.equalsIgnoreCase("ex")) {
             List<String> entries = new ArrayList<String>();
             String entry = "";
@@ -652,7 +957,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null)
                 npc = new dNPC(Depends.citizens.getNPCSelector().getSelected(sender));
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                    (sender instanceof Player)?dPlayer.mirrorBukkitPlayer((Player) sender):null, npc);
+                    new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player)sender): null, npc));
 
             queue.addEntries(scriptEntries);
             queue.start();
@@ -714,8 +1019,38 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     }
 
     @Override
+    public void debugError(ScriptQueue scriptQueue, String s) {
+        dB.echoError(scriptQueue, s);
+    }
+
+    @Override
+    public void debugError(ScriptQueue scriptQueue, Throwable throwable) {
+        dB.echoError(scriptQueue, throwable);
+    }
+
+    @Override
+    public void debugReport(Debuggable debuggable, String s, String s1) {
+        dB.report(debuggable, s, s1);
+    }
+
+    @Override
     public void debugApproval(String message) {
         dB.echoApproval(message);
+    }
+
+    @Override
+    public void debugEntry(Debuggable debuggable, String s) {
+        dB.echoDebug(debuggable, s);
+    }
+
+    @Override
+    public void debugEntry(Debuggable debuggable, DebugElement debugElement, String s) {
+        dB.echoDebug(debuggable, debugElement, s);
+    }
+
+    @Override
+    public void debugEntry(Debuggable debuggable, DebugElement debugElement) {
+        dB.echoDebug(debuggable, debugElement);
     }
 
     @Override
@@ -751,6 +1086,155 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError(e);
         }
         return files;
+    }
+
+    @Override
+    public void handleCommandSpecialCases(ScriptEntry scriptEntry) {
+        if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC()
+                && ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen() == null)
+            ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(null);
+    }
+
+    @Override
+    public void debugCommandHeader(ScriptEntry scriptEntry) {
+        if (scriptEntry.getOriginalArguments() == null ||
+                scriptEntry.getOriginalArguments().size() == 0 ||
+                !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
+            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null)
+                dB.echoDebug(scriptEntry, DebugElement.Header,
+                        "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" +
+                                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName());
+            else
+                dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " +
+                        scriptEntry.getCommandName() + (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null ?
+                        "/n@" + ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getName() : ""));
+        }
+    }
+
+    @Override
+    public TagContext getTagContextFor(ScriptEntry scriptEntry, boolean b) {
+        dPlayer player = scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null;
+        dNPC npc = scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null;
+        return new BukkitTagContext(player, npc, b, scriptEntry,
+                scriptEntry != null ? scriptEntry.shouldDebug(): true,
+                scriptEntry != null ? scriptEntry.getScript(): null);
+    }
+
+    @Override
+    public boolean handleCustomArgs(ScriptEntry scriptEntry, aH.Argument arg, boolean if_ignore) {
+        // Fill player/off-line player
+        if (arg.matchesPrefix("player") && !if_ignore) {
+            dB.echoDebug(scriptEntry, "...replacing the linked player with " + arg.getValue());
+            String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
+            dPlayer player = dPlayer.valueOf(value);
+            if (player == null || !player.isValid()) {
+                dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
+            }
+            ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(player);
+            return true;
+        }
+
+        // Fill NPCID/NPC argument
+        else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
+            dB.echoDebug(scriptEntry, "...replacing the linked NPC with " + arg.getValue());
+            String value = TagManager.tag(arg.getValue(), new BukkitTagContext(scriptEntry, false));
+            dNPC npc = dNPC.valueOf(value);
+            if (npc == null || !npc.isValid()) {
+                dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
+                return false;
+            }
+            ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(npc);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void refreshScriptContainers() {
+        ItemScriptHelper.item_scripts.clear();
+        ItemScriptHelper.item_scripts_by_hash_id.clear();
+        InventoryScriptHelper.inventory_scripts.clear();
+    }
+
+    @Override
+    public String scriptQueueSpeed() {
+        return Settings.scriptQueueSpeed();
+    }
+
+    @Override
+    public dList valueOfFlagdList(String string) {
+        FlagManager.Flag flag = getFlag(string);
+        if (flag == null) {
+            return null;
+        }
+        return new dList(flag.toString(), true, flag.values());
+    }
+
+    public FlagManager.Flag getFlag(String string) {
+        if (string.startsWith("fl")) {
+            FlagManager flag_manager = DenizenAPI.getCurrentInstance().flagManager();
+            if (string.indexOf('[') == 2) {
+                int cb = string.indexOf(']');
+                if (cb > 4) {
+                    String owner = string.substring(3, cb);
+                    String flag = string.substring(cb + 2);
+                    if (dPlayer.matches(owner)) {
+                        dPlayer player = dPlayer.valueOf(owner);
+                        if (FlagManager.playerHasFlag(player, flag))
+                            return flag_manager.getPlayerFlag(player, flag);
+                        else
+                            dB.echoError("Player '" + owner + "' flag '" + flag + "' not found.");
+                    }
+                    else if (Depends.citizens != null && dNPC.matches(owner)) {
+                        dNPC npc = dNPC.valueOf(owner);
+                        if (FlagManager.npcHasFlag(npc, flag))
+                            return flag_manager.getNPCFlag(npc.getId(), flag);
+                        else
+                            dB.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
+                    }
+                }
+                else {
+                    dB.echoError("Invalid dFlag format: " + string);
+                }
+            }
+            else if (string.indexOf('@') == 2) {
+                String flag = string.substring(3);
+                if (FlagManager.serverHasFlag(flag))
+                    return flag_manager.getGlobalFlag(flag);
+                else
+                    dB.echoError("Global flag '" + flag + "' not found.");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean matchesFlagdList(String arg) {
+        boolean flag = false;
+        if (arg.startsWith("fl")) {
+            if (arg.indexOf('[') == 2) {
+                int cb = arg.indexOf(']');
+                if (cb > 4 && arg.indexOf('@') == (cb + 1)) {
+                    String owner = arg.substring(3, cb);
+                    flag = arg.substring(cb + 2).length() > 0 && (dPlayer.matches(owner)
+                            || (Depends.citizens != null && dNPC.matches(owner)));
+                }
+            }
+            else if (arg.indexOf('@') == 2) {
+                flag = arg.substring(3).length() > 0;
+            }
+        }
+        return flag;
+    }
+
+    @Override
+    public String getLastEntryFromFlag(String flag) {
+        return getFlag(flag).getLast().asString();
+    }
+
+    @Override
+    public TagContext getTagContext(ScriptEntry scriptEntry) {
+        return new BukkitTagContext(scriptEntry, false);
     }
 
     @Override

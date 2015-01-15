@@ -3,11 +3,11 @@ package net.aufdemrand.denizen.utilities;
 import java.util.*;
 
 import com.google.common.base.Splitter;
-import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.objects.dPlayer;
 
 import net.aufdemrand.denizen.scripts.commands.server.ScoreboardCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -104,7 +104,7 @@ public class ScoreboardHelper {
                 o.setDisplayName(obj);
 
                 // Only set display slot if it's valid
-                if (Argument.valueOf(displaySlot).matchesEnum(DisplaySlot.values())) {
+                if (aH.Argument.valueOf(displaySlot).matchesEnum(DisplaySlot.values())) {
                     o.setDisplaySlot(DisplaySlot.valueOf(displaySlot.toUpperCase()));
                 }
 

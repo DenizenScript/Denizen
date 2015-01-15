@@ -6,9 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Material;

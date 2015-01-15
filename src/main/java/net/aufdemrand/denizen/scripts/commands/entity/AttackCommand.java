@@ -6,22 +6,14 @@ import java.util.List;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TargetType;
-
-/**
- *
- * Makes NPCs or entities attack a certain entity.
- *
- * @author David Cernat
- *
- */
 
 public class AttackCommand extends AbstractCommand {
 
@@ -33,7 +25,7 @@ public class AttackCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel", "stop")) {
 
-                scriptEntry.addObject("cancel", "");
+                scriptEntry.addObject("cancel", "true");
             }
 
             else if (!scriptEntry.hasObject("target")
@@ -76,10 +68,10 @@ public class AttackCommand extends AbstractCommand {
         // Get objects
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         dEntity target = (dEntity) scriptEntry.getObject("target");
-        Boolean cancel = scriptEntry.hasObject("cancel");
+        boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", "true") : "") +
                 aH.debugObj("entities", entities.toString()) +
                 (target != null ? aH.debugObj("target", target) : ""));
 
@@ -90,7 +82,7 @@ public class AttackCommand extends AbstractCommand {
             if (entity.isNPC()) {
                 Navigator nav = entity.getDenizenNPC().getCitizen().getNavigator();
 
-                if (cancel.equals(false)) {
+                if (!cancel) {
                     nav.setTarget(target.getBukkitEntity(), true);
                 }
                 else {
@@ -104,7 +96,7 @@ public class AttackCommand extends AbstractCommand {
                 }
             }
             else {
-                if (cancel.equals(false)) {
+                if (!cancel) {
                     entity.target(target.getLivingEntity());
                 }
                 else {

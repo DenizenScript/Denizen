@@ -4,34 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.scripts.commands.BracedCommand;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.scripts.commands.BracedCommand;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
-
-/**
- * Randomly selects a random script entry from the proceeding entries, discards
- * the rest.
- *
- *     <ol><tt>Usage:  RANDOM [#]</tt></ol>
- *
- * [#] of entries to randomly select from. Will select 1 of # to execute and
- * discard the rest.<br/><br/>
- *
- * Example Usage:<br/>
- * <ul style="list-style-type: none;">
- * <li><tt>Script:</tt></li>
- * <li><tt>- RANDOM 3</tt></li>
- * <li><tt>- CHAT Random Message 1</tt></li>
- * <li><tt>- CHAT Random Message 2</tt></li>
- * <li><tt>- CHAT Random Message 3 </tt></li>
- * </ul>
- *
- * @author Jeremy Schroeder
- */
 
 public class RandomCommand extends BracedCommand {
 

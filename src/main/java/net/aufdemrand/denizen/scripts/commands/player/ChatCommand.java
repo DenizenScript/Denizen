@@ -7,45 +7,13 @@ import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechContext;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechController;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Entity;
 
-/**
- * <p>Uses the Citizens SpeechController to 'chat', the default VocalChord for
- * of an NPC. Chat prefixes and setup is found in Citizen's config.yml file.</p>
- *
- * <b>dScript Usage:</b><br>
- * <pre>CHAT  ['message to chat.'] (TARGET(S):list_of_LivingEntities) (TALKER:NPC.#)</pre>
- *
- * <ol><tt>Arguments: [] - Required</ol></tt>
- *
- * <ol><tt>['message to chat']</tt><br>
- *         The chat message the Talker will use. This will be seen by all entities within range.</ol>
- *
- * <ol><tt>(TARGET(S):NONE|List of LivingEntities{Interact Player})</tt><br>
- *         The LivingEntities that the message is addressed to. Uses the dScript List format
- *         (item1|item2|etc). Valid entities are: PLAYER.player_name, NPC.npcid, or ENTITY.entity_name.
- *         If NONE is specified, the NPC speaking will have no target. Default target is set to
- *         the Player doing the interaction (if that information is available to the command).</ol>
- *
- * <ol><tt>(TALKER:NPC.npcid{Interact NPC})</tt><br>
- *         The NPC that will be doing the chatting. Defaults to the NPC interacted with (if that information is
- *         available to the command), but can be changed by using the NPC LivingEntity format (NPC.npcid).</ol>
- *
- * <br><b>Example Usage:</b><br>
- * <ol><tt>
- *  - CHAT 'Be careful out there! The road is long and dark.' <br>
- *  - CHAT TARGET:NONE 'Beer here! Beer for sale! ...anybody need a beer?' <br>
- *  - CHAT TARGETS:PLAYER.aufdemrand|PLAYER.Jeebiss|PLAYER.DrBix 'Ah, a group of adventurers! Great!'
- *  - CHAT TALKER:NPC.13 TARGET:NPC.<NPC.ID> 'Shut up, old man!'
- * </ol></tt>
- *
- * @author Jeremy Schroeder
- *
- */
 public class ChatCommand extends AbstractCommand {
 
     @Override

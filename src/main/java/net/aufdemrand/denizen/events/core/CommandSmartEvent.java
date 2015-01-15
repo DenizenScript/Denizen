@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -15,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class CommandSmartEvent implements SmartEvent, Listener {
+public class CommandSmartEvent implements OldSmartEvent, Listener {
 
     class CommandHandlerData {
         public final String name;
@@ -211,7 +212,7 @@ public class CommandSmartEvent implements SmartEvent, Listener {
         String determination;
 
         // Run any event scripts and get the determination.
-        determination = EventManager.doEvents(events,
+        determination = BukkitWorldScriptHelper.doEvents(events,
                 null, new dPlayer(event.getPlayer()), context).toUpperCase();
 
         // If a script has determined fulfilled, cancel this event so the player doesn't
@@ -246,7 +247,7 @@ public class CommandSmartEvent implements SmartEvent, Listener {
         context.put("raw_args", new Element((message.split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
         context.put("server", Element.TRUE);
 
-        String determination = EventManager.doEvents(events, null, null, context);
+        String determination = BukkitWorldScriptHelper.doEvents(events, null, null, context);
 
         if (determination.equalsIgnoreCase("FULFILLED") || determination.equalsIgnoreCase("CANCELLED"))
             event.setCommand("denizen do_nothing");

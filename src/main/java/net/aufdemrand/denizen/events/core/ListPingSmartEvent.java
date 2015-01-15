@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ListPingSmartEvent implements SmartEvent, Listener {
+public class ListPingSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -87,7 +87,7 @@ public class ListPingSmartEvent implements SmartEvent, Listener {
         context.put("max_players", new Element(event.getMaxPlayers()));
         context.put("num_players", new Element(event.getNumPlayers()));
         context.put("address", new Element(event.getAddress().toString()));
-        String determination = EventManager.doEvents(Arrays.asList("server list ping"), null, null, context);
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList("server list ping"), null, null, context);
         String[] values = determination.split("[\\|" + dList.internal_escape + "]", 2);
         if (new Element(values[0]).isInt())
             event.setMaxPlayers(new Element(values[0]).asInt());

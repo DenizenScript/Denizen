@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities.maps;
 
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;

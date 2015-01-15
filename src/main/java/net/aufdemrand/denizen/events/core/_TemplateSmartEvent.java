@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -11,10 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +23,7 @@ import java.util.regex.Pattern;
  * onEnable() if you're developing a plugin that depends on
  * Denizen)
  */
-public class _TemplateSmartEvent implements SmartEvent, Listener {
+public class _TemplateSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -84,10 +82,12 @@ public class _TemplateSmartEvent implements SmartEvent, Listener {
         // Add some things to it
         context.put("location", new dLocation(event.getTo()));
         // Fire the event!
-        String determination = EventManager.doEvents(Arrays.asList("x or y or z"), null /* NPC */,
-                new dPlayer(event.getPlayer()), context);
+        List<String> determinations = OldEventManager.doEvents(Arrays.asList("x or y or z"),
+                new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null), context);
         // Parse the determination and edit the event accordingly here
-        if (determination.equalsIgnoreCase("CANCELLED"))
-            event.setCancelled(true);
+        for (String determination: determinations) {
+            if (determination.equalsIgnoreCase("CANCELLED"))
+                event.setCancelled(true);
+        }
     }
 }

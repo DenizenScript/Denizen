@@ -2,12 +2,12 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.scripts.queues.core.Delayable;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.scripts.queues.core.Delayable;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 

@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
@@ -22,6 +24,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -187,16 +190,18 @@ public class ItemScriptHelper implements Listener {
                     }
                     context.put("recipe", recipeList);
 
-                    String determination = EventManager.doEvents(Arrays.asList
+                    List<String> determinations = OldEventManager.doEvents(Arrays.asList
                             ("item crafted",
                                     result.identifySimple() + " crafted",
                                     result.identifyMaterial() + " crafted"),
-                            null, new dPlayer(player), context);
+                            new BukkitScriptEntryData(new dPlayer(player), null), context);
 
-                    if (determination.toUpperCase().startsWith("CANCELLED"))
-                        return;
-                    else if (dItem.matches(determination)) {
-                        result = dItem.valueOf(determination);
+                    for (String determination: determinations) {
+                        if (determination.toUpperCase().startsWith("CANCELLED"))
+                            return;
+                        else if (dItem.matches(determination)) {
+                            result = dItem.valueOf(determination);
+                        }
                     }
 
                     // If this was a valid match, set the crafting's result
@@ -344,6 +349,11 @@ public class ItemScriptHelper implements Listener {
             return;
 
         if (event.getInventory().getType() != InventoryType.PLAYER) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!((Player)event.getInventory().getHolder()).getName().equalsIgnoreCase(event.getWhoClicked().getName())) {
             event.setCancelled(true);
             return;
         }

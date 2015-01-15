@@ -8,17 +8,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.objects.notable.Note;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizencore.objects.notable.Note;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -54,6 +56,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    public static dCuboid valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     final static Pattern cuboid_by_saved = Pattern.compile("(cu@)?(.+)");
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
@@ -65,7 +71,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
      *
      */
     @Fetchable("cu")
-    public static dCuboid valueOf(String string) {
+    public static dCuboid valueOf(String string, TagContext context) {
         if (string == null) return null;
 
         ////////

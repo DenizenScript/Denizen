@@ -2,8 +2,9 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -22,11 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Handles NPC walking with the Citizens API.
- *
- * @author Jeremy Schroeder
- */
 public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
     //                        percentage
@@ -120,8 +116,7 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                         && auto_range == Element.TRUE) {
                     double distance = npc.getLocation().distance(loc);
                     if (npc.getNavigator().getLocalParameters().range() < distance + 10)
-                        npc.getNavigator().getDefaultParameters().range((float) distance + 10);
-                    // TODO: Should be using local params rather than default?
+                        npc.getNavigator().getLocalParameters().range((float) distance + 10);
                 }
 
                 npc.getNavigator().setTarget(loc);
@@ -137,7 +132,7 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                 }
             }
             else {
-                EntityMovement.walkTo(entity.getBukkitEntity(), loc, speed != null ? speed.asDouble() : 0.3);
+                EntityMovement.walkTo(entity.getBukkitEntity(), loc, speed != null ? speed.asDouble() : 0.2);
             }
         }
 

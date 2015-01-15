@@ -1,27 +1,28 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.aH.Argument;
-import net.aufdemrand.denizen.objects.aH.PrimitiveType;
-import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.aH.Argument;
+import net.aufdemrand.denizencore.objects.aH.PrimitiveType;
+import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.objects.notable.Note;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.objects.notable.Note;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
-import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.BrewingStand;
-import org.bukkit.block.Chest;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.block.Furnace;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -124,9 +125,19 @@ public class dInventory implements dObject, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    @Fetchable("in")
+
     public static dInventory valueOf(String string) {
-        return valueOf(string, null, null);
+        return valueOf(string, null);
+    }
+
+    @Fetchable("in")
+    public static dInventory valueOf(String string, TagContext context) {
+        if (context == null) {
+            return valueOf(string, null , null);
+        }
+        else {
+            return valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
+        }
     }
 
     /**
@@ -148,7 +159,8 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Handle objects with properties through the object fetcher
         Matcher m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dInventory.class, string, player, npc);
+            return ObjectFetcher.getObjectFrom(dInventory.class, string,
+                    new BukkitTagContext(player, npc, false, null, false, null));
         }
 
         // Match in@scriptName for Inventory Scripts, as well as in@notableName
@@ -526,17 +538,11 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dLocation getLocation(InventoryHolder holder) {
         if (inventory != null && holder != null) {
-            if (holder instanceof Chest) {
-                return new dLocation(((Chest) holder).getLocation());
+            if (holder instanceof BlockState) {
+                return new dLocation(((BlockState) holder).getLocation());
             }
             else if (holder instanceof DoubleChest) {
                 return new dLocation(((DoubleChest) holder).getLocation());
-            }
-            else if (holder instanceof BrewingStand) {
-                return new dLocation(((BrewingStand) holder).getLocation());
-            }
-            else if (holder instanceof Furnace) {
-                return new dLocation(((Furnace) holder).getLocation());
             }
             else if (holder instanceof Entity) {
                 return new dLocation(((Entity) holder).getLocation());

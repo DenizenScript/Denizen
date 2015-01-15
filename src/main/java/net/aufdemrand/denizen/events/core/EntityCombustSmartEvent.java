@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class EntityCombustSmartEvent implements SmartEvent, Listener {
+public class EntityCombustSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -85,10 +86,10 @@ public class EntityCombustSmartEvent implements SmartEvent, Listener {
         context.put("entity", entity.getDenizenObject());
         context.put("duration", new Duration((long) event.getDuration()));
 
-        String determination = EventManager.doEvents(Arrays.asList
-                ("entity combusts",
-                        entity.identifySimple() + " combusts",
-                        entity.identifyType() + " combusts"),
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList
+                        ("entity combusts",
+                                entity.identifySimple() + " combusts",
+                                entity.identifyType() + " combusts"),
                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))

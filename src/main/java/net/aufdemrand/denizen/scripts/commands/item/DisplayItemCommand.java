@@ -3,19 +3,14 @@ package net.aufdemrand.denizen.scripts.commands.item;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
 
-/**
- * Displays an item in the world. This item will not disappear (unless set to)
- * and cannot be picked up.
- *
- * @author aufdemrand, mcmonkey
- */
 
 public class DisplayItemCommand extends AbstractCommand {
 

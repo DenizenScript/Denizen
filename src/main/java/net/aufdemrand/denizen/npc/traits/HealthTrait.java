@@ -2,8 +2,9 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
@@ -34,7 +35,7 @@ public class HealthTrait extends Trait implements Listener {
 // @name Health Trait
 // @group NPC Traits
 // @description
-// By default, NPCs are invulnerable, unable to be damaged. If you want your NPC 
+// By default, NPCs are invulnerable, unable to be damaged. If you want your NPC
 // to be able to take damage, or use the left click as an interaction, it must
 // have the health trait. The Health trait is automatically enabled if you set
 // the damage trigger state to true.

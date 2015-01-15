@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;

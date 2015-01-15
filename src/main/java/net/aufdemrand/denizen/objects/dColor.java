@@ -4,12 +4,17 @@ import java.lang.reflect.Field;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Fetchable;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Color;
 
-import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.DyeColor;
 
@@ -21,6 +26,10 @@ public class dColor implements dObject {
     //    OBJECT FETCHER
     ////////////////
 
+    public static dColor valueOf(String string) {
+        return valueOf(string, null);
+    }
+
     /**
      * Gets a Color Object from a string form.
      *
@@ -29,7 +38,7 @@ public class dColor implements dObject {
      *
      */
     @Fetchable("co")
-    public static dColor valueOf(String string) {
+    public static dColor valueOf(String string, TagContext context) {
 
         string = string.toUpperCase().replace("CO@", "");
 

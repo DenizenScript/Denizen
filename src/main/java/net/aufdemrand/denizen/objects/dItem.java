@@ -2,14 +2,19 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.objects.notable.*;
 import net.aufdemrand.denizen.objects.properties.item.*;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.notable.Note;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
-import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.notable.Notable;
+import net.aufdemrand.denizencore.tags.TagContext;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
@@ -44,9 +49,19 @@ public class dItem implements dObject, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-    @Fetchable("i")
+
     public static dItem valueOf(String string) {
-        return valueOf(string, null, null);
+        return valueOf(string, null);
+    }
+
+    @Fetchable("i")
+    public static dItem valueOf(String string, TagContext context) {
+        if (context == null) {
+            return valueOf(string, null, null);
+        }
+        else {
+            return valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
+        }
     }
 
     /**
@@ -70,7 +85,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // Handle objects with properties through the object fetcher
         m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dItem.class, string, player, npc);
+            return ObjectFetcher.getObjectFrom(dItem.class,  string, new BukkitTagContext(player, npc, false, null, true, null));
         }
 
         ////////

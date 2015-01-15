@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
 import java.util.List;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.TagManager;
 
 /**
  * This class implements requirement checking for scripts.
@@ -18,10 +18,7 @@ import net.aufdemrand.denizen.tags.TagManager;
  */
 public class RequirementChecker {
 
-    private Denizen plugin;
-
-    public RequirementChecker(Denizen denizen) {
-        plugin = denizen;
+    public RequirementChecker() {
     }
 
     /**
@@ -117,8 +114,8 @@ public class RequirementChecker {
 
             } else
                 // Check requirement with RequirementRegistry
-                if (plugin.getRequirementRegistry().list().containsKey(reqString)) {
-                    AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqString);
+                if (DenizenAPI.getCurrentInstance().getRequirementRegistry().list().containsKey(reqString)) {
+                    AbstractRequirement requirement = DenizenAPI.getCurrentInstance().getRequirementRegistry().get(reqString);
 
                     // Remove command name from arguments
                     argumentList.remove(0);

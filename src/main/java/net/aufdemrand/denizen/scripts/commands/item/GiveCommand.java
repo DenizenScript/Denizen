@@ -3,13 +3,13 @@ package net.aufdemrand.denizen.scripts.commands.item;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
@@ -19,20 +19,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-/* GIVE [MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
-
-/*
- * Arguments: [] - Required, () - Optional
- * [MONEY|[#](:#)|[MATERIAL_TYPE](:#)] specifies what to give.
- *   [MONEY] gives money using your economy.
- *   [#](:#) gives the item with the specified item ID. Optional
- *     argument (:#) can specify a specific data value.
- *   [MATERIAL_TYPE](:#) gives the item with the specified
- *     bukkit MaterialType. Optional argument (:#) can specify
- *     a specific data value.
- * (QTY:#) specifies quantity. If not specified, assumed 'QTY:1'
- *
- */
 
 public class GiveCommand  extends AbstractCommand {
 

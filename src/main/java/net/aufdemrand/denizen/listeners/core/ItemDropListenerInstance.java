@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemDropListenerType.ItemDropType;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ItemDropListenerInstance extends AbstractListener implements Listener {

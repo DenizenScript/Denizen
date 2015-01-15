@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands;
 
 import net.aufdemrand.denizen.scripts.commands.core.*;
+import net.aufdemrand.denizencore.scripts.commands.core.*;
 import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
 import net.aufdemrand.denizen.scripts.commands.npc.*;
@@ -172,15 +173,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Minecraft implements several player and entity animations which the animate command can use, just
         // specify an entity and an animation.
-
+        //
         // Player animations require a Player-type entity or NPC. Available player animations include:
         // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
         // START_USE_ITEM, STOP_USE_ITEM, EAT_FOOD
-
-        // All entities, regardless of type, can utilize the 'hurt' animation. Additionally, wolf entities
-        // and NPCs can also use: WOLF_SMOKE, WOLF_HEARTS, and WOLF_SHAKE. Sheep entities and NPCs also have
-        // available the SHEEP_EAT animation.
-
+        //
+        // All entities also have available Bukkit's entity effect list, which includes:
+        // DEATH, FIREWORK_EXPLODE, HURT, IRON_GOLEM_ROSE, SHEEP_EAT, VILLAGER_ANGRY, VILLAGER_HAPPY
+        // VILLAGER_HEART, WITCH_MAGIC, WOLF_HEARTS, WOLF_SHAKE, WOLF_SMOKE, ZOMBIE_TRANSFORM
+        //
+        // Note that the above list only applies where logical, EG 'WOLF_' animations only apply to wolves.
         // @Tags
         // None
 
@@ -394,13 +396,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Usage
         // Use to apply an effect to an entity
-        // - potion jump <player> d:120 p:3
+        // - cast jump <player> d:120 p:3
         // - narrate "You have been given the temporary ability to jump like a kangaroo."
 
         // @Usage
         // Use to remove an effect from an entity
         // - if <player.has_effect[jump]> {
-        //   - potion jump remove <player>
+        //   - cast jump remove <player>
         //   }
         //
         // -->
@@ -910,13 +912,15 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <server.has_event[<event_name>]>
         // <server.get_event_handlers[<event_name>]>
-        // <entry[saveName].determination> returns the determined value (if any) from the event.
+        // <entry[saveName].determinations> returns a list of the determined values (if any) from the event.
         // @Usage
         // Use to trigger a custom event
         // - event "player triggers custom event"
         // @Usage
         // Use to trigger multiple custom events with context
         // - event "player triggers custom event|player causes event" context:event|custom|npc|<player.selected_npc>
+        // @Usage
+        // TODO: Document command details
         // -->
         registerCoreMember(EventCommand.class,
                 "EVENT", "event [<event name>|...] (context:<name>|<object>|...)", 1);
@@ -1204,7 +1208,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //   }
 
         // -->
-        registerCoreMember(ForEachCommand.class,
+        registerCoreMember(ForeachCommand.class,
                 "FOREACH", "foreach [stop/next/<object>|...] [<commands>]", 1);
 
 
@@ -1423,6 +1427,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Required 1
         // @Stable stable
         // @Short Runs a script in the current ScriptQueue.
+        // @Video /denizen/vids/Run%20And%20Inject
         // @Author aufdemrand
         // @Group core
         // @Description
@@ -2187,6 +2192,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Required 1
         // @Stable stable
         // @Short Runs a script in a new ScriptQueue.
+        // @Video /denizen/vids/Run%20And%20Inject
         // @Author aufdemrand
         // @Group core
         // @Description

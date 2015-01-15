@@ -7,48 +7,17 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dScript;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.event.Listener;
 
-/**
- * <p>Changes a Player's current step for a script. Reminder: ZAP does NOT trigger anything. It merely
- * tells Denizen's ScriptEngine which step should be used WHEN interacting.</p>
- *
- * <b>dScript Usage:</b><br>
- * <pre>ZAP [#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})</pre>
- *
- * <ol><tt>Arguments: [] - Required () - Optional  {} - Default</ol></tt>
- *
- * <ol><tt>[#|STEP:step_name]</tt><br>
- *         The name of the step that should be enabled. If using numbered steps, an plain integer will
- *         suffice.</ol>
- *
- * <ol><tt>(SCRIPT:script_name{current_script})</tt><br>
- *         Specifies which script should be affected. If not specified, the current interact script will
- *         be used.</ol>
- *
- * <ol><tt>(DURATION:#{0})</tt><br>
- *         Optional. If not specified, no duration is used. If specified, after the duration period,
- *         Denizen will automatically reset the step to the original step. Note: If another ZAP command
- *         is utilized for the same Player and Script during a duration period, the reset in progress
- *         is cancelled.</ol>
- *
- * <br><b>Example Usage:</b><br>
- * <ol><tt>
- *  - ZAP SCRIPT:OtherScript 6<br>
- *  - ZAP 'STEP:Just for a minute' DURATION:1m<br>
- * </ol></tt>
- *
- * @author Jeremy Schroeder
- */
 
 public class ZapCommand extends AbstractCommand implements Listener{
 

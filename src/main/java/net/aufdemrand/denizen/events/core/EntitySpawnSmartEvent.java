@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
@@ -15,7 +17,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EntitySpawnSmartEvent implements SmartEvent, Listener {
+public class EntitySpawnSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -39,7 +41,7 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
 
                 // Check first group which contains entity name against dEntity's matches() method
                 if (!dEntity.matches(m.group(1)) && (!m.group(1).equalsIgnoreCase("entity") && !m.group(1).equalsIgnoreCase("npc"))) {
-                    dB.echoError("Possible issue with '" + event + "' world event in script(s) " + EventManager.events.get(event)
+                    dB.echoError("Possible issue with '" + event + "' world event in script(s) " + OldEventManager.events.get(event)
                             + ". Specified entity is not valid.");
                 }
 
@@ -140,7 +142,7 @@ public class EntitySpawnSmartEvent implements SmartEvent, Listener {
         context.put("reason", new Element(reason));
         context.put("location", new dLocation(event.getLocation()));
 
-        String determination = EventManager.doEvents(events,
+        String determination = BukkitWorldScriptHelper.doEvents(events,
                 (entity.isNPC() ? entity.getDenizenNPC() : null), null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))

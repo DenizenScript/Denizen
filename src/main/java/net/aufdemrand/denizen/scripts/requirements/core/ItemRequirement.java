@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ItemRequirement extends AbstractRequirement {

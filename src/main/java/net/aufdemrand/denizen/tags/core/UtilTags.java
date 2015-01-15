@@ -2,20 +2,21 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
-import net.aufdemrand.denizen.scripts.containers.core.WorldScriptContainer;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.scripts.containers.core.WorldScriptContainer;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -141,10 +142,12 @@ public class UtilTags implements Listener {
                 event.setReplaced(new Element(0).getAttribute(attribute.fulfill(1)));
                 return;
             }
-            if (FlagManager.serverHasFlag(flag_name))
-                event.setReplaced(new dList(DenizenAPI.getCurrentInstance().flagManager()
-                        .getGlobalFlag(flag_name))
+            if (FlagManager.serverHasFlag(flag_name)) {
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
+                        .getGlobalFlag(flag_name);
+                event.setReplaced(new dList(flag.toString(), true, flag.values())
                         .getAttribute(attribute));
+            }
             return;
         }
 
@@ -255,8 +258,8 @@ public class UtilTags implements Listener {
         // -->
         if (attribute.startsWith("has_event")
                 && attribute.hasContext(1)) {
-            event.setReplaced(new Element(EventManager.eventExists(attribute.getContext(1))
-                    || EventManager.eventExists(EventManager.StripIdentifiers(attribute.getContext(1))))
+            event.setReplaced(new Element(OldEventManager.eventExists(attribute.getContext(1))
+                    || OldEventManager.eventExists(OldEventManager.StripIdentifiers(attribute.getContext(1))))
                     .getAttribute(attribute.fulfill(1)));
         }
 
@@ -271,8 +274,8 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("get_event_handlers")
                 && attribute.hasContext(1)) {
             String eventName = attribute.getContext(1).toUpperCase();
-            List<WorldScriptContainer> EventsOne = EventManager.events.get("ON " + eventName);
-            List<WorldScriptContainer> EventsTwo = EventManager.events.get("ON " + EventManager.StripIdentifiers(eventName));
+            List<WorldScriptContainer> EventsOne = OldEventManager.events.get("ON " + eventName);
+            List<WorldScriptContainer> EventsTwo = OldEventManager.events.get("ON " + OldEventManager.StripIdentifiers(eventName));
             if (EventsOne == null && EventsTwo == null) {
                 dB.echoError("No world scripts will handle the event '" + eventName + "'");
             }
@@ -316,11 +319,11 @@ public class UtilTags implements Listener {
         // Returns a list of NPCs with a certain name.
         // -->
         if (attribute.startsWith("get_npcs_named") && Depends.citizens != null && attribute.hasContext(1)) {
-            ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+            dList npcs = new dList();
             for (NPC npc : CitizensAPI.getNPCRegistry())
                 if (npc.getName().equalsIgnoreCase(attribute.getContext(1)))
-                    npcs.add(dNPC.mirrorCitizensNPC(npc));
-            event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+                    npcs.add(dNPC.mirrorCitizensNPC(npc).identify());
+            event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -507,13 +510,13 @@ public class UtilTags implements Listener {
                 dB.echoError("Invalid script specified.");
             }
             else {
-                ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+                dList npcs = new dList();
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()
                             && npc.getTrait(AssignmentTrait.class).getAssignment().getName().equalsIgnoreCase(script.getName()))
-                        npcs.add(dNPC.mirrorCitizensNPC(npc));
+                        npcs.add(dNPC.mirrorCitizensNPC(npc).identify());
                 }
-                event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+                event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
                 return;
             }
         }
@@ -527,12 +530,12 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("get_online_players_flagged")
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
-            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            dList players = new dList();
             for (Player player: Bukkit.getOnlinePlayers()) {
                 if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new dPlayer(player), flag).size() > 0)
-                    players.add(new dPlayer(player));
+                    players.add(new dPlayer(player).identify());
             }
-            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -545,12 +548,12 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("get_players_flagged")
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
-            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            dList players = new dList();
             for (Map.Entry<String, UUID> entry : dPlayer.getAllPlayers().entrySet()) {
                 if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(entry.getValue(), flag).size() > 0)
-                    players.add(new dPlayer(entry.getValue()));
+                    players.add(new dPlayer(entry.getValue()).identify());
             }
-            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -563,13 +566,13 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("get_spawned_npcs_flagged") && Depends.citizens != null
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
-            ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+            dList npcs = new dList();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 dNPC dNpc = dNPC.mirrorCitizensNPC(npc);
                 if (dNpc.isSpawned() && FlagManager.npcHasFlag(dNpc, flag))
-                    npcs.add(dNpc);
+                    npcs.add(dNpc.identify());
             }
-            event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+            event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -582,13 +585,13 @@ public class UtilTags implements Listener {
         if (attribute.startsWith("get_npcs_flagged") && Depends.citizens != null
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
-            ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+            dList npcs = new dList();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 dNPC dNpc = dNPC.mirrorCitizensNPC(npc);
                 if (FlagManager.npcHasFlag(dNpc, flag))
-                    npcs.add(dNpc);
+                    npcs.add(dNpc.identify());
             }
-            event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+            event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -599,10 +602,10 @@ public class UtilTags implements Listener {
         // Returns a list of all NPCs.
         // -->
         if (attribute.startsWith("list_npcs") && Depends.citizens != null) {
-            ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+            dList npcs = new dList();
             for (NPC npc : CitizensAPI.getNPCRegistry())
-                npcs.add(dNPC.mirrorCitizensNPC(npc));
-            event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+                npcs.add(dNPC.mirrorCitizensNPC(npc).identify());
+            event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -613,10 +616,10 @@ public class UtilTags implements Listener {
         // Returns a list of all worlds.
         // -->
         if (attribute.startsWith("list_worlds")) {
-            ArrayList<dWorld> worlds = new ArrayList<dWorld>();
+            dList worlds = new dList();
             for (World world : Bukkit.getWorlds())
-                worlds.add(dWorld.mirrorBukkitWorld(world));
-            event.setReplaced(new dList(worlds).getAttribute(attribute.fulfill(1)));
+                worlds.add(dWorld.mirrorBukkitWorld(world).identify());
+            event.setReplaced(worlds.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -627,10 +630,10 @@ public class UtilTags implements Listener {
         // Gets a list of currently enabled dPlugins from the server.
         // -->
         if (attribute.startsWith("list_plugins")) {
-            ArrayList<dPlugin> plugins = new ArrayList<dPlugin>();
+            dList plugins = new dList();
             for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins())
-                plugins.add(new dPlugin(plugin));
-            event.setReplaced(new dList(plugins).getAttribute(attribute.fulfill(1)));
+                plugins.add(new dPlugin(plugin).identify());
+            event.setReplaced(plugins.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -641,10 +644,10 @@ public class UtilTags implements Listener {
         // Returns a list of all players that have ever played on the server, online or not.
         // -->
         if (attribute.startsWith("list_players")) {
-            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            dList players = new dList();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                    players.add(dPlayer.mirrorBukkitPlayer(player));
-            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+                    players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -655,10 +658,10 @@ public class UtilTags implements Listener {
         // Returns a list of all online players.
         // -->
         if (attribute.startsWith("list_online_players")) {
-            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            dList players = new dList();
             for (Player player : Bukkit.getOnlinePlayers())
-                players.add(dPlayer.mirrorBukkitPlayer(player));
-            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+                players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -669,10 +672,10 @@ public class UtilTags implements Listener {
         // Returns a list of all offline players.
         // -->
         if (attribute.startsWith("list_offline_players")) {
-            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            dList players = new dList();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                if (!player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player));
-            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+                if (!player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -683,10 +686,10 @@ public class UtilTags implements Listener {
         // Returns a list of all ops, online or not.
         // -->
         if (attribute.startsWith("list_ops")) {
-            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            dList players = new dList();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
-            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -697,10 +700,10 @@ public class UtilTags implements Listener {
         // Returns a list of all online ops.
         // -->
         if (attribute.startsWith("list_online_ops")) {
-            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            dList players = new dList();
             for (Player player : Bukkit.getOnlinePlayers())
-                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
-            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -711,10 +714,10 @@ public class UtilTags implements Listener {
         // Returns a list of all offline ops.
         // -->
         if (attribute.startsWith("list_offline_ops")) {
-            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            dList players = new dList();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                if (player.isOp() && !player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player));
-            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+                if (player.isOp() && !player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -941,9 +944,9 @@ public class UtilTags implements Listener {
 
         // TODO: Delete (Deprecated in favor of el@element.replace)
         else if (type.equalsIgnoreCase("REPLACE")) {
-            String item_to_replace = event.getTypeContext();
-            String replace = event.getSubTypeContext();
-            String replacement = event.getSpecifierContext();
+            String item_to_replace = type;
+            String replace = typeContext;
+            String replacement = specifierContext;
             event.setReplaced(new Element(item_to_replace.replace(replace, replacement))
                     .getAttribute(attribute.fulfill(3)));
         }
@@ -955,8 +958,8 @@ public class UtilTags implements Listener {
         // Returns whether an entity is spawned and valid.
         // -->
         else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")
-                && event.hasTypeContext()) {
-            dEntity ent = dEntity.valueOf(event.getTypeContext());
+                && typeContext.length() != 0) {
+            dEntity ent = dEntity.valueOf(typeContext);
             event.setReplaced(new Element((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
                     .getAttribute(attribute.fulfill(1)));
         }
@@ -968,8 +971,8 @@ public class UtilTags implements Listener {
         // Returns whether a player exists under the specified name.
         // -->
         else if (type.equalsIgnoreCase("PLAYER_IS_VALID")
-                && event.hasTypeContext()) {
-            event.setReplaced(new Element(dPlayer.playerNameIsValid(event.getTypeContext()))
+                && typeContext.length() != 0) {
+            event.setReplaced(new Element(dPlayer.playerNameIsValid(typeContext))
                     .getAttribute(attribute.fulfill(1)));
         }
 
@@ -980,8 +983,8 @@ public class UtilTags implements Listener {
         // Returns whether an NPC exists and is usable.
         // -->
         else if (type.equalsIgnoreCase("NPC_IS_VALID")
-                && event.hasTypeContext()) {
-            dNPC npc = dNPC.valueOf(event.getTypeContext());
+                && typeContext.length() != 0) {
+            dNPC npc = dNPC.valueOf(typeContext);
             event.setReplaced(new Element((npc != null && npc.isValid()))
                     .getAttribute(attribute.fulfill(1)));
         }
@@ -989,14 +992,14 @@ public class UtilTags implements Listener {
 
         // TODO: Delete (Deprecated in favor of el@element.to_uppercase)
         else if (type.equalsIgnoreCase("UPPERCASE")) {
-            String item_to_uppercase = event.getTypeContext();
+            String item_to_uppercase = typeContext;
             event.setReplaced(new Element(item_to_uppercase.toUpperCase())
                     .getAttribute(attribute.fulfill(1)));
         }
 
         // TODO: Delete (Deprecated in favor of el@element.to_lowercase)
         else if (type.equalsIgnoreCase("LOWERCASE")) {
-            String item_to_uppercase = event.getTypeContext();
+            String item_to_uppercase = typeContext;
             event.setReplaced(new Element(item_to_uppercase.toLowerCase())
                     .getAttribute(attribute.fulfill(1)));
         }
@@ -1103,11 +1106,11 @@ public class UtilTags implements Listener {
             // -->
             else if (subType.equalsIgnoreCase("FORMAT") && !subTypeContext.equalsIgnoreCase("")) {
                 try {
-                    format.applyPattern(event.getSubTypeContext());
+                    format.applyPattern(subTypeContext);
                     event.setReplaced(format.format(currentDate));
                 }
                 catch (Exception ex) {
-                    dB.echoError("Error: invalid pattern '" + event.getSubTypeContext() + "'");
+                    dB.echoError("Error: invalid pattern '" + subTypeContext + "'");
                     dB.echoError(ex);
                 }
             }

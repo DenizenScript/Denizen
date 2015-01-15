@@ -7,18 +7,19 @@ import java.util.*;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 
-import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.dScript;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
 /**
  * Preferred method of outputting debugger information with Denizen and
@@ -60,16 +61,12 @@ import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
  * 16:05:05 [INFO] +---------------------+
  *
  *
- * @author Jeremy Schroeder
- *
  */
 public class dB {
 
     public static boolean showDebug = Settings.showDebug();
     public static boolean showStackTraces = true;
-    public static boolean showScriptBuilder = false;
     public static boolean showColor = true;
-    public static boolean showEventsTrimming = false;
     public static boolean debugOverride = false;
 
     public static List<String> filter = new ArrayList<String>();
@@ -77,21 +74,8 @@ public class dB {
     public static boolean shouldTrim = true;
     public static boolean record = false;
     public static StringBuilder Recording = new StringBuilder();
-    public static void toggle() { showDebug = !showDebug; }
-
-
-    /**
-     * Can be used with echoDebug(...) to output a header, footer,
-     * or a spacer.
-     *
-     * DebugElement.Header = +- string description ------+
-     * DebugElement.Spacer =
-     * DebugElement.Footer = +--------------+
-     *
-     * Also includes color.
-     */
-    public static enum DebugElement {
-        Header, Footer, Spacer
+    public static void toggle() {
+        showDebug = !showDebug;
     }
 
     ////////////
@@ -250,11 +234,13 @@ public class dB {
             if (script != null)
                 events.add(script.identifySimple() + " generates error");
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
-            String Determination = EventManager.doEvents(events, (entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null),
-                    (entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null), context, true);
+            List<String> Determinations = OldEventManager.doEvents(events,
+                    entry != null ? entry.entryData: new BukkitScriptEntryData(null, null), context, true);
             ThrowErrorEvent = true;
-            if (Determination.equalsIgnoreCase("CANCELLED"))
-                return;
+            for (String Determination: Determinations) {
+                if (Determination.equalsIgnoreCase("CANCELLED"))
+                    return;
+            }
         }
         if (!showDebug) return;
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
@@ -293,11 +279,13 @@ public class dB {
             context.put("type", new Element(thrown.getClass().getSimpleName()));
             context.put("queue", source);
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
-            String Determination = EventManager.doEvents(Arrays.asList("server generates exception"),
-                    (entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null), (entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null), context);
+            List<String> Determinations = OldEventManager.doEvents(Arrays.asList("server generates exception"),
+                    entry == null ? new BukkitScriptEntryData(null, null): entry.entryData, context);
             ThrowErrorEvent = true;
-            if (Determination.equalsIgnoreCase("CANCELLED"))
-                return;
+            for (String Determination: Determinations) {
+                if (Determination.equalsIgnoreCase("CANCELLED"))
+                    return;
+            }
         }
         if (!showDebug) return;
         if (!showStackTraces) {

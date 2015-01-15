@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EventCommand extends AbstractCommand {
@@ -58,7 +58,8 @@ public class EventCommand extends AbstractCommand {
             context_map.put(context.get(i), ObjectFetcher.pickObjectFor(context.get(i + 1)));
         }
 
-        String Determination = EventManager.doEvents(events, ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(), ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), context_map, true);
-        scriptEntry.addObject("determination", new Element(Determination));
+        List<String> Determination = OldEventManager.doEvents(events,
+                scriptEntry.entryData, context_map, true);
+        scriptEntry.addObject("determinations", new dList(Determination));
     }
 }

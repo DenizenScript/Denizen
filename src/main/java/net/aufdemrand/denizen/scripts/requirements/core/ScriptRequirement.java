@@ -5,8 +5,8 @@ import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.List;

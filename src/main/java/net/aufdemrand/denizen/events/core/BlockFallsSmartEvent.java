@@ -1,10 +1,11 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
@@ -13,14 +14,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BlockFallsSmartEvent implements SmartEvent, Listener {
+public class BlockFallsSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -86,12 +84,15 @@ public class BlockFallsSmartEvent implements SmartEvent, Listener {
 
             context.put("location", new dLocation(event.getBlock().getLocation()));
 
-            String determination = EventManager.doEvents(Arrays.asList("block falls",
+            List<String> determinations = OldEventManager.doEvents(Arrays.asList("block falls",
                     dMaterial.getMaterialFrom(event.getBlock().getType(),
-                            event.getBlock().getData()).identifySimple() + " falls"), null, null, context, true);
+                            event.getBlock().getData()).identifySimple() + " falls"),
+                    new BukkitScriptEntryData(null, null), context, true);
 
-            if (determination.equalsIgnoreCase("CANCELLED"))
-                event.setCancelled(true);
+            for (String determination: determinations) {
+                if (determination.equalsIgnoreCase("CANCELLED"))
+                    event.setCancelled(true);
+            }
         }
     }
 }

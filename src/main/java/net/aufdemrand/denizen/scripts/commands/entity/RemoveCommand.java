@@ -3,25 +3,18 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.objects.dWorld;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
 import java.util.List;
-
-/**
- * Delete certain entities or all entities of a type.
- * Can permanently remove NPCs if used on them.
- *
- * @author David Cernat
- */
 
 public class RemoveCommand extends AbstractCommand {
 

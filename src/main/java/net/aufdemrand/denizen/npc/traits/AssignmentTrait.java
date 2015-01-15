@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.npc.traits;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;

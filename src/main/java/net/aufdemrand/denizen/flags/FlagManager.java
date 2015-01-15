@@ -1,10 +1,12 @@
 package net.aufdemrand.denizen.flags;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.EventManager;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.events.core.FlagSmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.objects.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
@@ -355,15 +357,15 @@ public class FlagManager {
                 world_script_events.add(type + " flag cleared");
                 world_script_events.add(type + " flag " + OldName + " cleared");
 
-                context.put("owner", Element.valueOf(OldOwner));
-                context.put("name", Element.valueOf(OldName));
-                context.put("type", Element.valueOf(type));
+                context.put("owner", new Element(OldOwner));
+                context.put("name", new Element(OldName));
+                context.put("type", new Element(type));
                 context.put("old_value", OldValue);
 
                 world_script_events.add("flag cleared");
 
-                EventManager.doEvents(world_script_events,
-                        npc, player, context);
+                OldEventManager.doEvents(world_script_events,
+                        new BukkitScriptEntryData(player, npc), context);
             }
         }
 
@@ -606,8 +608,8 @@ public class FlagManager {
 
                 world_script_events.add("flag changed");
 
-                EventManager.doEvents(world_script_events,
-                        npc, player, context);
+                OldEventManager.doEvents(world_script_events,
+                        new BukkitScriptEntryData(player, npc), context);
             }
 
         }
@@ -698,8 +700,8 @@ public class FlagManager {
 
                         world_script_events.add("flag expires");
 
-                        EventManager.doEvents(world_script_events,
-                                npc, player, context);
+                        OldEventManager.doEvents(world_script_events,
+                                new BukkitScriptEntryData(player, npc), context);
                     }
                     return true;
                 }

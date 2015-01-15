@@ -1,17 +1,19 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
-import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.*;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R1.PacketPlayOutGameStateChange;
@@ -83,8 +85,13 @@ public class dPlayer implements dObject, Adjustable {
     // are case insensitive.
     // -->
 
-    @Fetchable("p")
+
     public static dPlayer valueOf(String string) {
+        return valueOf(string, null);
+    }
+
+    @Fetchable("p")
+    public static dPlayer valueOf(String string, TagContext context) {
         return valueOfInternal(string, true);
     }
 
@@ -572,10 +579,12 @@ public class dPlayer implements dObject, Adjustable {
                         .getAttribute(attribute.fulfill(2));
             if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.playerHasFlag(this, flag_name))
                 return new Element(0).getAttribute(attribute.fulfill(2));
-            if (FlagManager.playerHasFlag(this, flag_name))
-                return new dList(DenizenAPI.getCurrentInstance().flagManager()
-                        .getPlayerFlag(this, flag_name))
-                        .getAttribute(attribute.fulfill(1));
+            if (FlagManager.playerHasFlag(this, flag_name)) {
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
+                        .getPlayerFlag(this, flag_name);
+                return new dList(flag.toString(),true, flag.values())
+                .getAttribute(attribute.fulfill(1));
+            }
             return new Element(identify()).getAttribute(attribute);
         }
 
@@ -1462,6 +1471,17 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("is_blocking"))
             return new Element(getPlayerEntity().isBlocking())
                     .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.ping>
+        // @returns Element(Number)
+        // @description
+        // returns the player's current ping.
+        // -->
+        if (attribute.startsWith("ping")) {
+            return new Element(((CraftPlayer)getPlayerEntity()).getHandle().ping)
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <p@player.is_flying>

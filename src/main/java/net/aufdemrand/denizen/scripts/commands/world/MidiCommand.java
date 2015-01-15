@@ -9,29 +9,11 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.midi.MidiUtil;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
-
-/**
- * Arguments: [] - Required, () - Optional
- * [<file>] specifies the name of the file under plugins/Denizen/midi/
- * (<entity>|...) specifies the entities the midi will be played at
- * (<location>) specifies the location where the midi will be played
- * (tempo:<#.#>) sets the tempo of the midi
- *
- * The listeners and location arguments cannot be used at the same time, but
- * the location has a higher priority if both are included.
- *
- * Example Usage:
- * midi stillalive tempo:1.0
- * midi p@aufdemrand|p@Jeebiss mariotheme
- * midi l@200,63,200,world clairdelune
- *
- * @author David Cernat
- */
 
 public class MidiCommand extends AbstractCommand {
 

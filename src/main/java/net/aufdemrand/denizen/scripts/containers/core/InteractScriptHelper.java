@@ -2,11 +2,12 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class InteractScriptHelper {
 
         // Alert the dBugger -- trying to find a good interact script!
         if (dB.shouldDebug(assignmentScript))
-            dB.log(dB.DebugElement.Header, "Getting interact script: n@" + npc.getName() + "/p@" + player.getName());
+            dB.log(DebugElement.Header, "Getting interact script: n@" + npc.getName() + "/p@" + player.getName());
 
         //
         // Get scripts that meet requirements and add them to interactableScripts.
@@ -119,7 +120,7 @@ public class InteractScriptHelper {
             }
 
             if (dB.shouldDebug(assignmentScript))
-                dB.log(dB.DebugElement.Spacer, null);
+                dB.log(DebugElement.Spacer, null);
             // Next entry!
         }
 
@@ -136,7 +137,7 @@ public class InteractScriptHelper {
             if (dB.shouldDebug(assignmentScript))
                 dB.log("Current step for this script is: " + getCurrentStep(player, script));
             if (dB.shouldDebug(interactScript))
-                dB.log(dB.DebugElement.Footer, "");
+                dB.log(DebugElement.Footer, "");
             return interactScript;
         }
 
@@ -145,7 +146,7 @@ public class InteractScriptHelper {
             if (dB.shouldDebug(assignmentScript))
                 dB.log(ChatColor.YELLOW + "+> " + ChatColor.WHITE + "No scripts meet requirements!");
             if (dB.shouldDebug(assignmentScript))
-                dB.log(dB.DebugElement.Footer, "");
+                dB.log(DebugElement.Footer, "");
             return null;
         }
 
@@ -176,7 +177,7 @@ public class InteractScriptHelper {
                     if (dB.shouldDebug(interactScript))
                         dB.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
                     if (dB.shouldDebug(interactScript))
-                        dB.log(dB.DebugElement.Footer, "");
+                        dB.log(DebugElement.Footer, "");
                     return interactScript;
                 }
 
@@ -195,7 +196,7 @@ public class InteractScriptHelper {
                 if (dB.shouldDebug(interactScript))
                     dB.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
                 if (dB.shouldDebug(interactScript))
-                    dB.log(dB.DebugElement.Footer, "");
+                    dB.log(DebugElement.Footer, "");
                 return interactScript;
             }
         }

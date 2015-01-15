@@ -4,16 +4,18 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.examiners.PathBlockExaminer;
 import net.aufdemrand.denizen.npc.traits.*;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.NPCTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
@@ -59,8 +61,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         return mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
     }
 
-    @Fetchable("n")
+
     public static dNPC valueOf(String string) {
+        return valueOf(string, null);
+    }
+
+    @Fetchable("n")
+    public static dNPC valueOf(String string, TagContext context) {
         if (string == null) return null;
 
         ////////
@@ -543,10 +550,12 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                         .getAttribute(attribute.fulfill(2));
             if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.npcHasFlag(this, flag_name))
                 return new Element(0).getAttribute(attribute.fulfill(2));
-            if (FlagManager.npcHasFlag(this, flag_name))
-                return new dList(DenizenAPI.getCurrentInstance().flagManager()
-                        .getNPCFlag(getId(), flag_name))
-                        .getAttribute(attribute.fulfill(1));
+            if (FlagManager.npcHasFlag(this, flag_name)) {
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
+                        .getNPCFlag(getId(), flag_name);
+                return new dList(flag.toString(),true, flag.values())
+                .getAttribute(attribute.fulfill(1));
+            }
              return new Element(identify()).getAttribute(attribute);
         }
 

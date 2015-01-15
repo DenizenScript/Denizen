@@ -2,8 +2,10 @@ package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 
 public class BukkitScriptEntryData extends ScriptEntryData {
@@ -48,5 +50,36 @@ public class BukkitScriptEntryData extends ScriptEntryData {
             dontFixMe = false;
         }
         this.npc = npc;
+    }
+
+    @Override
+    public void transferDataFrom(ScriptEntryData scriptEntryData) {
+        if (scriptEntryData == null) {
+            return;
+        }
+        player = ((BukkitScriptEntryData)scriptEntryData).getPlayer();
+        npc = ((BukkitScriptEntryData)scriptEntryData).getNPC();
+
+    }
+
+    @Override
+    public TagContext getTagContext() {
+        return new BukkitTagContext(player, npc, false, null, true, null);
+    }
+
+    @Override
+    public String toString() {
+        if (npc == null && player == null) {
+            return "";
+        }
+        else if (npc == null) {
+            return "player=p@" + player.getName();
+        }
+        else if (player == null) {
+            return "npc=n@" + npc.getId();
+        }
+        else {
+            return "player=p@" + player.getName() + "   npc=n@" + npc.getId();
+        }
     }
 }

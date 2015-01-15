@@ -3,8 +3,8 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
@@ -275,6 +275,6 @@ public class InteractScriptContainer extends ScriptContainer {
         RequirementsContext context = new RequirementsContext(new RequirementsMode(mode), requirements, this);
         context.attachPlayer(player);
         context.attachNPC(npc);
-        return DenizenAPI.getCurrentInstance().getScriptEngine().getRequirementChecker().check(context);
+        return DenizenAPI.getCurrentInstance().getRequirementChecker().check(context);
     }
 }

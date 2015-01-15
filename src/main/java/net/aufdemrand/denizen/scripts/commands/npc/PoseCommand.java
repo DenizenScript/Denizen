@@ -8,21 +8,12 @@ import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.trait.Poses;
 
-/**
- *
- * TODO: Document usage
- *
- * Controls a NPC's 'Poses' trait.
- *
- * @author aufdemrand
- *
- */
 public class PoseCommand extends AbstractCommand {
 
     private enum TargetType { NPC, PLAYER }

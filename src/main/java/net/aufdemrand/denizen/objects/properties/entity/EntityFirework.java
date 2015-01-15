@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizen.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dObject;
-import net.aufdemrand.denizen.objects.properties.Property;
-import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;

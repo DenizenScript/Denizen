@@ -5,12 +5,13 @@ import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.BracedCommand;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.BracedCommand;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -157,7 +158,7 @@ public class WhileCommand extends BracedCommand {
                 }
                 data.LastChecked = System.currentTimeMillis();
                 if (TagManager.tag(data.value, new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
-                    dB.echoDebug(scriptEntry, dB.DebugElement.Header, "While loop " + data.index);
+                    dB.echoDebug(scriptEntry, DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
                     ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("WHILE");
                     ScriptEntry callbackEntry = null;

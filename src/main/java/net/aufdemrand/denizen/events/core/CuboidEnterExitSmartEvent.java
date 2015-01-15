@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
+public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -178,7 +179,7 @@ public class CuboidEnterExitSmartEvent implements SmartEvent, Listener {
         context.put("cuboids", cuboids);
         events.add(EventName);
 
-        String determination = EventManager.doEvents(events,
+        String determination = BukkitWorldScriptHelper.doEvents(events,
                 null, new dPlayer(event.getPlayer()), context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED")) {

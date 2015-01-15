@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.Listener;
 
@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * Handler event, actual events are fired in NPCTags.java
  */
-public class NPCNavigationSmartEvent implements SmartEvent, Listener {
+public class NPCNavigationSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////

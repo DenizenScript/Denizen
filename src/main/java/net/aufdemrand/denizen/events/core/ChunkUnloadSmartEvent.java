@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.dChunk;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChunkUnloadSmartEvent implements SmartEvent, Listener {
+public class ChunkUnloadSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -82,7 +82,7 @@ public class ChunkUnloadSmartEvent implements SmartEvent, Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         dWorld world = new dWorld(event.getWorld());
         context.put("chunk", new dChunk(event.getChunk()));
-        String determination = EventManager.doEvents(Arrays.asList("chunk unloads",
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList("chunk unloads",
                 "chunk unloads " + world.identify()), null, null, context, true);
         if (determination.equalsIgnoreCase("cancelled"))
             event.setCancelled(true);

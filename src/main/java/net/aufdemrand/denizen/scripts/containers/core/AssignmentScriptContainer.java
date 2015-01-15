@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 // <--[language]

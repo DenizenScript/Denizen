@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.DenizenCore;

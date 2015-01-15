@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
@@ -367,8 +368,10 @@ public class Comparable {
                 else if (comparedto.equalsIgnoreCase("spawnedentity"))
                     outcome = (dEntity.matches(comparable) && dEntity.valueOf(comparable).isSpawned());
 
+                /** TODO: FIX
                 else if (comparedto.equalsIgnoreCase("entitytype"))
                     outcome = aH.matchesEntityType(comparable);
+                 */
 
                 else if (comparedto.equalsIgnoreCase("npc"))
                     outcome = dNPC.matches(comparable);

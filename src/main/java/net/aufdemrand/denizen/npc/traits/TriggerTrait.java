@@ -2,8 +2,8 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;

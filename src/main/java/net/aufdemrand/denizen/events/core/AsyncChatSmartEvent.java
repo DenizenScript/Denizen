@@ -1,12 +1,13 @@
 package net.aufdemrand.denizen.events.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dObject;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -16,17 +17,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class AsyncChatSmartEvent implements SmartEvent, Listener {
+public class AsyncChatSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -86,16 +84,16 @@ public class AsyncChatSmartEvent implements SmartEvent, Listener {
 
         final dPlayer player = new dPlayer(event.getPlayer());
 
-        Callable<String> call = new Callable<String>() {
+        Callable<List<String>> call = new Callable<List<String>>() {
             @Override
-            public String call() {
-                return EventManager.doEvents(Arrays.asList("player chats"),
-                        null, player, context);
+            public List<String> call() {
+                return OldEventManager.doEvents(Arrays.asList("player chats"),
+                        new BukkitScriptEntryData(player, null), context);
             }
         };
-        String determination = null;
+        List<String> determinations = null;
         try {
-            determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
+            determinations = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
             // TODO: Need to find a way to fix this eventually
             // dB.echoError(e);
@@ -105,18 +103,19 @@ public class AsyncChatSmartEvent implements SmartEvent, Listener {
             dB.echoError(e);
         }
 
-        if (determination == null)
-            return;
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (determination.toUpperCase().startsWith("FORMAT:")) {
-            String name = determination.substring(7);
-            FormatScriptContainer format = ScriptRegistry.getScriptContainer(name);
-            if (format == null) dB.echoError("Could not find format script matching '" + name + '\'');
-            else event.setFormat(format.getFormattedText(event.getMessage(), null, player));
-        }
-        else if (!determination.equals("none")) {
-            event.setMessage(determination);
+        for (String determination: determinations) {
+            if (determination == null)
+                continue;
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+            else if (determination.toUpperCase().startsWith("FORMAT:")) {
+                String name = determination.substring(7);
+                FormatScriptContainer format = ScriptRegistry.getScriptContainer(name);
+                if (format == null) dB.echoError("Could not find format script matching '" + name + '\'');
+                else event.setFormat(format.getFormattedText(event.getMessage(), null, player));
+            } else if (!determination.equals("none")) {
+                event.setMessage(determination);
+            }
         }
     }
 }

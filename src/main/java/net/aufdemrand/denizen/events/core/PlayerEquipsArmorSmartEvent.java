@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizen.events.EventManager;
-import net.aufdemrand.denizen.events.SmartEvent;
+import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -33,7 +34,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
+public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
 
 
     ///////////////////
@@ -155,7 +156,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
             }
         }
         else if (event.getClick().isShiftClick() && item != null && isArmor(item)) {
-            ItemStack currentItem = player.getInventory().getArmorContents()[getArmorTypeNumber(item)];
+            ItemStack currentItem = player.getInventory().getArmorContents()[3-getArmorTypeNumber(item)];
             if (currentItem == null || currentItem.getType() == Material.AIR) {
                 if (playerEquipsArmorEvent(player, item, "INVENTORY")) {
                     event.setCancelled(true);
@@ -197,7 +198,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
             if ((action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK)
                     || !isArmor(item) || (clicked != null && isInteractive(clicked.getType())))
                 return;
-            ItemStack currentItem = event.getPlayer().getInventory().getArmorContents()[getArmorTypeNumber(item)];
+            ItemStack currentItem = event.getPlayer().getInventory().getArmorContents()[3-getArmorTypeNumber(item)];
             if (currentItem == null || currentItem.getType() == Material.AIR) {
                 Player player = event.getPlayer();
                 if (playerEquipsArmorEvent(player, item, "INTERACT")) {
@@ -257,7 +258,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
     private int getArmorTypeNumber(ItemStack itemStack) {
         return (itemStack.getTypeId()-298)%4;
     }
-    
+
     private String getArmorType(ItemStack itemStack) {
         if (!isArmor(itemStack))
             return "helmet";
@@ -339,7 +340,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
         context.put("armor", armor);
         context.put("reason", new Element(reason));
 
-        String determination = EventManager.doEvents(Arrays.asList
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList
                         ("player equips armor",
                                 "player equips " + getArmorType(item),
                                 "player equips " + armor.identifySimple(),
@@ -368,7 +369,7 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
         context.put("armor", armor);
         context.put("reason", new Element(reason));
 
-        String determination = EventManager.doEvents(Arrays.asList
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList
                         ("player unequips armor",
                                 "player unequips " + getArmorType(item),
                                 "player unequips " + armor.identifySimple(),
@@ -386,6 +387,6 @@ public class PlayerEquipsArmorSmartEvent implements SmartEvent, Listener {
         }
 
         return false;
-        
+
     }
 }

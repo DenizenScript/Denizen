@@ -1,14 +1,17 @@
 package net.aufdemrand.denizen.tags.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.EventManager;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.events.core.NPCNavigationSmartEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -26,6 +29,7 @@ import org.bukkit.event.Listener;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class NPCTags implements Listener {
@@ -106,8 +110,8 @@ public class NPCTags implements Listener {
 
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive())
-            EventManager.doEvents(Arrays.asList
-                    ("npc completes navigation"), npc, null, null);
+            OldEventManager.doEvents(Arrays.asList
+                    ("npc completes navigation"), new BukkitScriptEntryData(null, npc), null);
 
         // Do the assignment script action
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
@@ -145,8 +149,8 @@ public class NPCTags implements Listener {
 
         // Do world script event 'On NPC Completes Navigation'
         if (NPCNavigationSmartEvent.IsActive())
-            EventManager.doEvents(Arrays.asList
-                    ("npc begins navigation"), npc, null, null);
+            OldEventManager.doEvents(Arrays.asList
+                    ("npc begins navigation"), new BukkitScriptEntryData(null, npc), null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         npc.action("begin navigation", null);
@@ -201,8 +205,8 @@ public class NPCTags implements Listener {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         if (NPCNavigationSmartEvent.IsActive())
-            EventManager.doEvents(Arrays.asList
-                    ("npc cancels navigation"), npc, null, null);
+            OldEventManager.doEvents(Arrays.asList
+                    ("npc cancels navigation"), new BukkitScriptEntryData(null, npc), null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         npc.action("cancel navigation", null);
@@ -248,12 +252,14 @@ public class NPCTags implements Listener {
 
         // Do world script event 'On NPC stuck'
         if (NPCNavigationSmartEvent.IsActive()) {
-            String determination = EventManager.doEvents(Arrays.asList
-                    ("npc stuck"), npc, null, context);
-            if (determination.equalsIgnoreCase("none"))
-                event.setAction(null);
-            if (determination.equalsIgnoreCase("teleport"))
-                event.setAction(TeleportStuckAction.INSTANCE);
+            List<String> determinations = OldEventManager.doEvents(Arrays.asList
+                    ("npc stuck"), new BukkitScriptEntryData(null, npc), context);
+            for (String determination: determinations) {
+                if (determination.equalsIgnoreCase("none"))
+                    event.setAction(null);
+                if (determination.equalsIgnoreCase("teleport"))
+                    event.setAction(TeleportStuckAction.INSTANCE);
+            }
         }
 
         // Do the assignment script action

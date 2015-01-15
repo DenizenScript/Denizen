@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.tags.ReplaceableTagEvent;
-import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
@@ -32,7 +32,10 @@ public class YamlCommand extends AbstractCommand implements Listener {
     Map<String, YamlConfiguration> yamls = new HashMap<String, YamlConfiguration>();
 
     private YamlConfiguration getYaml(String id) {
-        if (id == null) return null;
+        if (id == null) {
+            dB.echoError("Trying to get YAML file with NULL ID!");
+            return null;
+        }
         return yamls.get(id.toUpperCase());
     }
 
@@ -316,16 +319,16 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
                     switch (yaml_action) {
                         case INCREASE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "0")) + aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "0")) + aH.getFloatFrom(valueStr)));
                             break;
                         case DECREASE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "0")) - aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "0")) - aH.getFloatFrom(valueStr)));
                             break;
                         case MULTIPLY:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "1")) * aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "1")) * aH.getFloatFrom(valueStr)));
                             break;
                         case DIVIDE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getIntegerFrom(Get(yaml, index, keyStr, "1")) / aH.getIntegerFrom(valueStr)));
+                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "1")) / aH.getFloatFrom(valueStr)));
                             break;
                         case DELETE:
                             yaml.set(keyStr, null);
@@ -447,14 +450,15 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
 
         // Set id (name context) and path (type context)
-        String id = event.getNameContext();
+        String id = event.getNameContext().toUpperCase();
         String path = event.getTypeContext();
 
         // Check if there is a yaml file loaded with the specified id
-        if (!yamls.containsKey(id.toUpperCase())
-                && !attribute.hasAlternative()) {
-            dB.echoError("YAML tag '" + event.raw_tag + "' has specified an invalid ID, or the specified id has already" +
-                    " been closed. Tag replacement aborted. ID given: '" + id + "'.");
+        if (!yamls.containsKey(id)) {
+            if (!attribute.hasAlternative()) {
+                dB.echoError("YAML tag '" + event.raw_tag + "' has specified an invalid ID, or the specified id has already" +
+                        " been closed. Tag replacement aborted. ID given: '" + id + "'.");
+            }
             return;
         }
 
