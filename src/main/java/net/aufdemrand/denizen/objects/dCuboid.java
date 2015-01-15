@@ -481,6 +481,30 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
     }
 
+    public BlockData getBlockAt(double nX, double nY, double nZ, List<BlockData> materials) {
+        dLocation loc;
+        int index = 0;
+        // TODO: calculate rather than cheat
+        for (LocationPair pair : pairs) {
+            dLocation loc_1 = pair.low;
+            int y_distance = pair.y_distance;
+            int z_distance = pair.z_distance;
+            int x_distance = pair.x_distance;
+
+            for (int x = 0; x != x_distance + 1; x++) {
+                for (int z = 0; z != z_distance + 1; z++) {
+                    for (int y = 0; y != y_distance + 1; y++) {
+                        if (x == nX && nY == y && z == nZ) {
+                            return materials.get(index);
+                        }
+                        index++;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public List<dLocation> getBlockLocations() {
         int max = Settings.blockTagsMaxBlocks();
         dLocation loc;

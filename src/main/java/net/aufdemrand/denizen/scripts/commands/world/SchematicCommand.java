@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.utilities.blocks.BlockData;
 import net.aufdemrand.denizen.utilities.blocks.CuboidBlockSet;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
@@ -300,11 +301,9 @@ public class SchematicCommand extends AbstractCommand {
         if (attribute.startsWith("block")) {
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
                 dLocation location = dLocation.valueOf(attribute.getContext(1));
-                dB.echoError("Schematic.block[...] is TODO!");
-                /*
-                BaseBlock bb = cc.getBlock(new com.sk89q.worldedit.Vector(location.getX(), location.getY(), location.getZ()));
-                event.setReplaced(dMaterial.valueOf(bb.getType() + "," + bb.getData()) // TODO: Better representation of the block
-                        .getAttribute(attribute.fulfill(1)));*/
+                BlockData block = set.blockAt(location.getX(), location.getY(), location.getZ()));
+                event.setReplaced(dMaterial.getMaterialFrom(block.material, block.data)
+                        .getAttribute(attribute.fulfill(1)));
                 return;
             }
         }
@@ -319,22 +318,6 @@ public class SchematicCommand extends AbstractCommand {
         if (attribute.startsWith("origin")) {
             event.setReplaced(new dLocation(null, set.center_x, set.center_y, set.center_z)
                     .getAttribute(attribute.fulfill(1)));
-            return;
-        }
-
-        // <--[tag]
-        // @attribute <schematic[<name>].offset>
-        // @returns dLocation
-        // @description
-        // Returns the offset location of the schematic.
-        // @plugin WorldEdit
-        // -->
-        if (attribute.startsWith("offset")) {
-            dB.echoError("schematic.offset is TODO!");
-            /*
-            event.setReplaced(new dLocation(Bukkit.getWorlds().get(0),
-                    cc.getOffset().getX(), cc.getOffset().getY(), cc.getOffset().getZ())
-                    .getAttribute(attribute.fulfill(1)));*/
             return;
         }
 

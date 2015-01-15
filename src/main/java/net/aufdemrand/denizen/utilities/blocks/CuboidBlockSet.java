@@ -70,6 +70,10 @@ public class CuboidBlockSet implements BlockSet {
         return sb.toString();
     }
 
+    public BlockData blockAt(double x, double y, double z) {
+        return getCuboid(new Location(null, 0, 0, 0)).getBlockAt(x, y, z, blocks);
+    }
+
     public static CuboidBlockSet fromCompressedString(String str) {
         CuboidBlockSet cbs = new CuboidBlockSet();
         List<String> split = CoreUtilities.split(str, '\n');

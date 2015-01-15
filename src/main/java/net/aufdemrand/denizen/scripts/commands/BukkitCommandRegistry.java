@@ -2231,7 +2231,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>)
         // @Group World
         // @Required 2
-        // @Stable stable
+        // @Stable unstable
         // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
         // @Author mcmonkey
 
@@ -2244,7 +2244,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <schematic[<name>].width>
         // <schematic[<name>].block[<location>]>
         // <schematic[<name>].origin>
-        // <schematic[<name>].offset>
         // <schematic[<name>].blocks>
 
         // @Usage
