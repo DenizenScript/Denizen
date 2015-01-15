@@ -1233,6 +1233,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     }
 
     @Override
+    public Duration flagExpiration(String flag) {
+        return getFlag(flag).expiration();
+    }
+
+    @Override
     public TagContext getTagContext(ScriptEntry scriptEntry) {
         return new BukkitTagContext(scriptEntry, false);
     }
