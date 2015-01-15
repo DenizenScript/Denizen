@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.utilities.blocks.BlockData;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -152,8 +153,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
 
     public static class LocationPair {
-        dLocation  low;
-        dLocation high;
+        public dLocation low;
+        public dLocation high;
         dLocation point_1;
         dLocation point_2;
         int x_distance;
@@ -213,7 +214,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     //////////////////
 
     // Location Pairs (low, high) that make up the dCuboid
-    List<LocationPair> pairs = new ArrayList<LocationPair>();
+    public List<LocationPair> pairs = new ArrayList<LocationPair>();
 
     // Only put dMaterials in filter.
     ArrayList<dObject> filter = new ArrayList<dObject>();
@@ -430,7 +431,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 for (int z = 0; z != z_distance + 1; z++) {
                     for (int y = 0; y != y_distance + 1; y++) {
                         loc = new dLocation(loc_1.clone().add(x, y, z));
-                        if (!filter.isEmpty()) {
+                        if (!filter.isEmpty() && loc.getY() >= 0 && loc.getY() < 256) {
                             // Check filter
                             for (dObject material : filter) {
                                 if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
@@ -456,6 +457,28 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
 
         return list;
+    }
+
+    public void setBlocks_internal(List<BlockData> materials) {
+        dLocation loc;
+        int index = 0;
+        for (LocationPair pair : pairs) {
+            dLocation loc_1 = pair.low;
+            int y_distance = pair.y_distance;
+            int z_distance = pair.z_distance;
+            int x_distance = pair.x_distance;
+
+            for (int x = 0; x != x_distance + 1; x++) {
+                for (int z = 0; z != z_distance + 1; z++) {
+                    for (int y = 0; y != y_distance + 1; y++) {
+                        if (loc_1.getY() + y >= 0 && loc_1.getY() + y < 256) {
+                            materials.get(index).setBlock(loc_1.clone().add(x, y, z).getBlock());
+                        }
+                        index++;
+                    }
+                }
+            }
+        }
     }
 
     public List<dLocation> getBlockLocations() {
