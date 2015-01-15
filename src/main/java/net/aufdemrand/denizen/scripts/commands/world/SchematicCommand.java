@@ -101,15 +101,15 @@ public class SchematicCommand extends AbstractCommand {
         switch (Type.valueOf(type.asString())) {
             case CREATE:
                 if (schematics.containsKey(name.asString().toUpperCase())) {
-                    dB.echoError("Schematic file " + name.asString() + " is already loaded.");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is already loaded.");
                     return;
                 }
                 if (cuboid == null) {
-                    dB.echoError("Missing cuboid argument!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Missing cuboid argument!");
                     return;
                 }
                 if (location == null) {
-                    dB.echoError("Missing origin location argument!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Missing origin location argument!");
                     return;
                 }
                 try {
@@ -117,14 +117,14 @@ public class SchematicCommand extends AbstractCommand {
                     schematics.put(name.asString().toUpperCase(), set);
                 }
                 catch (Exception ex) {
-                    dB.echoError("Error creating schematic object " + name.asString() + ".");
-                    dB.echoError(ex);
+                    dB.echoError(scriptEntry.getResidingQueue(), "Error creating schematic object " + name.asString() + ".");
+                    dB.echoError(scriptEntry.getResidingQueue(), ex);
                     return;
                 }
                 break;
             case LOAD:
                 if (schematics.containsKey(name.asString().toUpperCase())) {
-                    dB.echoError("Schematic file " + name.asString() + " is already loaded.");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is already loaded.");
                     return;
                 }
                 try {
@@ -140,25 +140,25 @@ public class SchematicCommand extends AbstractCommand {
                     schematics.put(name.asString().toUpperCase(), set);
                 }
                 catch (Exception ex) {
-                    dB.echoError("Error loading schematic file " + name.asString() + ".");
-                    dB.echoError(ex);
+                    dB.echoError(scriptEntry.getResidingQueue(), "Error loading schematic file " + name.asString() + ".");
+                    dB.echoError(scriptEntry.getResidingQueue(), ex);
                     return;
                 }
                 break;
             case UNLOAD:
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    dB.echoError("Schematic file " + name.asString() + " is not loaded.");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
                 schematics.remove(name.asString().toUpperCase());
                 break;
             case ROTATE:
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    dB.echoError("Schematic file " + name.asString() + " is not loaded.");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
                 if (angle == null) {
-                    dB.echoError("Missing angle argument!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Missing angle argument!");
                     return;
                 }
                 dB.echoError(scriptEntry.getResidingQueue(), "Schematic rotation is TODO!");
@@ -166,25 +166,25 @@ public class SchematicCommand extends AbstractCommand {
                 break;
             case PASTE:
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    dB.echoError("Schematic file " + name.asString() + " is not loaded.");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
                 if (location == null) {
-                    dB.echoError("Missing location argument!");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Missing location argument!");
                     return;
                 }
                 try {
                     schematics.get(name.asString().toUpperCase()).setBlocks(location);
                 }
                 catch (Exception ex) {
-                    dB.echoError("Exception pasting schematic file " + name.asString() + ".");
-                    dB.echoError(ex);
+                    dB.echoError(scriptEntry.getResidingQueue(), "Exception pasting schematic file " + name.asString() + ".");
+                    dB.echoError(scriptEntry.getResidingQueue(), ex);
                     return;
                 }
                 break;
             case SAVE:
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
-                    dB.echoError("Schematic file " + name.asString() + " is not loaded.");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
                     return;
                 }
                 try {
@@ -201,8 +201,8 @@ public class SchematicCommand extends AbstractCommand {
                     fs.close();
                 }
                 catch (Exception ex) {
-                    dB.echoError("Error saving schematic file " + name.asString() + ".");
-                    dB.echoError(ex);
+                    dB.echoError(scriptEntry.getResidingQueue(), "Error saving schematic file " + name.asString() + ".");
+                    dB.echoError(scriptEntry.getResidingQueue(), ex);
                     return;
                 }
                 break;
@@ -229,7 +229,7 @@ public class SchematicCommand extends AbstractCommand {
                 return;
             }
 
-            dB.echoError("Schematic file " + id + " is not loaded.");
+            dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue(): null, "Schematic file " + id + " is not loaded.");
             return;
         }
 
@@ -301,7 +301,7 @@ public class SchematicCommand extends AbstractCommand {
         if (attribute.startsWith("block")) {
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
                 dLocation location = dLocation.valueOf(attribute.getContext(1));
-                BlockData block = set.blockAt(location.getX(), location.getY(), location.getZ()));
+                BlockData block = set.blockAt(location.getX(), location.getY(), location.getZ());
                 event.setReplaced(dMaterial.getMaterialFrom(block.material, block.data)
                         .getAttribute(attribute.fulfill(1)));
                 return;
