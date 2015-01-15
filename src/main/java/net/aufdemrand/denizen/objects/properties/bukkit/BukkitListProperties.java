@@ -11,8 +11,8 @@ import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 
 public class BukkitListProperties implements Property {
-    public static boolean describes(dObject script) {
-        return script instanceof dList;
+    public static boolean describes(dObject list) {
+        return list instanceof dList;
     }
 
     public static BukkitListProperties getFrom(dObject list) {
