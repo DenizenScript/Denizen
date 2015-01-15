@@ -855,7 +855,7 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public boolean isValid() {
-        return entity.isValid();
+        return entity != null && entity.isValid();
     }
 
     public void remove() {
