@@ -87,7 +87,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 //
 // # To make a global scoreboard instead, make the script with the scoreboard commands loop on it's own,
 // # and add viewers:<server.list_online_players> instead.
-// # An example of this script in action: <@link urlhttp://i.imgur.com/2tmQxff.png>
+// # An example of this script in action: <@link url http://i.imgur.com/2tmQxff.png>
 //
 // -->
 
