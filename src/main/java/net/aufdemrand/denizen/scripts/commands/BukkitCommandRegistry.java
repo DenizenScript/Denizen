@@ -2049,7 +2049,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
 
         // @Tags
-        // None
+        // <entry[saveName].possibilities> returns an Element of the possibility count.
+        // <entry[saveName].selected> returns an Element of the selected number.
 
         // @Usage
         // Use to choose randomly from the following commands

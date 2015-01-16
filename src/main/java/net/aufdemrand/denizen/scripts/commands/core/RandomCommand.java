@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.commands.BracedCommand;
@@ -75,6 +76,8 @@ public class RandomCommand extends BracedCommand {
         previous3 = previous2;
         previous2 = previous;
         previous = selected;
+        scriptEntry.addObject("possibilities", new Element(possibilities));
+        scriptEntry.addObject("selected", new Element(selected));
 
         dB.report(scriptEntry, getName(), aH.debugObj("possibilities", possibilities) + aH.debugObj("choice", selected + 1));
 
