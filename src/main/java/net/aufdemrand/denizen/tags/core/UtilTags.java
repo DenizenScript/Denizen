@@ -239,6 +239,51 @@ public class UtilTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.ram_allocated>
+        // @returns Element(Number)
+        // @description
+        // How much RAM is allocated to the server, in bytes (total memory).
+        // -->
+        if (attribute.startsWith("ram_allocated")) {
+            event.setReplaced(new Element(Runtime.getRuntime().totalMemory())
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.ram_max>
+        // @returns Element(Number)
+        // @description
+        // How much RAM is available to the server, in bytes (max memory).
+        // -->
+        if (attribute.startsWith("ram_max")) {
+            event.setReplaced(new Element(Runtime.getRuntime().maxMemory())
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.ram_free>
+        // @returns Element(Number)
+        // @description
+        // How much RAM is unused but available on the server, in bytes (free memory).
+        // -->
+        if (attribute.startsWith("ram_free")) {
+            event.setReplaced(new Element(Runtime.getRuntime().freeMemory())
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.available_processors>
+        // @returns Element(Number)
+        // @description
+        // How many virtual processors are available to the server.
+        // (In general, Minecraft only uses one, unfortunately.)
+        // -->
+        if (attribute.startsWith("available_processors")) {
+            event.setReplaced(new Element(Runtime.getRuntime().availableProcessors())
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.current_time_millis>
         // @returns Element(Number)
         // @description
