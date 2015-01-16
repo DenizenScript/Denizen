@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import net.aufdemrand.denizencore.DenizenCore;
+import net.aufdemrand.denizencore.events.core.ReloadScriptsScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
@@ -338,18 +339,6 @@ public class DenizenCommandHandler {
     }
 
 
-    // <--[event]
-    // @Events
-    // reload scripts
-    //
-    // @Triggers when Denizen scripts are reloaded.
-    // @Context
-    // <context.sender> returns the name of the sender who triggered the reload.
-    // <context.all> returns whether 'reload -a' was used.
-    // <context.haderror> returns whether there was an error.
-    //
-    // -->
-
     /*
      * DENIZEN RELOAD
      */
@@ -369,13 +358,13 @@ public class DenizenCommandHandler {
             if (ScriptHelper.hadError()) {
                 Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
             }
-            List<String> events = new ArrayList<String>();
-            Map<String, dObject> context = new HashMap<String, dObject>();
-            events.add("reload scripts");
-            context.put("all", Element.TRUE);
-            context.put("sender", new Element(sender.getName()));
-            context.put("haderror", new Element(ScriptHelper.hadError()));
-            BukkitWorldScriptHelper.doEvents(events, null, (sender instanceof Player) ? new dPlayer((Player) sender) : null, context);
+            // TODO: Properly handle player vs. npc?
+            ReloadScriptsScriptEvent.instance.reset();
+            ReloadScriptsScriptEvent.instance.all = true;
+            ReloadScriptsScriptEvent.instance.hadError = ScriptHelper.hadError();
+            ReloadScriptsScriptEvent.instance.sender = sender.getName();
+            ReloadScriptsScriptEvent.instance.data = new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender): null, null);
+            ReloadScriptsScriptEvent.instance.fire();
             return;
         }
         // Reload a specific item
@@ -398,13 +387,13 @@ public class DenizenCommandHandler {
                 if (ScriptHelper.hadError()) {
                     Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
                 }
-                List<String> events = new ArrayList<String>();
-                Map<String, dObject> context = new HashMap<String, dObject>();
-                events.add("reload scripts");
-                context.put("all", Element.FALSE);
-                context.put("haderror", new Element(ScriptHelper.hadError()));
-                context.put("sender", new Element(sender.getName()));
-                BukkitWorldScriptHelper.doEvents(events, null, (sender instanceof Player) ? new dPlayer((Player) sender) : null, context);
+                // TODO: Properly handle player vs. npc?
+                ReloadScriptsScriptEvent.instance.reset();
+                ReloadScriptsScriptEvent.instance.all = false;
+                ReloadScriptsScriptEvent.instance.hadError = ScriptHelper.hadError();
+                ReloadScriptsScriptEvent.instance.sender = sender.getName();
+                ReloadScriptsScriptEvent.instance.data = new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender): null, null);
+                ReloadScriptsScriptEvent.instance.fire();
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("externals")) {
