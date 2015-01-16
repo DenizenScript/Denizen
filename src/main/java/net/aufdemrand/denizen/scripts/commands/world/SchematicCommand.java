@@ -163,6 +163,14 @@ public class SchematicCommand extends AbstractCommand {
                     return;
                 }
                 dB.echoError(scriptEntry.getResidingQueue(), "Schematic rotation is TODO!");
+                int ang = angle.asInt();
+                if (ang < 0) {
+                    ang = 360 + ang;
+                }
+                while (ang > 0) {
+                    ang -= 90;
+                    schematics.get(name.asString().toUpperCase()).rotateOne();
+                }
                 //schematics.get(name.asString().toUpperCase()).rotate2D(angle.asInt());
                 break;
             case PASTE:

@@ -76,6 +76,11 @@ public class CuboidBlockSet implements BlockSet {
         }
     }
 
+    public CuboidBlockSet rotateOne() {
+        // TODO
+        return new CuboidBlockSet();
+    }
+
     @Override
     public String toCompressedFormat() {
         StringBuilder sb = new StringBuilder(blocks.size() * 20);
