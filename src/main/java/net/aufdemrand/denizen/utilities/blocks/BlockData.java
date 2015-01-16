@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
+import net.aufdemrand.denizen.utilities.jnbt.CompoundTag;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,6 +13,11 @@ public class BlockData {
     public int data;
 
     public BlockData() {
+    }
+
+    public BlockData(short mat, byte dat) {
+        material = Material.getMaterial(mat);
+        data = dat;
     }
 
     public BlockData(Block block) {
@@ -37,5 +43,13 @@ public class BlockData {
             throw new RuntimeException("Null material: " + datas.get(0));
         }
         return data;
+    }
+
+    public CompoundTag getNBTTag() {
+        return null;
+    }
+
+    public void setNBTTag(CompoundTag tag) {
+        return;
     }
 }

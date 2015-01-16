@@ -135,7 +135,8 @@ public class SchematicCommand extends AbstractCommand {
                         return;
                     }
                     InputStream fs = new FileInputStream(f);
-                    set = CuboidBlockSet.fromCompressedString(ScriptHelper.convertStreamToString(fs));
+                    //set = CuboidBlockSet.fromCompressedString(ScriptHelper.convertStreamToString(fs));
+                    set = CuboidBlockSet.fromMCEditStream(fs);
                     fs.close();
                     schematics.put(name.asString().toUpperCase(), set);
                 }
@@ -191,12 +192,13 @@ public class SchematicCommand extends AbstractCommand {
                     set = schematics.get(name.asString().toUpperCase());
                     String directory = URLDecoder.decode(System.getProperty("user.dir"));
                     File f = new File(directory + "/plugins/Denizen/schematics/" + name.asString() + ".schematic");
-                    String output = set.toCompressedFormat();
+                    //String output = set.toCompressedFormat();
                     FileOutputStream fs = new FileOutputStream(f);
-                    OutputStreamWriter osw = new OutputStreamWriter(fs);
+                    set.saveMCEditFormatToStream(fs);
+                    /*OutputStreamWriter osw = new OutputStreamWriter(fs);
                     osw.write(output);
                     osw.flush();
-                    osw.close();
+                    osw.close();*/
                     fs.flush();
                     fs.close();
                 }

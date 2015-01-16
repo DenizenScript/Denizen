@@ -428,8 +428,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             int x_distance = pair.x_distance;
 
             for (int x = 0; x != x_distance + 1; x++) {
-                for (int z = 0; z != z_distance + 1; z++) {
-                    for (int y = 0; y != y_distance + 1; y++) {
+                for (int y = 0; y != y_distance + 1; y++) {
+                    for (int z = 0; z != z_distance + 1; z++) {
                         loc = new dLocation(loc_1.clone().add(x, y, z));
                         if (!filter.isEmpty() && loc.getY() >= 0 && loc.getY() < 256) {
                             // Check filter
@@ -469,8 +469,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             int x_distance = pair.x_distance;
 
             for (int x = 0; x != x_distance + 1; x++) {
-                for (int z = 0; z != z_distance + 1; z++) {
-                    for (int y = 0; y != y_distance + 1; y++) {
+                for (int y = 0; y != y_distance + 1; y++) {
+                    for (int z = 0; z != z_distance + 1; z++) {
                         if (loc_1.getY() + y >= 0 && loc_1.getY() + y < 256) {
                             materials.get(index).setBlock(loc_1.clone().add(x, y, z).getBlock());
                         }
@@ -492,8 +492,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             int x_distance = pair.x_distance;
 
             for (int x = 0; x != x_distance + 1; x++) {
-                for (int z = 0; z != z_distance + 1; z++) {
-                    for (int y = 0; y != y_distance + 1; y++) {
+                for (int y = 0; y != y_distance + 1; y++) {
+                    for (int z = 0; z != z_distance + 1; z++) {
                         if (x == nX && nY == y && z == nZ) {
                             return materials.get(index);
                         }
@@ -571,9 +571,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             int x_distance = pair.x_distance;
 
             for (int x = 0; x != x_distance + 1; x++) {
-                for (int z = 0; z != z_distance + 1; z++) {
-                    for (int y = 0; y != y_distance; y++) {
-
+                for (int y = 0; y != y_distance + 1; y++) {
+                    for (int z = 0; z != z_distance + 1; z++) {
                         loc = new dLocation(loc_1.clone()
                                 .add(x, y, z));
 
