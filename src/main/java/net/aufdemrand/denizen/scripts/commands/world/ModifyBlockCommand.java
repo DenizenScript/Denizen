@@ -149,7 +149,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
         if ((locations == null || locations.size() == 0) && (location_list == null || location_list.size() == 0))
             dB.echoError("Must specify a valid location!");
-        if (materials.size() == 0)
+        if (materialList.size() == 0)
             dB.echoError("Must specify a valid material!");
 
         no_physics = !doPhysics;
