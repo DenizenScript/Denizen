@@ -1053,7 +1053,7 @@ public class dEntity implements dObject, Adjustable {
     public String identifySimple() {
 
         // Check if entity is an NPC
-        if (npc != null) {
+        if (npc != null && npc.isValid()) {
             return "n@" + npc.getId();
         }
 
