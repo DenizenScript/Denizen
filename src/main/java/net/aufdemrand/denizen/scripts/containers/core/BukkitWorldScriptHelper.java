@@ -3974,7 +3974,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when a player shears an entity.
     // @Context
-    // <context.state> returns the dEntity.
+    // <context.state> returns the dEntity of the sheep.
     //
     // @Determine
     // "CANCELLED" to stop the player from shearing the entity.
@@ -4011,7 +4011,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when a player starts or stops flying.
     // @Context
-    // <context.state> returns an Element with a value of "true" if the player is now flying and "false" otherwise.
+    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now flying and "false" otherwise.
     //
     // @Determine
     // "CANCELLED" to stop the player from toggling flying.
@@ -4040,7 +4040,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when a player starts or stops sneaking.
     // @Context
-    // <context.state> returns an Element with a value of "true" if the player is now sneaking and "false" otherwise.
+    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sneaking and "false" otherwise.
     //
     // @Determine
     // "CANCELLED" to stop the player from toggling sneaking.
@@ -4069,7 +4069,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when a player starts or stops sprinting.
     // @Context
-    // <context.state> returns an Element with a value of "true" if the player is now sprinting and "false" otherwise.
+    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sprinting and "false" otherwise.
     //
     // @Determine
     // "CANCELLED" to stop the player from toggling sprinting.
@@ -4386,7 +4386,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Triggers when weather changes in a world.
     // @Context
     // <context.world> returns the dWorld the weather changed in.
-    // <context.weather> returns an Element with the name of the new weather.
+    // <context.weather> returns an Element with the name of the new weather. (rain or clear).
     //
     // @Determine
     // "CANCELLED" to stop the weather from changing.
@@ -4432,7 +4432,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Triggers when a portal is created in a world.
     // @Context
     // <context.world> returns the dWorld the portal was created in.
-    // <context.reason> returns an Element of the reason the portal was created.
+    // <context.reason> returns an Element of the reason the portal was created. (FIRE or OBC_DESTINATION)
     //
     // @Determine
     // "CANCELLED" to stop the portal from being created.
@@ -4496,7 +4496,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.world> returns the dWorld the structure grew in.
     // <context.location> returns the dLocation the structure grew at.
     // <context.structure> returns an Element of the structure's type.
-    // <context.blocks> returns a list of all block locations to be modified.
+    // <context.blocks> returns a dList of all block locations to be modified.
     //
     // @Determine
     // "CANCELLED" to stop the structure from growing.
