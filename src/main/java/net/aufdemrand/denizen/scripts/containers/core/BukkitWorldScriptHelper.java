@@ -3484,6 +3484,74 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
+    // player right clicks at entity (with <item>)
+    // player right clicks at entity in <notable cuboid>
+    // player right clicks at entity in notable cuboid
+    // player right clicks at <entity> (with <item>)
+    // player right clicks at <entity> in <notable cuboid>
+    // player right clicks at <entity> in notable cuboid
+
+    // @Triggers when a player right clicks at an entity (Similar to right clicks entity, but for armor stands).
+    // @Context
+    // <context.entity> returns the dEntity the player is clicking on.
+    // <context.item> returns the dItem the player is clicking with.
+    // <context.cuboids> returns a dList of cuboids that contain the interacted entity.
+    // <context.location> returns a dLocation of the clicked entity.
+    //
+    // @Determine
+    // "CANCELLED" to stop the click from happening.
+    //
+    // -->
+    @EventHandler
+    public void playerInteractStand(PlayerInteractAtEntityEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("location", new dLocation(event.getPlayer().getWorld(),
+                event.getClickedPosition().getX(),
+                event.getClickedPosition().getY(),
+                event.getClickedPosition().getZ()));
+        dEntity entity = new dEntity(event.getRightClicked());
+        context.put("entity", entity);
+        dItem item = new dItem(event.getPlayer().getItemInHand());
+        context.put("item", item);
+        dNPC npc = null;
+        if (entity.isNPC()) npc = entity.getDenizenNPC();
+        List<String> events = new ArrayList<String>();
+        events.add("player right clicks at entity");
+        events.add("player right clicks at " + entity.identifyType());
+        events.add("player right clicks at entity with " +
+                item.identifySimple());
+        events.add("player right clicks at " + entity.identifyType() + " with " +
+                item.identifySimple());
+        events.add("player right clicks at entity with " +
+                item.identifyMaterial());
+        events.add("player right clicks at " + entity.identifyType() + " with " +
+                item.identifyMaterial());
+        // Look for cuboids that contain the block's location
+        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getRightClicked().getLocation());
+        if (cuboids.size() > 0) {
+            events.add("player right clicks at entity in notable cuboid");
+            events.add("player right clicks at " + entity.identifyType() + " in notable cuboid");
+        }
+        dList cuboid_context = new dList();
+        for (dCuboid cuboid : cuboids) {
+            events.add("player right clicks entity in " + cuboid.identifySimple());
+            events.add("player right clicks " + entity.identifyType() + " in " + cuboid.identifySimple());
+            cuboid_context.add(cuboid.identifySimple());
+        }
+        // Add in cuboids context, with either the cuboids or an empty list
+        context.put("cuboids", cuboid_context);
+        List<String> determinations = OldEventManager.doEvents(events,
+                new BukkitScriptEntryData(new dPlayer(event.getPlayer()), npc), context, true);
+        for (String determination: determinations) {
+            if (determination.equalsIgnoreCase("CANCELLED")) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    // <--[event]
+    // @Events
     // player right clicks entity (with <item>)
     // player right clicks entity in <notable cuboid>
     // player right clicks entity in notable cuboid
@@ -3495,7 +3563,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity the player is clicking on.
     // <context.item> returns the dItem the player is clicking with.
-    // <context.cuboids> returns a dList of cuboids that contain the interacted entity
+    // <context.cuboids> returns a dList of cuboids that contain the interacted entity.
+    // <context.location> returns a dLocation of the clicked entity.
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
@@ -3905,7 +3974,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when a player shears an entity.
     // @Context
-    // <context.state> returns the dEntity.
+    // <context.state> returns the dEntity of the sheep.
     //
     // @Determine
     // "CANCELLED" to stop the player from shearing the entity.
@@ -3942,7 +4011,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when a player starts or stops flying.
     // @Context
-    // <context.state> returns an Element with a value of "true" if the player is now flying and "false" otherwise.
+    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now flying and "false" otherwise.
     //
     // @Determine
     // "CANCELLED" to stop the player from toggling flying.
@@ -3971,7 +4040,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when a player starts or stops sneaking.
     // @Context
-    // <context.state> returns an Element with a value of "true" if the player is now sneaking and "false" otherwise.
+    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sneaking and "false" otherwise.
     //
     // @Determine
     // "CANCELLED" to stop the player from toggling sneaking.
@@ -4000,7 +4069,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when a player starts or stops sprinting.
     // @Context
-    // <context.state> returns an Element with a value of "true" if the player is now sprinting and "false" otherwise.
+    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sprinting and "false" otherwise.
     //
     // @Determine
     // "CANCELLED" to stop the player from toggling sprinting.
@@ -4317,7 +4386,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Triggers when weather changes in a world.
     // @Context
     // <context.world> returns the dWorld the weather changed in.
-    // <context.weather> returns an Element with the name of the new weather.
+    // <context.weather> returns an Element with the name of the new weather. (rain or clear).
     //
     // @Determine
     // "CANCELLED" to stop the weather from changing.
@@ -4363,7 +4432,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Triggers when a portal is created in a world.
     // @Context
     // <context.world> returns the dWorld the portal was created in.
-    // <context.reason> returns an Element of the reason the portal was created.
+    // <context.reason> returns an Element of the reason the portal was created. (FIRE or OBC_DESTINATION)
     //
     // @Determine
     // "CANCELLED" to stop the portal from being created.
@@ -4427,7 +4496,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.world> returns the dWorld the structure grew in.
     // <context.location> returns the dLocation the structure grew at.
     // <context.structure> returns an Element of the structure's type.
-    // <context.blocks> returns a list of all block locations to be modified.
+    // <context.blocks> returns a dList of all block locations to be modified.
     //
     // @Determine
     // "CANCELLED" to stop the structure from growing.

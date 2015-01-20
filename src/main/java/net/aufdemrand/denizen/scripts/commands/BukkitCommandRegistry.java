@@ -2049,7 +2049,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
 
         // @Tags
-        // None
+        // <entry[saveName].possibilities> returns an Element of the possibility count.
+        // <entry[saveName].selected> returns an Element of the selected number.
 
         // @Usage
         // Use to choose randomly from the following commands
@@ -2224,6 +2225,55 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(RuntaskCommand.class,
                 "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
+
+
+        // <--[command]
+        // @Name Schematic
+        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>)
+        // @Group World
+        // @Required 2
+        // @Stable unstable
+        // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
+        // @Author mcmonkey
+
+        // @Description
+        // Todo
+
+        // @Tags
+        // <schematic[<name>].height>
+        // <schematic[<name>].length>
+        // <schematic[<name>].width>
+        // <schematic[<name>].block[<location>]>
+        // <schematic[<name>].origin>
+        // <schematic[<name>].blocks>
+
+        // @Usage
+        // Use to create a new schematic from a cuboid and an origin location
+        // - schematic create name:MySchematic cu@<player.location.sub[5,5,5]>|<player.location.add[5,5,5]> <player.location>
+
+        // @Usage
+        // Use to load a schematic
+        // - schematic load name:MySchematic
+
+        // @Usage
+        // Use to unload a schematic
+        // - schematic unload name:MySchematic
+
+        // @Usage
+        // Use to rotate a loaded schematic
+        // - schematic rotate name:MySchematic angle:90
+
+        // @Usage
+        // Use to paste a loaded schematic
+        // - schematic paste name:MySchematic <player.location> noair
+
+        // @Usage
+        // Use to save a created schematic
+        // - schematic save name:MySchematic
+
+        // -->
+        registerCoreMember(SchematicCommand.class,
+                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>)", 2);
 
 
         // <--[command]

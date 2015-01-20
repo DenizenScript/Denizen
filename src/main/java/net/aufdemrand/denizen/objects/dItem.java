@@ -702,8 +702,8 @@ public class dItem implements dObject, Notable, Adjustable {
                         .getAttribute(attribute.fulfill(1)); // iron sword -> iron swords
 
             }   else {
-                if (id.equals("cactus")) return new Element("a cactus").getAttribute(attribute.fulfill(2));
-                if (id.endsWith("s")) return new Element(id).getAttribute(attribute.fulfill(2));
+                if (id.equals("cactus")) return new Element("a cactus").getAttribute(attribute.fulfill(1));
+                if (id.endsWith("s")) return new Element(id).getAttribute(attribute.fulfill(1));
                 if (id.startsWith("a") || id.startsWith("e") || id.startsWith("i")
                         || id.startsWith("o") || id.startsWith("u"))
                     return new Element("an " + id)

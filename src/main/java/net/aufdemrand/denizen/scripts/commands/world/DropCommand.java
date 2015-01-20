@@ -116,7 +116,8 @@ public class DropCommand extends AbstractCommand {
                         dB.echoDebug(scriptEntry, "Cannot drop multiples of this item because it is Unique!");
                     for (int x = 0; x < qty.asInt(); x++) {
                         dEntity e = new dEntity(location.getWorld().dropItemNaturally(location, item.getItemStack()));
-                        e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble(): 1d));
+                        if (e.isValid())
+                            e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble(): 1d));
                         entityList.add(e.toString());
                     }
                 }

@@ -2254,6 +2254,35 @@ public class dPlayer implements dObject, Adjustable {
             SignEditor.editSign(getPlayerEntity(), value.asType(dLocation.class));
         }
 
+        // <--[mechanism]
+        // @object dPlayer
+        // @name tab_list_info
+        // @input Element(|Element)
+        // @description
+        // Show the player some text in the header and footer area
+        // in their tab list.
+        // - adjust <player> tab_list_info:<header>|<footer>
+        // -->
+        if (mechanism.matches("tab_list_info")) {
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+                if (split.length > 0) {
+                    String header = split[0];
+                    String footer = "";
+                    if (split.length > 1) {
+                        footer = split[1];
+                    }
+                    DisplayHeaderFooter.showHeaderFooter(getPlayerEntity(), header, footer);
+                }
+                else {
+                    dB.echoError("Must specify a header and footer to show!");
+                }
+            }
+            else {
+                DisplayHeaderFooter.clearHeaderFooter(getPlayerEntity());
+            }
+        }
+
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);

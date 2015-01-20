@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitElementProperties;
+import net.aufdemrand.denizen.objects.properties.bukkit.BukkitListProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitQueueProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitScriptProperties;
 import net.aufdemrand.denizen.objects.properties.entity.*;
@@ -614,6 +615,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(BukkitScriptProperties.class, dScript.class);
             propertyParser.registerProperty(BukkitQueueProperties.class, ScriptQueue.class);
             propertyParser.registerProperty(BukkitElementProperties.class, Element.class);
+            propertyParser.registerProperty(BukkitListProperties.class, dList.class);
 
             // register core dEntity properties
             propertyParser.registerProperty(EntityAge.class, dEntity.class);
