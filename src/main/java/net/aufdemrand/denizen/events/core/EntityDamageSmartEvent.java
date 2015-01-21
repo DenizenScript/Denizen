@@ -79,8 +79,9 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
     //
     // @Triggers when an entity is damaged.
     // @Context
-    // <context.cause> returns the reason the entity was damaged - see <@link language damage cause> for causes.
-    // <context.damage> returns the amount of damage dealt.
+    // <context.cause> returns the an Element of reason the entity was damaged - see <@link language damage cause> for causes.
+    // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
+    // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.entity> returns the dEntity that was damaged.
     //
     // @Determine
@@ -101,6 +102,7 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
 
         context.put("entity", entity.getDenizenObject());
         context.put("damage", new Element(event.getDamage()));
+        context.put("final_damage", new Element(event.getFinalDamage()));
         context.put("cause", new Element(event.getCause().name()));
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
@@ -109,7 +111,7 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
         boolean isFatal = false;
 
         if (entity.isValid() && entity.isLivingEntity()) {
-            if (event.getDamage() >= entity.getLivingEntity().getHealth()) {
+            if (event.getFinalDamage() >= entity.getLivingEntity().getHealth()) {
                 isFatal = true;
             }
         }
@@ -133,11 +135,12 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
             //
             // @Triggers when an entity is killed.
             // @Context
-            // <context.cause> returns the reason the entity was killed - see <@link language damage cause> for causes.
             // <context.entity> returns the dEntity that was killed.
-            // <context.damage> returns the amount of damage dealt.
+            // <context.cause> returns the an Element of reason the entity was damaged - see <@link language damage cause> for causes.
+            // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
+            // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
             // <context.damager> returns the dEntity damaging the other entity.
-            // <context.projectile> returns the projectile shot by the damager, if any.
+            // <context.projectile> returns a dEntity of the projectile shot by the damager, if any.
             //
             // @Determine
             // "CANCELLED" to stop the entity from being killed.
@@ -168,11 +171,12 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
             //
             // @Triggers when an entity damages another entity.
             // @Context
-            // <context.cause> returns the reason the entity was damaged - see <@link language damage cause> for causes.
             // <context.entity> returns the dEntity that was damaged.
-            // <context.damage> returns the amount of damage dealt.
+            // <context.cause> returns the an Element of reason the entity was damaged - see <@link language damage cause> for causes.
+            // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
+            // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
             // <context.damager> returns the dEntity damaging the other entity.
-            // <context.projectile> returns the projectile, if one caused the event.
+            // <context.projectile> returns a dEntity of the projectile, if one caused the event.
             //
             // @Determine
             // "CANCELLED" to stop the entity from being damaged.
@@ -296,10 +300,11 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
                 //
                 // @Triggers when an entity kills another entity.
                 // @Context
-                // <context.cause> returns the reason the entity was killed - see <@link language damage cause> for causes.
                 // <context.entity> returns the dEntity that was killed.
-                // <context.damager> returns the dEntity killing the other entity.
-                // <context.projectile> returns the projectile, if one caused the event.
+                // <context.cause> returns the an Element of reason the entity was damaged - see <@link language damage cause> for causes.
+                // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
+                // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
+                // <context.projectile> returns a dEntity of the projectile, if one caused the event.
                 //
                 // @Determine
                 // "CANCELLED" to stop the entity from being killed.
