@@ -47,7 +47,7 @@ public class PlayEffectCommand extends AbstractCommand {
 
     public static enum ParticleEffect {
         ENDER_SIGNAL(EnumParticle.HEART), // TODO
-        MOBSPAWNER_FLAMES(EnumParticle.MOB_APPEARANCE),
+        MOBSPAWNER_FLAMES(EnumParticle.FLAME), // TODO
         POTION_BREAK(EnumParticle.HEART), // TODO
         SMOKE(EnumParticle.SMOKE_NORMAL),
         HUGE_EXPLOSION(EnumParticle.EXPLOSION_HUGE),
