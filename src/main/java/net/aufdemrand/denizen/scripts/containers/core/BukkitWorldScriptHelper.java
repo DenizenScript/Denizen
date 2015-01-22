@@ -1386,10 +1386,12 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.blocks> returns a dList of blocks that the entity blew up.
     // <context.entity> returns the dEntity that exploded.
     // <context.location> returns the dLocation the entity blew up at.
+    // <contect.strength> returns an Element(Decimal) of the strength of the explosion.
     //
     // @Determine
     // "CANCELLED" to stop the entity from exploding.
     // dList(dLocation) to set a new lists of blocks that are to be affected by the explosion.
+    // Element(Decimal) to change the strength of the explosion.
     //
     // -->
     @EventHandler
@@ -1403,6 +1405,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
         context.put("entity", entity.getDenizenObject());
         context.put("location", new dLocation(event.getLocation()));
+        context.put("strength", new Element(event.getYield()));
 
         String blocks = "";
         for (Block block : event.blockList()) {
@@ -1418,6 +1421,10 @@ public class BukkitWorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+
+        else if (aH.matchesDouble(determination)) {
+            event.setYield(new Element(determination).asFloat());
+        }
 
         else if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
             dList list = dList.valueOf(determination);
