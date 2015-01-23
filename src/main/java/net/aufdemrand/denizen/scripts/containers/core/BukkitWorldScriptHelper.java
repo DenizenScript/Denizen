@@ -57,10 +57,10 @@ public class BukkitWorldScriptHelper implements Listener {
     public static String doEvents(List<String> events, dNPC npc, dPlayer player, Map<String, dObject> context, boolean useids) {
         List<String> determ;
         if (useids) {
-            determ = OldEventManager.doEvents(events, new BukkitScriptEntryData(player, npc), context);
+            determ = OldEventManager.doEvents(events, new BukkitScriptEntryData(player, npc), context, true);
         }
         else {
-            determ = OldEventManager.doEvents(events, new BukkitScriptEntryData(player, npc), context, true);
+            determ = OldEventManager.doEvents(events, new BukkitScriptEntryData(player, npc), context);
         }
         return determ.size() > 0 ? determ.get(0): "none";
     }
@@ -3542,8 +3542,8 @@ public class BukkitWorldScriptHelper implements Listener {
         }
         dList cuboid_context = new dList();
         for (dCuboid cuboid : cuboids) {
-            events.add("player right clicks entity in " + cuboid.identifySimple());
-            events.add("player right clicks " + entity.identifyType() + " in " + cuboid.identifySimple());
+            events.add("player right clicks at entity in " + cuboid.identifySimple());
+            events.add("player right clicks at " + entity.identifyType() + " in " + cuboid.identifySimple());
             cuboid_context.add(cuboid.identifySimple());
         }
         // Add in cuboids context, with either the cuboids or an empty list
