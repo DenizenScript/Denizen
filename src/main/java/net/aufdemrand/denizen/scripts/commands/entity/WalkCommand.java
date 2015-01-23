@@ -104,7 +104,8 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
         // Do the execution
 
         List<dNPC> npcs = new ArrayList<dNPC>();
-        for (dEntity entity : entities) {
+        final List<dEntity> waitForEntities = new ArrayList<dEntity>();
+        for (final dEntity entity : entities) {
             if (entity.isNPC()) {
                 dNPC npc = entity.getDenizenNPC();
                 npcs.add(npc);
@@ -132,14 +133,23 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                 }
             }
             else {
-                EntityMovement.walkTo(entity.getBukkitEntity(), loc, speed != null ? speed.asDouble() : 0.2);
+                waitForEntities.add(entity);
+                EntityMovement.walkTo(entity.getBukkitEntity(), loc, speed != null ? speed.asDouble() : 0.2,
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                checkHeld(entity);
+                            }
+                        });
             }
         }
 
         if (scriptEntry.shouldWaitFor()) {
             held.add(scriptEntry);
-            scriptEntry.addObject("tally", npcs);
-            // TODO: make non-NPC entities waitable
+            if (!npcs.isEmpty())
+                scriptEntry.addObject("tally", npcs);
+            if (!waitForEntities.isEmpty())
+                scriptEntry.addObject("entities", waitForEntities);
         }
 
     }
@@ -184,9 +194,26 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
             // Check if tally is empty.
             if (tally.isEmpty()) {
-                entry.setFinished(true);
-                held.remove(i);
-                i--;
+                if (!entry.hasObject("entities") || ((List<dEntity>) entry.getObject("entities")).isEmpty()) {
+                    entry.setFinished(true);
+                    held.remove(i);
+                    i--;
+                }
+            }
+        }
+    }
+
+    public void checkHeld(dEntity entity) {
+        for (int i = 0; i < held.size(); i++) {
+            ScriptEntry entry = held.get(i);
+            List<dEntity> waitForEntities = (List<dEntity>) entry.getObject("entities");
+            waitForEntities.remove(entity);
+            if (waitForEntities.isEmpty()) {
+                if (!entry.hasObject("tally") || ((List<dNPC>) entry.getObject("tally")).isEmpty()) {
+                    entry.setFinished(true);
+                    held.remove(i);
+                    i--;
+                }
             }
         }
     }

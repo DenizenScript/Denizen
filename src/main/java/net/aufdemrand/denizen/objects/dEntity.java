@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
+import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
@@ -1924,6 +1925,18 @@ public class dEntity implements dObject, Adjustable {
             return new Duration(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <e@entity.has_ai>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns whether the entity uses the default Minecraft
+        // AI to roam and look around.
+        // -->
+        if (attribute.startsWith("has_ai"))
+            return new Element(!EntityMovement.isAIDisabled(getBukkitEntity()))
+                    .getAttribute(attribute.fulfill(1));
+
 
         /////////////////////
         //   TYPE ATTRIBUTES
@@ -2354,6 +2367,20 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("play_death")) {
             getLivingEntity().playEffect(EntityEffect.DEATH);
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name toggle_ai
+        // @input Element(Boolean)
+        // @description
+        // Sets whether this entity will use the default
+        // Minecraft AI to roam and look around.
+        // @tags
+        // <e@entity.has_ai>
+        // -->
+        if (mechanism.matches("toggle_ai") && mechanism.requireBoolean()) {
+            EntityMovement.toggleAI(getBukkitEntity(), value.asBoolean());
         }
 
         // Iterate through this object's properties' mechanisms
