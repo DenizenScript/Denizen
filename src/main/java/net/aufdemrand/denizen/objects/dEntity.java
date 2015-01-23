@@ -1392,6 +1392,21 @@ public class dEntity implements dObject, Adjustable {
             return new dItem(getLivingEntity().getEquipment().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <e@entity.inventory>
+        // @returns dInventory
+        // @group inventory
+        // @description
+        // Returns the entity's inventory, if it has one.
+        // -->
+        if (attribute.startsWith("inventory")) {
+            dInventory inventory = getInventory();
+            if (inventory != null)
+                return inventory.getAttribute(attribute.fulfill(1));
+            else
+                return null;
+        }
+
 
         /////////////////////
         //   LOCATION ATTRIBUTES
@@ -1400,7 +1415,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.map_trace>
         // @returns dLocation
-        // @group inventory
+        // @group location
         // @description
         // returns a 2D location indicating where on the map the entity's looking at.
         // Each coordinate is in the range of 0 to 128.
