@@ -72,6 +72,7 @@ public class ItemScriptHelper implements Listener {
         container.setHashID(colors);
         return colors;
     }
+
     public static String createItemScriptID(String name) {
         String script = name.toUpperCase();
         StringBuilder colors = new StringBuilder();
@@ -253,7 +254,7 @@ public class ItemScriptHelper implements Listener {
         primary: for (Map.Entry<dItem, dList> entry :
                 ItemScriptContainer.shapelessRecipesMap.entrySet()) {
             for (int i = 0; i < entry.getValue().size(); i++) {
-                if (!contains_any(dItem.valueOf(entry.getValue().get(i)), matrix)) {
+                if (!containsAny(dItem.valueOf(entry.getValue().get(i)), matrix)) {
                     continue primary;
                 }
             }
@@ -263,7 +264,7 @@ public class ItemScriptHelper implements Listener {
         return null;
     }
 
-    public boolean contains_any(dItem item, ItemStack[] matrix) {
+    public boolean containsAny(dItem item, ItemStack[] matrix) {
         String full = item.getFullString();
         for (int i = 0; i < matrix.length; i++) {
             if (full.equalsIgnoreCase(new dItem(matrix[i]).getFullString())) {

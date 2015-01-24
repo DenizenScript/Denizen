@@ -1369,34 +1369,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <l@location.biome.humidity>
-        // @returns Element(Decimal)
-        // @description
-        // Returns the current humidity at the location.
-        // -->
-        if (attribute.startsWith("biome.humidity"))
-            return new Element(getBlock().getHumidity())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <l@location.biome.temperature>
-        // @returns Element(Decimal)
-        // @description
-        // Returns the current temperature at the location.
-        // -->
-        if (attribute.startsWith("biome.temperature"))
-            return new Element(getBlock().getTemperature())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
         // @attribute <l@location.biome>
         // @mechanism dLocation.biome
-        // @returns Element
+        // @returns dBiome
         // @description
-        // Returns the biome name at the location.
+        // Returns the biome at the location.
         // -->
         if (attribute.startsWith("biome"))
-            return new Element(getBlock().getBiome().name())
+            return new dBiome(getBlock().getBiome())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1541,14 +1521,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <--[mechanism]
         // @object dLocation
         // @name biome
-        // @input Element
+        // @input dBiome
         // @description
         // Sets the biome of the block.
         // @tags
         // <l@location.biome>
         // -->
-        if (mechanism.matches("biome") && mechanism.requireEnum(false, Biome.values())) {
-            getBlock().setBiome(Biome.valueOf(value.asString().toUpperCase()));
+        if (mechanism.matches("biome") && mechanism.requireObject(dBiome.class)) {
+            value.asType(dBiome.class).getBiome().changeBlockBiome(this);
         }
 
         // <--[mechanism]
