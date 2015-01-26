@@ -7,6 +7,7 @@ import net.minecraft.server.v1_8_R1.TileEntity;
 import net.minecraft.server.v1_8_R1.TileEntitySign;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -36,7 +37,10 @@ public class SignEditor {
         TileEntity sign = ((CraftWorld) location.getWorld()).getTileEntityAt(location.getBlockX(),
                 location.getBlockY(), location.getBlockZ());
         if (sign instanceof TileEntitySign) {
+            // Prevent client crashing by sending current state of the sign
+            PacketHelper.sendPacket(player, sign.getUpdatePacket());
             ((TileEntitySign) sign).isEditable = true;
+            ((TileEntitySign) sign).a(((CraftPlayer) player).getHandle());
             PacketHelper.sendPacket(player, signEditorPacket);
         }
         else {

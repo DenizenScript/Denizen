@@ -2283,6 +2283,29 @@ public class dPlayer implements dObject, Adjustable {
             }
         }
 
+        // <--[mechanism]
+        // @object dPlayer
+        // @name sign_update
+        // @input dLocation|dList
+        // @description
+        // Shows the player fake lines on a sign.
+        // -->
+        if (mechanism.matches("sign_update")) {
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+                if (dLocation.matches(split[0]) && split.length > 1) {
+                    dList lines = dList.valueOf(split[1]);
+                    SignUpdate.updateSign(getPlayerEntity(), dLocation.valueOf(split[0]), lines.toArray(4));
+                }
+                else {
+                    dB.echoError("Must specify a valid location and at least one sign line!");
+                }
+            }
+            else {
+                dB.echoError("Must specify a valid location and at least one sign line!");
+            }
+        }
+
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
