@@ -1155,7 +1155,12 @@ public class dInventory implements dObject, Notable, Adjustable {
 
                 if (strict) {
                     for (ItemStack item : getContents()) {
-                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                        if (item != null && item.getType() == Material.WRITTEN_BOOK
+                                && ((BookMeta)item.getItemMeta()).getTitle().equalsIgnoreCase(search_string)) {
+                            found_items += item.getAmount();
+                            if (found_items >= qty) break;
+                        }
+                        else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                                 item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string)) {
                             found_items += item.getAmount();
                             if (found_items >= qty) break;
@@ -1163,7 +1168,13 @@ public class dInventory implements dObject, Notable, Adjustable {
                     }
                 } else {
                     for (ItemStack item : getContents()) {
-                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                        if (item != null && item.getType() == Material.WRITTEN_BOOK
+                                && ((BookMeta)item.getItemMeta()).getTitle()
+                                .toLowerCase().contains(search_string.toLowerCase())) {
+                            found_items += item.getAmount();
+                            if (found_items >= qty) break;
+                        }
+                        else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
                                 item.getItemMeta().getDisplayName().toLowerCase()
                                         .contains(search_string.toLowerCase())) {
                             found_items += item.getAmount();

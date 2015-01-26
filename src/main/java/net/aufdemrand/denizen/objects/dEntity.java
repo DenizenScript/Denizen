@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
+import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
@@ -1392,6 +1393,21 @@ public class dEntity implements dObject, Adjustable {
             return new dItem(getLivingEntity().getEquipment().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <e@entity.inventory>
+        // @returns dInventory
+        // @group inventory
+        // @description
+        // Returns the entity's inventory, if it has one.
+        // -->
+        if (attribute.startsWith("inventory")) {
+            dInventory inventory = getInventory();
+            if (inventory != null)
+                return inventory.getAttribute(attribute.fulfill(1));
+            else
+                return null;
+        }
+
 
         /////////////////////
         //   LOCATION ATTRIBUTES
@@ -1400,7 +1416,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[tag]
         // @attribute <e@entity.map_trace>
         // @returns dLocation
-        // @group inventory
+        // @group location
         // @description
         // returns a 2D location indicating where on the map the entity's looking at.
         // Each coordinate is in the range of 0 to 128.
@@ -1909,6 +1925,18 @@ public class dEntity implements dObject, Adjustable {
             return new Duration(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <e@entity.has_ai>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns whether the entity uses the default Minecraft
+        // AI to roam and look around.
+        // -->
+        if (attribute.startsWith("has_ai"))
+            return new Element(!EntityMovement.isAIDisabled(getBukkitEntity()))
+                    .getAttribute(attribute.fulfill(1));
+
 
         /////////////////////
         //   TYPE ATTRIBUTES
@@ -2339,6 +2367,20 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("play_death")) {
             getLivingEntity().playEffect(EntityEffect.DEATH);
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name toggle_ai
+        // @input Element(Boolean)
+        // @description
+        // Sets whether this entity will use the default
+        // Minecraft AI to roam and look around.
+        // @tags
+        // <e@entity.has_ai>
+        // -->
+        if (mechanism.matches("toggle_ai") && mechanism.requireBoolean()) {
+            EntityMovement.toggleAI(getBukkitEntity(), value.asBoolean());
         }
 
         // Iterate through this object's properties' mechanisms

@@ -40,14 +40,14 @@ public class FollowCommand extends AbstractCommand {
                     arg.matchesPrefix("s", "speed"))
                 scriptEntry.addObject("speed", arg.asElement());
 
-            else if (!scriptEntry.hasObject("target") &&
-                    arg.matchesArgumentType(dEntity.class))
-                scriptEntry.addObject("target", arg.asType(dEntity.class));
-
             else if (!scriptEntry.hasObject("entities") &&
                     arg.matchesPrefix("followers", "follower") &&
                     arg.matchesArgumentList(dEntity.class))
                 scriptEntry.addObject("entities", arg.asType(dList.class));
+
+            else if (!scriptEntry.hasObject("target") &&
+                    arg.matchesArgumentType(dEntity.class))
+                scriptEntry.addObject("target", arg.asType(dEntity.class));
 
             else
                 arg.reportUnhandled();

@@ -597,6 +597,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
             ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
             ObjectFetcher.registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
+            ObjectFetcher.registerWithObjectFetcher(dBiome.class);     // b@
 
             // Register Core dObjects with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();
@@ -622,6 +623,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(EntityAngry.class, dEntity.class);
             propertyParser.registerProperty(EntityColor.class, dEntity.class);
             propertyParser.registerProperty(EntityCritical.class, dEntity.class);
+            propertyParser.registerProperty(EntityElder.class, dEntity.class);
             propertyParser.registerProperty(EntityFirework.class, dEntity.class);
             propertyParser.registerProperty(EntityFramed.class, dEntity.class);
             propertyParser.registerProperty(EntityInfected.class, dEntity.class);
