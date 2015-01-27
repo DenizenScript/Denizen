@@ -893,9 +893,13 @@ public class dPlayer implements dObject, Adjustable {
         // it doesn't exist.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("bed_spawn"))
+        if (attribute.startsWith("bed_spawn")) {
+            if (getOfflinePlayer().getBedSpawnLocation() == null) {
+                return null;
+            }
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // If online, let dEntity handle location tags since there are more options
         // for online Players
