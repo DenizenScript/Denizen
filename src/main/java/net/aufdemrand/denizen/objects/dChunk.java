@@ -420,6 +420,19 @@ public class dChunk implements dObject, Adjustable {
             getWorld().regenerateChunk(getX(), getZ());
         }
 
+        // <--[mechanism]
+        // @object dChunk
+        // @name refresh_chunk
+        // @input None
+        // @description
+        // Refreshes the chunk, sending any changed properties to players.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("refresh_chunk")) {
+            getWorld().refreshChunk(getX(), getZ());
+        }
+
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
 
