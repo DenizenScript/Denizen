@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.core.*;
+import net.aufdemrand.denizen.events.scriptevents.VehicleMoveScriptEvent;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitElementProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitListProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitQueueProperties;
@@ -27,6 +28,7 @@ import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
+import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.scripts.*;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
@@ -581,6 +583,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             OldEventManager.registerSmartEvent(new SyncChatSmartEvent());
             OldEventManager.registerSmartEvent(new VehicleCollisionSmartEvent());
             eventManager().registerCoreMembers();
+
+            ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
 
 
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
