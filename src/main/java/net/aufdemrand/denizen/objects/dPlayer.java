@@ -1113,13 +1113,6 @@ public class dPlayer implements dObject, Adjustable {
 
             String permission = attribute.getContext(1);
 
-            if (Depends.permissions == null) {
-                if (!attribute.hasAlternative()) {
-                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                }
-                return null;
-            }
-
             // <--[tag]
             // @attribute <p@player.has_permission[permission.node].global>
             // @returns Element(Boolean)
@@ -1130,9 +1123,17 @@ public class dPlayer implements dObject, Adjustable {
             // -->
 
             // Non-world specific permission
-            if (attribute.getAttribute(2).startsWith("global"))
+            if (attribute.getAttribute(2).startsWith("global")) {
+                if (Depends.permissions == null) {
+                    if (!attribute.hasAlternative()) {
+                        dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                    }
+                    return null;
+                }
+
                 return new Element(Depends.permissions.has((World) null, getName(), permission)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
+            }
 
                 // <--[tag]
                 // @attribute <p@player.has_permission[permission.node].world>
@@ -1145,9 +1146,17 @@ public class dPlayer implements dObject, Adjustable {
                 // -->
 
                 // Permission in certain world
-            else if (attribute.getAttribute(2).startsWith("world"))
+            else if (attribute.getAttribute(2).startsWith("world")) {
+                if (Depends.permissions == null) {
+                    if (!attribute.hasAlternative()) {
+                        dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                    }
+                    return null;
+                }
+
                 return new Element(Depends.permissions.has(attribute.getContext(2), getName(), permission)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
+            }
 
             // Permission in current world
             else if (isOnline())
