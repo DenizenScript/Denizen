@@ -2319,6 +2319,17 @@ public class dPlayer implements dObject, Adjustable {
             }
         }
 
+        // <--[mechanism]
+        // @object dPlayer
+        // @name action_bar
+        // @input Element
+        // @description
+        // Sends the player text in the action bar.
+        // -->
+        if (mechanism.matches("action_bar")) {
+            ActionBar.sendActionBarMessage(getPlayerEntity(), value.asString());
+        }
+
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
