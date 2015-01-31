@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities.nbt;
 
 // NMS/CB imports start
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R1.*;
 import net.minecraft.server.v1_8_R1.PlayerInventory;
 import org.bukkit.*;
@@ -80,6 +81,21 @@ public class ImprovedOfflinePlayer {
         CraftInventoryPlayer inv = new CraftInventoryPlayer(new PlayerInventory(null));
         inv.setContents(inventory.getContents());
         this.compound.set("Inventory", inv.getInventory().a(new NBTTagList()));
+        if(this.autosave) savePlayerData();
+    }
+
+    public Inventory getEnderChest() {
+        if (InventoryScriptHelper.offlineEnderChests.containsKey(getUniqueId()))
+            return InventoryScriptHelper.offlineEnderChests.get(getUniqueId());
+        InventoryEnderChest endchest = new InventoryEnderChest();
+        endchest.a(this.compound.getList("EnderItems", 10));
+        org.bukkit.inventory.Inventory inv = new CraftInventory(endchest);
+        InventoryScriptHelper.offlineEnderChests.put(getUniqueId(), inv);
+        return inv;
+    }
+
+    public void setEnderChest(Inventory inventory) {
+        this.compound.set("EnderItems", ((InventoryEnderChest) ((CraftInventory) inventory).getInventory()).h());
         if(this.autosave) savePlayerData();
     }
 
@@ -218,15 +234,6 @@ public class ImprovedOfflinePlayer {
         this.compound.setInt("SpawnZ", (int)location.getZ());
         this.compound.setString("SpawnWorld", location.getWorld().getName());
         this.compound.setBoolean("SpawnForced", override == null ? false : override);
-        if(this.autosave) savePlayerData();
-    }
-    public Inventory getEnderChest() {
-        InventoryEnderChest endchest = new InventoryEnderChest();
-        endchest.a(this.compound.getList("EnderItems", 0));
-        return new CraftInventory(endchest);
-    }
-    public void setEnderChest(Inventory inventory) {
-        this.compound.set("EnderItems", ((InventoryEnderChest) ((CraftInventory) inventory).getInventory()).h());
         if(this.autosave) savePlayerData();
     }
     public float getExhaustion() {

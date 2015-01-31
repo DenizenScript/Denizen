@@ -52,6 +52,11 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory()))
                 return new dInventory(new ImprovedOfflinePlayer(inv.getKey()));
         }
+        // Iterate through offline player enderchests
+        for (Map.Entry<UUID, Inventory> inv : InventoryScriptHelper.offlineEnderChests.entrySet()) {
+            if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory()))
+                return new dInventory(new ImprovedOfflinePlayer(inv.getKey()), true);
+        }
 
         return new dInventory(inventory);
     }
@@ -491,6 +496,15 @@ public class dInventory implements dObject, Notable, Adjustable {
         else if (getIdType().equals("player")) {
             // Iterate through offline player inventories
             for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
+                if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
+                    idHolder = new dPlayer(inv.getKey()).identify();
+                    return;
+                }
+            }
+        }
+        else if (getIdType().equals("enderchest")) {
+            // Iterate through offline player enderchests
+            for (Map.Entry<UUID, Inventory> inv : InventoryScriptHelper.offlineEnderChests.entrySet()) {
                 if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
                     idHolder = new dPlayer(inv.getKey()).identify();
                     return;
