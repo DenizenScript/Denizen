@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.blocks.FakeBlock;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
@@ -13,6 +15,7 @@ import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -430,7 +433,23 @@ public class dChunk implements dObject, Adjustable {
         // None
         // -->
         if (mechanism.matches("refresh_chunk")) {
-            getWorld().refreshChunk(getX(), getZ());
+            final int chunkX = getX();
+            final int chunkZ = getZ();
+            getWorld().refreshChunk(chunkX, chunkZ);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (Map<dLocation, FakeBlock> blocks : FakeBlock.getBlocks().values()) {
+                        for (Map.Entry<dLocation, FakeBlock> locBlock : blocks.entrySet()) {
+                            dLocation location = locBlock.getKey();
+                            if (Math.floor(location.getX()/16) == chunkX
+                                    && Math.floor(location.getZ()/16) == chunkZ) {
+                                locBlock.getValue().updateBlock();
+                            }
+                        }
+                    }
+                }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), 2);
         }
 
         if (!mechanism.fulfilled())
