@@ -77,9 +77,8 @@ public class ImprovedOfflinePlayer {
         return inv;
     }
 
-    public void setInventory(org.bukkit.inventory.Inventory inventory) {
-        CraftInventoryPlayer inv = new CraftInventoryPlayer(new PlayerInventory(null));
-        inv.setContents(inventory.getContents());
+    public void setInventory(org.bukkit.inventory.PlayerInventory inventory) {
+        CraftInventoryPlayer inv = (CraftInventoryPlayer) inventory;
         this.compound.set("Inventory", inv.getInventory().a(new NBTTagList()));
         if(this.autosave) savePlayerData();
     }
