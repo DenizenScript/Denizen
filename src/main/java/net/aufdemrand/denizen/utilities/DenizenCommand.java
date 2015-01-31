@@ -86,6 +86,7 @@ public class DenizenCommand extends Command {
 
     @Override
     public boolean execute(CommandSender commandSender, String commandLabel, String[] arguments) {
+        if (!testPermission(commandSender)) return true;
         Map<String, dObject> context = new HashMap<String, dObject>();
         String raw_args = "";
         if (arguments.length > 0) {
