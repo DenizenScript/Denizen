@@ -1849,6 +1849,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.entity> returns the dEntity.
     // <context.origin> returns the dLocation the entity teleported from.
     // <context.destination> returns the dLocation the entity teleported to.
+    // <context.cause> returns an Element of the teleport cause. Can be:
+    // COMMAND, END_PORTAL, ENDER_PEARL, NETHER_PORTAL, PLUGIN, SPECTATE, UNKNOWN, or ENTITY_TELEPORT
     //
     // @Determine
     // dLocation to change the location the entity teleports to.
@@ -1867,6 +1869,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("origin", new dLocation(event.getFrom()));
         context.put("destination", new dLocation(event.getTo()));
         context.put("entity", entity.getDenizenObject());
+        context.put("cause", new Element("ENTITY_TELEPORT"));
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer()); // Should never happen, but just in case
@@ -1896,6 +1899,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("origin", new dLocation(event.getFrom()));
         context.put("destination", new dLocation(event.getTo()));
         context.put("entity", entity.getDenizenObject());
+        context.put("cause", new Element(event.getCause().name()));
 
         if (entity.isNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer());
