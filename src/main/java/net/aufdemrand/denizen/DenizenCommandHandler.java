@@ -247,10 +247,10 @@ public class DenizenCommandHandler {
             min = 1, max = 3, permission = "denizen.basic")
     public void version(CommandContext args, CommandSender sender) throws CommandException {
         Messaging.sendInfo(sender, " _/_ _  ._  _ _  ");
-        Messaging.sendInfo(sender, "(/(-/ )/ /_(-/ ) " + "<7> scriptable NPCs"); // TODO: "It's Scriptable!"?
-                Messaging.send(sender, "");
-        Messaging.send(sender, "<7>by: <f>aufdemrand and mcmonkey");
-        Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag);
+        Messaging.sendInfo(sender, "(/(-/ )/ /_(-/ ) " + "<7> scriptable Minecraft!"); // TODO: "It's Scriptable!"?
+        Messaging.send(sender, "");
+        Messaging.send(sender, "<7>by: <f>aufdemrand and mcmonkey, with help from many skilled contributors!");
+        Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag + "<7>, core version: <f>" + DenizenCore.VERSION );
     }
 
 
