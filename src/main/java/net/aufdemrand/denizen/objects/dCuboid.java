@@ -809,15 +809,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return new dList(filter)
                     .getAttribute(attribute.fulfill(1));
 
-        // Tag deprecated in favor of l@location.is_within
-        if (attribute.startsWith("is_within")
-                && attribute.hasContext(1)) {
-            dLocation loc = dLocation.valueOf(attribute.getContext(1));
-            if (loc != null)
-                return new Element(isInsideCuboid(loc))
-                        .getAttribute(attribute.fulfill(1));
-        }
-
         // <--[tag]
         // @attribute <cu@cuboid.intersects[<cuboid>]>
         // @returns Element(Boolean)
@@ -829,8 +820,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             dCuboid cub2 = dCuboid.valueOf(attribute.getContext(1));
             if (cub2 != null) {
                 boolean intersects = false;
-                for (LocationPair pair: pairs) {
+                whole_loop: for (LocationPair pair: pairs) {
                     for (LocationPair pair2: cub2.pairs) {
+                        if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
+                            return new Element("false").getAttribute(attribute.fulfill(1));
+                        }
                         if (pair2.low.getX() <= pair.high.getX()
                                 && pair2.low.getY() <= pair.high.getY()
                                 && pair2.low.getZ() <= pair.high.getZ()
@@ -838,11 +832,47 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                                 && pair2.high.getY() >= pair.low.getY()
                                 && pair2.high.getZ() >= pair.low.getZ()) {
                             intersects = true;
-                            break;
+                            break whole_loop;
                         }
                     }
                 }
                 return new Element(intersects).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <cu@cuboid.is_within[<cuboid>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether this cuboid is fully inside another cuboid.
+        // -->
+        if (attribute.startsWith("is_within")
+                && attribute.hasContext(1)) {
+            dCuboid cub2 = dCuboid.valueOf(attribute.getContext(1));
+            if (cub2 != null) {
+                boolean contains = true;
+                for (LocationPair pair2: pairs) {
+                    boolean contained = false;
+                    for (LocationPair pair: cub2.pairs) {
+                        if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
+                            return new Element("false").getAttribute(attribute.fulfill(1));
+                        }
+                        if (!(pair2.low.getX() >= pair.low.getX()
+                                && pair2.low.getY() >= pair.low.getY()
+                                && pair2.low.getZ() >= pair.low.getZ()
+                                && pair2.high.getX() <= pair.high.getX()
+                                && pair2.high.getY() <= pair.high.getY()
+                                && pair2.high.getZ() <= pair.high.getZ())) {
+                            contained = true;
+                            break;
+                        }
+                    }
+                    if (!contained) {
+                        contains = false;
+                        break;
+                    }
+                }
+                return new Element(contains).getAttribute(attribute.fulfill(1));
             }
         }
 

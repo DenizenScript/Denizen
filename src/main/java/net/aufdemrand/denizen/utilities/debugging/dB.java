@@ -125,7 +125,9 @@ public class dB {
                     ((BukkitScriptEntryData)((ScriptEntry) caller).entryData).getPlayer().getPlayerEntity()
                             .sendRawMessage(message.replace("<Y>", ChatColor.YELLOW.toString())
                                     .replace("<G>", ChatColor.DARK_GRAY.toString())
-                                    .replace("<A>", ChatColor.AQUA.toString()));
+                                    .replace("<A>", ChatColor.AQUA.toString())
+                                    .replace("<R>", ChatColor.DARK_RED.toString())
+                                    .replace("<W>", ChatColor.WHITE.toString()));
                 }
             }
         }
@@ -419,7 +421,9 @@ public class dB {
             string = TagManager.cleanOutputFully(string
                     .replace("<Y>", ChatColor.YELLOW.toString())
                     .replace("<G>", ChatColor.DARK_GRAY.toString())
-                    .replace("<A>", ChatColor.AQUA.toString()));
+                    .replace("<A>", ChatColor.AQUA.toString())
+                    .replace("<R>", ChatColor.DARK_RED.toString())
+                    .replace("<W>", ChatColor.WHITE.toString()));
 
             // 'Hack-fix' for disallowing multiple 'footers' to print in a row
             if (string.equals(ChatColor.LIGHT_PURPLE + "+---------------------+")) {

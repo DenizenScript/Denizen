@@ -17,6 +17,6 @@ Denizen: Helpful Citizens for Bukkit!
 
 #### Also check out:
 
-**Citizens2 (Base plugin - required!)**: https://github.com/CitizensDev/Citizens2/  
-**Depenizen (Plugin support - optional)**: https://github.com/DenizenScript/Depenizen-For-Bukkit  
+**Citizens2 (NPC support - optional)**: https://github.com/CitizensDev/Citizens2/  
+**Depenizen (Other plugin support - optional)**: https://github.com/DenizenScript/Depenizen-For-Bukkit  
 **Denizen Core (Our core, needed for building)**: https://github.com/DenizenScript/Denizen-Core  

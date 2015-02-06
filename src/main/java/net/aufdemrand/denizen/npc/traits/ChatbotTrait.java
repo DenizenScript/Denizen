@@ -10,10 +10,20 @@ import net.citizensnpcs.api.util.DataKey;
 
 import org.alicebot.ab.*;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 
 public class ChatbotTrait extends Trait {
 
+    // <--[language]
+    // @name ChatBot Trait
+    // @group NPC Traits
+    // @description
+    // A fully functional NPC AI Chat bot.
+    //
+    // Requires <@link url http://ci.citizensnpcs.co/job/AliceBot/> (ALICE Bot)
+    // In your /plugins/Denizen/lib folder.
+    //
+    // -->
     public ChatbotTrait() {
         super("chatbot");
     }
@@ -31,10 +41,10 @@ public class ChatbotTrait extends Trait {
         setBot(key.getString("botname"));
     }
 
-    public void chatTo(LivingEntity entity, String input) {
+    public void chatTo(Entity entity, String input) {
         SpeechContext context = new SpeechContext(reponse(input));
         context.addRecipient(entity);
-        context.setTalker(getNPC().getBukkitEntity());
+        context.setTalker(getNPC().getEntity());
         npc.getDefaultSpeechController().speak(context, "chat");
     }
 

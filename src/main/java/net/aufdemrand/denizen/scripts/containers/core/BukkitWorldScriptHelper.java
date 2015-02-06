@@ -1841,79 +1841,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity teleports
-    // <entity> teleports
-    //
-    // @Triggers when an entity teleports.
-    // @Context
-    // <context.entity> returns the dEntity.
-    // <context.origin> returns the dLocation the entity teleported from.
-    // <context.destination> returns the dLocation the entity teleported to.
-    //
-    // @Determine
-    // dLocation to change the location the entity teleports to.
-    // "CANCELLED" to stop the entity from teleporting.
-    //
-    // -->
-    @EventHandler
-    public void entityTeleport(EntityTeleportEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("origin", new dLocation(event.getFrom()));
-        context.put("destination", new dLocation(event.getTo()));
-        context.put("entity", entity.getDenizenObject());
-
-        if (entity.isNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer()); // Should never happen, but just in case
-
-        String determination = doEvents(Arrays.asList
-                ("entity teleports",
-                        entity.identifyType() + " teleports"),
-                npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (dLocation.matches(determination))
-            event.setTo(dLocation.valueOf(determination));
-
-    }
-
-    // Shares meta with EntityTeleportEvent
-    @EventHandler
-    public void playerTeleport(PlayerTeleportEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getPlayer());
-
-        context.put("origin", new dLocation(event.getFrom()));
-        context.put("destination", new dLocation(event.getTo()));
-        context.put("entity", entity.getDenizenObject());
-
-        if (entity.isNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer());
-
-        String determination = doEvents(Arrays.asList
-                ("entity teleports",
-                        entity.identifyType() + " teleports"),
-                npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (dLocation.matches(determination))
-            event.setTo(dLocation.valueOf(determination));
-
-    }
-
-    // <--[event]
-    // @Events
     // entity unleashed (because <reason>)
     // <entity> unleashed (because <reason>)
     //
@@ -3386,7 +3313,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.location> returns the dLocation the player is clicking on.
     // <context.cuboids> returns a dList of the notable cuboids that contain the clicked block.
     // <context.click_type> returns an Element of the click type.
-    // <context.relative> returns a dLocation of the air block in front of the click block.
+    // <context.relative> returns a dLocation of the air block in front of the clicked block.
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.

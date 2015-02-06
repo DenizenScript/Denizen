@@ -893,9 +893,13 @@ public class dPlayer implements dObject, Adjustable {
         // it doesn't exist.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("bed_spawn"))
+        if (attribute.startsWith("bed_spawn")) {
+            if (getOfflinePlayer().getBedSpawnLocation() == null) {
+                return null;
+            }
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // If online, let dEntity handle location tags since there are more options
         // for online Players
@@ -1109,13 +1113,6 @@ public class dPlayer implements dObject, Adjustable {
 
             String permission = attribute.getContext(1);
 
-            if (Depends.permissions == null) {
-                if (!attribute.hasAlternative()) {
-                    dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                }
-                return null;
-            }
-
             // <--[tag]
             // @attribute <p@player.has_permission[permission.node].global>
             // @returns Element(Boolean)
@@ -1126,9 +1123,17 @@ public class dPlayer implements dObject, Adjustable {
             // -->
 
             // Non-world specific permission
-            if (attribute.getAttribute(2).startsWith("global"))
+            if (attribute.getAttribute(2).startsWith("global")) {
+                if (Depends.permissions == null) {
+                    if (!attribute.hasAlternative()) {
+                        dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                    }
+                    return null;
+                }
+
                 return new Element(Depends.permissions.has((World) null, getName(), permission)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
+            }
 
                 // <--[tag]
                 // @attribute <p@player.has_permission[permission.node].world>
@@ -1141,9 +1146,17 @@ public class dPlayer implements dObject, Adjustable {
                 // -->
 
                 // Permission in certain world
-            else if (attribute.getAttribute(2).startsWith("world"))
+            else if (attribute.getAttribute(2).startsWith("world")) {
+                if (Depends.permissions == null) {
+                    if (!attribute.hasAlternative()) {
+                        dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                    }
+                    return null;
+                }
+
                 return new Element(Depends.permissions.has(attribute.getContext(2), getName(), permission)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
+            }
 
             // Permission in current world
             else if (isOnline())
@@ -2281,6 +2294,40 @@ public class dPlayer implements dObject, Adjustable {
             else {
                 DisplayHeaderFooter.clearHeaderFooter(getPlayerEntity());
             }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name sign_update
+        // @input dLocation|dList
+        // @description
+        // Shows the player fake lines on a sign.
+        // -->
+        if (mechanism.matches("sign_update")) {
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+                if (dLocation.matches(split[0]) && split.length > 1) {
+                    dList lines = dList.valueOf(split[1]);
+                    SignUpdate.updateSign(getPlayerEntity(), dLocation.valueOf(split[0]), lines.toArray(4));
+                }
+                else {
+                    dB.echoError("Must specify a valid location and at least one sign line!");
+                }
+            }
+            else {
+                dB.echoError("Must specify a valid location and at least one sign line!");
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name action_bar
+        // @input Element
+        // @description
+        // Sends the player text in the action bar.
+        // -->
+        if (mechanism.matches("action_bar")) {
+            ActionBar.sendActionBarMessage(getPlayerEntity(), value.asString());
         }
 
         // Iterate through this object's properties' mechanisms
