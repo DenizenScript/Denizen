@@ -3390,7 +3390,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.location> returns the dLocation the player is clicking on.
     // <context.cuboids> returns a dList of the notable cuboids that contain the clicked block.
     // <context.click_type> returns an Element of the click type.
-    // <context.relative> returns a dLocation of the air block in front of the click block.
+    // <context.relative> returns a dLocation of the air block in front of the clicked block.
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
