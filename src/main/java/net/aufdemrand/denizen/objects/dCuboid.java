@@ -809,15 +809,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return new dList(filter)
                     .getAttribute(attribute.fulfill(1));
 
-        // Tag deprecated in favor of l@location.is_within
-        if (attribute.startsWith("is_within")
-                && attribute.hasContext(1)) {
-            dLocation loc = dLocation.valueOf(attribute.getContext(1));
-            if (loc != null)
-                return new Element(isInsideCuboid(loc))
-                        .getAttribute(attribute.fulfill(1));
-        }
-
         // <--[tag]
         // @attribute <cu@cuboid.intersects[<cuboid>]>
         // @returns Element(Boolean)
