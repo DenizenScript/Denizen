@@ -534,6 +534,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.length> returns an Element of the number of blocks that will be moved by the piston.
     // <context.blocks> returns a dList of all block locations about to be moved.
     // <context.sticky> returns an Element of whether the piston is sticky.
+    // <context.relative> returns a dLocation of the block in front of the piston.
     //
     // @Determine
     // "CANCELLED" to stop the piston from extending.
@@ -549,6 +550,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("material", material);
         context.put("length", new Element(event.getLength()));
         context.put("sticky", new Element(event.isSticky() ? "true": "false"));
+        context.put("relative", new dLocation(event.getBlock().getRelative(event.getDirection()).getLocation()));
 
         dList blocks = new dList();
         for (Block block: event.getBlocks())
@@ -577,6 +579,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.blocks> returns a dList of all block locations about to be moved.
     // <context.material> returns the dMaterial of the piston.
     // <context.sticky> returns an Element of whether the piston is sticky.
+    // <context.relative> returns a dLocation of the block in front of the piston.
     //
     // @Determine
     // "CANCELLED" to stop the piston from retracting.
@@ -592,6 +595,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("retract_location", new dLocation(event.getRetractLocation()));
         context.put("material", material);
         context.put("sticky", new Element(event.isSticky() ? "true": "false"));
+        context.put("relative", new dLocation(event.getBlock().getRelative(event.getDirection()).getLocation()));
 
         dList blocks = new dList();
         for (Block block: event.getBlocks())
