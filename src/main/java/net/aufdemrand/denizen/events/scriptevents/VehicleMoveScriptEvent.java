@@ -55,7 +55,10 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = s.toLowerCase();
         String ename = vehicle.getEntityType().name().toLowerCase();
-        return (lower.startsWith(ename + " moves") || lower.startsWith("vehicle moves"));
+        String ename2 = vehicle.identifySimple().substring(2);
+        return lower.startsWith(ename + " moves")
+                || lower.startsWith("vehicle moves")
+                || lower.startsWith(ename2 + " moves");
     }
 
     @Override
@@ -74,8 +77,8 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public boolean applyDetermination(String determination) {
-        return super.applyDetermination(determination);
+    public boolean applyDetermination(ScriptContainer container, String determination) {
+        return super.applyDetermination(container, determination);
     }
 
     @Override
@@ -89,6 +92,7 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
 
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {
+        // TODO: Cuboids?
         to = new dLocation(event.getTo());
         from = new dLocation(event.getFrom());
         vehicle = new dEntity(event.getVehicle());
