@@ -40,8 +40,8 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
     // COMMAND, END_PORTAL, ENDER_PEARL, NETHER_PORTAL, PLUGIN, SPECTATE, UNKNOWN, or ENTITY_TELEPORT
     //
     // @Determine
-    // "origin:" + dLocation to change the location the entity teleported from.
-    // "destination:" +dLocation to change the location the entity teleports to.
+    // "ORIGIN:" + dLocation to change the location the entity teleported from.
+    // "DESTINATION:" + dLocation to change the location the entity teleports to.
     //
     // -->
 
@@ -74,9 +74,11 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
         String lower = s.toLowerCase();
         String ename = entity.getEntityType().name().toLowerCase();
         String ename2 = entity.identifySimple().substring(2);
+        String ename3 = entity.identifySimpleType();
         return lower.startsWith(ename + " teleports")
                 || lower.startsWith("entity teleports")
-                || lower.startsWith(ename2 + " teleports");
+                || lower.startsWith(ename2 + " teleports")
+                || lower.startsWith(ename3 + " teleports");
     }
 
     @Override

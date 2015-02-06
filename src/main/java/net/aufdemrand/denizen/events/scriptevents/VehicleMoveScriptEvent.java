@@ -56,9 +56,11 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
         String lower = s.toLowerCase();
         String ename = vehicle.getEntityType().name().toLowerCase();
         String ename2 = vehicle.identifySimple().substring(2);
+        String ename3 = vehicle.identifySimpleType();
         return lower.startsWith(ename + " moves")
                 || lower.startsWith("vehicle moves")
-                || lower.startsWith(ename2 + " moves");
+                || lower.startsWith(ename2 + " moves")
+                || lower.startsWith(ename3 + " moves");
     }
 
     @Override
