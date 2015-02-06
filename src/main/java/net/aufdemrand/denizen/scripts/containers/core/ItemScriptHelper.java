@@ -128,6 +128,11 @@ public class ItemScriptHelper implements Listener {
             else {
                 processSpecialRecipes(inventory, player);
             }
+
+            if (slotType.equals(InventoryType.SlotType.RESULT)) {
+                inventory.setMatrix(new ItemStack[9]);
+                player.updateInventory();
+            }
         }
     }
 
@@ -328,6 +333,10 @@ public class ItemScriptHelper implements Listener {
 
                 // Set the crafting's result
                 inventory.setResult(resultStack);
+
+                // Clear the matrix
+                // TODO: Find better solution
+                inventory.setMatrix(new ItemStack[9]);
 
                 // Update the player's inventory
                 //
