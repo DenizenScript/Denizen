@@ -574,6 +574,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.location> returns the dLocation of the piston.
     // <context.retract_location> returns the new dLocation of the block that
     //                            will be moved by the piston if it is sticky.
+    // <context.blocks> returns a dList of all block locations about to be moved.
     // <context.material> returns the dMaterial of the piston.
     // <context.sticky> returns an Element of whether the piston is sticky.
     //
@@ -591,6 +592,11 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("retract_location", new dLocation(event.getRetractLocation()));
         context.put("material", material);
         context.put("sticky", new Element(event.isSticky() ? "true": "false"));
+
+        dList blocks = new dList();
+        for (Block block: event.getBlocks())
+            blocks.add(new dLocation(block.getLocation()).identify());
+        context.put("blocks", blocks);
 
         String determination = doEvents(Arrays.asList
                 ("piston retracts",
