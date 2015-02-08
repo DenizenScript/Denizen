@@ -52,7 +52,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("origin")
-                && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
+                && arg.matchesPrefix("origin", "o", "source", "s")) {
 
                 if (arg.matchesArgumentType(dEntity.class))
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
