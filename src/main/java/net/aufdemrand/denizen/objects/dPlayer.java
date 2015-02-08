@@ -1136,11 +1136,11 @@ public class dPlayer implements dObject, Adjustable {
             }
 
                 // <--[tag]
-                // @attribute <p@player.has_permission[permission.node].world>
+                // @attribute <p@player.has_permission[permission.node].world[<world name>]>
                 // @returns Element(Boolean)
                 // @description
                 // returns whether the player has the specified node in regards to the
-                // player's current world.
+                // specified world.
                 // (Works with offline players)
                 // (Note: This may or may not be functional with your permissions system.)
                 // -->
