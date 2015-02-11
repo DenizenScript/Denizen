@@ -60,7 +60,7 @@ public class dWorld implements dObject, Adjustable {
 
     @Fetchable("w")
     public static dWorld valueOf(String string, TagContext context) {
-        return valueOf(string, true);
+        return valueOf(string, context == null || context.debug);
     }
 
     public static dWorld valueOf(String string, boolean announce) {
