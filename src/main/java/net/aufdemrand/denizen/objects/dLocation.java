@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -495,8 +496,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("spawner_type")) {
             if (getBlock().getState() instanceof CreatureSpawner) {
-                return new dEntity(((CreatureSpawner) getBlock().getState()).getSpawnedType())
-                        .getAttribute(attribute.fulfill(1));
+                return new dEntity(DenizenEntityType.getByName(((CreatureSpawner) getBlock().getState())
+                        .getSpawnedType().name())).getAttribute(attribute.fulfill(1));
             }
             else return "null";
         }
@@ -971,8 +972,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     if (Utilities.checkLocation(this, entity.getLocation(), radius)) {
                         dEntity current = new dEntity(entity);
                         if (!ent_list.isEmpty()) {
+                            String type = current.getEntityType().getName();
                             for (String ent : ent_list) {
-                                if ((entity.getType().name().equals(ent) ||
+                                if ((type.equals(ent) ||
                                         current.identify().equalsIgnoreCase(ent)) && entity.isValid()) {
                                     found.add(current);
                                     break;
@@ -1565,7 +1567,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("spawner_type") && mechanism.requireObject(dEntity.class)
                 && getBlock().getState() instanceof CreatureSpawner) {
-            ((CreatureSpawner) getBlock().getState()).setSpawnedType(value.asType(dEntity.class).getEntityType());
+            ((CreatureSpawner) getBlock().getState()).setSpawnedType(value.asType(dEntity.class).getBukkitEntityType());
         }
 
         // <--[mechanism]

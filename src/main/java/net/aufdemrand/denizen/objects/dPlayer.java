@@ -1559,7 +1559,7 @@ public class dPlayer implements dObject, Adjustable {
                     return new Element(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
                             .getAttribute(attribute.fulfill(2));
                 else if (obj instanceof dEntity)
-                    return new Element(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getEntityType()))
+                    return new Element(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getBukkitEntityType()))
                             .getAttribute(attribute.fulfill(2));
                 else
                     return null;

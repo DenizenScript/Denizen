@@ -14,8 +14,8 @@ public class EntitySitting implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity && (
-                ((dEntity)entity).getEntityType() == EntityType.WOLF
-                || ((dEntity)entity).getEntityType() == EntityType.OCELOT);
+                ((dEntity)entity).getBukkitEntityType() == EntityType.WOLF
+                || ((dEntity)entity).getBukkitEntityType() == EntityType.OCELOT);
     }
 
     public static EntitySitting getFrom(dObject entity) {
@@ -40,7 +40,7 @@ public class EntitySitting implements Property {
 
     @Override
     public String getPropertyString() {
-        if (entity.getEntityType() == EntityType.WOLF) {
+        if (entity.getBukkitEntityType() == EntityType.WOLF) {
             if (!((Wolf)entity.getBukkitEntity()).isSitting())
                 return null;
             else
@@ -77,7 +77,7 @@ public class EntitySitting implements Property {
         // If the entity is a wolf or ocelot, returns whether the animal is sitting.
         // -->
         if (attribute.startsWith("sitting")) {
-            if (entity.getEntityType() == EntityType.WOLF)
+            if (entity.getBukkitEntityType() == EntityType.WOLF)
                 return new Element(((Wolf)entity.getBukkitEntity()).isSitting())
                         .getAttribute(attribute.fulfill(1));
             else
@@ -102,7 +102,7 @@ public class EntitySitting implements Property {
         // -->
 
         if (mechanism.matches("sitting") && mechanism.requireBoolean()) {
-            if (entity.getEntityType() == EntityType.WOLF)
+            if (entity.getBukkitEntityType() == EntityType.WOLF)
                 ((Wolf)entity.getBukkitEntity()).setSitting(mechanism.getValue().asBoolean());
             else
                 ((Ocelot)entity.getBukkitEntity()).setSitting(mechanism.getValue().asBoolean());

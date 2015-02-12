@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityPowered implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.CREEPER;
+        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.CREEPER;
     }
 
     public static EntityPowered getFrom(dObject entity) {

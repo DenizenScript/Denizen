@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 public class EntityFirework implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.FIREWORK;
+        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.FIREWORK;
     }
 
     public static EntityFirework getFrom(dObject entity) {

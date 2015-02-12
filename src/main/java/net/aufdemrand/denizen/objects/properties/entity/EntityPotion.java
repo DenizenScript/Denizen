@@ -13,7 +13,7 @@ public class EntityPotion implements Property {
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
         // Check if the entity is a SPLASH_POTION, the EntityType alias for ThrownPotion
-        return ((dEntity) entity).getEntityType() == EntityType.SPLASH_POTION;
+        return ((dEntity) entity).getBukkitEntityType() == EntityType.SPLASH_POTION;
     }
 
     public static EntityPotion getFrom(dObject entity) {

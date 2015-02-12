@@ -72,7 +72,7 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = s.toLowerCase();
-        String ename = entity.getEntityType().name().toLowerCase();
+        String ename = entity.getEntityType().getLowercaseName();
         String ename2 = entity.identifySimple().substring(2);
         String ename3 = entity.identifySimpleType();
         return lower.startsWith(ename + " teleports")

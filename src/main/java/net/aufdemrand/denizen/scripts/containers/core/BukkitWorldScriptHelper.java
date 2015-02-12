@@ -3200,7 +3200,7 @@ public class BukkitWorldScriptHelper implements Listener {
         }
         else if (dEntity.matches(determination)) {
             event.setHatching(true);
-            event.setHatchingType(dEntity.valueOf(determination).getEntityType());
+            event.setHatchingType(dEntity.valueOf(determination).getBukkitEntityType());
         }
     }
 

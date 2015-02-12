@@ -13,7 +13,7 @@ import org.bukkit.entity.Painting;
 public class EntityPainting implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.PAINTING;
+        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.PAINTING;
     }
 
     public static EntityPainting getFrom(dObject entity) {

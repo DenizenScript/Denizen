@@ -54,7 +54,7 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = s.toLowerCase();
-        String ename = vehicle.getEntityType().name().toLowerCase();
+        String ename = vehicle.getEntityType().getLowercaseName();
         String ename2 = vehicle.identifySimple().substring(2);
         String ename3 = vehicle.identifySimpleType();
         return lower.startsWith(ename + " moves")

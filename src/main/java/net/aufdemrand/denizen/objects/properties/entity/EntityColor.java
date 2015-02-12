@@ -14,7 +14,7 @@ public class EntityColor implements Property {
 
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
-        EntityType type = ((dEntity) entity).getEntityType();
+        EntityType type = ((dEntity) entity).getBukkitEntityType();
         return type == EntityType.SHEEP ||
                 type == EntityType.HORSE ||
                 type == EntityType.WOLF ||
@@ -40,7 +40,7 @@ public class EntityColor implements Property {
     dEntity colored;
 
     private String getColor() {
-        EntityType type = colored.getEntityType();
+        EntityType type = colored.getBukkitEntityType();
 
         if (type == EntityType.HORSE)
           return ((Horse) colored.getBukkitEntity()).getColor().name() + "|" +
@@ -156,7 +156,7 @@ public class EntityColor implements Property {
         // -->
 
         if (mechanism.matches("color")) {
-            EntityType type = colored.getEntityType();
+            EntityType type = colored.getBukkitEntityType();
 
             if (type == EntityType.HORSE) {
                     dList horse_info = mechanism.getValue().asType(dList.class);

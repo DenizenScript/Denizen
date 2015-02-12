@@ -12,7 +12,7 @@ import org.bukkit.entity.Wolf;
 public class EntityAngry implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.WOLF;
+        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.WOLF;
     }
 
     public static EntityAngry getFrom(dObject entity) {

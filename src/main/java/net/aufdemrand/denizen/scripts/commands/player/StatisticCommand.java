@@ -116,7 +116,7 @@ public class StatisticCommand extends AbstractCommand {
                 break;
 
             case ENTITY:
-                EntityType ent = entity.getEntityType();
+                EntityType ent = entity.getBukkitEntityType();
                 switch (act) {
                     case ADD:
                         for (dPlayer player : players.filter(dPlayer.class))

@@ -12,7 +12,7 @@ import org.bukkit.entity.Guardian;
 public class EntityElder implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.GUARDIAN;
+        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.GUARDIAN;
     }
 
     public static EntityElder getFrom(dObject entity) {
