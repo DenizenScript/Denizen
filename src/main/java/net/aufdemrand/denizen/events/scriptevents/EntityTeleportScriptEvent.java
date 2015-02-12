@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.events.scriptevents;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
@@ -12,12 +11,10 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.HashMap;
 
@@ -75,8 +72,8 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
         String ename = entity.getEntityType().getLowercaseName();
         String ename2 = entity.identifySimple().substring(2);
         String ename3 = entity.identifySimpleType();
-        return lower.startsWith(ename + " teleports")
-                || lower.startsWith("entity teleports")
+        return lower.startsWith("entity teleports")
+                || lower.startsWith(ename + " teleports")
                 || lower.startsWith(ename2 + " teleports")
                 || lower.startsWith(ename3 + " teleports");
     }

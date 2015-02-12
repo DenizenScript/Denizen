@@ -7,7 +7,6 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
@@ -48,7 +47,7 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = s.toLowerCase();
-        return (lower.matches("[^\\s]+ moves.*"));
+        return (lower.matches("[^\\s]+ moves"));
     }
 
     @Override
@@ -57,8 +56,8 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
         String ename = vehicle.getEntityType().getLowercaseName();
         String ename2 = vehicle.identifySimple().substring(2);
         String ename3 = vehicle.identifySimpleType();
-        return lower.startsWith(ename + " moves")
-                || lower.startsWith("vehicle moves")
+        return lower.startsWith("vehicle moves")
+                || lower.startsWith(ename + " moves")
                 || lower.startsWith(ename2 + " moves")
                 || lower.startsWith(ename3 + " moves");
     }
