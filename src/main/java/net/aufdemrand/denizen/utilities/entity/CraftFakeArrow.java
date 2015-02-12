@@ -15,7 +15,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
 
-public class CraftFakeArrow extends CraftArrow implements Vehicle {
+public class CraftFakeArrow extends CraftArrow implements DenizenCustomEntity, Vehicle {
     public CraftFakeArrow(CraftServer craftServer, EntityArrow entityArrow) {
         super(craftServer, entityArrow);
     }
@@ -32,6 +32,7 @@ public class CraftFakeArrow extends CraftArrow implements Vehicle {
         super.remove();
     }
 
+    @CreateEntity
     public static Arrow createArrow(Location location) {
         CraftWorld world = (CraftWorld) location.getWorld();
         EntityArrow arrow = new FakeArrowEntity(world, location);
@@ -112,5 +113,10 @@ public class CraftFakeArrow extends CraftArrow implements Vehicle {
     }
 
     public void removeAttachment(PermissionAttachment attachment) {
+    }
+
+    @Override
+    public String getEntityTypeName() {
+        return "FAKE_ARROW";
     }
 }
