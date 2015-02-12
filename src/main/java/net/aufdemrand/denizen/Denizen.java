@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.events.scriptevents.EntityTeleportScriptEvent;
+import net.aufdemrand.denizen.events.scriptevents.LiquidSpreadsScriptEvent;
 import net.aufdemrand.denizen.events.scriptevents.VehicleMoveScriptEvent;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitElementProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitListProperties;
@@ -587,6 +588,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
+            ScriptEvent.registerScriptEvent(new LiquidSpreadsScriptEvent());
 
 
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
