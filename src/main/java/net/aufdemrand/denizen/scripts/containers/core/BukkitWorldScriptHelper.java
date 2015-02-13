@@ -400,6 +400,10 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void blockForm(BlockFormEvent event) {
 
+        if (event instanceof EntityBlockFormEvent) {
+            return; // Handled separately for now
+        }
+
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         dMaterial material = dMaterial.getMaterialFrom(event.getNewState().getType(), event.getNewState().getData().getData());
