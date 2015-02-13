@@ -1,6 +1,9 @@
 package net.aufdemrand.denizen.objects;
 
+import com.google.common.collect.Iterables;
+import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -15,12 +18,14 @@ import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
+import net.minecraft.server.v1_8_R1.TileEntitySkull;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.*;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -491,8 +496,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("spawner_type")) {
             if (getBlock().getState() instanceof CreatureSpawner) {
-                return new dEntity(((CreatureSpawner) getBlock().getState()).getSpawnedType())
-                        .getAttribute(attribute.fulfill(1));
+                return new dEntity(DenizenEntityType.getByName(((CreatureSpawner) getBlock().getState())
+                        .getSpawnedType().name())).getAttribute(attribute.fulfill(1));
             }
             else return "null";
         }
@@ -504,10 +509,29 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object.
         // -->
+        // <--[tag]
+        // @attribute <l@location.skull_skin.full>
+        // @returns Element|Element
+        // @mechanism dLocation.skull_skin
+        // @description
+        // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object,
+        // along with the permanently cached texture property.
+        // -->
         if (attribute.startsWith("skull_skin")) {
             if (getBlock().getState() instanceof Skull) {
-                return new Element(((Skull) getBlock().getState()).getOwner())
-                        .getAttribute(attribute.fulfill(1));
+                // TODO: use Bukkit Skull method when updated
+                GameProfile profile = ((TileEntitySkull) ((CraftWorld) getWorld())
+                        .getTileEntityAt(getBlockX(), getBlockY(), getBlockZ())).getGameProfile();
+                String name = profile.getName();
+                UUID id = profile.getId();
+                com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.getProperties().get("textures"), null);
+                attribute = attribute.fulfill(1);
+                if (attribute.startsWith("full")) {
+                    return new Element((id != null ? id : name != null ? name : null)
+                            + (property != null ? "|" + property.getValue() : ""))
+                            .getAttribute(attribute.fulfill(1));
+                }
+                return new Element(id != null ? id.toString() : name != null ? name : null).getAttribute(attribute);
             }
             else return "null";
         }
@@ -948,8 +972,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     if (Utilities.checkLocation(this, entity.getLocation(), radius)) {
                         dEntity current = new dEntity(entity);
                         if (!ent_list.isEmpty()) {
+                            String type = current.getEntityType().getName();
                             for (String ent : ent_list) {
-                                if ((entity.getType().name().equals(ent) ||
+                                if ((type.equals(ent) ||
                                         current.identify().equalsIgnoreCase(ent)) && entity.isValid()) {
                                     found.add(current);
                                     break;
@@ -1542,7 +1567,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("spawner_type") && mechanism.requireObject(dEntity.class)
                 && getBlock().getState() instanceof CreatureSpawner) {
-            ((CreatureSpawner) getBlock().getState()).setSpawnedType(value.asType(dEntity.class).getEntityType());
+            ((CreatureSpawner) getBlock().getState()).setSpawnedType(value.asType(dEntity.class).getBukkitEntityType());
         }
 
         // <--[mechanism]

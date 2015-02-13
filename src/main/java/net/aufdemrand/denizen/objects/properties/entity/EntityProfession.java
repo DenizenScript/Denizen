@@ -15,7 +15,7 @@ public class EntityProfession implements Property {
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
         // Check if the entity is a Villager, the only EntityType that can be a Professional
-        return ((dEntity) entity).getEntityType() == EntityType.VILLAGER;
+        return ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER;
     }
 
     public static EntityProfession getFrom(dObject entity) {

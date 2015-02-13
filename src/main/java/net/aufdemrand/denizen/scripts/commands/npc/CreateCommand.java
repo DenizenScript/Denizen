@@ -60,7 +60,7 @@ public class CreateCommand extends AbstractCommand {
         }
         else {
             created = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry()
-                    .createNPC(type.getEntityType(), name.asString()));
+                    .createNPC(type.getBukkitEntityType(), name.asString()));
         }
 
         // Add the created NPC into the script entry so it can be utilized if need be.

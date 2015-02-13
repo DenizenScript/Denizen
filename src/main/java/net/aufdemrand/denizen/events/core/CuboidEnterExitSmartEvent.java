@@ -7,8 +7,10 @@ import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -78,6 +80,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     public void breakDown() {
         PlayerMoveEvent.getHandlerList().unregister(this);
         PlayerTeleportEvent.getHandlerList().unregister(this);
+        PlayerChangedWorldEvent.getHandlerList().unregister(this);
     }
 
     //////////////
@@ -112,6 +115,14 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
         playerMoveEvent(evt);
         event.setCancelled(evt.isCancelled());
+    }
+
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+        Location to = event.getPlayer().getLocation().clone();
+        Location from = event.getPlayer().getLocation().clone();
+        from.setWorld(event.getFrom());
+        PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), from, to);
+        playerMoveEvent(evt);
     }
 
     @EventHandler

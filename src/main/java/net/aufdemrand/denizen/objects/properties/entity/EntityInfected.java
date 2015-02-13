@@ -17,8 +17,8 @@ public class EntityInfected implements Property {
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
         // Check if a Villager or Zombie -- the only two EntityTypes that can be 'infected'
-        return ((dEntity) entity).getEntityType() == EntityType.ZOMBIE
-                || ((dEntity) entity).getEntityType() == EntityType.VILLAGER;
+        return ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE
+                || ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER;
     }
 
     public static EntityInfected getFrom(dObject entity) {

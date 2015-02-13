@@ -13,8 +13,8 @@ public class EntityItem implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity &&
-                ( ((dEntity)entity).getEntityType() == EntityType.DROPPED_ITEM
-                || ((dEntity)entity).getEntityType() == EntityType.ENDERMAN);
+                ( ((dEntity)entity).getBukkitEntityType() == EntityType.DROPPED_ITEM
+                || ((dEntity)entity).getBukkitEntityType() == EntityType.ENDERMAN);
     }
 
     public static EntityItem getFrom(dObject entity) {

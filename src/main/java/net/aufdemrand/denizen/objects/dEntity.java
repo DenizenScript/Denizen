@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
+import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
@@ -39,6 +41,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,7 +102,7 @@ public class dEntity implements dObject, Adjustable {
                 randomType = EntityType.values()[CoreUtilities.getRandom().nextInt(EntityType.values().length)];
             }
 
-            return new dEntity(randomType, "RANDOM");
+            return new dEntity(DenizenEntityType.getByName(randomType.name()), "RANDOM");
         }
 
         ///////
@@ -180,10 +183,9 @@ public class dEntity implements dObject, Adjustable {
                 data2 = m.group(3);
             }
 
-            for (EntityType type : EntityType.values()) {
-                if (type.name().equalsIgnoreCase(m.group(1)))
-                    // Construct a new 'vanilla' unspawned dEntity
-                    return new dEntity(type, data1, data2);
+            // Handle custom DenizenEntityTypes
+            if (DenizenEntityType.isRegistered(m.group(1))) {
+                return new dEntity(DenizenEntityType.getByName(m.group(1)), data1, data2);
             }
         }
 
@@ -233,8 +235,8 @@ public class dEntity implements dObject, Adjustable {
         m = entity_with_data.matcher(arg);
         if (m.matches()) {
             // Check first word with a valid entity_type (other groups are datas used in constructors)
-            for (EntityType type : EntityType.values())
-                if (type.name().equals(m.group(1))) return true;
+            if (DenizenEntityType.isRegistered(m.group(1)))
+                return true;
         }
 
         // No luck otherwise!
@@ -249,42 +251,76 @@ public class dEntity implements dObject, Adjustable {
     public dEntity(Entity entity) {
         if (entity != null) {
             this.entity = entity;
-            EntityScript = EntityScriptHelper.getEntityScript(entity);
+            entityScript = EntityScriptHelper.getEntityScript(entity);
             this.uuid = entity.getUniqueId();
-            this.entity_type = entity.getType();
+            this.entity_type = DenizenEntityType.getByEntity(entity);
             if (Depends.citizens != null && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity)) {
                 this.npc = new dNPC(net.citizensnpcs.api.CitizensAPI.getNPCRegistry().getNPC(entity));
             }
         } else dB.echoError("Entity referenced is null!");
     }
 
+    @Deprecated
     public dEntity(EntityType entityType) {
         if (entityType != null) {
             this.entity = null;
-            this.entity_type = entityType;
+            this.entity_type = DenizenEntityType.getByName(entityType.name());
         } else dB.echoError("Entity_type referenced is null!");
     }
 
+    @Deprecated
     public dEntity(EntityType entityType, ArrayList<Mechanism> mechanisms) {
         this(entityType);
         this.mechanisms = mechanisms;
     }
 
+    @Deprecated
     public dEntity(EntityType entityType, String data1) {
         if (entityType != null) {
             this.entity = null;
-            this.entity_type = entityType;
+            this.entity_type = DenizenEntityType.getByName(entityType.name());
             this.data1 = data1;
         } else dB.echoError("Entity_type referenced is null!");
     }
 
+    @Deprecated
     public dEntity(EntityType entityType, String data1, String data2) {
+        if (entityType != null) {
+            this.entity = null;
+            this.entity_type = DenizenEntityType.getByName(entityType.name());
+            this.data1 = data1;
+            this.data2 = data2;
+        } else dB.echoError("Entity_type referenced is null!");
+    }
+
+    public dEntity(DenizenEntityType entityType) {
+        if (entityType != null) {
+            this.entity = null;
+            this.entity_type = entityType;
+        } else dB.echoError("DenizenEntityType referenced is null!");
+    }
+
+    public dEntity(DenizenEntityType entityType, ArrayList<Mechanism> mechanisms) {
+        this(entityType);
+        this.mechanisms = mechanisms;
+    }
+
+    public dEntity(DenizenEntityType entityType, String data1) {
+        if (entityType != null) {
+            this.entity = null;
+            this.entity_type = entityType;
+            this.data1 = data1;
+        }
+        else dB.echoError("DenizenEntityType referenced is null!");
+    }
+
+    public dEntity(DenizenEntityType entityType, String data1, String data2) {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = entityType;
             this.data1 = data1;
             this.data2 = data2;
-        } else dB.echoError("Entity_type referenced is null!");
+        } else dB.echoError("DenizenEntityType referenced is null!");
     }
 
     public dEntity(dNPC npc) {
@@ -296,7 +332,7 @@ public class dEntity implements dObject, Adjustable {
 
             if (npc.isSpawned()) {
                 this.entity = npc.getEntity();
-                this.entity_type = npc.getEntity().getType();
+                this.entity_type = DenizenEntityType.getByName(npc.getEntityType().name());
                 this.uuid = entity.getUniqueId();
             }
         } else dB.echoError("NPC referenced is null!");
@@ -309,24 +345,28 @@ public class dEntity implements dObject, Adjustable {
     /////////////////
 
     private Entity entity = null;
-    private EntityType entity_type = null;
+    private DenizenEntityType entity_type = null;
     private String data1 = null;
     private String data2 = null;
     private DespawnedEntity despawned_entity = null;
     private dNPC npc = null;
     private UUID uuid = null;
-    private String EntityScript = null;
+    private String entityScript = null;
 
-    public EntityType getEntityType() {
+    public DenizenEntityType getEntityType() {
         return entity_type;
     }
 
-    public void setEntityScript(String EntityScript) {
-        this.EntityScript = EntityScript;
+    public EntityType getBukkitEntityType() {
+        return entity_type.getBukkitEntityType();
+    }
+
+    public void setEntityScript(String entityScript) {
+        this.entityScript = entityScript;
     }
 
     public String getEntityScript() {
-        return EntityScript;
+        return entityScript;
     }
 
     /**
@@ -538,7 +578,7 @@ public class dEntity implements dObject, Adjustable {
             if (customName != null)
                 return customName;
         }
-        return entity_type.name();
+        return entity_type.getName();
     }
 
     /**
@@ -663,7 +703,8 @@ public class dEntity implements dObject, Adjustable {
                         // TODO: Build entity from custom script
                     }
                     // Else, use the entity_type specified/remembered
-                    else entity = location.getWorld().spawnEntity(location, entity_type);
+                    else
+                        entity = entity_type.spawnNewEntity(location);
 
                     getLivingEntity().teleport(location);
                     getLivingEntity().getEquipment().setArmorContents(despawned_entity.equipment);
@@ -676,7 +717,7 @@ public class dEntity implements dObject, Adjustable {
 
                     org.bukkit.entity.Entity ent = null;
 
-                    if (entity_type.name().matches("PLAYER")) {
+                    if (entity_type.getName().equals("PLAYER")) {
                         if (Depends.citizens == null) {
                             dB.echoError("Cannot spawn entity of type PLAYER!");
                             return;
@@ -688,7 +729,7 @@ public class dEntity implements dObject, Adjustable {
                             uuid = entity.getUniqueId();
                         }
                     }
-                    else if (entity_type.name().matches("FALLING_BLOCK")) {
+                    else if (entity_type.getName().equals("FALLING_BLOCK")) {
 
                         Material material = null;
 
@@ -729,16 +770,13 @@ public class dEntity implements dObject, Adjustable {
                     }
                     else {
 
-                        if (entity_type == EntityType.DROPPED_ITEM)
-                            ent = location.getWorld().dropItem(location, new ItemStack(Material.STONE));
-                        else
-                            ent = location.getWorld().spawnEntity(location, entity_type);
+                        ent = entity_type.spawnNewEntity(location);
                         entity = ent;
                         uuid = entity.getUniqueId();
-                        if (EntityScript != null)
-                            EntityScriptHelper.setEntityScript(entity, EntityScript);
+                        if (entityScript != null)
+                            EntityScriptHelper.setEntityScript(entity, entityScript);
 
-                        if (entity_type.name().matches("PIG_ZOMBIE")) {
+                        if (entity_type.getName().equals("PIG_ZOMBIE")) {
 
                             // Give pig zombies golden swords by default, unless data2 specifies
                             // a different weapon
@@ -749,7 +787,7 @@ public class dEntity implements dObject, Adjustable {
                             ((PigZombie) entity).getEquipment()
                                     .setItemInHand(dItem.valueOf(data1).getItemStack());
                         }
-                        else if (entity_type.name().matches("SKELETON")) {
+                        else if (entity_type.getName().equals("SKELETON")) {
 
                             // Give skeletons bows by default, unless data2 specifies
                             // a different weapon
@@ -1029,8 +1067,8 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // Try to identify as an entity script
-        if (EntityScript != null)
-            return "e@" + EntityScript;
+        if (entityScript != null)
+            return "e@" + entityScript;
 
         // Check if an entity_type is available
         if (entity_type != null) {
@@ -1043,7 +1081,7 @@ public class dEntity implements dObject, Adjustable {
             if (properties.length() > 0) {
                 propertyOutput = "[" + properties.substring(0, properties.length() - 1) + "]";
             }
-            return "e@" + entity_type.name() + propertyOutput;
+            return "e@" + entity_type.getLowercaseName() + propertyOutput;
         }
 
         return "null";
@@ -1062,12 +1100,12 @@ public class dEntity implements dObject, Adjustable {
             return "p@" + getPlayer().getName();
 
         // Try to identify as an entity script
-        if (EntityScript != null)
-            return "e@" + EntityScript;
+        if (entityScript != null)
+            return "e@" + entityScript;
 
         // Check if an entity_type is available
         if (entity_type != null)
-            return "e@" + entity_type.name();
+            return "e@" + entity_type.getLowercaseName();
 
         return "null";
     }
@@ -1076,13 +1114,13 @@ public class dEntity implements dObject, Adjustable {
     public String identifyType() {
         if (isNPC()) return "npc";
         else if (isPlayer()) return "player";
-        else return "e@" + entity_type.name();
+        else return "e@" + entity_type.getName();
     }
 
     public String identifySimpleType() {
         if (isNPC()) return "npc";
         else if (isPlayer()) return "player";
-        else return entity_type.name();
+        else return entity_type.getLowercaseName();
     }
 
     @Override
@@ -1183,7 +1221,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the type of the entity.
         // -->
         if (attribute.startsWith("entity_type")) {
-            return new Element(entity_type.name()).getAttribute(attribute.fulfill(1));
+            return new Element(entity_type.getName()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1229,7 +1267,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the name of the entity script that spawned this entity, if any.
         // -->
         if (attribute.startsWith("script")) {
-            return new Element(EntityScript == null ? "null": EntityScript)
+            return new Element(entityScript == null ? "null": entityScript)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2058,7 +2096,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the entity's full description, including all properties.
         // -->
         if (attribute.startsWith("describe"))
-            return new Element("e@" + getEntityType().name().toLowerCase()
+            return new Element("e@" + getEntityType().getLowercaseName()
                     + PropertyParser.getPropertiesString(this))
                     .getAttribute(attribute.fulfill(1));
 

@@ -855,14 +855,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     boolean contained = false;
                     for (LocationPair pair: cub2.pairs) {
                         if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
+                            if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose) {
+                                dB.log("Worlds don't match!");
+                            }
                             return new Element("false").getAttribute(attribute.fulfill(1));
                         }
-                        if (!(pair2.low.getX() >= pair.low.getX()
+                        if (pair2.low.getX() >= pair.low.getX()
                                 && pair2.low.getY() >= pair.low.getY()
                                 && pair2.low.getZ() >= pair.low.getZ()
                                 && pair2.high.getX() <= pair.high.getX()
                                 && pair2.high.getY() <= pair.high.getY()
-                                && pair2.high.getZ() <= pair.high.getZ())) {
+                                && pair2.high.getZ() <= pair.high.getZ()) {
                             contained = true;
                             break;
                         }

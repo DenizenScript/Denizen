@@ -1014,7 +1014,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // <n@npc.entity_type>
         // -->
         if (mechanism.matches("set_entity_type") && mechanism.requireObject(dEntity.class)) {
-            getCitizen().setBukkitEntityType(value.asType(dEntity.class).getEntityType());
+            getCitizen().setBukkitEntityType(value.asType(dEntity.class).getBukkitEntityType());
         }
 
         // <--[mechanism]

@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityCritical implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.ARROW;
+        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.ARROW;
     }
 
     public static EntityCritical getFrom(dObject entity) {

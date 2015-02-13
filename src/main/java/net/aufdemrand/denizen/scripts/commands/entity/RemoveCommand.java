@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -115,7 +116,7 @@ public class RemoveCommand extends AbstractCommand {
                     // as our current dEntity, and all other applicable
                     // conditions are met, remove it
 
-                    if (entity.getEntityType().equals(worldEntity.getType())) {
+                    if (entity.getEntityType().equals(DenizenEntityType.getByEntity(worldEntity))) {
 
                         if (region != null) {
                             dB.echoError(scriptEntry.getResidingQueue(), "Region support is deprecated!");

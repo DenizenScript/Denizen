@@ -52,7 +52,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("origin")
-                && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
+                && arg.matchesPrefix("origin", "o", "source", "s")) {
 
                 if (arg.matchesArgumentType(dEntity.class))
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
@@ -240,21 +240,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         final dEntity lastEntity = entities.get(entities.size() - 1);
 
         if (gravity == null) {
-
-            String entityType = lastEntity.getEntityType().name();
-
-            for (Gravity defaultGravity : Gravity.values()) {
-
-                if (defaultGravity.name().equals(entityType)) {
-
-                    gravity = new Element(defaultGravity.getGravity());
-                }
-            }
-
-            // If the gravity is still null, use a default value
-            if (gravity == null) {
-                gravity = new Element(0.115);
-            }
+            gravity = new Element(lastEntity.getEntityType().getGravity());
         }
 
         if (speed == null) {

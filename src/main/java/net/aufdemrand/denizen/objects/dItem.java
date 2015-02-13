@@ -255,6 +255,10 @@ public class dItem implements dObject, Notable, Adjustable {
         return item;
     }
 
+    public void setItemStack(ItemStack item) {
+        this.item = item;
+    }
+
     // Compare item to item.
     // -1 indicates it is not a match
     //  0 indicates it is a perfect match

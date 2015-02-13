@@ -12,7 +12,7 @@ import org.bukkit.entity.Skeleton;
 public class EntitySkeleton implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getEntityType() == EntityType.SKELETON;
+        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.SKELETON;
     }
 
     public static EntitySkeleton getFrom(dObject entity) {
