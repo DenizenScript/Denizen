@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockFromToEvent;
 
 import java.util.HashMap;
 
-public class LiquidSpreadsScriptEvent extends ScriptEvent implements Listener  {
+public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener  {
 
     // <--[event]
     // @Events
@@ -21,21 +21,21 @@ public class LiquidSpreadsScriptEvent extends ScriptEvent implements Listener  {
     // <liquid block> spreads
     //
     // @Triggers when a liquid block spreads or dragon egg moves.
+    //
+    // @Cancellable true
+    //
     // @Context
     // <context.destination> returns the dLocation the block spread to.
     // <context.location> returns the dLocation the block spread from.
     // <context.material> returns the dMaterial of the block that spread.
     //
-    // @Determine
-    // "CANCELLED" to stop the block from spreading.
-    //
     // -->
 
 
-    public LiquidSpreadsScriptEvent() {
+    public LiquidSpreadScriptEvent() {
         instance = this;
     }
-    public static LiquidSpreadsScriptEvent instance;
+    public static LiquidSpreadScriptEvent instance;
     public dMaterial material;
     public dLocation from;
     public dLocation to;
@@ -54,7 +54,8 @@ public class LiquidSpreadsScriptEvent extends ScriptEvent implements Listener  {
         String mname2 = material.identifySimple().substring(2);
         return lower.startsWith("liquid spreads")
                 || lower.startsWith(mname + " spreads")
-                || lower.startsWith(mname2 + " spreads");
+                || lower.startsWith(mname2 + " spreads")
+                && !lower.equals("block spreads");
     }
 
     @Override
