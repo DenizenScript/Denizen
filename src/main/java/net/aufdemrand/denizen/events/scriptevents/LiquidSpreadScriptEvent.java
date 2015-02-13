@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,9 +21,9 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener  {
     // liquid spreads
     // <liquid block> spreads
     //
-    // @Triggers when a liquid block spreads or dragon egg moves.
-    //
     // @Cancellable true
+    //
+    // @Triggers when a liquid block spreads or dragon egg moves.
     //
     // @Context
     // <context.destination> returns the dLocation the block spread to.
@@ -43,19 +44,18 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener  {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = s.toLowerCase();
-        return (lower.matches("[^\\s]+ spreads"));
+        String lower = CoreUtilities.toLowerCase(s);
+        return CoreUtilities.xthArgEquals(1, lower, "spreads") && !lower.startsWith("block");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = s.toLowerCase();
-        String mname = event.getBlock().getType().getData().getName().toLowerCase();
-        String mname2 = material.identifySimple().substring(2);
-        return (lower.startsWith("liquid spreads")
-                || lower.startsWith(mname + " spreads")
-                || lower.startsWith(mname2 + " spreads"))
-                && !lower.equals("block spreads");
+        String lower = CoreUtilities.toLowerCase(s);
+        String matName = event.getBlock().getType().getData().getName().toLowerCase();
+        String matName2 = material.identifySimple().substring(2);
+        return lower.startsWith("liquid")
+                || lower.startsWith(matName)
+                || lower.startsWith(matName2);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener  {
     }
 
     @EventHandler
-    public void blockFromTo(BlockFromToEvent event) {
+    public void onLiquidSpreads(BlockFromToEvent event) {
         to = new dLocation(event.getToBlock().getLocation());
         from = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

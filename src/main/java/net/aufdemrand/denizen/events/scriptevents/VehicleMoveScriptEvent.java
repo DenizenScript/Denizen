@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,20 +47,20 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = s.toLowerCase();
-        return (lower.matches("[^\\s]+ moves"));
+        String lower = CoreUtilities.toLowerCase(s);
+        return CoreUtilities.xthArgEquals(1, lower, "moves");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = s.toLowerCase();
-        String ename = vehicle.getEntityType().getLowercaseName();
-        String ename2 = vehicle.identifySimple().substring(2);
-        String ename3 = vehicle.identifySimpleType();
-        return lower.startsWith("vehicle moves")
-                || lower.startsWith(ename + " moves")
-                || lower.startsWith(ename2 + " moves")
-                || lower.startsWith(ename3 + " moves");
+        String lower = CoreUtilities.toLowerCase(s);
+        String eName = vehicle.getEntityType().getLowercaseName();
+        String eName2 = vehicle.identifySimple().substring(2);
+        String eName3 = vehicle.identifySimpleType();
+        return lower.startsWith("vehicle")
+                || lower.startsWith(eName)
+                || lower.startsWith(eName2)
+                || lower.startsWith(eName3);
     }
 
     @Override

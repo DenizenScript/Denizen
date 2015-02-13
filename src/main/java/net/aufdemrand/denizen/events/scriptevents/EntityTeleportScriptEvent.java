@@ -10,6 +10,7 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -62,20 +63,20 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = s.toLowerCase();
-        return (lower.matches("[^\\s]+ teleports.*"));
+        String lower = CoreUtilities.toLowerCase(s);
+        return CoreUtilities.xthArgEquals(1, lower, "teleports");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = s.toLowerCase();
-        String ename = entity.getEntityType().getLowercaseName();
-        String ename2 = entity.identifySimple().substring(2);
-        String ename3 = entity.identifySimpleType();
-        return lower.startsWith("entity teleports")
-                || lower.startsWith(ename + " teleports")
-                || lower.startsWith(ename2 + " teleports")
-                || lower.startsWith(ename3 + " teleports");
+        String lower = CoreUtilities.toLowerCase(s);
+        String eName = entity.getEntityType().getLowercaseName();
+        String eName2 = entity.identifySimple().substring(2);
+        String eName3 = entity.identifySimpleType();
+        return lower.startsWith("entity")
+                || lower.startsWith(eName)
+                || lower.startsWith(eName2)
+                || lower.startsWith(eName3);
     }
 
     @Override
