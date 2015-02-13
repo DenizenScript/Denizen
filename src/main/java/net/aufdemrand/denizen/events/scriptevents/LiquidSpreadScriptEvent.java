@@ -52,9 +52,9 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener  {
         String lower = s.toLowerCase();
         String mname = event.getBlock().getType().getData().getName().toLowerCase();
         String mname2 = material.identifySimple().substring(2);
-        return lower.startsWith("liquid spreads")
+        return (lower.startsWith("liquid spreads")
                 || lower.startsWith(mname + " spreads")
-                || lower.startsWith(mname2 + " spreads")
+                || lower.startsWith(mname2 + " spreads"))
                 && !lower.equals("block spreads");
     }
 
