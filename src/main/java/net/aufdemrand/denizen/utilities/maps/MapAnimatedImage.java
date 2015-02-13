@@ -13,7 +13,7 @@ public class MapAnimatedImage extends MapImage {
     protected AnimationObserver observer = null;
 
     public MapAnimatedImage(String xTag, String yTag, String visibilityTag, boolean debug, String fileTag, int width, int height) {
-        super(xTag, yTag, visibilityTag, debug, fileTag, width, height);
+        super(xTag, yTag, visibilityTag, debug, fileTag, width, height, false);
     }
 
     @Override
