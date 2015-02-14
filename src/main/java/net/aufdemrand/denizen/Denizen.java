@@ -3,9 +3,7 @@ package net.aufdemrand.denizen;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -720,6 +718,21 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void onDisable() {
         if(!startedSuccessful) return;
+
+        // <--[event]
+        // @Events
+        // shutdown
+        //
+        // @Warning not all plugins will be loaded and delayed scripts will be dropped.
+        //
+        // @Triggers when the server is shutting down.
+        //
+        // @Context
+        // None.
+        //
+        // -->
+        HashMap<String, dObject> context = new HashMap<String, dObject>();
+        OldEventManager.doEvents(Arrays.asList("shutdown"), new BukkitScriptEntryData(null, null), context);
 
         // Disable the log interceptor... otherwise bad things on /reload
         logInterceptor.standardOutput();
