@@ -1424,7 +1424,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.is_liquid>
         // @returns Element(Boolean)
         // @description
-        // Returns whether block at the location is a liquid.
+        // Returns whether the block at the location is a liquid.
         // -->
         if (attribute.startsWith("is_liquid"))
             return new Element(getBlock().isLiquid()).getAttribute(attribute.fulfill(1));

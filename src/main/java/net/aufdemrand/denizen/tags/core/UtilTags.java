@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -849,6 +850,22 @@ public class UtilTags implements Listener {
             }
         }
 
+        // <--[mechanism]
+        // @object server
+        // @name reset_event_stats
+        // @input None
+        // @description
+        // Resets the statistics on events for the queue.stats tag.
+        // @tags
+        // <queue.stats>
+        // -->
+        if (mechanism.matches("reset_event_stats")) {
+            for (ScriptEvent se: ScriptEvent.events) {
+                se.fires = 0;
+                se.scriptFires = 0;
+                se.nanoTimes = 0;
+            }
+        }
         // TODO: Properties somehow?
 
         if (!mechanism.fulfilled())
