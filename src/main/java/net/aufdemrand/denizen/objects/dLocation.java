@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.properties.item.ItemSkullskin;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
@@ -1608,10 +1609,22 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.skull_skin>
         // -->
         if (mechanism.matches("skull_skin") && getBlock().getState() instanceof Skull) {
-            Skull state = ((Skull)getBlock().getState());
-            if (!state.setOwner(value.asString()))
-                dB.echoError("Failed to set skull_skin!");
-            state.update(true);
+            dList list = mechanism.getValue().asType(dList.class);
+            String idString = list.get(0);
+            GameProfile profile;
+            if (idString.contains("-")) {
+                UUID uuid = UUID.fromString(idString);
+                profile = new GameProfile(uuid, null);
+            }
+            else {
+                profile = new GameProfile(null, idString);
+            }
+            profile = ItemSkullskin.fillGameProfile(profile);
+            if (list.size() > 1) {
+                profile.getProperties().put("textures", new com.mojang.authlib.properties.Property("value", list.get(1)));
+            }
+            ((TileEntitySkull) ((CraftWorld) getWorld()).getTileEntityAt(getBlockX(), getBlockY(), getBlockZ()))
+                    .setGameProfile(profile);
         }
 
         // <--[mechanism]
