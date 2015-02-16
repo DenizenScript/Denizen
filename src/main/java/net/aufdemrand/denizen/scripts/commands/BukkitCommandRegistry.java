@@ -1488,6 +1488,32 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
+        // @Name Light
+        // @Syntax light [<location>] [<#>/reset]
+        // @Required 2
+        // @Stable stable
+        // @Short Creates a light source at the location.
+        // @Author Morphan1
+        // @Group world
+        // @Description
+        // This command can create and reset a light source at a specified location, regardless of the type
+        // of block. It will be shown to all players near the location until it is reset, with certain
+        // exceptions.
+        // @Tags
+        // <l@location.light>
+        // <l@location.light.blocks>
+        // @Usage
+        // Use to create a bright light at a noted location.
+        // - light l@MyFancyLightOfWool 15
+        // @Usage
+        // Use to reset the brightness of the location to its original state.
+        // - light l@MyFancyLightOfWool reset
+        // -->
+        registerCoreMember(LightCommand.class,
+                "LIGHT", "light [<location>] [<#>/reset]", 2);
+
+
+        // <--[command]
         // @Name Listen
         // @Syntax listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
         // @Required 2
