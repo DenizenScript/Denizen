@@ -1183,12 +1183,7 @@ public class UtilTags implements Listener {
 
         }
 
-        // <--[tag]
-        // @attribute <util.as_element[<text>]>
-        // @returns Element
-        // @description
-        // Returns the text as an Element.
-        // -->
+        // Deprecated
         else if (type.equalsIgnoreCase("AS_ELEMENT")) {
             event.setReplaced(new Element(typeContext).getAttribute(attribute.fulfill(1)));
         }

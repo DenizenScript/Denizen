@@ -1421,6 +1421,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.ellipsoids>
+        // @returns dList(dCuboid)
+        // @description
+        // Returns a dList of all notable dEllipsoids that include this location.
+        // -->
+        if (attribute.startsWith("ellipsoids")) {
+            List<dEllipsoid> ellipsoids = dEllipsoid.getNotableEllipsoidsContaining(this);
+            dList ellipsoid_list = new dList();
+            for (dEllipsoid ellipsoid : ellipsoids) {
+                ellipsoid_list.add(ellipsoid.identify());
+            }
+            return ellipsoid_list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.is_liquid>
         // @returns Element(Boolean)
         // @description

@@ -16,6 +16,16 @@ import java.util.List;
 
 
 public class dEllipsoid implements dObject, Notable {
+
+    public static List<dEllipsoid> getNotableEllipsoidsContaining(Location location) {
+        List<dEllipsoid> cuboids = new ArrayList<dEllipsoid>();
+        for (dEllipsoid ellipsoid : NotableManager.getAllType(dEllipsoid.class))
+            if (ellipsoid.contains(location))
+                cuboids.add(ellipsoid);
+
+        return cuboids;
+    }
+
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -115,7 +125,7 @@ public class dEllipsoid implements dObject, Notable {
         return locations;
     }
 
-    public boolean contains(dLocation test) {
+    public boolean contains(Location test) {
         double xbase = test.getX() - loc.getX();
         double ybase = test.getY() - loc.getY();
         double zbase = test.getZ() - loc.getZ();
