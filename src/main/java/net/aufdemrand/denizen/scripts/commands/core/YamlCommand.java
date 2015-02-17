@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.json.JSONObject;
@@ -535,7 +536,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // Returns a dList of all the keys at the path and all subpaths.
         // -->
         if (attribute.startsWith("list_deep_keys")) {
-            Set<String> keys;
+            Set<StringHolder> keys;
             if (path != null && path.length() > 0) {
                 YamlConfiguration section = getYaml(id).getConfigurationSection(path);
                 if (section == null) {
@@ -550,9 +551,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 return;
 
             } else {
-                ArrayList<String> list = new ArrayList<String>();
-                list.addAll(keys);
-                event.setReplaced(new dList(list).getAttribute(attribute.fulfill(1)));
+                event.setReplaced(new dList(keys).getAttribute(attribute.fulfill(1)));
                 return;
             }
         }
@@ -564,7 +563,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // Returns a dList of all the keys at the path.
         // -->
         if (attribute.startsWith("list_keys")) {
-            Set<String> keys;
+            Set<StringHolder> keys;
             if (path != null && path.length() > 0) {
                 YamlConfiguration section = getYaml(id).getConfigurationSection(path);
                 if (section == null) {
@@ -579,9 +578,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 return;
 
             } else {
-                ArrayList<String> list = new ArrayList<String>();
-                list.addAll(keys);
-                event.setReplaced(new dList(list).getAttribute(attribute.fulfill(1)));
+                event.setReplaced(new dList(keys).getAttribute(attribute.fulfill(1)));
                 return;
             }
         }

@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.command.exception.CommandException;
@@ -145,11 +146,11 @@ public class ConstantsTrait extends Trait {
 
         try {
             if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS"))
-                for (String constant : ScriptRegistry.getScriptContainer(assignment)
+                for (StringHolder constant : ScriptRegistry.getScriptContainer(assignment)
                         .getConfigurationSection("DEFAULT CONSTANTS").getKeys(false))
-                    assignmentConstants.put(constant.toLowerCase(),
+                    assignmentConstants.put(constant.str.toLowerCase(),
                         ScriptRegistry.getScriptContainer(assignment)
-                                .getString("DEFAULT CONSTANTS." + constant.toUpperCase(), ""));
+                                .getString("DEFAULT CONSTANTS." + constant.str.toUpperCase(), ""));
         }
         catch (NullPointerException e) {
             dB.echoError("Constants in assignment script '" + npc.getTrait(AssignmentTrait.class)

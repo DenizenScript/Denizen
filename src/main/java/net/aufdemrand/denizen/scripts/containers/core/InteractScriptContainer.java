@@ -11,6 +11,8 @@ import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import net.aufdemrand.denizencore.utilities.text.StringHolder;
+
 import java.util.*;
 
 public class InteractScriptContainer extends ScriptContainer {
@@ -20,7 +22,7 @@ public class InteractScriptContainer extends ScriptContainer {
 
         try {
             // Find steps/default step in the script
-            Set<String> keys;
+            Set<StringHolder> keys;
             keys = getConfigurationSection("STEPS").getKeys(false);
 
             // TODO: Throw a warning if 'requirements' section exists
@@ -28,7 +30,8 @@ public class InteractScriptContainer extends ScriptContainer {
             if (keys.isEmpty())
                 throw new ExceptionInInitializerError("Could not find any STEPS in " + getName() + "! Is the type on this script correct?");
 
-            for (String step : keys) {
+            for (StringHolder step1 : keys) {
+                String step = step1.str;
                 if (step.contains("*")) {
                     YamlConfiguration defaultStepSection = getConfigurationSection("STEPS." + step);
                     step = step.replace("*", "");
@@ -212,11 +215,11 @@ public class InteractScriptContainer extends ScriptContainer {
             Map<String, String> idMap = new HashMap<String, String>();
             // Iterate through IDs to build the idMap
             try {
-                for (String id : getConfigurationSection("STEPS." + step + "."
+                for (StringHolder id : getConfigurationSection("STEPS." + step + "."
                         + triggerName + " TRIGGER").getKeys(false))
-                    if (!id.equalsIgnoreCase("SCRIPT"))
-                        idMap.put(id, getString("STEPS." + step + "."
-                                + triggerName + " TRIGGER." + id + ".TRIGGER", ""));
+                    if (!id.str.equalsIgnoreCase("SCRIPT"))
+                        idMap.put(id.str, getString("STEPS." + step + "."
+                                + triggerName + " TRIGGER." + id.str + ".TRIGGER", ""));
             }
             catch (Exception ex) {
                 dB.echoError("Warning: improperly defined " + trigger.getName() + " trigger for script '" + getName() + "'!");
