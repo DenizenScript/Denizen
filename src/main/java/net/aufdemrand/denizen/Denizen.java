@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.core.*;
+import net.aufdemrand.denizen.events.scriptevents.EntityDespawnScriptEvent;
 import net.aufdemrand.denizen.events.scriptevents.EntityTeleportScriptEvent;
 import net.aufdemrand.denizen.events.scriptevents.LiquidSpreadScriptEvent;
 import net.aufdemrand.denizen.events.scriptevents.VehicleMoveScriptEvent;
@@ -68,6 +69,7 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -594,6 +596,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
 
 
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
@@ -674,6 +677,15 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(ItemQuantity.class, dItem.class);
             propertyParser.registerProperty(ItemSkullskin.class, dItem.class);
             propertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+
+        try {
+            for (World world: getServer().getWorlds()) {
+                EntityScriptHelper.linkWorld(world);
+            }
         }
         catch (Exception e) {
             dB.echoError(e);

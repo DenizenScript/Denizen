@@ -1,15 +1,23 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 
+import net.aufdemrand.denizen.events.scriptevents.EntityDespawnScriptEvent;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.world.DenizenWorldAccess;
+import net.aufdemrand.denizencore.objects.Element;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +35,20 @@ public class EntityScriptHelper implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
+        EntityDespawnScriptEvent.instance.entity = new dEntity(event.getEntity());
+        EntityDespawnScriptEvent.instance.cause = new Element("DEATH");
+        EntityDespawnScriptEvent.instance.cancelled = false;
+        EntityDespawnScriptEvent.instance.fire();
         unlinkEntity(event.getEntity());
+    }
+
+    public static void linkWorld(World world) {
+        ((CraftWorld)world).getHandle().addIWorldAccess(new DenizenWorldAccess());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldLoad(WorldLoadEvent event) {
+        linkWorld(event.getWorld());
     }
 
     @EventHandler
@@ -36,8 +57,13 @@ public class EntityScriptHelper implements Listener {
         // Bukkit: https://github.com/Bukkit/Bukkit/pull/1070
         // CraftBukkit: https://github.com/Bukkit/CraftBukkit/pull/1386
         for (Entity ent: event.getChunk().getEntities()) {
-            if (!(ent instanceof LivingEntity) || ((LivingEntity)ent).getRemoveWhenFarAway())
+            if (!(ent instanceof LivingEntity) || ((LivingEntity)ent).getRemoveWhenFarAway()) {
+                EntityDespawnScriptEvent.instance.entity = new dEntity(ent);
+                EntityDespawnScriptEvent.instance.cause = new Element("CHUNK_UNLOAD");
+                EntityDespawnScriptEvent.instance.cancelled = false;
+                EntityDespawnScriptEvent.instance.fire();
                 unlinkEntity(ent);
+            }
         }
     }
 
