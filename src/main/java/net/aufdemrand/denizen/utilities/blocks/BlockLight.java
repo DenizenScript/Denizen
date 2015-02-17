@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.Bukkit;
@@ -10,17 +11,20 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class BlockLight {
 
     private static final Method playerChunkMethod;
     private static final Field dirtyCountField;
     private static final Map<Location, BlockLight> lightsByLocation = new HashMap<Location, BlockLight>();
+    private static final Map<Chunk, List<BlockLight>> lightsByChunk  = new HashMap<Chunk, List<BlockLight>>();
+    private static final BukkitTask bukkitTask;
     private static final BlockFace[] adjacentFaces = new BlockFace[] {
             BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN
     };
@@ -41,53 +45,87 @@ public class BlockLight {
         for (World worlds : Bukkit.getServer().getWorlds()) {
             WorldServer nmsWorld = ((CraftWorld) worlds).getHandle();
             IWorldAccess access = getIWorldAccess(worlds);
-
             nmsWorld.addIWorldAccess(access);
         }
+        bukkitTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Map.Entry<Chunk, List<BlockLight>> entry : lightsByChunk.entrySet()) {
+                    Chunk chunk = entry.getKey();
+                    if (chunk.bukkitChunk.isLoaded()) {
+                        List<BlockLight> blockLights = entry.getValue();
+                        if (blockLights.isEmpty())
+                            continue;
+                        PlayerChunkMap playerChunkMap = blockLights.get(0).worldServer.getPlayerChunkMap();
+                        for (BlockLight light : blockLights)
+                            light.reset(false);
+                        updateChunk(chunk, playerChunkMap);
+                        for (BlockLight light : blockLights)
+                            light.update(light.cachedLight, false);
+                        updateChunk(chunk, playerChunkMap);
+                    }
+                }
+            }
+        }.runTaskTimer(DenizenAPI.getCurrentInstance(), 5, 5);
     }
 
     private final CraftWorld craftWorld;
     private final WorldServer worldServer;
     private final CraftChunk craftChunk;
+    private final Chunk chunk;
     private final Block block;
     private final BlockPosition position;
     private final int originalLight;
     private int currentLight;
+    private int cachedLight;
 
     private BlockLight(Location location) {
         this.craftWorld = (CraftWorld) location.getWorld();
         this.worldServer = craftWorld.getHandle();
         this.craftChunk = (CraftChunk) location.getChunk();
+        this.chunk = craftChunk.getHandle();
         this.block = location.getBlock();
         this.position = new BlockPosition(block.getX(), block.getY(), block.getZ());
         this.originalLight = block.getLightLevel();
         this.currentLight = originalLight;
-        lightsByLocation.put(location, this);
+        this.cachedLight = originalLight;
     }
 
     public static BlockLight createLight(Location location, int lightLevel) {
         location = location.getBlock().getLocation();
         BlockLight blockLight;
-        if (lightsByLocation.containsKey(location))
-            removeLight(location);
-        blockLight = new BlockLight(location);
-        blockLight.update(lightLevel);
+        if (lightsByLocation.containsKey(location)) {
+            blockLight = lightsByLocation.get(location);
+            blockLight.reset(true);
+        }
+        else {
+            blockLight = new BlockLight(location);
+            lightsByLocation.put(location, blockLight);
+            if (!lightsByChunk.containsKey(blockLight.chunk))
+                lightsByChunk.put(blockLight.chunk, new ArrayList<BlockLight>());
+            lightsByChunk.get(blockLight.chunk).add(blockLight);
+        }
+        blockLight.update(lightLevel, true);
         return blockLight;
     }
 
     public static void removeLight(Location location) {
         location = location.getBlock().getLocation();
         if (lightsByLocation.containsKey(location)) {
-            lightsByLocation.get(location).reset();
+            BlockLight blockLight = lightsByLocation.get(location);
+            blockLight.reset(true);
             lightsByLocation.remove(location);
+            lightsByChunk.get(blockLight.chunk).remove(blockLight);
+            if (lightsByChunk.get(blockLight.chunk).isEmpty())
+                lightsByChunk.remove(blockLight.chunk);
         }
     }
 
-    private void reset() {
-        this.update(originalLight);
+    private void reset(boolean updateChunk) {
+        this.update(originalLight, updateChunk);
     }
 
-    private void update(int lightLevel) {
+    private void update(int lightLevel, boolean updateChunk) {
         if (this.currentLight == lightLevel) {
             return;
         }
@@ -111,15 +149,22 @@ public class BlockLight {
             if (adjacentAir != null) {
                 worldServer.x(new BlockPosition(adjacentAir.getX(), adjacentAir.getY(), adjacentAir.getZ()));
             }
+            this.cachedLight = lightLevel;
         }
-        int cX = craftChunk.getX();
-        int cZ = craftChunk.getZ();
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                BlockLight.setDirtyCount(getPlayerChunk(worldServer.getPlayerChunkMap(), cX + x, cZ + z));
-            }
+        if (updateChunk) {
+            updateChunk(chunk, worldServer.getPlayerChunkMap());
         }
         this.currentLight = lightLevel;
+    }
+
+    private static void updateChunk(Chunk chunk, PlayerChunkMap playerChunkMap) {
+        int cX = chunk.locX;
+        int cZ = chunk.locZ;
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                BlockLight.setDirtyCount(getPlayerChunk(playerChunkMap, cX + x, cZ + z));
+            }
+        }
     }
 
     private static Object getPlayerChunk(PlayerChunkMap map, int x, int z) {
