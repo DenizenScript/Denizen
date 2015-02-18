@@ -99,6 +99,10 @@ public class ItemScriptHelper implements Listener {
     @EventHandler
     public void specialRecipeClick(InventoryClickEvent event) {
 
+        if (true) {
+            return;
+        }
+
         // Proceed only if at least one special recipe has been stored
         if (ItemScriptContainer.specialrecipesMap.isEmpty()
                 && ItemScriptContainer.shapelessRecipesMap.isEmpty())
@@ -128,11 +132,6 @@ public class ItemScriptHelper implements Listener {
             else {
                 processSpecialRecipes(inventory, player);
             }
-
-            if (slotType.equals(InventoryType.SlotType.RESULT)) {
-                inventory.setMatrix(new ItemStack[9]);
-                player.updateInventory();
-            }
         }
     }
 
@@ -141,6 +140,10 @@ public class ItemScriptHelper implements Listener {
     // drags (which are entirely separate from clicks) are made in CRAFTING slots
     @EventHandler
     public void specialRecipeDrag(InventoryDragEvent event) {
+
+        if (true) {
+            return;
+        }
 
         // Proceed only if at least one special recipe has been stored
         if (ItemScriptContainer.specialrecipesMap.isEmpty()
