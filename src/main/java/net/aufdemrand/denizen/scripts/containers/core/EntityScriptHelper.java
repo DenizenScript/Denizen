@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.world.DenizenWorldAccess;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,8 +19,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,6 +31,19 @@ import java.util.UUID;
 public class EntityScriptHelper implements Listener {
 
     static HashMap<UUID, String> entities = new HashMap<UUID, String>();
+    private static final Field iWorldAccessList;
+    private static final Map<World, DenizenWorldAccess> worlds = new HashMap<World, DenizenWorldAccess>();
+
+    static {
+        Field field = null;
+        try {
+            field = net.minecraft.server.v1_8_R1.World.class.getDeclaredField("u");
+            field.setAccessible(true);
+        } catch (Exception e) {
+            dB.echoError(e);
+        }
+        iWorldAccessList = field;
+    }
 
     public EntityScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
@@ -43,12 +60,28 @@ public class EntityScriptHelper implements Listener {
     }
 
     public static void linkWorld(World world) {
-        ((CraftWorld)world).getHandle().addIWorldAccess(new DenizenWorldAccess());
+        DenizenWorldAccess denizenWorldAccess = new DenizenWorldAccess();
+        worlds.put(world, denizenWorldAccess);
+        ((CraftWorld) world).getHandle().addIWorldAccess(denizenWorldAccess);
+    }
+
+    public static void unlinkWorld(World world) {
+        try {
+            ((List) iWorldAccessList.get(((CraftWorld) world).getHandle())).remove(worlds.get(world));
+            worlds.remove(world);
+        } catch (Exception e) {
+            dB.echoError(e);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onWorldLoad(WorldLoadEvent event) {
         linkWorld(event.getWorld());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldUnload(WorldUnloadEvent event) {
+        unlinkWorld(event.getWorld());
     }
 
     @EventHandler

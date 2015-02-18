@@ -572,17 +572,24 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         /////////////////
 
         // <--[tag]
-        // @attribute <l@location.precise_cursor_on>
+        // @attribute <l@location.precise_cursor_on[<range>]>
         // @returns dLocation
         // @description
         // Returns the exact location this location is pointing at.
+        // Optionally, specify a maximum range to find the location from.
         // -->
         if (attribute.startsWith("precise_cursor_on")) {
+            int range = attribute.getIntContext(1);
+            if (range < 1) range = 200;
             double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI/180));
             double ny = Math.sin(getPitch() * (Math.PI/180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI/180));
-            return new dLocation(Rotation.rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), 200)).getAttribute(attribute.fulfill(1));
+            Location location = Rotation.rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), range);
+            if (location != null)
+                return new dLocation(location).getAttribute(attribute.fulfill(1));
+            else
+                return null;
         }
 
         // <--[tag]

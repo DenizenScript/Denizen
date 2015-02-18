@@ -785,6 +785,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
+
+        for (World world : getServer().getWorlds()) {
+            EntityScriptHelper.unlinkWorld(world);
+        }
+
         saveSaves();
     }
 
