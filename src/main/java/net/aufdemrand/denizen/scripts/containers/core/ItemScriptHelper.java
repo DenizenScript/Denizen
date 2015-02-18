@@ -99,10 +99,6 @@ public class ItemScriptHelper implements Listener {
     @EventHandler
     public void specialRecipeClick(InventoryClickEvent event) {
 
-        if (true) {
-            return;
-        }
-
         // Proceed only if at least one special recipe has been stored
         if (ItemScriptContainer.specialrecipesMap.isEmpty()
                 && ItemScriptContainer.shapelessRecipesMap.isEmpty())
@@ -140,10 +136,6 @@ public class ItemScriptHelper implements Listener {
     // drags (which are entirely separate from clicks) are made in CRAFTING slots
     @EventHandler
     public void specialRecipeDrag(InventoryDragEvent event) {
-
-        if (true) {
-            return;
-        }
 
         // Proceed only if at least one special recipe has been stored
         if (ItemScriptContainer.specialrecipesMap.isEmpty()
@@ -312,12 +304,13 @@ public class ItemScriptHelper implements Listener {
                 }
             }
 
-            // Deduct that amount from every ingredient in the matrix,
-            // but account for the fact that clicking the RESULT slot
-            // will also deduct 1 from every ingredient by itself
+            // Deduct that amount from every ingredient in the matrix
             for (int n = 0; n < matrix.length - 1; n++) {
                 if (matrix[n].getAmount() > 0) {
-                    matrix[n].setAmount(matrix[n].getAmount() - lowestAmount + 1);
+                    matrix[n].setAmount(matrix[n].getAmount() - lowestAmount);
+                    if (matrix[n].getAmount() <= 0) {
+                        matrix[n] = null;
+                    }
                 }
             }
 
@@ -334,12 +327,10 @@ public class ItemScriptHelper implements Listener {
                 // Set the itemstack's amount
                 resultStack.setAmount(lowestAmount * resultStack.getAmount());
 
+                inventory.setContents(matrix);
+
                 // Set the crafting's result
                 inventory.setResult(resultStack);
-
-                // Clear the matrix
-                // TODO: Find better solution
-                inventory.setMatrix(new ItemStack[9]);
 
                 // Update the player's inventory
                 //
