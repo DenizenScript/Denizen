@@ -1539,6 +1539,7 @@ public class dEntity implements dObject, Adjustable {
             int range = attribute.getIntContext(2);
             if (range < 1) range = 50;
             HashSet<Byte> set = new HashSet<Byte>();
+            set.add(Byte.valueOf((byte)0));
             return new dLocation(getLivingEntity().getTargetBlock(set, range).getLocation().clone())
                     .getAttribute(attribute.fulfill(2));
         }
