@@ -128,7 +128,34 @@ public class ItemScriptHelper implements Listener {
             else {
                 processSpecialRecipes(inventory, player);
             }
+            if (slotType.equals(SlotType.RESULT)) {
+                removeOneFromEachSlot(inventory, player);
+            }
         }
+    }
+
+    public void removeOneFromEachSlot(final CraftingInventory inventory, final Player player) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        ItemStack[] matrix = inventory.getMatrix();
+                        for (int i = 0; i < matrix.length; i++) {
+                            if (matrix[i] != null) {
+                                if (matrix[i].getAmount() == 0) {
+                                    matrix[i] = null;
+                                } else {
+                                    matrix[i].setAmount(matrix[i].getAmount() - 1);
+                                    if (matrix[i].getAmount() == 0) {
+                                        matrix[i] = null;
+                                    }
+                                }
+                            }
+                        }
+                        inventory.setContents(matrix);
+                        player.updateInventory();
+                    }
+                }, 0);
     }
 
     // When special Denizen recipes that have itemscripts as ingredients
