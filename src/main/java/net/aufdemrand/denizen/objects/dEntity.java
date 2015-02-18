@@ -41,6 +41,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -1537,7 +1538,8 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
             if (range < 1) range = 50;
-            return new dLocation(getLivingEntity().getTargetBlock(null, range).getLocation().clone())
+            HashSet<Byte> set = new HashSet<Byte>();
+            return new dLocation(getLivingEntity().getTargetBlock(set, range).getLocation().clone())
                     .getAttribute(attribute.fulfill(2));
         }
 
