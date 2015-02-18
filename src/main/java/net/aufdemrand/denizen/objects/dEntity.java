@@ -40,10 +40,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1535,13 +1532,29 @@ public class dEntity implements dObject, Adjustable {
         // Returns the location of the block the entity is looking at.
         // Optionally, specify a maximum range to find the location from.
         // -->
+        // <--[tag]
+        // @attribute <e@entity.location.cursor_on[<range>].ignore[<material>|...]>
+        // @returns dLocation
+        // @group location
+        // @description
+        // Returns the location of the block the entity is looking at, ignoring
+        // the specified materials along the way. Note that air is always an
+        // ignored material.
+        // Optionally, specify a maximum range to find the location from.
+        // -->
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
             if (range < 1) range = 50;
-            HashSet<Byte> set = new HashSet<Byte>();
-            set.add(Byte.valueOf((byte)0));
-            return new dLocation(getLivingEntity().getTargetBlock(set, range).getLocation().clone())
-                    .getAttribute(attribute.fulfill(2));
+            Set<Material> set = new HashSet<Material>();
+            set.add(Material.AIR);
+            attribute = attribute.fulfill(2);
+            if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
+                List<dMaterial> ignoreList = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
+                for (dMaterial material : ignoreList)
+                    set.add(material.getMaterial());
+                attribute = attribute.fulfill(1);
+            }
+            return new dLocation(getLivingEntity().getTargetBlock(set, range).getLocation()).getAttribute(attribute);
         }
 
         // <--[tag]
