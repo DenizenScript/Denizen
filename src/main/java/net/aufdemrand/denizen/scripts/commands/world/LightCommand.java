@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.utilities.blocks.BlockLight;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -29,6 +30,11 @@ public class LightCommand extends AbstractCommand {
                     && arg.matches("reset"))
                 scriptEntry.addObject("reset", new Element(true));
 
+            else if (!scriptEntry.hasObject("duration")
+                    && arg.matchesPrefix("d", "duration")
+                    && arg.matchesArgumentType(Duration.class))
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
+
         }
 
         if (!scriptEntry.hasObject("location") ||
@@ -45,12 +51,20 @@ public class LightCommand extends AbstractCommand {
         dLocation location = scriptEntry.getdObject("location");
         Element light = scriptEntry.getElement("light");
         Element reset = scriptEntry.getElement("reset");
+        Duration duration = scriptEntry.getdObject("duration");
 
-        dB.report(scriptEntry, getName(), location.debug() + (light != null ? light.debug() : "") + reset.debug());
+        dB.report(scriptEntry, getName(), location.debug() + reset.debug()
+                + (light != null ? light.debug() : "") + (duration != null ? duration.debug() : ""));
 
-        if (!reset.asBoolean())
-            BlockLight.createLight(location, light.asInt());
-        else
+        if (!reset.asBoolean()) {
+            int brightness = light.asInt();
+            if (brightness < 0 || brightness > 15) {
+                throw new CommandExecutionException("Light brightness must be between 0 and 15, inclusive!");
+            }
+            BlockLight.createLight(location, brightness, duration);
+        }
+        else {
             BlockLight.removeLight(location);
+        }
     }
 }

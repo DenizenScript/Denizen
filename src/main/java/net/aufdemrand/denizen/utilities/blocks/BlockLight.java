@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities.blocks;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Duration;
 import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -78,8 +79,9 @@ public class BlockLight {
     private final int originalLight;
     private int currentLight;
     private int cachedLight;
+    private BukkitTask removeTask;
 
-    private BlockLight(Location location) {
+    private BlockLight(final Location location, Duration duration) {
         this.craftWorld = (CraftWorld) location.getWorld();
         this.worldServer = craftWorld.getHandle();
         this.craftChunk = (CraftChunk) location.getChunk();
@@ -89,17 +91,23 @@ public class BlockLight {
         this.originalLight = block.getLightLevel();
         this.currentLight = originalLight;
         this.cachedLight = originalLight;
+        this.removeLater(duration);
     }
 
-    public static BlockLight createLight(Location location, int lightLevel) {
+    public static BlockLight createLight(Location location, int lightLevel, Duration duration) {
         location = location.getBlock().getLocation();
         BlockLight blockLight;
         if (lightsByLocation.containsKey(location)) {
             blockLight = lightsByLocation.get(location);
+            if (blockLight.removeTask != null) {
+                blockLight.removeTask.cancel();
+                blockLight.removeTask = null;
+            }
             blockLight.reset(true);
+            blockLight.removeLater(duration);
         }
         else {
-            blockLight = new BlockLight(location);
+            blockLight = new BlockLight(location, duration);
             lightsByLocation.put(location, blockLight);
             if (!lightsByChunk.containsKey(blockLight.chunk))
                 lightsByChunk.put(blockLight.chunk, new ArrayList<BlockLight>());
@@ -114,10 +122,27 @@ public class BlockLight {
         if (lightsByLocation.containsKey(location)) {
             BlockLight blockLight = lightsByLocation.get(location);
             blockLight.reset(true);
+            if (blockLight.removeTask != null)
+                blockLight.removeTask.cancel();
             lightsByLocation.remove(location);
             lightsByChunk.get(blockLight.chunk).remove(blockLight);
             if (lightsByChunk.get(blockLight.chunk).isEmpty())
                 lightsByChunk.remove(blockLight.chunk);
+        }
+    }
+
+    private void removeLater(Duration duration) {
+        if (duration != null) {
+            long ticks = duration.getTicks();
+            if (ticks > 0) {
+                this.removeTask = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        removeTask = null;
+                        removeLight(block.getLocation());
+                    }
+                }.runTaskLater(DenizenAPI.getCurrentInstance(), ticks);
+            }
         }
     }
 
