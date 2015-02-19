@@ -1278,7 +1278,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public String getLastEntryFromFlag(String flag) {
-        return getFlag(flag).getLast().asString();
+        FlagManager.Flag theflag = getFlag(flag);
+        if (theflag == null || theflag.getLast() == null) {
+            return null;
+        }
+        return theflag.getLast().asString();
     }
 
     @Override
