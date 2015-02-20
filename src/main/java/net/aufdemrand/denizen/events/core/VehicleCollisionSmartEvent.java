@@ -134,8 +134,8 @@ public class VehicleCollisionSmartEvent implements OldSmartEvent, Listener {
         context.put("vehicle", vehicle);
         context.put("entity", entity.getDenizenObject());
 
-        if (entity.isNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer());
+        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
+        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
 
         List<String> events = new ArrayList<String>();
         events.add("vehicle collides with entity");

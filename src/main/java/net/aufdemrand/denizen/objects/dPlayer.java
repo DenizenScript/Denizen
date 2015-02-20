@@ -176,8 +176,8 @@ public class dPlayer implements dObject, Adjustable {
 
     public dPlayer(Player player) {
         this((OfflinePlayer)player);
-        if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(player))
-            NPCPlayer = player;
+        if (dEntity.isNPC(player))
+            throw new IllegalStateException("NPCs are not allowed as dPlayer objects!");
     }
 
 
@@ -187,14 +187,11 @@ public class dPlayer implements dObject, Adjustable {
 
     OfflinePlayer offlinePlayer = null;
 
-    Player NPCPlayer = null;
-
     public boolean isValid() {
         return getPlayerEntity() != null || getOfflinePlayer() != null;
     }
 
     public Player getPlayerEntity() {
-        if (NPCPlayer != null) return NPCPlayer;
         if (offlinePlayer == null) return null;
         return Bukkit.getPlayer(offlinePlayer.getUniqueId());
     }
@@ -744,14 +741,13 @@ public class dPlayer implements dObject, Adjustable {
                         for (String ent: context.split("\\|")) {
                             boolean valid = false;
 
-                            if (ent.equalsIgnoreCase("npc") && Depends.citizens != null
-                                    && CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                            if (ent.equalsIgnoreCase("npc") && dEntity.isCitizensNPC(entity)) {
                                 valid = true;
                             }
                             else if (dEntity.matches(ent)) {
                                 // only accept generic entities that are not NPCs
                                 if (dEntity.valueOf(ent).isGeneric()) {
-                                    if (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                                    if (dEntity.isCitizensNPC(entity)) {
                                         valid = true;
                                     }
                                 }

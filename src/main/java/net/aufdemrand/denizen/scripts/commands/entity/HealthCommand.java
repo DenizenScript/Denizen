@@ -79,7 +79,7 @@ public class HealthCommand extends AbstractCommand {
             action = Element.TRUE;
 
         for (dEntity target: targets) {
-            if (target.isNPC()) {
+            if (target.isCitizensNPC()) {
                 if (action.asString().equalsIgnoreCase("true"))
                     target.getDenizenNPC().getCitizen().addTrait(HealthTrait.class);
                 else if (action.asString().equalsIgnoreCase("false"))
@@ -91,7 +91,7 @@ public class HealthCommand extends AbstractCommand {
             }
 
             if (qty != null) {
-                if (target.isNPC()) {
+                if (target.isCitizensNPC()) {
                     if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
                         target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(qty.asInt());
                     else

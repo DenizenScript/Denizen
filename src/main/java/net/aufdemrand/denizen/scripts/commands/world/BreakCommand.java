@@ -87,7 +87,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
         config.callback(new Runnable() {
             @Override
             public void run() {
-                if (entity.isNPC()) {
+                if (entity.isCitizensNPC()) {
                     DenizenAPI.getDenizenNPC(entity.getDenizenNPC().getCitizen()).action("dig", null, context);
                     se.setFinished(true);
                 }

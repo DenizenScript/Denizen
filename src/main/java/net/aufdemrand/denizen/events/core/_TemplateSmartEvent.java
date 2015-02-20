@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -83,7 +84,7 @@ public class _TemplateSmartEvent implements OldSmartEvent, Listener {
         context.put("location", new dLocation(event.getTo()));
         // Fire the event!
         List<String> determinations = OldEventManager.doEvents(Arrays.asList("x or y or z"),
-                new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null), context);
+                new BukkitScriptEntryData(dEntity.getPlayerFrom(event.getPlayer()), null), context);
         // Parse the determination and edit the event accordingly here
         for (String determination: determinations) {
             if (determination.equalsIgnoreCase("CANCELLED"))

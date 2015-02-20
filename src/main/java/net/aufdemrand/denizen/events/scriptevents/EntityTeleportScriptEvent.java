@@ -124,8 +124,8 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(pEvent != null ? new dPlayer(pEvent.getPlayer()): null,
-                entity.isNPC() ? entity.getDenizenNPC(): null);
+        return new BukkitScriptEntryData(pEvent != null ? dEntity.getPlayerFrom(pEvent.getPlayer()) : null,
+                entity.isCitizensNPC() ? entity.getDenizenNPC(): null);
     }
 
     @Override

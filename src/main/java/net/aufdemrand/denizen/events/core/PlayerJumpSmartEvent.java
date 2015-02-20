@@ -79,7 +79,8 @@ public class PlayerJumpSmartEvent implements OldSmartEvent, Listener {
             // Not perfect checking, but close enough until Bukkit adds a proper event
             Map<String, dObject> context = new HashMap<String, dObject>();
             context.put("location", new dLocation(event.getTo()));
-            BukkitWorldScriptHelper.doEvents(Arrays.asList("player jumps"), null, new dPlayer(event.getPlayer()), context);
+            BukkitWorldScriptHelper.doEvents(Arrays.asList("player jumps"), null,
+                    dEntity.getPlayerFrom(event.getPlayer()), context);
         }
     }
 }
