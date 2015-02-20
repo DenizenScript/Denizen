@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
@@ -20,6 +20,7 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     // <--[event]
     // @Events
     // player fills bucket
+    // player fills bucket with <material>
     //
     // @Triggers when a player fills a bucket.
     //
@@ -39,29 +40,28 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     }
 
     public static BucketFillScriptEvent instance;
+    public dEntity entity;
     public dItem item;
     public dMaterial material;
     public dLocation location;
     public dLocation relative;
-    public PlayerBucketFillEvent event;
+    public PlayerBucketFillEvent pEvent;
 
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.xthArgEquals(1, lower, "fills")
-                && (CoreUtilities.xthArgEquals(3, lower, "bucket")
-                || CoreUtilities.xthArgEquals(2, lower, "bucket"));
+        return CoreUtilities.xthArgEquals(1, lower, "fills");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String iName = event.getBucket().getData().getName().toLowerCase();
-        String iName2 = material.identifySimple().substring(2);
+        String matName = pEvent.getBlockClicked().getRelative(pEvent.getBlockFace()).getType().getData().getName().toLowerCase();
+        String matName2 = material.identifySimple().substring(2);
         return (lower.startsWith("player fills bucket")
-            || lower.startsWith("player fills" + iName + "bucket")
-            || lower.startsWith("player fills" + iName2 + "bucket"));
+                || lower.endsWith("with" + matName)
+                || lower.endsWith("with" + matName2));
     }
 
     @Override
@@ -85,6 +85,12 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(pEvent != null ? new dPlayer(pEvent.getPlayer()): null,
+                entity.isNPC() ? entity.getDenizenNPC(): null);
+    }
+
+    @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("location", location);
@@ -96,12 +102,13 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
 
     @EventHandler
     public void onBucketFill(PlayerBucketFillEvent event) {
+        entity = new dEntity(event.getPlayer());
         location = new dLocation(event.getBlockClicked().getLocation());
         relative = new dLocation(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
         item = new dItem(event.getBucket());
         material = dMaterial.getMaterialFrom(event.getBlockClicked().getRelative(event.getBlockFace()).getType(), event.getBlockClicked().getRelative(event.getBlockFace()).getData());
         cancelled = event.isCancelled();
-        this.event = event;
+        pEvent = event;
         fire();
         event.setCancelled(cancelled);
     }
