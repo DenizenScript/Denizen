@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizencore.objects.Element;
@@ -82,7 +83,7 @@ public class AsyncChatSmartEvent implements OldSmartEvent, Listener {
         context.put("message", new Element(event.getMessage()));
         context.put("format", new Element(event.getMessage()));
 
-        final dPlayer player = new dPlayer(event.getPlayer());
+        final dPlayer player = dEntity.getPlayerFrom(event.getPlayer());
 
         Callable<List<String>> call = new Callable<List<String>>() {
             @Override

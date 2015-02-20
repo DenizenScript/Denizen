@@ -91,7 +91,7 @@ public class FollowCommand extends AbstractCommand {
                         + target.debug());
 
         for (dEntity entity : entities.filter(dEntity.class)) {
-            if (entity.isNPC()) {
+            if (entity.isCitizensNPC()) {
                 dNPC npc = entity.getDenizenNPC();
                 if (lead != null)
                     npc.getNavigator().getLocalParameters().distanceMargin(lead.asDouble());

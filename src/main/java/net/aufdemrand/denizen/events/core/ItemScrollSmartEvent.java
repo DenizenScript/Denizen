@@ -89,7 +89,7 @@ public class ItemScrollSmartEvent implements OldSmartEvent, Listener {
         context.put("previous_slot", new Element(event.getPreviousSlot() + 1));
 
         String determination = BukkitWorldScriptHelper.doEvents(events,
-                null, new dPlayer(event.getPlayer()), context, true);
+                null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);

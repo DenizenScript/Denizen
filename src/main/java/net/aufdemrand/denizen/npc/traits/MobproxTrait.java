@@ -51,7 +51,7 @@ public class MobproxTrait extends Trait {
                     List<Entity> removeme = new ArrayList<Entity>();
                     removeme.addAll(inrange);
                     for (Entity ent: nearby) {
-                        if (ent instanceof LivingEntity && !(ent instanceof Player) && (acceptnpc || (!new dEntity(ent).isNPC()))) {
+                        if (ent instanceof LivingEntity && !(ent instanceof Player) && (acceptnpc || (!dEntity.isCitizensNPC(ent)))) {
                             if (removeme.contains(ent)) {
                                 removeme.remove(ent);
                             }

@@ -1,25 +1,25 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
-import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
-import net.aufdemrand.denizen.utilities.entity.EntityMovement;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
-import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
+import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.citizensnpcs.api.CitizensAPI;
 import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.*;
 import org.bukkit.Material;
@@ -45,6 +45,37 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class dEntity implements dObject, Adjustable {
+
+
+    /////////////////////
+    //   STATIC METHODS
+    /////////////////
+
+    public static boolean isNPC(Entity entity) {
+        return entity != null && entity.hasMetadata("NPC") && entity.getMetadata("NPC").get(0).asBoolean();
+    }
+
+    public static boolean isCitizensNPC(Entity entity) {
+        return entity != null && Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(entity);
+    }
+
+    public static dNPC getNPCFrom(Entity entity) {
+        if (isNPC(entity))
+            return dNPC.fromEntity(entity);
+        else
+            return null;
+    }
+
+    public static boolean isPlayer(Entity entity) {
+        return entity != null && entity instanceof Player && !isNPC(entity);
+    }
+
+    public static dPlayer getPlayerFrom(Entity entity) {
+        if (isPlayer(entity))
+            return dPlayer.mirrorBukkitPlayer((Player) entity);
+        else
+            return null;
+    }
 
 
     //////////////////
@@ -252,8 +283,8 @@ public class dEntity implements dObject, Adjustable {
             entityScript = EntityScriptHelper.getEntityScript(entity);
             this.uuid = entity.getUniqueId();
             this.entity_type = DenizenEntityType.getByEntity(entity);
-            if (Depends.citizens != null && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity)) {
-                this.npc = new dNPC(net.citizensnpcs.api.CitizensAPI.getNPCRegistry().getNPC(entity));
+            if (isCitizensNPC(entity)) {
+                this.npc = getNPCFrom(entity);
             }
         } else dB.echoError("Entity referenced is null!");
     }
@@ -389,11 +420,12 @@ public class dEntity implements dObject, Adjustable {
 
         if (entity == null) return null;
 
-        if (isNPC()) {
+        if (isCitizensNPC())
             return getDenizenNPC();
-        }
-        else if (isPlayer()) return new dPlayer(getPlayer());
-        else return this;
+        else if (isPlayer())
+            return new dPlayer(getPlayer());
+        else
+            return this;
     }
 
     /**
@@ -428,7 +460,7 @@ public class dEntity implements dObject, Adjustable {
         return (entity instanceof LivingEntity);
     }
 
-    public boolean hasInventory() { return getBukkitEntity() instanceof InventoryHolder || isNPC(); }
+    public boolean hasInventory() { return getBukkitEntity() instanceof InventoryHolder || isCitizensNPC(); }
 
     /**
      * Get the dNPC corresponding to this dEntity
@@ -437,13 +469,10 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dNPC getDenizenNPC() {
-        if (Depends.citizens == null)
-            return null;
         if (npc != null)
             return npc;
-        else if (entity != null && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity))
-            return dNPC.fromEntity(entity);
-        else return null;
+        else
+            return getNPCFrom(entity);
     }
 
     /**
@@ -453,11 +482,11 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public boolean isNPC() {
-        if (Depends.citizens == null)
-            return false;
-        if (npc != null) return true;
-        else if (entity != null && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity)) return true;
-        else return false;
+        return npc != null || isNPC(entity);
+    }
+
+    public boolean isCitizensNPC() {
+        return npc != null || isCitizensNPC(entity);
     }
 
     /**
@@ -467,8 +496,10 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public Player getPlayer() {
-
-        return (Player) entity;
+        if (isPlayer())
+            return (Player) entity;
+        else
+            return null;
     }
 
     /**
@@ -478,8 +509,10 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dPlayer getDenizenPlayer() {
-
-        return new dPlayer(getPlayer());
+        if (isPlayer())
+            return new dPlayer(getPlayer());
+        else
+            return null;
     }
 
     /**
@@ -549,7 +582,7 @@ public class dEntity implements dObject, Adjustable {
 
     public Inventory getBukkitInventory() {
         if (hasInventory()) {
-            if (!isNPC())
+            if (!isCitizensNPC())
                 return ((InventoryHolder) getBukkitEntity()).getInventory();
         }
         return null;
@@ -562,12 +595,12 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dInventory getInventory() {
-        return hasInventory() ? isNPC() ? getDenizenNPC().getDenizenInventory()
+        return hasInventory() ? isCitizensNPC() ? getDenizenNPC().getDenizenInventory()
                 : new dInventory(getBukkitInventory()) : null;
     }
 
     public String getName() {
-        if (isNPC())
+        if (isCitizensNPC())
             return getDenizenNPC().getCitizen().getName();
         if (entity instanceof Player)
             return ((Player) entity).getName();
@@ -682,7 +715,7 @@ public class dEntity implements dObject, Adjustable {
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
 
-        if (isNPC()) {
+        if (isCitizensNPC()) {
             if (getDenizenNPC().getCitizen().isSpawned())
                 getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
             else {
@@ -901,7 +934,7 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public void teleport(Location location) {
-        if (isNPC())
+        if (isCitizensNPC())
             getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
         else
             entity.teleport(location);
@@ -1110,13 +1143,13 @@ public class dEntity implements dObject, Adjustable {
 
 
     public String identifyType() {
-        if (isNPC()) return "npc";
+        if (isCitizensNPC()) return "npc";
         else if (isPlayer()) return "player";
         else return "e@" + entity_type.getName();
     }
 
     public String identifySimpleType() {
-        if (isNPC()) return "npc";
+        if (isCitizensNPC()) return "npc";
         else if (isPlayer()) return "player";
         else return entity_type.getLowercaseName();
     }
@@ -1128,7 +1161,7 @@ public class dEntity implements dObject, Adjustable {
 
     @Override
     public boolean isUnique() {
-        return (isPlayer() || isNPC() || isSpawned());  // || isSaved()
+        return (isPlayer() || isCitizensNPC() || isSpawned());  // || isSaved()
     }
 
     @Override
@@ -1896,7 +1929,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the player that last killed the entity.
         // -->
         if (attribute.startsWith("killer"))
-            return new dPlayer(getLivingEntity().getKiller())
+            return getPlayerFrom(getLivingEntity().getKiller())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -2026,10 +2059,10 @@ public class dEntity implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @group data
         // @description
-        // Returns whether the entity is an NPC.
+        // Returns whether the entity is a Citizens NPC.
         // -->
         if (attribute.startsWith("is_npc")) {
-            return new Element(isNPC())
+            return new Element(isCitizensNPC())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2240,7 +2273,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         // TODO: Maybe a property?
         if (mechanism.matches("max_health") && mechanism.requireInteger()) {
-            if (isNPC()) {
+            if (isCitizensNPC()) {
                 if (getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
                     getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(mechanism.getValue().asInt());
                 else

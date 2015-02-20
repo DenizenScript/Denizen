@@ -143,7 +143,7 @@ public class EntitySpawnSmartEvent implements OldSmartEvent, Listener {
         context.put("location", new dLocation(event.getLocation()));
 
         String determination = BukkitWorldScriptHelper.doEvents(events,
-                (entity.isNPC() ? entity.getDenizenNPC() : null), null, context, true);
+                (entity.isCitizensNPC() ? entity.getDenizenNPC() : null), null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);

@@ -79,7 +79,7 @@ public class AttackCommand extends AbstractCommand {
         // the target or stop attacking
 
         for (dEntity entity : entities) {
-            if (entity.isNPC()) {
+            if (entity.isCitizensNPC()) {
                 Navigator nav = entity.getDenizenNPC().getCitizen().getNavigator();
 
                 if (!cancel) {

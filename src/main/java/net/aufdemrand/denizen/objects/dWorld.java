@@ -242,7 +242,7 @@ public class dWorld implements dObject, Adjustable {
             ArrayList<dPlayer> players = new ArrayList<dPlayer>();
 
             for (Player player : getWorld().getPlayers()) {
-                if (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(player))
+                if (!dEntity.isNPC(player))
                     players.add(new dPlayer(player));
             }
 
