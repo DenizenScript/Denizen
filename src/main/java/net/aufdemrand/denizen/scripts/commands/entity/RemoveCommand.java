@@ -91,7 +91,7 @@ public class RemoveCommand extends AbstractCommand {
 
                 if (conditionsMet) {
 
-                    if (entity.isNPC()) {
+                    if (entity.isCitizensNPC()) {
                         entity.getDenizenNPC().getCitizen().destroy();
                     }
                     else {

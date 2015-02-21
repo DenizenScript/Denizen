@@ -116,7 +116,8 @@ public class PlayerStepsOnSmartEvent implements OldSmartEvent, Listener {
             // Add in cuboids context, with either the cuboids or an empty list
             context.put("cuboids", cuboid_context);
             // Fire event
-            String Determination = BukkitWorldScriptHelper.doEvents(events, null, new dPlayer(event.getPlayer()), context, true);
+            String Determination = BukkitWorldScriptHelper.doEvents(events, null,
+                    dEntity.getPlayerFrom(event.getPlayer()), context, true);
             if (Determination.equalsIgnoreCase("CANCELLED"))
                 event.setCancelled(true);
         }

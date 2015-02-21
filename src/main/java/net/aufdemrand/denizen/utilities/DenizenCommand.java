@@ -39,7 +39,7 @@ public class DenizenCommand extends Command {
         dNPC npc = null;
         if (commandSender instanceof Player) {
             Player pl = (Player) commandSender;
-            if (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(pl))
+            if (!dEntity.isNPC(pl))
                 player = dPlayer.mirrorBukkitPlayer(pl);
             context.put("server", Element.FALSE);
         }
@@ -64,7 +64,7 @@ public class DenizenCommand extends Command {
             dNPC npc = null;
             if (target instanceof Player) {
                 Player pl = (Player) target;
-                if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(pl))
+                if (dEntity.isCitizensNPC(pl))
                     npc = dNPC.fromEntity(pl);
                 else
                     player = dPlayer.mirrorBukkitPlayer(pl);
@@ -104,7 +104,7 @@ public class DenizenCommand extends Command {
         dNPC npc = null;
         if (commandSender instanceof Player) {
             Player pl = (Player) commandSender;
-            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(pl))
+            if (dEntity.isCitizensNPC(pl))
                 npc = dNPC.fromEntity(pl);
             else
                 player = dPlayer.mirrorBukkitPlayer(pl);
@@ -147,7 +147,7 @@ public class DenizenCommand extends Command {
         dNPC npc = null;
         if (commandSender instanceof Player) {
             Player pl = (Player) commandSender;
-            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(pl))
+            if (dEntity.isCitizensNPC(pl))
                 npc = dNPC.fromEntity(pl);
             else
                 player = dPlayer.mirrorBukkitPlayer(pl);

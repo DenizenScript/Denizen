@@ -105,8 +105,8 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
         context.put("final_damage", new Element(event.getFinalDamage()));
         context.put("cause", new Element(event.getCause().name()));
 
-        if (entity.isNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer());
+        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
+        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
 
         boolean isFatal = false;
 
@@ -227,7 +227,7 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
             events.add(entity.identifySimple() + " damaged by " + damager.identifyType());
             events.add(entity.identifySimple() + " damaged by " + damager.identifySimple());
 
-            if (damager.isNPC()) {
+            if (damager.isCitizensNPC()) {
                 subNPC = damager.getDenizenNPC();
 
                 // If we had no NPC in our regular context, use this one
@@ -235,7 +235,7 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
             }
 
             else if (damager.isPlayer()) {
-                subPlayer = new dPlayer(damager.getPlayer());
+                subPlayer = damager.getDenizenPlayer();
 
                 // If we had no player in our regular context, use this one
                 if (player == null) player = subPlayer;

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.events.core;
 
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -80,7 +81,8 @@ public class PlayerWalkSmartEvent implements OldSmartEvent, Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("old_location", new dLocation(event.getFrom()));
         context.put("new_location", new dLocation(event.getTo()));
-        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList("player walks"), null, new dPlayer(event.getPlayer()), context, true);
+        String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList("player walks"), null,
+                dEntity.getPlayerFrom(event.getPlayer()), context, true);
         if (determination.equalsIgnoreCase("CANCELLED"))
             event.setCancelled(true);
     }

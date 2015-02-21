@@ -3,10 +3,8 @@ package net.aufdemrand.denizen;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.tags.TagContext;
-import net.citizensnpcs.api.CitizensAPI;
 
 public class BukkitScriptEntryData extends ScriptEntryData {
     private dPlayer player;
@@ -34,21 +32,10 @@ public class BukkitScriptEntryData extends ScriptEntryData {
     }
 
     public void setPlayer(dPlayer player) {
-        if (player != null && player.isOnline() && Depends.citizens != null
-                && CitizensAPI.getNPCRegistry().isNPC(player.getPlayerEntity())) {
-            dontFixMe = true;
-            setNPC(new dNPC(CitizensAPI.getNPCRegistry().getNPC(player.getPlayerEntity())));
-        }
-        else
-            this.player = player;
+        this.player = player;
     }
 
-    private boolean dontFixMe = false;
-
     public void setNPC(dNPC npc) {
-        if (npc == null && dontFixMe) {
-            dontFixMe = false;
-        }
         this.npc = npc;
     }
 

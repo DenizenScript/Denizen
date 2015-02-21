@@ -105,7 +105,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
 
         if (isArmor(item)) {
             for (final Player player : location.getWorld().getPlayers()) {
-                if (Utilities.checkLocation(player, location, 2.5)) {
+                if (!dEntity.isNPC(player) && Utilities.checkLocation(player, location, 2.5)) {
                     final ItemStack[] armor_contents = player.getInventory().getArmorContents().clone();
                     final Vector velocity = event.getVelocity();
                     new BukkitRunnable() {
@@ -345,7 +345,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
                                 "player equips " + getArmorType(item),
                                 "player equips " + armor.identifySimple(),
                                 "player equips " + armor.identifyMaterial()),
-                null, new dPlayer(player), context).toUpperCase();
+                null, dEntity.getPlayerFrom(player), context).toUpperCase();
 
         if (determination.startsWith("CANCELLED")) {
             new BukkitRunnable() {
@@ -374,7 +374,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
                                 "player unequips " + getArmorType(item),
                                 "player unequips " + armor.identifySimple(),
                                 "player unequips " + armor.identifyMaterial()),
-                null, new dPlayer(player), context).toUpperCase();
+                null, dEntity.getPlayerFrom(player), context).toUpperCase();
 
         if (determination.startsWith("CANCELLED")) {
             new BukkitRunnable() {

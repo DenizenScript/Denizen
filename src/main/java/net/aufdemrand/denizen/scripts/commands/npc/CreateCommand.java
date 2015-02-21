@@ -21,8 +21,8 @@ public class CreateCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Avoid duplication of objects
                 dEntity ent = arg.asType(dEntity.class);
-                if (!ent.isGeneric() && !ent.isNPC())
-                    throw new InvalidArgumentsException("Entity supplied must be generic or an NPC!");
+                if (!ent.isGeneric() && !ent.isCitizensNPC())
+                    throw new InvalidArgumentsException("Entity supplied must be generic or a Citizens NPC!");
                 scriptEntry.addObject("entity_type", ent);
             }
 
@@ -54,7 +54,7 @@ public class CreateCommand extends AbstractCommand {
                 + (traits != null ? traits.debug() : ""));
 
         dNPC created;
-        if (!type.isGeneric() && type.isNPC()) {
+        if (!type.isGeneric() && type.isCitizensNPC()) {
             created = new dNPC(type.getDenizenNPC().getCitizen().clone());
             created.getCitizen().setName(name.asString());
         }

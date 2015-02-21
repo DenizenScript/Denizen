@@ -44,7 +44,7 @@ public class EntityAge implements Property {
     }
 
     public void setBaby(boolean bool) {
-        if (ageable.isNPC()) {
+        if (ageable.isCitizensNPC()) {
             NPC ageable_npc = ageable.getDenizenNPC().getCitizen();
             if (!ageable_npc.hasTrait(Age.class))
                 ageable_npc.addTrait(Age.class);
@@ -63,7 +63,7 @@ public class EntityAge implements Property {
     }
 
     public void setAge(int val) {
-        if (ageable.isNPC()) {
+        if (ageable.isCitizensNPC()) {
             NPC ageable_npc = ageable.getDenizenNPC().getCitizen();
             ageable_npc.getTrait(Age.class).setAge(val);
         }

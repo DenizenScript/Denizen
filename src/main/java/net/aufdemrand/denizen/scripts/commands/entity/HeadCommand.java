@@ -83,7 +83,7 @@ public class HeadCommand extends AbstractCommand {
         // Loop through entities, apply the item/skin
 
         for (dEntity entity : entities) {
-            if (entity.isNPC()) {
+            if (entity.isCitizensNPC()) {
                 if (!entity.getDenizenNPC().getCitizen().hasTrait(Equipment.class))
                     entity.getDenizenNPC().getCitizen().addTrait(Equipment.class);
                 Equipment trait = entity.getDenizenNPC().getCitizen().getTrait(Equipment.class);
