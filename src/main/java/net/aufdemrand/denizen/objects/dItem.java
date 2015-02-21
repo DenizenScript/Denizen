@@ -527,6 +527,53 @@ public class dItem implements dObject, Notable, Adjustable {
         return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identifySimple();
     }
 
+    @Override
+    public String identifyNoIdentifier() {
+
+        if (item == null) return "null";
+
+        if (item.getTypeId() != 0) {
+
+            // If saved item, return that
+            if (isUnique()) {
+                return NotableManager.getSavedId(this) + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
+            }
+
+            // If not a saved item, but is a custom item, return the script id
+            else if (isItemscript()) {
+                return getScriptName() + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
+            }
+        }
+
+        // Else, return the material name
+        if (item.getDurability() >= 16 || item.getDurability() < 0) {
+            return getMaterial().realName() + "," + item.getDurability()  + PropertyParser.getPropertiesString(this);
+        }
+        return getMaterial().identify() + PropertyParser.getPropertiesString(this);
+    }
+
+
+    @Override
+    public String identifySimpleNoIdentifier() {
+        if (item == null) return "null";
+
+        if (item.getTypeId() != 0) {
+
+            // If saved item, return that
+            if (isUnique()) {
+                return NotableManager.getSavedId(this);
+            }
+
+            // If not a saved item, but is a custom item, return the script id
+            else if (isItemscript()) {
+                return getScriptName();
+            }
+        }
+
+        // Else, return the material name
+        return identifyMaterial();
+    }
+
     public String getFullString() {
         return "i@" + (isItemscript() ? getScriptName(): getMaterial().realName()) + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
     }

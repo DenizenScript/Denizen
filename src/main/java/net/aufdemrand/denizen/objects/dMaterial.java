@@ -704,6 +704,24 @@ public class dMaterial implements dObject {
         return "m@" + material.name().toLowerCase();
     }
 
+    public String identifyNoIdentifier() {
+        if (forcedIdentity != null) return forcedIdentity.toLowerCase();
+        if (getData() != null && getData() > 0) return material.name().toLowerCase() + "," + getData();
+        return material.name().toLowerCase();
+    }
+
+    @Override
+    public String identifySimpleNoIdentifier() {
+        if (forcedIdentity != null) return forcedIdentity.toLowerCase();
+        return material.name().toLowerCase();
+    }
+
+    public String identifyFullNoIdentifier() {
+        if (forcedIdentity != null) return forcedIdentity.toLowerCase() + (getData() != null ? "," +  getData(): "");
+        if (getData() != null) return material.name().toLowerCase() + "," + getData();
+        return material.name().toLowerCase();
+    }
+
     @Override
     public String toString() {
         return identify();
