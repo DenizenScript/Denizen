@@ -2999,41 +2999,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player empties bucket
-    //
-    // @Triggers when a player empties a bucket.
-    // @Context
-    // <context.item> returns the dItem of the bucket.
-    // <context.location> returns the dLocation of the block clicked with the bucket.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from emptying the bucket.
-    // dItem to set the item in the player's hand after the event.
-    //
-    // -->
-    @EventHandler
-    public void playerBucketEmpty(PlayerBucketEmptyEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("item", new dItem(event.getBucket()));
-        context.put("location", new dLocation(event.getBlockClicked().getLocation()));
-
-        String determination = doEvents(Arrays.asList
-                ("player empties bucket"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        // Handle message
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        if (dItem.matches(determination)) {
-            ItemStack is = dItem.valueOf(determination).getItemStack();
-            event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
-        }
-
-    }
-
-    // <--[event]
-    // @Events
     // player changes world
     // player changes world from <world>
     // player changes world to <world>
