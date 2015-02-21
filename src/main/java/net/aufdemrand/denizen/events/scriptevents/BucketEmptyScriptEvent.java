@@ -50,17 +50,15 @@ public class BucketEmptyScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.xthArgEquals(1, lower, "empties");
+        return lower.startsWith("player empties");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String iName = item.identifyNoIdentifier();
-        String iName2 = item.identifySimpleNoIdentifier();
-        return (lower.startsWith("player empties bucket")
-                || lower.endsWith("empties " + iName)
-                || lower.endsWith("empties " + iName2));
+        return lower.endsWith(" bucket")
+                || lower.endsWith(" "+item.identifyNoIdentifier())
+                || lower.endsWith(" "+item.identifySimpleNoIdentifier());
     }
 
     @Override

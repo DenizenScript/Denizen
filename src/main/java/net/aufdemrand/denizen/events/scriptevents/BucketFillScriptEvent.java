@@ -20,17 +20,16 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     // <--[event]
     // @Events
     // player fills bucket
-    // player fills bucket with:<material>
+    // player fills <bucket>
     //
     // @Triggers when a player fills a bucket.
     //
     // @Cancellable true
     //
     // @Context
-    // <context.item> returns the dItem of the bucket.
+    // <context.item> returns the dItem of the filled bucket.
     // <context.location> returns the dLocation of the block clicked with the bucket.
-    // <context.relative> returns the dLocation of the block in front of the clicked block.
-    // <context.material> returns the dMaterial the the bucket is being filled with.
+    // <context.material> returns the dMaterial of the dLocation.
     //
     // -->
 
@@ -51,14 +50,15 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player fills bucket");
+        return lower.startsWith("player fills");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return checkSwitch(s, "with", (material.identifySimpleNoIdentifier()))
-                || checkSwitch(s, "with", (material.identifyFullNoIdentifier()));
+        return lower.endsWith(" bucket")
+                || lower.endsWith(" "+item.identifyNoIdentifier())
+                || lower.endsWith(" "+item.identifySimpleNoIdentifier());
     }
 
     @Override
@@ -91,7 +91,6 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("location", location);
-        context.put("relative", relative);
         context.put("item", item);
         context.put("material", material);
         return context;
@@ -101,9 +100,8 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     public void onBucketFill(PlayerBucketFillEvent event) {
         entity = new dEntity(event.getPlayer());
         location = new dLocation(event.getBlockClicked().getLocation());
-        relative = new dLocation(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
         item = new dItem(event.getItemStack());
-        material = dMaterial.getMaterialFrom(event.getBlockClicked().getRelative(event.getBlockFace()).getType(), event.getBlockClicked().getRelative(event.getBlockFace()).getData());
+        material = dMaterial.getMaterialFrom(event.getBlockClicked().getType(), event.getBlockClicked().getData());
         cancelled = event.isCancelled();
         this.event = event;
         fire();
