@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands;
 
 import net.aufdemrand.denizen.scripts.commands.core.*;
-import net.aufdemrand.denizencore.scripts.commands.core.*;
+import net.aufdemrand.denizencore.scripts.commands.core.ForeachCommand;
+import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizencore.scripts.commands.core.DefineCommand;
 import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
 import net.aufdemrand.denizen.scripts.commands.npc.*;

@@ -144,7 +144,7 @@ public class WhileCommand extends BracedCommand {
         else if (callback != null && callback.asBoolean()) {
             if (scriptEntry.getOwner() != null && (scriptEntry.getOwner().getCommandName().equalsIgnoreCase("while") ||
                     scriptEntry.getOwner().getBracedSet() == null || scriptEntry.getOwner().getBracedSet().size() == 0 ||
-                    scriptEntry.getBracedSet().get("WHILE").get(scriptEntry.getBracedSet().get("WHILE").size() - 1) != scriptEntry)) {
+                    scriptEntry.getBracedSet().get(0).value.get(scriptEntry.getBracedSet().get(0).value.size() - 1) != scriptEntry)) {
                 WhileData data = (WhileData)scriptEntry.getOwner().getData();
                 data.index++;
                 if (System.currentTimeMillis() - data.LastChecked < 50) {
@@ -160,7 +160,7 @@ public class WhileCommand extends BracedCommand {
                 if (TagManager.tag(data.value, new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
                     dB.echoDebug(scriptEntry, DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
-                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("WHILE");
+                    List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
                     ScriptEntry callbackEntry = null;
                     try {
                         callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
@@ -188,8 +188,8 @@ public class WhileCommand extends BracedCommand {
 
             // Get objects
             Element value = scriptEntry.getElement("value");
-            ArrayList<ScriptEntry> bracedCommandsList =
-                    ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("WHILE");
+            List<ScriptEntry> bracedCommandsList =
+                    ((List<BracedData>) scriptEntry.getObject("braces")).get(0).value;
 
             if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Empty braces!");
@@ -199,7 +199,7 @@ public class WhileCommand extends BracedCommand {
             // Report to dB
             dB.report(scriptEntry, getName(), value.debug());
 
-            if (!TagManager.tag(value.asString(), new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
+            if (!TagManager.tag(value.asString(), scriptEntry.entryData.getTagContext()).equalsIgnoreCase("true")) {
                 return;
             }
 
