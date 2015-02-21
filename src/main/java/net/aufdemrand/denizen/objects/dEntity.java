@@ -60,7 +60,7 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public static dNPC getNPCFrom(Entity entity) {
-        if (isNPC(entity))
+        if (isCitizensNPC(entity))
             return dNPC.fromEntity(entity);
         else
             return null;
@@ -522,7 +522,7 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public boolean isPlayer() {
-        return !isNPC() && entity instanceof Player;
+        return entity instanceof Player && !isNPC();
     }
 
     /**
@@ -735,7 +735,7 @@ public class dEntity implements dObject, Adjustable {
                     }
                     // Else, use the entity_type specified/remembered
                     else
-                        entity = entity_type.spawnNewEntity(location);
+                        entity = entity_type.spawnNewEntity(location, mechanisms);
 
                     getLivingEntity().teleport(location);
                     getLivingEntity().getEquipment().setArmorContents(despawned_entity.equipment);
@@ -801,8 +801,11 @@ public class dEntity implements dObject, Adjustable {
                     }
                     else {
 
-                        ent = entity_type.spawnNewEntity(location);
+                        ent = entity_type.spawnNewEntity(location, mechanisms);
                         entity = ent;
+                        if (entity == null) {
+                            return;
+                        }
                         uuid = entity.getUniqueId();
                         if (entityScript != null)
                             EntityScriptHelper.setEntityScript(entity, entityScript);

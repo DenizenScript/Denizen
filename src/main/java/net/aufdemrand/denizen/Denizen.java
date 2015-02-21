@@ -25,6 +25,7 @@ import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
+import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.CraftItemProjectile;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.events.OldEventManager;
@@ -414,6 +415,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Register DenizenEntityTypes
             DenizenEntityType.registerEntityType("ITEM_PROJECTILE", CraftItemProjectile.class);
             DenizenEntityType.registerEntityType("FAKE_ARROW", CraftFakeArrow.class);
+            DenizenEntityType.registerEntityType("FAKE_PLAYER", CraftFakePlayer.class);
 
             // Track all player names for quick dPlayer matching
             for (OfflinePlayer player: Bukkit.getOfflinePlayers()) {

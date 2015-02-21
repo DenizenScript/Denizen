@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.entity;
 
+import net.aufdemrand.denizencore.objects.Mechanism;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
@@ -8,6 +9,8 @@ import org.bukkit.craftbukkit.v1_8_R1.entity.CraftItem;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.projectiles.ProjectileSource;
+
+import java.util.ArrayList;
 
 public class CraftItemProjectile extends CraftItem implements DenizenCustomEntity, ItemProjectile {
 
@@ -18,7 +21,7 @@ public class CraftItemProjectile extends CraftItem implements DenizenCustomEntit
     }
 
     @CreateEntity
-    public static ItemProjectile createItemProjectile(Location location) {
+    public static ItemProjectile createItemProjectile(Location location, ArrayList<Mechanism> mechanisms) {
         CraftWorld world = (CraftWorld) location.getWorld();
         EntityItemProjectile entity = new EntityItemProjectile(world, location);
         return (ItemProjectile) entity.getBukkitEntity();
