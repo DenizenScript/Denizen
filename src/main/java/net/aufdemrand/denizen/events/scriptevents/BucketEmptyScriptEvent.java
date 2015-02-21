@@ -44,7 +44,7 @@ public class BucketEmptyScriptEvent extends ScriptEvent implements Listener {
     public dMaterial material;
     public dLocation location;
     public dLocation relative;
-    public PlayerBucketEmptyEvent pEvent;
+    public PlayerBucketEmptyEvent event;
 
 
     @Override
@@ -56,8 +56,8 @@ public class BucketEmptyScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String iName = pEvent.getBucket().getData().getName().toLowerCase();
-        String iName2 = item.identifySimple().substring(2);
+        String iName = item.identifyNoIdentifier();
+        String iName2 = item.identifySimpleNoIdentifier();
         return (lower.startsWith("player empties bucket")
                 || lower.endsWith("empties " + iName)
                 || lower.endsWith("empties " + iName2));
@@ -85,7 +85,7 @@ public class BucketEmptyScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(pEvent != null ? new dPlayer(pEvent.getPlayer()): null,
+        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()): null,
                 entity.isNPC() ? entity.getDenizenNPC(): null);
     }
 
@@ -105,7 +105,7 @@ public class BucketEmptyScriptEvent extends ScriptEvent implements Listener {
         relative = new dLocation(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
         item = new dItem(event.getBucket());
         cancelled = event.isCancelled();
-        pEvent = event;
+        this.event = event;
         fire();
         event.setCancelled(cancelled);
     }

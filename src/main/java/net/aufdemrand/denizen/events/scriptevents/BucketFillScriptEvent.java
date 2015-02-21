@@ -20,7 +20,7 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     // <--[event]
     // @Events
     // player fills bucket
-    // player fills bucket with <material>
+    // player fills bucket with:<material>
     //
     // @Triggers when a player fills a bucket.
     //
@@ -45,23 +45,20 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     public dMaterial material;
     public dLocation location;
     public dLocation relative;
-    public PlayerBucketFillEvent pEvent;
+    public PlayerBucketFillEvent event;
 
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.xthArgEquals(1, lower, "fills");
+        return lower.startsWith("player fills bucket");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String matName = pEvent.getBlockClicked().getRelative(pEvent.getBlockFace()).getType().getData().getName().toLowerCase();
-        String matName2 = material.identifySimple().substring(2);
-        return (lower.startsWith("player fills bucket")
-                || lower.endsWith("with" + matName)
-                || lower.endsWith("with" + matName2));
+        return checkSwitch(s, "with", (material.identifySimpleNoIdentifier()))
+                || checkSwitch(s, "with", (material.identifyFullNoIdentifier()));
     }
 
     @Override
@@ -86,7 +83,7 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(pEvent != null ? new dPlayer(pEvent.getPlayer()): null,
+        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()): null,
                 entity.isNPC() ? entity.getDenizenNPC(): null);
     }
 
@@ -105,10 +102,10 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
         entity = new dEntity(event.getPlayer());
         location = new dLocation(event.getBlockClicked().getLocation());
         relative = new dLocation(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
-        item = new dItem(event.getBucket());
+        item = new dItem(event.getItemStack());
         material = dMaterial.getMaterialFrom(event.getBlockClicked().getRelative(event.getBlockFace()).getType(), event.getBlockClicked().getRelative(event.getBlockFace()).getData());
         cancelled = event.isCancelled();
-        pEvent = event;
+        this.event = event;
         fire();
         event.setCancelled(cancelled);
     }
