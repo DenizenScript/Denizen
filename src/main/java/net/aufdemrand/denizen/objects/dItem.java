@@ -527,7 +527,12 @@ public class dItem implements dObject, Notable, Adjustable {
         return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identifySimple();
     }
 
-    @Override
+
+    // Special-case that essentially fetches the material of the items and uses its 'identify()' method
+    public String identifyMaterialNoIdentifier() {
+        return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identifySimpleNoIdentifier();
+    }
+
     public String identifyNoIdentifier() {
 
         if (item == null) return "null";
@@ -549,11 +554,9 @@ public class dItem implements dObject, Notable, Adjustable {
         if (item.getDurability() >= 16 || item.getDurability() < 0) {
             return getMaterial().realName() + "," + item.getDurability()  + PropertyParser.getPropertiesString(this);
         }
-        return getMaterial().identify() + PropertyParser.getPropertiesString(this);
+        return getMaterial().identifyNoIdentifier() + PropertyParser.getPropertiesString(this);
     }
 
-
-    @Override
     public String identifySimpleNoIdentifier() {
         if (item == null) return "null";
 
@@ -571,7 +574,7 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // Else, return the material name
-        return identifyMaterial();
+        return identifyMaterialNoIdentifier();
     }
 
     public String getFullString() {

@@ -710,7 +710,6 @@ public class dMaterial implements dObject {
         return material.name().toLowerCase();
     }
 
-    @Override
     public String identifySimpleNoIdentifier() {
         if (forcedIdentity != null) return forcedIdentity.toLowerCase();
         return material.name().toLowerCase();
