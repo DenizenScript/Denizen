@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Mechanism;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftEntity;
@@ -9,6 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,14 +67,14 @@ public class DenizenEntityType {
         this.createMethod = finalMethod;
     }
 
-    public Entity spawnNewEntity(Location location) {
+    public Entity spawnNewEntity(Location location, ArrayList<Mechanism> mechanisms) {
         try {
             if (name.equals("DROPPED_ITEM"))
                 return location.getWorld().dropItem(location, new ItemStack(Material.STONE));
             else if (!isCustom())
                 return location.getWorld().spawnEntity(location, bukkitEntityType);
             else
-                return (Entity) createMethod.invoke(null, location);
+                return (Entity) createMethod.invoke(null, location, mechanisms);
         } catch (Exception e) {
             dB.echoError(e);
         }

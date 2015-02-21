@@ -213,7 +213,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
 
         // Run any event scripts and get the determination.
         determination = BukkitWorldScriptHelper.doEvents(events,
-                null, new dPlayer(event.getPlayer()), context).toUpperCase();
+                null, dEntity.getPlayerFrom(event.getPlayer()), context).toUpperCase();
 
         // If a script has determined fulfilled, cancel this event so the player doesn't
         // receive the default 'Invalid command' gibberish from bukkit.

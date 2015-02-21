@@ -250,8 +250,8 @@ public class dChunk implements dObject, Adjustable {
         if (attribute.startsWith("players")) {
             dList entities = new dList();
             for (Entity ent : chunk.getEntities())
-                if (ent instanceof Player && (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(ent)))
-                    entities.add(new dPlayer((Player) ent).identify());
+                if (dEntity.isPlayer(ent))
+                    entities.add(dEntity.getPlayerFrom(ent).identify());
 
             return entities.getAttribute(attribute.fulfill(1));
         }

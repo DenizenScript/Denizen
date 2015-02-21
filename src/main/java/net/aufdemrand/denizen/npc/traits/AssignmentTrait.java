@@ -7,6 +7,7 @@ import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -176,8 +177,8 @@ public class AssignmentTrait extends Trait {
         paginator.addLine("<e>Key: <a>Action name  <b>Script Size");
         if (assignmentScript.contains("ACTIONS")) entriesPresent = true;
         if (entriesPresent)
-            for (String action : assignmentScript.getConfigurationSection("ACTIONS").getKeys(false))
-                paginator.addLine("<a>" + action + " <b>" + assignmentScript.getStringList("ACTIONS." + action).size());
+            for (StringHolder action : assignmentScript.getConfigurationSection("ACTIONS").getKeys(false))
+                paginator.addLine("<a>" + action.str + " <b>" + assignmentScript.getStringList("ACTIONS." + action.str).size());
         else paginator.addLine("<c>No actions defined in the assignment.");
         paginator.addLine("");
 

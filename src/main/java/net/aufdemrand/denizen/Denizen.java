@@ -3,13 +3,12 @@ package net.aufdemrand.denizen;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.core.*;
+import net.aufdemrand.denizen.events.scriptevents.EntityDespawnScriptEvent;
 import net.aufdemrand.denizen.events.scriptevents.EntityTeleportScriptEvent;
 import net.aufdemrand.denizen.events.scriptevents.LiquidSpreadScriptEvent;
 import net.aufdemrand.denizen.events.scriptevents.VehicleMoveScriptEvent;
@@ -26,6 +25,7 @@ import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
+import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.CraftItemProjectile;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.events.OldEventManager;
@@ -70,6 +70,7 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -414,6 +415,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Register DenizenEntityTypes
             DenizenEntityType.registerEntityType("ITEM_PROJECTILE", CraftItemProjectile.class);
             DenizenEntityType.registerEntityType("FAKE_ARROW", CraftFakeArrow.class);
+            DenizenEntityType.registerEntityType("FAKE_PLAYER", CraftFakePlayer.class);
 
             // Track all player names for quick dPlayer matching
             for (OfflinePlayer player: Bukkit.getOfflinePlayers()) {
@@ -596,6 +598,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
 
 
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
@@ -681,6 +684,15 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError(e);
         }
 
+        try {
+            for (World world: getServer().getWorlds()) {
+                EntityScriptHelper.linkWorld(world);
+            }
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+
         // Run everything else on the first server tick
         getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
@@ -721,6 +733,21 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public void onDisable() {
         if(!startedSuccessful) return;
 
+        // <--[event]
+        // @Events
+        // shutdown
+        //
+        // @Warning not all plugins will be loaded and delayed scripts will be dropped.
+        //
+        // @Triggers when the server is shutting down.
+        //
+        // @Context
+        // None.
+        //
+        // -->
+        HashMap<String, dObject> context = new HashMap<String, dObject>();
+        OldEventManager.doEvents(Arrays.asList("shutdown"), new BukkitScriptEntryData(null, null), context);
+
         // Disable the log interceptor... otherwise bad things on /reload
         logInterceptor.standardOutput();
 
@@ -760,6 +787,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
+
+        for (World world : getServer().getWorlds()) {
+            EntityScriptHelper.unlinkWorld(world);
+        }
+
         saveSaves();
     }
 
@@ -1248,7 +1280,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public String getLastEntryFromFlag(String flag) {
-        return getFlag(flag).getLast().asString();
+        FlagManager.Flag theflag = getFlag(flag);
+        if (theflag == null || theflag.getLast() == null) {
+            return null;
+        }
+        return theflag.getLast().asString();
     }
 
     @Override

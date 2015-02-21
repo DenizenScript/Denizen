@@ -106,7 +106,7 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
         List<dNPC> npcs = new ArrayList<dNPC>();
         final List<dEntity> waitForEntities = new ArrayList<dEntity>();
         for (final dEntity entity : entities) {
-            if (entity.isNPC()) {
+            if (entity.isCitizensNPC()) {
                 dNPC npc = entity.getDenizenNPC();
                 npcs.add(npc);
                 if (!npc.isSpawned()) {

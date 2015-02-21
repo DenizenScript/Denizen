@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Mechanism;
 import net.minecraft.server.v1_8_R1.EntityArrow;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
@@ -13,6 +14,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 public class CraftFakeArrow extends CraftArrow implements DenizenCustomEntity, Vehicle {
@@ -33,7 +35,7 @@ public class CraftFakeArrow extends CraftArrow implements DenizenCustomEntity, V
     }
 
     @CreateEntity
-    public static Arrow createArrow(Location location) {
+    public static Arrow createArrow(Location location, ArrayList<Mechanism> mechanisms) {
         CraftWorld world = (CraftWorld) location.getWorld();
         EntityArrow arrow = new FakeArrowEntity(world, location);
         return (Arrow) arrow.getBukkitEntity();

@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.npc.traits;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
+import net.aufdemrand.denizencore.objects.Mechanism;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 
@@ -15,6 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
+
+import java.util.ArrayList;
 
 public class SittingTrait extends Trait implements Listener  {
 
@@ -69,7 +72,7 @@ public class SittingTrait extends Trait implements Listener  {
     }
 
     private void sitInternal() {
-        CraftFakeArrow.createArrow(npc.getEntity().getLocation()).setPassenger(npc.getEntity());
+        CraftFakeArrow.createArrow(npc.getEntity().getLocation(), new ArrayList<Mechanism>()).setPassenger(npc.getEntity());
         //PlayerAnimation.SIT.play((Player)npc.getEntity());
         //eh.getDataWatcher().watch(0, (byte) 0x04);
         sitting = true;

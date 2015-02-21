@@ -128,12 +128,34 @@ public class ItemScriptHelper implements Listener {
             else {
                 processSpecialRecipes(inventory, player);
             }
-
-            if (slotType.equals(InventoryType.SlotType.RESULT)) {
-                inventory.setMatrix(new ItemStack[9]);
-                player.updateInventory();
+            if (slotType.equals(SlotType.RESULT)) {
+                removeOneFromEachSlot(inventory, player);
             }
         }
+    }
+
+    public void removeOneFromEachSlot(final CraftingInventory inventory, final Player player) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        ItemStack[] matrix = inventory.getMatrix();
+                        for (int i = 0; i < matrix.length; i++) {
+                            if (matrix[i] != null) {
+                                if (matrix[i].getAmount() == 0) {
+                                    matrix[i] = null;
+                                } else {
+                                    matrix[i].setAmount(matrix[i].getAmount() - 1);
+                                    if (matrix[i].getAmount() == 0) {
+                                        matrix[i] = null;
+                                    }
+                                }
+                            }
+                        }
+                        inventory.setContents(matrix);
+                        player.updateInventory();
+                    }
+                }, 0);
     }
 
     // When special Denizen recipes that have itemscripts as ingredients
@@ -200,7 +222,7 @@ public class ItemScriptHelper implements Listener {
                             ("item crafted",
                                     result.identifySimple() + " crafted",
                                     result.identifyMaterial() + " crafted"),
-                            new BukkitScriptEntryData(new dPlayer(player), null), context);
+                            new BukkitScriptEntryData(dEntity.getPlayerFrom(player), null), context);
 
                     for (String determination: determinations) {
                         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -309,12 +331,13 @@ public class ItemScriptHelper implements Listener {
                 }
             }
 
-            // Deduct that amount from every ingredient in the matrix,
-            // but account for the fact that clicking the RESULT slot
-            // will also deduct 1 from every ingredient by itself
+            // Deduct that amount from every ingredient in the matrix
             for (int n = 0; n < matrix.length - 1; n++) {
                 if (matrix[n].getAmount() > 0) {
-                    matrix[n].setAmount(matrix[n].getAmount() - lowestAmount + 1);
+                    matrix[n].setAmount(matrix[n].getAmount() - lowestAmount);
+                    if (matrix[n].getAmount() <= 0) {
+                        matrix[n] = null;
+                    }
                 }
             }
 
@@ -331,12 +354,10 @@ public class ItemScriptHelper implements Listener {
                 // Set the itemstack's amount
                 resultStack.setAmount(lowestAmount * resultStack.getAmount());
 
+                inventory.setContents(matrix);
+
                 // Set the crafting's result
                 inventory.setResult(resultStack);
-
-                // Clear the matrix
-                // TODO: Find better solution
-                inventory.setMatrix(new ItemStack[9]);
 
                 // Update the player's inventory
                 //

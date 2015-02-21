@@ -162,7 +162,7 @@ public class ItemSkullskin implements Property {
 
     }
 
-    private static GameProfile fillGameProfile(GameProfile gameProfile) {
+    public static GameProfile fillGameProfile(GameProfile gameProfile) {
         if(gameProfile != null) {
             GameProfile gameProfile1 = null;
             if (gameProfile.getName() != null) {

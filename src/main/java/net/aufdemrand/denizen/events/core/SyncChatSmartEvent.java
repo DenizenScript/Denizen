@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizencore.objects.Element;
@@ -96,7 +97,7 @@ public class SyncChatSmartEvent implements OldSmartEvent, Listener {
         context.put("message", new Element(event.getMessage()));
         context.put("format", new Element(event.getMessage()));
 
-        dPlayer player = new dPlayer(event.getPlayer());
+        dPlayer player = dEntity.getPlayerFrom(event.getPlayer());
 
         String determination = BukkitWorldScriptHelper.doEvents(Arrays.asList("player chats"), null, player, context);
 

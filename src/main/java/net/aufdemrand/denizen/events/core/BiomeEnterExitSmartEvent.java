@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizencore.objects.Element;
@@ -109,7 +110,7 @@ public class BiomeEnterExitSmartEvent implements OldSmartEvent, Listener {
            List<String> determinations = OldEventManager.doEvents(Arrays.asList(
                     "player enters biome", "player exits biome",
                     "player enters " + to.name(), "player exits " + from.name()
-                ), new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null), context, true);
+                ), new BukkitScriptEntryData(dEntity.getPlayerFrom(event.getPlayer()), null), context, true);
 
             for (String determination: determinations) {
                 if (determination.toUpperCase().startsWith("CANCELLED"))

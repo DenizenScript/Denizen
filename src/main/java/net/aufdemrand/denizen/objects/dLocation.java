@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.properties.item.ItemSkullskin;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
@@ -571,17 +572,24 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         /////////////////
 
         // <--[tag]
-        // @attribute <l@location.precise_cursor_on>
+        // @attribute <l@location.precise_cursor_on[<range>]>
         // @returns dLocation
         // @description
         // Returns the exact location this location is pointing at.
+        // Optionally, specify a maximum range to find the location from.
         // -->
         if (attribute.startsWith("precise_cursor_on")) {
+            int range = attribute.getIntContext(1);
+            if (range < 1) range = 200;
             double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI/180));
             double ny = Math.sin(getPitch() * (Math.PI/180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI/180));
-            return new dLocation(Rotation.rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), 200)).getAttribute(attribute.fulfill(1));
+            Location location = Rotation.rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), range);
+            if (location != null)
+                return new dLocation(location).getAttribute(attribute.fulfill(1));
+            else
+                return null;
         }
 
         // <--[tag]
@@ -1420,10 +1428,25 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.ellipsoids>
+        // @returns dList(dCuboid)
+        // @description
+        // Returns a dList of all notable dEllipsoids that include this location.
+        // -->
+        if (attribute.startsWith("ellipsoids")) {
+            List<dEllipsoid> ellipsoids = dEllipsoid.getNotableEllipsoidsContaining(this);
+            dList ellipsoid_list = new dList();
+            for (dEllipsoid ellipsoid : ellipsoids) {
+                ellipsoid_list.add(ellipsoid.identify());
+            }
+            return ellipsoid_list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.is_liquid>
         // @returns Element(Boolean)
         // @description
-        // Returns whether block at the location is a liquid.
+        // Returns whether the block at the location is a liquid.
         // -->
         if (attribute.startsWith("is_liquid"))
             return new Element(getBlock().isLiquid()).getAttribute(attribute.fulfill(1));
@@ -1608,10 +1631,22 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.skull_skin>
         // -->
         if (mechanism.matches("skull_skin") && getBlock().getState() instanceof Skull) {
-            Skull state = ((Skull)getBlock().getState());
-            if (!state.setOwner(value.asString()))
-                dB.echoError("Failed to set skull_skin!");
-            state.update(true);
+            dList list = mechanism.getValue().asType(dList.class);
+            String idString = list.get(0);
+            GameProfile profile;
+            if (idString.contains("-")) {
+                UUID uuid = UUID.fromString(idString);
+                profile = new GameProfile(uuid, null);
+            }
+            else {
+                profile = new GameProfile(null, idString);
+            }
+            profile = ItemSkullskin.fillGameProfile(profile);
+            if (list.size() > 1) {
+                profile.getProperties().put("textures", new com.mojang.authlib.properties.Property("value", list.get(1)));
+            }
+            ((TileEntitySkull) ((CraftWorld) getWorld()).getTileEntityAt(getBlockX(), getBlockY(), getBlockZ()))
+                    .setGameProfile(profile);
         }
 
         // <--[mechanism]

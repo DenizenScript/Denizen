@@ -111,8 +111,8 @@ public class EntityDeathSmartEvent implements OldSmartEvent, Listener {
         }
         context.put("drops", drops_dlist);
 
-        if (entity.isNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = new dPlayer(entity.getPlayer());
+        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
+        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
 
         // If this entity has a stored killer, get it and then
         // remove it from the entityKillers map

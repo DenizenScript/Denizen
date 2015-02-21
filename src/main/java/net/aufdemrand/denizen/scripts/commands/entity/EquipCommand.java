@@ -94,7 +94,7 @@ public class EquipCommand extends AbstractCommand {
             if (entity.isGeneric()) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Cannot equip generic entity " + entity.identify() + "!");
             }
-            else if (entity.isNPC()) {
+            else if (entity.isCitizensNPC()) {
 
                 dNPC npc = entity.getDenizenNPC();
 

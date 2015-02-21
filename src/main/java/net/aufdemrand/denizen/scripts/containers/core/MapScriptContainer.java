@@ -6,6 +6,7 @@ import net.aufdemrand.denizencore.utilities.NaturalOrderComparator;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.maps.*;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import org.bukkit.map.MapView;
 
 import java.util.ArrayList;
@@ -27,7 +28,11 @@ public class MapScriptContainer extends ScriptContainer {
         }
         if (contains("OBJECTS")) {
             YamlConfiguration objectsSection = getConfigurationSection("OBJECTS");
-            List<String> objectKeys = new ArrayList<String>(objectsSection.getKeys(false));
+            List<StringHolder> objectKeys1 = new ArrayList<StringHolder>(objectsSection.getKeys(false));
+            List<String> objectKeys = new ArrayList<String>(objectKeys1.size());
+            for (StringHolder sh: objectKeys1) {
+                objectKeys.add(sh.str);
+            }
             Collections.sort(objectKeys, new NaturalOrderComparator());
             for (String objectKey : objectKeys) {
                 YamlConfiguration objectSection = objectsSection.getConfigurationSection(objectKey);

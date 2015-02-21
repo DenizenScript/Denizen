@@ -16,6 +16,8 @@ import java.util.UUID;
 
 public class MapImage extends MapObject {
 
+    protected boolean useCache;
+    protected byte[] cachedImage;
     protected Image image;
     protected ImageIcon imageIcon;
     protected int width = 0;
@@ -23,8 +25,18 @@ public class MapImage extends MapObject {
     protected String fileTag;
     protected String actualFile = null;
 
-    public MapImage(String xTag, String yTag, String visibilityTag, boolean debug, String fileTag, int width, int height) {
+    public MapImage(String xTag, String yTag, String visibilityTag, boolean debug, String fileTag,
+                    int width, int height) {
+        this(xTag, yTag, visibilityTag, debug, fileTag, width, height, false);
+    }
+
+    public MapImage(String xTag, String yTag, String visibilityTag, boolean debug, String fileTag,
+                    int width, int height, boolean useCache) {
         super(xTag, yTag, visibilityTag, debug);
+        this.useCache = useCache;
+        if (useCache) {
+            this.cachedImage = null;
+        }
         this.fileTag = fileTag;
         if (width > 0 || height > 0) {
             this.width = width > 0 ? width : 0;
@@ -61,7 +73,16 @@ public class MapImage extends MapObject {
             }
         }
         // Use custom functions to draw image to allow transparency and reduce lag intensely
-        byte[] bytes = imageToBytes(image, width, height);
+        byte[] bytes;
+        if (!useCache || cachedImage == null) {
+            bytes = imageToBytes(image, width, height);
+            if (useCache) {
+                cachedImage = bytes;
+            }
+        }
+        else {
+            bytes = cachedImage;
+        }
         int x = getX(player, uuid);
         int y = getY(player, uuid);
         for (int x2 = 0; x2 < width; ++x2) {

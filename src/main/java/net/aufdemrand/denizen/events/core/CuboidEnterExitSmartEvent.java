@@ -191,7 +191,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         events.add(EventName);
 
         String determination = BukkitWorldScriptHelper.doEvents(events,
-                null, new dPlayer(event.getPlayer()), context, true);
+                null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);

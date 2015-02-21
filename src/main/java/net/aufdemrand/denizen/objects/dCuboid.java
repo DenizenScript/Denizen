@@ -1047,8 +1047,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute.startsWith("list_living_entities")) {
             ArrayList<dEntity> entities = new ArrayList<dEntity>();
             for (Entity ent : getWorld().getLivingEntities()) {
-                if (ent.isValid() && isInsideCuboid(ent.getLocation())
-                        && (Depends.citizens == null || !CitizensAPI.getNPCRegistry().isNPC(ent)))
+                if (ent.isValid() && isInsideCuboid(ent.getLocation()) && !dEntity.isCitizensNPC(ent))
                     entities.add(new dEntity(ent));
             }
             return new dList(entities).getAttribute(attribute.fulfill(1));
