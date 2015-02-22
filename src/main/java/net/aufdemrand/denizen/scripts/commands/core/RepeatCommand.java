@@ -102,7 +102,7 @@ public class RepeatCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError("Cannot stop repeat: not in one!");
             }
             return;
         }
@@ -129,7 +129,7 @@ public class RepeatCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError("Cannot stop repeat: not in one!");
             }
             return;
         }
