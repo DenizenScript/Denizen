@@ -36,7 +36,7 @@ public class WhileCommand extends BracedCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        List<aH.Argument> original_args = aH.interpret(scriptEntry.getOriginalArguments());
+        List<aH.Argument> original_args = aH.interpret(scriptEntry.modifiedArguments());
         List<aH.Argument> parsed_args = aH.interpret(scriptEntry.getArguments());
         for (int i = 0; i < parsed_args.size(); i++) {
 
