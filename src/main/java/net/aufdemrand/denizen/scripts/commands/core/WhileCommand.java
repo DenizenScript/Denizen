@@ -182,7 +182,7 @@ public class WhileCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError(scriptEntry.getResidingQueue(), "Wnew BukkitTagContext(scriptEntry, false)hile CALLBACK invalid: not a real callback!");
+                dB.echoError(scriptEntry.getResidingQueue(), "While CALLBACK invalid: not a real callback!");
             }
         }
 
