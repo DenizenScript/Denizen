@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
@@ -62,6 +63,7 @@ public class WhileCommand extends BracedCommand {
 
             else if (!scriptEntry.hasObject("value")) {
                 scriptEntry.addObject("value", new Element(original.raw_value));
+                scriptEntry.addObject("parsed_value", new Element(arg.raw_value));
                 break;
             }
 
@@ -157,7 +159,7 @@ public class WhileCommand extends BracedCommand {
                     data.instaTicks = 0;
                 }
                 data.LastChecked = System.currentTimeMillis();
-                if (TagManager.tag(data.value, new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
+                if (TagManager.tag(data.value, DenizenCore.getImplementation().getTagContextFor(scriptEntry, false)).equalsIgnoreCase("true")) {
                     dB.echoDebug(scriptEntry, DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
                     List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
@@ -180,7 +182,7 @@ public class WhileCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError(scriptEntry.getResidingQueue(), "While CALLBACK invalid: not a real callback!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Wnew BukkitTagContext(scriptEntry, false)hile CALLBACK invalid: not a real callback!");
             }
         }
 
@@ -188,6 +190,7 @@ public class WhileCommand extends BracedCommand {
 
             // Get objects
             Element value = scriptEntry.getElement("value");
+            Element parsed_value = scriptEntry.getElement("parsed_value");
             List<ScriptEntry> bracedCommandsList =
                     ((List<BracedData>) scriptEntry.getObject("braces")).get(0).value;
 
@@ -199,7 +202,7 @@ public class WhileCommand extends BracedCommand {
             // Report to dB
             dB.report(scriptEntry, getName(), value.debug());
 
-            if (!TagManager.tag(value.asString(), scriptEntry.entryData.getTagContext()).equalsIgnoreCase("true")) {
+            if (!parsed_value.asString().equalsIgnoreCase("true")) {
                 return;
             }
 
