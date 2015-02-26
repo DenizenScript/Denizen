@@ -364,6 +364,6 @@ public class Settings {
 
     public static int pathfindingMaxDistance() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Tags.Path fiding.Max distance", 100);
+                .getInt("Tags.Path finding.Max distance", 100);
     }
 }
