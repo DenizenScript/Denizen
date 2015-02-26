@@ -24,7 +24,7 @@ public class ExperienceCommand extends AbstractCommand {
     }
 
     public static int getTotalExperience(int level, double bar) {
-        return getTotalExpToLevel(level) + (int) (getExpToLevel(level + 1) * bar);
+        return getTotalExpToLevel(level) + (int) (getExpToLevel(level + 1) * bar + 0.5);
     }
 
     public static int getExpToLevel(int level) {
@@ -111,8 +111,8 @@ public class ExperienceCommand extends AbstractCommand {
         if (newexp > 0) {
             final int level = countLevel(newexp, 17, 0);
             player.setLevel(level);
-            final int epxToLvl = newexp - getTotalExpToLevel(level);
-            player.setExp(epxToLvl < 0 ? 0 : epxToLvl / getExpToLevel(level + 1));
+            final int expToLvl = newexp - getTotalExpToLevel(level);
+            player.setExp(expToLvl < 0 ? 0.0f : (float) expToLvl / (float) getExpToLevel(level + 1));
         }
     }
 
