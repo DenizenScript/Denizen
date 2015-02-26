@@ -120,15 +120,16 @@ public class ItemScriptHelper implements Listener {
 
             // If the RESULT slot was shift-clicked, emulate
             // shift click behavior for it
+            boolean clicked;
             if (slotType.equals(InventoryType.SlotType.RESULT) &&
                 event.isShiftClick()) {
-                emulateSpecialRecipeResultShiftClick(inventory, player);
+                clicked = emulateSpecialRecipeResultShiftClick(inventory, player);
             }
             // Otherwise check for special recipe matches
             else {
-                processSpecialRecipes(inventory, player);
+                clicked = processSpecialRecipes(inventory, player);
             }
-            if (slotType.equals(SlotType.RESULT)) {
+            if (clicked && slotType.equals(SlotType.RESULT)) {
                 removeOneFromEachSlot(inventory, player);
             }
         }
@@ -188,7 +189,16 @@ public class ItemScriptHelper implements Listener {
 
     // Compare a crafting matrix with all stored special recipes right
     // after a click or drag has been made in it
-    public void processSpecialRecipes(final CraftingInventory inventory, final Player player) {
+    public boolean processSpecialRecipes(final CraftingInventory inventory, final Player player) {
+
+        // Store the current matrix
+        ItemStack[] matrix1 = inventory.getMatrix();
+
+        // Get the result of the special recipe that this matrix matches,
+        // if any
+        dItem result1 = getSpecialRecipeResult(matrix1);
+
+        boolean returnme = result1 != null;
 
         // Run a task 1 tick later than the event from which this method
         // was called, to check the new state of the CraftingInventory's matrix
@@ -243,6 +253,8 @@ public class ItemScriptHelper implements Listener {
                 }
             }
         }, 0);
+
+        return returnme;
     }
 
     // Check if a CraftingInventory's crafting matrix matches a special
@@ -304,7 +316,7 @@ public class ItemScriptHelper implements Listener {
     // Because Denizen special recipes are basically fake recipes,
     // shift clicking the result slot will not work by itself and needs
     // to be emulated like below
-    public void emulateSpecialRecipeResultShiftClick(CraftingInventory inventory, Player player) {
+    public boolean emulateSpecialRecipeResultShiftClick(CraftingInventory inventory, Player player) {
 
         // Store the crafting matrix
         ItemStack[] matrix = inventory.getMatrix();
@@ -365,7 +377,9 @@ public class ItemScriptHelper implements Listener {
                 // is added to Bukkit
                 player.updateInventory();
             }
+            return true;
         }
+        return false;
     }
 
     @EventHandler

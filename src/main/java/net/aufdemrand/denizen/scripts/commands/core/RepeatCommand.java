@@ -102,7 +102,7 @@ public class RepeatCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError("Cannot stop repeat: not in one!");
             }
             return;
         }
@@ -129,20 +129,20 @@ public class RepeatCommand extends BracedCommand {
                 }
             }
             else {
-                dB.echoError("Cannot stop while: not in one!");
+                dB.echoError("Cannot stop repeat: not in one!");
             }
             return;
         }
         else if (callback != null && callback.asBoolean()) {
             if (scriptEntry.getOwner() != null && (scriptEntry.getOwner().getCommandName().equalsIgnoreCase("repeat") ||
                     scriptEntry.getOwner().getBracedSet() == null || scriptEntry.getOwner().getBracedSet().size() == 0 ||
-                    scriptEntry.getBracedSet().get("REPEAT").get(scriptEntry.getBracedSet().get("REPEAT").size() - 1) != scriptEntry)) {
+                    scriptEntry.getBracedSet().get(0).value.get(scriptEntry.getBracedSet().get(0).value.size() - 1) != scriptEntry)) {
                 RepeatData data = (RepeatData)scriptEntry.getOwner().getData();
                 data.index++;
                 if (data.index <= data.target) {
                     dB.echoDebug(scriptEntry, DebugElement.Header, "Repeat loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(data.index));
-                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("REPEAT");
+                    List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
                     ScriptEntry callbackEntry = null;
                     try {
                         callbackEntry = new ScriptEntry("REPEAT", new String[] { "\0CALLBACK" },
@@ -169,8 +169,8 @@ public class RepeatCommand extends BracedCommand {
         else {
 
             // Get objects
-            ArrayList<ScriptEntry> bracedCommandsList =
-                    ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("REPEAT");
+            List<ScriptEntry> bracedCommandsList =
+                    ((List<BracedData>) scriptEntry.getObject("braces")).get(0).value;
 
             if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
                 dB.echoError("Empty braces!");

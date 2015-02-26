@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
@@ -35,7 +36,7 @@ public class WhileCommand extends BracedCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        List<aH.Argument> original_args = aH.interpret(scriptEntry.getOriginalArguments());
+        List<aH.Argument> original_args = aH.interpret(scriptEntry.modifiedArguments());
         List<aH.Argument> parsed_args = aH.interpret(scriptEntry.getArguments());
         for (int i = 0; i < parsed_args.size(); i++) {
 
@@ -62,6 +63,7 @@ public class WhileCommand extends BracedCommand {
 
             else if (!scriptEntry.hasObject("value")) {
                 scriptEntry.addObject("value", new Element(original.raw_value));
+                scriptEntry.addObject("parsed_value", new Element(arg.raw_value));
                 break;
             }
 
@@ -144,7 +146,7 @@ public class WhileCommand extends BracedCommand {
         else if (callback != null && callback.asBoolean()) {
             if (scriptEntry.getOwner() != null && (scriptEntry.getOwner().getCommandName().equalsIgnoreCase("while") ||
                     scriptEntry.getOwner().getBracedSet() == null || scriptEntry.getOwner().getBracedSet().size() == 0 ||
-                    scriptEntry.getBracedSet().get("WHILE").get(scriptEntry.getBracedSet().get("WHILE").size() - 1) != scriptEntry)) {
+                    scriptEntry.getBracedSet().get(0).value.get(scriptEntry.getBracedSet().get(0).value.size() - 1) != scriptEntry)) {
                 WhileData data = (WhileData)scriptEntry.getOwner().getData();
                 data.index++;
                 if (System.currentTimeMillis() - data.LastChecked < 50) {
@@ -157,10 +159,10 @@ public class WhileCommand extends BracedCommand {
                     data.instaTicks = 0;
                 }
                 data.LastChecked = System.currentTimeMillis();
-                if (TagManager.tag(data.value, new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
+                if (TagManager.tag(data.value, DenizenCore.getImplementation().getTagContextFor(scriptEntry, false)).equalsIgnoreCase("true")) {
                     dB.echoDebug(scriptEntry, DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
-                    ArrayList<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get("WHILE");
+                    List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
                     ScriptEntry callbackEntry = null;
                     try {
                         callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
@@ -188,8 +190,9 @@ public class WhileCommand extends BracedCommand {
 
             // Get objects
             Element value = scriptEntry.getElement("value");
-            ArrayList<ScriptEntry> bracedCommandsList =
-                    ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("WHILE");
+            Element parsed_value = scriptEntry.getElement("parsed_value");
+            List<ScriptEntry> bracedCommandsList =
+                    ((List<BracedData>) scriptEntry.getObject("braces")).get(0).value;
 
             if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Empty braces!");
@@ -199,7 +202,7 @@ public class WhileCommand extends BracedCommand {
             // Report to dB
             dB.report(scriptEntry, getName(), value.debug());
 
-            if (!TagManager.tag(value.asString(), new BukkitTagContext(scriptEntry, false)).equalsIgnoreCase("true")) {
+            if (!parsed_value.asString().equalsIgnoreCase("true")) {
                 return;
             }
 

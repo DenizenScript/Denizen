@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -57,13 +59,13 @@ public class RandomCommand extends BracedCommand {
 
         int possibilities = 0;
         ScriptQueue queue = scriptEntry.getResidingQueue();
-        ArrayList<ScriptEntry> bracedCommands = null;
+        List<ScriptEntry> bracedCommands = null;
 
         if (!scriptEntry.hasObject("braces")) {
             possibilities = scriptEntry.getElement("possibilities").asInt();
         }
         else {
-            bracedCommands = ((LinkedHashMap<String, ArrayList<ScriptEntry>>) scriptEntry.getObject("braces")).get("RANDOM");
+            bracedCommands = ((List<BracedData>) scriptEntry.getObject("braces")).get(0).value;
             possibilities = bracedCommands.size();
         }
 

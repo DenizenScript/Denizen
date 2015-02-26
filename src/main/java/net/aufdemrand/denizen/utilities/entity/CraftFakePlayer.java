@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
         GameProfile gameProfile = new GameProfile(null, name);
         gameProfile = ItemSkullskin.fillGameProfile(gameProfile);
         if (skin != null) {
-            gameProfile.getProperties().get("textures").clear();
+            gameProfile = new GameProfile(gameProfile.getId(), gameProfile.getName());
             GameProfile skinProfile = new GameProfile(null, skin);
             skinProfile = ItemSkullskin.fillGameProfile(skinProfile);
             for (Property texture : skinProfile.getProperties().get("textures"))
@@ -84,16 +85,21 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
         }
         setProfileId(gameProfile, uuid);
 
-        EntityFakePlayer fakePlayer = new EntityFakePlayer(worldServer.getMinecraftServer(), worldServer, gameProfile,
-                new PlayerInteractManager(worldServer));
+        final EntityFakePlayer fakePlayer = new EntityFakePlayer(worldServer.getMinecraftServer(), worldServer,
+                gameProfile, new PlayerInteractManager(worldServer));
         fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
-        PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(fakePlayer);
-        PacketPlayOutPlayerInfo playerInfo = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer);
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            PacketHelper.sendPacket(player, spawnPacket);
-            PacketHelper.sendPacket(player, playerInfo);
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(fakePlayer);
+                PacketPlayOutPlayerInfo playerInfo = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer);
+                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                    PacketHelper.sendPacket(player, spawnPacket);
+                    PacketHelper.sendPacket(player, playerInfo);
+                }
+            }
+        }.runTaskLater(DenizenAPI.getCurrentInstance(), 5);
         return fakePlayer.getBukkitEntity();
     }
 

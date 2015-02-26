@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands;
 
 import net.aufdemrand.denizen.scripts.commands.core.*;
-import net.aufdemrand.denizencore.scripts.commands.core.*;
 import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
 import net.aufdemrand.denizen.scripts.commands.npc.*;
@@ -616,62 +615,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
-        // @Name Define
-        // @Syntax define [<id>] [<value>]
-        // @Required 1
-        // @Stable stable
-        // @Short Creates a temporary variable inside a script queue.
-        // @Author aufdemrand
-        // @Group core
-
-        // @Description
-        // Definitions are queue-level (or script-level) 'variables' that can be used throughout a script, once
-        // defined, by using %'s around the definition id/name. Definitions are only valid on the current queue and are
-        // not transferred to any new queues constructed within the script, such as a 'run' command, without explicitly
-        // specifying to do so.
-        //
-        // Definitions are lighter and faster than creating a temporary flag, but unlike flags, are only a single entry,
-        // that is, you can't add or remove from the definition, but you can re-create it if you wish to specify a new
-        // value. Definitions are also automatically destroyed when the queue is completed, so there is no worry for
-        // leaving unused data hanging around.
-        //
-        // Definitions are also resolved before replaceable tags, meaning you can use them within tags, even as an
-        // attribute. ie. <%player%.name>
-
-        // @Tags
-        // %<ID>% to get the value assign to an ID
-        // <def[<ID>]> to get the value assigned to an ID
-
-        // @Usage
-        // Use to make complex tags look less complex, and scripts more readable.
-        // - narrate 'You invoke your power of notice...'
-        // - define range '<player.flag[range_level].mul[3]>'
-        // - define blocks '<player.flag[noticeable_blocks]>'
-        // - narrate '[NOTICE] You have noticed <player.location.find.blocks[<def[blocks]>].within[<def[range]>].size>
-        // blocks in the area that may be of interest.'
-
-        // @Usage
-        // Use to keep the value of a replaceable tag that you might use many times within a single script. Definitions
-        // can be faster and cleaner than reusing a replaceable tag over and over.
-        // - define arg1 <c.args.get[1]>
-        // - if <def[arg1]> == hello narrate 'Hello!'
-        // - if <def[arg1]> == goodbye narrate 'Goodbye!'
-
-        // @Usage
-        // Use to pass some important information (arguments) on to another queue.
-        // - run 'new_task' d:hello|world
-        // 'new_task' now has some definitions, <def[1]> and <def[2]>, that contains the contents specified, 'hello' and 'world'.
-
-        // @Usage
-        // Use to remove a definition
-        // - define myDef:!
-
-        // -->
-        registerCoreMember(DefineCommand.class,
-                "DEFINE", "define [<id>] [<value>]", 1);
-
-
-        // <--[command]
         // @Name Despawn
         // @Syntax Despawn (<npc>|...)
         // @Required 0
@@ -699,29 +642,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null)
             registerCoreMember(DespawnCommand.class,
                     "DESPAWN", "despawn (<npc>)", 0);
-
-
-        // <--[command]
-        // @Name Determine
-        // @Syntax determine (passively) [<value>]
-        // @Required 1
-        // @Stable stable
-        // @Short Sets the outcome of a world event.
-        // @Author aufdemrand
-        // @Group core
-        // @Description
-        // TODO: Document Command Details
-        // @Tags
-        // TODO: Document Command Details
-        // @Usage
-        // Use to modify the result of an event
-        // - determine <context.message.substring[5]>
-        // @Usage
-        // Use to cancel an event, but continue running script commands
-        // - determine passively cancelled
-        // -->
-        registerCoreMember(DetermineCommand.class,
-                "DETERMINE", "determine (passively) [<value>]", 1);
 
 
         // <--[command]
@@ -1173,46 +1093,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
-        // @Name Foreach
-        // @Syntax foreach [stop/next/<object>|...] [<commands>]
-        // @Required 1
-        // @Stable stable
-        // @Short Loops through a dList, running a set of commands for each item.
-        // @Author Morphan1, mcmonkey
-        // @Group core
-        // @Video /denizen/vids/Loops
-
-        // @Description
-        // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
-        // that list entry. To call the value of the entry while in the loop, you can use <def[value]>.
-        //
-        // To end a foreach loop, do - foreach stop
-        //
-        // To jump immediately to the next entry in the loop, do - foreach next
-
-        // @Tags
-        // <def[value]> to get the current item in the loop
-        // <def[loop_index]> to get the current loop iteration number
-
-        // @Usage
-        // Use to run commands for 'each entry' in a list of objects/elements.
-        // - foreach li@e@123|n@424|p@BobBarker {
-        //     - announce "There's something at <def[value].location>!"
-        //   }
-
-        // @Usage
-        // Use to iterate through entries in any tag that returns a list
-        // - foreach <server.list_online_players> {
-        //     - narrate "Thanks for coming to our server! Here's a bonus $50.00!"
-        //     - give <def[value]> money qty:50
-        //   }
-
-        // -->
-        registerCoreMember(ForeachCommand.class,
-                "FOREACH", "foreach [stop/next/<object>|...] [<commands>]", 1);
-
-
-        // <--[command]
         // @Name Give
         // @Syntax give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)
         // @Required 1
@@ -1352,26 +1232,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(HurtCommand.class,
                 "HURT", "hurt (<#.#>) (<entity>|...)", 0);
-
-
-        // <--[command]
-        // @Name If
-        // @Syntax if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)
-        // @Required 1
-        // @Stable stable
-        // @Short Compares values, and runs one script if they match, or a different script if they don't match.
-        // @Author aufdemrand, David Cernat
-        // @Group core
-        // @Video /denizen/vids/Alternate/Dynamic%20Actions:%20The%20If%20Command
-        // @Description
-        // TODO: Document Command Details
-        // @Tags
-        // <el@element.is[<operator>].to[<element>]>
-        // @Usage
-        // TODO: Document Command Details
-        // -->
-        registerCoreMember(IfCommand.class,
-                "IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
 
 
         // <--[command]

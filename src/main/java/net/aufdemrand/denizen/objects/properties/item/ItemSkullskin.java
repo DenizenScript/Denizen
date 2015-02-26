@@ -163,22 +163,19 @@ public class ItemSkullskin implements Property {
     }
 
     public static GameProfile fillGameProfile(GameProfile gameProfile) {
-        if(gameProfile != null) {
-            GameProfile gameProfile1 = null;
+        if (gameProfile != null) {
+            GameProfile gameProfile1;
             if (gameProfile.getName() != null) {
                 gameProfile1 = MinecraftServer.getServer().getUserCache().getProfile(gameProfile.getName());
             } else if (gameProfile.getId() != null) {
                 gameProfile1 = MinecraftServer.getServer().getUserCache().a(gameProfile.getId());
-            }
-            if (gameProfile1 == null) {
-                return gameProfile;
             } else {
-                com.mojang.authlib.properties.Property property = Iterables.getFirst(gameProfile1.getProperties().get("textures"), null);
-                if (property == null) {
-                    gameProfile1 = MinecraftServer.getServer().aB().fillProfileProperties(gameProfile1, true);
-                }
-                return gameProfile1;
+                gameProfile1 = gameProfile;
             }
+            if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
+                gameProfile1 = MinecraftServer.getServer().aB().fillProfileProperties(gameProfile1, true);
+            }
+            return gameProfile1;
         }
         return null;
     }
