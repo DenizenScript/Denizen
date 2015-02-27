@@ -195,11 +195,9 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
 
             // Check if tally is empty.
             if (tally.isEmpty()) {
-                if (!entry.hasObject("entities") || ((List<dEntity>) entry.getObject("entities")).isEmpty()) {
-                    entry.setFinished(true);
-                    held.remove(i);
-                    i--;
-                }
+                entry.setFinished(true);
+                held.remove(i);
+                i--;
             }
         }
     }
