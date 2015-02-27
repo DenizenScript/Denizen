@@ -74,7 +74,8 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
                     || !((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isSpawned())
                 throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
             else
-                scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC()));
+                scriptEntry.addObject("entities",
+                        Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()));
         }
 
 
