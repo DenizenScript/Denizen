@@ -4,6 +4,7 @@
 _util_dtime_command:
     type: command
     name: dtime
+    debug: false
     description: (Deprecated) Changes the server time.
     usage: /dtime <&lt>time<&gt>
     allowed help:
@@ -32,6 +33,7 @@ _util_dtime_command:
 loop through:
     type: task
     speed: 0
+    debug: false
     context: task|flag|type
 
     script:
@@ -47,6 +49,7 @@ loop through:
 _util_gl:
     type: task
     speed: 0
+    debug: false
     context: task|flag|type
 
     script:
@@ -57,6 +60,7 @@ _util_gl:
 
 _depend generic loop process:
     type: task
+    debug: false
     definitions: task|flag|type|id
 
     script:
@@ -75,6 +79,7 @@ _depend generic loop process:
 Load Tester:
     type: command
     name: testload
+    debug: false
     description: Tests server load.
     usage: /testload <&lt>power<&gt>
     allowed help:
