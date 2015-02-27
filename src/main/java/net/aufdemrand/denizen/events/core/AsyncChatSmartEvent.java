@@ -81,7 +81,7 @@ public class AsyncChatSmartEvent implements OldSmartEvent, Listener {
 
         final Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getMessage()));
-        context.put("format", new Element(event.getMessage()));
+        context.put("format", new Element(event.getFormat()));
 
         final dPlayer player = dEntity.getPlayerFrom(event.getPlayer());
 
