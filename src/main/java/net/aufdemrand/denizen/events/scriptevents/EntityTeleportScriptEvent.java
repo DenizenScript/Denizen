@@ -156,6 +156,10 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
 
     @EventHandler
     public void onPlayerTeleports(PlayerTeleportEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         from = new dLocation(event.getFrom());
         to = new dLocation(event.getTo());
         entity = new dEntity(event.getPlayer());

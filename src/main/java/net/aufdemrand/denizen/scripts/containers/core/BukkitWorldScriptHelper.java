@@ -96,6 +96,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         Block block = event.getBlock();
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
@@ -271,6 +274,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void blockDamage(BlockDamageEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
@@ -604,6 +610,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void blockPlace(BlockPlaceEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         Block block = event.getBlock();
         dMaterial material = dMaterial.getMaterialFrom(block.getType(), block.getData());
@@ -802,6 +811,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void furnaceExtract(FurnaceExtractEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dMaterial itemMaterial = dMaterial.getMaterialFrom(event.getItemType());
         dItem item = new dItem(itemMaterial, event.getItemAmount());
@@ -916,6 +928,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void signChange(final SignChangeEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Block block = event.getBlock();
         if (block == null || !(block.getState() instanceof Sign)) {
@@ -1172,6 +1187,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void hangingPlace(HangingPlaceEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity hanging = new dEntity(event.getEntity());
@@ -1596,6 +1614,9 @@ public class BukkitWorldScriptHelper implements Listener {
             // If some other plugin is messing with this event... just back off.
             return;
         }
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         dPlayer player = dEntity.getPlayerFrom(event.getPlayer());
 
@@ -2631,6 +2652,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void inventoryCloseEvent(InventoryCloseEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         dEntity entity = new dEntity(event.getPlayer());
@@ -2745,6 +2769,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void inventoryOpenEvent(InventoryOpenEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         String type = event.getInventory().getType().name();
@@ -2845,6 +2872,10 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerEditBook(PlayerEditBookEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         if (event.isSigning()) context.put("title", new Element(event.getNewBookMeta().getTitle()));
         context.put("pages", new Element(event.getNewBookMeta().getPageCount()));
@@ -2894,6 +2925,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerBreakItem(PlayerItemBreakEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         final ItemStack itemstack = event.getBrokenItem();
         dItem item = new dItem(itemstack);
@@ -2938,6 +2972,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerAnimation(PlayerAnimationEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         String animation = event.getAnimationType().name();
         context.put("animation", new Element(animation));
@@ -2966,6 +3003,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerBedEnter(PlayerBedEnterEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getBed().getLocation()));
 
@@ -2988,6 +3028,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerBedLeave(PlayerBedLeaveEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getBed().getLocation()));
@@ -3012,6 +3055,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerChangedWorld(PlayerChangedWorldEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dWorld originWorld = new dWorld(event.getFrom());
@@ -3046,6 +3092,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerDropItem(PlayerDropItemEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getItemDrop().getItemStack());
         context.put("item", item);
@@ -3079,6 +3128,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerEggThrow(PlayerEggThrowEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity egg = new dEntity(event.getEgg());
@@ -3118,6 +3170,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerExpChange(PlayerExpChangeEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("amount", new Element(event.getAmount()));
 
@@ -3150,6 +3205,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerFish(PlayerFishEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         dNPC npc = null;
         String state = event.getState().name();
@@ -3199,6 +3257,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerGameModeChange(PlayerGameModeChangeEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("gamemode", new Element(event.getNewGameMode().name()));
 
@@ -3234,6 +3295,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         Action action = event.getAction();
@@ -3351,6 +3415,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerInteractStand(PlayerInteractAtEntityEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getPlayer().getWorld(),
                 event.getClickedPosition().getX(),
@@ -3418,6 +3485,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerInteractEntity(PlayerInteractEntityEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         String determination;
         dNPC npc = null;
@@ -3494,6 +3564,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerItemConsume(PlayerItemConsumeEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         dItem item = new dItem(event.getItem());
 
         Map<String, dObject> context = new HashMap<String, dObject>();
@@ -3531,6 +3604,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerJoinEvent(PlayerJoinEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Player player = event.getPlayer();
         Map<String, dObject> context = new HashMap<String, dObject>();
@@ -3570,6 +3646,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerKick(PlayerKickEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getLeaveMessage()));
 
@@ -3599,6 +3678,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerLeashEntity(PlayerLeashEntityEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
 
@@ -3626,6 +3708,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerLevelChange(PlayerLevelChangeEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("level", new Element(event.getNewLevel()));
 
@@ -3652,6 +3737,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerLogin(PlayerLoginEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         List<String> events = new ArrayList<String>();
@@ -3729,6 +3817,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerPickupItem(PlayerPickupItemEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getItem().getItemStack());
         context.put("item", item);
@@ -3766,6 +3857,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getQuitMessage()));
 
@@ -3793,6 +3887,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerRespawn(PlayerRespawnEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getRespawnLocation()));
@@ -3828,6 +3925,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerShearEntity(PlayerShearEntityEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dEntity entity = new dEntity(event.getEntity());
@@ -3866,6 +3966,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerToggleFlight(PlayerToggleFlightEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("state", new Element(event.isFlying()));
 
@@ -3895,6 +3998,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerToggleSneak(PlayerToggleSneakEvent event) {
 
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("state", new Element(event.isSneaking()));
 
@@ -3923,6 +4029,9 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerToggleSprint(PlayerToggleSprintEvent event) {
+
+        if (dEntity.isNPC(event.getPlayer()))
+            return;
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("state", new Element(event.isSprinting()));
