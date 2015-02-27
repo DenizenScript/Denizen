@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.aufdemrand.denizen.objects.properties.item.ItemSkullskin;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -19,26 +20,13 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity {
 
-    private static final Field gameProfileId;
     private final CraftServer server;
-
-    static {
-        Field field = null;
-        try {
-            field = GameProfile.class.getDeclaredField("id");
-            field.setAccessible(true);
-        } catch (Exception e) {
-            dB.echoError(e);
-        }
-        gameProfileId = field;
-    }
 
     public CraftFakePlayer(CraftServer server, EntityFakePlayer entity) {
         super(server, entity);
@@ -58,11 +46,11 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                 skin = mechanism.getValue().asString();
             }
         }
-        if (name == null || name.length() == 0 || name.length() > 16) {
+        if (name == null || name.length() > 16) {
             dB.echoError("You must specify a name with no more than 16 characters for FAKE_PLAYER names!");
             return null;
         }
-        if (skin != null && (skin.isEmpty() || skin.length() > 16)) {
+        if (skin != null && skin.length() > 16) {
             dB.echoError("You must specify a name with no more than 16 characters for FAKE_PLAYER skins!");
         }
         CraftWorld world = (CraftWorld) location.getWorld();
@@ -83,7 +71,7 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
             msb |= 0x0000000000002000L;
             uuid = new UUID(msb, uuid.getLeastSignificantBits());
         }
-        setProfileId(gameProfile, uuid);
+        PlayerProfileEditor.setProfileId(gameProfile, uuid);
 
         final EntityFakePlayer fakePlayer = new EntityFakePlayer(worldServer.getMinecraftServer(), worldServer,
                 gameProfile, new PlayerInteractManager(worldServer));
@@ -101,14 +89,6 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
             }
         }.runTaskLater(DenizenAPI.getCurrentInstance(), 5);
         return fakePlayer.getBukkitEntity();
-    }
-
-    private static void setProfileId(GameProfile gameProfile, UUID uuid) {
-        try {
-            gameProfileId.set(gameProfile, uuid);
-        } catch (Exception e) {
-            dB.echoError(e);
-        }
     }
 
     @Override
