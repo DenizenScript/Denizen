@@ -657,7 +657,10 @@ public class dEntity implements dObject, Adjustable {
 
     public dLocation getEyeLocation() {
 
-        if (!isGeneric() && isLivingEntity()) {
+        if (isPlayer()) {
+            return new dLocation(getPlayer().getEyeLocation());
+        }
+        else if (!isGeneric() && isLivingEntity()) {
             return new dLocation(getLivingEntity().getEyeLocation());
         }
         else if (!isGeneric()) {
