@@ -78,7 +78,7 @@ public class EntityFakePlayer extends EntityPlayer {
 
         @Override
         public void updatePlayer(final EntityPlayer entityplayer) {
-            if(entityplayer != this.tracker) {
+            if (entityplayer != this.tracker) {
                 if (this.c(entityplayer)) {
                     if (!this.trackedPlayers.contains(entityplayer)
                             && (entityplayer.u().getPlayerChunkMap().a(entityplayer, this.tracker.ae, this.tracker.ag)

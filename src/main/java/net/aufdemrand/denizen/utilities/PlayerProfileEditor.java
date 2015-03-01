@@ -78,15 +78,18 @@ public class PlayerProfileEditor {
                     if (!player.getUniqueId().equals(uuid)) {
                         PacketHelper.sendPacket(player, spawnPacket);
                     }
-                    else if (isSkinChanging) {
-                        boolean isFlying = player.isFlying();
-                        PacketHelper.sendPacket(player, new PacketPlayOutRespawn(
-                                player.getWorld().getEnvironment().getId(),
-                                entityPlayer.getWorld().getDifficulty(),
-                                entityPlayer.getWorld().worldData.getType(),
-                                entityPlayer.playerInteractManager.getGameMode()));
-                        player.teleport(player.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                        player.setFlying(isFlying);
+                    else {
+                        if (isSkinChanging) {
+                            boolean isFlying = player.isFlying();
+                            PacketHelper.sendPacket(player, new PacketPlayOutRespawn(
+                                    player.getWorld().getEnvironment().getId(),
+                                    entityPlayer.getWorld().getDifficulty(),
+                                    entityPlayer.getWorld().worldData.getType(),
+                                    entityPlayer.playerInteractManager.getGameMode()));
+                            player.teleport(player.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                            player.setFlying(isFlying);
+                        }
+                        player.updateInventory();
                     }
                 }
             }
