@@ -42,6 +42,22 @@ public class EntityMovement {
         return nmsEntity.getDataWatcher().getByte(15) != 0;
     }
 
+    public static double getSpeed(Entity entity) {
+        net.minecraft.server.v1_8_R1.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
+        if (!(nmsEntityEntity instanceof EntityInsentient))
+            return 0.0;
+        EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
+        return nmsEntity.getAttributeInstance(GenericAttributes.d).getValue();
+    }
+
+    public static void setSpeed(Entity entity, double speed) {
+        net.minecraft.server.v1_8_R1.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
+        if (!(nmsEntityEntity instanceof EntityInsentient))
+            return;
+        EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
+        nmsEntity.getAttributeInstance(GenericAttributes.d).setValue(speed);
+    }
+
     public static void follow(final Entity target, final Entity follower, final double speed, final double lead,
                               final double maxRange, final boolean allowWander) {
         if (target == null || follower == null)
