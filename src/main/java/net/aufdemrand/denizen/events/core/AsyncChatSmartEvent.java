@@ -12,6 +12,7 @@ import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -113,7 +114,7 @@ public class AsyncChatSmartEvent implements OldSmartEvent, Listener {
                 String name = determination.substring(7);
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(name);
                 if (format == null) dB.echoError("Could not find format script matching '" + name + '\'');
-                else event.setFormat(format.getFormattedText(event.getMessage(), null, player));
+                else event.setFormat(EscapeTags.unEscape(format.getFormattedText(EscapeTags.Escape(event.getMessage()), null, player)));
             } else if (!determination.equals("none")) {
                 event.setMessage(determination);
             }
