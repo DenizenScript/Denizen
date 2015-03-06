@@ -591,10 +591,10 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Events
     // player places block
     // player places <material>
-    // player places <item>
+    // player places block in notable cuboid
+    // player places <material> in notable cuboid
     // player places block in <notable cuboid>
     // player places <material> in <notable cuboid>
-    // player places <item> in <notable cuboid>
     //
     // @Triggers when a player places a block.
     // @Context
@@ -625,8 +625,7 @@ public class BukkitWorldScriptHelper implements Listener {
         if (cuboids.size() > 0) {
             events.add("player places block in notable cuboid");
             events.add("player places " + material.identifySimple() + " in notable cuboid");
-            events.add("player places " + material.identifySimple() + " with " + item.identifySimple() + " in notable cuboid");
-            events.add("player places " + material.identifySimple() + " with " + item.identifyMaterial() + " in notable cuboid");
+            events.add("player places " + item.identifySimple() + " in notable cuboid");
         }
 
         dList cuboid_context = new dList();
