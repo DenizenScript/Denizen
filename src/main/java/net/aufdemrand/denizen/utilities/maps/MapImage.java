@@ -109,7 +109,7 @@ public class MapImage extends MapObject {
     }
 
     private static byte[] imageToBytes(Image image, int width, int height) {
-        BufferedImage temp = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage temp = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = temp.createGraphics();
         graphics.drawImage(image, 0, 0, width, height, null);
         graphics.dispose();
