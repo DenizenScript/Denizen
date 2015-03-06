@@ -89,6 +89,8 @@ public class SyncChatSmartEvent implements OldSmartEvent, Listener {
     // "CANCELLED" to stop the player from chatting.
     // Element(String) to change the message.
     // "FORMAT:" to set the format script the message should use.
+    // Note: Use <text> in the format script first for the name, then <text> for the actual text.
+    // Name can be used like <player.flag[custom_name]||<text>> if you don't want to use the actual name.
     //
     // -->
     @EventHandler
@@ -108,9 +110,7 @@ public class SyncChatSmartEvent implements OldSmartEvent, Listener {
             String name = determination.substring(7);
             FormatScriptContainer format = ScriptRegistry.getScriptContainer(name);
             if (format == null) dB.echoError("Could not find format script matching '" + name + '\'');
-            else event.setFormat(format.getFormattedText(event.getMessage()
-                    .replace("&", "&amp").replace("%", "&pc"), null, player)
-                    .replace("&pc", "%").replace("&amp", "&"));
+            else event.setFormat(format.getFormatText(null, player));
         }
         else if (!determination.equals("none")) {
             event.setMessage(determination);

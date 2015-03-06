@@ -114,9 +114,7 @@ public class AsyncChatSmartEvent implements OldSmartEvent, Listener {
                 String name = determination.substring(7);
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(name);
                 if (format == null) dB.echoError("Could not find format script matching '" + name + '\'');
-                else event.setFormat(format.getFormattedText(event.getMessage()
-                        .replace("&", "&amp").replace("%", "&pc"), null, player)
-                        .replace("&pc", "%").replace("&amp", "&"));
+                else event.setFormat(format.getFormatText(null, player));
             } else if (!determination.equals("none")) {
                 event.setMessage(determination);
             }
