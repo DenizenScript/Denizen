@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.core;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizencore.objects.Element;
@@ -114,7 +115,13 @@ public class AsyncChatSmartEvent implements OldSmartEvent, Listener {
                 String name = determination.substring(7);
                 FormatScriptContainer format = ScriptRegistry.getScriptContainer(name);
                 if (format == null) dB.echoError("Could not find format script matching '" + name + '\'');
-                else event.setFormat(format.getFormatText(null, player));
+                else {
+                    String formatstr = format.getFormatText(null, player);
+                    if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose) {
+                        dB.log("Setting format to " + formatstr);
+                    }
+                    event.setFormat(formatstr);
+                }
             } else if (!determination.equals("none")) {
                 event.setMessage(determination);
             }

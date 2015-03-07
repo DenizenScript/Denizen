@@ -110,7 +110,13 @@ public class SyncChatSmartEvent implements OldSmartEvent, Listener {
             String name = determination.substring(7);
             FormatScriptContainer format = ScriptRegistry.getScriptContainer(name);
             if (format == null) dB.echoError("Could not find format script matching '" + name + '\'');
-            else event.setFormat(format.getFormatText(null, player));
+            else {
+                String formatstr = format.getFormatText(null, player);
+                if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose) {
+                    dB.log("Setting format to " + formatstr);
+                }
+                event.setFormat(formatstr);
+            }
         }
         else if (!determination.equals("none")) {
             event.setMessage(determination);
