@@ -10,6 +10,8 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.blocks.FakeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import java.util.List;
+
 public class ShowFakeCommand extends AbstractCommand {
 
     @Override
@@ -23,31 +25,41 @@ public class ShowFakeCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matchesPrefix("to", "players")) {
-                for (String entity : dList.valueOf(arg.getValue()))
-                    if (dPlayer.matches(entity)) entities.add(entity);
+                for (String entity : dList.valueOf(arg.getValue())) {
+                    if (dPlayer.matches(entity)) {
+                        entities.add(entity);
+                    }
+                }
                 added_entities = true; // TODO: handle lists properly
             }
 
-            else if (arg.matchesArgumentType(dList.class)) {
+            else if (arg.matchesArgumentList(dMaterial.class)) {
+                scriptEntry.addObject("materials", arg.asType(dList.class));
+            }
+
+            else if (locations.isEmpty()
+                    && arg.matchesArgumentType(dList.class)) {
                 for (String item : dList.valueOf(arg.getValue()))
                     if (dLocation.matches(item)) locations.add(item);
             }
 
-            else if (arg.matchesArgumentType(dLocation.class))
+            else if (locations.isEmpty()
+                && arg.matchesArgumentType(dLocation.class)) {
                 locations.add(arg.getValue());
+            }
 
             else if (arg.matchesPrefix("d", "duration")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
-            else if (arg.matchesArgumentType(dMaterial.class))
-                scriptEntry.addObject("material", arg.asType(dMaterial.class));
-
-            else if (arg.matches("cancel"))
+            else if (arg.matches("cancel")) {
                 scriptEntry.addObject("cancel", new Element(true));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
 
         }
 
@@ -64,8 +76,8 @@ public class ShowFakeCommand extends AbstractCommand {
         if (entities.isEmpty() && added_entities)
             throw new InvalidArgumentsException("Must specify valid targets!");
 
-        if (!scriptEntry.hasObject("material") && !scriptEntry.hasObject("cancel"))
-            throw new InvalidArgumentsException("Must specify a valid material!");
+        if (!scriptEntry.hasObject("materials") && !scriptEntry.hasObject("cancel"))
+            throw new InvalidArgumentsException("Must specify valid material(s)!");
 
         scriptEntry.addObject("entities", entities);
         scriptEntry.addObject("locations", locations);
@@ -78,21 +90,31 @@ public class ShowFakeCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Duration duration = scriptEntry.getdObject("duration");
-        dMaterial material = scriptEntry.getdObject("material");
+        dList material_list = scriptEntry.getdObject("materials");
         dList list = scriptEntry.getdObject("locations");
         dList players = scriptEntry.getdObject("entities");
         Element cancel = scriptEntry.getElement("cancel");
 
-        dB.report(scriptEntry, getName(), (material != null ? material.debug() : "")
+        dB.report(scriptEntry, getName(), (material_list != null ? material_list.debug() : "")
                 + list.debug() + players.debug() + duration.debug() + cancel.debug());
+
 
         boolean shouldCancel = cancel.asBoolean();
 
+        List<dMaterial> mats = null;
+        if (!shouldCancel) {
+            mats = material_list.filter(dMaterial.class);
+        }
+
+        int i = 0;
         for (dLocation loc : list.filter(dLocation.class)) {
-            if (!shouldCancel)
-                FakeBlock.showFakeBlockTo(players.filter(dPlayer.class), loc, material, duration);
-            else
+            if (!shouldCancel) {
+                FakeBlock.showFakeBlockTo(players.filter(dPlayer.class), loc, mats.get(i % mats.size()), duration);
+            }
+            else {
                 FakeBlock.stopShowingTo(players.filter(dPlayer.class), loc);
+            }
+            i++;
         }
     }
 }

@@ -164,7 +164,7 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
             cancelled = event.isCancelled();
-            recipients = event.getRecipients();
+            recipients = new HashSet<Player>(event.getRecipients());
             pcEvent = event;
             apcEvent = null;
             player = dEntity.getPlayerFrom(event.getPlayer());
