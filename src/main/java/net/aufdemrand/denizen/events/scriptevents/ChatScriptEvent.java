@@ -2,24 +2,30 @@ package net.aufdemrand.denizen.events.scriptevents;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ChatScriptEvent extends ScriptEvent implements Listener {
 
@@ -35,10 +41,12 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
     // @Context
     // <context.message> returns the player's message as an Element.
     // <context.format> returns the chat message's format.
+    // <context.recipients> returns a list of all players that will receive the chat.
     //
     // @Determine
     // Element(String) to change the message.
-    // "FORMAT:" to set the format script the message should use.
+    // "FORMAT:" + dScript to set the format script the message should use.
+    // "RECIPIENTS:" + dList(dPlayer) to set the list of players that will receive the message.
     //
     // -->
 
@@ -52,6 +60,7 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
     public Element message;
     public Element format;
     public dPlayer player;
+    public Set<Player> recipients;
 
     public SyncChatHandler sch = new SyncChatHandler();
     public AsyncChatHandler asch = new AsyncChatHandler();
@@ -111,15 +120,24 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
                 }
                 format = new Element(formatstr);
             }
-            return true;
         }
-        if (!lower.startsWith("cancelled")) {
+        else if (lower.startsWith("recipients:")) {
+            String rec_new = determination.substring(11);
+            dList recs = dList.valueOf(rec_new);
+            List<dPlayer> players = recs.filter(dPlayer.class);
+            recipients.clear();
+            for (dPlayer player: players) {
+                recipients.add(player.getPlayerEntity());
+            }
+        }
+
+        else if (!lower.startsWith("cancelled")) {
             message = new Element(determination);
-            return true;
         }
         else {
             return super.applyDetermination(container, determination);
         }
+        return true;
     }
 
     @Override
@@ -132,6 +150,11 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
         HashMap<String, dObject> context = super.getContext();
         context.put("message", message);
         context.put("format", format);
+        dList list = new dList();
+        for (Player tplayer: recipients) {
+            list.add(dPlayer.mirrorBukkitPlayer(tplayer).identify());
+        }
+        context.put("recipients", list);
         return context;
     }
 
@@ -141,12 +164,16 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
             cancelled = event.isCancelled();
+            recipients = event.getRecipients();
             pcEvent = event;
             apcEvent = null;
+            player = dEntity.getPlayerFrom(event.getPlayer());
             fire();
             event.setCancelled(cancelled);
             event.setMessage(message.asString());
             event.setFormat(format.asString());
+            event.getRecipients().clear();
+            event.getRecipients().addAll(recipients);
         }
     }
 
@@ -156,12 +183,16 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
             cancelled = event.isCancelled();
+            recipients = new HashSet<Player>(event.getRecipients());
             pcEvent = null;
             apcEvent = event;
+            player = dEntity.getPlayerFrom(event.getPlayer());
             fire();
             event.setCancelled(cancelled);
             event.setMessage(message.asString());
             event.setFormat(format.asString());
+            event.getRecipients().clear();
+            event.getRecipients().addAll(recipients);
         }
     }
 }
