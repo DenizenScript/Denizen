@@ -41,13 +41,14 @@ public class EntitySpawnSmartEvent implements OldSmartEvent, Listener {
 
                 // Check first group which contains entity name against dEntity's matches() method
                 if (!dEntity.matches(m.group(1)) && (!m.group(1).equalsIgnoreCase("entity") && !m.group(1).equalsIgnoreCase("npc"))) {
-                    dB.echoError("Possible issue with '" + event + "' world event in script(s) " + OldEventManager.events.get(event)
-                            + ". Specified entity is not valid.");
+                    // This is where we would throw an error message... if we wanted one, which we don't anymore.
+                    // (See: Item Spawns event)
                 }
-
-                // If registerable, we'll set should_register to true, but keep iterating through the matches
-                // to check them for errors, as caught above.
-                should_register = true;
+                else {
+                    // If registerable, we'll set should_register to true, but keep iterating through the matches
+                    // to check them for errors, as caught above.
+                    should_register = true;
+                }
             }
         }
 

@@ -154,15 +154,15 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-<minimizeJar>true</minimizeJar>
-<filters>
-<filter>
-<artifact>net.aufdemrand:denizencore</artifact>
-<includes>
-<include>**</include>
-</includes>
-</filter>
-</filters>
+                            <minimizeJar>true</minimizeJar>
+                            <filters>
+                                <filter>
+                                    <artifact>net.aufdemrand:denizencore</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>

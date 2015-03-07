@@ -78,7 +78,8 @@ public class dMaterial implements dObject {
         WOODEN_DOUBLESLAB, COBBLESTONE_DOUBLESLAB, BRICKS_DOUBLESLAB, STONEBRICKS_DOUBLESLAB, NETHERBRICK_DOUBLESLAB,
         QUARTZ_DOUBLESLAB, OAK_WOOD_DOUBLESLAB, SPRUCE_WOOD_DOUBLESLAB, BIRCH_WOOD_DOUBLESLAB, JUNGLE_WOOD_DOUBLESLAB,
         ACACIA_WOOD_DOUBLESLAB, DARKOAK_WOOD_DOUBLESLAB, SKELETON_EGG, RAW_FISH, RAW_SALMON, RAW_CLOWNFISH,
-        RAW_PUFFERFISH, COOKED_FISH, COOKED_SALMON, COOKED_CLOWNFISH, COOKED_PUFFERFISH }
+        RAW_PUFFERFISH, COOKED_FISH, COOKED_SALMON, COOKED_CLOWNFISH, COOKED_PUFFERFISH,
+        GRANITE, POLISHED_GRANITE, DIORITE, POLISHED_DIORITE, ANDESITE, POLISHED_ANDESITE, COARSE_DIRT }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
@@ -380,9 +381,18 @@ public class dMaterial implements dObject {
     // One-Offs (Don't have their own group)
     public final static dMaterial CHARCOAL = new dMaterial(Material.COAL, 1).forceIdentifyAs("CHARCOAL");
     public final static dMaterial RED_SAND = new dMaterial(Material.SAND, 1).forceIdentifyAs("RED_SAND");
+    public final static dMaterial COARSE_DIRT = new dMaterial(Material.DIRT, 1).forceIdentifyAs("COARSE_DIRT");
     public final static dMaterial PODZOL = new dMaterial(Material.DIRT, 2).forceIdentifyAs("PODZOL");
     public final static dMaterial MOSSY_COBBLE_WALL = new dMaterial(Material.COBBLE_WALL, 1).forceIdentifyAs("MOSSY_COBBLE_WALL");
 
+    // Stone
+    // GRANITE, POLISHED_GRANITE, DIORITE, POLISHED_DIORITE, ANDESITE, POLISHED_ADESITE
+    public final static dMaterial GRANITE = new dMaterial(Material.STONE, 1).forceIdentifyAs("GRANITE");
+    public final static dMaterial POLISHED_GRANITE = new dMaterial(Material.STONE, 2).forceIdentifyAs("POLISHED_GRANITE");
+    public final static dMaterial DIORITE = new dMaterial(Material.STONE, 3).forceIdentifyAs("DIORITE");
+    public final static dMaterial POLISHED_DIORITE = new dMaterial(Material.STONE, 4).forceIdentifyAs("POLISHED_DIORITE");
+    public final static dMaterial ANDESITE = new dMaterial(Material.STONE, 5).forceIdentifyAs("ANDESITE");
+    public final static dMaterial POLISHED_ANDESITE = new dMaterial(Material.STONE, 6).forceIdentifyAs("POLISHED_ANDESITE");
 
     // TODO: The following would be walls of useless materials, make properties for these instead of custom mats
     // Step rotations [rotation=(north/west/south/east)(up/down)] for each of the step blocks

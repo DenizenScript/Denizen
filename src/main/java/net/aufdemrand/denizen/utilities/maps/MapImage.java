@@ -27,7 +27,7 @@ public class MapImage extends MapObject {
 
     public MapImage(String xTag, String yTag, String visibilityTag, boolean debug, String fileTag,
                     int width, int height) {
-        this(xTag, yTag, visibilityTag, debug, fileTag, width, height, false);
+        this(xTag, yTag, visibilityTag, debug, fileTag, width, height, true);
     }
 
     public MapImage(String xTag, String yTag, String visibilityTag, boolean debug, String fileTag,
@@ -94,20 +94,21 @@ public class MapImage extends MapObject {
         }
     }
 
-    private static Color[] bukkitColors = null;
-    // Since color conversions will never change, remember them instead of using a bunch of math every single time
-    private final static Map<Integer, Byte> colorCache = new HashMap<Integer, Byte>();
+    private static final Color[] bukkitColors;
+
+    static {
+        Color[] colors = null;
+        try {
+            Field field = MapPalette.class.getDeclaredField("colors");
+            field.setAccessible(true);
+            colors = (Color[]) field.get(null);
+        } catch (Exception e) {
+            dB.echoError(e);
+        }
+        bukkitColors = colors;
+    }
 
     private static byte[] imageToBytes(Image image, int width, int height) {
-        if (bukkitColors == null) {
-            try {
-                Field field = MapPalette.class.getDeclaredField("colors");
-                field.setAccessible(true);
-                bukkitColors = (Color[]) field.get(null);
-            } catch (Exception e) {
-                dB.echoError(e);
-            }
-        }
         BufferedImage temp = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = temp.createGraphics();
         graphics.drawImage(image, 0, 0, width, height, null);
@@ -116,15 +117,7 @@ public class MapImage extends MapObject {
         temp.getRGB(0, 0, width, height, pixels, 0, width);
         byte[] result = new byte[width * height];
         for (int i = 0; i < pixels.length; i++) {
-            int pixel = pixels[i];
-            if (colorCache.containsKey(pixel)) {
-                result[i] = colorCache.get(pixel);
-            }
-            else {
-                byte color = matchColor(new Color(pixel));
-                colorCache.put(pixel, color);
-                result[i] = color;
-            }
+            result[i] = matchColor(new Color(pixels[i]));
         }
         return result;
     }

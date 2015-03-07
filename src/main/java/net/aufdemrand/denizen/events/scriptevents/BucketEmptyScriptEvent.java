@@ -83,6 +83,7 @@ public class BucketEmptyScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
+        // TODO: Store the player / npc?
         return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()): null,
                 entity.isNPC() ? entity.getDenizenNPC(): null);
     }

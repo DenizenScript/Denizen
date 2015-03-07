@@ -114,7 +114,8 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
         playerMoveEvent(evt);
-        event.setCancelled(evt.isCancelled());
+        if (evt.isCancelled())
+            event.setCancelled(true);
     }
 
     public void onWorldChange(PlayerChangedWorldEvent event) {

@@ -1,18 +1,19 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
-import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.*;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -1275,6 +1276,7 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("ip") ||
                 attribute.startsWith("host_name")) {
             attribute = attribute.fulfill(1);
+            String host = getPlayerEntity().getAddress().getHostName();
             // <--[tag]
             // @attribute <p@player.ip.address>
             // @returns Element
@@ -1285,7 +1287,7 @@ public class dPlayer implements dObject, Adjustable {
                 return new Element(getPlayerEntity().getAddress().toString())
                         .getAttribute(attribute.fulfill(1));
 
-            return new Element(getPlayerEntity().getAddress().getHostName())
+            return new Element(host)
                     .getAttribute(attribute);
         }
 
@@ -2324,6 +2326,37 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("action_bar")) {
             ActionBar.sendActionBarMessage(getPlayerEntity(), value.asString());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name name
+        // @input Element
+        // @description
+        // Changes the name of this player to the entire server.
+        // -->
+        if (mechanism.matches("name")) {
+            String name = value.asString();
+            if (name.length() > 16)
+                dB.echoError("Must specify a name with no more than 16 characters.");
+            else
+                PlayerProfileEditor.setPlayerName(getPlayerEntity(), value.asString());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name skin
+        // @input Element
+        // @description
+        // Changes the skin of the player to the skin of the given
+        // player name.
+        // -->
+        if (mechanism.matches("skin")) {
+            String name = value.asString();
+            if (name.length() > 16)
+                dB.echoError("Must specify a name with no more than 16 characters.");
+            else
+                PlayerProfileEditor.setPlayerSkin(getPlayerEntity(), value.asString());
         }
 
         // Iterate through this object's properties' mechanisms

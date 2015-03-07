@@ -83,6 +83,9 @@ public class PlayerStepsOnSmartEvent implements OldSmartEvent, Listener {
     // -->
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
         onPlayerMove(evt);
         event.setCancelled(evt.isCancelled());
