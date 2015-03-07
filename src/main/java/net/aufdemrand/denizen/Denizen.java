@@ -8,12 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.core.*;
-import net.aufdemrand.denizen.events.scriptevents.EntityDespawnScriptEvent;
-import net.aufdemrand.denizen.events.scriptevents.EntityTeleportScriptEvent;
-import net.aufdemrand.denizen.events.scriptevents.LiquidSpreadScriptEvent;
-import net.aufdemrand.denizen.events.scriptevents.BucketFillScriptEvent;
-import net.aufdemrand.denizen.events.scriptevents.BucketEmptyScriptEvent;
-import net.aufdemrand.denizen.events.scriptevents.VehicleMoveScriptEvent;
+import net.aufdemrand.denizen.events.scriptevents.*;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitElementProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitListProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitQueueProperties;
@@ -570,7 +565,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             eventManager = new OldEventManager();
             // Register all the 'Core' SmartEvents.
-            OldEventManager.registerSmartEvent(new AsyncChatSmartEvent());
             OldEventManager.registerSmartEvent(new BiomeEnterExitSmartEvent());
             OldEventManager.registerSmartEvent(new BlockFallsSmartEvent());
             OldEventManager.registerSmartEvent(new BlockPhysicsSmartEvent());
@@ -593,16 +587,16 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             OldEventManager.registerSmartEvent(new PlayerStepsOnSmartEvent());
             OldEventManager.registerSmartEvent(new PlayerWalkSmartEvent());
             OldEventManager.registerSmartEvent(new RedstoneSmartEvent());
-            OldEventManager.registerSmartEvent(new SyncChatSmartEvent());
             OldEventManager.registerSmartEvent(new VehicleCollisionSmartEvent());
             eventManager().registerCoreMembers();
 
-            ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
+            ScriptEvent.registerScriptEvent(new BucketEmptyScriptEvent());
+            ScriptEvent.registerScriptEvent(new BucketFillScriptEvent());
+            ScriptEvent.registerScriptEvent(new ChatScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
-            ScriptEvent.registerScriptEvent(new BucketFillScriptEvent());
-            ScriptEvent.registerScriptEvent(new BucketEmptyScriptEvent());
+            ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
 
 
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@

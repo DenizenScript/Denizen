@@ -88,6 +88,6 @@ public class FormatScriptContainer extends ScriptContainer {
     public String getFormatText(dNPC npc, dPlayer player) {
         String text = getFormat().replace("<text>", String.valueOf((char)0x00));
         return TagManager.tag(text, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)))
-                .replace("%", "%%").replace(String.valueOf((char)0x00), "%s");
+                .replace("%", "%%").replace(String.valueOf((char)0x00), "%2$s");
     }
 }

@@ -63,6 +63,8 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
                 || lower.startsWith(eName3);
     }
 
+    // TODO: Can the vehicle be an NPC?
+
     @Override
     public String getName() {
         return "VehicleMoves";
