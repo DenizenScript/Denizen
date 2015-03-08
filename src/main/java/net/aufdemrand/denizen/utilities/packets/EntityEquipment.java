@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R1.PacketPlayOutEntityEquipment;
-import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityEquipment;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +23,7 @@ public class EntityEquipment {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutEntityEquipment.class);
-        equipment_entityId = fields.get("a");
+        equipment_entityId = fields.get("a"); // TODO: Are these accurate (1.8.3)?
         equipment_slot = fields.get("b");
         equipment_itemstack = fields.get("c");
     }

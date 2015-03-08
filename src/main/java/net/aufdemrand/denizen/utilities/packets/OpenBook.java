@@ -2,8 +2,8 @@ package net.aufdemrand.denizen.utilities.packets;
 
 import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R1.PacketDataSerializer;
-import net.minecraft.server.v1_8_R1.PacketPlayOutCustomPayload;
+import net.minecraft.server.v1_8_R2.PacketDataSerializer;
+import net.minecraft.server.v1_8_R2.PacketPlayOutCustomPayload;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -15,7 +15,7 @@ public class OpenBook {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutCustomPayload.class);
-        channel = fields.get("a");
+        channel = fields.get("a"); // TODO: Are these accurate (1.8.3)?
         packet_data = fields.get("b");
     }
 

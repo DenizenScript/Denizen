@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R1.ChatComponentText;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R2.ChatComponentText;
+import net.minecraft.server.v1_8_R2.PacketPlayOutChat;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -14,7 +14,7 @@ public class ActionBar {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutChat.class);
-        chat_message = fields.get("a");
+        chat_message = fields.get("a"); // TODO: Are these accurate (1.8.3)?
         chat_type = fields.get("b");
     }
 

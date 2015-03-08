@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R1.PacketPlayOutCamera;
+import net.minecraft.server.v1_8_R2.PacketPlayOutCamera;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -14,7 +14,7 @@ public class PlayerSpectateEntity {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutCamera.class);
-        entity_id = fields.get("a");
+        entity_id = fields.get("a"); // TODO: Are these accurate (1.8.3)?
     }
 
     public static PacketPlayOutCamera getCameraPacket(Entity entity) {

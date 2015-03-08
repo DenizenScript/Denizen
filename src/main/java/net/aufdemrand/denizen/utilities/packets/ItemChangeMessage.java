@@ -2,9 +2,9 @@ package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R1.PacketPlayOutSetSlot;
+import net.minecraft.server.v1_8_R2.PacketPlayOutSetSlot;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +24,7 @@ public class ItemChangeMessage implements Listener {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutSetSlot.class);
-        slot_inventoryId = fields.get("a");
+        slot_inventoryId = fields.get("a"); // TODO: Are these accurate (1.8.3)?
         slot_slotId = fields.get("b");
         slot_item = fields.get("c");
         DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(new ItemChangeMessage(),

@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_8_R1.EntityRabbit;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftRabbit;
+import net.minecraft.server.v1_8_R2.EntityRabbit;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftRabbit;
 import org.bukkit.entity.Rabbit;
 
 public enum RabbitType {
@@ -14,11 +14,12 @@ public enum RabbitType {
     KILLER(6,99);
 
     public static RabbitType getRabbitType(Rabbit rabbit) {
-        return RabbitType.getType(getEntityRabbit(rabbit).cl());
+        // return RabbitType.getType(getEntityRabbit(rabbit).cl()); // TODO: 1.8.3 update
+        return BROWN; // TODO: 1.8.3 update
     }
 
     public static void setRabbitType(Rabbit rabbit, RabbitType type) {
-        getEntityRabbit(rabbit).r(type.getId());
+        // getEntityRabbit(rabbit).r(type.getId()); // TODO: 1.8.3 update
     }
 
     private static EntityRabbit getEntityRabbit(Rabbit rabbit) {

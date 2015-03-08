@@ -6,10 +6,10 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
-import net.minecraft.server.v1_8_R1.*;
+import net.minecraft.server.v1_8_R2.*;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.util.Vector;
@@ -40,10 +40,10 @@ public class FishingTrait extends Trait {
             (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 1)).a(0.25F).a(),
             (new PossibleFishingResult(new ItemStack(Items.BOOK), 1)).a()});
     private static final List fishResults = Arrays.asList(new PossibleFishingResult[] {
-            new PossibleFishingResult(new ItemStack(Items.FISH, 1, EnumFish.COD.a()), 60),
-            new PossibleFishingResult(new ItemStack(Items.FISH, 1, EnumFish.SALMON.a()), 25),
-            new PossibleFishingResult(new ItemStack(Items.FISH, 1, EnumFish.CLOWNFISH.a()), 2),
-            new PossibleFishingResult(new ItemStack(Items.FISH, 1, EnumFish.PUFFERFISH.a()), 13)});
+            new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.COD.a()), 60),
+            new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.SALMON.a()), 25),
+            new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.CLOWNFISH.a()), 2),
+            new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.PUFFERFISH.a()), 13)});
 
     public static enum CatchType { NONE, DEFAULT, JUNK, TREASURE, FISH }
 

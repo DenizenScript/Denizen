@@ -34,10 +34,10 @@ import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
-import net.minecraft.server.v1_8_R1.EntityLiving;
+import net.minecraft.server.v1_8_R2.EntityLiving;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -1078,6 +1078,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             Material mat = item.getMaterial().getMaterial();
             int data = item.getMaterial().getData((byte)0);
             switch (getEntity().getType()) {
+                /*
                 case DROPPED_ITEM:
                     ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
                     ((ItemController.ItemNPC) getEntity()).setType(mat, data);
@@ -1089,6 +1090,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                 case FALLING_BLOCK:
                     ((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
                     break;
+                    */ // TODO: 1.8.3 Update - Waiting on Citizens
                 default:
                     dB.echoError("NPC is the not an item type!");
                     break;

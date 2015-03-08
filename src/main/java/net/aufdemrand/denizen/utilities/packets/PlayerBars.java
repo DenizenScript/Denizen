@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.packets;
 
-import net.minecraft.server.v1_8_R1.PacketPlayOutExperience;
-import net.minecraft.server.v1_8_R1.PacketPlayOutUpdateHealth;
+import net.minecraft.server.v1_8_R2.PacketPlayOutExperience;
+import net.minecraft.server.v1_8_R2.PacketPlayOutUpdateHealth;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ public class PlayerBars {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutExperience.class);
-        xp_current = fields.get("a");
+        xp_current = fields.get("a"); // TODO: Are these accurate (1.8.3)?
         xp_total = fields.get("b");
         xp_level = fields.get("c");
 

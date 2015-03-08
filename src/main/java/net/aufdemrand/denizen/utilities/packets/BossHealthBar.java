@@ -1,11 +1,10 @@
 package net.aufdemrand.denizen.utilities.packets;
 
-import net.minecraft.server.v1_8_R1.PacketPlayInClientCommand;
-import net.minecraft.server.v1_8_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R1.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_8_R1.PacketPlayOutSpawnEntityLiving;
-import net.minecraft.server.v1_8_R1.EnumClientCommand;
-import net.minecraft.server.v1_8_R1.DataWatcher;
+import net.minecraft.server.v1_8_R2.PacketPlayInClientCommand;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_8_R2.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.v1_8_R2.DataWatcher;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -37,7 +36,7 @@ public class BossHealthBar {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityLiving.class);
-        spawn_entityId = fields.get("a");
+        spawn_entityId = fields.get("a"); // TODO: Are these accurate (1.8.3)?
         spawn_entityType = fields.get("b");
         spawn_locationX = fields.get("c");
         spawn_locationY = fields.get("d");
@@ -108,7 +107,7 @@ public class BossHealthBar {
     public static PacketPlayInClientCommand getRespawnPacket() {
         PacketPlayInClientCommand ccommandPacket = new PacketPlayInClientCommand();
         try {
-            ccommand_command.set(ccommandPacket, EnumClientCommand.PERFORM_RESPAWN);
+            ccommand_command.set(ccommandPacket, PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN);
         } catch (Exception e) {
             dB.echoError(e);
         }

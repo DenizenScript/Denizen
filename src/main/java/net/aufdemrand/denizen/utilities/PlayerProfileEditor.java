@@ -5,9 +5,9 @@ import com.mojang.authlib.properties.Property;
 import net.aufdemrand.denizen.objects.properties.item.ItemSkullskin;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R1.*;
+import net.minecraft.server.v1_8_R2.*;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,7 +29,7 @@ public class PlayerProfileEditor {
         Field profileIdField = null;
         Field profileNameField = null;
         try {
-            profileField = EntityHuman.class.getDeclaredField("bF");
+            profileField = EntityHuman.class.getDeclaredField("bF"); // TODO: Are these accurate (1.8.3)?
             profileField.setAccessible(true);
             profileIdField = GameProfile.class.getDeclaredField("id");
             profileIdField.setAccessible(true);
@@ -71,7 +71,7 @@ public class PlayerProfileEditor {
         new BukkitRunnable() {
             @Override
             public void run() {
-                PacketPlayOutPlayerInfo playerInfo = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
+                PacketPlayOutPlayerInfo playerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
                 PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(entityPlayer);
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                     PacketHelper.sendPacket(player, playerInfo);
