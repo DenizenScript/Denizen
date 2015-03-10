@@ -792,7 +792,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("json")) {
             String JSON = CraftItemStack.asNMSCopy(item).C().getChatModifier().toString();
-            return new Element(JSON.substring(176, JSON.length() - 186))
+            return new Element(JSON.substring(176, JSON.length() - 185))
                     .getAttribute(attribute.fulfill(1));
         }
 
