@@ -14,7 +14,7 @@ public class ActionBar {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutChat.class);
-        chat_message = fields.get("a"); // TODO: Are these accurate (1.8.3)?
+        chat_message = fields.get("a");
         chat_type = fields.get("b");
     }
 

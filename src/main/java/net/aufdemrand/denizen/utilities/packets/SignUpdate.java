@@ -18,7 +18,7 @@ public class SignUpdate {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutUpdateSign.class);
-        sign_world = fields.get("a"); // TODO: Are these accurate (1.8.3)?
+        sign_world = fields.get("a");
         sign_location = fields.get("b");
         sign_lines = fields.get("c");
     }

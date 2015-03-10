@@ -226,11 +226,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         // Freeze the first world in the list.
         // TODO: make this do all worlds from the locations in the list
         CraftWorld craftWorld = (CraftWorld)loc0.getWorld();
-       // boolean was_static = craftWorld.getHandle().isStatic; // TODO: 1.8.3 update
+        boolean was_static = craftWorld.getHandle().isClientSide;
         if (no_physics)
             setWorldIsStatic(loc0.getWorld(), true);
-       // return was_static; // TODO: 1.8.3 update
-        return false; // TODO: 1.8.3 update
+        return was_static;
     }
 
     void postComplete(Location loc, boolean was_static) {
@@ -247,7 +246,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         try {
             CraftWorld craftWorld = (CraftWorld) world;
             if (isStaticField == null) {
-                    isStaticField = craftWorld.getHandle().getClass().getField("isStatic"); // TODO: 1.8.3 update
+                    isStaticField = craftWorld.getHandle().getClass().getField("isClientSide");
                     isStaticField.setAccessible(true);
                     Field modifiersField = Field.class.getDeclaredField("modifiers");
                     modifiersField.setAccessible(true);

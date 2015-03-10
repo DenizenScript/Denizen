@@ -16,7 +16,7 @@ public class PlayerBars {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutExperience.class);
-        xp_current = fields.get("a"); // TODO: Are these accurate (1.8.3)?
+        xp_current = fields.get("a");
         xp_total = fields.get("b");
         xp_level = fields.get("c");
 

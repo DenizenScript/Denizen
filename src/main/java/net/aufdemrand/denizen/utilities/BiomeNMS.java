@@ -171,7 +171,7 @@ public class BiomeNMS {
             dB.echoError(e);
         }
         try {
-            rains = BiomeBase.class.getDeclaredField("ay"); // TODO: Are these accurate (1.8.3)?
+            rains = BiomeBase.class.getDeclaredField("ay");
             rains.setAccessible(true);
         } catch (Exception e) {
             dB.echoError(e);

@@ -19,7 +19,7 @@ public class SignEditor {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutOpenSignEditor.class);
-        sign_location = fields.get("a"); // TODO: Are these accurate (1.8.3)?
+        sign_location = fields.get("a");
     }
 
     public static PacketPlayOutOpenSignEditor getSignEditorPacket(Location location) {

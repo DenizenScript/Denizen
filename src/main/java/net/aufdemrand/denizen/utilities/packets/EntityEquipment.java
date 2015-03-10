@@ -23,7 +23,7 @@ public class EntityEquipment {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutEntityEquipment.class);
-        equipment_entityId = fields.get("a"); // TODO: Are these accurate (1.8.3)?
+        equipment_entityId = fields.get("a");
         equipment_slot = fields.get("b");
         equipment_itemstack = fields.get("c");
     }

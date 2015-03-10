@@ -14,12 +14,11 @@ public enum RabbitType {
     KILLER(6,99);
 
     public static RabbitType getRabbitType(Rabbit rabbit) {
-        // return RabbitType.getType(getEntityRabbit(rabbit).cl()); // TODO: 1.8.3 update
-        return BROWN; // TODO: 1.8.3 update
+        return RabbitType.getType(getEntityRabbit(rabbit).getRabbitType());
     }
 
     public static void setRabbitType(Rabbit rabbit, RabbitType type) {
-        // getEntityRabbit(rabbit).r(type.getId()); // TODO: 1.8.3 update
+        getEntityRabbit(rabbit).setRabbitType(type.getId());
     }
 
     private static EntityRabbit getEntityRabbit(Rabbit rabbit) {

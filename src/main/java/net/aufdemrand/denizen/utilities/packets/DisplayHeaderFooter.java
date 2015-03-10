@@ -14,7 +14,7 @@ public class DisplayHeaderFooter {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutPlayerListHeaderFooter.class);
-        tab_header = fields.get("a"); // TODO: Are these accurate (1.8.3)?
+        tab_header = fields.get("a");
         tab_footer = fields.get("b");
     }
 

@@ -15,7 +15,7 @@ public class OpenBook {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutCustomPayload.class);
-        channel = fields.get("a"); // TODO: Are these accurate (1.8.3)?
+        channel = fields.get("a");
         packet_data = fields.get("b");
     }
 

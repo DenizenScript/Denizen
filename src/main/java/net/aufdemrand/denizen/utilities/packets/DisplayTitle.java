@@ -14,7 +14,7 @@ public class DisplayTitle {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutTitle.class);
-        title_action = fields.get("a"); // TODO: Are these accurate (1.8.3)?
+        title_action = fields.get("a");
         chat_component = fields.get("b");
         fade_in_ticks = fields.get("c");
         stay_ticks = fields.get("d");
