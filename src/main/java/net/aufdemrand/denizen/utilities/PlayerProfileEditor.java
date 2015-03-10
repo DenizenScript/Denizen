@@ -29,7 +29,7 @@ public class PlayerProfileEditor {
         Field profileIdField = null;
         Field profileNameField = null;
         try {
-            profileField = EntityHuman.class.getDeclaredField("bF"); // TODO: Are these accurate (1.8.3)?
+            profileField = EntityHuman.class.getDeclaredField("bH");
             profileField.setAccessible(true);
             profileIdField = GameProfile.class.getDeclaredField("id");
             profileIdField.setAccessible(true);

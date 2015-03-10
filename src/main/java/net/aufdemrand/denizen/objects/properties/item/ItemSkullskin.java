@@ -173,7 +173,7 @@ public class ItemSkullskin implements Property {
                 gameProfile1 = gameProfile;
             }
             if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
-                // gameProfile1 = MinecraftServer.getServer().aB().fillProfileProperties(gameProfile1, true); // TODO: 1.8.3 update
+                gameProfile1 = MinecraftServer.getServer().aC().fillProfileProperties(gameProfile1, true);
             }
             return gameProfile1;
         }
