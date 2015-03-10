@@ -1,20 +1,26 @@
 package net.aufdemrand.denizen.utilities.packets;
 
+
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R2.PacketPlayInClientCommand;
 import net.minecraft.server.v1_8_R2.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_8_R2.PacketPlayOutEntityMetadata;
 import net.minecraft.server.v1_8_R2.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityTeleport;
 import net.minecraft.server.v1_8_R2.DataWatcher;
-
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 // Retrieved from https://forums.bukkit.org/threads/tutorial-utilizing-the-boss-health-bar.158018/
@@ -26,6 +32,7 @@ import java.util.Map;
 public class BossHealthBar {
     public static final int ENTITY_ID = 1234567;
     private static HashMap<String, Boolean> hasHealthBar = new HashMap<String, Boolean>();
+    private static ArrayList<Player> playersWithHealthBar = new ArrayList<Player>();
 
     // Keep track of fields to avoid unnecessarily getting them repeatedly
     private static final Field spawn_entityId, spawn_entityType, spawn_locationX, spawn_locationY, spawn_locationZ,
@@ -33,10 +40,30 @@ public class BossHealthBar {
     private static final Field destroy_entityList;
     private static final Field metadata_entityId, metadata_data;
     private static final Field ccommand_command;
+    private static final Field teleport_entityId, teleport_x, teleport_y, teleport_z,
+            teleport_yaw, teleport_pitch, teleport_onGround;
+
+    private static final HashSet<Material> ignoreAllBlocks = new HashSet<Material>(EnumSet.allOf(Material.class));
+    private static final BukkitTask task = new BukkitRunnable() {
+        @Override
+        public void run() {
+            for (int i = 0; i < playersWithHealthBar.size(); i++) {
+                Player player = playersWithHealthBar.get(i);
+                if (!player.isDead() && player.isValid()) {
+                        PacketHelper.sendPacket(player, getTeleportPacket(player
+                                .getTargetBlock(ignoreAllBlocks, 32).getLocation()));
+                }
+                else {
+                    hasHealthBar.put(player.getName(), false);
+                    playersWithHealthBar.remove(player);
+                }
+            }
+        }
+    }.runTaskTimer(DenizenAPI.getCurrentInstance(), 20, 20);
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityLiving.class);
-        spawn_entityId = fields.get("a"); // TODO: Are these accurate (1.8.3)?
+        spawn_entityId = fields.get("a");
         spawn_entityType = fields.get("b");
         spawn_locationX = fields.get("c");
         spawn_locationY = fields.get("d");
@@ -58,6 +85,15 @@ public class BossHealthBar {
 
         fields = PacketHelper.registerFields(PacketPlayInClientCommand.class);
         ccommand_command = fields.get("a");
+
+        fields = PacketHelper.registerFields(PacketPlayOutEntityTeleport.class);
+        teleport_entityId = fields.get("a");
+        teleport_x = fields.get("b");
+        teleport_y = fields.get("c");
+        teleport_z = fields.get("d");
+        teleport_yaw = fields.get("e");
+        teleport_pitch = fields.get("f");
+        teleport_onGround = fields.get("g");
     }
 
     //Accessing packets
@@ -66,7 +102,7 @@ public class BossHealthBar {
         PacketPlayOutSpawnEntityLiving mobPacket = new PacketPlayOutSpawnEntityLiving();
         try {
             spawn_entityId.set(mobPacket, ENTITY_ID);
-            spawn_entityType.set(mobPacket, (byte) EntityType.ENDER_DRAGON.getTypeId());
+            spawn_entityType.set(mobPacket, (byte) EntityType.WITHER.getTypeId());
             spawn_locationX.set(mobPacket, (int) Math.floor(loc.getBlockX() * 32.0D));
             spawn_locationY.set(mobPacket, -256 * 32);
             spawn_locationZ.set(mobPacket, (int) Math.floor(loc.getBlockZ() * 32.0D));
@@ -104,6 +140,22 @@ public class BossHealthBar {
         return metaPacket;
     }
 
+    public static PacketPlayOutEntityTeleport getTeleportPacket(Location location) {
+        PacketPlayOutEntityTeleport teleportPacket = new PacketPlayOutEntityTeleport();
+        try {
+            teleport_entityId.set(teleportPacket, ENTITY_ID);
+            teleport_x.set(teleportPacket, (int) Math.floor(location.getBlockX() * 32.0D));
+            teleport_y.set(teleportPacket, (int) Math.floor(location.getBlockY() * 32.0D));
+            teleport_z.set(teleportPacket, (int) Math.floor(location.getBlockZ() * 32.0D));
+            teleport_yaw.set(teleportPacket, (byte) 0);
+            teleport_pitch.set(teleportPacket, (byte) 0);
+            teleport_onGround.set(teleportPacket, false);
+        } catch (Exception e) {
+            dB.echoError(e);
+        }
+        return teleportPacket;
+    }
+
     public static PacketPlayInClientCommand getRespawnPacket() {
         PacketPlayInClientCommand ccommandPacket = new PacketPlayInClientCommand();
         try {
@@ -119,7 +171,7 @@ public class BossHealthBar {
         watcher.a(0, (byte) 0x20); //Flags, 0x20 = invisible
         watcher.a(2, text); //Entity name
         watcher.a(3, (byte) 1); //Show name, 1 = show, 0 = don't show
-        watcher.a(6, (float) health);
+        watcher.a(6, (float) health * 1.5F); // Account for 1.8 switch from Ender Dragon to Wither by multiplying by 1.5
         return watcher;
     }
 
@@ -128,6 +180,7 @@ public class BossHealthBar {
         PacketPlayOutSpawnEntityLiving mobPacket = getMobPacket(text, player.getLocation(), health);
         PacketHelper.sendPacket(player, mobPacket);
         hasHealthBar.put(player.getName(), true);
+        playersWithHealthBar.add(player);
     }
 
     public static void removeTextBar(Player player) {
@@ -135,6 +188,7 @@ public class BossHealthBar {
             PacketPlayOutEntityDestroy destroyEntityPacket = getDestroyEntityPacket();
             PacketHelper.sendPacket(player, destroyEntityPacket);
             hasHealthBar.put(player.getName(), false);
+            playersWithHealthBar.remove(player);
         }
     }
 
@@ -142,6 +196,7 @@ public class BossHealthBar {
         PacketPlayOutSpawnEntityLiving mobPacket = getMobPacket(text, player.getLocation(), 200);
         PacketHelper.sendPacket(player, mobPacket);
         hasHealthBar.put(player.getName(), true);
+        playersWithHealthBar.add(player);
         new BukkitRunnable() {
             int health = (loadUp ? 0 : 300);
 
@@ -163,10 +218,12 @@ public class BossHealthBar {
                     PacketHelper.sendPacket(player, metaPacket);
                     PacketHelper.sendPacket(player, destroyEntityPacket);
                     hasHealthBar.put(player.getName(), false);
+                    playersWithHealthBar.remove(player);
 //Complete text
                     PacketPlayOutSpawnEntityLiving mobPacket = getMobPacket(completeText, player.getLocation(), 200);
                     PacketHelper.sendPacket(player, mobPacket);
                     hasHealthBar.put(player.getName(), true);
+                    playersWithHealthBar.add(player);
                     DataWatcher watcher2 = getWatcher(completeText, 300);
                     PacketPlayOutEntityMetadata metaPacket2 = getMetadataPacket(watcher2);
                     PacketHelper.sendPacket(player, metaPacket2);
@@ -176,6 +233,7 @@ public class BossHealthBar {
                             PacketPlayOutEntityDestroy destroyEntityPacket = getDestroyEntityPacket();
                             PacketHelper.sendPacket(player, destroyEntityPacket);
                             hasHealthBar.put(player.getName(), false);
+                            playersWithHealthBar.remove(player);
                         }
                     }.runTaskLater(DenizenAPI.getCurrentInstance(), 40L);
                     this.cancel();
