@@ -777,6 +777,45 @@ public class UtilTags implements Listener {
             event.setReplaced(new Element(Bukkit.getServer().getMotd()).getAttribute(attribute.fulfill(1)));
             return;
         }
+
+        // <--[tag]
+        // @attribute <util.entity_is_spawned[<entity>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether an entity is spawned and valid.
+        // -->
+        else if (attribute.startsWith("entity_is_spawned")
+                && attribute.hasContext(1)) {
+            dEntity ent = dEntity.valueOf(attribute.getContext(1));
+            event.setReplaced(new Element((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <util.player_is_valid[<player name>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether a player exists under the specified name.
+        // -->
+        else if (attribute.startsWith("player_is_valid")
+                && attribute.hasContext(1)) {
+            event.setReplaced(new Element(dPlayer.playerNameIsValid(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <util.npc_is_valid[<npc>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether an NPC exists and is usable.
+        // -->
+        else if (attribute.startsWith("npc_is_valid")
+                && attribute.hasContext(1)) {
+            dNPC npc = dNPC.valueOf(attribute.getContext(1));
+            event.setReplaced(new Element((npc != null && npc.isValid()))
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
         // TODO: Add everything else from Bukkit.getServer().*
 
     }
@@ -1033,30 +1072,6 @@ public class UtilTags implements Listener {
             event.setReplaced(new Element(item_to_replace.replace(replace, replacement))
                     .getAttribute(attribute.fulfill(3)));
         }
-
-        // TODO: Deprecate in favor of server tag
-        else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")
-                && typeContext.length() != 0) {
-            dEntity ent = dEntity.valueOf(typeContext);
-            event.setReplaced(new Element((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
-        // TODO: Deprecate in favor of server tag
-        else if (type.equalsIgnoreCase("PLAYER_IS_VALID")
-                && typeContext.length() != 0) {
-            event.setReplaced(new Element(dPlayer.playerNameIsValid(typeContext))
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
-        // TODO: Deprecate in favor of server tag
-        else if (type.equalsIgnoreCase("NPC_IS_VALID")
-                && typeContext.length() != 0) {
-            dNPC npc = dNPC.valueOf(typeContext);
-            event.setReplaced(new Element((npc != null && npc.isValid()))
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
 
         // TODO: Delete (Deprecated in favor of el@element.to_uppercase)
         else if (type.equalsIgnoreCase("UPPERCASE")) {
