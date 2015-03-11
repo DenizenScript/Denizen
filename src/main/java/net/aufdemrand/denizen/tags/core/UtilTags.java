@@ -840,7 +840,9 @@ public class UtilTags implements Listener {
             }
             File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), value.asString());
             try {
-                file.delete();
+                if (!file.delete()) {
+                    dB.echoError("Failed to delete file: returned false");
+                }
             }
             catch (Exception e) {
                 dB.echoError("Failed to delete file: " + e.getMessage());
@@ -974,13 +976,6 @@ public class UtilTags implements Listener {
                 event.setReplaced(new Element(CoreUtilities.getRandom().nextGaussian())
                         .getAttribute(attribute.fulfill(2)));
 
-            // TODO: Delete (Deprecated in favor of li@list.random)
-            else if (subType.equalsIgnoreCase("ELEMENT")) {
-                dList list = dList.valueOf(subTypeContext);
-                event.setReplaced(new Element(list.get(new Random().nextInt(list.size())))
-                        .getAttribute(attribute.fulfill(2)));
-            }
-
             // <--[tag]
             // @attribute <util.random.uuid>
             // @returns Element
@@ -1022,68 +1017,6 @@ public class UtilTags implements Listener {
         // -->
         else if (type.equalsIgnoreCase("tau")) {
             event.setReplaced(new Element(Math.PI * 2)
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
-        else if (type.equalsIgnoreCase("SUBSTR")
-                || type.equalsIgnoreCase("TRIM")
-                || type.equalsIgnoreCase("SUBSTRING")) {
-            String text = event.getTypeContext();
-            int from = 1;
-            int to = text.length() + 1;
-            int tags = 2;
-
-            // TODO: Delete (Deprecated in favor of el@element.after)
-            if (subType.equalsIgnoreCase("AFTER")) {
-                from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
-            }
-
-            // TODO: Delete (Deprecated in favor of el@element.before)
-            if (subType.equalsIgnoreCase("BEFORE")) {
-                to = text.toUpperCase().indexOf(subTypeContext) + 1;
-            }
-
-            // TODO: Delete (Deprecated in favor of el@element.substring)
-            try {
-                if (subType.equalsIgnoreCase("FROM"))
-                    from = Integer.valueOf(subTypeContext);
-            } catch (NumberFormatException e) { }
-
-            try {
-                if (specifier.equalsIgnoreCase("TO")) {
-                    to = Integer.valueOf(specifierContext);
-                    tags = 3;
-                }
-            } catch (NumberFormatException e) { }
-
-            if (to > text.length())
-                to = text.length() + 1;
-
-            event.setReplaced(new Element(text.substring(from - 1, to - 1))
-                    .getAttribute(attribute.fulfill(tags)));
-        }
-
-
-        // TODO: Delete (Deprecated in favor of el@element.replace)
-        else if (type.equalsIgnoreCase("REPLACE")) {
-            String item_to_replace = type;
-            String replace = typeContext;
-            String replacement = specifierContext;
-            event.setReplaced(new Element(item_to_replace.replace(replace, replacement))
-                    .getAttribute(attribute.fulfill(3)));
-        }
-
-        // TODO: Delete (Deprecated in favor of el@element.to_uppercase)
-        else if (type.equalsIgnoreCase("UPPERCASE")) {
-            String item_to_uppercase = typeContext;
-            event.setReplaced(new Element(item_to_uppercase.toUpperCase())
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
-        // TODO: Delete (Deprecated in favor of el@element.to_lowercase)
-        else if (type.equalsIgnoreCase("LOWERCASE")) {
-            String item_to_uppercase = typeContext;
-            event.setReplaced(new Element(item_to_uppercase.toLowerCase())
                     .getAttribute(attribute.fulfill(1)));
         }
 
@@ -1180,9 +1113,7 @@ public class UtilTags implements Listener {
                 }
 
             }
-            // <--[tag]
-            // @attribute <util.date.format[<format>]>
-            // @returns Element
+
             // @description
             // Returns the current system time, formatted as specified
             // Example format: [EEE, MMM d, yyyy K:mm a] will become "Mon, Jan 1, 2112 0:01 AM"
