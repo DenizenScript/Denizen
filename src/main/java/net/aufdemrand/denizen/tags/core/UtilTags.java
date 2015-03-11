@@ -964,6 +964,11 @@ public class UtilTags implements Listener {
                         .getAttribute(attribute.fulfill(2)));
         }
 
+        else if (type.equalsIgnoreCase("pi")) {
+            event.setReplaced(new Element(Math.PI)
+            .getAttribute(attribute.fulfill(1)));
+        }
+
 
         else if (type.equalsIgnoreCase("SUBSTR")
                 || type.equalsIgnoreCase("TRIM")
