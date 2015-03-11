@@ -779,7 +779,7 @@ public class ServerTags implements Listener {
         }
 
         // <--[tag]
-        // @attribute <util.entity_is_spawned[<entity>]>
+        // @attribute <server.entity_is_spawned[<entity>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether an entity is spawned and valid.
@@ -792,7 +792,7 @@ public class ServerTags implements Listener {
         }
 
         // <--[tag]
-        // @attribute <util.player_is_valid[<player name>]>
+        // @attribute <server.player_is_valid[<player name>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether a player exists under the specified name.
@@ -804,7 +804,7 @@ public class ServerTags implements Listener {
         }
 
         // <--[tag]
-        // @attribute <util.npc_is_valid[<npc>]>
+        // @attribute <server.npc_is_valid[<npc>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether an NPC exists and is usable.
