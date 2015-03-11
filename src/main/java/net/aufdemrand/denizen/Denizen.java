@@ -552,7 +552,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             new EntityTags(this);
             new LocationTags(this);
             new PlayerTags(this);
-            new UtilTags(this);
+            new ServerTags(this);
             new TextTags(this);
             new ParseTags(this);
             if (Depends.citizens != null) {
