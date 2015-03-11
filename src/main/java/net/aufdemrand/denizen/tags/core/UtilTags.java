@@ -964,11 +964,27 @@ public class UtilTags implements Listener {
                         .getAttribute(attribute.fulfill(2)));
         }
 
+        // <--[tag]
+        // @attribute <util.pi>
+        // @returns Element
+        // @description
+        // Returns PI: 3.141592653589793
+        // -->
         else if (type.equalsIgnoreCase("pi")) {
             event.setReplaced(new Element(Math.PI)
             .getAttribute(attribute.fulfill(1)));
         }
 
+        // <--[tag]
+        // @attribute <util.tau>
+        // @returns Element
+        // @description
+        // Returns Tau: 6.283185307179586
+        // -->
+        else if (type.equalsIgnoreCase("tau")) {
+            event.setReplaced(new Element(Math.PI * 2)
+                    .getAttribute(attribute.fulfill(1)));
+        }
 
         else if (type.equalsIgnoreCase("SUBSTR")
                 || type.equalsIgnoreCase("TRIM")
@@ -1018,12 +1034,7 @@ public class UtilTags implements Listener {
                     .getAttribute(attribute.fulfill(3)));
         }
 
-        // <--[tag]
-        // @attribute <util.entity_is_spawned[<entity>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether an entity is spawned and valid.
-        // -->
+        // TODO: Deprecate in favor of server tag
         else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")
                 && typeContext.length() != 0) {
             dEntity ent = dEntity.valueOf(typeContext);
@@ -1031,24 +1042,14 @@ public class UtilTags implements Listener {
                     .getAttribute(attribute.fulfill(1)));
         }
 
-        // <--[tag]
-        // @attribute <util.player_is_valid[<player name>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether a player exists under the specified name.
-        // -->
+        // TODO: Deprecate in favor of server tag
         else if (type.equalsIgnoreCase("PLAYER_IS_VALID")
                 && typeContext.length() != 0) {
             event.setReplaced(new Element(dPlayer.playerNameIsValid(typeContext))
                     .getAttribute(attribute.fulfill(1)));
         }
 
-        // <--[tag]
-        // @attribute <util.npc_is_valid[<npc>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether an NPC exists and is usable.
-        // -->
+        // TODO: Deprecate in favor of server tag
         else if (type.equalsIgnoreCase("NPC_IS_VALID")
                 && typeContext.length() != 0) {
             dNPC npc = dNPC.valueOf(typeContext);
