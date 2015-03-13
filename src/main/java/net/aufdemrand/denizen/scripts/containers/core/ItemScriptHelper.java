@@ -232,7 +232,7 @@ public class ItemScriptHelper implements Listener {
                             ("item crafted",
                                     result.identifySimple() + " crafted",
                                     result.identifyMaterial() + " crafted"),
-                            new BukkitScriptEntryData(dEntity.getPlayerFrom(player), null), context);
+                            new BukkitScriptEntryData(dEntity.getPlayerFrom(player), null), context, true);
 
                     for (String determination: determinations) {
                         if (determination.toUpperCase().startsWith("CANCELLED"))
