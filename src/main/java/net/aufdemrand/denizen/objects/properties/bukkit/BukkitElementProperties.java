@@ -95,7 +95,7 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <el@element.as_chunk>
-        // @returns dCuboid
+        // @returns dChunk
         // @group conversion
         // @description
         // Returns the element as a chunk. Note: the value must be a valid chunk.
@@ -109,7 +109,7 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <el@element.as_color>
-        // @returns dCuboid
+        // @returns dColor
         // @group conversion
         // @description
         // Returns the element as a dColor. Note: the value must be a valid color.
