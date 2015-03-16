@@ -234,7 +234,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public dItem(ItemStack item) {
         if (item == null)
-            this.item = new ItemStack(Material.AIR);
+            this.item = new ItemStack(Material.AIR, 0);
         else
             this.item = item;
     }

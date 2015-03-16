@@ -1449,7 +1449,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns dList
         // @group inventory
         // @description
-        // returns a dInventory containing the entity's equipment.
+        // returns a dList containing the entity's equipment.
         // -->
         else if (attribute.startsWith("equipment")) {
             return getEquipment().getAttribute(attribute.fulfill(1));
