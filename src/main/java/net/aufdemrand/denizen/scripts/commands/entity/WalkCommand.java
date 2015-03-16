@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class WalkCommand extends AbstractCommand implements Listener, Holdable {
+public class WalkCommand extends AbstractCommand implements Holdable {
 
     //                        percentage
     // walk [location] (speed:#.#) (auto_range)
@@ -159,45 +159,48 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
     // Held script entries
     public static List<ScriptEntry> held = new ArrayList<ScriptEntry>();
 
-    @EventHandler
-    public void finish(NavigationCompleteEvent e) {
+    public static class CitizensWalkEvents implements Listener {
 
-        if (held.isEmpty()) return;
+        @EventHandler
+        public void finish(NavigationCompleteEvent e) {
 
-        checkHeld(e);
+            if (held.isEmpty()) return;
 
-    }
+            checkHeld(e);
 
-    @EventHandler
-    public void cancel(NavigationCancelEvent e) {
+        }
 
-        if (held.isEmpty()) return;
+        @EventHandler
+        public void cancel(NavigationCancelEvent e) {
 
-        checkHeld(e);
+            if (held.isEmpty()) return;
 
-    }
+            checkHeld(e);
+
+        }
 
 
-    public void checkHeld(NavigationEvent e) {
-        if (e.getNPC() == null)
-            return;
+        public void checkHeld(NavigationEvent e) {
+            if (e.getNPC() == null)
+                return;
 
-        // Check each held entry -- the scriptExecuter is waiting on
-        // the entry to be marked 'waited for'.
-        for (int i = 0; i < held.size(); i++) {
-            ScriptEntry entry = held.get(i);
+            // Check each held entry -- the scriptExecuter is waiting on
+            // the entry to be marked 'waited for'.
+            for (int i = 0; i < held.size(); i++) {
+                ScriptEntry entry = held.get(i);
 
-            // Get all NPCs associated with the entry. They must all
-            // finish navigation before the entry can be let go
-            List<dNPC> tally = (List<dNPC>) entry.getObject("tally");
-            // If the NPC is the NPC from the event, take it from the list.
-            tally.remove(dNPC.mirrorCitizensNPC(e.getNPC()));
+                // Get all NPCs associated with the entry. They must all
+                // finish navigation before the entry can be let go
+                List<dNPC> tally = (List<dNPC>) entry.getObject("tally");
+                // If the NPC is the NPC from the event, take it from the list.
+                tally.remove(dNPC.mirrorCitizensNPC(e.getNPC()));
 
-            // Check if tally is empty.
-            if (tally.isEmpty()) {
-                entry.setFinished(true);
-                held.remove(i);
-                i--;
+                // Check if tally is empty.
+                if (tally.isEmpty()) {
+                    entry.setFinished(true);
+                    held.remove(i);
+                    i--;
+                }
             }
         }
     }
@@ -221,7 +224,7 @@ public class WalkCommand extends AbstractCommand implements Listener, Holdable {
     public void onEnable() {
         if (Depends.citizens != null) {
             DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                    .registerEvents(this, DenizenAPI.getCurrentInstance());
+                    .registerEvents(new CitizensWalkEvents(), DenizenAPI.getCurrentInstance());
         }
     }
 }
