@@ -32,6 +32,7 @@ import org.bukkit.craftbukkit.v1_8_R2.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -966,7 +967,7 @@ public class dEntity implements dObject, Adjustable {
                 : null;
 
         ((CraftCreature) entity).getHandle().
-                setGoalTarget(nmsTarget);
+                setGoalTarget(nmsTarget, EntityTargetEvent.TargetReason.CUSTOM, true);
 
         ((CraftCreature) entity).setTarget(target);
     }
