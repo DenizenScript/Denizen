@@ -112,6 +112,9 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     // -->
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
         playerMoveEvent(evt);
         if (evt.isCancelled())
@@ -119,6 +122,9 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     }
 
     public void onWorldChange(PlayerChangedWorldEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         Location to = event.getPlayer().getLocation().clone();
         Location from = event.getPlayer().getLocation().clone();
         from.setWorld(event.getFrom());
@@ -128,6 +134,9 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
     @EventHandler
     public void playerMoveEvent(PlayerMoveEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
 
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
