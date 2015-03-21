@@ -446,6 +446,7 @@ public class dMaterial implements dObject {
     // dMaterials that are registered as a 'variety' will need to identify as
     // something more specific than the traditional enum/data information.
     private String forcedIdentity = null;
+    private String forcedIdentityLow = null;
 
     /**
      * Forces the dMaterial to identify as something other than the enum value
@@ -457,6 +458,7 @@ public class dMaterial implements dObject {
      */
     private dMaterial forceIdentifyAs(String string) {
         forcedIdentity = string;
+        forcedIdentityLow = CoreUtilities.toLowerCase(string);
         return this;
     }
 
@@ -697,36 +699,36 @@ public class dMaterial implements dObject {
 
     @Override
     public String identify() {
-        if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase();
+        if (forcedIdentity != null) return "m@" + forcedIdentityLow;
         if (getData() != null && getData() > 0) return "m@" + material.name().toLowerCase() + "," + getData();
         return "m@" + material.name().toLowerCase();
     }
 
     public String identifyFull() {
-        if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase() + (getData() != null ? "," +  getData(): "");
+        if (forcedIdentity != null) return "m@" + forcedIdentityLow + (getData() != null ? "," +  getData(): "");
         if (getData() != null) return "m@" + material.name().toLowerCase() + "," + getData();
         return "m@" + material.name().toLowerCase();
     }
 
     @Override
     public String identifySimple() {
-        if (forcedIdentity != null) return "m@" + forcedIdentity.toLowerCase();
+        if (forcedIdentity != null) return "m@" + forcedIdentityLow;
         return "m@" + material.name().toLowerCase();
     }
 
     public String identifyNoIdentifier() {
-        if (forcedIdentity != null) return forcedIdentity.toLowerCase();
+        if (forcedIdentity != null) return forcedIdentityLow;
         if (getData() != null && getData() > 0) return material.name().toLowerCase() + "," + getData();
         return material.name().toLowerCase();
     }
 
     public String identifySimpleNoIdentifier() {
-        if (forcedIdentity != null) return forcedIdentity.toLowerCase();
+        if (forcedIdentity != null) return forcedIdentityLow;
         return material.name().toLowerCase();
     }
 
     public String identifyFullNoIdentifier() {
-        if (forcedIdentity != null) return forcedIdentity.toLowerCase() + (getData() != null ? "," +  getData(): "");
+        if (forcedIdentity != null) return forcedIdentityLow + (getData() != null ? "," +  getData(): "");
         if (getData() != null) return material.name().toLowerCase() + "," + getData();
         return material.name().toLowerCase();
     }
@@ -737,7 +739,7 @@ public class dMaterial implements dObject {
     }
 
     public String realName() {
-        if (forcedIdentity != null) return forcedIdentity.toLowerCase();
+        if (forcedIdentity != null) return forcedIdentityLow;
         return material.name().toLowerCase();
     }
 
@@ -903,7 +905,7 @@ public class dMaterial implements dObject {
         // Returns the name of the material.
         // -->
         if (attribute.startsWith("name"))
-            return new Element(forcedIdentity != null ? forcedIdentity.toLowerCase():
+            return new Element(forcedIdentity != null ? forcedIdentityLow:
                                 material.name().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
 
