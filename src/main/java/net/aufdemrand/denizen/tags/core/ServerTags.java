@@ -534,9 +534,35 @@ public class ServerTags implements Listener {
                 }
             }
 
-            if (matchPlayer == null) {
-                event.setReplaced("null");
-            } else {
+            if (matchPlayer != null) {
+                event.setReplaced(new dPlayer(matchPlayer).getAttribute(attribute.fulfill(1)));
+            }
+
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.match_offline_player[<name>]>
+        // @returns dPlayer
+        // @description
+        // Returns any player (online or offline) that best matches the input name.
+        // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns p@bob,
+        // input 'bobb' returns p@bobby, and input 'b' returns p@bo.
+        // -->
+        if (attribute.startsWith("match_offline_player") && attribute.hasContext(1)) {
+            UUID matchPlayer = null;
+            String matchInput = attribute.getContext(1).toLowerCase();
+            for (Map.Entry<String, UUID> entry: dPlayer.getAllPlayers().entrySet()) {
+                if (entry.getKey().toLowerCase().equals(matchInput)) {
+                    matchPlayer = entry.getValue();
+                    break;
+                }
+                else if (entry.getKey().toLowerCase().contains(matchInput) && matchPlayer == null) {
+                    matchPlayer = entry.getValue();
+                }
+            }
+
+            if (matchPlayer != null) {
                 event.setReplaced(new dPlayer(matchPlayer).getAttribute(attribute.fulfill(1)));
             }
 
