@@ -19,7 +19,7 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         super(craftWorld.getHandle());
         this.pickupDelay = Integer.MAX_VALUE;
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-        this.a((float)0.25F, (float)0.25F);
+        //this.a(0.25F, 0.25F); // TODO: 1.8.3 update
         world.addEntity(this);
         bukkitEntity = new CraftItemProjectile((CraftServer) Bukkit.getServer(), this);
     }
