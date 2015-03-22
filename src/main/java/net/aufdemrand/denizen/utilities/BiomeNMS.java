@@ -2,11 +2,11 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_8_R1.*;
+import net.minecraft.server.v1_8_R2.*;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.block.CraftBlock;
 import org.bukkit.entity.EntityType;
 
 import java.lang.reflect.Field;
@@ -47,7 +47,7 @@ public class BiomeNMS {
 
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {
         List<EntityType> entityTypes = new ArrayList<EntityType>();
-        for (BiomeMeta meta : (List<BiomeMeta>) biomeBase.getMobs(creatureType)) {
+        for (BiomeBase.BiomeMeta meta : (List<BiomeBase.BiomeMeta>) biomeBase.getMobs(creatureType)) {
             entityTypes.add(EntityType.fromId(ENTITY_CLASS_ID_MAP.get(meta.b)));
         }
         return entityTypes;

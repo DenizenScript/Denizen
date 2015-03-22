@@ -41,9 +41,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class UtilTags implements Listener {
+public class ServerTags implements Listener {
 
-    public UtilTags(Denizen denizen) {
+    public ServerTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
         TagManager.registerTagEvents(this);
     }
@@ -534,9 +534,35 @@ public class UtilTags implements Listener {
                 }
             }
 
-            if (matchPlayer == null) {
-                event.setReplaced("null");
-            } else {
+            if (matchPlayer != null) {
+                event.setReplaced(new dPlayer(matchPlayer).getAttribute(attribute.fulfill(1)));
+            }
+
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.match_offline_player[<name>]>
+        // @returns dPlayer
+        // @description
+        // Returns any player (online or offline) that best matches the input name.
+        // EG, in a group of 'bo', 'bob', and 'bobby'... input 'bob' returns p@bob,
+        // input 'bobb' returns p@bobby, and input 'b' returns p@bo.
+        // -->
+        if (attribute.startsWith("match_offline_player") && attribute.hasContext(1)) {
+            UUID matchPlayer = null;
+            String matchInput = attribute.getContext(1).toLowerCase();
+            for (Map.Entry<String, UUID> entry: dPlayer.getAllPlayers().entrySet()) {
+                if (entry.getKey().toLowerCase().equals(matchInput)) {
+                    matchPlayer = entry.getValue();
+                    break;
+                }
+                else if (entry.getKey().toLowerCase().contains(matchInput) && matchPlayer == null) {
+                    matchPlayer = entry.getValue();
+                }
+            }
+
+            if (matchPlayer != null) {
                 event.setReplaced(new dPlayer(matchPlayer).getAttribute(attribute.fulfill(1)));
             }
 
@@ -777,6 +803,45 @@ public class UtilTags implements Listener {
             event.setReplaced(new Element(Bukkit.getServer().getMotd()).getAttribute(attribute.fulfill(1)));
             return;
         }
+
+        // <--[tag]
+        // @attribute <server.entity_is_spawned[<entity>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether an entity is spawned and valid.
+        // -->
+        else if (attribute.startsWith("entity_is_spawned")
+                && attribute.hasContext(1)) {
+            dEntity ent = dEntity.valueOf(attribute.getContext(1));
+            event.setReplaced(new Element((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.player_is_valid[<player name>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether a player exists under the specified name.
+        // -->
+        else if (attribute.startsWith("player_is_valid")
+                && attribute.hasContext(1)) {
+            event.setReplaced(new Element(dPlayer.playerNameIsValid(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.npc_is_valid[<npc>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether an NPC exists and is usable.
+        // -->
+        else if (attribute.startsWith("npc_is_valid")
+                && attribute.hasContext(1)) {
+            dNPC npc = dNPC.valueOf(attribute.getContext(1));
+            event.setReplaced(new Element((npc != null && npc.isValid()))
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
         // TODO: Add everything else from Bukkit.getServer().*
 
     }
@@ -801,7 +866,9 @@ public class UtilTags implements Listener {
             }
             File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), value.asString());
             try {
-                file.delete();
+                if (!file.delete()) {
+                    dB.echoError("Failed to delete file: returned false");
+                }
             }
             catch (Exception e) {
                 dB.echoError("Failed to delete file: " + e.getMessage());
@@ -870,323 +937,5 @@ public class UtilTags implements Listener {
 
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
-    }
-
-
-    @TagManager.TagEvents
-    public void utilTag(ReplaceableTagEvent event) {
-        if (!event.matches("util", "u")) return;
-
-        String type = event.getType() != null ? event.getType() : "";
-        String typeContext = event.getTypeContext() != null ? event.getTypeContext() : "";
-        String subType = event.getSubType() != null ? event.getSubType() : "";
-        String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext().toUpperCase() : "";
-        String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";
-        String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
-        Attribute attribute = event.getAttributes().fulfill(1);
-
-        if (type.equalsIgnoreCase("RANDOM")) {
-
-            // <--[tag]
-            // @attribute <util.random.int[<#>].to[<#>]>
-            // @returns Element(Number)
-            // @description
-            // Returns a random number between the 2 specified numbers, inclusive.
-            // EG, random.int[1].to[3] could return 1, 2, or 3.
-            // -->
-            if (subType.equalsIgnoreCase("INT")) {
-                if (specifier.equalsIgnoreCase("TO")) {
-                    if (aH.matchesInteger(subTypeContext) && aH.matchesInteger(specifierContext)) {
-                        int min = aH.getIntegerFrom(subTypeContext);
-                        int max = aH.getIntegerFrom(specifierContext);
-
-                        // in case the first number is larger than the second, reverse them
-                        if (min > max) {
-                            int store = min;
-                            min = max;
-                            max = store;
-                        }
-
-                        event.setReplaced(new Element(
-                                String.valueOf(CoreUtilities.getRandom().nextInt(max - min + 1) + min))
-                                .getAttribute(attribute.fulfill(3)));
-                    }
-                }
-            }
-
-            // <--[tag]
-            // @attribute <util.random.decimal>
-            // @returns Element
-            // @description
-            // Returns a random decimal number from 0 to 1
-            // -->
-            else if (subType.equalsIgnoreCase("DECIMAL"))
-                event.setReplaced(new Element(CoreUtilities.getRandom().nextDouble())
-                        .getAttribute(attribute.fulfill(2)));
-
-                // <--[tag]
-                // @attribute <util.random.gauss>
-                // @returns Element
-                // @description
-                // Returns a random decimal number with a gaussian distribution.
-                // 70% of all results will be within the range of -1 to 1.
-                // -->
-            else if (subType.equalsIgnoreCase("GAUSS"))
-                event.setReplaced(new Element(CoreUtilities.getRandom().nextGaussian())
-                        .getAttribute(attribute.fulfill(2)));
-
-            // TODO: Delete (Deprecated in favor of li@list.random)
-            else if (subType.equalsIgnoreCase("ELEMENT")) {
-                dList list = dList.valueOf(subTypeContext);
-                event.setReplaced(new Element(list.get(new Random().nextInt(list.size())))
-                        .getAttribute(attribute.fulfill(2)));
-            }
-
-            // <--[tag]
-            // @attribute <util.random.uuid>
-            // @returns Element
-            // @description
-            // Returns a random unique ID.
-            // -->
-            else if (subType.equalsIgnoreCase("UUID"))
-                event.setReplaced(new Element(UUID.randomUUID().toString())
-                        .getAttribute(attribute.fulfill(2)));
-
-            // <--[tag]
-            // @attribute <util.random.duuid>
-            // @returns Element
-            // @description
-            // Returns a random 'denizen' unique ID, which is made of a randomly generated sentence.
-            // -->
-            else if (subType.equalsIgnoreCase("DUUID"))
-                event.setReplaced(new Element(ScriptQueue
-                        .getNextId(event.hasSubTypeContext() ? event.getSubTypeContext(): "DUUID"))
-                        .getAttribute(attribute.fulfill(2)));
-        }
-
-
-        else if (type.equalsIgnoreCase("SUBSTR")
-                || type.equalsIgnoreCase("TRIM")
-                || type.equalsIgnoreCase("SUBSTRING")) {
-            String text = event.getTypeContext();
-            int from = 1;
-            int to = text.length() + 1;
-            int tags = 2;
-
-            // TODO: Delete (Deprecated in favor of el@element.after)
-            if (subType.equalsIgnoreCase("AFTER")) {
-                from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
-            }
-
-            // TODO: Delete (Deprecated in favor of el@element.before)
-            if (subType.equalsIgnoreCase("BEFORE")) {
-                to = text.toUpperCase().indexOf(subTypeContext) + 1;
-            }
-
-            // TODO: Delete (Deprecated in favor of el@element.substring)
-            try {
-                if (subType.equalsIgnoreCase("FROM"))
-                    from = Integer.valueOf(subTypeContext);
-            } catch (NumberFormatException e) { }
-
-            try {
-                if (specifier.equalsIgnoreCase("TO")) {
-                    to = Integer.valueOf(specifierContext);
-                    tags = 3;
-                }
-            } catch (NumberFormatException e) { }
-
-            if (to > text.length())
-                to = text.length() + 1;
-
-            event.setReplaced(new Element(text.substring(from - 1, to - 1))
-                    .getAttribute(attribute.fulfill(tags)));
-        }
-
-
-        // TODO: Delete (Deprecated in favor of el@element.replace)
-        else if (type.equalsIgnoreCase("REPLACE")) {
-            String item_to_replace = type;
-            String replace = typeContext;
-            String replacement = specifierContext;
-            event.setReplaced(new Element(item_to_replace.replace(replace, replacement))
-                    .getAttribute(attribute.fulfill(3)));
-        }
-
-        // <--[tag]
-        // @attribute <util.entity_is_spawned[<entity>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether an entity is spawned and valid.
-        // -->
-        else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")
-                && typeContext.length() != 0) {
-            dEntity ent = dEntity.valueOf(typeContext);
-            event.setReplaced(new Element((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <util.player_is_valid[<player name>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether a player exists under the specified name.
-        // -->
-        else if (type.equalsIgnoreCase("PLAYER_IS_VALID")
-                && typeContext.length() != 0) {
-            event.setReplaced(new Element(dPlayer.playerNameIsValid(typeContext))
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <util.npc_is_valid[<npc>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether an NPC exists and is usable.
-        // -->
-        else if (type.equalsIgnoreCase("NPC_IS_VALID")
-                && typeContext.length() != 0) {
-            dNPC npc = dNPC.valueOf(typeContext);
-            event.setReplaced(new Element((npc != null && npc.isValid()))
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
-
-        // TODO: Delete (Deprecated in favor of el@element.to_uppercase)
-        else if (type.equalsIgnoreCase("UPPERCASE")) {
-            String item_to_uppercase = typeContext;
-            event.setReplaced(new Element(item_to_uppercase.toUpperCase())
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
-        // TODO: Delete (Deprecated in favor of el@element.to_lowercase)
-        else if (type.equalsIgnoreCase("LOWERCASE")) {
-            String item_to_uppercase = typeContext;
-            event.setReplaced(new Element(item_to_uppercase.toLowerCase())
-                    .getAttribute(attribute.fulfill(1)));
-        }
-
-        // <--[tag]
-        // @attribute <util.date>
-        // @returns Element
-        // @description
-        // Returns the current system date.
-        // -->
-        else if (type.equalsIgnoreCase("DATE")) {
-            Calendar calendar = Calendar.getInstance();
-            Date currentDate = new Date();
-            SimpleDateFormat format = new SimpleDateFormat();
-
-            // <--[tag]
-            // @attribute <util.date.time>
-            // @returns Element
-            // @description
-            // Returns the current system time.
-            // -->
-            if (subType.equalsIgnoreCase("TIME")) {
-
-                // <--[tag]
-                // @attribute <util.date.time.twentyfour_hour>
-                // @returns Element
-                // @description
-                // Returns the current system time in 24-hour format.
-                // -->
-                if (specifier.equalsIgnoreCase("TWENTYFOUR_HOUR")) {
-                    format.applyPattern("k:mm");
-                    event.setReplaced(new Element(format.format(currentDate))
-                            .getAttribute(attribute.fulfill(3)));
-                }
-                // <--[tag]
-                // @attribute <util.date.time.year>
-                // @returns Element(Number)
-                // @description
-                // Returns the current year of the system time.
-                // -->
-                else if (specifier.equalsIgnoreCase("year"))
-                    event.setReplaced(new Element(calendar.get(Calendar.YEAR)).getAttribute(attribute.fulfill(3)));
-                    // <--[tag]
-                    // @attribute <util.date.time.month>
-                    // @returns Element(Number)
-                    // @description
-                    // Returns the current month of the system time.
-                    // -->
-                else if (specifier.equalsIgnoreCase("month"))
-                    event.setReplaced(new Element(calendar.get(Calendar.MONTH) + 1).getAttribute(attribute.fulfill(3)));
-                    // <--[tag]
-                    // @attribute <util.date.time.day>
-                    // @returns Element(Number)
-                    // @description
-                    // Returns the current day of the system time.
-                    // -->
-                else if (specifier.equalsIgnoreCase("day"))
-                    event.setReplaced(new Element(calendar.get(Calendar.DAY_OF_MONTH)).getAttribute(attribute.fulfill(3)));
-                    // <--[tag]
-                    // @attribute <util.date.time.hour>
-                    // @returns Element(Number)
-                    // @description
-                    // Returns the current hour of the system time.
-                    // -->
-                else if (specifier.equalsIgnoreCase("hour"))
-                    event.setReplaced(new Element(calendar.get(Calendar.HOUR_OF_DAY)).getAttribute(attribute.fulfill(3)));
-                    // <--[tag]
-                    // @attribute <util.date.time.minute>
-                    // @returns Element(Number)
-                    // @description
-                    // Returns the current minute of the system time.
-                    // -->
-                else if (specifier.equalsIgnoreCase("minute"))
-                    event.setReplaced(new Element(calendar.get(Calendar.MINUTE)).getAttribute(attribute.fulfill(3)));
-                    // <--[tag]
-                    // @attribute <util.date.time.second>
-                    // @returns Element(Number)
-                    // @description
-                    // Returns the current second of the system time.
-                    // -->
-                else if (specifier.equalsIgnoreCase("second"))
-                    event.setReplaced(new Element(calendar.get(Calendar.SECOND)).getAttribute(attribute.fulfill(3)));
-                    // <--[tag]
-                    // @attribute <util.date.time.duration>
-                    // @returns Duration
-                    // @description
-                    // Returns the current system time as a duration.
-                    // To get the exact millisecond count, use <@link tag server.current_time_millis>.
-                    // -->
-                else if (specifier.equalsIgnoreCase("duration"))
-                    event.setReplaced(new Duration(System.currentTimeMillis() / 50).getAttribute(attribute.fulfill(3)));
-                else {
-                    format.applyPattern("K:mm a");
-                    event.setReplaced(format.format(currentDate));
-                }
-
-            }
-            // <--[tag]
-            // @attribute <util.date.format[<format>]>
-            // @returns Element
-            // @description
-            // Returns the current system time, formatted as specified
-            // Example format: [EEE, MMM d, yyyy K:mm a] will become "Mon, Jan 1, 2112 0:01 AM"
-            // -->
-            else if (subType.equalsIgnoreCase("FORMAT") && !subTypeContext.equalsIgnoreCase("")) {
-                try {
-                    format.applyPattern(subTypeContext);
-                    event.setReplaced(format.format(currentDate));
-                }
-                catch (Exception ex) {
-                    dB.echoError("Error: invalid pattern '" + subTypeContext + "'");
-                    dB.echoError(ex);
-                }
-            }
-            else {
-                format.applyPattern("EEE, MMM d, yyyy");
-                event.setReplaced(format.format(currentDate));
-            }
-
-        }
-
-        // Deprecated
-        else if (type.equalsIgnoreCase("AS_ELEMENT")) {
-            event.setReplaced(new Element(typeContext).getAttribute(attribute.fulfill(1)));
-        }
-
     }
 }

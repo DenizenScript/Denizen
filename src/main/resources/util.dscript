@@ -1,78 +1,3 @@
-# /dTime Command
-
-
-_util_dtime_command:
-    type: command
-    name: dtime
-    debug: false
-    description: (Deprecated) Changes the server time.
-    usage: /dtime <&lt>time<&gt>
-    allowed help:
-    - determine <player.is_op>
-    script:
-    - if !<player.is_op> queue clear
-    - narrate "WARNING- This command is deprecated!"
-    - flag 'ddtc_time:<context.args.get[1]>'
-    - if <flag.p:ddtc_time> > 24
-      queue clear
-      else narrate 'Changing time to <flag.p:ddtc_time>:00.'
-    - if <flag.p:ddtc_time> == 24
-      execute as_op 'time set 18000'
-    - flag ddtc_time:-:6
-    - if <flag.p:ddtc_time> >= 0
-      execute as_op 'time set <flag.p:ddtc_time.asint>000'
-    - flag ddtc_time:+:24
-    - if <flag.p:ddtc_time> > 18
-      execute as_op 'time set <flag.p:ddtc_time.asint>000'
-    - flag ddtc_time:!
-    - determine cancelled
-
-
-# Generic Looper (GL)
-
-loop through:
-    type: task
-    speed: 0
-    debug: false
-    context: task|flag|type
-
-    script:
-    - announce to_console "<&3>Denizen<&co><&c> Using outdated 'loop through' task script"
-    - ^if %3% == global || <context.type> == global ^define 3 server
-      else ^define 3 <context.type>
-    - ^define queue <util.random.uuid>
-    - ^if %1% != null
-      ^run '_depend generic loop process' id:%queue% "def:%1%|%2%|%3%|%queue%" instantly
-      else ^run '_depend generic loop process'
-      "def:<context.task>|<context.flag>|%3%|%queue%" instantly
-
-_util_gl:
-    type: task
-    speed: 0
-    debug: false
-    context: task|flag|type
-
-    script:
-    - if %1% != null
-      run '_depend generic loop process' id:<util.random.uuid> "def:%1%|%2%|%3%|<util.random.uuid>" instantly
-      else run '_depend generic loop process'
-      "def:<context.task>|<context.flag>|<context.type>|<util.random.uuid>" instantly
-
-_depend generic loop process:
-    type: task
-    debug: false
-    definitions: task|flag|type|id
-
-    script:
-    - ^if "<server.flag[Iterator %id%]>" == null
-      ^flag global "Iterator %id%:|:<%type%.flag[%flag%].aslist>"
-    - ^runtask "%task%" "context:<server.flag[Iterator %id%].get[1]>" queue instantly
-    - ^flag global "Iterator %id%:<-:<server.flag[Iterator %id%].get[1]>"
-    - ^if "<server.flag[Iterator %id%].size || 0>" > 0
-      run instantly '_depend Generic Loop Process' id:%id%
-      "def:%task%|%flag%|%type%|%id%"
-      else flag global "Iterator %id%:!"
-
 
 # Load Tester
 
@@ -83,11 +8,11 @@ Load Tester:
     description: Tests server load.
     usage: /testload <&lt>power<&gt>
     allowed help:
-    - determine <player.is_op>
+    - determine <player.has_permission[denizen.testload]||<player.is_op>>
     script:
 
     # ops only!
-    - if !<player.is_op> queue clear
+    - if !<player.has_permission[denizen.testload]||<player.is_op>> queue clear
 
     - if <c.args.size> == 1
       define n <c.args.get[1]>

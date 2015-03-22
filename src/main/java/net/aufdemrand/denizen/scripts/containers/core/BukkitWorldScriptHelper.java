@@ -1834,7 +1834,9 @@ public class BukkitWorldScriptHelper implements Listener {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override
                 public void run() {
-                    entity.target(newTarget.getLivingEntity());
+                    if (newTarget.isValid() && newTarget.isLivingEntity()) {
+                        entity.target(newTarget.getLivingEntity());
+                    }
                 }
             }, 1);
         }

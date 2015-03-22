@@ -10,7 +10,7 @@ import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -37,7 +37,7 @@ public class EntityScriptHelper implements Listener {
     static {
         Field field = null;
         try {
-            field = net.minecraft.server.v1_8_R1.World.class.getDeclaredField("u");
+            field = net.minecraft.server.v1_8_R2.World.class.getDeclaredField("u");
             field.setAccessible(true);
         } catch (Exception e) {
             dB.echoError(e);

@@ -17,7 +17,7 @@ import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.tags.TagContext;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -234,7 +234,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public dItem(ItemStack item) {
         if (item == null)
-            this.item = new ItemStack(Material.AIR);
+            this.item = new ItemStack(Material.AIR, 0);
         else
             this.item = item;
     }
@@ -792,7 +792,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("json")) {
             String JSON = CraftItemStack.asNMSCopy(item).C().getChatModifier().toString();
-            return new Element(JSON.substring(176, JSON.length() - 186))
+            return new Element(JSON.substring(176, JSON.length() - 185))
                     .getAttribute(attribute.fulfill(1));
         }
 

@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R1.ChatComponentText;
-import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R2.ChatComponentText;
+import net.minecraft.server.v1_8_R2.PacketPlayOutChat;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

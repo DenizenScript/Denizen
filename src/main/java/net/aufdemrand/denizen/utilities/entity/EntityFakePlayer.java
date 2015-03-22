@@ -6,10 +6,10 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.network.FakeNetworkManager;
 import net.aufdemrand.denizen.utilities.entity.network.FakePlayerConnection;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
-import net.minecraft.server.v1_8_R1.*;
+import net.minecraft.server.v1_8_R2.*;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -38,7 +38,7 @@ public class EntityFakePlayer extends EntityPlayer {
 
     public EntityFakePlayer(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
         super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
-        playerinteractmanager.setGameMode(EnumGamemode.SURVIVAL);
+        playerinteractmanager.setGameMode(WorldSettings.EnumGamemode.SURVIVAL);
         NetworkManager networkManager = new FakeNetworkManager(EnumProtocolDirection.CLIENTBOUND);
         playerConnection = new FakePlayerConnection(minecraftserver, networkManager, this);
         networkManager.a(playerConnection);
@@ -89,12 +89,12 @@ public class EntityFakePlayer extends EntityPlayer {
                                 return;
                             }
                             final PacketPlayOutPlayerInfo[] playerListPacket = {new PacketPlayOutPlayerInfo(
-                                    EnumPlayerInfoAction.ADD_PLAYER, (EntityPlayer) this.tracker)};
+                                    PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, (EntityPlayer) this.tracker)};
                             PacketHelper.sendPacket(entityplayer.getBukkitEntity(), playerListPacket[0]);
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
-                                    playerListPacket[0] = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER,
+                                    playerListPacket[0] = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER,
                                             (EntityPlayer) tracker);
                                     PacketHelper.sendPacket(entityplayer.getBukkitEntity(), playerListPacket[0]);
                                 }

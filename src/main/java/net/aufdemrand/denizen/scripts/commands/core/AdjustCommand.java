@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.tags.core.UtilTags;
+import net.aufdemrand.denizen.tags.core.ServerTags;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.*;
@@ -60,7 +60,7 @@ public class AdjustCommand extends AbstractCommand {
 
         for (String object: objects) {
             if (object.equalsIgnoreCase("server")) {
-                UtilTags.adjustServer(new Mechanism(mechanism, value));
+                ServerTags.adjustServer(new Mechanism(mechanism, value));
                 continue;
             }
 

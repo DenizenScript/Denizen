@@ -16,7 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -226,7 +226,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         // Freeze the first world in the list.
         // TODO: make this do all worlds from the locations in the list
         CraftWorld craftWorld = (CraftWorld)loc0.getWorld();
-        boolean was_static = craftWorld.getHandle().isStatic;
+        boolean was_static = craftWorld.getHandle().isClientSide;
         if (no_physics)
             setWorldIsStatic(loc0.getWorld(), true);
         return was_static;
@@ -246,7 +246,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         try {
             CraftWorld craftWorld = (CraftWorld) world;
             if (isStaticField == null) {
-                    isStaticField = craftWorld.getHandle().getClass().getField("isStatic");
+                    isStaticField = craftWorld.getHandle().getClass().getField("isClientSide");
                     isStaticField.setAccessible(true);
                     Field modifiersField = Field.class.getDeclaredField("modifiers");
                     modifiersField.setAccessible(true);

@@ -3,9 +3,9 @@ package net.aufdemrand.denizen.scripts.commands.world;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.objects.*;
-import net.minecraft.server.v1_8_R1.Block;
-import net.minecraft.server.v1_8_R1.PacketPlayOutBlockAction;
-import net.minecraft.server.v1_8_R1.BlockPosition;
+import net.minecraft.server.v1_8_R2.Block;
+import net.minecraft.server.v1_8_R2.PacketPlayOutBlockAction;
+import net.minecraft.server.v1_8_R2.BlockPosition;
 import org.bukkit.Sound;
 
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -13,8 +13,8 @@ import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 
 import java.util.Arrays;
 import java.util.List;

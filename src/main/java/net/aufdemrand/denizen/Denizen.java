@@ -345,7 +345,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void onEnable() {
         try {
-            net.minecraft.server.v1_8_R1.Block.getById(0);
+            net.minecraft.server.v1_8_R2.Block.getById(0);
         }
         catch (NoClassDefFoundError e) {
             getLogger().warning("-------------------------------------");
@@ -552,7 +552,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             new EntityTags(this);
             new LocationTags(this);
             new PlayerTags(this);
-            new UtilTags(this);
+            new ServerTags(this);
             new TextTags(this);
             new ParseTags(this);
             if (Depends.citizens != null) {
