@@ -493,7 +493,7 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // Else, return the material name
-        if (item.getDurability() >= 16 || item.getDurability() < 0) {
+        if ((item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
             return "i@" + getMaterial().realName() + "," + item.getDurability()  + PropertyParser.getPropertiesString(this);
         }
         return "i@" + getMaterial().identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
