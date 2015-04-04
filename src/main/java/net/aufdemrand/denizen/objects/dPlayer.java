@@ -1464,7 +1464,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.gamemode.id>
             // @returns Element(Number)
             // @description
-            // returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure
+            // returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure, 3 = spectator
             // -->
             if (attribute.startsWith("id"))
                 return new Element(getPlayerEntity().getGameMode().getValue())
@@ -1860,11 +1860,24 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name flying
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the player is flying.
+        // @tags
+        // <p@player.is_flying>
+        // -->
+        if (mechanism.matches("flying") && mechanism.requireBoolean()) {
+            getPlayerEntity().setFlying(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name gamemode
         // @input Element
         // @description
         // Sets the game mode of the player.
-        // Valid gamemodes are survival, creative, and adventure.
+        // Valid gamemodes are survival, creative, adventure, and spectator.
         // @tags
         // <p@player.gamemode>
         // <p@player.gamemode.id>
