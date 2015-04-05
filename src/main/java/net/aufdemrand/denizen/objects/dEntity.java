@@ -621,7 +621,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dList getEquipment() {
         if (isCitizensNPC() || isPlayer()) {
-            return getInventory().getEquipment();
+            return getInventory().getEquipment(); // TODO: Is this part needed?
         }
         ItemStack[] equipment = getLivingEntity().getEquipment().getArmorContents();
         dList equipmentList = new dList();
@@ -2039,17 +2039,6 @@ public class dEntity implements dObject, Adjustable {
             return new Element(!EntityMovement.isAIDisabled(getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <e@entity.speed>
-        // @returns Element(Decimal)
-        // @group attributes
-        // @description
-        // Returns the entity's current speed when walking.
-        // -->
-        if (attribute.startsWith("speed"))
-            return new Element(EntityMovement.getSpeed(getBukkitEntity()))
-                    .getAttribute(attribute.fulfill(1));
-
 
         /////////////////////
         //   TYPE ATTRIBUTES
@@ -2494,19 +2483,6 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("toggle_ai") && mechanism.requireBoolean()) {
             EntityMovement.toggleAI(getBukkitEntity(), value.asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name speed
-        // @input Element(Decimal)
-        // @description
-        // Sets how fast the entity walks.
-        // @tags
-        // <e@entity.speed>
-        // -->
-        if (mechanism.matches("speed") && mechanism.requireDouble()) {
-            EntityMovement.setSpeed(getBukkitEntity(), value.asDouble());
         }
 
         // Iterate through this object's properties' mechanisms
