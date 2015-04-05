@@ -1700,67 +1700,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.health.formatted>
-        // @returns Element
-        // @group attributes
-        // @description
-        // Returns a formatted value of the player's current health level.
-        // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
-        // -->
-        if (attribute.startsWith("health.formatted")) {
-            double maxHealth = getLivingEntity().getMaxHealth();
-            if (attribute.hasContext(2))
-                maxHealth = attribute.getIntContext(2);
-            if ((float) getLivingEntity().getHealth() / maxHealth < .10)
-                return new Element("dying").getAttribute(attribute.fulfill(2));
-            else if ((float) getLivingEntity().getHealth() / maxHealth < .40)
-                return new Element("seriously wounded").getAttribute(attribute.fulfill(2));
-            else if ((float) getLivingEntity().getHealth() / maxHealth < .75)
-                return new Element("injured").getAttribute(attribute.fulfill(2));
-            else if ((float) getLivingEntity().getHealth() / maxHealth < 1)
-                return new Element("scraped").getAttribute(attribute.fulfill(2));
-
-            else return new Element("healthy").getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.health.max>
-        // @returns Element(Decimal)
-        // @group attributes
-        // @description
-        // Returns the maximum health of the entity.
-        // -->
-        if (attribute.startsWith("health.max"))
-            return new Element(getLivingEntity().getMaxHealth())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <e@entity.health.percentage>
-        // @returns Element(Decimal)
-        // @group attributes
-        // @description
-        // Returns the entity's current health as a percentage.
-        // -->
-        if (attribute.startsWith("health.percentage")) {
-            double maxHealth = getLivingEntity().getMaxHealth();
-            if (attribute.hasContext(2))
-                maxHealth = attribute.getIntContext(2);
-            return new Element((getLivingEntity().getHealth() / maxHealth) * 100)
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.health>
-        // @returns Element(Decimal)
-        // @group attributes
-        // @description
-        // Returns the current health of the entity.
-        // -->
-        if (attribute.startsWith("health"))
-            return new Element(getLivingEntity().getHealth())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <e@entity.can_breed>
         // @returns Element(Boolean)
         // @group attributes
@@ -2185,54 +2124,6 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class))
             getLivingEntity().setLeashHolder(value.asType(dEntity.class).getBukkitEntity());
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name max_health
-        // @input Number
-        // @description
-        // Sets the maximum health the entity may have.
-        // The entity must be living.
-        // @tags
-        // <e@entity.health>
-        // <e@entity.health.max>
-        // -->
-        // TODO: Maybe a property?
-        if (mechanism.matches("max_health") && mechanism.requireInteger()) {
-            if (isCitizensNPC()) {
-                if (getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
-                    getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(mechanism.getValue().asInt());
-                else
-                    dB.echoError("NPC doesn't have health trait!");
-            }
-            else if (isLivingEntity()) {
-                getLivingEntity().setMaxHealth(mechanism.getValue().asDouble());
-            }
-            else {
-                dB.echoError("Entity is not alive!");
-            }
-        }
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name health
-        // @input Number(Decimal)
-        // @description
-        // Sets the amount of health the entity has.
-        // The entity must be living.
-        // @tags
-        // <e@entity.health>
-        // <e@entity.health.max>
-        // -->
-        // TODO: Maybe a property?
-        if (mechanism.matches("health") && mechanism.requireDouble()) {
-            if (isLivingEntity()) {
-                getLivingEntity().setHealth(mechanism.getValue().asDouble());
-            }
-            else {
-                dB.echoError("Entity is not alive!");
-            }
-        }
 
         // <--[mechanism]
         // @object dEntity
