@@ -1996,10 +1996,12 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the entity's full description, including all properties.
         // -->
-        if (attribute.startsWith("describe"))
-            return new Element("e@" + getEntityType().getLowercaseName()
-                    + PropertyParser.getPropertiesString(this))
+        if (attribute.startsWith("describe")) {
+            String escript = getEntityScript();
+            return new Element("e@" + (escript != null && escript.length() > 0 ? escript:getEntityType().getLowercaseName())
+                    +PropertyParser.getPropertiesString(this))
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
