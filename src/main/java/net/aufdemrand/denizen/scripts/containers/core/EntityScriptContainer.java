@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.objects.dEntity;
@@ -31,8 +33,11 @@ public class EntityScriptContainer extends ScriptContainer {
     //
     //   type: entity
     //
-    //   # Must be a valid dEntity (EG e@zombie or @pig[age=baby]) See 'dEntity' for more information.
+    //   # Must be a valid dEntity (EG e@zombie or e@pig[age=baby]) See 'dEntity' for more information.
     //   entity_type: e@base_entity
+    //
+    //   # Whether the entity has the default AI
+    //   has_ai: true/false
     //
     //   # MORE OPTIONS ARE 'TODO'!
     //
@@ -55,6 +60,16 @@ public class EntityScriptContainer extends ScriptContainer {
                 String entityType = TagManager.tag((getString("ENTITY_TYPE", "")), new BukkitTagContext
                         (player, npc, false, null, shouldDebug(), new dScript(this)));
                 entity = dEntity.valueOf(entityType);
+            }
+
+            else {
+                throw new Exception("Missing entity_type argument!");
+            }
+
+            if (contains("HAS_AI")) {
+                String has_ai = TagManager.tag((getString("HAS_AI", "false")), new BukkitTagContext
+                        (player, npc, false, null, shouldDebug(), new dScript(this)));
+                entity.adjust(new Mechanism(new Element("has_ai"), new Element(has_ai)));
             }
 
             if (entity == null || entity.isUnique())
