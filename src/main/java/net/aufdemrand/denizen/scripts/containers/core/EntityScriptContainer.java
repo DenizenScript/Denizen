@@ -11,6 +11,9 @@ import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import net.aufdemrand.denizencore.utilities.text.StringHolder;
+
+import java.util.Set;
 
 public class EntityScriptContainer extends ScriptContainer {
 
@@ -39,7 +42,10 @@ public class EntityScriptContainer extends ScriptContainer {
     //   # Whether the entity has the default AI
     //   has_ai: true/false
     //
-    //   # MORE OPTIONS ARE 'TODO'!
+    //   # What age the entity is
+    //   age: baby/adult/<#>
+    //
+    //   # MORE OPTIONS ARE LISTED HERE: <@link url /denizen/mecs/dentity.>
     //
     // </code>
     //
@@ -66,10 +72,13 @@ public class EntityScriptContainer extends ScriptContainer {
                 throw new Exception("Missing entity_type argument!");
             }
 
-            if (contains("HAS_AI")) {
-                String has_ai = TagManager.tag((getString("HAS_AI", "false")), new BukkitTagContext
-                        (player, npc, false, null, shouldDebug(), new dScript(this)));
-                entity.adjust(new Mechanism(new Element("has_ai"), new Element(has_ai)));
+            Set<StringHolder> strings = getConfigurationSection("").getKeys(false);
+            for (StringHolder string: strings) {
+                if (!string.low.equals("entity_type") && !string.low.equals("type")) {
+                    String value = TagManager.tag((getString(string.low, "")), new BukkitTagContext
+                            (player, npc, false, null, shouldDebug(), new dScript(this)));
+                    entity.adjust(new Mechanism(new Element(string.low), new Element(value)));
+                }
             }
 
             if (entity == null || entity.isUnique())
