@@ -620,7 +620,15 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dList getEquipment() {
-        return getInventory().getEquipment();
+        if (isCitizensNPC() || isPlayer()) {
+            return getInventory().getEquipment();
+        }
+        ItemStack[] equipment = getLivingEntity().getEquipment().getArmorContents();
+        dList equipmentList = new dList();
+        for (ItemStack item : equipment) {
+            equipmentList.add(new dItem(item).identify());
+        }
+        return equipmentList;
     }
 
     /**
