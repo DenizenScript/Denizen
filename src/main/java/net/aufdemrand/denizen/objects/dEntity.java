@@ -1477,21 +1477,6 @@ public class dEntity implements dObject, Adjustable {
             return new dItem(getLivingEntity().getEquipment().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <e@entity.inventory>
-        // @returns dInventory
-        // @group inventory
-        // @description
-        // Returns the entity's inventory, if it has one.
-        // -->
-        if (attribute.startsWith("inventory")) {
-            dInventory inventory = getInventory();
-            if (inventory != null)
-                return inventory.getAttribute(attribute.fulfill(1));
-            else
-                return null;
-        }
-
 
         /////////////////////
         //   LOCATION ATTRIBUTES
