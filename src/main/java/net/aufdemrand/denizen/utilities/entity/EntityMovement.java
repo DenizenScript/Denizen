@@ -47,7 +47,7 @@ public class EntityMovement {
         if (!(nmsEntityEntity instanceof EntityInsentient))
             return 0.0;
         EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
-        return nmsEntity.getAttributeInstance(GenericAttributes.d).getValue();
+        return nmsEntity.getAttributeInstance(GenericAttributes.d).b();
     }
 
     public static void setSpeed(Entity entity, double speed) {
@@ -138,7 +138,7 @@ public class EntityMovement {
             toggleAI(entity, true);
             followerNavigation.a(path, 1D);
             followerNavigation.a(2D);
-            final double oldSpeed = nmsEntity.getAttributeInstance(GenericAttributes.d).getValue();
+            final double oldSpeed = nmsEntity.getAttributeInstance(GenericAttributes.d).b();
             nmsEntity.getAttributeInstance(GenericAttributes.d).setValue(speed);
             new BukkitRunnable() {
                 @Override
