@@ -30,6 +30,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 
 public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
@@ -434,8 +435,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         if (!filter.isEmpty() && loc.getY() >= 0 && loc.getY() < 256) {
                             // Check filter
                             for (dObject material : filter) {
-                                if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
-                                        .getMaterial().name())) {
+                                if (((dMaterial)material).matchesMaterialData(
+                                new MaterialData(loc.getBlock().getType(), loc.getBlock().getData()))) {
                                     if (matchesMaterialList(loc, materials)) {
                                         list.add(loc);
                                     }
