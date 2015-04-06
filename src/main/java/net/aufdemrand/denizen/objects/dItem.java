@@ -477,7 +477,7 @@ public class dItem implements dObject, Notable, Adjustable {
     @Override
     public String identify() {
 
-        if (item == null) return "null";
+        if (item == null) return "i@air";
 
         if (item.getTypeId() != 0) {
 
