@@ -1160,18 +1160,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // TODO: Should cuboids have mechanisms? Aren't tags sufficient?
 
-        // <--[mechanism]
-        // @object dCuboid
-        // @name outset
-        // @input Element(Number)
-        // @description
-        // 'Outsets' the area of a dCuboid by the number specified, or 1 if not
-        // specified. Example: - adjust cu@my_cuboid outset:5
-        // Outsetting a cuboid expands it in all directions. Use negative numbers
-        // to 'inset' instead.
-        // @tags
-        // <cu@cuboid.get_outline>
-        // -->
         if (mechanism.matches("outset")) {
             int mod = 1;
             if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
@@ -1187,19 +1175,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return;
         }
 
-        // <--[mechanism]
-        // @object dCuboid
-        // @name expand
-        // @input Element(Number)
-        // @description
-        // Expands the area of a dCuboid by the number specified, or 1 if not
-        // specified, in a specified direction. Example: - adjust cu@my_cuboid expand:5|north
-        // Use negative numbers to 'reduce' instead.
-        // @tags
-        // <e@entity.location.direction>
-        // <e@entity.location.pitch>
-        // <cu@cuboid.get_outline>
-        // -->
         if (mechanism.matches("expand")) {
             int mod = 1;
             if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
@@ -1216,18 +1191,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return;
         }
 
-        // <--[mechanism]
-        // @object dCuboid
-        // @name set_location
-        // @input Element(Number)
-        // @description
-        // Sets one of two defining locations. dCuboid will take the location into
-        // account when recalculating the low and high locations as well as distances
-        // belonging to the cuboid.
-        // @tags
-        // <cu@cuboid.low>
-        // <cu@cuboid.high>
-        // -->
         if (mechanism.matches("set_location")) {
             int mod = 1;
             if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
