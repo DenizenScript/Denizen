@@ -62,7 +62,7 @@ public class EntityChestCarrier implements Property {
         // @mechanism dEntity.carries_chest
         // @group properties
         // @description
-        // If the entity is an horse, returns whether it is carrying a chest.
+        // If the entity is a horse, returns whether it is carrying a chest.
         // -->
         if (attribute.startsWith("carries_chest"))
             return new Element(((Horse)entity.getBukkitEntity()).isCarryingChest())

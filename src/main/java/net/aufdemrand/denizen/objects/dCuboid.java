@@ -432,7 +432,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 for (int y = 0; y != y_distance + 1; y++) {
                     for (int z = 0; z != z_distance + 1; z++) {
                         loc = new dLocation(loc_1.clone().add(x, y, z));
-                        if (!filter.isEmpty() && loc.getY() >= 0 && loc.getY() < 256) {
+                        if (loc.getY() < 0 || loc.getY() > 255) {
+                            continue; // TODO: Why is this ever possible?
+                        }
+                        if (!filter.isEmpty()) { // TODO: Should 'filter' exist?
                             // Check filter
                             for (dObject material : filter) {
                                 if (((dMaterial)material).matchesMaterialData(
@@ -730,7 +733,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_blocks[<material>...]>
+        // @attribute <cu@cuboid.get_blocks[<material>|...]>
         // @returns dList(dLocation)
         // @description
         // Returns each block location within the dCuboid.
