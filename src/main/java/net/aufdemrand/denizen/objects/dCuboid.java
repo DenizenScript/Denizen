@@ -252,11 +252,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         for (LocationPair pair : pairs) {
             if (!location.getWorld().equals(pair.low.getWorld()))
                 continue;
-            if (!Utilities.isBetween(pair.low.getBlockX(), pair.high.getBlockX(), location.getBlockX()))
+            if (!Utilities.isBetween(pair.low.getBlockX(), pair.high.getBlockX() + 1, location.getBlockX()))
                 continue;
-            if (!Utilities.isBetween(pair.low.getBlockY(), pair.high.getBlockY(), location.getBlockY()))
+            if (!Utilities.isBetween(pair.low.getBlockY(), pair.high.getBlockY() + 1, location.getBlockY()))
                 continue;
-            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ(), location.getBlockZ()))
+            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ() + 1, location.getBlockZ()))
                 return true;
         }
 

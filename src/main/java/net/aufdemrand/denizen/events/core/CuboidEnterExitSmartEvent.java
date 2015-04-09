@@ -143,8 +143,8 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getTo());
         List<dCuboid> match = new ArrayList<dCuboid>();
-        String namelow = CoreUtilities.toLowerCase(event.getPlayer().getName());
-        if (player_cuboids.containsKey(namelow))
+        String namelow = CoreUtilities.toLowerCase(event.getPlayer().getName()); // TODO: UUID?
+        if (player_cuboids.containsKey(namelow)) // TODO: Clear on quit?
             match = player_cuboids.get(namelow);
 
         List<dCuboid> exits = new ArrayList<dCuboid>(match);

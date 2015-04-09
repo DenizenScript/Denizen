@@ -1991,7 +1991,7 @@ public class dPlayer implements dObject, Adjustable {
         // Sets the time of day the Player is currently experiencing. Setting this will cause the
         // player to have a different time than other Players in the world are experiencing though
         // time will continue to progress. Using the 'reset_time' mechanism, or relogging your player
-        // will reset this mechanism to match the world's current time. Valid range is 0-28000
+        // will reset this mechanism to match the world's current time. Valid range is 0-24000
         // @tags
         // <player.time>
         // -->
@@ -2008,7 +2008,7 @@ public class dPlayer implements dObject, Adjustable {
         // there is a small 'twitch effect' when looking at the sky when time is frozen.
         // Setting this will cause the player to have a different time than other Players in
         // the world are experiencing. Using the 'reset_time' mechanism, or relogging your player
-        // will reset this mechanism to match the world's current time. Valid range is 0-28000
+        // will reset this mechanism to match the world's current time. Valid range is 0-24000
         // @tags
         // <player.time>
         // -->
