@@ -187,8 +187,8 @@ public class EntityHealth implements Property {
         if (mechanism.matches("health_data")) {
             if (entity.isLivingEntity()) {
                 List<String> values = CoreUtilities.split(mechanism.getValue().asString(), '/');
-                entity.getLivingEntity().setHealth(Double.valueOf(values.get(0)));
                 entity.getLivingEntity().setMaxHealth(Double.valueOf(values.get(1)));
+                entity.getLivingEntity().setHealth(Double.valueOf(values.get(0)));
             } else {
                 dB.echoError("Entity is not alive!");
             }
