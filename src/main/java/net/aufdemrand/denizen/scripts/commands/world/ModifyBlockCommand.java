@@ -293,7 +293,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             material = null;
             for (int i = 0; i < materialList.size(); i++) {
                 float perc = percents.get(i) / 100f;
-                if (CoreUtilities.getRandom().nextDouble() >= perc) {
+                if (CoreUtilities.getRandom().nextDouble() <= perc) {
                     material = materialList.get(i);
                     break;
                 }
