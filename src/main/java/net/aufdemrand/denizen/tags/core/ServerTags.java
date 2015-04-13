@@ -386,6 +386,32 @@ public class ServerTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.has_permissions>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the server has a known permission plugin loaded.
+        // Note: should not be considered incredibly reliable.
+        // -->
+        if (attribute.startsWith("has_permissions")) {
+            event.setReplaced(new Element(Depends.permissions != null && Depends.permissions.isEnabled())
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.has_economy>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the server has a known economy plugin loaded.
+        // Note: should not be considered incredibly reliable.
+        // -->
+        if (attribute.startsWith("has_economy")) {
+            event.setReplaced(new Element(Depends.economy != null && Depends.economy.isEnabled())
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.denizen_version>
         // @returns Element
         // @description
