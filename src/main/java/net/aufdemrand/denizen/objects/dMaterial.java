@@ -706,7 +706,7 @@ public class dMaterial implements dObject {
 
     public String identifyFull() {
         if (forcedIdentity != null) return "m@" + forcedIdentityLow + (getData() != null ? "," +  getData(): "");
-        if (getData() != null) return "m@" + material.name().toLowerCase() + "," + getData();
+        if (getData() != null && getData() > 0) return "m@" + material.name().toLowerCase() + "," + getData();
         return "m@" + material.name().toLowerCase();
     }
 
@@ -729,7 +729,7 @@ public class dMaterial implements dObject {
 
     public String identifyFullNoIdentifier() {
         if (forcedIdentity != null) return forcedIdentityLow + (getData() != null ? "," +  getData(): "");
-        if (getData() != null) return material.name().toLowerCase() + "," + getData();
+        if (getData() != null && getData() > 0) return material.name().toLowerCase() + "," + getData();
         return material.name().toLowerCase();
     }
 

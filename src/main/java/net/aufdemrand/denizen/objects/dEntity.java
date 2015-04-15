@@ -620,7 +620,15 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dList getEquipment() {
-        return getInventory().getEquipment();
+        if (isCitizensNPC() || isPlayer()) {
+            return getInventory().getEquipment(); // TODO: Is this part needed?
+        }
+        ItemStack[] equipment = getLivingEntity().getEquipment().getArmorContents();
+        dList equipmentList = new dList();
+        for (ItemStack item : equipment) {
+            equipmentList.add(new dItem(item).identify());
+        }
+        return equipmentList;
     }
 
     /**
@@ -1383,80 +1391,6 @@ public class dEntity implements dObject, Adjustable {
         /////////////////
 
         // <--[tag]
-        // @attribute <e@entity.equipment.boots>
-        // @returns dItem
-        // @group inventory
-        // @description
-        // returns the item the entity is wearing as boots, or null
-        // if none.
-        // -->
-        if (attribute.startsWith("equipment.boots")) {
-            if (getLivingEntity().getEquipment().getBoots() != null) {
-                return new dItem(getLivingEntity().getEquipment().getBoots())
-                        .getAttribute(attribute.fulfill(2));
-            }
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.equipment.chestplate>
-        // @returns dItem
-        // @group inventory
-        // @description
-        // returns the item the entity is wearing as a chestplate, or null
-        // if none.
-        // -->
-        else if (attribute.startsWith("equipment.chestplate") ||
-                attribute.startsWith("equipment.chest")) {
-            if (getLivingEntity().getEquipment().getChestplate() != null) {
-                return new dItem(getLivingEntity().getEquipment().getChestplate())
-                        .getAttribute(attribute.fulfill(2));
-            }
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.equipment.helmet>
-        // @returns dItem
-        // @group inventory
-        // @description
-        // returns the item the entity is wearing as a helmet, or null
-        // if none.
-        // -->
-        else if (attribute.startsWith("equipment.helmet") ||
-                attribute.startsWith("equipment.head")) {
-            if (getLivingEntity().getEquipment().getHelmet() != null) {
-                return new dItem(getLivingEntity().getEquipment().getHelmet())
-                        .getAttribute(attribute.fulfill(2));
-            }
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.equipment.leggings>
-        // @returns dItem
-        // @group inventory
-        // @description
-        // returns the item the entity is wearing as leggings, or null
-        // if none.
-        // -->
-        else if (attribute.startsWith("equipment.leggings") ||
-                attribute.startsWith("equipment.legs")) {
-            if (getLivingEntity().getEquipment().getLeggings() != null) {
-                return new dItem(getLivingEntity().getEquipment().getLeggings())
-                        .getAttribute(attribute.fulfill(2));
-            }
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.equipment>
-        // @returns dList
-        // @group inventory
-        // @description
-        // returns a dList containing the entity's equipment.
-        // -->
-        else if (attribute.startsWith("equipment")) {
-            return getEquipment().getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <e@entity.item_in_hand>
         // @returns dItem
         // @group inventory
@@ -1468,21 +1402,6 @@ public class dEntity implements dObject, Adjustable {
                 attribute.startsWith("iteminhand"))
             return new dItem(getLivingEntity().getEquipment().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <e@entity.inventory>
-        // @returns dInventory
-        // @group inventory
-        // @description
-        // Returns the entity's inventory, if it has one.
-        // -->
-        if (attribute.startsWith("inventory")) {
-            dInventory inventory = getInventory();
-            if (inventory != null)
-                return inventory.getAttribute(attribute.fulfill(1));
-            else
-                return null;
-        }
 
 
         /////////////////////
@@ -1781,67 +1700,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.health.formatted>
-        // @returns Element
-        // @group attributes
-        // @description
-        // Returns a formatted value of the player's current health level.
-        // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
-        // -->
-        if (attribute.startsWith("health.formatted")) {
-            double maxHealth = getLivingEntity().getMaxHealth();
-            if (attribute.hasContext(2))
-                maxHealth = attribute.getIntContext(2);
-            if ((float) getLivingEntity().getHealth() / maxHealth < .10)
-                return new Element("dying").getAttribute(attribute.fulfill(2));
-            else if ((float) getLivingEntity().getHealth() / maxHealth < .40)
-                return new Element("seriously wounded").getAttribute(attribute.fulfill(2));
-            else if ((float) getLivingEntity().getHealth() / maxHealth < .75)
-                return new Element("injured").getAttribute(attribute.fulfill(2));
-            else if ((float) getLivingEntity().getHealth() / maxHealth < 1)
-                return new Element("scraped").getAttribute(attribute.fulfill(2));
-
-            else return new Element("healthy").getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.health.max>
-        // @returns Element(Decimal)
-        // @group attributes
-        // @description
-        // Returns the maximum health of the entity.
-        // -->
-        if (attribute.startsWith("health.max"))
-            return new Element(getLivingEntity().getMaxHealth())
-                    .getAttribute(attribute.fulfill(2));
-
-        // <--[tag]
-        // @attribute <e@entity.health.percentage>
-        // @returns Element(Decimal)
-        // @group attributes
-        // @description
-        // Returns the entity's current health as a percentage.
-        // -->
-        if (attribute.startsWith("health.percentage")) {
-            double maxHealth = getLivingEntity().getMaxHealth();
-            if (attribute.hasContext(2))
-                maxHealth = attribute.getIntContext(2);
-            return new Element((getLivingEntity().getHealth() / maxHealth) * 100)
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.health>
-        // @returns Element(Decimal)
-        // @group attributes
-        // @description
-        // Returns the current health of the entity.
-        // -->
-        if (attribute.startsWith("health"))
-            return new Element(getLivingEntity().getHealth())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <e@entity.can_breed>
         // @returns Element(Boolean)
         // @group attributes
@@ -2019,30 +1877,6 @@ public class dEntity implements dObject, Adjustable {
             return new Duration(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <e@entity.has_ai>
-        // @returns Element(Boolean)
-        // @group attributes
-        // @description
-        // Returns whether the entity uses the default Minecraft
-        // AI to roam and look around.
-        // -->
-        if (attribute.startsWith("has_ai"))
-            return new Element(!EntityMovement.isAIDisabled(getBukkitEntity()))
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <e@entity.speed>
-        // @returns Element(Decimal)
-        // @group attributes
-        // @description
-        // Returns the entity's current speed when walking.
-        // -->
-        if (attribute.startsWith("speed"))
-            return new Element(EntityMovement.getSpeed(getBukkitEntity()))
-                    .getAttribute(attribute.fulfill(1));
-
-
         /////////////////////
         //   TYPE ATTRIBUTES
         /////////////////
@@ -2162,10 +1996,12 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the entity's full description, including all properties.
         // -->
-        if (attribute.startsWith("describe"))
-            return new Element("e@" + getEntityType().getLowercaseName()
-                    + PropertyParser.getPropertiesString(this))
+        if (attribute.startsWith("describe")) {
+            String escript = getEntityScript();
+            return new Element("e@" + (escript != null && escript.length() > 0 ? escript:getEntityType().getLowercaseName())
+                    +PropertyParser.getPropertiesString(this))
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
@@ -2277,54 +2113,6 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class))
             getLivingEntity().setLeashHolder(value.asType(dEntity.class).getBukkitEntity());
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name max_health
-        // @input Number
-        // @description
-        // Sets the maximum health the entity may have.
-        // The entity must be living.
-        // @tags
-        // <e@entity.health>
-        // <e@entity.health.max>
-        // -->
-        // TODO: Maybe a property?
-        if (mechanism.matches("max_health") && mechanism.requireInteger()) {
-            if (isCitizensNPC()) {
-                if (getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
-                    getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(mechanism.getValue().asInt());
-                else
-                    dB.echoError("NPC doesn't have health trait!");
-            }
-            else if (isLivingEntity()) {
-                getLivingEntity().setMaxHealth(mechanism.getValue().asDouble());
-            }
-            else {
-                dB.echoError("Entity is not alive!");
-            }
-        }
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name health
-        // @input Number(Decimal)
-        // @description
-        // Sets the amount of health the entity has.
-        // The entity must be living.
-        // @tags
-        // <e@entity.health>
-        // <e@entity.health.max>
-        // -->
-        // TODO: Maybe a property?
-        if (mechanism.matches("health") && mechanism.requireDouble()) {
-            if (isLivingEntity()) {
-                getLivingEntity().setHealth(mechanism.getValue().asDouble());
-            }
-            else {
-                dB.echoError("Entity is not alive!");
-            }
-        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2474,32 +2262,6 @@ public class dEntity implements dObject, Adjustable {
             getLivingEntity().playEffect(EntityEffect.DEATH);
         }
 
-        // <--[mechanism]
-        // @object dEntity
-        // @name toggle_ai
-        // @input Element(Boolean)
-        // @description
-        // Sets whether this entity will use the default
-        // Minecraft AI to roam and look around.
-        // @tags
-        // <e@entity.has_ai>
-        // -->
-        if (mechanism.matches("toggle_ai") && mechanism.requireBoolean()) {
-            EntityMovement.toggleAI(getBukkitEntity(), value.asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name speed
-        // @input Element(Decimal)
-        // @description
-        // Sets how fast the entity walks.
-        // @tags
-        // <e@entity.speed>
-        // -->
-        if (mechanism.matches("speed") && mechanism.requireDouble()) {
-            EntityMovement.setSpeed(getBukkitEntity(), value.asDouble());
-        }
 
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {

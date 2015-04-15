@@ -193,19 +193,22 @@ public class ItemPotion implements Property {
                     return;
                 }
                 if (!data1.isInt()) {
-                    dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
+                    dB.echoError("Cannot apply effect '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
                     return;
                 }
                 if (!data2.isBoolean()) {
-                    dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[2] + "' is not a valid boolean!");
+                    dB.echoError("Cannot apply effect '" + data[0] + "': '" + data[2] + "' is not a valid boolean!");
                     return;
                 }
                 if (!data3.isBoolean()) {
-                    dB.echoError("Cannot apply effect '" + data[0] +"': '" + data[3] + "' is not a valid boolean!");
+                    dB.echoError("Cannot apply effect '" + data[0] + "': '" + data[3] + "' is not a valid boolean!");
                     return;
                 }
                 Potion pot = new Potion(type);
-                pot.setLevel(data1.asInt());
+                int d1 = data1.asInt();
+                if (d1 >= 1 && d1 <= pot.getType().getMaxLevel()) {
+                    pot.setLevel(d1);
+                }
                 if (!pot.getType().isInstant())
                     pot.setHasExtendedDuration(data2.asBoolean());
                 pot.setSplash(data3.asBoolean());

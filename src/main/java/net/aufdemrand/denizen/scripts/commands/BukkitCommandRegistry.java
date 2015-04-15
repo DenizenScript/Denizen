@@ -1646,7 +1646,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ModifyBlock
-        // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>)
+        // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percentages>)
         // @Required 2
         // @Stable stable
         // @Short Modifies blocks.
@@ -1657,6 +1657,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // in only the specified blocks being changed. Use 'no_physics' to place the blocks without
         // physics taking over the modified blocks. This is useful for block types such as portals. This does NOT
         // control physics for an extended period of time.
+        // Specify <percentages> to give a chance of each material being placed (in any materail at all).
         // Use 'naturally' when setting a block to air to break it naturally, meaning that it will drop items.
         // Use 'delayed' to make the modifyblock slowly edit blocks at a time pace roughly equivalent to the server's limits.
         // Note that specify a list of locations will take more time in parsing than in the actual block modification.
@@ -1670,6 +1671,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to modify an entire cuboid to half stone, half dirt.
         // - modifyblock cu@<player.location>|<player.location.cursor_on> li@stone|dirt
+        // @Usage
+        // Use to modify an entire cuboid to some stone, some dirt, and some left as it is.
+        // - modifyblock cu@<player.location>|<player.location.cursor_on> li@stone|dirt li@25|25
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2363,11 +2367,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ShowFake
-        // @Syntax showfake [<material>/cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})
+        // @Syntax showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})
         // @Required 2
         // @Stable stable
         // @Short Makes the player see a block change that didn't actually happen.
-        // @Author aufdemrand, Morphan1
+        // @Author aufdemrand, Morphan1, mcmonkey
         // @Group player
         // @Description
         // TODO: Document Command Details
@@ -2377,7 +2381,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ShowFakeCommand.class,
-                "SHOWFAKE", "showfake [<material>/cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})", 2);
+                "SHOWFAKE", "showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})", 2);
 
 
         // <--[command]

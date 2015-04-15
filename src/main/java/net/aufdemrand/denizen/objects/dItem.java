@@ -477,23 +477,23 @@ public class dItem implements dObject, Notable, Adjustable {
     @Override
     public String identify() {
 
-        if (item == null) return "null";
+        if (item == null) return "i@air";
 
         if (item.getTypeId() != 0) {
 
             // If saved item, return that
             if (isUnique()) {
-                return "i@" + NotableManager.getSavedId(this) + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
+                return "i@" + NotableManager.getSavedId(this) + PropertyParser.getPropertiesString(this);
             }
 
             // If not a saved item, but is a custom item, return the script id
             else if (isItemscript()) {
-                return "i@" + getScriptName() + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
+                return "i@" + getScriptName() + PropertyParser.getPropertiesString(this);
             }
         }
 
         // Else, return the material name
-        if (item.getDurability() >= 16 || item.getDurability() < 0) {
+        if ((item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
             return "i@" + getMaterial().realName() + "," + item.getDurability()  + PropertyParser.getPropertiesString(this);
         }
         return "i@" + getMaterial().identify().replace("m@", "") + PropertyParser.getPropertiesString(this);

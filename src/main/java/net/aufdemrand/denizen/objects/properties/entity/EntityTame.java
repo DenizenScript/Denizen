@@ -44,7 +44,7 @@ public class EntityTame implements Property {
             if (owner == null)
                 return "true";
             else
-                return "true|" + owner.getName();
+                return "true|" + owner.getUniqueId();
         }
         else
             return null;

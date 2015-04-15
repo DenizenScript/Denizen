@@ -636,13 +636,18 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             // register core dEntity properties
             propertyParser.registerProperty(EntityAge.class, dEntity.class);
+            propertyParser.registerProperty(EntityAI.class, dEntity.class);
             propertyParser.registerProperty(EntityAngry.class, dEntity.class);
+            propertyParser.registerProperty(EntityChestCarrier.class, dEntity.class);
             propertyParser.registerProperty(EntityColor.class, dEntity.class);
             propertyParser.registerProperty(EntityCritical.class, dEntity.class);
             propertyParser.registerProperty(EntityElder.class, dEntity.class);
+            propertyParser.registerProperty(EntityEquipment.class, dEntity.class);
             propertyParser.registerProperty(EntityFirework.class, dEntity.class);
             propertyParser.registerProperty(EntityFramed.class, dEntity.class);
+            propertyParser.registerProperty(EntityHealth.class, dEntity.class);
             propertyParser.registerProperty(EntityInfected.class, dEntity.class);
+            propertyParser.registerProperty(EntityInventory.class, dEntity.class);
             propertyParser.registerProperty(EntityItem.class, dEntity.class);
             propertyParser.registerProperty(EntityJumpStrength.class, dEntity.class);
             propertyParser.registerProperty(EntityKnockback.class, dEntity.class);
@@ -654,6 +659,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(EntitySitting.class, dEntity.class);
             propertyParser.registerProperty(EntitySize.class, dEntity.class);
             propertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
+            propertyParser.registerProperty(EntitySpeed.class, dEntity.class);
             propertyParser.registerProperty(EntityTame.class, dEntity.class);
 
             // register core dInventory properties

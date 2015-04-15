@@ -64,8 +64,14 @@ public class Settings {
                 .getString("Scripts.Queue speed", "0.5s");
 
         // Check for users setting delay to 0, which will in turn lock up the server
-        try { if (Double.valueOf(delay) < 1) delay = "1t"; }
-        catch (Exception e) { delay = "0.5s"; }
+        try {
+            if (Duration.valueOf(delay).getTicks() < 1) {
+                delay = "1t";
+            }
+        }
+        catch (Exception e) {
+            delay = "0.5s";
+        }
 
         return delay;
     }

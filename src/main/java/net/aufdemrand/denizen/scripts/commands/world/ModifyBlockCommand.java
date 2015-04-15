@@ -12,6 +12,7 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -79,18 +80,26 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 scriptEntry.addObject("depth", new Element(arg.getValue()));
             }
 
-            else if (arg.matches("no_physics"))
+            else if (arg.matches("no_physics")) {
                 scriptEntry.addObject("physics", new Element(false));
+            }
 
-            else if (arg.matches("naturally"))
+            else if (arg.matches("naturally")) {
                 scriptEntry.addObject("natural", new Element(true));
+            }
 
-            else if (arg.matches("delayed"))
+            else if (arg.matches("delayed")) {
                 scriptEntry.addObject("delayed", new Element(true));
+            }
 
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class))
+                    && arg.matchesArgumentType(dScript.class)) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
+            }
+
+            else if (!scriptEntry.hasObject("percents")) {
+                scriptEntry.addObject("percents", arg.asType(dList.class));
+            }
 
             else
                 arg.reportUnhandled();
@@ -128,6 +137,12 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         final Element heightElement = scriptEntry.getElement("height");
         final Element depthElement = scriptEntry.getElement("depth");
         final dScript script = scriptEntry.getdObject("script");
+        dList percents = scriptEntry.getdObject("percents");
+
+        if (percents != null && percents.size() != materials.size()) {
+            dB.echoError(scriptEntry.getResidingQueue(), "Percents length != materials length");
+            percents = null;
+        }
 
         final List<dMaterial> materialList = materials.filter(dMaterial.class);
 
@@ -139,13 +154,22 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                                           + depthElement.debug()
                                           + natural.debug()
                                           + delayed.debug()
-                                          + (script != null ? script.debug(): ""));
+                                          + (script != null ? script.debug(): "")
+                                          + (percents != null ? percents.debug(): ""));
 
         final boolean doPhysics = physics.asBoolean();
         final  boolean isNatural = natural.asBoolean();
         final int radius = radiusElement.asInt();
         final int height = heightElement.asInt();
         final int depth = depthElement.asInt();
+        List<Float> percentages = null;
+        if (percents != null) {
+            percentages = new ArrayList<Float>();
+            for (String str: percents) {
+                percentages.add(new Element(str).asFloat());
+            }
+        }
+        final List<Float> percs = percentages;
 
         if ((locations == null || locations.size() == 0) && (location_list == null || location_list.size() == 0))
             dB.echoError("Must specify a valid location!");
@@ -175,7 +199,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                         else {
                             nLoc = dLocation.valueOf(location_list.get(index));
                         }
-                        handleLocation(nLoc, index, materialList, doPhysics, isNatural, radius, height, depth);
+                        handleLocation(nLoc, index, materialList, doPhysics, isNatural, radius, height, depth, percs);
                         index++;
                         if (System.currentTimeMillis() - start > 50) {
                             break;
@@ -207,13 +231,13 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             int index = 0;
             if (locations != null) {
                 for (dObject obj : locations) {
-                    handleLocation((dLocation) obj, index, materialList, doPhysics, isNatural, radius, height, depth);
+                    handleLocation((dLocation) obj, index, materialList, doPhysics, isNatural, radius, height, depth, percentages);
                     index++;
                 }
             }
             else {
                 for (String str : location_list) {
-                    handleLocation(dLocation.valueOf(str), index, materialList, doPhysics, isNatural, radius, height, depth);
+                    handleLocation(dLocation.valueOf(str), index, materialList, doPhysics, isNatural, radius, height, depth, percentages);
                     index++;
                 }
             }
@@ -259,9 +283,26 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     }
 
     void handleLocation(dLocation location, int index, List<dMaterial> materialList, boolean doPhysics,
-                        boolean isNatural, int radius, int height, int depth) {
+                        boolean isNatural, int radius, int height, int depth, List<Float> percents) {
 
-        dMaterial material = materialList.get(index % materialList.size());
+        dMaterial material;
+        if (percents == null) {
+            material = materialList.get(index % materialList.size());
+        }
+        else {
+            material = null;
+            for (int i = 0; i < materialList.size(); i++) {
+                float perc = percents.get(i) / 100f;
+                if (CoreUtilities.getRandom().nextDouble() <= perc) {
+                    material = materialList.get(i);
+                    break;
+                }
+            }
+            if (material == null) {
+                return;
+            }
+        }
+
         World world = location.getWorld();
 
         location.setX(location.getBlockX());

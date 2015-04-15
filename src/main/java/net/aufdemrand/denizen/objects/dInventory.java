@@ -1054,7 +1054,10 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
-            if (item == null) continue;
+            if (item == null) continue; // TODO: Should we allow setting null (air)?
+            if (slot + i < 0 || slot + i >= inventory.getSize()) {
+                break;
+            }
             inventory.setItem(slot+i, item);
         }
 

@@ -30,6 +30,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 
 public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
@@ -251,11 +252,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         for (LocationPair pair : pairs) {
             if (!location.getWorld().equals(pair.low.getWorld()))
                 continue;
-            if (!Utilities.isBetween(pair.low.getBlockX(), pair.high.getBlockX(), location.getBlockX()))
+            if (!Utilities.isBetween(pair.low.getBlockX(), pair.high.getBlockX() + 1, location.getBlockX()))
                 continue;
-            if (!Utilities.isBetween(pair.low.getBlockY(), pair.high.getBlockY(), location.getBlockY()))
+            if (!Utilities.isBetween(pair.low.getBlockY(), pair.high.getBlockY() + 1, location.getBlockY()))
                 continue;
-            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ(), location.getBlockZ()))
+            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ() + 1, location.getBlockZ()))
                 return true;
         }
 
@@ -431,11 +432,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 for (int y = 0; y != y_distance + 1; y++) {
                     for (int z = 0; z != z_distance + 1; z++) {
                         loc = new dLocation(loc_1.clone().add(x, y, z));
-                        if (!filter.isEmpty() && loc.getY() >= 0 && loc.getY() < 256) {
+                        if (loc.getY() < 0 || loc.getY() > 255) {
+                            continue; // TODO: Why is this ever possible?
+                        }
+                        if (!filter.isEmpty()) { // TODO: Should 'filter' exist?
                             // Check filter
                             for (dObject material : filter) {
-                                if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
-                                        .getMaterial().name())) {
+                                if (((dMaterial)material).matchesMaterialData(
+                                new MaterialData(loc.getBlock().getType(), loc.getBlock().getData()))) {
                                     if (matchesMaterialList(loc, materials)) {
                                         list.add(loc);
                                     }
@@ -729,7 +733,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_blocks[<material>...]>
+        // @attribute <cu@cuboid.get_blocks[<material>|...]>
         // @returns dList(dLocation)
         // @description
         // Returns each block location within the dCuboid.
@@ -1159,18 +1163,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         // TODO: Should cuboids have mechanisms? Aren't tags sufficient?
 
-        // <--[mechanism]
-        // @object dCuboid
-        // @name outset
-        // @input Element(Number)
-        // @description
-        // 'Outsets' the area of a dCuboid by the number specified, or 1 if not
-        // specified. Example: - adjust cu@my_cuboid outset:5
-        // Outsetting a cuboid expands it in all directions. Use negative numbers
-        // to 'inset' instead.
-        // @tags
-        // <cu@cuboid.get_outline>
-        // -->
         if (mechanism.matches("outset")) {
             int mod = 1;
             if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
@@ -1186,19 +1178,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return;
         }
 
-        // <--[mechanism]
-        // @object dCuboid
-        // @name expand
-        // @input Element(Number)
-        // @description
-        // Expands the area of a dCuboid by the number specified, or 1 if not
-        // specified, in a specified direction. Example: - adjust cu@my_cuboid expand:5|north
-        // Use negative numbers to 'reduce' instead.
-        // @tags
-        // <e@entity.location.direction>
-        // <e@entity.location.pitch>
-        // <cu@cuboid.get_outline>
-        // -->
         if (mechanism.matches("expand")) {
             int mod = 1;
             if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
@@ -1215,18 +1194,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return;
         }
 
-        // <--[mechanism]
-        // @object dCuboid
-        // @name set_location
-        // @input Element(Number)
-        // @description
-        // Sets one of two defining locations. dCuboid will take the location into
-        // account when recalculating the low and high locations as well as distances
-        // belonging to the cuboid.
-        // @tags
-        // <cu@cuboid.low>
-        // <cu@cuboid.high>
-        // -->
         if (mechanism.matches("set_location")) {
             int mod = 1;
             if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))

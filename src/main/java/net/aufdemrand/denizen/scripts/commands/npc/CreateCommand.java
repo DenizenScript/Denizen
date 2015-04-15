@@ -40,6 +40,12 @@ public class CreateCommand extends AbstractCommand {
             else arg.reportUnhandled();
         }
 
+        if (!scriptEntry.hasObject("name")) {
+            throw new InvalidArgumentsException("Must specify a name!");
+        }
+        if (!scriptEntry.hasObject("entity_type")) {
+            throw new InvalidArgumentsException("Must specify an entity type!");
+        }
     }
 
     @Override
