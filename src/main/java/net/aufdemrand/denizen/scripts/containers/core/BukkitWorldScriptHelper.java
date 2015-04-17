@@ -2507,6 +2507,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.raw_slot> returns an Element with the raw number of the slot that was clicked.
     // <context.is_shift_click> returns true if 'shift' was used while clicking.
     // <context.action> returns the inventory_action. See <@link language Inventory Actions>.
+    // <context.hotbar_button> returns an Element of the button pressed as a number, or -1 if no number button was pressed.
     //
     // @Determine
     // "CANCELLED" to stop the player from clicking.
@@ -2515,7 +2516,7 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void inventoryClickEvent(InventoryClickEvent event) {
 
-        // TODO: make this a smart event...
+        // TODO: make this a script event...
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = null;
@@ -2621,6 +2622,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("raw_slot", new Element(event.getRawSlot() + 1));
         context.put("is_shift_click", new Element(event.isShiftClick()));
         context.put("action", new Element(event.getAction().name()));
+        context.put("hotbar_button", new Element(event.getHotbarButton()));
 
         String determination = doEvents(events, null, player, context, true);
 
