@@ -50,8 +50,8 @@ public class BossHealthBar {
             for (int i = 0; i < playersWithHealthBar.size(); i++) {
                 Player player = playersWithHealthBar.get(i);
                 if (!player.isDead() && player.isValid()) {
-                        PacketHelper.sendPacket(player, getTeleportPacket(player
-                                .getTargetBlock(ignoreAllBlocks, 32).getLocation()));
+                        PacketHelper.sendPacket(player, getTeleportPacket(player.getLocation().clone()
+                                .add(player.getLocation().getDirection().multiply(30))));
                 }
                 else {
                     hasHealthBar.put(player.getName(), false);
