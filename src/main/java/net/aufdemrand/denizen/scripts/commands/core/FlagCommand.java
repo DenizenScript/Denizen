@@ -77,14 +77,16 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
 
             // Check if setting a boolean
-            else if (arg.raw_value.split(":", 3).length == 1) {
+            else if (!scriptEntry.hasObject("flag_name") &&
+                    arg.raw_value.split(":", 3).length == 1) {
                 scriptEntry.addObject("action", FlagManager.Action.SET_BOOLEAN);
                 scriptEntry.addObject("value", Element.TRUE);
                 scriptEntry.addObject("flag_name", arg.asElement());
             }
 
             // Check for flag_name:value/action
-            else if (arg.raw_value.split(":", 3).length == 2) {
+            else if (!scriptEntry.hasObject("flag_name") &&
+                        arg.raw_value.split(":", 3).length == 2) {
 
                 String[] flagArgs = arg.raw_value.split(":", 2);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
@@ -113,7 +115,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
             }
 
             // Check for flag_name:action:value
-            else if (arg.raw_value.split(":", 3).length == 3) {
+            else if (!scriptEntry.hasObject("flag_name") &&
+                    arg.raw_value.split(":", 3).length == 3) {
                 String[] flagArgs = arg.raw_value.split(":", 3);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
 

@@ -39,14 +39,6 @@ public class SchematicCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // - schematic create name:Potato cu@x,y,z,world|x,y,z,world origin:x,y,z,world
-        // - schematic load name:Potato
-        // - schematic unload name:Potato
-        // - schematic rotate name:Potato angle:90
-        // - schematic paste name:Potato location:x,y,z,world (noair)
-        // - schematic save name:Potato
-        // - schematic [load/unload/rotate/paste] [name:<name>] (angle:<#>) (<location>) (noair)
-
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
