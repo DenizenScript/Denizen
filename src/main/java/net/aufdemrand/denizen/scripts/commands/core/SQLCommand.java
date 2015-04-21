@@ -7,6 +7,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 
@@ -199,7 +200,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                     count++;
                     StringBuilder current = new StringBuilder();
                     for (int i = 0; i < columns; i++) {
-                        current.append(set.getString(i + 1)).append("/");
+                        current.append(EscapeTags.Escape(set.getString(i + 1))).append("/");
                     }
                     rows.add(current.toString());
                 }
@@ -224,17 +225,14 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                 ResultSetMetaData rsmd = set.getMetaData();
                 int columns = rsmd.getColumnCount();
                 dB.echoDebug(scriptEntry, "Got a query result of " + columns + " columns");
-                int count = 0;
                 dList rows = new dList();
                 while (set.next()) {
-                    count++;
                     StringBuilder current = new StringBuilder();
                     for (int i = 0; i < columns; i++) {
-                        current.append(set.getString(i + 1)).append("/");
+                        current.append(EscapeTags.Escape(set.getString(i + 1))).append("/");
                     }
                     rows.add(current.toString());
                 }
-                // TODO: add(count)?
                 scriptEntry.addObject("result", rows);
                 dB.echoDebug(scriptEntry, "Updated " + affected + " rows");
             }

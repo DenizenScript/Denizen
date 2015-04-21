@@ -2465,7 +2465,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // It is recommended you hold the connection command by doing "- ~sql ..." rather than just "- sql ..."
         // as this will delay the commands following the connect command until after the connection is established.
         // @Tags
-        // <entry[saveName].result> returns a dList of all rows from a query or update command.
+        // <entry[saveName].result> returns a dList of all rows from a query or update command, of the form li@escaped_text/escaped_text|escaped_text/escaped_text
         // <entry[saveName].affected_rows> returns how many rows were affected by an update command.
         // @Usage
         // Use to connect to an SQL server.
