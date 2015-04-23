@@ -774,7 +774,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         for (OfflinePlayer player : this.getServer().getOfflinePlayers()) {
             try {
                 getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player)); } catch (Exception e) {
-                if (player == null) dB.echoError("Tell aufdemrand ASAP about this error! ERR: OPN");
+                if (player == null) dB.echoError("Tell the Denizen team ASAP about this error! ERR: OPN: " + e.toString());
                 else dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
                         "You might have a corrupt player file!");
             }
