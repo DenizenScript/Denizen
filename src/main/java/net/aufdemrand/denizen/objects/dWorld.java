@@ -666,6 +666,19 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dWorld
+        // @name force_unload
+        // @input None
+        // @description
+        // Unloads the world from the server without saving chunks.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("force_unload")) {
+            Bukkit.getServer().unloadWorld(getWorld(), false);
+        }
+
+        // <--[mechanism]
+        // @object dWorld
         // @name full_time
         // @input Element(Integer)
         // @description
@@ -806,6 +819,19 @@ public class dWorld implements dObject, Adjustable {
         // -->
         if (mechanism.matches("time") && mechanism.requireInteger()) {
             getWorld().setTime(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name unload
+        // @input None
+        // @description
+        // Unloads the world from the server and saves chunks.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("unload")) {
+            Bukkit.getServer().unloadWorld(getWorld(), true);
         }
 
         // <--[mechanism]
