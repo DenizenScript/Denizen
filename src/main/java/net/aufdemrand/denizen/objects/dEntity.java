@@ -164,7 +164,7 @@ public class dEntity implements dObject, Adjustable {
                 if (returnable != null) {
                     return new dEntity(returnable);
                 }
-                else if (context.debug) {
+                else if (context == null || context.debug) {
                     dB.echoError("Invalid Player! '" + m.group(2)
                             + "' could not be found. Has the player logged off?");
                 }
@@ -223,7 +223,7 @@ public class dEntity implements dObject, Adjustable {
             }
         }
 
-        if (context.debug) {
+        if (context == null || context.debug) {
             dB.log("valueOf dEntity returning null: " + string);
         }
 

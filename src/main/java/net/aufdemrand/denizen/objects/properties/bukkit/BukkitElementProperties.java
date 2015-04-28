@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -102,7 +103,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("aschunk")
                 || attribute.startsWith("as_chunk")) {
-            dObject object = Element.handleNull(element.asString(), dChunk.valueOf(element.asString()), "dChunk", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dChunk.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dChunk", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -116,7 +118,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("ascolor")
                 || attribute.startsWith("as_color")) {
-            dObject object = Element.handleNull(element.asString(), dColor.valueOf(element.asString()), "dColor", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dColor.valueOf(element.asString(),
+            new BukkitTagContext(attribute.getScriptEntry(), false)), "dColor", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -130,7 +133,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("ascuboid")
                 || attribute.startsWith("as_cuboid")) {
-            dObject object = Element.handleNull(element.asString(), dCuboid.valueOf(element.asString()), "dCuboid", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dCuboid.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dCuboid", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -144,7 +148,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asentity")
                 || attribute.startsWith("as_entity")) {
-            dObject object = Element.handleNull(element.asString(), dEntity.valueOf(element.asString()), "dEntity", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dEntity.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dEntity", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -158,7 +163,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asinventory")
                 || attribute.startsWith("as_inventory")) {
-            dObject object = Element.handleNull(element.asString(), dInventory.valueOf(element.asString()), "dInventory", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dInventory.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dInventory", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -173,7 +179,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asitem")
                 || attribute.startsWith("as_item")) {
-            dObject object = Element.handleNull(element.asString(), dItem.valueOf(element.asString()), "dItem", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dItem.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dItem", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -187,7 +194,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("aslocation")
                 || attribute.startsWith("as_location")) {
-            dObject object = Element.handleNull(element.asString(), dLocation.valueOf(element.asString()), "dLocation", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dLocation.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dLocation", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -201,7 +209,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asmaterial")
                 || attribute.startsWith("as_material")) {
-            dObject object = Element.handleNull(element.asString(), dMaterial.valueOf(element.asString()), "dMaterial", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dMaterial.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dMaterial", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -215,7 +224,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asnpc")
                 || attribute.startsWith("as_npc")) {
-            dObject object = Element.handleNull(element.asString(), dNPC.valueOf(element.asString()), "dNPC", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dNPC.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dNPC", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -229,7 +239,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asplayer")
                 || attribute.startsWith("as_player")) {
-            dObject object = Element.handleNull(element.asString(), dPlayer.valueOf(element.asString()), "dPlayer", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dPlayer.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dPlayer", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -243,7 +254,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asworld")
                 || attribute.startsWith("as_world")) {
-            dObject object = Element.handleNull(element.asString(), dWorld.valueOf(element.asString()), "dWorld", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dWorld.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dWorld", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -257,7 +269,8 @@ public class BukkitElementProperties implements Property {
         // -->
         if (attribute.startsWith("asplugin")
                 || attribute.startsWith("as_plugin")) {
-            dObject object = Element.handleNull(element.asString(), dPlugin.valueOf(element.asString()), "dPlugin", attribute.hasAlternative());
+            dObject object = Element.handleNull(element.asString(), dPlugin.valueOf(element.asString(),
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dPlugin", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
