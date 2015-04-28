@@ -161,9 +161,13 @@ public class dEntity implements dObject, Adjustable {
             else if (entityGroup.matches("P@")) {
                 LivingEntity returnable = dPlayer.valueOf(m.group(2)).getPlayerEntity();
 
-                if (returnable != null) return new dEntity(returnable);
-                else dB.echoError("Invalid Player! '" + m.group(2)
-                        + "' could not be found. Has the player logged off?");
+                if (returnable != null) {
+                    return new dEntity(returnable);
+                }
+                else if (context.debug) {
+                    dB.echoError("Invalid Player! '" + m.group(2)
+                            + "' could not be found. Has the player logged off?");
+                }
             }
 
             // Assume entity
@@ -219,7 +223,9 @@ public class dEntity implements dObject, Adjustable {
             }
         }
 
-        dB.log("valueOf dEntity returning null: " + string);
+        if (context.debug) {
+            dB.log("valueOf dEntity returning null: " + string);
+        }
 
         return null;
     }
