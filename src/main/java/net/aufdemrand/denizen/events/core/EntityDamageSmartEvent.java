@@ -83,6 +83,7 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
     // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
     // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.entity> returns the dEntity that was damaged.
+    // <context.damage_TYPE> returns the damage by a given damage type. Types: BASE, HARD_HAT, BLOCKING, ARMOR,RESISTANCE, MAGIC, ABSORPTION
     //
     // @Determine
     // "CANCELLED" to stop the entity from being damaged.
@@ -104,6 +105,9 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
         context.put("damage", new Element(event.getDamage()));
         context.put("final_damage", new Element(event.getFinalDamage()));
         context.put("cause", new Element(event.getCause().name()));
+        for (EntityDamageEvent.DamageModifier dm: EntityDamageEvent.DamageModifier.values()) {
+            context.put("damage_" +  dm.name(), new Element(event.getDamage(dm)));
+        }
 
         if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
         else if (entity.isPlayer()) player = entity.getDenizenPlayer();
