@@ -33,7 +33,7 @@ public class HealthCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("qty")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
                 scriptEntry.addObject("qty", arg.asElement());
 
             else if (!scriptEntry.hasObject("target")
@@ -93,7 +93,7 @@ public class HealthCommand extends AbstractCommand {
             if (qty != null) {
                 if (target.isCitizensNPC()) {
                     if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
-                        target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(qty.asInt());
+                        target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth((int)qty.asFloat());
                     else
                         dB.echoError(scriptEntry.getResidingQueue(), "NPC doesn't have health trait!");
                 }
