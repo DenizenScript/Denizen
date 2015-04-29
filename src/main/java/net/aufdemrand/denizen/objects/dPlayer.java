@@ -93,7 +93,7 @@ public class dPlayer implements dObject, Adjustable {
 
     @Fetchable("p")
     public static dPlayer valueOf(String string, TagContext context) {
-        return valueOfInternal(string, true);
+        return valueOfInternal(string, context == null || context.debug);
     }
 
 
