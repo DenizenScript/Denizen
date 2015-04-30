@@ -52,6 +52,16 @@ public class dEntity implements dObject, Adjustable {
     //   STATIC METHODS
     /////////////////
 
+    private static final Map<UUID, Entity> rememberedEntities = new HashMap<UUID, Entity>();
+
+    public static void rememberEntity(Entity entity) {
+        rememberedEntities.put(entity.getUniqueId(), entity);
+    }
+
+    public static void forgetEntity(Entity entity) {
+        rememberedEntities.remove(entity.getUniqueId());
+    }
+
     public static boolean isNPC(Entity entity) {
         return entity != null && entity.hasMetadata("NPC") && entity.getMetadata("NPC").get(0).asBoolean();
     }
@@ -230,10 +240,11 @@ public class dEntity implements dObject, Adjustable {
         return null;
     }
 
-    @Deprecated
-    public static Entity getEntityForID(UUID ID) {
+    public static Entity getEntityForID(UUID id) {
+        if (rememberedEntities.containsKey(id))
+            return rememberedEntities.get(id);
         for (World world : Bukkit.getWorlds()) {
-            net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(ID);
+            net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
 
             // Make sure the nmsEntity is valid, to prevent unpleasant errors
             if (nmsEntity != null) {
@@ -1114,7 +1125,7 @@ public class dEntity implements dObject, Adjustable {
                 // if (isSaved(this))
                 //    return "e@" + getSaved(this);
 
-            else if (isSpawned())
+            else if (isSpawned() || rememberedEntities.containsKey(entity.getUniqueId()))
                 return "e@" + entity.getUniqueId().toString();
         }
 
