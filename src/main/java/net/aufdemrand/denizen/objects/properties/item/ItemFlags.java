@@ -31,7 +31,7 @@ public class ItemFlags implements Property {
         for (ItemFlag flag: item.getItemStack().getItemMeta().getItemFlags()) {
             output.add(flag.name());
         }
-        return output.;
+        return output;
     }
 
     dItem item;
