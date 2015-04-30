@@ -83,7 +83,7 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
     // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
     // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
     // <context.entity> returns the dEntity that was damaged.
-    // <context.damage_TYPE> returns the damage by a given damage type. Types: BASE, HARD_HAT, BLOCKING, ARMOR,RESISTANCE, MAGIC, ABSORPTION
+    // <context.damage_TYPE> returns the damage dealt by a specific damage type where TYPE can be any of: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
     //
     // @Determine
     // "CANCELLED" to stop the entity from being damaged.
@@ -145,7 +145,7 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
             // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
             // <context.damager> returns the dEntity damaging the other entity.
             // <context.projectile> returns a dEntity of the projectile shot by the damager, if any.
-            // <context.damage_TYPE> returns the damage by a given damage type. Types: BASE, HARD_HAT, BLOCKING, ARMOR,RESISTANCE, MAGIC, ABSORPTION
+            // <context.damage_TYPE> returns the damage dealt by a specific damage type where TYPE can be any of: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
             //
             // @Determine
             // "CANCELLED" to stop the entity from being killed.
@@ -182,7 +182,7 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
             // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
             // <context.damager> returns the dEntity damaging the other entity.
             // <context.projectile> returns a dEntity of the projectile, if one caused the event.
-            // <context.damage_TYPE> returns the damage by a given damage type. Types: BASE, HARD_HAT, BLOCKING, ARMOR,RESISTANCE, MAGIC, ABSORPTION
+            // <context.damage_TYPE> returns the damage dealt by a specific damage type where TYPE can be any of: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
             //
             // @Determine
             // "CANCELLED" to stop the entity from being damaged.
@@ -311,7 +311,7 @@ public class EntityDamageSmartEvent implements OldSmartEvent, Listener {
                 // <context.damage> returns an Element(Decimal) of the amount of damage dealt.
                 // <context.final_damage> returns an Element(Decimal) of the amount of damage dealt, after armor is calculated.
                 // <context.projectile> returns a dEntity of the projectile, if one caused the event.
-                // <context.damage_TYPE> returns the damage by a given damage type. Types: BASE, HARD_HAT, BLOCKING, ARMOR,RESISTANCE, MAGIC, ABSORPTION
+                // <context.damage_TYPE> returns the damage dealt by a specific damage type where TYPE can be any of: BASE, HARD_HAT, BLOCKING, ARMOR, RESISTANCE, MAGIC, ABSORPTION.
                 //
                 // @Determine
                 // "CANCELLED" to stop the entity from being killed.
