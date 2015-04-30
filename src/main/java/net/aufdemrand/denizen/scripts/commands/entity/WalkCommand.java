@@ -1,23 +1,21 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
-import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
-import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
-import net.citizensnpcs.api.ai.event.NavigationEvent;
-import net.citizensnpcs.api.ai.flocking.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,10 +125,8 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
 
                 if (radius != null) {
-                    NPCFlock flock = new RadiusNPCFlock(radius.asDouble());
-                    Flocker flocker = new Flocker(npc.getCitizen(), flock, new SeparationBehavior(Flocker.LOW_INFLUENCE),
-                            new CohesionBehavior(Flocker.LOW_INFLUENCE), new AlignmentBehavior(Flocker.HIGH_INFLUENCE));
-                    npc.getNavigator().getLocalParameters().addRunCallback(flocker);
+                    npc.getNavigator().getLocalParameters().addRunCallback(WalkCommandCitizensEvents
+                            .generateNewFlocker(npc.getCitizen(), radius.asDouble()));
                 }
             }
             else {
@@ -159,52 +155,6 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     // Held script entries
     public static List<ScriptEntry> held = new ArrayList<ScriptEntry>();
 
-    public static class CitizensWalkEvents implements Listener {
-
-        @EventHandler
-        public void finish(NavigationCompleteEvent e) {
-
-            if (held.isEmpty()) return;
-
-            checkHeld(e);
-
-        }
-
-        @EventHandler
-        public void cancel(NavigationCancelEvent e) {
-
-            if (held.isEmpty()) return;
-
-            checkHeld(e);
-
-        }
-
-
-        public void checkHeld(NavigationEvent e) {
-            if (e.getNPC() == null)
-                return;
-
-            // Check each held entry -- the scriptExecuter is waiting on
-            // the entry to be marked 'waited for'.
-            for (int i = 0; i < held.size(); i++) {
-                ScriptEntry entry = held.get(i);
-
-                // Get all NPCs associated with the entry. They must all
-                // finish navigation before the entry can be let go
-                List<dNPC> tally = (List<dNPC>) entry.getObject("tally");
-                // If the NPC is the NPC from the event, take it from the list.
-                tally.remove(dNPC.mirrorCitizensNPC(e.getNPC()));
-
-                // Check if tally is empty.
-                if (tally.isEmpty()) {
-                    entry.setFinished(true);
-                    held.remove(i);
-                    i--;
-                }
-            }
-        }
-    }
-
     public void checkHeld(dEntity entity) {
         for (int i = 0; i < held.size(); i++) {
             ScriptEntry entry = held.get(i);
@@ -224,7 +174,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
     public void onEnable() {
         if (Depends.citizens != null) {
             DenizenAPI.getCurrentInstance().getServer().getPluginManager()
-                    .registerEvents(new CitizensWalkEvents(), DenizenAPI.getCurrentInstance());
+                    .registerEvents(new WalkCommandCitizensEvents(), DenizenAPI.getCurrentInstance());
         }
     }
 }
