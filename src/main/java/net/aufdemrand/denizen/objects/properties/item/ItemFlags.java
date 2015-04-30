@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemFlags implements Property {
@@ -28,8 +29,11 @@ public class ItemFlags implements Property {
 
     public dList flags() {
         dList output = new dList();
-        for (ItemFlag flag: item.getItemStack().getItemMeta().getItemFlags()) {
-            output.add(flag.name());
+        ItemStack itemStack = item.getItemStack();
+        if (itemStack.hasItemMeta()) {
+            for (ItemFlag flag : itemStack.getItemMeta().getItemFlags()) {
+                output.add(flag.name());
+            }
         }
         return output;
     }
