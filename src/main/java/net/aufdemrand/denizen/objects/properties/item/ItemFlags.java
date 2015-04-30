@@ -26,12 +26,12 @@ public class ItemFlags implements Property {
         item = _item;
     }
 
-    public String flags() {
+    public dList flags() {
         dList output = new dList();
         for (ItemFlag flag: item.getItemStack().getItemMeta().getItemFlags()) {
             output.add(flag.name());
         }
-        return output.identify();
+        return output.;
     }
 
     dItem item;
@@ -51,7 +51,7 @@ public class ItemFlags implements Property {
         // Valid flags include: HIDE_ATTRUBTES, HIDE_DESTROYS, HIDE_ENCHANTS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS, and HIDE_UNBREAKABLE
         // -->
         if (attribute.startsWith("flags")) {
-            return new Element(flags())
+            return flags()
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -61,7 +61,7 @@ public class ItemFlags implements Property {
 
     @Override
     public String getPropertyString() {
-        return flags();
+        return flags().identify();
     }
 
     @Override
