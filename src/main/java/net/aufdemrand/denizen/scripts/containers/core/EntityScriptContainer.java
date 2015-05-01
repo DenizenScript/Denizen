@@ -48,8 +48,6 @@ public class EntityScriptContainer extends ScriptContainer {
     //
     // MORE OPTIONS ARE LISTED HERE: <@link url /denizen/mecs/dentity.>
     //
-    // </code>
-    //
     // -->
 
     public EntityScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
