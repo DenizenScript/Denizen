@@ -44,8 +44,9 @@ public class EntityScriptContainer extends ScriptContainer {
     //
     //   # What age the entity is
     //   age: baby/adult/<#>
+    // </code>
     //
-    //   # MORE OPTIONS ARE LISTED HERE: <@link url /denizen/mecs/dentity.>
+    // MORE OPTIONS ARE LISTED HERE: <@link url /denizen/mecs/dentity.>
     //
     // </code>
     //
