@@ -164,12 +164,14 @@ public class ItemSkullskin implements Property {
 
     public static GameProfile fillGameProfile(GameProfile gameProfile) {
         if (gameProfile != null) {
-            GameProfile gameProfile1;
+            GameProfile gameProfile1 = null;
             if (gameProfile.getName() != null) {
                 gameProfile1 = MinecraftServer.getServer().getUserCache().getProfile(gameProfile.getName());
-            } else if (gameProfile.getId() != null) {
+            }
+            if (gameProfile1 == null) {
                 gameProfile1 = MinecraftServer.getServer().getUserCache().a(gameProfile.getId());
-            } else {
+            }
+            if (gameProfile1 == null) {
                 gameProfile1 = gameProfile;
             }
             if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
