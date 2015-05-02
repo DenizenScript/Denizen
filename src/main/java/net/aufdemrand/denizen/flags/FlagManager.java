@@ -145,6 +145,10 @@ public class FlagManager {
         DenizenAPI.getCurrentInstance().getSaves().set("NPCs." + npcid, null);
     }
 
+    public static void clearEntityFlags(dEntity entity) {
+        DenizenAPI.getCurrentInstance().getSaves().set("Entities." + entity.getSaveName(), null);
+    }
+
     /**
      * Returns a NPC Flag object. If this flag currently exists
      * it will be populated with the current values. If the flag does NOT exist,

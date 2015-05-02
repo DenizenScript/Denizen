@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 
 import net.aufdemrand.denizen.events.scriptevents.EntityDespawnScriptEvent;
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.world.DenizenWorldAccess;
@@ -162,5 +163,6 @@ public class EntityScriptHelper implements Listener {
         if (ent == null || ent.getUniqueId() == null)
             return;
         entities.remove(ent.getUniqueId());
+        FlagManager.clearEntityFlags(new dEntity(ent));
     }
 }
