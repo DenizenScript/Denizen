@@ -123,6 +123,12 @@ public class FlagManager {
                 .getPlayerFlag(player, flagName).size() > 0;
     }
 
+    public static boolean entityHasFlag(dEntity entity, String flagName) {
+        if (entity == null || flagName == null) return false;
+        return DenizenAPI.getCurrentInstance().flagManager()
+                .getEntityFlag(entity, flagName).size() > 0;
+    }
+
     public static boolean npcHasFlag(dNPC npc, String flagName) {
         if (npc == null || flagName == null) return false;
         return DenizenAPI.getCurrentInstance().flagManager()
@@ -171,6 +177,12 @@ public class FlagManager {
         return new Flag("Players." + player.getSaveName() + ".Flags." + flagName.toUpperCase(), flagName, player.identify());
     }
 
+    public Flag getEntityFlag(dEntity entity, String flagName) {
+        if (entity == null)
+            return new Flag("Entities.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "p@null");
+        return new Flag("Entities." + entity.getSaveName() + ".Flags." + flagName.toUpperCase(), flagName, entity.identify());
+    }
+
     public Flag getPlayerFlag(UUID player, String flagName) {
         if (player == null)
             return new Flag("players.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "p@null");
@@ -199,6 +211,11 @@ public class FlagManager {
      */
     public Set<String> listPlayerFlags(dPlayer player) {
         ConfigurationSection section = denizen.getSaves().getConfigurationSection("Players." + player.getSaveName() + ".Flags");
+        return section!= null ? _filterExpirations(section.getValues(true).keySet()) : null;
+    }
+
+    public Set<String> listEntityFlags(dEntity entity) {
+        ConfigurationSection section = denizen.getSaves().getConfigurationSection("Entities." + entity.getSaveName() + ".Flags");
         return section!= null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
 
@@ -550,6 +567,8 @@ public class FlagManager {
         // npc flag <flagname> changed
         // server flag changed
         // server flag <flagname> changed
+        // entity flag changed
+        // entity flag <flagname> changed
         //
         // @Warning This event will fire rapidly and not exactly when you might expect it to fire.
         //
@@ -586,6 +605,8 @@ public class FlagManager {
                 if (dPlayer.matches(OldOwner)) player = dPlayer.valueOf(OldOwner);
                 dNPC npc = null;
                 if (dNPC.matches(OldOwner)) npc = dNPC.valueOf(OldOwner);
+                dEntity entity = null;
+                if (dEntity.matches(OldOwner)) entity = dEntity.valueOf(OldOwner);
 
                 String type;
 
@@ -594,6 +615,9 @@ public class FlagManager {
                 }
                 else if (npc != null) {
                     type = "npc";
+                }
+                else if (entity != null) {
+                    type = "entity";
                 }
                 else {
                     type = "server";
@@ -637,6 +661,8 @@ public class FlagManager {
         // npc flag <flagname> expires
         // server flag expires
         // server flag <flagname> expires
+        // entity flag expires
+        // entity flag <flagname> expires
         //
         // @Warning This event will fire rapidly and not exactly when you might expect it to fire.
         //
@@ -678,6 +704,9 @@ public class FlagManager {
                         dNPC npc = null;
                         if (dNPC.matches(OldOwner))
                             npc = dNPC.valueOf(OldOwner);
+                        dEntity entity = null;
+                        if (dEntity.matches(OldOwner))
+                            entity = dEntity.valueOf(OldOwner);
 
                         String type;
 
@@ -686,6 +715,9 @@ public class FlagManager {
                         }
                         else if (npc != null) {
                             type = "npc";
+                        }
+                        else if (entity != null) {
+                            type = "entity";
                         }
                         else {
                             type = "server";

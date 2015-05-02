@@ -58,21 +58,29 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
             // Allow a p@player or n@npc entity to specify the target to be flagged.
             // Don't check if the player/npc is valid until after the argument
-            // is being process to make sure the objects don't accidently get set
+            // is being process to make sure the objects don't accidentally get set
             // as the name of the flag..
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.startsWith("n@") && !arg.hasPrefix()) {
-                if (dNPC.valueOf(arg.getValue()) == null)
+                if (dNPC.valueOf(arg.getValue()) == null) // TODO: Optimize
                     throw new InvalidArgumentsException("Invalid NPC target.");
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
 
-            } else if (!scriptEntry.hasObject("flag_target")
+            }
+            else if (!scriptEntry.hasObject("flag_target")
                     && arg.startsWith("p@") && !arg.hasPrefix()) {
-                if (dPlayer.valueOf(arg.getValue()) == null)
+                if (dPlayer.valueOf(arg.getValue()) == null) // TODO: Optimize
                     throw new InvalidArgumentsException("Invalid Player target.");
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
+            }
+            else if (!scriptEntry.hasObject("flag_target")
+                    && !arg.hasPrefix()) {
+                if (dEntity.valueOf(arg.getValue()) == null) // TODO: Optimize
+                    throw new InvalidArgumentsException("Invalid Entity target.");
+                specified_target = true;
+                scriptEntry.addObject("flag_target", arg.asType(dEntity.class));
             }
 
 
@@ -204,6 +212,9 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         else if (flag_target instanceof dNPC)
             flag = DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(((dNPC) flag_target).getId(), name.asString());
+
+        else if (flag_target instanceof dEntity)
+            flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag((dEntity) flag_target, name.asString());
 
         else throw new CommandExecutionException("Could not fetch a flag for this entity: " + flag_target.debug());
 

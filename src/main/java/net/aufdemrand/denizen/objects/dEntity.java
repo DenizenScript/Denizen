@@ -1,11 +1,13 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
@@ -424,6 +426,11 @@ public class dEntity implements dObject, Adjustable {
 
     public UUID getUUID() {
         return uuid;
+    }
+
+    public String getSaveName() {
+        String baseID = uuid.toString().toUpperCase().replace("-", "");
+        return baseID.substring(0, 2) + "." + baseID;
     }
 
     /**
@@ -1332,6 +1339,77 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("script")) {
             return new Element(entityScript == null ? "null": entityScript)
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.has_flag[<flag_name>]>
+        // @returns Element(Boolean)
+        // @description
+        // returns true if the entity has the specified flag, otherwise returns false.
+        // -->
+        if (attribute.startsWith("has_flag")) {
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else return null;
+            return new Element(FlagManager.entityHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.flag[<flag_name>]>
+        // @returns Flag dList
+        // @description
+        // returns the specified flag from the entity.
+        // -->
+        if (attribute.startsWith("flag")) {
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else return null;
+            if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
+                    || attribute.startsWith("isexpired"))
+                return new Element(!FlagManager.entityHasFlag(this, flag_name))
+                        .getAttribute(attribute.fulfill(2));
+            if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.entityHasFlag(this, flag_name))
+                return new Element(0).getAttribute(attribute.fulfill(2));
+            if (FlagManager.entityHasFlag(this, flag_name)) {
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
+                        .getEntityFlag(this, flag_name);
+                return new dList(flag.toString(),true, flag.values())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            return new Element(identify()).getAttribute(attribute);
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.list_flags[(regex:)<search>]>
+        // @returns dList
+        // @description
+        // Returns a list of an entity's flag names, with an optional search for
+        // names containing a certain pattern.
+        // -->
+        if (attribute.startsWith("list_flags")) {
+            dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listEntityFlags(this));
+            dList searchFlags = null;
+            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
+                searchFlags = new dList();
+                String search = attribute.getContext(1).toLowerCase();
+                if (search.startsWith("regex:")) {
+                    try {
+                        Pattern pattern = Pattern.compile(search.substring(6));
+                        for (String flag : allFlags)
+                            if (pattern.matcher(flag).matches())
+                                searchFlags.add(flag);
+                    } catch (Exception e) {
+                        dB.echoError(e);
+                    }
+                }
+                else {
+                    for (String flag : allFlags)
+                        if (flag.toLowerCase().contains(search))
+                            searchFlags.add(flag);
+                }
+            }
+            return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
+                    : searchFlags.getAttribute(attribute.fulfill(1));
         }
 
         if (entity == null) {

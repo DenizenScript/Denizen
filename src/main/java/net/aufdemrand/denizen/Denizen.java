@@ -1248,6 +1248,13 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                         else
                             dB.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
                     }
+                    else if (dEntity.matches(owner)) {
+                        dEntity entity = dEntity.valueOf(owner);
+                        if (FlagManager.entityHasFlag(entity, flag))
+                            return flag_manager.getEntityFlag(entity, flag);
+                        else
+                            dB.echoError("Entity '" + owner + "' flag '" + flag + "' not found.");
+                    }
                 }
                 else {
                     dB.echoError("Invalid dFlag format: " + string);
