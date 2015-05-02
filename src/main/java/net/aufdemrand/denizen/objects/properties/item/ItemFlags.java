@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
 import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,7 +15,7 @@ public class ItemFlags implements Property {
 
     public static boolean describes(dObject item) {
         // All items can have flags
-        return item instanceof dItem;
+        return item instanceof dItem && ((dItem) item).getItemStack().getType() != Material.AIR;
     }
 
     public static ItemFlags getFrom(dObject _item) {
@@ -65,7 +65,13 @@ public class ItemFlags implements Property {
 
     @Override
     public String getPropertyString() {
-        return flags().identify();
+        dList flags = flags();
+        if (flags.size() > 0) {
+            return flags().identify();
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -78,7 +84,7 @@ public class ItemFlags implements Property {
 
         // <--[mechanism]
         // @object dItem
-        // @name flag
+        // @name flags
         // @input dList
         // @description
         // Sets the item's meta flag set.

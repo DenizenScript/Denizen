@@ -142,7 +142,7 @@ public class Utilities {
      * @return  true if c is in between.
      */
     public static boolean isBetween(double a, double b, double c) {
-        return b > a ?  (c >= a && c < b): (c >= b && c < a); // Cuboid's have to be compensated for weirdly
+        return b > a ? (c >= a && c < b): (c >= b && c < a); // Cuboid's have to be compensated for weirdly
     }
 
 
