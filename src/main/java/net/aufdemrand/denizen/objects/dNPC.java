@@ -660,7 +660,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // See <@link command vulnerable>
         // -->
         if (attribute.startsWith("vulnerable")) {
-            return new Element(getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true)).getAttribute(attribute.fulfill(1);
+            return new Element(getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
