@@ -2447,7 +2447,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name SQL
-        // @Syntax sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (username:<username>) (password:<password>)
+        // @Syntax sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>)/query:<query>/update:<update>]
         // @Required 1
         // @Stable unstable
         // @Short Interacts with a MySQL server.
@@ -2492,7 +2492,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - sql disconnect id:name
         // -->
         registerCoreMember(SQLCommand.class,
-                "SQL", "sql [id:<ID>] [disconnect/connect:<server>/query:<query>/update:<update>] (username:<username>) (password:<password>)", 2);
+                "SQL", "sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>)/query:<query>/update:<update>]", 2);
 
 
         // <--[command]
