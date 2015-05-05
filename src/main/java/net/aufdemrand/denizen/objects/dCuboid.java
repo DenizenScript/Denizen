@@ -910,6 +910,30 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <cu@cuboid.size[<index>]>
+        // @returns dLocation
+        // @description
+        // Returns the size of the cuboid. If a single-member dCuboid, no index is required.
+        // If wanting the center of a specific member, just specify an index.
+        // Effectively equivalent to: (max - min) + (1,1,1)
+        // -->
+        if (attribute.startsWith("size")) {
+            LocationPair pair;
+            if (!attribute.hasContext(1))
+                pair = pairs.get(0);
+            else {
+                int member = attribute.getIntContext(1);
+                if (member < 1)
+                    member = 1;
+                if (member > pairs.size())
+                    member = pairs.size();
+                pair = pairs.get(member - 1);
+            }
+            Location base = pair.high.clone().subtract(pair.low.clone()).add(1, 1, 1);
+            return new dLocation(base).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <cu@cuboid.max[<index>]>
         // @returns dLocation
         // @description

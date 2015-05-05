@@ -93,7 +93,7 @@ public class dPlayer implements dObject, Adjustable {
 
     @Fetchable("p")
     public static dPlayer valueOf(String string, TagContext context) {
-        return valueOfInternal(string, true);
+        return valueOfInternal(string, context == null || context.debug);
     }
 
 
@@ -866,6 +866,17 @@ public class dPlayer implements dObject, Adjustable {
         else if (attribute.startsWith("uuid") && !isOnline())
             // This can be parsed later with more detail if the player is online, so only check for offline.
             return new Element(offlinePlayer.getUniqueId().toString()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <p@player.type>
+        // @returns Element
+        // @description
+        // Always returns 'Player' for dPlayer objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        if (attribute.startsWith("type")) {
+            return new Element("Player").getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <p@player.save_name>
@@ -1655,17 +1666,6 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("xp"))
             return new Element(getPlayerEntity().getExp() * 100)
                     .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <p@player.type>
-        // @returns Element
-        // @description
-        // Always returns 'Player' for dPlayer objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        if (attribute.startsWith("type")) {
-            return new Element("Player").getAttribute(attribute.fulfill(1));
-        }
 
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {

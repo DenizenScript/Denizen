@@ -676,6 +676,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(ItemDye.class, dItem.class);
             propertyParser.registerProperty(ItemEnchantments.class, dItem.class);
             propertyParser.registerProperty(ItemFirework.class, dItem.class);
+            propertyParser.registerProperty(ItemFlags.class, dItem.class);
             propertyParser.registerProperty(ItemLore.class, dItem.class);
             propertyParser.registerProperty(ItemMap.class, dItem.class);
             propertyParser.registerProperty(ItemPlantgrowth.class, dItem.class);
@@ -774,7 +775,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         for (OfflinePlayer player : this.getServer().getOfflinePlayers()) {
             try {
                 getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player)); } catch (Exception e) {
-                if (player == null) dB.echoError("Tell aufdemrand ASAP about this error! ERR: OPN");
+                if (player == null) dB.echoError("Tell the Denizen team ASAP about this error! ERR: OPN: " + e.toString());
                 else dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
                         "You might have a corrupt player file!");
             }
@@ -1246,6 +1247,13 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                             return flag_manager.getNPCFlag(npc.getId(), flag);
                         else
                             dB.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
+                    }
+                    else if (dEntity.matches(owner)) {
+                        dEntity entity = dEntity.valueOf(owner);
+                        if (FlagManager.entityHasFlag(entity, flag))
+                            return flag_manager.getEntityFlag(entity, flag);
+                        else
+                            dB.echoError("Entity '" + owner + "' flag '" + flag + "' not found.");
                     }
                 }
                 else {

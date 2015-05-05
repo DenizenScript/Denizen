@@ -72,8 +72,11 @@ public class HealCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(), amountelement.debug() + aH.debugObj("entities", entities));
         if (amountelement.asDouble() == -1)
-            for (dEntity entity : entities)
-                entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
+            for (dEntity entity : entities) {
+                if (entity.isLivingEntity()) {
+                    entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
+                }
+            }
         else {
             double amount = amountelement.asDouble();
             for (dEntity entity : entities)

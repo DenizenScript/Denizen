@@ -114,6 +114,9 @@ public class EntitySpawnSmartEvent implements OldSmartEvent, Listener {
         dEntity entity = new dEntity(event.getEntity());
         String reason = event.getSpawnReason().name();
 
+        // Remember the entity (for adjusting and stuff before it's spawned)
+        dEntity.rememberEntity(event.getEntity());
+
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getLocation());
 
@@ -145,6 +148,8 @@ public class EntitySpawnSmartEvent implements OldSmartEvent, Listener {
 
         String determination = BukkitWorldScriptHelper.doEvents(events,
                 (entity.isCitizensNPC() ? entity.getDenizenNPC() : null), null, context, true);
+
+        dEntity.forgetEntity(event.getEntity());
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);

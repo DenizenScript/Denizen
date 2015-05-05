@@ -98,12 +98,7 @@ public class EntityAge implements Property {
 
     @Override
     public String getPropertyString() {
-        if (isBaby())
-            return "baby" + (getLock() ? "|locked": "");
-        else if (ageable.getBukkitEntity().getType() != EntityType.ZOMBIE && getLock())
-            return "adult|locked";
-        else
-            return null;
+        return getAge() + (getLock() ? "|locked": "");
     }
 
     @Override

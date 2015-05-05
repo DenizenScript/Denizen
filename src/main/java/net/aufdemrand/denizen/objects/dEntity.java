@@ -1,11 +1,13 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
@@ -51,6 +53,16 @@ public class dEntity implements dObject, Adjustable {
     /////////////////////
     //   STATIC METHODS
     /////////////////
+
+    private static final Map<UUID, Entity> rememberedEntities = new HashMap<UUID, Entity>();
+
+    public static void rememberEntity(Entity entity) {
+        rememberedEntities.put(entity.getUniqueId(), entity);
+    }
+
+    public static void forgetEntity(Entity entity) {
+        rememberedEntities.remove(entity.getUniqueId());
+    }
 
     public static boolean isNPC(Entity entity) {
         return entity != null && entity.hasMetadata("NPC") && entity.getMetadata("NPC").get(0).asBoolean();
@@ -161,9 +173,13 @@ public class dEntity implements dObject, Adjustable {
             else if (entityGroup.matches("P@")) {
                 LivingEntity returnable = dPlayer.valueOf(m.group(2)).getPlayerEntity();
 
-                if (returnable != null) return new dEntity(returnable);
-                else dB.echoError("Invalid Player! '" + m.group(2)
-                        + "' could not be found. Has the player logged off?");
+                if (returnable != null) {
+                    return new dEntity(returnable);
+                }
+                else if (context == null || context.debug) {
+                    dB.echoError("Invalid Player! '" + m.group(2)
+                            + "' could not be found. Has the player logged off?");
+                }
             }
 
             // Assume entity
@@ -219,15 +235,18 @@ public class dEntity implements dObject, Adjustable {
             }
         }
 
-        dB.log("valueOf dEntity returning null: " + string);
+        if (context == null || context.debug) {
+            dB.log("valueOf dEntity returning null: " + string);
+        }
 
         return null;
     }
 
-    @Deprecated
-    public static Entity getEntityForID(UUID ID) {
+    public static Entity getEntityForID(UUID id) {
+        if (rememberedEntities.containsKey(id))
+            return rememberedEntities.get(id);
         for (World world : Bukkit.getWorlds()) {
-            net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(ID);
+            net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
 
             // Make sure the nmsEntity is valid, to prevent unpleasant errors
             if (nmsEntity != null) {
@@ -407,6 +426,11 @@ public class dEntity implements dObject, Adjustable {
 
     public UUID getUUID() {
         return uuid;
+    }
+
+    public String getSaveName() {
+        String baseID = uuid.toString().toUpperCase().replace("-", "");
+        return baseID.substring(0, 2) + "." + baseID;
     }
 
     /**
@@ -1108,7 +1132,7 @@ public class dEntity implements dObject, Adjustable {
                 // if (isSaved(this))
                 //    return "e@" + getSaved(this);
 
-            else if (isSpawned())
+            else if (isSpawned() || rememberedEntities.containsKey(entity.getUniqueId()))
                 return "e@" + entity.getUniqueId().toString();
         }
 
@@ -1315,6 +1339,77 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("script")) {
             return new Element(entityScript == null ? "null": entityScript)
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.has_flag[<flag_name>]>
+        // @returns Element(Boolean)
+        // @description
+        // returns true if the entity has the specified flag, otherwise returns false.
+        // -->
+        if (attribute.startsWith("has_flag")) {
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else return null;
+            return new Element(FlagManager.entityHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.flag[<flag_name>]>
+        // @returns Flag dList
+        // @description
+        // returns the specified flag from the entity.
+        // -->
+        if (attribute.startsWith("flag")) {
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else return null;
+            if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
+                    || attribute.startsWith("isexpired"))
+                return new Element(!FlagManager.entityHasFlag(this, flag_name))
+                        .getAttribute(attribute.fulfill(2));
+            if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.entityHasFlag(this, flag_name))
+                return new Element(0).getAttribute(attribute.fulfill(2));
+            if (FlagManager.entityHasFlag(this, flag_name)) {
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
+                        .getEntityFlag(this, flag_name);
+                return new dList(flag.toString(),true, flag.values())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            return new Element(identify()).getAttribute(attribute);
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.list_flags[(regex:)<search>]>
+        // @returns dList
+        // @description
+        // Returns a list of an entity's flag names, with an optional search for
+        // names containing a certain pattern.
+        // -->
+        if (attribute.startsWith("list_flags")) {
+            dList allFlags = new dList(DenizenAPI.getCurrentInstance().flagManager().listEntityFlags(this));
+            dList searchFlags = null;
+            if (!allFlags.isEmpty() && attribute.hasContext(1)) {
+                searchFlags = new dList();
+                String search = attribute.getContext(1).toLowerCase();
+                if (search.startsWith("regex:")) {
+                    try {
+                        Pattern pattern = Pattern.compile(search.substring(6));
+                        for (String flag : allFlags)
+                            if (pattern.matcher(flag).matches())
+                                searchFlags.add(flag);
+                    } catch (Exception e) {
+                        dB.echoError(e);
+                    }
+                }
+                else {
+                    for (String flag : allFlags)
+                        if (flag.toLowerCase().contains(search))
+                            searchFlags.add(flag);
+                }
+            }
+            return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
+                    : searchFlags.getAttribute(attribute.fulfill(1));
         }
 
         if (entity == null) {
