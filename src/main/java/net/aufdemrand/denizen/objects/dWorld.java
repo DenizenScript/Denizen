@@ -501,9 +501,10 @@ public class dWorld implements dObject, Adjustable {
         // @description
         // Returns the in-game time of this world.
         // -->
-        if (attribute.startsWith("time.full"))
+        if (attribute.startsWith("time.full")) {
             return new Element(getWorld().getFullTime())
-                    .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
         // @attribute <w@world.time>
@@ -511,9 +512,10 @@ public class dWorld implements dObject, Adjustable {
         // @description
         // Returns the relative in-game time of this world.
         // -->
-        if (attribute.startsWith("time"))
+        if (attribute.startsWith("time")) {
             return new Element(getWorld().getTime())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <w@world.moon_phase>
@@ -522,9 +524,10 @@ public class dWorld implements dObject, Adjustable {
         // returns the current phase of the moon, as an integer from 1 to 8.
         // -->
         if (attribute.startsWith("moon_phase")
-                || attribute.startsWith("moonphase"))
-            return new Element((int)((getWorld().getFullTime() / 24000) % 8) + 1)
+                || attribute.startsWith("moonphase")) {
+            return new Element((int) ((getWorld().getFullTime() / 24000) % 8) + 1)
                     .getAttribute(attribute.fulfill(1));
+        }
 
 
         /////////////////////
@@ -537,9 +540,10 @@ public class dWorld implements dObject, Adjustable {
         // @description
         // returns whether there is currently a storm in this world.
         // -->
-        if (attribute.startsWith("has_storm"))
+        if (attribute.startsWith("has_storm")) {
             return new Element(getWorld().hasStorm())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <w@world.thunder_duration>
@@ -547,9 +551,10 @@ public class dWorld implements dObject, Adjustable {
         // @description
         // Returns the duration of thunder.
         // -->
-        if (attribute.startsWith("thunder_duration"))
+        if (attribute.startsWith("thunder_duration")) {
             return new Duration((long) getWorld().getThunderDuration())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <w@world.thundering>
@@ -557,9 +562,10 @@ public class dWorld implements dObject, Adjustable {
         // @description
         // Returns whether it is currently thundering in this world.
         // -->
-        if (attribute.startsWith("thundering"))
+        if (attribute.startsWith("thundering")) {
             return new Element(getWorld().isThundering())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <w@world.weather_duration>
@@ -567,9 +573,10 @@ public class dWorld implements dObject, Adjustable {
         // @description
         // Returns the duration of storms.
         // -->
-        if (attribute.startsWith("weather_duration"))
+        if (attribute.startsWith("weather_duration")) {
             return new Duration((long) getWorld().getWeatherDuration())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <w@world.type>
