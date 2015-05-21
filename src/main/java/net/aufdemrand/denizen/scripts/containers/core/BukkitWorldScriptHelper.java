@@ -4453,6 +4453,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.location> returns the dLocation the structure grew at.
     // <context.structure> returns an Element of the structure's type.
     // <context.blocks> returns a dList of all block locations to be modified.
+    // <context.new_materials> returns a dList of the new block materials, to go with <context.blocks>.
     //
     // @Determine
     // "CANCELLED" to stop the structure from growing.
@@ -4470,10 +4471,13 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("structure", new Element(treeType));
 
         dList structure = new dList();
+        dList mats = new dList();
         for (BlockState state: event.getBlocks()) {
             structure.add(new dLocation(state.getLocation()).identify());
+            mats.add(dMaterial.getMaterialFrom(state.getType(), state.getRawData()).identify());
         }
         context.put("blocks", structure);
+        context.put("new_materials", mats);
 
         List<String> events = new ArrayList<String>();
         events.add("structure grows");

@@ -271,6 +271,12 @@ public class ScoreboardHelper {
     private static Map.Entry<Team, String> createTeam(Scoreboard scoreboard, String text) {
         if (text.length() <= 16)
             return new HashMap.SimpleEntry<Team, String>(null, text);
+        if (text.length() <= 32) {
+            Team team = scoreboard.registerNewTeam("text-" + scoreboard.getTeams().size());
+            team.setPrefix(text.substring(0, text.length() - 16));
+            String result = text.substring(text.length() - 16);
+            return new HashMap.SimpleEntry<Team, String>(team, result);
+        }
         Team team = scoreboard.registerNewTeam("text-" + scoreboard.getTeams().size());
         Iterator<String> iterator = Splitter.fixedLength(16).split(text).iterator();
         team.setPrefix(iterator.next());

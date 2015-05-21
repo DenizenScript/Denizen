@@ -647,10 +647,21 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @returns Element(Boolean)
         // @description
         // returns whether the NPC is currently engaged.
-        // See <@link command Engage>
+        // See <@link command engage>
         // -->
         if (attribute.startsWith("engaged") || attribute.startsWith("is_engaged"))
             return new Element(isEngaged()).getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
+        // @attribute <n@npc.vulnerable>
+        // @returns Element(Boolean)
+        // @description
+        // returns whether the NPC is currently vulnerable.
+        // See <@link command vulnerable>
+        // -->
+        if (attribute.startsWith("vulnerable")) {
+            return new Element(getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true)).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <n@npc.id>
