@@ -98,7 +98,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
         final Element username = scriptEntry.getElement("username");
         final Element password = scriptEntry.getElement("password");
         final Element sqlID = scriptEntry.getElement("sqlid");
-        Element query = scriptEntry.getElement("query");
+        final Element query = scriptEntry.getElement("query");
 
         dB.report(scriptEntry, getName(), sqlID.debug()
                                         + action.debug()
@@ -107,7 +107,8 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                                         + (password != null ? aH.debugObj("password", "NotLogged"): "")
                                         + (query != null ? query.debug(): ""));
 
-        if (!action.asString().equalsIgnoreCase("connect") && !action.asString().equalsIgnoreCase("query"))
+        if (!action.asString().equalsIgnoreCase("connect") &&
+                (!action.asString().equalsIgnoreCase("query") || !scriptEntry.shouldWaitFor()))
             scriptEntry.setFinished(true);
 
         try {
@@ -185,57 +186,79 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                     dB.echoError(scriptEntry.getResidingQueue(), "Must specify a query!");
                     return;
                 }
-                Connection con = connections.get(sqlID.asString().toUpperCase());
+                final Connection con = connections.get(sqlID.asString().toUpperCase());
                 if (con == null) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Not connected to server with ID '" + sqlID.asString() + "'!");
                     return;
                 }
                 dB.echoDebug(scriptEntry, "Running query " + query.asString());
-                Bukkit.getScheduler().runTaskLaterAsynchronously(DenizenAPI.getCurrentInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Statement statement = con.createStatement();
-                        ResultSet set = statement.executeQuery(query.asString());
-                        try {
-                            ResultSetMetaData rsmd = set.getMetaData();
-                            final int columns = rsmd.getColumnCount();
-                            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
-                                @Override
-                                public void run() {
-                                    dB.echoDebug(scriptEntry, "Got a query result of " + columns + " columns");
+                if (scriptEntry.shouldWaitFor()) {
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(DenizenAPI.getCurrentInstance(), new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Statement statement = con.createStatement();
+                                ResultSet set = statement.executeQuery(query.asString());
+                                ResultSetMetaData rsmd = set.getMetaData();
+                                final int columns = rsmd.getColumnCount();
+                                Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        dB.echoDebug(scriptEntry, "Got a query result of " + columns + " columns");
+                                    }
+                                }, 1);
+                                int count = 0;
+                                dList rows = new dList();
+                                while (set.next()) {
+                                    count++;
+                                    StringBuilder current = new StringBuilder();
+                                    for (int i = 0; i < columns; i++) {
+                                        current.append(EscapeTags.Escape(set.getString(i + 1))).append("/");
+                                    }
+                                    rows.add(current.toString());
                                 }
-                            }, 1);
-                            int count = 0;
-                            dList rows = new dList();
-                            while (set.next()) {
-                                count++;
-                                StringBuilder current = new StringBuilder();
-                                for (int i = 0; i < columns; i++) {
-                                    current.append(EscapeTags.Escape(set.getString(i + 1))).append("/");
-                                }
-                                rows.add(current.toString());
+                                scriptEntry.addObject("result", rows);
+                                final int finalCount = count;
+                                Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        dB.echoDebug(scriptEntry, "Got a query result of " + finalCount + " rows");
+                                        scriptEntry.setFinished(true);
+                                    }
+                                }, 1);
+                            } catch (final Exception e) {
+                                Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        dB.echoError(scriptEntry.getResidingQueue(), "SQL Exception: " + e.getMessage());
+                                        scriptEntry.setFinished(true);
+                                        if (dB.verbose) dB.echoError(scriptEntry.getResidingQueue(), e);
+                                    }
+                                }, 1);
                             }
-                            scriptEntry.addObject("result", rows);
-                            final int finalCount = count;
-                            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
-                                @Override
-                                public void run() {
-                                    dB.echoDebug(scriptEntry, "Got a query result of " + finalCount + " rows");
-                                    scriptEntry.setFinished(true);
-                                }
-                            }, 1);
-                        } catch (final Exception e) {
-                            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
-                                @Override
-                                public void run() {
-                                    dB.echoError(scriptEntry.getResidingQueue(), "SQL Exception: " + e.getMessage());
-                                    scriptEntry.setFinished(true);
-                                    if (dB.verbose) dB.echoError(scriptEntry.getResidingQueue(), e);
-                                }
-                            }, 1);
                         }
+                    }, 1);
+                }
+                else {
+                    Statement statement = con.createStatement();
+                    ResultSet set = statement.executeQuery(query.asString());
+                    ResultSetMetaData rsmd = set.getMetaData();
+                    final int columns = rsmd.getColumnCount();
+                    dB.echoDebug(scriptEntry, "Got a query result of " + columns + " columns");
+                    int count = 0;
+                    dList rows = new dList();
+                    while (set.next()) {
+                        count++;
+                        StringBuilder current = new StringBuilder();
+                        for (int i = 0; i < columns; i++) {
+                            current.append(EscapeTags.Escape(set.getString(i + 1))).append("/");
+                        }
+                        rows.add(current.toString());
                     }
-                }, 1);
+                    scriptEntry.addObject("result", rows);
+                    final int finalCount = count;
+                    dB.echoDebug(scriptEntry, "Got a query result of " + finalCount + " rows");
+                }
             }
             else if (action.asString().equalsIgnoreCase("update")) {
                 if (query == null) {
