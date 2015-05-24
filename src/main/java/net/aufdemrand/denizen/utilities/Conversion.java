@@ -79,10 +79,14 @@ public class Conversion {
         String string = arg.getValue();
 
         if (dInventory.matches(string)) {
-            return dInventory.valueOf(string, ((BukkitScriptEntryData) scriptEntry.getData()).getTagContext());
+            BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.getData();
+            if (data != null)
+                return dInventory.valueOf(string, ((BukkitScriptEntryData) scriptEntry.getData()).getTagContext());
+            else
+                return dInventory.valueOf(string);
         }
         else if (arg.matchesArgumentList(dItem.class)) {
-            List<dItem> list = dList.valueOf(string).filter(dItem.class);
+            List<dItem> list = dList.valueOf(string).filter(dItem.class, scriptEntry);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
             dInventory inventory = new dInventory(dInventory.maxSlots);
             inventory.setContents(items);
