@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
@@ -11,7 +10,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
-import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.objects.*;

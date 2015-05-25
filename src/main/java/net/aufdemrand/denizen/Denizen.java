@@ -453,6 +453,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptRegistry._registerType("inventory", InventoryScriptContainer.class);
             ScriptRegistry._registerType("command", CommandScriptContainer.class);
             ScriptRegistry._registerType("map", MapScriptContainer.class);
+            ScriptRegistry._registerType("version", VersionScriptContainer.class);
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -1207,6 +1208,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public void refreshScriptContainers() {
+        VersionScriptContainer.scripts.clear();
         ItemScriptHelper.item_scripts.clear();
         ItemScriptHelper.item_scripts_by_hash_id.clear();
         InventoryScriptHelper.inventory_scripts.clear();
