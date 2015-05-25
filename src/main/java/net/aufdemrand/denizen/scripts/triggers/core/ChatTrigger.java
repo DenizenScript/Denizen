@@ -1,23 +1,23 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.ChatbotTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
+import net.aufdemrand.denizen.utilities.entity.Rotation;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -28,7 +28,7 @@ import org.bukkit.event.player.PlayerChatEvent;
 
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -316,41 +316,26 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Return if "Use asynchronous event" is false in config file
         if (!Settings.chatAsynchronous()) return;
 
-        Callable<ChatContext> call = new Callable<ChatContext>() {
-            ChatContext called = null;
+        FutureTask<ChatContext> futureTask =  new FutureTask<ChatContext>(new Callable<ChatContext>() {
+            @Override
             public ChatContext call() {
-                if (called != null)
-                    return called;
-                called = process(event.getPlayer(), event.getMessage());
-                return called;
+                return process(event.getPlayer(), event.getMessage());
             }
-        };
+        });
 
-        Boolean cancelled = false;
+        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), futureTask);
 
         try {
-            // Determine if the chat should be cancelled
-            cancelled = event.isAsynchronous()
-                    ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get().wasTriggered()
-                    : call.call().wasTriggered();
-
-            // Handle any changes with the ChatContext message
-            if (call.call().hasChanges())
-                event.setMessage(call.call().getChanges());
-
-        } catch (InterruptedException e) {
-            if (HyperDebug) dB.log("INTERRUPTED?");
-            // This is normal -- probably.
-            // dB.echoError(e);
-        } catch (ExecutionException e) {
-            dB.echoError(e);
-        } catch (Exception e) {
+            ChatContext context = futureTask.get();
+            if (context.wasTriggered()) {
+                event.setCancelled(true);
+            }
+            if (context.hasChanges()) {
+                event.setMessage(context.getChanges());
+            }
+        }  catch (Exception e) {
             dB.echoError(e);
         }
-
-
-        if (cancelled)
-            event.setCancelled(true);
     }
 
     @EventHandler

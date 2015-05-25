@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
@@ -11,7 +10,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
-import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.objects.*;
@@ -22,16 +20,16 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
-import net.minecraft.server.v1_8_R2.*;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftAnimals;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -246,7 +244,7 @@ public class dEntity implements dObject, Adjustable {
         if (rememberedEntities.containsKey(id))
             return rememberedEntities.get(id);
         for (World world : Bukkit.getWorlds()) {
-            net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
+            net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
 
             // Make sure the nmsEntity is valid, to prevent unpleasant errors
             if (nmsEntity != null) {

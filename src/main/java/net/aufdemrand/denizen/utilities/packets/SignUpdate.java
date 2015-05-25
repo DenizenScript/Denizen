@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R2.BlockPosition;
-import net.minecraft.server.v1_8_R2.ChatComponentText;
-import net.minecraft.server.v1_8_R2.IChatBaseComponent;
-import net.minecraft.server.v1_8_R2.PacketPlayOutUpdateSign;
+import net.minecraft.server.v1_8_R3.BlockPosition;
+import net.minecraft.server.v1_8_R3.ChatComponentText;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateSign;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

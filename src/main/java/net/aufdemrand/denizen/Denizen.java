@@ -240,7 +240,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Denizen extends JavaPlugin implements DenizenImplementation {
-    public final static int configVersion = 10;
+    public final static int configVersion = 11;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
@@ -345,7 +345,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void onEnable() {
         try {
-            net.minecraft.server.v1_8_R2.Block.getById(0);
+            net.minecraft.server.v1_8_R3.Block.getById(0);
         }
         catch (NoClassDefFoundError e) {
             getLogger().warning("-------------------------------------");
@@ -453,6 +453,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptRegistry._registerType("inventory", InventoryScriptContainer.class);
             ScriptRegistry._registerType("command", CommandScriptContainer.class);
             ScriptRegistry._registerType("map", MapScriptContainer.class);
+            ScriptRegistry._registerType("version", VersionScriptContainer.class);
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -1207,6 +1208,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public void refreshScriptContainers() {
+        VersionScriptContainer.scripts.clear();
         ItemScriptHelper.item_scripts.clear();
         ItemScriptHelper.item_scripts_by_hash_id.clear();
         InventoryScriptHelper.inventory_scripts.clear();

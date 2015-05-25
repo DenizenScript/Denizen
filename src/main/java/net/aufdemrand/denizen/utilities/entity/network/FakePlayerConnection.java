@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities.entity.network;
 
-import net.minecraft.server.v1_8_R2.*;
+import net.minecraft.server.v1_8_R3.*;
 
 public class FakePlayerConnection extends PlayerConnection {
 

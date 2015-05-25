@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -34,21 +35,23 @@ public class PlayerTags implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void addMessage(final AsyncPlayerChatEvent event) {
-        Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
-            @Override
-            public void run() {
-                List<String> history = playerChatHistory.get(event.getPlayer().getName());
-                // If history hasn't been started for this player, initialize a new ArrayList
-                if (history == null) history = new ArrayList<String>();
-                // Maximum history size is 10
-                // TODO: Make size configurable
-                if (history.size() > 10) history.remove(9);
-                // Add message to history
-                history.add(0, event.getMessage());
-                // Store the new history
-                playerChatHistory.put(event.getPlayer().getName(), history);
-            }
-        }, 1);
+        final int maxSize = Settings.chatHistoryMaxMessages();
+        if (maxSize > 0) {
+            Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    List<String> history = playerChatHistory.get(event.getPlayer().getName());
+                    // If history hasn't been started for this player, initialize a new ArrayList
+                    if (history == null) history = new ArrayList<String>();
+                    // Maximum history size is specified by config.yml
+                    if (history.size() > maxSize) history.remove(maxSize - 1);
+                    // Add message to history
+                    history.add(0, event.getMessage());
+                    // Store the new history
+                    playerChatHistory.put(event.getPlayer().getName(), history);
+                }
+            }, 1);
+        }
     }
 
 

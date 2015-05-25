@@ -6,6 +6,8 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
+import net.aufdemrand.denizen.scripts.containers.core.VersionScriptContainer;
+import net.aufdemrand.denizen.utilities.ScriptVersionChecker;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.events.core.ReloadScriptsScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
@@ -21,6 +23,7 @@ import net.aufdemrand.denizen.utilities.debugging.DebugSubmit;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -250,6 +253,22 @@ public class DenizenCommandHandler {
         Messaging.send(sender, "");
         Messaging.send(sender, "<7>by: <f>aufdemrand and mcmonkey, with help from many skilled contributors!");
         Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag + "<7>, core version: <f>" + DenizenCore.VERSION );
+    }
+
+
+    /*
+     * DENIZEN SCRIPTCHECK
+     */
+    @Command(
+            aliases = { "denizen" }, usage = "scriptversions",
+            desc = "Shows the currently loaded version of your scripts and checks them against the script repo.", modifiers = { "scriptversions"},
+            min = 1, max = 3, permission = "denizen.basic")
+    public void scriptcheck(CommandContext args, CommandSender sender) throws CommandException {
+        sender.sendMessage(ChatColor.GREEN + "Checking " + VersionScriptContainer.scripts.size() + " script(s)!");
+        for (VersionScriptContainer cont: VersionScriptContainer.scripts) {
+            ScriptVersionChecker svc = new ScriptVersionChecker(cont);
+            svc.runme(sender);
+        }
     }
 
 

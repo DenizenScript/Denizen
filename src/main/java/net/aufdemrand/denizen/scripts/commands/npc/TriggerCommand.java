@@ -95,7 +95,7 @@ public class TriggerCommand extends AbstractCommand {
         if (radius != null)
             trait.setLocalRadius(trigger.asString(), radius.asInt());
 
-        if (cooldown != null && cooldown.getSeconds() > 0)
+        if (cooldown != null)
             trait.setLocalCooldown(trigger.asString(), cooldown.getSeconds());
     }
 }

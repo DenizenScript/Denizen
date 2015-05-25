@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R2.PacketPlayOutCamera;
+import net.minecraft.server.v1_8_R3.PacketPlayOutCamera;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
