@@ -101,6 +101,9 @@ public class TriggerTrait extends Trait implements Listener {
 
 
     public void setLocalCooldown(String triggerName, double value) {
+        if (value < 0) {
+            value = 0;
+        }
         duration.put(triggerName.toUpperCase(), value);
     }
 
