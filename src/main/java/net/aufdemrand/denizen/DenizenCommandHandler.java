@@ -260,11 +260,11 @@ public class DenizenCommandHandler {
      * DENIZEN SCRIPTCHECK
      */
     @Command(
-            aliases = { "denizen" }, usage = "scriptcheck",
-            desc = "Shows the currently loaded version of your scripts and checks them against the script repo.", modifiers = { "scriptcheck"},
+            aliases = { "denizen" }, usage = "scriptversions",
+            desc = "Shows the currently loaded version of your scripts and checks them against the script repo.", modifiers = { "scriptversions"},
             min = 1, max = 3, permission = "denizen.basic")
     public void scriptcheck(CommandContext args, CommandSender sender) throws CommandException {
-        sender.sendMessage(ChatColor.GREEN + "Checking " + VersionScriptContainer.scripts.size() + " scripts!");
+        sender.sendMessage(ChatColor.GREEN + "Checking " + VersionScriptContainer.scripts.size() + " script(s)!");
         for (VersionScriptContainer cont: VersionScriptContainer.scripts) {
             ScriptVersionChecker svc = new ScriptVersionChecker(cont);
             svc.runme(sender);
