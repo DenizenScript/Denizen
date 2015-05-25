@@ -3,10 +3,13 @@ package net.aufdemrand.denizen.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.objects.aH.Argument;
 
 import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import org.bukkit.Color;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -72,14 +75,18 @@ public class Conversion {
      * @return The dInventory retrieved by parsing the argument
      */
 
-    public static dInventory getInventory(Argument arg, dPlayer player, dNPC npc) {
+    public static dInventory getInventory(Argument arg, ScriptEntry scriptEntry) {
         String string = arg.getValue();
 
         if (dInventory.matches(string)) {
-            return dInventory.valueOf(string, player, npc);
+            BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.getData();
+            if (data != null)
+                return dInventory.valueOf(string, ((BukkitScriptEntryData) scriptEntry.getData()).getTagContext());
+            else
+                return dInventory.valueOf(string);
         }
         else if (arg.matchesArgumentList(dItem.class)) {
-            List<dItem> list = dList.valueOf(string).filter(dItem.class);
+            List<dItem> list = dList.valueOf(string).filter(dItem.class, scriptEntry);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
             dInventory inventory = new dInventory(dInventory.maxSlots);
             inventory.setContents(items);
