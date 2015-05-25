@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.packets;
 
-import net.minecraft.server.v1_8_R2.PacketPlayOutExperience;
-import net.minecraft.server.v1_8_R2.PacketPlayOutUpdateHealth;
+import net.minecraft.server.v1_8_R3.PacketPlayOutExperience;
+import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateHealth;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;

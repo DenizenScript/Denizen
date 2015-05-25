@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
-import net.minecraft.server.v1_8_R2.EntityLiving;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
+import net.minecraft.server.v1_8_R3.EntityLiving;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +22,7 @@ public class CustomNBT {
     public static boolean hasCustomNBT(ItemStack item, String key) {
         if (item == null) return false;
         NBTTagCompound tag;
-        net.minecraft.server.v1_8_R2.ItemStack cis = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_8_R3.ItemStack cis = CraftItemStack.asNMSCopy(item);
         if (!cis.hasTag()) return false;
         tag = cis.getTag();
         // dB.echoDebug(tag.toString());
@@ -32,7 +32,7 @@ public class CustomNBT {
 
     public static String getCustomNBT(ItemStack item, String key) {
         if (item == null) return null;
-        net.minecraft.server.v1_8_R2.ItemStack cis = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_8_R3.ItemStack cis = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag;
         if (!cis.hasTag())
             cis.setTag(new NBTTagCompound());
@@ -45,7 +45,7 @@ public class CustomNBT {
 
     public static ItemStack removeCustomNBT(ItemStack item, String key) {
         if (item == null) return null;
-        net.minecraft.server.v1_8_R2.ItemStack cis = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_8_R3.ItemStack cis = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag;
         if (!cis.hasTag())
             cis.setTag(new NBTTagCompound());
@@ -57,7 +57,7 @@ public class CustomNBT {
 
     public static ItemStack addCustomNBT(ItemStack item, String key, String value) {
         if (item == null) return null;
-        net.minecraft.server.v1_8_R2.ItemStack cis = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_8_R3.ItemStack cis = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag = null;
         // Do stuff with tag
         if (!cis.hasTag())
@@ -70,7 +70,7 @@ public class CustomNBT {
     public static LivingEntity addCustomNBT(LivingEntity entity, String key, String value) {
         if (entity == null) return null;
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag
@@ -87,7 +87,7 @@ public class CustomNBT {
     public static LivingEntity removeCustomNBT(LivingEntity entity, String key) {
         if (entity == null) return null;
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag
@@ -104,7 +104,7 @@ public class CustomNBT {
     public static boolean hasCustomNBT(LivingEntity entity, String key) {
         if (entity == null) return false;
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag
@@ -117,7 +117,7 @@ public class CustomNBT {
     public static String getCustomNBT(LivingEntity entity, String key) {
         if (entity == null) return null;
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag

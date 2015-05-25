@@ -20,16 +20,16 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
-import net.minecraft.server.v1_8_R2.*;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftAnimals;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -244,7 +244,7 @@ public class dEntity implements dObject, Adjustable {
         if (rememberedEntities.containsKey(id))
             return rememberedEntities.get(id);
         for (World world : Bukkit.getWorlds()) {
-            net.minecraft.server.v1_8_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
+            net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
 
             // Make sure the nmsEntity is valid, to prevent unpleasant errors
             if (nmsEntity != null) {

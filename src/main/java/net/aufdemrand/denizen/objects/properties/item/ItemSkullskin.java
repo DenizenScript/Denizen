@@ -11,11 +11,11 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_8_R2.GameProfileSerializer;
-import net.minecraft.server.v1_8_R2.ItemStack;
-import net.minecraft.server.v1_8_R2.MinecraftServer;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
+import net.minecraft.server.v1_8_R3.GameProfileSerializer;
+import net.minecraft.server.v1_8_R3.ItemStack;
+import net.minecraft.server.v1_8_R3.MinecraftServer;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
@@ -175,7 +175,7 @@ public class ItemSkullskin implements Property {
                 gameProfile1 = gameProfile;
             }
             if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
-                gameProfile1 = MinecraftServer.getServer().aC().fillProfileProperties(gameProfile1, true);
+                gameProfile1 = MinecraftServer.getServer().aD().fillProfileProperties(gameProfile1, true);
             }
             return gameProfile1;
         }

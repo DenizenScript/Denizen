@@ -3,12 +3,12 @@ package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R2.PacketPlayInClientCommand;
-import net.minecraft.server.v1_8_R2.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R2.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_8_R2.PacketPlayOutSpawnEntityLiving;
-import net.minecraft.server.v1_8_R2.PacketPlayOutEntityTeleport;
-import net.minecraft.server.v1_8_R2.DataWatcher;
+import net.minecraft.server.v1_8_R3.PacketPlayInClientCommand;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata;
+import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_8_R3.DataWatcher;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;

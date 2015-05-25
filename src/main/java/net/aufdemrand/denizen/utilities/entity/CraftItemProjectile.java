@@ -2,11 +2,11 @@ package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizencore.objects.Mechanism;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftHumanEntity;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftItem;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftItem;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.projectiles.ProjectileSource;
 

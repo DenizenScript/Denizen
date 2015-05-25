@@ -2,8 +2,8 @@ package net.aufdemrand.denizen.utilities.packets;
 
 import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R2.PacketDataSerializer;
-import net.minecraft.server.v1_8_R2.PacketPlayOutCustomPayload;
+import net.minecraft.server.v1_8_R3.PacketDataSerializer;
+import net.minecraft.server.v1_8_R3.PacketPlayOutCustomPayload;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

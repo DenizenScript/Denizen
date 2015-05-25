@@ -3,9 +3,9 @@ package net.aufdemrand.denizen.npc.traits;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.minecraft.server.v1_8_R2.EntityHuman;
+import net.minecraft.server.v1_8_R3.EntityHuman;
 
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Listener;
 
