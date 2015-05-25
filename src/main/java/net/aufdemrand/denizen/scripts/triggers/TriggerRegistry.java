@@ -104,13 +104,19 @@ public class TriggerRegistry implements dRegistry {
 
     public void setCooldown(NPC npc, dPlayer player, AbstractTrigger triggerClass, double seconds, CooldownType cooldownType) {
         Map<String, Long> triggerMap = new HashMap<String, Long>();
+        boolean noCooldown = seconds <= 0;
 
         switch (cooldownType) {
             case NPC:
                 // set npcCooldown
                 if (npcCooldown.containsKey(npc.getId()))
                     triggerMap = npcCooldown.get(npc.getId());
-                triggerMap.put(triggerClass.name, System.currentTimeMillis() + (long) (seconds * 1000));
+                if (noCooldown && triggerMap.containsKey(triggerClass.name)) {
+                    triggerMap.remove(triggerClass.name);
+                }
+                else {
+                    triggerMap.put(triggerClass.name, System.currentTimeMillis() + (long) (seconds * 1000));
+                }
                 npcCooldown.put(npc.getId(), triggerMap);
                 break;
 
@@ -118,7 +124,12 @@ public class TriggerRegistry implements dRegistry {
                 // set playerCooldown
                 if (playerCooldown.containsKey(player.getName() + "/" + npc.getId()))
                     triggerMap = playerCooldown.get(player.getName() + "/" + npc.getId());
-                triggerMap.put(triggerClass.name, System.currentTimeMillis() + (long) (seconds * 1000));
+                if (noCooldown && playerCooldown.containsKey(player.getName() + "/" + npc.getId())) {
+                    triggerMap.remove(player.getName() + "/" + npc.getId());
+                }
+                else {
+                    triggerMap.put(triggerClass.name, System.currentTimeMillis() + (long) (seconds * 1000));
+                }
                 playerCooldown.put(player.getName() + "/" + npc.getId(), triggerMap);
                 break;
         }

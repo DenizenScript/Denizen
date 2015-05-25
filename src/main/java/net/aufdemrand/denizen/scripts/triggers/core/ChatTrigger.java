@@ -29,6 +29,7 @@ import org.bukkit.event.player.PlayerChatEvent;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -316,41 +317,26 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Return if "Use asynchronous event" is false in config file
         if (!Settings.chatAsynchronous()) return;
 
-        Callable<ChatContext> call = new Callable<ChatContext>() {
-            ChatContext called = null;
+        FutureTask<ChatContext> futureTask =  new FutureTask<ChatContext>(new Callable<ChatContext>() {
+            @Override
             public ChatContext call() {
-                if (called != null)
-                    return called;
-                called = process(event.getPlayer(), event.getMessage());
-                return called;
+                return process(event.getPlayer(), event.getMessage());
             }
-        };
+        });
 
-        Boolean cancelled = false;
+        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), futureTask);
 
         try {
-            // Determine if the chat should be cancelled
-            cancelled = event.isAsynchronous()
-                    ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get().wasTriggered()
-                    : call.call().wasTriggered();
-
-            // Handle any changes with the ChatContext message
-            if (call.call().hasChanges())
-                event.setMessage(call.call().getChanges());
-
+            ChatContext context = futureTask.get();
+            event.setCancelled(context.wasTriggered());
+            if (context.hasChanges()) {
+                event.setMessage(context.getChanges());
+            }
         } catch (InterruptedException e) {
-            if (HyperDebug) dB.log("INTERRUPTED?");
-            // This is normal -- probably.
-            // dB.echoError(e);
+            dB.echoError(e);
         } catch (ExecutionException e) {
             dB.echoError(e);
-        } catch (Exception e) {
-            dB.echoError(e);
         }
-
-
-        if (cancelled)
-            event.setCancelled(true);
     }
 
     @EventHandler
