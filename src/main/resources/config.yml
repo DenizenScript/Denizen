@@ -93,11 +93,11 @@ Commands:
         # This is extremely dangerous and should be kept off unless monitored carefully.
         # Set to 'false' if you're worried about security.
         Allow running java: false
-  log:
+  Log:
         # The log command writes to file, which is potentially dangerous
         # Set to 'false' if you're worried about security.
         Allow logging: true
-  yaml:
+  Yaml:
         # Whether the YAML command is allowed to save outside the minecraft folder.
         # Set to 'false' if you're worried about security.
         Allow saving outside folder: false
@@ -113,9 +113,11 @@ Tags:
   Path finding:
     # How far away the path finder can search before giving up
     Max distance: 100
-
+  Chat history:
+    # How many player messages will be stored for each player (<player.chat_history>, etc.)
+    Max messages: 10
 
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 10
+  Version: 11

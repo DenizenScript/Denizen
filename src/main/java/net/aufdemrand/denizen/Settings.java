@@ -216,12 +216,12 @@ public class Settings {
 
     public static boolean allowLogging() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.log.Allow logging", true);
+                .getBoolean("Commands.Log.Allow logging", true);
     }
 
     public static boolean allowStrangeYAMLSaves() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.yaml.Allow saving outside folder", false);
+                .getBoolean("Commands.Yaml.Allow saving outside folder", false);
     }
 
     public static String chatMultipleTargetsFormat() {
@@ -371,5 +371,10 @@ public class Settings {
     public static int pathfindingMaxDistance() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getInt("Tags.Path finding.Max distance", 100);
+    }
+
+    public static int chatHistoryMaxMessages() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getInt("Tags.Chat history.Max messages", 10);
     }
 }

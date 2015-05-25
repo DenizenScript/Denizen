@@ -240,7 +240,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Denizen extends JavaPlugin implements DenizenImplementation {
-    public final static int configVersion = 10;
+    public final static int configVersion = 11;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
