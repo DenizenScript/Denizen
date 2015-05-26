@@ -959,7 +959,20 @@ public class ServerTags implements Listener {
                 se.nanoTimes = 0;
             }
         }
-        // TODO: Properties somehow?
+
+        // <--[mechanism]
+        // @object server
+        // @name cleanmem
+        // @input None
+        // @description
+        // Suggests to the internal systems that it's a good time to clean the memory.
+        // Does NOT force a memory cleaning.
+        // @tags
+        // <server.ram_free>
+        // -->
+        if (mechanism.matches("cleanmem")) {
+            System.gc();
+        }
 
         if (!mechanism.fulfilled())
             mechanism.reportInvalid();
