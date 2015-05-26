@@ -28,6 +28,13 @@ public class EntityMovement {
             followTasks.get(uuid).cancel();
     }
 
+    public static void stopWalking(Entity entity) {
+        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        if (!(nmsEntity instanceof EntityInsentient))
+            return;
+        ((EntityInsentient) nmsEntity).getNavigation().n();
+    }
+
     public static void toggleAI(Entity entity, boolean hasAI) {
         net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntity instanceof EntityInsentient))

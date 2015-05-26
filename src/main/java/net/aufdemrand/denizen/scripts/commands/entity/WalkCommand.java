@@ -52,6 +52,10 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     && arg.matchesPrefix("radius"))
                 scriptEntry.addObject("radius", arg.asElement());
 
+            else if (!scriptEntry.hasObject("stop")
+                    && arg.matches("stop"))
+                scriptEntry.addObject("stop", new Element(true));
+
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class))
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
@@ -63,7 +67,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         // Check for required information
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("stop"))
             throw new InvalidArgumentsException("Must specify a location!");
 
         if (!scriptEntry.hasObject("entities")) {
@@ -76,7 +80,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                         Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()));
         }
 
-
+        scriptEntry.defaultObject("stop", new Element(false));
     }
 
 
@@ -89,6 +93,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         Element speed = scriptEntry.getElement("speed");
         Element auto_range = scriptEntry.getElement("auto_range");
         Element radius = scriptEntry.getElement("radius");
+        Element stop = scriptEntry.getElement("stop");
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 
 
@@ -98,9 +103,12 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 + (speed != null ? speed.debug() : "")
                 + (auto_range != null ? auto_range.debug() : "")
                 + (radius != null ? radius.debug(): "")
+                + stop.debug()
                 + (aH.debugObj("entities", entities)));
 
         // Do the execution
+
+        boolean shouldStop = stop.asBoolean();
 
         List<dNPC> npcs = new ArrayList<dNPC>();
         final List<dEntity> waitForEntities = new ArrayList<dEntity>();
@@ -112,6 +120,12 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     dB.echoError(scriptEntry.getResidingQueue(), "NPC " + npc.identify() + " is not spawned!");
                     continue;
                 }
+
+                if (shouldStop) {
+                    npc.getNavigator().setPaused(true);
+                    continue;
+                }
+
                 if (auto_range != null
                         && auto_range == Element.TRUE) {
                     double distance = npc.getLocation().distance(loc);
@@ -128,6 +142,9 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     npc.getNavigator().getLocalParameters().addRunCallback(WalkCommandCitizensEvents
                             .generateNewFlocker(npc.getCitizen(), radius.asDouble()));
                 }
+            }
+            else if (shouldStop) {
+                EntityMovement.stopWalking(entity.getBukkitEntity());
             }
             else {
                 waitForEntities.add(entity);
