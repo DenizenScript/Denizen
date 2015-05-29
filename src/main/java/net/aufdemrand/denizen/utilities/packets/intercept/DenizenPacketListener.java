@@ -71,10 +71,7 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
     public static class PlayerEventListener implements Listener {
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onPlayerJoin(PlayerJoinEvent event) {
-            EntityPlayer entityPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
-            NetworkManager manager = entityPlayer.playerConnection.networkManager;
-            PacketListenerPlayIn oldListener = (PacketListenerPlayIn) manager.getPacketListener();
-            manager.a(new DenizenPacketListener(entityPlayer, oldListener));
+            DenizenNetworkManager.setNetworkManager(event.getPlayer());
         }
     }
 }

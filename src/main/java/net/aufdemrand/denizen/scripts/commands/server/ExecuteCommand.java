@@ -18,11 +18,16 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class ExecuteCommand extends AbstractCommand {
 
     enum Type { AS_SERVER, AS_NPC, AS_PLAYER, AS_OP }
 
     public DenizenCommandSender dcs = new DenizenCommandSender();
+    public static final List<UUID> silencedPlayers = new ArrayList<UUID>();
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -97,9 +102,16 @@ public class ExecuteCommand extends AbstractCommand {
             try {
                 PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), "/" + command);
                 Bukkit.getPluginManager().callEvent(pcpe);
-                if (!pcpe.isCancelled())
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().performCommand(
-                            pcpe.getMessage().startsWith("/") ? pcpe.getMessage().substring(1): pcpe.getMessage());
+                if (!pcpe.isCancelled()) {
+                    boolean silentBool = silent.asBoolean();
+                    Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+                    if (silentBool)
+                        silencedPlayers.add(player.getUniqueId());
+                    player.performCommand(pcpe.getMessage().startsWith("/") ?
+                            pcpe.getMessage().substring(1) : pcpe.getMessage());
+                    if (silentBool)
+                        silencedPlayers.remove(player.getUniqueId());
+                }
             }
             catch (Throwable e) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as player.");
