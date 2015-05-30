@@ -21,6 +21,7 @@ public class DenizenNetworkManager extends NetworkManager {
     public DenizenNetworkManager(EntityPlayer entityPlayer, NetworkManager oldManager) {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
+        this.channel = oldManager.channel;
         PacketListenerPlayIn oldListener = (PacketListenerPlayIn) oldManager.getPacketListener();
         this.packetListener = new DenizenPacketListener(entityPlayer, oldListener);
         a(this.packetListener); // in case something caught the old manager somehow
