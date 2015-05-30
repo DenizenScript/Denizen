@@ -91,9 +91,10 @@ public class EntitySpawnSmartEvent implements OldSmartEvent, Listener {
     // @Triggers when an entity spawns.
     // @Context
     // <context.entity> returns the dEntity that spawned.
-    // <context.reason> returns the reason the entity spawned.
     // <context.location> returns the location the entity will spawn at.
     // <context.cuboids> returns a list of cuboids that the entity spawned inside.
+    // <context.reason> returns the reason the entity spawned.
+    // Reasons: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
     //
     // @Determine
     // "CANCELLED" to stop the entity from spawning.
