@@ -5,10 +5,8 @@ import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.minecraft.server.v1_8_R3.*;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 public class PacketOutHandler {
@@ -92,23 +90,5 @@ public class PacketOutHandler {
         fields = PacketHelper.registerFields(PacketPlayOutWindowItems.class);
         window_items_windowId = fields.get("a");
         window_items_itemStackArray = fields.get("b");
-    }
-
-
-    //////////////////////////////////
-    //// Packet Fields
-    ///////////
-
-    private static final Method applyItemMetaMethod;
-
-    static {
-        Method method = null;
-        try {
-            method = CraftItemStack.getItemMeta(new ItemStack(Blocks.STONE)).getClass().getDeclaredMethod("applyToItem", NBTTagCompound.class);
-            method.setAccessible(true);
-        } catch (Exception e) {
-            dB.echoError(e);
-        }
-        applyItemMetaMethod = method;
     }
 }
