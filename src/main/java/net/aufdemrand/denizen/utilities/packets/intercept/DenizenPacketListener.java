@@ -6,13 +6,9 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.objects.Element;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.NetworkManager;
-import net.minecraft.server.v1_8_R3.PacketListenerPlayIn;
-import net.minecraft.server.v1_8_R3.PacketPlayInResourcePackStatus;
+import net.minecraft.server.v1_8_R3.*;
 import net.minecraft.server.v1_8_R3.PacketPlayInResourcePackStatus.EnumResourcePackStatus;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -32,16 +28,22 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
                 .registerEvents(new DenizenPacketListener.PlayerEventListener(), DenizenAPI.getCurrentInstance());
     }
 
-    //////////////////////////////////
-    //// Resource Pack Status
-    ///////////
-
-    private static final Field resource_pack_hash, resource_pack_status;
-
-    static {
-        Map<String, Field> fields = PacketHelper.registerFields(PacketPlayInResourcePackStatus.class);
-        resource_pack_hash = fields.get("a");
-        resource_pack_status = fields.get("b");
+    @Override
+    public void a(PacketPlayInSetCreativeSlot packet) {
+        ItemStack itemStack = packet.getItemStack();
+        if (itemStack != null && itemStack.getTag() != null && !itemStack.getTag().isEmpty()) {
+            NBTTagCompound tag = itemStack.getTag();
+            String hash = tag.getString("Denizen Item Script");
+            if (hash != null) {
+                NBTTagCompound display = tag.getCompound("display");
+                NBTTagList nbtLore = display.hasKey("Lore") ? (NBTTagList) display.get("Lore") : new NBTTagList();
+                nbtLore.add(new NBTTagString(hash));
+                display.set("Lore", nbtLore);
+                tag.set("display", display);
+                itemStack.setTag(tag);
+            }
+        }
+        oldListener.a(packet);
     }
 
     @Override
@@ -73,5 +75,17 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
         public void onPlayerJoin(PlayerJoinEvent event) {
             DenizenNetworkManager.setNetworkManager(event.getPlayer());
         }
+    }
+
+    //////////////////////////////////
+    //// Packet Fields
+    ///////////
+
+    private static final Field resource_pack_hash, resource_pack_status;
+
+    static {
+        Map<String, Field> fields = PacketHelper.registerFields(PacketPlayInResourcePackStatus.class);
+        resource_pack_hash = fields.get("a");
+        resource_pack_status = fields.get("b");
     }
 }

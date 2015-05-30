@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.utilities.packets.intercept;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -17,6 +16,7 @@ public class DenizenNetworkManager extends NetworkManager {
 
     private final NetworkManager oldManager;
     private final DenizenPacketListener packetListener;
+    private final EntityPlayer entityPlayer;
 
     public DenizenNetworkManager(EntityPlayer entityPlayer, NetworkManager oldManager) {
         super(getProtocolDirection(oldManager));
@@ -25,6 +25,7 @@ public class DenizenNetworkManager extends NetworkManager {
         PacketListenerPlayIn oldListener = (PacketListenerPlayIn) oldManager.getPacketListener();
         this.packetListener = new DenizenPacketListener(entityPlayer, oldListener);
         a(this.packetListener); // in case something caught the old manager somehow
+        this.entityPlayer = this.packetListener.entityPlayer;
     }
 
     public static void setNetworkManager(Player player) {
@@ -64,11 +65,10 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     public void handle(Packet packet) {
-        if (packet instanceof PacketPlayOutChat) {
-            if (ExecuteCommand.silencedPlayers.contains(packetListener.entityPlayer.getUniqueID()))
-                return;
+        // If the packet sending isn't cancelled, allow normal sending
+        if (!PacketOutHandler.handle(entityPlayer, packet)) {
+            oldManager.handle(packet);
         }
-        oldManager.handle(packet);
     }
 
     public void a(Packet packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener, GenericFutureListener<? extends Future<? super Void>>... agenericfuturelistener) {
