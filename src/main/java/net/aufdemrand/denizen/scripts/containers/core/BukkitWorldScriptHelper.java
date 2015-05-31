@@ -468,6 +468,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.location> returns the dLocation the block was set on fire at.
     // <context.material> returns the dMaterial of the block that was set on fire.
     // <context.entity> returns the dEntity of the entity that ignited the block.
+    // <context.origin_location> returns the dLocation of the fire block that ignited this block.
     // <context.cause> returns an Element of the cause of the event: ENDER_CRYSTAL, EXPLOSION, FIREBALL, FLINT_AND_STEEL, LAVA, or SPREAD.
     //
     // @Determine
@@ -485,6 +486,9 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("cause", new Element(event.getCause().name()));
         if (event.getIgnitingEntity() != null) {
             context.put("entity", new dEntity(event.getIgnitingEntity()).getDenizenObject());
+        }
+        if (event.getIgnitingBlock() != null) {
+            context.put("origin_location", new dLocation(event.getIgnitingBlock().getLocation()));
         }
 
         String determination = doEvents(Arrays.asList
