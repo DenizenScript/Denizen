@@ -184,9 +184,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
     @Override
-    public Inventory getInventory() { return dNPCRegistry.getInventory(getCitizen()); }
+    public Inventory getInventory() {
+        return dNPCRegistry.getInventory(getCitizen());
+    }
 
-    public dInventory getDenizenInventory() { return new dInventory(this); }
+    public dInventory getDenizenInventory() {
+        return new dInventory(this);
+    }
 
     public EntityType getEntityType() {
         return getCitizen().getEntity().getType();

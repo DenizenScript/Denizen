@@ -171,6 +171,7 @@ public class SittingTrait extends Trait implements Listener  {
 
     @EventHandler
     public void arrowDismount(final VehicleExitEvent event) {
+        // TODO: Move elsewhere so not multi-firing?
         if (event.getVehicle() instanceof CraftFakeArrow) {
             Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override

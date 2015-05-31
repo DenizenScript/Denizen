@@ -75,7 +75,7 @@ public class dNPCRegistry implements Listener {
         if (!denizenNPCs.containsKey(id)) {
             denizenNPCs.put(id, denizenNPC);
             Inventory npcInventory = Bukkit.getServer().createInventory(denizenNPC, InventoryType.PLAYER);
-            npcInventory.setContents(denizenNPC.getInventoryTrait().getContents());
+            npcInventory.setContents(Arrays.copyOf(denizenNPC.getInventoryTrait().getContents(), npcInventory.getSize()));
             npcInventories.put(id, npcInventory);
         }
     }
