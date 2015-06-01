@@ -31,6 +31,7 @@ import java.util.UUID;
 public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity {
 
     private final CraftServer server;
+    private String fullName;
 
     public CraftFakePlayer(CraftServer server, EntityFakePlayer entity) {
         super(server, entity);
@@ -61,7 +62,7 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
             if (fullName.length() > 30) {
                 int len = 30;
                 name = fullName.substring(16, 30);
-                if (name.indexOf(ChatColor.COLOR_CHAR) != -1) {
+                if (name.matches(".*[^A-Za-z0-9_].*")) {
                     if (fullName.length() >= 32) {
                         len = 32;
                         name = fullName.substring(16, 32);
@@ -78,16 +79,16 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                 else {
                     name = ChatColor.RESET + name;
                 }
-                suffix = fullName.substring(len, fullName.length());
+                suffix = fullName.substring(len);
             }
             else {
-                name = fullName.substring(16, fullName.length());
-                if (name.indexOf(ChatColor.COLOR_CHAR) == -1) {
+                name = fullName.substring(16);
+                if (!name.matches(".*[^A-Za-z0-9_].*")) {
                     name = ChatColor.RESET + name;
-                    if (name.length() > 16) {
-                        suffix = name.substring(16);
-                        name = name.substring(0, 16);
-                    }
+                }
+                if (name.length() > 16) {
+                    suffix = name.substring(16);
+                    name = name.substring(0, 16);
                 }
             }
         }
@@ -97,7 +98,7 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
         CraftWorld world = (CraftWorld) location.getWorld();
         WorldServer worldServer = world.getHandle();
         GameProfile gameProfile = new GameProfile(null, name);
-        if (name.indexOf(ChatColor.COLOR_CHAR) != -1) {
+        if (skin == null && !name.matches(".*[^A-Za-z0-9_].*")) {
             gameProfile = ItemSkullskin.fillGameProfile(gameProfile);
         }
         if (skin != null) {
@@ -119,7 +120,8 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                 gameProfile, new PlayerInteractManager(worldServer));
         fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
-
+        CraftFakePlayer craftFakePlayer = fakePlayer.getBukkitEntity();
+        craftFakePlayer.fullName = fullName;
         if (prefix != null) {
             Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
             String teamName = "FAKE_PLAYER_TEAM_" + fullName;
@@ -141,11 +143,10 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                         team.setSuffix(suffix);
                     }
                 }
-                team.addPlayer(fakePlayer.getBukkitEntity());
+                team.addPlayer(craftFakePlayer);
             }
         }
-
-        return fakePlayer.getBukkitEntity();
+        return craftFakePlayer;
     }
 
     @Override
@@ -171,5 +172,9 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
     @Override
     public String getEntityTypeName() {
         return "FAKE_PLAYER";
+    }
+
+    public String getFullName() {
+        return fullName;
     }
 }

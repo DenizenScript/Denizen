@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
@@ -625,6 +626,8 @@ public class dEntity implements dObject, Adjustable {
     public String getName() {
         if (isCitizensNPC())
             return getDenizenNPC().getCitizen().getName();
+        if (entity instanceof CraftFakePlayer)
+            return ((CraftFakePlayer) entity).getFullName();
         if (entity instanceof Player)
             return ((Player) entity).getName();
         if (isLivingEntity()) {
