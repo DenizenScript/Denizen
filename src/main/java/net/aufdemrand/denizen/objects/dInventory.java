@@ -632,6 +632,9 @@ public class dInventory implements dObject, Notable, Adjustable {
             filled ++;
         }
         inventory.setContents(contents);
+        if (dNPC.matches(idHolder)) { // TODO: Directly store holder
+            dNPC.valueOf(idHolder).getInventoryTrait().setContents(contents);
+        }
     }
 
     public boolean update() {
@@ -1060,7 +1063,9 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
             inventory.setItem(slot+i, item);
         }
-
+        if (dNPC.matches(idHolder)) { // TODO: Directly store holder
+            dNPC.valueOf(idHolder).getInventoryTrait().setContents(inventory.getContents());
+        }
         return this;
 
     }

@@ -25,6 +25,7 @@ import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
 import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.CraftItemProjectile;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
+import net.aufdemrand.denizen.utilities.packets.intercept.DenizenPacketListener;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
@@ -597,6 +598,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
+            ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
 
 
@@ -698,6 +700,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         catch (Exception e) {
             dB.echoError(e);
         }
+
+        // Enable custom inbound packet listener
+        DenizenPacketListener.enable();
 
         // Run everything else on the first server tick
         getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {

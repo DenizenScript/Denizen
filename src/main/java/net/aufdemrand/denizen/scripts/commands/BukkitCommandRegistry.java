@@ -2771,7 +2771,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Walk
-        // @Syntax walk (<entity>|...) [<location>] (speed:<#.#>) (auto_range) (radius:<#.#>)
+        // @Syntax walk (<entity>|...) [<location>/stop] (speed:<#.#>) (auto_range) (radius:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Causes an entity or list of entities to walk to another location.
@@ -2788,7 +2788,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(WalkCommand.class,
-                "WALK, WALKTO", "walk (<entity>|...) [<location>] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
+                "WALK, WALKTO", "walk (<entity>|...) [<location>/stop] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
 
         // <--[command]
         // @Name Weather

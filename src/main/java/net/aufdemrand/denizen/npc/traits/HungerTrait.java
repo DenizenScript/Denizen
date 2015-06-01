@@ -34,7 +34,8 @@ public class HungerTrait extends Trait implements Listener {
      * per block moved, unless a modifier is used.
      *
      */
-    @Override public void run() {
+    @Override
+    public void run() {
         if (!listening) return;
         // We'll only actually calculate hunger-loss once per second
         count++;
@@ -70,6 +71,7 @@ public class HungerTrait extends Trait implements Listener {
     @EventHandler
     public void onMove(NavigationBeginEvent event) {
 
+        // TODO: Check if NPC == this NPC?
         if (allowexhaustion) {
             if (isStarving()) {
                 // Create NPCExhaustedEvent, give chance for outside plugins to cancel.

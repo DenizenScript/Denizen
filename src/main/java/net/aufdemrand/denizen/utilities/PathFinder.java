@@ -45,6 +45,7 @@ public class PathFinder {
             return res;
         }
     }
+
     public static dLocation[] surroundings = new dLocation[] {
             new dLocation(null, 1, 0, 0),
             new dLocation(null, -1, 0, 0),
