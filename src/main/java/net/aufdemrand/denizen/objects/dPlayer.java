@@ -15,6 +15,7 @@ import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R3.PacketPlayOutGameStateChange;
@@ -613,10 +614,10 @@ public class dPlayer implements dObject, Adjustable {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                String search = attribute.getContext(1).toLowerCase();
+                String search = attribute.getContext(1);
                 if (search.startsWith("regex:")) {
                     try {
-                        Pattern pattern = Pattern.compile(search.substring(6));
+                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
                         for (String flag : allFlags)
                             if (pattern.matcher(flag).matches())
                                 searchFlags.add(flag);
@@ -625,6 +626,7 @@ public class dPlayer implements dObject, Adjustable {
                     }
                 }
                 else {
+                    search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags)
                         if (flag.toLowerCase().contains(search))
                             searchFlags.add(flag);

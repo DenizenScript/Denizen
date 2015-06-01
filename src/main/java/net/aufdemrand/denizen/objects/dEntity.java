@@ -1389,10 +1389,10 @@ public class dEntity implements dObject, Adjustable {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                String search = attribute.getContext(1).toLowerCase();
+                String search = attribute.getContext(1);
                 if (search.startsWith("regex:")) {
                     try {
-                        Pattern pattern = Pattern.compile(search.substring(6));
+                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
                         for (String flag : allFlags)
                             if (pattern.matcher(flag).matches())
                                 searchFlags.add(flag);
@@ -1401,6 +1401,7 @@ public class dEntity implements dObject, Adjustable {
                     }
                 }
                 else {
+                    search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags)
                         if (flag.toLowerCase().contains(search))
                             searchFlags.add(flag);

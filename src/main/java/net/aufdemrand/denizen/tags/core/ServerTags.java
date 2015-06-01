@@ -177,11 +177,10 @@ public class ServerTags implements Listener {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                String search = attribute.getContext(1).toLowerCase();
+                String search = attribute.getContext(1);
                 if (search.startsWith("regex:")) {
-                    String regex = search.substring(6);
                     try {
-                        Pattern pattern = Pattern.compile(search.substring(6));
+                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
                         for (String flag : allFlags)
                             if (pattern.matcher(flag).matches())
                                 searchFlags.add(flag);
@@ -190,6 +189,7 @@ public class ServerTags implements Listener {
                     }
                 }
                 else {
+                    search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags)
                         if (flag.toLowerCase().contains(search))
                             searchFlags.add(flag);
