@@ -6,9 +6,9 @@ import net.aufdemrand.denizen.objects.properties.item.ItemSkullskin;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_8_R3.PlayerInteractManager;
+import net.minecraft.server.v1_8_R3.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
@@ -18,8 +18,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,12 +49,28 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                 skin = mechanism.getValue().asString();
             }
         }
-        if (name == null || name.length() > 16) {
-            dB.echoError("You must specify a name with no more than 16 characters for FAKE_PLAYER names!");
+        String fullName = name;
+        String prefix = null;
+        String suffix = null;
+        if (name == null) {
             return null;
         }
+        else if (name.length() > 16) {
+            if (name.length() > 48) {
+                dB.echoError("You must specify a name with no more than 48 characters for FAKE_PLAYER entities!");
+                return null;
+            }
+            prefix = fullName.substring(0, 16);
+            if (name.length() > 32) {
+                name = fullName.substring(16, 32);
+                suffix = fullName.substring(32, name.length());
+            }
+            else {
+                name = fullName.substring(16, name.length());
+            }
+        }
         if (skin != null && skin.length() > 16) {
-            dB.echoError("You must specify a name with no more than 16 characters for FAKE_PLAYER skins!");
+            dB.echoError("You must specify a name with no more than 16 characters for FAKE_PLAYER entity skins!");
         }
         CraftWorld world = (CraftWorld) location.getWorld();
         WorldServer worldServer = world.getHandle();
@@ -77,6 +96,32 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                 gameProfile, new PlayerInteractManager(worldServer));
         fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
+
+        if (prefix != null) {
+            Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+            String teamName = "FAKE_PLAYER_TEAM_" + fullName;
+            String hash = null;
+            try {
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] bytes = teamName.getBytes("UTF-8");
+                md.update(bytes, 0, bytes.length);
+                hash = new BigInteger(1, md.digest()).toString(16).substring(0, 16);
+            } catch (Exception e) {
+                dB.echoError(e);
+            }
+            if (hash != null) {
+                Team team = scoreboard.getTeam(hash);
+                if (team == null) {
+                    team = scoreboard.registerNewTeam(hash);
+                    team.setPrefix(prefix);
+                    if (suffix != null) {
+                        team.setSuffix(suffix);
+                    }
+                }
+                team.addPlayer(fakePlayer.getBukkitEntity());
+            }
+        }
+
         return fakePlayer.getBukkitEntity();
     }
 
