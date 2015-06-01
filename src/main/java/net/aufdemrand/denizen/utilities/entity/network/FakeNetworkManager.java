@@ -16,9 +16,9 @@ public class FakeNetworkManager extends NetworkManager {
         Field chan = null;
         Field addr = null;
         try {
-            chan = NetworkManager.class.getDeclaredField("i");
+            chan = NetworkManager.class.getDeclaredField("channel");
             chan.setAccessible(true);
-            addr = NetworkManager.class.getDeclaredField("j");
+            addr = NetworkManager.class.getDeclaredField("l");
             addr.setAccessible(true);
         } catch (Exception e) {
             dB.echoError(e);
