@@ -77,17 +77,6 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                 gameProfile, new PlayerInteractManager(worldServer));
         fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                PacketPlayOutNamedEntitySpawn spawnPacket = new PacketPlayOutNamedEntitySpawn(fakePlayer);
-                PacketPlayOutPlayerInfo playerInfo = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, fakePlayer);
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    PacketHelper.sendPacket(player, spawnPacket);
-                    PacketHelper.sendPacket(player, playerInfo);
-                }
-            }
-        }.runTaskLater(DenizenAPI.getCurrentInstance(), 5);
         return fakePlayer.getBukkitEntity();
     }
 

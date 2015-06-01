@@ -1533,6 +1533,30 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <l@location.furnace_burn_time>
+        // @returns Element(Number)
+        // @mechanism furnace_burn_time
+        // @description
+        // Returns the burn time a furnace has left.
+        // -->
+        if (attribute.startsWith("furnace_burn_time")) {
+            return new Element(((Furnace) getBlock().getState()).getBurnTime())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.furnace_cook_time>
+        // @returns Element(Number)
+        // @mechanism furnace_cook_time
+        // @description
+        // Returns the cook time a furnace has left.
+        // -->
+        if (attribute.startsWith("furnace_cook_time")) {
+            return new Element(((Furnace) getBlock().getState()).getCookTime())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
@@ -1680,6 +1704,40 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 CommandBlock block = ((CommandBlock)getBlock().getState());
                 block.setCommand(value.asString());
                 block.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name furnace_burn_time
+        // @input Element(Number)
+        // @description
+        // Sets the burn time for a furnace in ticks. Maximum is 32767.
+        // @tags
+        // <l@location.furnace_burn_time>
+        // -->
+        if (mechanism.matches("furnace_burn_time")) {
+            Material material = getBlock().getType();
+            if (material == Material.FURNACE || material == Material.BURNING_FURNACE) {
+                Furnace furnace = (Furnace) getBlock().getState();
+                furnace.setBurnTime((short) value.asInt());
+            }
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name furnace_cook_time
+        // @input Element(Number)
+        // @description
+        // Sets the cook time for a furnace in ticks. Maximum is 32767.
+        // @tags
+        // <l@location.furnace_cook_time>
+        // -->
+        if (mechanism.matches("furnace_cook_time")) {
+            Material material = getBlock().getType();
+            if (material == Material.FURNACE || material == Material.BURNING_FURNACE) {
+                Furnace furnace = (Furnace) getBlock().getState();
+                furnace.setCookTime((short) value.asInt());
             }
         }
 
