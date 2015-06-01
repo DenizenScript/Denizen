@@ -10,6 +10,7 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import net.minecraft.server.v1_8_R3.WorldServer;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
@@ -55,18 +56,39 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
         if (name == null) {
             return null;
         }
-        else if (name.length() > 16) {
-            if (name.length() > 48) {
-                dB.echoError("You must specify a name with no more than 48 characters for FAKE_PLAYER entities!");
-                return null;
-            }
+        else if (fullName.length() > 16) {
             prefix = fullName.substring(0, 16);
-            if (name.length() > 32) {
-                name = fullName.substring(16, 32);
-                suffix = fullName.substring(32, name.length());
+            if (fullName.length() > 30) {
+                int len = 30;
+                name = fullName.substring(16, 30);
+                if (name.indexOf(ChatColor.COLOR_CHAR) != -1) {
+                    if (fullName.length() >= 32) {
+                        len = 32;
+                        name = fullName.substring(16, 32);
+                    }
+                    else if (fullName.length() == 31) {
+                        len = 31;
+                        name = fullName.substring(16, 31);
+                    }
+                }
+                else if (name.length() > 46) {
+                    dB.echoError("You must specify a name with no more than 46 characters for FAKE_PLAYER entities!");
+                    return null;
+                }
+                else {
+                    name = ChatColor.RESET + name;
+                }
+                suffix = fullName.substring(len, fullName.length());
             }
             else {
-                name = fullName.substring(16, name.length());
+                name = fullName.substring(16, fullName.length());
+                if (name.indexOf(ChatColor.COLOR_CHAR) == -1) {
+                    name = ChatColor.RESET + name;
+                    if (name.length() > 16) {
+                        suffix = name.substring(16);
+                        name = name.substring(0, 16);
+                    }
+                }
             }
         }
         if (skin != null && skin.length() > 16) {
@@ -75,9 +97,10 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
         CraftWorld world = (CraftWorld) location.getWorld();
         WorldServer worldServer = world.getHandle();
         GameProfile gameProfile = new GameProfile(null, name);
-        gameProfile = ItemSkullskin.fillGameProfile(gameProfile);
+        if (name.indexOf(ChatColor.COLOR_CHAR) != -1) {
+            gameProfile = ItemSkullskin.fillGameProfile(gameProfile);
+        }
         if (skin != null) {
-            gameProfile = new GameProfile(gameProfile.getId(), gameProfile.getName());
             GameProfile skinProfile = new GameProfile(null, skin);
             skinProfile = ItemSkullskin.fillGameProfile(skinProfile);
             for (Property texture : skinProfile.getProperties().get("textures"))

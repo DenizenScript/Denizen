@@ -60,7 +60,7 @@ public class PacketOutHandler {
                                     PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER,
                                     (EntityFakePlayer) entity));
                         }
-                    }, 3);
+                    }, 5);
                 }
             }
         } catch (Exception e) {
