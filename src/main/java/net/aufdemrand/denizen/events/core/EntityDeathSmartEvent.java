@@ -159,7 +159,7 @@ public class EntityDeathSmartEvent implements OldSmartEvent, Listener {
             // XP
             else if (aH.Argument.valueOf(determination)
                     .matchesPrimitive(aH.PrimitiveType.Integer)) {
-                int xp = Integer.valueOf(determination);
+                int xp = aH.Argument.valueOf(determination).asElement().asInt();
                 event.setDroppedExp(xp);
             }
 
