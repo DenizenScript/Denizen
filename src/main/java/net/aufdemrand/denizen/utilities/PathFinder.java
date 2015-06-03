@@ -85,6 +85,7 @@ public class PathFinder {
                 n.pathCost = curr.cost + 1;
                 n.next = curr;
                 fNodes.add(n);
+                continue;
             }
             for (int i = 0; i < surroundings.length; i++) {
                 dLocation surr = surroundings[i];
