@@ -5,6 +5,7 @@ import net.minecraft.server.v1_8_R3.*;
 public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
     protected final PlayerConnection oldListener;
+    private boolean processedDisconnect;
 
     public AbstractListenerPlayIn(NetworkManager networkManager, EntityPlayer entityPlayer) {
         super(MinecraftServer.getServer(), networkManager, entityPlayer);
@@ -128,6 +129,9 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
     @Override
     public void a(IChatBaseComponent iChatBaseComponent) {
-        oldListener.a(iChatBaseComponent);
+        if (!this.processedDisconnect) {
+            oldListener.a(iChatBaseComponent);
+            this.processedDisconnect = true;
+        }
     }
 }
