@@ -20,7 +20,7 @@ import java.util.Map;
 public class DenizenPacketListener extends AbstractListenerPlayIn {
 
     public DenizenPacketListener(NetworkManager networkManager, EntityPlayer entityPlayer) {
-        super(networkManager, entityPlayer);
+        super(networkManager, entityPlayer, entityPlayer.playerConnection);
     }
 
     public static void enable() {
