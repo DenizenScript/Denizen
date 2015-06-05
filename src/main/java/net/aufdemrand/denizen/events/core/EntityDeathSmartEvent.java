@@ -156,6 +156,13 @@ public class EntityDeathSmartEvent implements OldSmartEvent, Listener {
                 event.setDroppedExp(0);
             }
 
+            // XP
+            else if (aH.Argument.valueOf(determination)
+                    .matchesPrimitive(aH.PrimitiveType.Integer)) {
+                int xp = aH.Argument.valueOf(determination).asElement().asInt();
+                event.setDroppedExp(xp);
+            }
+
             // Drops
             else if (aH.Argument.valueOf(determination).matchesArgumentList(dItem.class)) {
                 dList drops = dList.valueOf(determination);
@@ -168,12 +175,7 @@ public class EntityDeathSmartEvent implements OldSmartEvent, Listener {
                 }
             }
 
-            // XP
-            else if (aH.Argument.valueOf(determination)
-                    .matchesPrimitive(aH.PrimitiveType.Integer)) {
-                int xp = Integer.valueOf(determination.substring(3));
-                event.setDroppedExp(xp);
-            } else if (!determination.toUpperCase().equals("NONE")) {
+            else if (!determination.toUpperCase().equals("NONE")) {
                 if (event instanceof PlayerDeathEvent) {
                     subEvent.setDeathMessage(determination);
                 }

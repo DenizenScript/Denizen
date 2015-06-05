@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.tags.core.NPCTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
@@ -575,10 +576,10 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                String search = attribute.getContext(1).toLowerCase();
+                String search = attribute.getContext(1);
                 if (search.startsWith("regex:")) {
                     try {
-                        Pattern pattern = Pattern.compile(search.substring(6));
+                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
                         for (String flag : allFlags)
                             if (pattern.matcher(flag).matches())
                                 searchFlags.add(flag);
@@ -587,6 +588,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                     }
                 }
                 else {
+                    search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags)
                         if (flag.toLowerCase().contains(search))
                             searchFlags.add(flag);

@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
@@ -625,6 +626,8 @@ public class dEntity implements dObject, Adjustable {
     public String getName() {
         if (isCitizensNPC())
             return getDenizenNPC().getCitizen().getName();
+        if (entity instanceof CraftFakePlayer)
+            return ((CraftFakePlayer) entity).getFullName();
         if (entity instanceof Player)
             return ((Player) entity).getName();
         if (isLivingEntity()) {
@@ -1389,10 +1392,10 @@ public class dEntity implements dObject, Adjustable {
             dList searchFlags = null;
             if (!allFlags.isEmpty() && attribute.hasContext(1)) {
                 searchFlags = new dList();
-                String search = attribute.getContext(1).toLowerCase();
+                String search = attribute.getContext(1);
                 if (search.startsWith("regex:")) {
                     try {
-                        Pattern pattern = Pattern.compile(search.substring(6));
+                        Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
                         for (String flag : allFlags)
                             if (pattern.matcher(flag).matches())
                                 searchFlags.add(flag);
@@ -1401,6 +1404,7 @@ public class dEntity implements dObject, Adjustable {
                     }
                 }
                 else {
+                    search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags)
                         if (flag.toLowerCase().contains(search))
                             searchFlags.add(flag);

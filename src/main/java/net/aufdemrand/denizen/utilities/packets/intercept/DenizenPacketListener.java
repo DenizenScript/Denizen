@@ -19,8 +19,8 @@ import java.util.Map;
 
 public class DenizenPacketListener extends AbstractListenerPlayIn {
 
-    public DenizenPacketListener(EntityPlayer entityPlayer, PacketListenerPlayIn oldListener) {
-        super(entityPlayer, oldListener);
+    public DenizenPacketListener(NetworkManager networkManager, EntityPlayer entityPlayer) {
+        super(networkManager, entityPlayer, entityPlayer.playerConnection);
     }
 
     public static void enable() {
@@ -57,7 +57,7 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
                     ResourcePackStatusScriptEvent event = ResourcePackStatusScriptEvent.instance;
                     event.hash = new Element(hash);
                     event.status = new Element(status.name());
-                    event.player = dPlayer.mirrorBukkitPlayer(entityPlayer.getBukkitEntity());
+                    event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
                     event.fire();
                 }
             });
