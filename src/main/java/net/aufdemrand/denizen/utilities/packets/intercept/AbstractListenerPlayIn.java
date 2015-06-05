@@ -2,14 +2,13 @@ package net.aufdemrand.denizen.utilities.packets.intercept;
 
 import net.minecraft.server.v1_8_R3.*;
 
-public abstract class AbstractListenerPlayIn implements PacketListenerPlayIn {
+public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
-    protected final EntityPlayer entityPlayer;
-    protected final PacketListenerPlayIn oldListener;
+    protected final PlayerConnection oldListener;
 
-    public AbstractListenerPlayIn(EntityPlayer entityPlayer, PacketListenerPlayIn oldListener) {
-        this.entityPlayer = entityPlayer;
-        this.oldListener = oldListener;
+    public AbstractListenerPlayIn(NetworkManager networkManager, EntityPlayer entityPlayer) {
+        super(MinecraftServer.getServer(), networkManager, entityPlayer);
+        this.oldListener = entityPlayer.playerConnection;
     }
 
     @Override

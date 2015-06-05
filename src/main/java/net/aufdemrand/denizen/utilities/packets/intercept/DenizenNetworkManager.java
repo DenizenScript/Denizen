@@ -16,16 +16,14 @@ public class DenizenNetworkManager extends NetworkManager {
 
     private final NetworkManager oldManager;
     private final DenizenPacketListener packetListener;
-    private final EntityPlayer entityPlayer;
+    private final EntityPlayer player;
 
     public DenizenNetworkManager(EntityPlayer entityPlayer, NetworkManager oldManager) {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
-        PacketListenerPlayIn oldListener = (PacketListenerPlayIn) oldManager.getPacketListener();
-        this.packetListener = new DenizenPacketListener(entityPlayer, oldListener);
-        a(this.packetListener); // in case something caught the old manager somehow
-        this.entityPlayer = this.packetListener.entityPlayer;
+        this.packetListener = new DenizenPacketListener(this, entityPlayer);
+        this.player = this.packetListener.player;
     }
 
     public static void setNetworkManager(Player player) {
@@ -66,7 +64,7 @@ public class DenizenNetworkManager extends NetworkManager {
 
     public void handle(Packet packet) {
         // If the packet sending isn't cancelled, allow normal sending
-        if (!PacketOutHandler.handle(entityPlayer, packet)) {
+        if (!PacketOutHandler.handle(player, packet)) {
             oldManager.handle(packet);
         }
     }
