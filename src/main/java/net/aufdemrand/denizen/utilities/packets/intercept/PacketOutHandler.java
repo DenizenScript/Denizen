@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.utilities.packets.intercept;
 import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.EntityFakePlayer;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
@@ -62,6 +63,9 @@ public class PacketOutHandler {
                         }
                     }, 5);
                 }
+            }
+            else if (packet instanceof PacketPlayOutPlayerInfo) {
+                PlayerProfileEditor.updatePlayerProfiles((PacketPlayOutPlayerInfo) packet);
             }
         } catch (Exception e) {
             dB.echoError(e);
