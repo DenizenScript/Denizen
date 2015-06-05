@@ -1,6 +1,10 @@
 package net.aufdemrand.denizen.utilities.packets.intercept;
 
 import net.minecraft.server.v1_8_R3.*;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+
+import java.util.Set;
 
 public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
@@ -9,6 +13,56 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
     public AbstractListenerPlayIn(NetworkManager networkManager, EntityPlayer entityPlayer, PlayerConnection oldListener) {
         super(MinecraftServer.getServer(), networkManager, entityPlayer);
         this.oldListener = oldListener;
+    }
+
+    @Override
+    public CraftPlayer getPlayer() {
+        return oldListener.getPlayer();
+    }
+
+    @Override
+    public NetworkManager a() {
+        return this.networkManager;
+    }
+
+    @Override
+    public void disconnect(String s) {
+        oldListener.disconnect(s);
+    }
+
+    @Override
+    public void a(double d0, double d1, double d2, float f, float f1) {
+        oldListener.a(d0, d1, d2, f, f1);
+    }
+
+    @Override
+    public void a(double d0, double d1, double d2, float f, float f1, Set<PacketPlayOutPosition.EnumPlayerTeleportFlags> set) {
+        oldListener.a(d0, d1, d2, f, f1, set);
+    }
+
+    @Override
+    public void teleport(Location dest) {
+        oldListener.teleport(dest);
+    }
+
+    @Override
+    public void teleport(Location dest, Set set) {
+        oldListener.teleport(dest, set);
+    }
+
+    @Override
+    public void sendPacket(final Packet packet) {
+        oldListener.sendPacket(packet);
+    }
+
+    @Override
+    public void chat(String s, boolean async) {
+        oldListener.chat(s, async);
+    }
+
+    @Override
+    public void c() {
+        oldListener.c();
     }
 
     @Override
