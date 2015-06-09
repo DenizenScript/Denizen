@@ -2591,6 +2591,24 @@ public class BukkitCommandRegistry extends CommandRegistry {
                 "TAKE", "take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
 
         // <--[command]
+        // @Name Team
+        // @Syntax team [id:<scoreboard>] [name:<team>] (add:<player>|...) (remove:<player>|...) (prefix:<prefix>) (suffix:<suffix>)
+        // @Required 3
+        // @Stable stable
+        // @Short Controls scoreboard teams.
+        // @Author Morphan1
+        // @Group player
+        // @Description
+        // TODO: Document Command Details
+        // @Tags
+        // None
+        // @Usage
+        // TODO: Document Command Details
+        // -->
+        registerCoreMember(TeamCommand.class,
+                "TEAM", "team [id:<scoreboard>] [name:<team>] (add:<player>|...) (remove:<player>|...) (prefix:<prefix>) (suffix:<suffix>)", 3);
+
+        // <--[command]
         // @Name Teleport
         // @Syntax teleport (<entity>|...) [<location>]
         // @Required 1

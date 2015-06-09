@@ -34,10 +34,6 @@
             <id>everything</id>
             <url>http://repo.citizensnpcs.co</url>
         </repository>
-        <repository>
-            <id>comphenix-repo</id>
-            <url>http://repo.comphenix.net/content/groups/public</url>
-        </repository>
     </repositories>
 
     <!-- Dependencies -->

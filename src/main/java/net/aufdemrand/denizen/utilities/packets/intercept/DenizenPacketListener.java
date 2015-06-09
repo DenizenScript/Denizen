@@ -43,7 +43,7 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
                 itemStack.setTag(tag);
             }
         }
-        oldListener.a(packet);
+        super.a(packet);
     }
 
     @Override
@@ -64,14 +64,14 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
         } catch (Exception e) {
             dB.echoError(e);
         }
-        oldListener.a(packet);
+        super.a(packet);
     }
 
     // IMPORTANT NOTE WHEN ADDING MORE HANDLERS:
     // Packets are handled asynchronously. Remember to use Bukkit's Scheduler!
 
     public static class PlayerEventListener implements Listener {
-        @EventHandler(priority = EventPriority.HIGHEST)
+        @EventHandler(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerJoinEvent event) {
             DenizenNetworkManager.setNetworkManager(event.getPlayer());
         }
