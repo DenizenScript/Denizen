@@ -109,19 +109,19 @@ public class ParticlesTrait extends Trait {
 
     @Override
     public void onSpawn() {
-        //el = ((CraftLivingEntity)npc.getBukkitEntity()).getHandle();
+        //el = ((CraftLivingEntity)npc.getEntity()).getHandle();
         //dw = el.getDataWatcher();
-        world = npc.getBukkitEntity().getWorld();
+        world = npc.getEntity().getWorld();
     }
 
     public void playFlameEffect() {
-        Location location = npc.getBukkitEntity().getLocation();
+        Location location = npc.getEntity().getLocation();
         world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 0);
         if (dense) world.playEffect(location.add(0, 1, 0), Effect.MOBSPAWNER_FLAMES, 0);
     }
 
     public void playEnderEffect() {
-        Location location = npc.getBukkitEntity().getLocation();
+        Location location = npc.getEntity().getLocation();
         world.playEffect(location, Effect.ENDER_SIGNAL, 0);
         if (dense) world.playEffect(location.add(0, 1, 0), Effect.ENDER_SIGNAL, 0);
     }
@@ -131,13 +131,13 @@ public class ParticlesTrait extends Trait {
     }
 
     public void playPotionBreakEffect() {
-        Location location = npc.getBukkitEntity().getLocation();
+        Location location = npc.getEntity().getLocation();
         world.playEffect(location, Effect.POTION_BREAK, 0);
         if (dense) world.playEffect(location.add(0, 1, 0), Effect.POTION_BREAK, 0);
     }
 
     public void playHeartEffect() {
-        Location location = npc.getBukkitEntity().getLocation();
+        Location location = npc.getEntity().getLocation();
         Wolf tempWolf = world.spawn(location, Wolf.class);
         ((CraftWolf) tempWolf).getHandle().setInvisible(true);
         tempWolf.playEffect(EntityEffect.WOLF_HEARTS);
@@ -146,7 +146,7 @@ public class ParticlesTrait extends Trait {
     }
 
     public void playSmokeEffect() {
-        Location location = npc.getBukkitEntity().getLocation();
+        Location location = npc.getEntity().getLocation();
         world.playEffect(location, Effect.SMOKE, 0);
         world.playEffect(location, Effect.SMOKE, 1);
         world.playEffect(location, Effect.SMOKE, 2);
@@ -170,7 +170,7 @@ public class ParticlesTrait extends Trait {
     }
 
     public void playExplosionEffect() {
-        Location location = npc.getBukkitEntity().getLocation();
+        Location location = npc.getEntity().getLocation();
         world.createExplosion(location, 0);
     }
 

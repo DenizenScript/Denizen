@@ -18,7 +18,7 @@ public class SneakingTrait extends Trait implements Listener  {
 
     @Override
     public void onSpawn() {
-        eh = ((CraftPlayer) npc.getBukkitEntity()).getHandle();
+        eh = ((CraftPlayer) npc.getEntity()).getHandle();
         if (sneaking) sneak();
     }
 
@@ -38,7 +38,7 @@ public class SneakingTrait extends Trait implements Listener  {
     public void sneak() {
         DenizenAPI.getDenizenNPC(npc).action("sneak", null);
 
-        if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+        if (npc.getEntity().getType() != EntityType.PLAYER) {
             return;
         }
 

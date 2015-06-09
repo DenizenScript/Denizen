@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -30,7 +31,7 @@ public class SittingTrait extends Trait implements Listener  {
     @Override
     public void run() {
         if (!npc.isSpawned() || chairLocation == null) return;
-        if (!Utilities.checkLocation(npc.getBukkitEntity(), chairLocation, 1)) {
+        if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), chairLocation, 1)) {
             stand();
         }
     }
@@ -63,12 +64,12 @@ public class SittingTrait extends Trait implements Listener  {
     public void sit() {
         DenizenAPI.getDenizenNPC(npc).action("sit", null);
 
-        if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+        if (npc.getEntity().getType() != EntityType.PLAYER) {
             return;
         }
 
         sitInternal();
-        chairLocation = npc.getBukkitEntity().getLocation().clone();
+        chairLocation = npc.getEntity().getLocation().clone();
     }
 
     private void sitInternal() {
