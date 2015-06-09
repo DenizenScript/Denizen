@@ -10,12 +10,9 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-
-import java.util.List;
 
 public class TeamCommand extends AbstractCommand {
 
