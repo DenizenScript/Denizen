@@ -68,8 +68,8 @@ public class TeamCommand extends AbstractCommand {
         if (name == null || name.length() == 0 || name.length() > 16)
             throw new InvalidArgumentsException("Must specify a team name between 1 and 16 characters!");
 
-        if (!scriptEntry.hasObject("add") || !scriptEntry.hasObject("remove")
-                || !scriptEntry.hasObject("prefix") || !scriptEntry.hasObject("suffix"))
+        if (!scriptEntry.hasObject("add") && !scriptEntry.hasObject("remove")
+                && !scriptEntry.hasObject("prefix") && !scriptEntry.hasObject("suffix"))
             throw new InvalidArgumentsException("Must specify something to do with the team!");
 
         if ((prefix != null && prefix.length() > 16) || (suffix != null && suffix.length() > 16))
@@ -89,13 +89,14 @@ public class TeamCommand extends AbstractCommand {
         Element suffix = scriptEntry.getElement("suffix");
 
         dB.report(scriptEntry, getName(),
+                id.debug() +
                 name.debug() +
                 (add != null ? add.debug() : "") +
                 (remove != null ? remove.debug() : "") +
                 (prefix != null ? prefix.debug() : "") +
                 (suffix != null ? suffix.debug() : ""));
 
-        Scoreboard board = null;
+        Scoreboard board;
 
         if (id.asString().equalsIgnoreCase("main")) {
             board = ScoreboardHelper.getMain();
