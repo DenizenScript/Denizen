@@ -110,7 +110,7 @@ public class VehicleCollidesEntityScriptEvent extends ScriptEvent implements Lis
     public void onVehicleCollidesEntity(VehicleEntityCollisionEvent event) {
         entity = new dEntity(event.getEntity());
         vehicle = new dEntity(event.getVehicle());
-        pickup_cancel = false;
+        pickup_cancel = event.isPickupCancelled();
         cancelled = event.isCancelled();
         this.event = event;
         fire();
