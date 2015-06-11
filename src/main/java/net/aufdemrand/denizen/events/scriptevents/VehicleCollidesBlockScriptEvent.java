@@ -45,8 +45,7 @@ public class VehicleCollidesBlockScriptEvent extends ScriptEvent implements List
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String arg = lower.substring(lower.lastIndexOf("with ") + 5);
-        return lower.contains(" collides with ")
-                && (arg.equals("block") || dMaterial.matches(arg));
+        return lower.contains(" collides with ") && (arg.equals("block") || dMaterial.matches(arg));
     }
 
     @Override
@@ -103,7 +102,7 @@ public class VehicleCollidesBlockScriptEvent extends ScriptEvent implements List
 
     @EventHandler
     public void onVehicleCollidesBlock(VehicleBlockCollisionEvent event) {
-        vehicle= new dEntity(event.getVehicle());
+        vehicle = new dEntity(event.getVehicle());
         location = new dLocation(event.getBlock().getLocation());
         this.event = event;
         fire();
