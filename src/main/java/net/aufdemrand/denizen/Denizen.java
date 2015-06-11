@@ -567,38 +567,40 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             eventManager = new OldEventManager();
             // Register all the 'Core' SmartEvents.
-            OldEventManager.registerSmartEvent(new BiomeEnterExitSmartEvent());
-            OldEventManager.registerSmartEvent(new BlockFallsSmartEvent());
-            OldEventManager.registerSmartEvent(new BlockPhysicsSmartEvent());
-            OldEventManager.registerSmartEvent(new ChunkLoadSmartEvent());
-            OldEventManager.registerSmartEvent(new ChunkUnloadSmartEvent());
             OldEventManager.registerSmartEvent(new CommandSmartEvent());
             OldEventManager.registerSmartEvent(new CuboidEnterExitSmartEvent());
-            OldEventManager.registerSmartEvent(new EntityCombustSmartEvent());
-            OldEventManager.registerSmartEvent(new EntityDamageSmartEvent());
-            OldEventManager.registerSmartEvent(new EntityDeathSmartEvent());
             OldEventManager.registerSmartEvent(new EntityInteractSmartEvent());
             OldEventManager.registerSmartEvent(new EntitySpawnSmartEvent());
             OldEventManager.registerSmartEvent(new FlagSmartEvent());
-            OldEventManager.registerSmartEvent(new ItemMoveSmartEvent());
-            OldEventManager.registerSmartEvent(new ItemScrollSmartEvent());
-            OldEventManager.registerSmartEvent(new ListPingSmartEvent());
             OldEventManager.registerSmartEvent(new NPCNavigationSmartEvent());
             OldEventManager.registerSmartEvent(new PlayerEquipsArmorSmartEvent());
-            OldEventManager.registerSmartEvent(new PlayerJumpSmartEvent());
             OldEventManager.registerSmartEvent(new PlayerStepsOnSmartEvent());
-            OldEventManager.registerSmartEvent(new PlayerWalkSmartEvent());
-            OldEventManager.registerSmartEvent(new RedstoneSmartEvent());
-            OldEventManager.registerSmartEvent(new VehicleCollisionSmartEvent());
             eventManager().registerCoreMembers();
 
+            ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockFallsScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockPhysicsScriptEvent());
             ScriptEvent.registerScriptEvent(new BucketEmptyScriptEvent());
             ScriptEvent.registerScriptEvent(new BucketFillScriptEvent());
             ScriptEvent.registerScriptEvent(new ChatScriptEvent());
+            ScriptEvent.registerScriptEvent(new ChunkLoadScriptEvent());
+            ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityCombustsScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityDamagedScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityDeathScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
+            ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
+            ScriptEvent.registerScriptEvent(new ItemScrollScriptEvent());
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
+            ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerJumpScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerWalkScriptEvent());
+            ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
             ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
+            ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
+            ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
 
 
