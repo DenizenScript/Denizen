@@ -673,6 +673,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             // register core dItem properties
             propertyParser.registerProperty(ItemApple.class, dItem.class);
+            propertyParser.registerProperty(ItemBaseColor.class, dItem.class);
             propertyParser.registerProperty(ItemBook.class, dItem.class);
             propertyParser.registerProperty(ItemDisplayname.class, dItem.class);
             propertyParser.registerProperty(ItemDurability.class, dItem.class);
@@ -682,6 +683,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(ItemFlags.class, dItem.class);
             propertyParser.registerProperty(ItemLore.class, dItem.class);
             propertyParser.registerProperty(ItemMap.class, dItem.class);
+            propertyParser.registerProperty(ItemPatterns.class, dItem.class);
             propertyParser.registerProperty(ItemPlantgrowth.class, dItem.class);
             propertyParser.registerProperty(ItemPotion.class, dItem.class);
             propertyParser.registerProperty(ItemQuantity.class, dItem.class);
