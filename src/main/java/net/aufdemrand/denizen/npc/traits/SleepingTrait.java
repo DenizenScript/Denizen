@@ -6,6 +6,7 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
 
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -22,9 +23,9 @@ public class SleepingTrait extends Trait {
     public void run() {
         if (npc == null || bedLocation == null) return;
 
-        //if (npc.getBukkitEntity().getPassenger() == null && sitting) eh.mount(eh);
+        //if (npc.getEntity().getPassenger() == null && sitting) eh.mount(eh);
 
-        if (!Utilities.checkLocation(npc.getBukkitEntity(), bedLocation, 1)) wakeUp();
+        if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), bedLocation, 1)) wakeUp();
     }
 
     /**
@@ -35,10 +36,10 @@ public class SleepingTrait extends Trait {
             return;
         }
 
-        PlayerAnimation.SLEEP.play((Player) npc.getBukkitEntity());
+        PlayerAnimation.SLEEP.play((Player) npc.getEntity());
 
         sleeping = true;
-        bedLocation = npc.getBukkitEntity().getLocation();
+        bedLocation = npc.getEntity().getLocation();
     }
 
     /**
@@ -56,9 +57,9 @@ public class SleepingTrait extends Trait {
          * playing sleep animation.
          */
         //TODO Adjust the .add()
-        npc.getBukkitEntity().teleport(location.add(0.5, 0, 0.5));
+        npc.getEntity().teleport(location.add(0.5, 0, 0.5));
 
-        PlayerAnimation.SLEEP.play((Player) npc.getBukkitEntity());
+        PlayerAnimation.SLEEP.play((Player) npc.getEntity());
 
         sleeping = true;
         bedLocation = location;
@@ -72,7 +73,7 @@ public class SleepingTrait extends Trait {
             return;
         }
 
-        PlayerAnimation.STOP_SLEEPING.play((Player) npc.getBukkitEntity());
+        PlayerAnimation.STOP_SLEEPING.play((Player) npc.getEntity());
 
         bedLocation = null;
         sleeping = false;

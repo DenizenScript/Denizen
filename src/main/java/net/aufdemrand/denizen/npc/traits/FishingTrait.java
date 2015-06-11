@@ -12,6 +12,7 @@ import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class FishingTrait extends Trait {
         reelCount++;
         castCount++;
         if(fish != null) {
-            if (fish.getBukkitEntity().getLocation().distance(npc.getBukkitEntity().getLocation()) < 3) {
+            if (fish.getBukkitEntity().getLocation().distance(npc.getEntity().getLocation()) < 3) {
                 try {
                     fish.getBukkitEntity().remove();
                 } catch (Exception e) {
@@ -96,8 +97,8 @@ public class FishingTrait extends Trait {
 
     @Override
     public void onSpawn() {
-        eh = ((CraftPlayer) npc.getBukkitEntity()).getHandle();
-        nmsworld = ((CraftWorld) npc.getBukkitEntity().getWorld()).getHandle();
+        eh = ((CraftPlayer) npc.getEntity()).getHandle();
+        nmsworld = ((CraftWorld) npc.getEntity().getWorld()).getHandle();
     }
 
     // <--[action]
@@ -153,7 +154,7 @@ public class FishingTrait extends Trait {
      */
     public void startFishing() {
         fishing = true;
-        fishingLocation = npc.getBukkitEntity().getLocation();
+        fishingLocation = npc.getEntity().getLocation();
     }
 
     // <--[action]
@@ -181,7 +182,7 @@ public class FishingTrait extends Trait {
 
         fishHook = new EntityFishingHook(nmsworld, eh);
         nmsworld.addEntity(fishHook);
-        from = npc.getBukkitEntity().getLocation();
+        from = npc.getEntity().getLocation();
         from = from.add(0,.33,0);
         to = fishingLocation;
 
@@ -208,10 +209,10 @@ public class FishingTrait extends Trait {
         victor = victor.multiply(v / 20.0);
 
         Projectile theHook = (Projectile) fishHook.getBukkitEntity();
-        theHook.setShooter(npc.getBukkitEntity());
+        theHook.setShooter((ProjectileSource) npc.getEntity());
         theHook.setVelocity(victor);
 
-        PlayerAnimation.ARM_SWING.play((Player) npc.getBukkitEntity());
+        PlayerAnimation.ARM_SWING.play((Player) npc.getEntity());
     }
 
     // <--[action]
@@ -238,9 +239,9 @@ public class FishingTrait extends Trait {
                 fish.getBukkitEntity().remove();
             } catch(Exception e) {}
             fish = new EntityItem(nmsworld, fishHook.locX, fishHook.locY, fishHook.locZ, getFishingResult());
-            double d5 = npc.getBukkitEntity().getLocation().getX() - fishHook.locX;
-            double d6 = npc.getBukkitEntity().getLocation().getY() - fishHook.locY;
-            double d7 = npc.getBukkitEntity().getLocation().getZ() - fishHook.locZ;
+            double d5 = npc.getEntity().getLocation().getX() - fishHook.locX;
+            double d6 = npc.getEntity().getLocation().getY() - fishHook.locY;
+            double d7 = npc.getEntity().getLocation().getZ() - fishHook.locZ;
             double d8 = (double) MathHelper.sqrt(d5 * d5 + d6 * d6 + d7 * d7);
             double d9 = 0.1D;
 
@@ -251,7 +252,7 @@ public class FishingTrait extends Trait {
             DenizenAPI.getDenizenNPC(npc).action("catch fish", null);
         }
 
-        PlayerAnimation.ARM_SWING.play((Player) npc.getBukkitEntity());
+        PlayerAnimation.ARM_SWING.play((Player) npc.getEntity());
     }
 
     public ItemStack getFishingResult() {

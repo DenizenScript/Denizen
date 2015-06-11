@@ -2591,6 +2591,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
                 "TAKE", "take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
 
         // <--[command]
+        // @Name Team
+        // @Syntax team (id:<scoreboard>/{main}) [name:<team>] (add:<player>|...) (remove:<player>|...) (prefix:<prefix>) (suffix:<suffix>)
+        // @Required 2
+        // @Stable stable
+        // @Short Controls scoreboard teams.
+        // @Author Morphan1
+        // @Group player
+        // @Description
+        // The Team command allows you to add modify a team's prefix and suffix, as well as adding
+        // and removing players from teams.
+        // NOTE: Prefixes and suffixes cannot be longer than 16 characters!
+        // @Tags
+        // None
+        // @Usage
+        // Use to add a player to a team.
+        // - team name:red add:<player>
+        // @Usage
+        // Use to change the prefix for a team.
+        // - team name:red "prefix:[<red>Red Team<reset>]"
+        // -->
+        registerCoreMember(TeamCommand.class,
+                "TEAM", "team (id:<scoreboard>/{main}) [name:<team>] (add:<player>|...) (remove:<player>|...) (prefix:<prefix>) (suffix:<suffix>)", 2);
+
+        // <--[command]
         // @Name Teleport
         // @Syntax teleport (<entity>|...) [<location>]
         // @Required 1

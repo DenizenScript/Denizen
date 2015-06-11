@@ -152,7 +152,7 @@ public class PushableTrait extends Trait implements Listener {
             if (System.currentTimeMillis() > pushedTimer) {
                 // Get pusher
                 Player pusher = null;
-                for (Entity le : event.getNPC().getBukkitEntity().getNearbyEntities(1, 1, 1))
+                for (Entity le : event.getNPC().getEntity().getNearbyEntities(1, 1, 1))
                     if (le instanceof Player) pusher = (Player) le;
                 if (pusher != null) {
                     DenizenAPI.getDenizenNPC(npc).action("push", dPlayer.mirrorBukkitPlayer(pusher));
@@ -161,7 +161,7 @@ public class PushableTrait extends Trait implements Listener {
             } // End push action
             if (!pushed && returnable) {
                 pushed = true;
-                returnLocation = npc.getBukkitEntity().getLocation().clone();
+                returnLocation = npc.getEntity().getLocation().clone();
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
                         DenizenAPI.getCurrentInstance(), new Runnable() {
                             @Override public void run() { navigateBack(); } }, delay * 20);
@@ -186,7 +186,7 @@ public class PushableTrait extends Trait implements Listener {
     @EventHandler
     public void NPCCompleteDestination (NavigationCompleteEvent event) {
         if (event.getNPC() == npc && pushed) {
-            EntityLiving handle = ((CraftLivingEntity) npc.getBukkitEntity()).getHandle();
+            EntityLiving handle = ((CraftLivingEntity) npc.getEntity()).getHandle();
             handle.yaw = returnLocation.getYaw();
             handle.pitch = returnLocation.getPitch();
             // !--- START NMS OBFUSCATED

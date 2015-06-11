@@ -42,9 +42,9 @@ public class HungerTrait extends Trait implements Listener {
         if (count >= 20) {
             // Reset counter
             count = 0;
-            double td = getDistance(npc.getBukkitEntity().getLocation());
+            double td = getDistance(npc.getEntity().getLocation());
             if (td > 0) {
-                location = npc.getBukkitEntity().getLocation().clone();
+                location = npc.getEntity().getLocation().clone();
                 currenthunger = currenthunger - (td * 0.01 * multiplier);
             }
         }
@@ -89,7 +89,7 @@ public class HungerTrait extends Trait implements Listener {
             }
         }
 
-        location = npc.getBukkitEntity().getLocation();
+        location = npc.getEntity().getLocation();
         listening = true;
     }
 
@@ -223,9 +223,9 @@ public class HungerTrait extends Trait implements Listener {
 
     // Used internally
     private double getDistance(Location location) {
-        if (!npc.getBukkitEntity().getWorld().equals(location.getWorld())) {
+        if (!npc.getEntity().getWorld().equals(location.getWorld())) {
             // World change, update location
-            this.location = npc.getBukkitEntity().getLocation();
+            this.location = npc.getEntity().getLocation();
             return 0;
         }
         return location.distance(this.location);
