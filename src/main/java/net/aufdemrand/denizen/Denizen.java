@@ -569,7 +569,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Register all the 'Core' SmartEvents.
             OldEventManager.registerSmartEvent(new CommandSmartEvent());
             OldEventManager.registerSmartEvent(new CuboidEnterExitSmartEvent());
-            OldEventManager.registerSmartEvent(new EntityDeathSmartEvent());
             OldEventManager.registerSmartEvent(new EntityInteractSmartEvent());
             OldEventManager.registerSmartEvent(new EntitySpawnSmartEvent());
             OldEventManager.registerSmartEvent(new FlagSmartEvent());
@@ -595,6 +594,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityCombustsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDamagedScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityDeathScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
