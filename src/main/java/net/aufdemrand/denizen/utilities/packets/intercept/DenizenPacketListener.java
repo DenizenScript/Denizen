@@ -31,13 +31,12 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
     @Override
     public void a(PacketPlayInSetCreativeSlot packet) {
         ItemStack itemStack = packet.getItemStack();
-        if (itemStack != null && itemStack.getTag() != null && !itemStack.getTag().isEmpty()) {
+        if (itemStack != null && itemStack.hasTag() && !itemStack.getTag().isEmpty()) {
             NBTTagCompound tag = itemStack.getTag();
-            String hash = tag.getString("Denizen Item Script");
-            if (hash != null) {
+            if (tag.hasKey("Denizen Item Script")) {
                 NBTTagCompound display = tag.getCompound("display");
                 NBTTagList nbtLore = display.hasKey("Lore") ? (NBTTagList) display.get("Lore") : new NBTTagList();
-                nbtLore.add(new NBTTagString(hash));
+                nbtLore.add(new NBTTagString(tag.getString("Denizen Item Script")));
                 display.set("Lore", nbtLore);
                 tag.set("display", display);
                 itemStack.setTag(tag);

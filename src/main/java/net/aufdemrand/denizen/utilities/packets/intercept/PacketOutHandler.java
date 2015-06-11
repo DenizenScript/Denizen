@@ -44,6 +44,7 @@ public class PacketOutHandler {
                 for (int i = 0; i < itemStacks.length; i++) {
                     itemStacks[i] = removeItemScriptLore(itemStacks[i]);
                 }
+                window_items_itemStackArray.set(wiPacket, itemStacks);
             }
             else if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                 PacketPlayOutNamedEntitySpawn nesPacket = (PacketPlayOutNamedEntitySpawn) packet;
@@ -74,7 +75,7 @@ public class PacketOutHandler {
     }
 
     private static ItemStack removeItemScriptLore(ItemStack itemStack) throws Exception{
-        if (itemStack != null && itemStack.getTag() != null && !itemStack.getTag().isEmpty()) {
+        if (itemStack != null && itemStack.hasTag() && !itemStack.getTag().isEmpty()) {
             NBTTagCompound tag = itemStack.getTag();
             NBTTagCompound display = tag.getCompound("display");
             NBTTagList lore = (NBTTagList) display.get("Lore");
