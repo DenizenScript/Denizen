@@ -1,11 +1,12 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
 import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEllipsoid;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -16,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
@@ -39,9 +41,11 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
     public BlockPhysicsScriptEvent() {
         instance = this;
     }
+
     public static BlockPhysicsScriptEvent instance;
     public dLocation location;
     public dMaterial new_material;
+    public dMaterial old_material;
     public BlockPhysicsEvent event;
 
     @Override
@@ -58,29 +62,44 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
             return true;
         }
 
-        Boolean blockvalid = true;
-        if (!lower.startsWith(new_material.identifySimple())) {
-            blockvalid = false;
-        }
-
-        Boolean cuboidvalid = true;
-        if (lower.contains(" in ")) {
-            dList cuboids = new dList();
-            for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
-                cuboids.add(cuboid.identify());
+        if (!lower.startsWith("block")) {
+            dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(0, lower));
+            if (mat == null) {
+                dB.echoError("Invalid event material [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
+                return false;
             }
-
-            if (!cuboids.contains(lower.substring(lower.lastIndexOf("in ") + 3))) {
-                cuboidvalid = false;
+            if (!old_material.matchesMaterialData(mat.getMaterialData())) {
+                return false;
             }
         }
 
-        return blockvalid && cuboidvalid;
+        if (CoreUtilities.xthArgEquals(2, lower, "in")) {
+            String it = CoreUtilities.getXthArg(3, lower);
+            if (dCuboid.matches(it)) {
+                dCuboid cuboid = dCuboid.valueOf(it);
+                if (!cuboid.isInsideCuboid(location)) {
+                    dB.log(location + " not in " + cuboid);
+                    return false;
+                }
+            }
+            else if (dEllipsoid.matches(it)) {
+                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
+                if (!ellipsoid.contains(location)) {
+                    return false;
+                }
+            }
+            else {
+                dB.echoError("Invalid event 'IN ...' check [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public String getName() {
-        return "ChunkLoads";
+        return "BlockPhysics";
     }
 
     @Override
@@ -102,14 +121,15 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("location", location);
-        context.put("new_material", new_material); // Deprecated in favor of context.chunk.world
+        context.put("new_material", new_material);
         return context;
     }
 
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        new_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+        new_material =  dMaterial.getMaterialFrom(event.getChangedType());
+        old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
         cancelled = event.isCancelled();
         this.event = event;
         fire();
