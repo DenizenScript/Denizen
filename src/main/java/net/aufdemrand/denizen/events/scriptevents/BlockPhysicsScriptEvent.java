@@ -43,6 +43,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
     }
 
     public static BlockPhysicsScriptEvent instance;
+
     public dLocation location;
     public dMaterial new_material;
     public dMaterial old_material;

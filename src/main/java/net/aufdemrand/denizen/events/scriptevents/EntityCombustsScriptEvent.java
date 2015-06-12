@@ -35,7 +35,9 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
     public EntityCombustsScriptEvent() {
         instance = this;
     }
+
     public static EntityCombustsScriptEvent instance;
+
     public dEntity entity;
     public Element duration;
     public EntityCombustEvent event;

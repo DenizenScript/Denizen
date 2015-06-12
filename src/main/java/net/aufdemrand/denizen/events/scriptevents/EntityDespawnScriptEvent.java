@@ -34,6 +34,7 @@ public class EntityDespawnScriptEvent extends ScriptEvent {
     }
 
     public static EntityDespawnScriptEvent instance;
+
     public dEntity entity;
     public Element cause;
 

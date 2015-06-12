@@ -34,7 +34,9 @@ public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
     public ItemScrollScriptEvent() {
         instance = this;
     }
+
     public static ItemScrollScriptEvent instance;
+
     public Element new_slot;
     public Element previous_slot;
     public PlayerItemHeldEvent event;

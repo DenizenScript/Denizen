@@ -38,6 +38,7 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener  {
     }
 
     public static LiquidSpreadScriptEvent instance;
+
     public dMaterial material;
     public dLocation from;
     public dLocation to;

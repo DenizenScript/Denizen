@@ -65,7 +65,9 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
     public EntityDamagedScriptEvent() {
         instance = this;
     }
+
     public static EntityDamagedScriptEvent instance;
+
     public dEntity entity;
     public Element cause;
     public Element damage;

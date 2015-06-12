@@ -36,7 +36,9 @@ public class VehicleCollidesBlockScriptEvent extends ScriptEvent implements List
     public VehicleCollidesBlockScriptEvent() {
         instance = this;
     }
+
     public static VehicleCollidesBlockScriptEvent instance;
+
     public dEntity vehicle;
     public dLocation location;
     public VehicleBlockCollisionEvent event;

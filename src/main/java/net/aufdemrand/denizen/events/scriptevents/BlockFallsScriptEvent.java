@@ -33,7 +33,9 @@ public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
     public BlockFallsScriptEvent() {
         instance = this;
     }
+
     public static BlockFallsScriptEvent instance;
+
     public dLocation location;
     public EntityChangeBlockEvent event;
 

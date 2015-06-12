@@ -51,7 +51,9 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
     public EntityKilledScriptEvent() {
         instance = this;
     }
+
     public static EntityKilledScriptEvent instance;
+
     public dEntity entity;
     public Element cause;
     public Element damage;

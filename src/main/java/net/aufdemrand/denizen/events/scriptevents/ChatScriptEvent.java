@@ -55,6 +55,7 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
     }
 
     public static ChatScriptEvent instance;
+
     public PlayerChatEvent pcEvent;
     public AsyncPlayerChatEvent apcEvent;
     public Element message;

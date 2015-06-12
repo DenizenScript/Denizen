@@ -42,7 +42,9 @@ public class ItemMoveScriptEvent extends ScriptEvent implements Listener {
     public ItemMoveScriptEvent() {
         instance = this;
     }
+
     public static ItemMoveScriptEvent instance;
+
     public dInventory origin;
     public dInventory destination;
     public dInventory initiator;

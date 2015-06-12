@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.events.scriptevents;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -30,9 +32,11 @@ public class VehicleCollidesEntityScriptEvent extends ScriptEvent implements Lis
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
     // <context.entity> returns the dEntity of the entity the vehicle has collided with.
+    // <context.pickup> returns whether the vehicle can pick up the entity.
     //
     // @Determine
-    // "NOPICKUP" to stop the vehicle from picking up the entity.
+    // "PICKUP:TRUE" to allow the vehicle to pick up the entity.
+    // "PICKUP:FALSE" to stop the vehicle from picking up the entity.
     //
     // -->
 
@@ -41,6 +45,7 @@ public class VehicleCollidesEntityScriptEvent extends ScriptEvent implements Lis
     }
 
     public static VehicleCollidesEntityScriptEvent instance;
+
     public dEntity vehicle;
     public dEntity entity;
     public Boolean pickup_cancel;
@@ -91,8 +96,9 @@ public class VehicleCollidesEntityScriptEvent extends ScriptEvent implements Lis
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (determination.toLowerCase().equals("nopickup")) {
-            pickup_cancel = true;
+        aH.Argument arg = aH.Argument.valueOf(determination);
+        if (arg.matchesPrefix("pickup")) {
+            pickup_cancel = !arg.asElement().asBoolean();
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -103,6 +109,7 @@ public class VehicleCollidesEntityScriptEvent extends ScriptEvent implements Lis
         HashMap<String, dObject> context = super.getContext();
         context.put("vehicle", vehicle);
         context.put("entity", entity);
+        context.put("pickup", new Element(!pickup_cancel));
         return context;
     }
 

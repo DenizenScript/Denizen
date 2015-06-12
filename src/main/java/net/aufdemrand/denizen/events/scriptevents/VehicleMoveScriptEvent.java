@@ -22,7 +22,6 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
     // <vehicle> moves
     //
     // @Warning This event fires very very rapidly!
-    // @Warning This is a listen-only event: it can't be stopped!
     //
     // @Triggers when a vehicle moves in the slightest.
     // @Context

@@ -39,6 +39,7 @@ public class BucketEmptyScriptEvent extends ScriptEvent implements Listener {
     }
 
     public static BucketEmptyScriptEvent instance;
+
     public dEntity entity;
     public dItem item;
     public dMaterial material;
