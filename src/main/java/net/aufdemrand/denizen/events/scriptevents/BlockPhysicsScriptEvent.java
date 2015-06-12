@@ -79,7 +79,6 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
             if (dCuboid.matches(it)) {
                 dCuboid cuboid = dCuboid.valueOf(it);
                 if (!cuboid.isInsideCuboid(location)) {
-                    dB.log(location + " not in " + cuboid);
                     return false;
                 }
             }
