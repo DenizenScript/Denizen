@@ -65,13 +65,8 @@ public class VehicleCollidesBlockScriptEvent extends ScriptEvent implements List
             return false;
         }
 
-        String v_test = lower.substring(0,lower.indexOf(" "));
-        if (!v_test.equals("vehicle")
-                && !v_test.equals(vehicle.identifySimpleType())) {
-            return false;
-        }
-
-        return true;
+        String ent = CoreUtilities.getXthArg(0, s);
+        return vehicle.matchesEntity(ent);
     }
 
     @Override

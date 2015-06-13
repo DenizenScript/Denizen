@@ -52,14 +52,8 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String eName = vehicle.getEntityType().getLowercaseName();
-        String eName2 = vehicle.identifySimple().substring(2);
-        String eName3 = vehicle.identifySimpleType();
-        return lower.startsWith("vehicle")
-                || lower.startsWith(eName)
-                || lower.startsWith(eName2)
-                || lower.startsWith(eName3);
+        String ent = CoreUtilities.getXthArg(0, s);
+        return vehicle.matchesEntity(ent);
     }
 
     // TODO: Can the vehicle be an NPC?

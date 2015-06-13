@@ -47,14 +47,9 @@ public class EntityDespawnScriptEvent extends ScriptEvent {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String eName = entity.getEntityType().getLowercaseName();
-        String eName2 = entity.identifySimple().substring(2);
-        String eName3 = entity.identifySimpleType();
-        return (lower.startsWith("entity")
-                || lower.startsWith(eName)
-                || lower.startsWith(eName2)
-                || lower.startsWith(eName3))
-                && checkSwitch(s, "cause", CoreUtilities.toLowerCase(cause.asString()));
+        String ent = CoreUtilities.getXthArg(0, s);
+        return entity.matchesEntity(ent)
+                && checkSwitch(lower, "cause", CoreUtilities.toLowerCase(cause.asString()));
     }
 
     @Override

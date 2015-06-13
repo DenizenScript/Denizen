@@ -1204,6 +1204,35 @@ public class dEntity implements dObject, Adjustable {
         return (isPlayer() || isCitizensNPC() || isSpawned());  // || isSaved()
     }
 
+    public boolean matchesEntity(String ent) {
+        if (ent.equalsIgnoreCase("npc")) {
+            return this.isCitizensNPC();
+        }
+        if (ent.equalsIgnoreCase("entity")) {
+            return true;
+        }
+        if (ent.equalsIgnoreCase("player")) {
+            return this.isPlayer();
+        }
+        if (ent.equalsIgnoreCase("vehicle")) {
+            return entity instanceof Vehicle;
+        }
+        if (ent.equalsIgnoreCase(getName())) {
+            return true;
+        }
+        if (ent.equalsIgnoreCase(entity_type.getLowercaseName())) {
+            return true;
+        }
+        dEntity e = dEntity.valueOf(ent);
+        if (e == null) {
+            return false;
+        }
+        if (entity == null) {
+            return e.entity == null && entity_type == e.entity_type;
+        }
+        return e.entity != null && getUUID().equals(e.getUUID());
+    }
+
     @Override
     public String getAttribute(Attribute attribute) {
 
