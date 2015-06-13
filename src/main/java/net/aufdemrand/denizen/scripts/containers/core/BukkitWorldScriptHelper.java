@@ -173,63 +173,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player damages block
-    // player damages <material>
-    // player damages block in <notable cuboid>
-    // player damages <material> in <notable cuboid>
-    //
-    // @Triggers when a block is damaged by a player.
-    // @Context
-    // <context.location> returns the dLocation the block that was damaged.
-    // <context.material> returns the dMaterial of the block that was damaged.
-    // <context.cuboids> returns a dList of notable cuboids which the damaged block is contained.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from being damaged.
-    // "INSTABREAK" to make the block get broken instantly.
-    //
-    // -->
-    @EventHandler
-    public void blockDamage(BlockDamageEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        List<String> events = new ArrayList<String>();
-
-        // Look for cuboids that contain the block's location
-        List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getBlock().getLocation());
-
-        dList cuboid_context = new dList();
-        for (dCuboid cuboid : cuboids) {
-            events.add("player damages block in " + cuboid.identifySimple());
-            events.add("player damages " + material.identifySimple() + " in " + cuboid.identifySimple());
-            cuboid_context.add(cuboid.identifySimple());
-        }
-        // Add in cuboids context, with either the cuboids or an empty list
-        context.put("cuboids", cuboid_context);
-
-        events.add("player damages block");
-        events.add("player damages " + material.identifySimple());
-
-        // Add in add'l context
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-
-        String determination = doEvents(events,
-                null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-
-        if (determination.toUpperCase().startsWith("INSTABREAK"))
-            event.setInstaBreak(true);
-    }
-
-    // <--[event]
-    // @Events
     // block fades
     // <block> fades
     //
