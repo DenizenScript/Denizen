@@ -70,47 +70,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // furnace smelts item (into <item>)
-    // furnace smelts <item> (into <item>)
-    //
-    // @Triggers when a furnace smelts an item.
-    // @Context
-    // <context.location> returns the dLocation of the furnace.
-    // <context.source_item> returns the dItem that is being smelted.
-    // <context.result_item> returns the dItem that is the result of the smelting.
-    //
-    // @Determine
-    // "CANCELLED" to stop the furnace from smelting the item.
-    // dItem to set the item that is the result of the smelting.
-    //
-    // -->
-    @EventHandler
-    public void furnaceSmelt(FurnaceSmeltEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem source = new dItem(event.getSource());
-        dItem result = new dItem(event.getResult());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("source_item", source);
-        context.put("result_item", result);
-
-        String determination = doEvents(Arrays.asList
-                ("furnace smelts item",
-                        "furnace smelts " + source.identifySimple(),
-                        "furnace smelts item into " + result.identifySimple(),
-                        "furnace smelts " + source.identifySimple() + " into " + result.identifySimple()),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (dItem.matches(determination)) {
-            event.setResult(dItem.valueOf(determination).getItemStack());
-        }
-    }
-
-    // <--[event]
-    // @Events
     // leaves decay
     // <block> decay
     //
