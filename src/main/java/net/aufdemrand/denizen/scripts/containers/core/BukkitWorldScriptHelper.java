@@ -173,40 +173,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block grows
-    // <block> grows
-    //
-    // @Triggers when a block grows naturally in the world,
-    //           e.g. when wheat, sugar canes, cactuses,
-    //           watermelons or pumpkins grow
-    // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> returns the dMaterial of the block.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from growing.
-    //
-    // -->
-    @EventHandler
-    public void blockGrow(BlockGrowEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-
-        String determination = doEvents(Arrays.asList
-                ("block grows",
-                        material.identifySimple() + " grows"),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // block ignites
     // <block> ignites
     //
