@@ -70,38 +70,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // leaves decay
-    // <block> decay
-    //
-    // @Triggers when leaves decay.
-    // @Context
-    // <context.location> returns the dLocation of the leaves.
-    // <context.material> returns the dMaterial of the leaves.
-    //
-    // @Determine
-    // "CANCELLED" to stop the leaves from decaying.
-    //
-    // -->
-    @EventHandler
-    public void leavesDecay(LeavesDecayEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-
-        String determination = doEvents(Arrays.asList
-                ("leaves decay",
-                        material.identifySimple() + " decay"),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // player changes sign
     // player changes sign in <notable cuboid>
     // player changes <material>
