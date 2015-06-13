@@ -171,39 +171,6 @@ public class BukkitWorldScriptHelper implements Listener {
         }
     }
 
-
-    // <--[event]
-    // @Events
-    // block burns
-    // <block> burns
-    //
-    // @Triggers when a block is destroyed by fire.
-    // @Context
-    // <context.location> returns the dLocation the block was burned at.
-    // <context.material> returns the dMaterial of the block that was burned.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from being destroyed.
-    //
-    // -->
-    @EventHandler
-    public void blockBurn(BlockBurnEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        context.put("material", material);
-
-        String determination = doEvents(Arrays.asList
-                ("block burns",
-                        material.identifySimple() + " burns"),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
     // <--[event]
     // @Events
     // player damages block
