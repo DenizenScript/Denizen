@@ -173,39 +173,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block spreads
-    // <block> spreads
-    //
-    // @Triggers when a block spreads based on world conditions,
-    //           e.g. when fire spreads, when mushrooms spread
-    // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> returns the dMaterial of the block.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from growing.
-    //
-    // -->
-    @EventHandler
-    public void blockSpread(BlockSpreadEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getSource().getType(), event.getSource().getData());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-
-        String determination = doEvents(Arrays.asList
-                ("block spreads",
-                        material.identifySimple() + " spreads"),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // brewing stand brews
     //
     // @Triggers when a brewing stand brews a potion.
