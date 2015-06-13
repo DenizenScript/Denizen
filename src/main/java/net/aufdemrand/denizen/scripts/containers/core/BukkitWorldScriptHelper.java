@@ -230,51 +230,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block dispenses item
-    // block dispenses <item>
-    // <block> dispenses item
-    // <block> dispenses <item>
-    //
-    // @Triggers when a block dispenses an item.
-    // @Context
-    // <context.location> returns the dLocation of the dispenser.
-    // <context.item> returns the dItem of the item being dispensed.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from dispensing.
-    // Element(Decimal) to set the power with which the item is shot.
-    //
-    // -->
-    @EventHandler
-    public void blockDispense(BlockDispenseEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = new dItem(event.getItem());
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        dLocation location = new dLocation(event.getBlock().getLocation());
-
-        context.put("location", location);
-        context.put("item", item);
-
-        String determination = doEvents(Arrays.asList
-                ("block dispenses item",
-                        "block dispenses " + item.identifySimple(),
-                        material.identifySimple() + " dispenses item",
-                        material.identifySimple() + " dispenses " + item.identifySimple()),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-
-        else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Double)) {
-            event.setVelocity(event.getVelocity().normalize()
-                    .multiply(aH.getDoubleFrom(determination)));
-        }
-    }
-
-    // <--[event]
-    // @Events
     // block fades
     // <block> fades
     //
