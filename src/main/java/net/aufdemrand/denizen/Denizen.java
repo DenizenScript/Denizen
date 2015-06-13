@@ -77,6 +77,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+import sun.security.jgss.krb5.Krb5Util;
 
 // <--[language]
 // @name dObjects
@@ -612,6 +613,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerJumpScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerWalkScriptEvent());
             ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
             ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());

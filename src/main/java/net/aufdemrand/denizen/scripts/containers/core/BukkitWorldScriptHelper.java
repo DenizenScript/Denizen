@@ -70,46 +70,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player takes item from furnace
-    // player takes <item> from furnace
-    // player takes <material> from furnace
-    //
-    // @Triggers when a player takes an item from a furnace.
-    // @Context
-    // <context.location> returns the dLocation of the furnace.
-    // <context.item> returns the dItem taken out of the furnace.
-    //
-    // @Determine
-    // Element(Number) to set the amount of experience the player will get.
-    //
-    // -->
-    @EventHandler
-    public void furnaceExtract(FurnaceExtractEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial itemMaterial = dMaterial.getMaterialFrom(event.getItemType());
-        dItem item = new dItem(itemMaterial, event.getItemAmount());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("item", item);
-
-        String determination = doEvents(Arrays.asList
-                ("player takes item from furnace",
-                        "player takes " + item.identifySimple() + " from furnace",
-                        "player takes " + item.identifyMaterial() + " from furnace"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
-            event.setExpToDrop(aH.getIntegerFrom(determination));
-        }
-    }
-
-    // <--[event]
-    // @Events
     // furnace smelts item (into <item>)
     // furnace smelts <item> (into <item>)
     //
