@@ -70,43 +70,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // furnace burns item
-    // furnace burns <item>
-    //
-    // @Triggers when a furnace burns an item used as fuel.
-    // @Context
-    // <context.location> returns the dLocation of the furnace.
-    // <context.item> returns the dItem burnt.
-    //
-    // @Determine
-    // "CANCELLED" to stop the furnace from burning the item.
-    // Element(Number) to set the burn time for this fuel.
-    //
-    // -->
-    @EventHandler
-    public void furnaceBurn(FurnaceBurnEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = new dItem(event.getFuel());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("item", item);
-
-        String determination = doEvents(Arrays.asList
-                ("furnace burns item",
-                        "furnace burns " + item.identifySimple()),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
-            event.setBurnTime(aH.getIntegerFrom(determination));
-        }
-    }
-
-    // <--[event]
-    // @Events
     // player takes item from furnace
     // player takes <item> from furnace
     // player takes <material> from furnace
