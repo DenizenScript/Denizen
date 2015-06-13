@@ -173,50 +173,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // piston extends
-    // <block> extends
-    //
-    // @Triggers when a piston extends.
-    // @Context
-    // <context.location> returns the dLocation of the piston.
-    // <context.material> returns the dMaterial of the piston.
-    // <context.length> returns an Element of the number of blocks that will be moved by the piston.
-    // <context.blocks> returns a dList of all block locations about to be moved.
-    // <context.sticky> returns an Element of whether the piston is sticky.
-    // <context.relative> returns a dLocation of the block in front of the piston.
-    //
-    // @Determine
-    // "CANCELLED" to stop the piston from extending.
-    //
-    // -->
-    @EventHandler
-    public void blockPistonExtend(BlockPistonExtendEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-        context.put("length", new Element(event.getLength()));
-        context.put("sticky", new Element(event.isSticky() ? "true": "false"));
-        context.put("relative", new dLocation(event.getBlock().getRelative(event.getDirection()).getLocation()));
-
-        dList blocks = new dList();
-        for (Block block: event.getBlocks())
-            blocks.add(new dLocation(block.getLocation()).identify());
-        context.put("blocks", blocks);
-
-        String determination = doEvents(Arrays.asList
-                ("piston extends",
-                        material.identifySimple() + " extends"),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // piston retracts
     // <block> retracts
     //
