@@ -129,7 +129,7 @@ public class PlayerDamagesBlockScriptEvent extends ScriptEvent implements Listen
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();
-        instabreak = event.getInstaBreak()
+        instabreak = event.getInstaBreak();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
