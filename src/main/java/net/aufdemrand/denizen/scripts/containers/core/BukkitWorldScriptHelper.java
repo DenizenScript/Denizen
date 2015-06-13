@@ -173,44 +173,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block forms
-    // <block> forms
-    //
-    // @Triggers when a block is formed based on world conditions,
-    // E.G. when snow forms in a snow storm or ice forms in a snowy biome
-    // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> returns the dMaterial of the block.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from forming.
-    //
-    // -->
-    @EventHandler
-    public void blockForm(BlockFormEvent event) {
-
-        if (event instanceof EntityBlockFormEvent) {
-            return; // Handled separately for now
-        }
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dMaterial material = dMaterial.getMaterialFrom(event.getNewState().getType(), event.getNewState().getData().getData());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-
-        String determination = doEvents(Arrays.asList
-                ("block forms",
-                        material.identifySimple() + " forms"),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // block grows
     // <block> grows
     //
