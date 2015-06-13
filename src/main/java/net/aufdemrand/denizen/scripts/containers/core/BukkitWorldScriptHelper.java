@@ -206,54 +206,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block being built
-    // block being built on <material>
-    // <material> being built
-    // <material> being built on <material>
-    //
-    // @Triggers when an attempt is made to build a block on another block. Not necessarily caused by players.
-    // @Context
-    // <context.location> returns the dLocation of the block the player is trying to build on.
-    // <context.old_material> returns the dMaterial of the block the player is trying to build on.
-    // <context.new_material> returns the dMaterial of the block the player is trying to build.
-    //
-    // @Determine
-    // "BUILDABLE" to allow the building.
-    // "CANCELLED" to cancel the building.
-    //
-    // -->
-    @EventHandler
-    public void blockCanBuild(BlockCanBuildEvent event) {
-
-        // TODO: Remove when Bukkit fixes error?
-        if (event.getMaterial() == null)
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial oldMaterial = dMaterial.getMaterialFrom(event.getBlock().getType());
-        dMaterial newMaterial = dMaterial.getMaterialFrom(event.getMaterial());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("old_material", oldMaterial);
-        context.put("new_material", newMaterial);
-
-        String determination = doEvents(Arrays.asList
-                ("block being built",
-                        "block being built on " + oldMaterial.identifySimple(),
-                        newMaterial.identifySimple() + " being built",
-                        newMaterial.identifySimple() + " being built on " +
-                                oldMaterial.identifySimple()),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("BUILDABLE"))
-            event.setBuildable(true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setBuildable(false);
-    }
-
-    // <--[event]
-    // @Events
     // player damages block
     // player damages <material>
     // player damages block in <notable cuboid>
