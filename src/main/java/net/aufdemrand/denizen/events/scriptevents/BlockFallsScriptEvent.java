@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -42,14 +43,16 @@ public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("falls");
+        String mat = CoreUtilities.getXthArg(0, lower);
+        return lower.equals("block falls")
+                || (lower.equals(mat + " falls") && dMaterial.matches(mat));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         return lower.equals("block falls")
-                || lower.equals(event.getBlock().getType().name().toLowerCase() + " falls");
+                || CoreUtilities.getXthArg(0,lower).equals(event.getBlock().getType().name().toLowerCase());
     }
 
     @Override
@@ -80,7 +83,7 @@ public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
     }
 
     @EventHandler
-    public void onBlockPhysics(EntityChangeBlockEvent event) {
+    public void onBlockFalls(EntityChangeBlockEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         cancelled = event.isCancelled();
         this.event = event;
