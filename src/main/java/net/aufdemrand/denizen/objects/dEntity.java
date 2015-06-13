@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -1223,7 +1224,7 @@ public class dEntity implements dObject, Adjustable {
         if (ent.equalsIgnoreCase(entity_type.getLowercaseName())) {
             return true;
         }
-        dEntity e = dEntity.valueOf(ent);
+        dEntity e = dEntity.valueOf(ent, new BukkitTagContext(null, null, false, null, false, null));
         if (e == null) {
             return false;
         }
