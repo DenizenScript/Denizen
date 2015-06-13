@@ -70,35 +70,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // brewing stand brews
-    //
-    // @Triggers when a brewing stand brews a potion.
-    // @Context
-    // <context.location> returns the dLocation of the brewing stand.
-    // <context.inventory> returns the dInventory of the brewing stand's contents.
-    //
-    // @Determine
-    // "CANCELLED" to stop the brewing stand from brewing.
-    //
-    // -->
-    @EventHandler
-    public void brew(BrewEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getContents()));
-
-        String determination = doEvents(Arrays.asList
-                ("brewing stand brews"),
-                null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // entity forms block
     // entity forms <block>
     // <entity> forms block
