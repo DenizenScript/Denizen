@@ -70,46 +70,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity forms block
-    // entity forms <block>
-    // <entity> forms block
-    // <entity> forms <block>
-    //
-    // @Triggers when a block is formed by an entity.
-    // For example, when a snowman forms snow.
-    // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> returns the dMaterial of the block.
-    // <context.entity> returns the dEntity that formed the block.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from forming.
-    //
-    // -->
-    @EventHandler
-    public void entityBlockForm(EntityBlockFormEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-        context.put("entity", entity.getDenizenObject());
-
-        String determination = doEvents(Arrays.asList
-                ("entity forms block",
-                        "entity forms " + material.identifySimple(),
-                        entity.identifyType() + " forms block",
-                        entity.identifyType() + " forms " + material.identifySimple()),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // furnace burns item
     // furnace burns <item>
     //
