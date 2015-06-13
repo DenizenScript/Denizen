@@ -73,28 +73,15 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        String test = lower.substring(0,lower.indexOf(" ") - 1);
-        if (!test.equals("entity")
-                && !test.equals(entity.identifySimpleType())
-                && !test.equals(damager.identifySimpleType())) {
+        boolean by = lower.contains(" by ");
+        dEntity entOne = by ? entity: damager;
+        if (!entOne.matchesEntity(CoreUtilities.getXthArg(0, s))) {
             return false;
         }
 
-        if (lower.contains(" by ")) {
-            test = lower.substring(lower.indexOf(" by " + 4));
-            if (!test.equals("entity")
-                    && !test.equals(entity.identifySimpleType())
-                    && !test.equals(damager.identifySimpleType())) {
-                if (projectile.isValid()) {
-                    if (!test.equals("projectile")
-                            || !test.equals(projectile.identifySimpleType())) {
-                        return false;
-                    }
-                }
-                else {
-                    return false;
-                }
-            }
+        dEntity entTwo = by ? damager: entity;
+        if (!entTwo.matchesEntity(CoreUtilities.getXthArg(by ? 3: 2, s))) {
+            return false;
         }
 
         if (entity.isValid() && entity.isLivingEntity()) {

@@ -4,7 +4,9 @@ import net.aufdemrand.denizen.events.scriptevents.EntityDespawnScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.objects.Element;
+import net.citizensnpcs.api.CitizensAPI;
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.Entity;
 import net.minecraft.server.v1_8_R3.EntityHuman;
@@ -43,6 +45,9 @@ public class DenizenWorldAccess implements IWorldAccess {
     @Override
     public void b(Entity entity) {
         try {
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(entity.getBukkitEntity())) {
+                return;
+            }
             EntityDespawnScriptEvent.instance.entity = new dEntity(entity.getBukkitEntity());
             EntityDespawnScriptEvent.instance.cause = new Element("OTHER");
             EntityDespawnScriptEvent.instance.cancelled = false;
