@@ -578,6 +578,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
             ScriptEvent.registerScriptEvent(new BlockBuiltScriptEvent());
             ScriptEvent.registerScriptEvent(new BlockBurnsScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockFadesScriptEvent());
             ScriptEvent.registerScriptEvent(new BlockDispensesScriptEvent());
             ScriptEvent.registerScriptEvent(new BlockFallsScriptEvent());
             ScriptEvent.registerScriptEvent(new BlockPhysicsScriptEvent());

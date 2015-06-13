@@ -173,38 +173,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // block fades
-    // <block> fades
-    //
-    // @Triggers when a block fades, melts or disappears based on world conditions.
-    // @Context
-    // <context.location> returns the dLocation the block faded at.
-    // <context.material> returns the dMaterial of the block that faded.
-    //
-    // @Determine
-    // "CANCELLED" to stop the block from fading.
-    //
-    // -->
-    @EventHandler
-    public void blockFade(BlockFadeEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dMaterial material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("material", material);
-
-        String determination = doEvents(Arrays.asList
-                ("block fades",
-                        material.identifySimple() + " fades"),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // block forms
     // <block> forms
     //
