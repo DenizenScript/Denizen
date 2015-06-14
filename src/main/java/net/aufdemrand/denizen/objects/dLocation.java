@@ -19,13 +19,12 @@ import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_8_R3.TileEntitySkull;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.*;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -433,6 +432,18 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.base_color>
+        // @returns Element
+        // @description
+        // Returns the base color of the banner at this location.
+        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // -->
+        if (attribute.startsWith("base_color")) {
+            DyeColor color = ((Banner) getBlock()).getBaseColor();
+            return new Element(color != null ? color.name() : "BLACK").getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.has_inventory>
         // @returns Element(Boolean)
         // @description
@@ -459,8 +470,28 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the material of the block at the location.
         // -->
-        if (attribute.startsWith("material"))
+        if (attribute.startsWith("material")) {
             return dMaterial.getMaterialFrom(getBlock().getType(), getBlock().getData()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <i@item.patterns>
+        // @returns dList
+        // @group properties
+        // @mechanism dItem.patterns
+        // @description
+        // Lists the patterns of the banner at this location in the form "li@COLOR/PATTERN|COLOR/PATTERN" etc.
+        // TODO: Local meta for these links
+        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
+        // -->
+        if (attribute.startsWith("patterns")) {
+            dList list = new dList();
+            for (org.bukkit.block.banner.Pattern pattern : ((Banner) getBlock()).getPatterns()) {
+                list.add(pattern.getColor().name() + "/" + pattern.getPattern().name());
+            }
+            return list.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <l@location.switched>
@@ -470,8 +501,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // (For buttons, levers, etc.)
         // To change this, see <@link command Switch>
         // -->
-        if (attribute.startsWith("switched"))
+        if (attribute.startsWith("switched")) {
             return new Element((getBlock().getData() & 0x8) > 0).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <l@location.sign_contents>
@@ -1739,6 +1771,52 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 Furnace furnace = (Furnace) getBlock().getState();
                 furnace.setCookTime((short) value.asInt());
             }
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name base_color
+        // @inout Element
+        // @description
+        // Changes the base color of the banner at this location.
+        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // @tags
+        // <l@location.base_color>
+        // -->
+        if (mechanism.matches("base_color")) {
+            Banner banner = (Banner) getBlock();
+            banner.setBaseColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
+            banner.update();
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name patterns
+        // @input dList
+        // @description
+        // Changes the patterns of the banner at this location. Input must be in the form
+        // "li@COLOR/PATTERN|COLOR/PATTERN" etc.
+        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
+        // @tags
+        // <l@location.patterns>
+        // -->
+        if (mechanism.matches("patterns")) {
+            List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<org.bukkit.block.banner.Pattern>();
+            dList list = mechanism.getValue().asType(dList.class);
+            List<String> split;
+            for (String string : list) {
+                try {
+                    split = CoreUtilities.split(string, '/', 2);
+                    patterns.add(new org.bukkit.block.banner.Pattern(DyeColor.valueOf(split.get(0).toUpperCase()),
+                            PatternType.valueOf(split.get(1).toUpperCase())));
+                } catch (Exception e) {
+                    dB.echoError("Could not apply pattern to banner: " + string);
+                }
+            }
+            Banner banner = (Banner) getBlock();
+            banner.setPatterns(patterns);
+            banner.update();
         }
 
         // <--[mechanism]
