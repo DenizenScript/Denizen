@@ -35,9 +35,11 @@ public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
     public ChunkUnloadScriptEvent() {
         instance = this;
     }
+
     public static ChunkUnloadScriptEvent instance;
+
     public dChunk chunk;
-    public dWorld world; // Deprecated in favor of context.chunk.world
+    public dWorld world;
     public ChunkUnloadEvent event;
 
     @Override
@@ -50,7 +52,7 @@ public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         return lower.equals("chunk unloads")
-                || lower.equals("chunk unloads in " + dWorld.mirrorBukkitWorld(event.getWorld()).getName().toLowerCase());
+                || lower.equals("chunk unloads in " + CoreUtilities.toLowerCase(world.getName()));
     }
 
     @Override
@@ -84,7 +86,7 @@ public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
         chunk = new dChunk(event.getChunk());
-        world = new dWorld(event.getWorld()); // Deprecated in favor of context.chunk.world
+        world = new dWorld(event.getWorld());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

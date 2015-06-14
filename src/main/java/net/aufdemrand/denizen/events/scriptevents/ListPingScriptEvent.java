@@ -38,7 +38,9 @@ public class ListPingScriptEvent extends ScriptEvent implements Listener {
     public ListPingScriptEvent() {
         instance = this;
     }
+
     public static ListPingScriptEvent instance;
+
     public Element motd;
     public Element max_players;
     public Element num_players;

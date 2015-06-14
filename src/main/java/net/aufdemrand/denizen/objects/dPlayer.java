@@ -1566,18 +1566,30 @@ public class dPlayer implements dObject, Adjustable {
             if (attribute.getAttribute(2).startsWith("qualifier")) {
                 if (statistic == null) return null;
                 dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2));
-                if (obj instanceof dMaterial)
-                    return new Element(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
-                            .getAttribute(attribute.fulfill(2));
-                else if (obj instanceof dEntity)
-                    return new Element(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getBukkitEntityType()))
-                            .getAttribute(attribute.fulfill(2));
-                else
+                try {
+                    if (obj instanceof dMaterial)
+                        return new Element(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
+                                .getAttribute(attribute.fulfill(2));
+                    else if (obj instanceof dEntity)
+                        return new Element(getPlayerEntity().getStatistic(statistic, ((dEntity) obj).getBukkitEntityType()))
+                                .getAttribute(attribute.fulfill(2));
+                    else
+                        return null;
+                }
+                catch (Exception e) {
+                    dB.echoError("Invalid statistic: " + statistic + " for this player!");
                     return null;
+                }
             }
 
             if (statistic == null) return null;
-            return new Element(getPlayerEntity().getStatistic(statistic)).getAttribute(attribute.fulfill(1));
+            try {
+                return new Element(getPlayerEntity().getStatistic(statistic)).getAttribute(attribute.fulfill(1));
+            }
+            catch (Exception e) {
+                dB.echoError("Invalid statistic: " + statistic + " for this player!");
+                return null;
+            }
         }
 
         // <--[tag]

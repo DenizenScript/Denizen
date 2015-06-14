@@ -2,11 +2,12 @@ package net.aufdemrand.denizen.events.scriptevents;
 
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEllipsoid;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,82 +15,72 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 
 import java.util.HashMap;
-import java.util.List;
 
-public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
+public class PlayerPlacesHangingScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block physics (in <notable cuboid>)
-    // <material> physics (in <notable cuboid>)
-    //
-    // @Warning This event may fire very rapidly.
+    // player places hanging (in <notable>)
+    // player places <hanging> (in <notable>)
     //
     // @Cancellable true
     //
-    // @Triggers when a block's physics update.
+    // @Triggers when a hanging entity (painting or itemframe) is placed.
     //
     // @Context
-    // <context.location> returns a dLocation of the block the physics is affecting.
-    // <context.new_material> returns a dMaterial of what the block is becoming.
+    // <context.hanging> returns the dEntity of the hanging.
+    // <context.location> returns the dLocation of the block the hanging was placed on.
+    // <context.cuboids> returns a dList of the cuboids the hanging is in.
     //
     // -->
 
-    public BlockPhysicsScriptEvent() {
+    public PlayerPlacesHangingScriptEvent() {
         instance = this;
     }
-
-    public static BlockPhysicsScriptEvent instance;
-
+    public static PlayerPlacesHangingScriptEvent instance;
+    public dEntity hanging;
+    public dList cuboids;
     public dLocation location;
-    public dMaterial new_material;
-    public dMaterial old_material;
-    public BlockPhysicsEvent event;
+    public HangingPlaceEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("physics");
+        String mat = CoreUtilities.getXthArg(2, lower);
+        return lower.startsWith("player places")
+                && (mat.equals("hanging") || mat.equals("painting") || mat.equals("item_frame"));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-
-        if (lower.equals("block physics")) {
-            return true;
+        String hangCheck = CoreUtilities.getXthArg(2, lower);
+        if (!hangCheck.equals("hanging")
+                && hanging.matchesEntity(hangCheck)){
+            return false;
         }
-
-        if (!lower.startsWith("block")) {
-            dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(0, lower));
-            if (mat == null) {
-                dB.echoError("Invalid event material [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
-            if (!old_material.matchesMaterialData(mat.getMaterialData())) {
-                return false;
-            }
+        String notable = null;
+        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
+            notable = CoreUtilities.getXthArg(4, lower);
         }
-
-        if (CoreUtilities.xthArgEquals(2, lower, "in")) {
-            String it = CoreUtilities.getXthArg(3, lower);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
+        if (notable != null) {
+            if (dCuboid.matches(notable)) {
+                dCuboid cuboid = dCuboid.valueOf(notable);
                 if (!cuboid.isInsideCuboid(location)) {
                     return false;
                 }
             }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
+            else if (dEllipsoid.matches(notable)) {
+                dEllipsoid ellipsoid = dEllipsoid.valueOf(notable);
                 if (!ellipsoid.contains(location)) {
                     return false;
                 }
             }
             else {
-                dB.echoError("Invalid event 'IN ...' check [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
+                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
                 return false;
             }
         }
@@ -99,7 +90,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public String getName() {
-        return "BlockPhysics";
+        return "PlayerPlacesHanging";
     }
 
     @Override
@@ -109,7 +100,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        BlockPhysicsEvent.getHandlerList().unregister(this);
+        HangingPlaceEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -120,16 +111,20 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
+        context.put("hanging", hanging);
+        context.put("cuboids", cuboids);
         context.put("location", location);
-        context.put("new_material", new_material);
         return context;
     }
 
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
+    public void pnPlayerPlacesHanging(HangingPlaceEvent event) {
+        hanging = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
-        new_material =  dMaterial.getMaterialFrom(event.getChangedType());
-        old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+        cuboids = new dList();
+        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+            cuboids.add(cuboid.identifySimple());
+        }
         cancelled = event.isCancelled();
         this.event = event;
         fire();

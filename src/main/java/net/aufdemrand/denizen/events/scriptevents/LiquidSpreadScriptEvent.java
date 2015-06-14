@@ -7,6 +7,7 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,7 +37,6 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener  {
     public LiquidSpreadScriptEvent() {
         instance = this;
     }
-
     public static LiquidSpreadScriptEvent instance;
     public dMaterial material;
     public dLocation from;
@@ -52,11 +52,8 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener  {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String matName = event.getBlock().getType().getData().getName().toLowerCase();
-        String matName2 = material.identifySimple().substring(2);
         return lower.startsWith("liquid")
-                || lower.startsWith(matName)
-                || lower.startsWith(matName2);
+                || CoreUtilities.getXthArg(0, lower).equals(event.getBlock().getType().getData().getName().toLowerCase());
     }
 
     @Override

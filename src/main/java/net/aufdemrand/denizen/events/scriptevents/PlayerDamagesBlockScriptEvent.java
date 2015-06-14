@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,68 +15,61 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 
 import java.util.HashMap;
-import java.util.List;
 
-public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
+public class PlayerDamagesBlockScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block physics (in <notable cuboid>)
-    // <material> physics (in <notable cuboid>)
-    //
-    // @Warning This event may fire very rapidly.
+    // player damages block
+    // player damages <material>
+    // player damages block in <notable cuboid>
+    // player damages <material> in <notable cuboid>
     //
     // @Cancellable true
     //
-    // @Triggers when a block's physics update.
+    // @Triggers when a block is damaged by a player.
     //
     // @Context
-    // <context.location> returns a dLocation of the block the physics is affecting.
-    // <context.new_material> returns a dMaterial of what the block is becoming.
+    // <context.location> returns the dLocation the block that was damaged.
+    // <context.material> returns the dMaterial of the block that was damaged.
+    // <context.cuboids> returns a dList of notable cuboids which the damaged block is contained.
+    //
+    // @Determine
+    // "INSTABREAK" to make the block get broken instantly.
     //
     // -->
 
-    public BlockPhysicsScriptEvent() {
+    public PlayerDamagesBlockScriptEvent() {
         instance = this;
     }
-
-    public static BlockPhysicsScriptEvent instance;
-
+    public static PlayerDamagesBlockScriptEvent instance;
     public dLocation location;
-    public dMaterial new_material;
-    public dMaterial old_material;
-    public BlockPhysicsEvent event;
+    public dMaterial material;
+    public dList cuboids;
+    public Boolean instabreak;
+    public BlockDamageEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("physics");
+        String mat = CoreUtilities.getXthArg(3, lower);
+        return lower.startsWith("player damages")
+                && (mat.equals("block") || dMaterial.matches(mat));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (lower.equals("block physics")) {
-            return true;
+        String mat = CoreUtilities.getXthArg(2, lower);
+        if (!mat.equals("block") && !mat.equals(material.identifyNoIdentifier())) {
+            return false;
         }
-
-        if (!lower.startsWith("block")) {
-            dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(0, lower));
-            if (mat == null) {
-                dB.echoError("Invalid event material [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
-            if (!old_material.matchesMaterialData(mat.getMaterialData())) {
-                return false;
-            }
-        }
-
-        if (CoreUtilities.xthArgEquals(2, lower, "in")) {
-            String it = CoreUtilities.getXthArg(3, lower);
+        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
+            String it = CoreUtilities.getXthArg(4, lower);
             if (dCuboid.matches(it)) {
                 dCuboid cuboid = dCuboid.valueOf(it);
                 if (!cuboid.isInsideCuboid(location)) {
@@ -89,7 +83,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
                 }
             }
             else {
-                dB.echoError("Invalid event 'IN ...' check [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
+                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
                 return false;
             }
         }
@@ -99,7 +93,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public String getName() {
-        return "BlockPhysics";
+        return "PlayerDamagesBlock";
     }
 
     @Override
@@ -109,11 +103,14 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        BlockPhysicsEvent.getHandlerList().unregister(this);
+        BlockDamageEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (determination.toLowerCase().equals("instabreak")) {
+            instabreak = true;
+        }
         return super.applyDetermination(container, determination);
     }
 
@@ -121,18 +118,25 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("location", location);
-        context.put("new_material", new_material);
+        context.put("material", material);
+        context.put("cuboids", cuboids);
         return context;
     }
 
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
+    public void onPlayerDamagesBlock(BlockDamageEvent event) {
+        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
-        new_material =  dMaterial.getMaterialFrom(event.getChangedType());
-        old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+        cuboids = new dList();
+        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+            cuboids.add(cuboid.identifySimple());
+        }
         cancelled = event.isCancelled();
+        instabreak = event.getInstaBreak();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
+        event.setInstaBreak(instabreak);
     }
+
 }

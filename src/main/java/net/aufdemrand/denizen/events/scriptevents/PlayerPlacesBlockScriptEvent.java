@@ -1,81 +1,73 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
-import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dEllipsoid;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.HashMap;
-import java.util.List;
 
-public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
+public class PlayerPlacesBlockScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block physics (in <notable cuboid>)
-    // <material> physics (in <notable cuboid>)
-    //
-    // @Warning This event may fire very rapidly.
+    // player places block
+    // player places <material>
+    // player places block in notable cuboid
+    // player places <material> in notable cuboid
+    // player places block in <notable cuboid>
+    // player places <material> in <notable cuboid>
+    // NOTE: This event does not catch "hanging", "painting", or "item_frame" blocks.
+    //       See "on player places hanging"
     //
     // @Cancellable true
     //
-    // @Triggers when a block's physics update.
+    // @Triggers when a player places a block.
     //
     // @Context
-    // <context.location> returns a dLocation of the block the physics is affecting.
-    // <context.new_material> returns a dMaterial of what the block is becoming.
+    // <context.location> returns the dLocation of the block that was placed.
+    // <context.material> returns the dMaterial of the block that was placed.
+    // <context.cuboids> returns a dList of notable cuboids surrounding the placed block.
+    // <context.item_in_hand> returns the dItem of the item in hand.
     //
     // -->
 
-    public BlockPhysicsScriptEvent() {
+    public PlayerPlacesBlockScriptEvent() {
         instance = this;
     }
-
-    public static BlockPhysicsScriptEvent instance;
-
+    public static PlayerPlacesBlockScriptEvent instance;
     public dLocation location;
-    public dMaterial new_material;
-    public dMaterial old_material;
-    public BlockPhysicsEvent event;
+    public dMaterial material;
+    public dList cuboids;
+    public dItem item_in_hand;
+    public BlockPlaceEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("physics");
+        String mat = CoreUtilities.getXthArg(2, lower);
+        return lower.startsWith("player places")
+                && (!mat.equals("hanging") && !mat.equals("painting") && !mat.equals("item_frame"));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (lower.equals("block physics")) {
-            return true;
+        String mat = CoreUtilities.getXthArg(2, lower);
+        if (!mat.equals("block") && !mat.equals(material.identifyNoIdentifier())) {
+            return false;
         }
-
-        if (!lower.startsWith("block")) {
-            dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(0, lower));
-            if (mat == null) {
-                dB.echoError("Invalid event material [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
-            if (!old_material.matchesMaterialData(mat.getMaterialData())) {
-                return false;
-            }
-        }
-
-        if (CoreUtilities.xthArgEquals(2, lower, "in")) {
-            String it = CoreUtilities.getXthArg(3, lower);
+        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
+            String it = CoreUtilities.getXthArg(4, lower);
             if (dCuboid.matches(it)) {
                 dCuboid cuboid = dCuboid.valueOf(it);
                 if (!cuboid.isInsideCuboid(location)) {
@@ -99,7 +91,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public String getName() {
-        return "BlockPhysics";
+        return "PlayerPlacesBlock";
     }
 
     @Override
@@ -109,7 +101,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        BlockPhysicsEvent.getHandlerList().unregister(this);
+        BlockPlaceEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -121,18 +113,25 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("location", location);
-        context.put("new_material", new_material);
+        context.put("material", material);
+        context.put("cuboids", cuboids);
+        context.put("item_in_hand", item_in_hand);
         return context;
     }
 
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
+    public void onPlayerPlacesBlock(BlockPlaceEvent event) {
+        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
-        new_material =  dMaterial.getMaterialFrom(event.getChangedType());
-        old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+        cuboids = new dList();
+        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+            cuboids.add(cuboid.identifySimple());
+        }
         cancelled = event.isCancelled();
+        item_in_hand = new dItem(event.getItemInHand());
         this.event = event;
         fire();
         event.setCancelled(cancelled);
     }
+
 }

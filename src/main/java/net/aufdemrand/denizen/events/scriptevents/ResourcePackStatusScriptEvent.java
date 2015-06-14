@@ -17,8 +17,6 @@ public class ResourcePackStatusScriptEvent extends ScriptEvent {
     // @Events
     // resource pack status
     //
-    // @Cancellable false
-    //
     // @Triggers when a player accepts, denies, successfully loads, or fails to download a resource pack.
     //
     // @Context
@@ -32,6 +30,7 @@ public class ResourcePackStatusScriptEvent extends ScriptEvent {
     }
 
     public static ResourcePackStatusScriptEvent instance;
+
     public Element hash;
     public Element status;
     public dPlayer player;

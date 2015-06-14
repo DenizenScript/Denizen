@@ -35,7 +35,9 @@ public class PlayerWalkScriptEvent extends ScriptEvent implements Listener {
     public PlayerWalkScriptEvent() {
         instance = this;
     }
+
     public static PlayerWalkScriptEvent instance;
+
     public dLocation old_location;
     public dLocation new_location;
     public PlayerMoveEvent event;

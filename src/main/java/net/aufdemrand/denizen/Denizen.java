@@ -77,6 +77,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+import sun.security.jgss.krb5.Krb5Util;
 
 // <--[language]
 // @name dObjects
@@ -569,33 +570,56 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Register all the 'Core' SmartEvents.
             OldEventManager.registerSmartEvent(new CommandSmartEvent());
             OldEventManager.registerSmartEvent(new CuboidEnterExitSmartEvent());
-            OldEventManager.registerSmartEvent(new EntityInteractSmartEvent());
-            OldEventManager.registerSmartEvent(new EntitySpawnSmartEvent());
             OldEventManager.registerSmartEvent(new FlagSmartEvent());
             OldEventManager.registerSmartEvent(new NPCNavigationSmartEvent());
             OldEventManager.registerSmartEvent(new PlayerEquipsArmorSmartEvent());
-            OldEventManager.registerSmartEvent(new PlayerStepsOnSmartEvent());
             eventManager().registerCoreMembers();
 
             ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockBuiltScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockBurnsScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockDispensesScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockFadesScriptEvent());
             ScriptEvent.registerScriptEvent(new BlockFallsScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockFormsScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockGrowsScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockSpreadsScriptEvent());
+            ScriptEvent.registerScriptEvent(new BlockIgnitesScriptEvent());
             ScriptEvent.registerScriptEvent(new BlockPhysicsScriptEvent());
+            ScriptEvent.registerScriptEvent(new BrewsScriptEvent());
             ScriptEvent.registerScriptEvent(new BucketEmptyScriptEvent());
             ScriptEvent.registerScriptEvent(new BucketFillScriptEvent());
             ScriptEvent.registerScriptEvent(new ChatScriptEvent());
             ScriptEvent.registerScriptEvent(new ChunkLoadScriptEvent());
             ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityBreaksHangingScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityCombustsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDamagedScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDeathScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityFormsBlock());
+            ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
+            ScriptEvent.registerScriptEvent(new FurnaceBurnsItemScriptEvent());
+            ScriptEvent.registerScriptEvent(new FurnaceSmeltsItemScriptEvent());
+            ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemScrollScriptEvent());
+            ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
             ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
+            ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
+            ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerBreaksBlockScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerChangesSignScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerJumpScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerStepsOnScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerWalkScriptEvent());
             ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
             ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());

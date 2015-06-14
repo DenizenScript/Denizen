@@ -42,7 +42,9 @@ public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
     public BiomeEnterExitScriptEvent() {
         instance = this;
     }
+
     public static BiomeEnterExitScriptEvent instance;
+
     public dLocation from;
     public dLocation to;
     public Element old_biome;

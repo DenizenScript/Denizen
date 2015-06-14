@@ -29,7 +29,9 @@ public class PlayerJumpScriptEvent extends ScriptEvent implements Listener {
     public PlayerJumpScriptEvent() {
         instance = this;
     }
+
     public static PlayerJumpScriptEvent instance;
+
     public dLocation location;
     public PlayerMoveEvent event;
 
@@ -80,9 +82,7 @@ public class PlayerJumpScriptEvent extends ScriptEvent implements Listener {
     @EventHandler
     public void onPlayerJumps(PlayerMoveEvent event) {
         location = new dLocation(event.getFrom());
-        cancelled = event.isCancelled(); // Bukkit is broken, this doesn't work
         this.event = event;
         fire();
-        event.setCancelled(cancelled); // Bukkit is broken, this doesn't work
     }
 }

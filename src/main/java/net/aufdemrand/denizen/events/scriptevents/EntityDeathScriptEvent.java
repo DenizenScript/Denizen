@@ -34,9 +34,8 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
     // <context.damager> returns the dEntity damaging the other entity, if any.
     // <context.message> returns an Element of a player's death message.
     // <context.inventory> returns the dInventory of the entity if it was a player.
-    // <context.cause> returns an Element of the cause of the death.
+    // <context.cause> returns an Element of the cause of the death. See <@link language damage cause> for a list of possible damage causes.
     // <context.drops> returns a dList of all pending item drops.
-    // Causes: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html>
     //
     // @Determine
     // Element(String) to change the death message.
@@ -50,7 +49,9 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
     public EntityDeathScriptEvent() {
         instance = this;
     }
+
     public static EntityDeathScriptEvent instance;
+
     public dEntity entity;
     public dEntity damager;
     public Element message;
@@ -70,16 +71,8 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String entityType = entity.identifyType();
-        String entityName = entity.identifySimple();
-
-        return lower.equals("entity dies")
-                || lower.equals("entity death")
-                || lower.equals(entityType + " dies")
-                || lower.equals(entityType + " death")
-                || lower.equals(entityName + " dies")
-                || lower.equals(entityName + " death");
+        String ent = CoreUtilities.getXthArg(0, s);
+        return entity.matchesEntity(ent);
     }
 
     @Override

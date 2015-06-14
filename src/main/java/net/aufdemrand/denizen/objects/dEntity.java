@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -125,7 +126,7 @@ public class dEntity implements dObject, Adjustable {
         // Handle objects with properties through the object fetcher
         m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dEntity.class, string);
+            return ObjectFetcher.getObjectFrom(dEntity.class, string, context);
         }
 
 
@@ -1204,6 +1205,35 @@ public class dEntity implements dObject, Adjustable {
         return (isPlayer() || isCitizensNPC() || isSpawned());  // || isSaved()
     }
 
+    public boolean matchesEntity(String ent) {
+        if (ent.equalsIgnoreCase("npc")) {
+            return this.isCitizensNPC();
+        }
+        if (ent.equalsIgnoreCase("entity")) {
+            return true;
+        }
+        if (ent.equalsIgnoreCase("player")) {
+            return this.isPlayer();
+        }
+        if (ent.equalsIgnoreCase("vehicle")) {
+            return entity instanceof Vehicle;
+        }
+        if (ent.equalsIgnoreCase(getName())) {
+            return true;
+        }
+        if (ent.equalsIgnoreCase(entity_type.getLowercaseName())) {
+            return true;
+        }
+        dEntity e = dEntity.valueOf(ent, new BukkitTagContext(null, null, false, null, false, null));
+        if (e == null) {
+            return false;
+        }
+        if (entity == null) {
+            return e.entity == null && entity_type == e.entity_type;
+        }
+        return e.entity != null && getUUID().equals(e.getUUID());
+    }
+
     @Override
     public String getAttribute(Attribute attribute) {
 
@@ -2096,7 +2126,7 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("describe")) {
             String escript = getEntityScript();
             return new Element("e@" + (escript != null && escript.length() > 0 ? escript:getEntityType().getLowercaseName())
-                    +PropertyParser.getPropertiesString(this))
+                    + PropertyParser.getPropertiesString(this))
                     .getAttribute(attribute.fulfill(1));
         }
 

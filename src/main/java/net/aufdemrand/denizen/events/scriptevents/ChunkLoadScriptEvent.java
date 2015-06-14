@@ -33,9 +33,11 @@ public class ChunkLoadScriptEvent extends ScriptEvent implements Listener {
     public ChunkLoadScriptEvent() {
         instance = this;
     }
+
     public static ChunkLoadScriptEvent instance;
+
     public dChunk chunk;
-    public dWorld world; // Deprecated in favor of context.chunk.world
+    public dWorld world;
     public ChunkLoadEvent event;
 
     @Override
@@ -48,7 +50,8 @@ public class ChunkLoadScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         return lower.equals("chunk loads for the first time")
-                || lower.equals("chunk loads for the first time in " + dWorld.mirrorBukkitWorld(event.getWorld()).getName().toLowerCase());
+                || lower.equals("chunk loads for the first time in " +
+                CoreUtilities.toLowerCase(world.getName()));
     }
 
     @Override
@@ -82,7 +85,7 @@ public class ChunkLoadScriptEvent extends ScriptEvent implements Listener {
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
         chunk = new dChunk(event.getChunk());
-        world = new dWorld(event.getWorld()); // Deprecated in favor of context.chunk.world
+        world = new dWorld(event.getWorld());
         this.event = event;
         fire();
     }

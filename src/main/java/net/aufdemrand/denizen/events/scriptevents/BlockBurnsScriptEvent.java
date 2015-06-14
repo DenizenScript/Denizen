@@ -11,53 +11,54 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 
 import java.util.HashMap;
 
-public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
+public class BlockBurnsScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block falls
-    // <material> falls
+    // block burns
+    // <block> burns
     //
     // @Cancellable true
     //
-    // @Triggers when a block falls.
+    // @Triggers when a block is destroyed by fire.
     //
     // @Context
-    // <context.location> returns the location of the block.
+    // <context.location> returns the dLocation the block was burned at.
+    // <context.material> returns the dMaterial of the block that was burned.
     //
     // -->
 
-    public BlockFallsScriptEvent() {
+    public BlockBurnsScriptEvent() {
         instance = this;
     }
-
-    public static BlockFallsScriptEvent instance;
-
+    public static BlockBurnsScriptEvent instance;
     public dLocation location;
-    public EntityChangeBlockEvent event;
+    public dMaterial material;
+    public BlockBurnEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String mat = CoreUtilities.getXthArg(0, lower);
-        return lower.equals("block falls")
-                || (lower.equals(mat + " falls") && dMaterial.matches(mat));
+        return lower.contains("block burns")
+                || (lower.equals(mat + " burns") && dMaterial.matches(mat));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("block falls")
-                || CoreUtilities.getXthArg(0,lower).equals(event.getBlock().getType().name().toLowerCase());
+        String mat = CoreUtilities.getXthArg(0, lower);
+        return mat.equals("block")
+                || (material.identifySimpleNoIdentifier().toLowerCase().equals(mat));
     }
 
     @Override
     public String getName() {
-        return "BlockFalls";
+        return "BlockBurns";
     }
 
     @Override
@@ -67,7 +68,7 @@ public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        EntityChangeBlockEvent.getHandlerList().unregister(this);
+        BlockBurnEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -79,12 +80,14 @@ public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("location", location);
+        context.put("material", material);
         return context;
     }
 
     @EventHandler
-    public void onBlockFalls(EntityChangeBlockEvent event) {
+    public void onBlockBurns(BlockBurnEvent event) {
         location = new dLocation(event.getBlock().getLocation());
+        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

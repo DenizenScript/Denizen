@@ -2,10 +2,13 @@ package net.aufdemrand.denizen.utilities.blocks;
 
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizen.utilities.jnbt.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.*;
 import org.bukkit.util.Vector;
 
@@ -63,6 +66,36 @@ public class CuboidBlockSet implements BlockSet {
         return new dCuboid(low, high);
     }
 
+    public class IntHolder {
+        public long theInt = 0;
+    }
+
+    @Override
+    public void setBlocksDelayed(final Location loc, final Runnable runme) {
+        final IntHolder index = new IntHolder();
+        final long goal = (long)(x_width * y_length * z_height);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                while (index.theInt < goal) {
+                    long z = index.theInt % ((long)(z_height));
+                    long y = ((index.theInt - z) % ((long)(y_length * z_height))) / ((long)z_height);
+                    long x = (index.theInt - y - z) / ((long)(y_length * z_height));
+                    blocks.get((int)index.theInt).setBlock(loc.clone().add(x, y, z).getBlock());
+                    index.theInt++;
+                    if (System.currentTimeMillis() - start > 50) {
+                        return;
+                    }
+                }
+                runme.run();
+                cancel();
+
+            }
+        }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
+    }
+
     @Override
     public void setBlocks(Location loc) {
         int index = 0;
@@ -77,7 +110,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public CuboidBlockSet rotateOne() {
-        // TODO
+        // TODO: IMPLEMENT ME!
         return new CuboidBlockSet();
     }
 

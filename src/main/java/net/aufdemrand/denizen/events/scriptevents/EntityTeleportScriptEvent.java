@@ -69,14 +69,8 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String eName = entity.getEntityType().getLowercaseName();
-        String eName2 = entity.identifySimple().substring(2);
-        String eName3 = entity.identifySimpleType();
-        return lower.startsWith("entity")
-                || lower.startsWith(eName)
-                || lower.startsWith(eName2)
-                || lower.startsWith(eName3);
+        String ent = CoreUtilities.getXthArg(0, s);
+        return entity.matchesEntity(ent);
     }
 
     @Override
@@ -158,8 +152,9 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
     @EventHandler
     public void onPlayerTeleports(PlayerTeleportEvent event) {
 
-        if (dEntity.isNPC(event.getPlayer()))
+        if (dEntity.isNPC(event.getPlayer())) {
             return;
+        }
 
         from = new dLocation(event.getFrom());
         to = new dLocation(event.getTo());

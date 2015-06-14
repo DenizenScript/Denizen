@@ -54,7 +54,7 @@ public class ItemBaseColor implements Property {
         // @mechanism dItem.base_color
         // @description
         // Gets the base color of a banner.
-        // For the list of possible colors, see http://bit.ly/1dydq12
+        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // -->
         if (attribute.startsWith("base_color")) {
             Element baseColor = getBaseColor();
@@ -91,7 +91,7 @@ public class ItemBaseColor implements Property {
         // @input Element
         // @description
         // Changes the base color of a banner.
-        // For the list of possible colors, see http://bit.ly/1dydq12
+        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // @tags
         // <i@item.base_color>
         // -->

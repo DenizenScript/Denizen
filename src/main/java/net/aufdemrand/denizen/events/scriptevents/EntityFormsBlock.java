@@ -1,9 +1,6 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
-import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dEllipsoid;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
@@ -14,68 +11,63 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.EntityBlockFormEvent;
 
 import java.util.HashMap;
-import java.util.List;
 
-public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
+public class EntityFormsBlock extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block physics (in <notable cuboid>)
-    // <material> physics (in <notable cuboid>)
-    //
-    // @Warning This event may fire very rapidly.
+    // entity forms block (in <notable cuboid>)
+    // entity forms <block> (in <notable cuboid>)
+    // <entity> forms block (in <notable cuboid>)
+    // <entity> forms <block> (in <notable cuboid>)
     //
     // @Cancellable true
     //
-    // @Triggers when a block's physics update.
+    // @Triggers when a block is formed by an entity.
+    // For example, when a snowman forms snow.
     //
     // @Context
-    // <context.location> returns a dLocation of the block the physics is affecting.
-    // <context.new_material> returns a dMaterial of what the block is becoming.
+    // <context.location> returns the dLocation the block.
+    // <context.material> returns the dMaterial of the block.
+    // <context.entity> returns the dEntity that formed the block.
     //
     // -->
 
-    public BlockPhysicsScriptEvent() {
+    public EntityFormsBlock() {
         instance = this;
     }
-
-    public static BlockPhysicsScriptEvent instance;
-
+    public static EntityFormsBlock instance;
+    public dMaterial material;
     public dLocation location;
-    public dMaterial new_material;
-    public dMaterial old_material;
-    public BlockPhysicsEvent event;
+    public dEntity entity;
+    public EntityBlockFormEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("physics");
+        String entTest = CoreUtilities.getXthArg(1, lower);
+        String matTest = CoreUtilities.getXthArg(2, lower);
+        return CoreUtilities.getXthArg(1, lower).equals("forms")
+                && (entTest.equals("entity") || dEntity.matches(entTest))
+                && (matTest.equals("block") || dMaterial.matches(matTest));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (lower.equals("block physics")) {
-            return true;
+        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+            return false;
         }
-
-        if (!lower.startsWith("block")) {
-            dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(0, lower));
-            if (mat == null) {
-                dB.echoError("Invalid event material [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
-            if (!old_material.matchesMaterialData(mat.getMaterialData())) {
-                return false;
-            }
+        if (!material.identifySimpleNoIdentifier().equals("block")
+                || !material.identifySimpleNoIdentifier().equals(CoreUtilities.getXthArg(2, lower))) {
+            return false;
         }
-
-        if (CoreUtilities.xthArgEquals(2, lower, "in")) {
-            String it = CoreUtilities.getXthArg(3, lower);
+        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
+            String it = CoreUtilities.getXthArg(4, lower);
             if (dCuboid.matches(it)) {
                 dCuboid cuboid = dCuboid.valueOf(it);
                 if (!cuboid.isInsideCuboid(location)) {
@@ -99,7 +91,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public String getName() {
-        return "BlockPhysics";
+        return "EntityFormsBlock";
     }
 
     @Override
@@ -109,7 +101,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        BlockPhysicsEvent.getHandlerList().unregister(this);
+        EntityBlockFormEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -121,15 +113,16 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("location", location);
-        context.put("new_material", new_material);
+        context.put("material", material);
+        context.put("entity", entity);
         return context;
     }
 
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
+    public void onEntityFormsBlock(EntityBlockFormEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        new_material =  dMaterial.getMaterialFrom(event.getChangedType());
-        old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        entity = new dEntity(event.getEntity());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

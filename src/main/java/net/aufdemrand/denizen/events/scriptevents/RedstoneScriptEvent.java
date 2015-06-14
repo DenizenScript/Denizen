@@ -37,7 +37,9 @@ public class RedstoneScriptEvent extends ScriptEvent implements Listener {
     public RedstoneScriptEvent() {
         instance = this;
     }
+
     public static RedstoneScriptEvent instance;
+
     public dLocation location;
     public Element old_current;
     public Element new_current;
