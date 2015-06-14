@@ -99,6 +99,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         CuboidBlockSet set;
         Type ttype = Type.valueOf(type.asString());
         if (scriptEntry.shouldWaitFor() && ttype != Type.PASTE) {
+            dB.echoError("Tried to wait for a non-paste schematic command.");
             scriptEntry.setFinished(true);
         }
         switch (ttype) {
@@ -196,6 +197,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                         });
                     }
                     else {
+                        scriptEntry.setFinished(true);
                         schematics.get(name.asString().toUpperCase()).setBlocks(location);
                     }
                 }
