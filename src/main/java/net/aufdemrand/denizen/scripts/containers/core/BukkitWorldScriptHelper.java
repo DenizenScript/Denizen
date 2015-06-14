@@ -12,7 +12,6 @@ import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
@@ -23,7 +22,6 @@ import net.aufdemrand.denizencore.objects.aH.Argument;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
@@ -62,13 +60,6 @@ public class BukkitWorldScriptHelper implements Listener {
         }
         return determ.size() > 0 ? determ.get(0): "none";
     }
-
-
-    /////////////////////
-    //   BLOCK EVENTS
-    /////////////////
-
-
 
     /////////////////////
     //   CUSTOM EVENTS
@@ -143,105 +134,6 @@ public class BukkitWorldScriptHelper implements Listener {
                 current_time.put(currentWorld.identifySimple(), hour);
             }
         }
-    }
-
-    /////////////////////
-    //   HANGING EVENTS
-    /////////////////
-
-    // <--[event]
-    // @Events
-    // hanging breaks
-    // hanging breaks because <cause>
-    // <hanging> breaks
-    // <hanging> breaks because <cause>
-    //
-    // @Triggers when a hanging entity (painting or itemframe) is broken.
-    // @Context
-    // <context.cause> returns the cause of the entity breaking.
-    // <context.entity> returns the dEntity that broke the hanging entity, if any.
-    // <context.hanging> returns the dEntity of the hanging.
-    //
-    // @Determine
-    // "CANCELLED" to stop the hanging from being broken.
-    //
-    // -->
-    @EventHandler
-    public void hangingBreak(HangingBreakEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity hanging = new dEntity(event.getEntity());
-        String cause =  event.getCause().name();
-
-        List<String> events = new ArrayList<String>();
-        events.add("hanging breaks");
-        events.add("hanging breaks because " + cause);
-        events.add(hanging.identifyType() + " breaks");
-        events.add(hanging.identifyType() +
-                " breaks because " + cause);
-
-        if (event instanceof HangingBreakByEntityEvent) {
-
-            // <--[event]
-            // @Events
-            // <entity> breaks hanging
-            // <entity> breaks hanging because <cause>
-            // <entity> breaks <hanging> in <notable cuboid>
-            // <entity> breaks <hanging> because
-            // <entity> breaks <hanging> because <cause>
-            //
-            // @Triggers when a hanging entity is broken by an entity.
-            // @Context
-            // <context.cause> returns the cause of the entity breaking.
-            // <context.entity> returns the dEntity that broke the hanging entity.
-            // <context.hanging> returns the hanging entity as a dEntity.
-            //
-            // @Determine
-            // "CANCELLED" to stop the hanging entity from being broken.
-            //
-            // -->
-
-            HangingBreakByEntityEvent subEvent = (HangingBreakByEntityEvent) event;
-
-            dEntity entity = new dEntity(subEvent.getRemover());
-            context.put("entity", entity.getDenizenObject());
-
-            if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-            else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-            // Look for cuboids that contain the block's location
-            List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getEntity().getLocation());
-
-            dList cuboid_context = new dList();
-            for (dCuboid cuboid : cuboids) {
-                events.add(entity.identifyType() + " breaks " + hanging.identifyType() + " in " + cuboid.identifySimple());
-
-                cuboid_context.add(cuboid.identifySimple());
-            }
-            // Add in cuboids context, with either the cuboids or an empty list
-            context.put("cuboids", cuboid_context);
-
-            events.add("entity breaks hanging");
-            events.add("entity breaks hanging because " + cause);
-            events.add("entity breaks " + hanging.identifyType());
-            events.add("entity breaks " + hanging.identifyType() + " because " + cause);
-            events.add(entity.identifyType() + " breaks hanging");
-            events.add(entity.identifyType() + " breaks hanging because " + cause);
-            events.add(entity.identifyType() + " breaks " + hanging.identifyType());
-            events.add(entity.identifyType() + " breaks " + hanging.identifyType() + " because " + cause);
-        }
-
-        // Add context
-        context.put("hanging", hanging);
-        context.put("cause", new Element(cause));
-
-        String determination = doEvents(events, npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
     }
 
     // <--[event]

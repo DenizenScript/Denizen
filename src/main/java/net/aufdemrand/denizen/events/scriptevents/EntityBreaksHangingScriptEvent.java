@@ -12,72 +12,80 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
 import java.util.HashMap;
 
-public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
+public class EntityBreaksHangingScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity spawns
-    // entity spawns (in <notable cuboid>) (because <cause>)
-    // <entity> spawns
-    // <entity> spawns (in <notable cuboid>) (because <cause>)
+    // entity breaks hanging (in <notable cuboid>)
+    // entity breaks hanging because <cause> (in <notable cuboid>)
+    // <entity> breaks hanging (in <notable cuboid>)
+    // <entity> breaks hanging because <cause> (in <notable cuboid>)
     //
     // @Cancellable true
     //
-    // @Warning This event may fire very rapidly.
-    //
-    // @Triggers when an entity spawns.
+    // @Triggers when a hanging entity (painting or itemframe) is broken.
     //
     // @Context
-    // <context.entity> returns the dEntity that spawned.
-    // <context.location> returns the location the entity will spawn at.
-    // <context.cuboids> returns a list of cuboids that the entity spawned inside.
-    // <context.reason> returns the reason the entity spawned.
-    // Reasons: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
+    // <context.cause> returns the cause of the entity breaking.
+    // <context.entity> returns the dEntity that broke the hanging entity, if any.
+    // <context.hanging> returns the dEntity of the hanging.
+    // <context.cuboids> returns a dList of the cuboids the hanging is in.
+    // <context.location> returns a dLocation of the hanging.
+    // Causes list: <@link url http://bit.ly/1BeqxPX>
     //
     // -->
 
-    public EntitySpawnScriptEvent() {
+    public EntityBreaksHangingScriptEvent() {
         instance = this;
     }
-    public static EntitySpawnScriptEvent instance;
+    public static EntityBreaksHangingScriptEvent instance;
+    public Element cause;
     public dEntity entity;
-    public dLocation location;
+    public dEntity hanging;
     public dList cuboids;
-    public Element reason;
-    public CreatureSpawnEvent event;
+    public dLocation location;
+    public HangingBreakByEntityEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains(" spawns");
+        String entName = CoreUtilities.getXthArg(0, lower);
+        return (CoreUtilities.getXthArg(1, lower).equals("breaks")
+                && CoreUtilities.getXthArg(2, lower).equals("hanging"))
+                || (entName.equals("entity") || dEntity.matches(entName));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+        String entName = CoreUtilities.getXthArg(0, lower);
+        if (!entity.matchesEntity(entName)){
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(2, lower, "in")) {
-            String it = CoreUtilities.getXthArg(3, lower);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
+        String notable = null;
+        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
+            notable = CoreUtilities.getXthArg(4, lower);
+        }
+        else if (CoreUtilities.xthArgEquals(5, lower, "in")) {
+            notable = CoreUtilities.getXthArg(6, lower);
+        }
+        if (notable != null) {
+            if (dCuboid.matches(notable)) {
+                dCuboid cuboid = dCuboid.valueOf(notable);
                 if (!cuboid.isInsideCuboid(location)) {
                     return false;
                 }
             }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
+            else if (dEllipsoid.matches(notable)) {
+                dEllipsoid ellipsoid = dEllipsoid.valueOf(notable);
                 if (!ellipsoid.contains(location)) {
                     return false;
                 }
@@ -88,15 +96,17 @@ public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
             }
         }
 
-        if (CoreUtilities.xthArgEquals(4, lower, "because")) {
-            return CoreUtilities.getXthArg(5, lower).equals(reason.toString());
+        if (CoreUtilities.xthArgEquals(3, lower, "because")){
+            if (!CoreUtilities.getXthArg(4, lower).equals(CoreUtilities.toLowerCase(cause.asString()))) {
+                return false;
+            }
         }
         return true;
     }
 
     @Override
     public String getName() {
-        return "EntitySpawn";
+        return "EntityBreaksHanging";
     }
 
     @Override
@@ -106,7 +116,7 @@ public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        CreatureSpawnEvent.getHandlerList().unregister(this);
+        HangingBreakByEntityEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -117,26 +127,27 @@ public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
+        context.put("cause", cause);
         context.put("entity", entity);
-        context.put("location", location);
+        context.put("hanging", hanging);
         context.put("cuboids", cuboids);
-        context.put("reason", reason);
+        context.put("location", location);
         return context;
     }
 
     @EventHandler
-    public void onEntityInteract(CreatureSpawnEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getLocation());
+    public void onHangingBreaks(HangingBreakByEntityEvent event) {
+        hanging = new dEntity(event.getEntity());
+        cause =  new Element(event.getCause().name());
+        location = new dLocation(hanging.getLocation());
+        entity = new dEntity(event.getRemover());
         cuboids = new dList();
         for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
-        reason = new Element(event.getSpawnReason().name());
         cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
     }
-
 }
