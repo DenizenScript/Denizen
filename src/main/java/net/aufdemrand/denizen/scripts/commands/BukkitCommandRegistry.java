@@ -2120,7 +2120,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Schematic
-        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>)
+        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (delayed)
         // @Group World
         // @Required 2
         // @Stable unstable
@@ -2164,7 +2164,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // -->
         registerCoreMember(SchematicCommand.class,
-                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>)", 2);
+                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (delayed)", 2);
 
 
         // <--[command]
