@@ -136,41 +136,6 @@ public class BukkitWorldScriptHelper implements Listener {
         }
     }
 
-    // <--[event]
-    // @Events
-    // player places hanging
-    // player places <hanging>
-    //
-    // @Triggers when a hanging entity (painting or itemframe) is placed.
-    // @Context
-    // <context.hanging> returns the dEntity of the hanging.
-    // <context.location> returns the dLocation of the block the hanging was placed on.
-    //
-    // @Determine
-    // "CANCELLED" to stop the hanging from being placed.
-    //
-    // -->
-    @EventHandler
-    public void hangingPlace(HangingPlaceEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity hanging = new dEntity(event.getEntity());
-
-        context.put("hanging", hanging);
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-
-        String determination = doEvents(Arrays.asList
-                ("player places hanging",
-                        "player places " + hanging.identifyType()),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
     /////////////////////
     //   ENTITY EVENTS
     /////////////////

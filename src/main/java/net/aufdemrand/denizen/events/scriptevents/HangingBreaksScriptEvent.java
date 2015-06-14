@@ -56,8 +56,8 @@ public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String mat = CoreUtilities.getXthArg(0, lower);
-        return CoreUtilities.getXthArg(0, lower).equals("breaks")
-                || (mat.equals("hanging") || dEntity.matches(mat));
+        return CoreUtilities.getXthArg(1, lower).equals("breaks")
+                && (mat.equals("hanging") || mat.equals("painting") || mat.equals("item_frame"));
     }
 
     @Override
