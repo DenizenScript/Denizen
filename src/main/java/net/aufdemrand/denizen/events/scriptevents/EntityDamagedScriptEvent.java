@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.scriptevents;
 
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -92,13 +93,20 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
+        // Check for possibility of death first
+        if (entity.isValid() && entity.isLivingEntity()) {
+            if (final_damage.asDouble() >= entity.getLivingEntity().getHealth()) {
+                return false;
+            }
+        }
+
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(3, lower);
         String target = cmd.equals("damages") ? CoreUtilities.getXthArg(2, lower): CoreUtilities.getXthArg(0, lower);
         if (attacker.length() > 0) {
-            if (dEntity.matches(attacker)) {
-                if (!damager.matchesEntity(attacker)) {
+            if (damager != null) {
+                if( !damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
                     return false;
                 }
             }
@@ -113,12 +121,6 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
                 if (!entity.matchesEntity(target)) {
                     return false;
                 }
-            }
-        }
-
-        if (entity.isValid() && entity.isLivingEntity()) {
-            if (final_damage.asDouble() >= entity.getLivingEntity().getHealth()) {
-                return false;
             }
         }
 
@@ -184,9 +186,6 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
                     damager = damager.getShooter();
                 }
             }
-        }
-        if (damager == null) {
-            return;
         }
         cancelled = event.isCancelled();
         this.event = event;
