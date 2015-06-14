@@ -3322,6 +3322,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Context
     // <context.world> returns the dWorld the portal was created in.
     // <context.reason> returns an Element of the reason the portal was created. (FIRE or OBC_DESTINATION)
+    // <context.list> returns a dList of all the blocks that will become portal blocks.
     //
     // @Determine
     // "CANCELLED" to stop the portal from being created.
@@ -3336,6 +3337,12 @@ public class BukkitWorldScriptHelper implements Listener {
 
         context.put("world", world);
         context.put("reason", new Element(reason));
+
+        dList list = new dList();
+        for (Block block: event.getBlocks()) {
+            list.add(new dLocation(block.getLocation()).identify());
+        }
+        context.put("blocks", list);
 
         String determination = doEvents(Arrays.asList
                 ("portal created",

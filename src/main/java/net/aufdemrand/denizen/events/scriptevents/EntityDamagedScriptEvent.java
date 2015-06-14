@@ -94,7 +94,7 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         }
 
         dEntity entTwo = by ? damager: entity;
-        if (!entTwo.matchesEntity(CoreUtilities.getXthArg(by ? 3: 2, s))) {
+        if (!(!by && lower.contains("damaged") || entTwo.matchesEntity(CoreUtilities.getXthArg(by ? 3: 2, s)))) {
             return false;
         }
 

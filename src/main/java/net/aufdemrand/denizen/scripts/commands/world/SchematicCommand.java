@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.utilities.blocks.BlockData;
 import net.aufdemrand.denizen.utilities.blocks.CuboidBlockSet;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -24,7 +25,7 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SchematicCommand extends AbstractCommand {
+public class SchematicCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void onEnable() {
@@ -42,27 +43,32 @@ public class SchematicCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
-                    && arg.matchesEnum(Type.values()))
+                    && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", new Element(arg.raw_value.toUpperCase()));
-
+            }
             else if (!scriptEntry.hasObject("name")
-                    && arg.matchesPrefix("name"))
+                    && arg.matchesPrefix("name")) {
                 scriptEntry.addObject("name", arg.asElement());
-
+            }
             else if (!scriptEntry.hasObject("angle")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("angle", arg.asElement());
-
+            }
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
-
+            }
             else if (!scriptEntry.hasObject("cuboid")
-                    && arg.matchesArgumentType(dCuboid.class))
+                    && arg.matchesArgumentType(dCuboid.class)) {
                 scriptEntry.addObject("cuboid", arg.asType(dCuboid.class));
-
-            else
+            }
+            else if (!scriptEntry.hasObject("delayed")
+                    && arg.matches("delayed")) {
+                scriptEntry.addObject("delayed", new Element("true"));
+            }
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         if (!scriptEntry.hasObject("type"))
@@ -70,16 +76,16 @@ public class SchematicCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("name"))
             throw new InvalidArgumentsException("Missing name argument!");
-
     }
 
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Element angle = scriptEntry.getElement("angle");
         Element type = scriptEntry.getElement("type");
         Element name = scriptEntry.getElement("name");
+        Element delayed = scriptEntry.getElement("delayed");
         dLocation location = scriptEntry.getdObject("location");
         dCuboid cuboid = scriptEntry.getdObject("cuboid");
 
@@ -87,10 +93,16 @@ public class SchematicCommand extends AbstractCommand {
                 + name.debug()
                 + (location != null ? location.debug(): "")
                 + (cuboid != null ? cuboid.debug(): "")
-                + (angle != null ? angle.debug(): ""));
+                + (angle != null ? angle.debug(): "")
+                + (delayed != null ? delayed.debug(): ""));
 
         CuboidBlockSet set;
-        switch (Type.valueOf(type.asString())) {
+        Type ttype = Type.valueOf(type.asString());
+        if (scriptEntry.shouldWaitFor() && ttype != Type.PASTE) {
+            dB.echoError("Tried to wait for a non-paste schematic command.");
+            scriptEntry.setFinished(true);
+        }
+        switch (ttype) {
             case CREATE:
                 if (schematics.containsKey(name.asString().toUpperCase())) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is already loaded.");
@@ -105,6 +117,7 @@ public class SchematicCommand extends AbstractCommand {
                     return;
                 }
                 try {
+                    // TODO: Make me waitable!
                     set = new CuboidBlockSet(cuboid, location);
                     schematics.put(name.asString().toUpperCase(), set);
                 }
@@ -127,7 +140,7 @@ public class SchematicCommand extends AbstractCommand {
                         return;
                     }
                     InputStream fs = new FileInputStream(f);
-                    //set = CuboidBlockSet.fromCompressedString(ScriptHelper.convertStreamToString(fs));
+                    // TODO: Make me waitable!
                     set = CuboidBlockSet.fromMCEditStream(fs);
                     fs.close();
                     schematics.put(name.asString().toUpperCase(), set);
@@ -155,6 +168,7 @@ public class SchematicCommand extends AbstractCommand {
                     return;
                 }
                 dB.echoError(scriptEntry.getResidingQueue(), "Schematic rotation is TODO!");
+                // TODO: Make me waitable!
                 int ang = angle.asInt();
                 if (ang < 0) {
                     ang = 360 + ang;
@@ -163,7 +177,6 @@ public class SchematicCommand extends AbstractCommand {
                     ang -= 90;
                     schematics.get(name.asString().toUpperCase()).rotateOne();
                 }
-                //schematics.get(name.asString().toUpperCase()).rotate2D(angle.asInt());
                 break;
             case PASTE:
                 if (!schematics.containsKey(name.asString().toUpperCase())) {
@@ -175,7 +188,18 @@ public class SchematicCommand extends AbstractCommand {
                     return;
                 }
                 try {
-                    schematics.get(name.asString().toUpperCase()).setBlocks(location);
+                    if (delayed != null && delayed.asBoolean()) {
+                        schematics.get(name.asString().toUpperCase()).setBlocksDelayed(location, new Runnable() {
+                            @Override
+                            public void run() {
+                                scriptEntry.setFinished(true);
+                            }
+                        });
+                    }
+                    else {
+                        scriptEntry.setFinished(true);
+                        schematics.get(name.asString().toUpperCase()).setBlocks(location);
+                    }
                 }
                 catch (Exception ex) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Exception pasting schematic file " + name.asString() + ".");
@@ -192,13 +216,9 @@ public class SchematicCommand extends AbstractCommand {
                     set = schematics.get(name.asString().toUpperCase());
                     String directory = URLDecoder.decode(System.getProperty("user.dir"));
                     File f = new File(directory + "/plugins/Denizen/schematics/" + name.asString() + ".schematic");
-                    //String output = set.toCompressedFormat();
+                    // TODO: Make me waitable!
                     FileOutputStream fs = new FileOutputStream(f);
                     set.saveMCEditFormatToStream(fs);
-                    /*OutputStreamWriter osw = new OutputStreamWriter(fs);
-                    osw.write(output);
-                    osw.flush();
-                    osw.close();*/
                     fs.flush();
                     fs.close();
                 }

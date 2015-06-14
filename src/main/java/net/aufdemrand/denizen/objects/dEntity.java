@@ -126,7 +126,7 @@ public class dEntity implements dObject, Adjustable {
         // Handle objects with properties through the object fetcher
         m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dEntity.class, string);
+            return ObjectFetcher.getObjectFrom(dEntity.class, string, context);
         }
 
 
@@ -2126,7 +2126,7 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("describe")) {
             String escript = getEntityScript();
             return new Element("e@" + (escript != null && escript.length() > 0 ? escript:getEntityType().getLowercaseName())
-                    +PropertyParser.getPropertiesString(this))
+                    + PropertyParser.getPropertiesString(this))
                     .getAttribute(attribute.fulfill(1));
         }
 

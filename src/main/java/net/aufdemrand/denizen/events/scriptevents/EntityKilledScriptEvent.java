@@ -80,7 +80,7 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
         }
 
         dEntity entTwo = by ? damager: entity;
-        if (!entTwo.matchesEntity(CoreUtilities.getXthArg(by ? 3: 2, s))) {
+        if (!(!by && lower.contains("killed") || entTwo.matchesEntity(CoreUtilities.getXthArg(by ? 3: 2, s)))) {
             return false;
         }
 
@@ -124,9 +124,7 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
         context.put("damage", damage);
         context.put("final_damage", final_damage);
         context.put("cause", cause);
-        if (damager != null) {
-            context.put("damager", damager);
-        }
+        context.put("damager", damager);
         if (projectile != null) {
             context.put("projectile", projectile);
         }
@@ -151,6 +149,9 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
                     damager = damager.getShooter();
                 }
             }
+        }
+        if (damager == null) {
+            return;
         }
         cancelled = event.isCancelled();
         this.event = event;
