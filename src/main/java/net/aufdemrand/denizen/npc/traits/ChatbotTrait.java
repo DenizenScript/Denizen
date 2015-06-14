@@ -42,13 +42,13 @@ public class ChatbotTrait extends Trait {
     }
 
     public void chatTo(Entity entity, String input) {
-        SpeechContext context = new SpeechContext(reponse(input));
+        SpeechContext context = new SpeechContext(response(input));
         context.addRecipient(entity);
         context.setTalker(getNPC().getEntity());
         npc.getDefaultSpeechController().speak(context, "chat");
     }
 
-    public String reponse(String request) {
+    public String response(String request) {
         return chatSession.multisentenceRespond(request);
     }
 

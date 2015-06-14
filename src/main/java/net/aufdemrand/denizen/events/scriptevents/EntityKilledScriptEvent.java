@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.scriptevents;
 
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -15,7 +16,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
 
@@ -23,8 +26,12 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
     // @Events
     // entity killed
     // entity killed by <cause>
+    // entity killed by entity
+    // entity killed by <entity>
     // <entity> killed
     // <entity> killed by <cause>
+    // <entity> killed by entity
+    // <entity> killed by <entity>
     // entity kills entity
     // entity kills <entity>
     // <entity> kills entity
@@ -65,30 +72,45 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains(" kills")
-                || lower.contains(" killed");
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String entOne = CoreUtilities.getXthArg(0, lower);
+        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower): CoreUtilities.getXthArg(2, lower);
+        List<String> types = Arrays.asList("entity", "player", "npc");
+        return ((types.contains(entOne) || dEntity.matches(entOne))
+                && (cmd.equals("killed") || cmd.equals("kills"))
+                && ((entTwo.length() == 0) || (types.contains(entTwo) || dEntity.matches(entTwo))));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-
-        boolean by = lower.contains(" by ");
-        dEntity entOne = by ? entity: damager;
-        if (!entOne.matchesEntity(CoreUtilities.getXthArg(0, s))) {
-            return false;
-        }
-
-        dEntity entTwo = by ? damager: entity;
-        if (!(!by && lower.contains("killed") || entTwo.matchesEntity(CoreUtilities.getXthArg(by ? 3: 2, s)))) {
-            return false;
-        }
-
+        // Check for possibility of death first
         if (entity.isValid() && entity.isLivingEntity()) {
             if (final_damage.asDouble() <= entity.getLivingEntity().getHealth()) {
                 return false;
             }
         }
+        String lower = CoreUtilities.toLowerCase(s);
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String attacker = cmd.equals("kills") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(3, lower);
+        String target = cmd.equals("kills") ? CoreUtilities.getXthArg(2, lower): CoreUtilities.getXthArg(0, lower);
+        if (attacker.length() > 0) {
+            if (damager != null) {
+                if( !damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
+                    return false;
+                }
+            }
+            else if(!cause.asString().equals(attacker)) {
+                return false;
+            }
+        }
+        if (target.length() > 0) {
+            if (dEntity.matches(target)) {
+                if (!entity.matchesEntity(target)) {
+                    return false;
+                }
+            }
+        }
+
 
         return true;
     }
@@ -124,7 +146,9 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
         context.put("damage", damage);
         context.put("final_damage", final_damage);
         context.put("cause", cause);
-        context.put("damager", damager);
+        if (damager != null) {
+            context.put("damager", damager);
+        }
         if (projectile != null) {
             context.put("projectile", projectile);
         }
@@ -141,6 +165,7 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
         damage = new Element(event.getDamage());
         final_damage = new Element(event.getFinalDamage());
         cause = new Element(event.getCause().name().toLowerCase());
+        damager = null;
         if (event instanceof EntityDamageByEntityEvent) {
             damager = new dEntity(((EntityDamageByEntityEvent) event).getDamager());
             if (damager.isProjectile()) {
@@ -149,9 +174,6 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
                     damager = damager.getShooter();
                 }
             }
-        }
-        if (damager == null) {
-            return;
         }
         cancelled = event.isCancelled();
         this.event = event;
