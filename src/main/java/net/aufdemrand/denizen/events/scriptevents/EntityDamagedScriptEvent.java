@@ -15,7 +15,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
 
@@ -79,23 +81,39 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains(" damaged")
-                || lower.contains(" damages ");
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String entOne = CoreUtilities.getXthArg(0, lower);
+        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower): CoreUtilities.getXthArg(2, lower);
+        List<String> types = Arrays.asList("entity", "player", "npc");
+        return ((types.contains(entOne) || dEntity.matches(entOne))
+                && (cmd.equals("damaged") || cmd.equals("damages"))
+                && ((entTwo.length() == 0) || (types.contains(entTwo) || dEntity.matches(entTwo))));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-
-        boolean by = lower.contains(" by ");
-        dEntity entOne = by ? entity: damager;
-        if (!entOne.matchesEntity(CoreUtilities.getXthArg(0, s))) {
-            return false;
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(3, lower);
+        String target = cmd.equals("damages") ? CoreUtilities.getXthArg(2, lower): CoreUtilities.getXthArg(0, lower);
+        if (attacker.length() > 0) {
+            if (dEntity.matches(attacker)) {
+                if (!damager.matchesEntity(attacker)) {
+                    return false;
+                }
+            }
+            else {
+                if (!cause.asString().equals(attacker)) {
+                    return false;
+                }
+            }
         }
-
-        dEntity entTwo = by ? damager: entity;
-        if (!(!by && lower.contains("damaged") || entTwo.matchesEntity(CoreUtilities.getXthArg(by ? 3: 2, s)))) {
-            return false;
+        if (target.length() > 0) {
+            if (dEntity.matches(target)) {
+                if (!entity.matchesEntity(target)) {
+                    return false;
+                }
+            }
         }
 
         if (entity.isValid() && entity.isLivingEntity()) {
@@ -157,6 +175,7 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         damage = new Element(event.getDamage());
         final_damage = new Element(event.getFinalDamage());
         cause = new Element(event.getCause().name().toLowerCase());
+        damager = null;
         if (event instanceof EntityDamageByEntityEvent) {
             damager = new dEntity(((EntityDamageByEntityEvent) event).getDamager());
             if (damager.isProjectile()) {

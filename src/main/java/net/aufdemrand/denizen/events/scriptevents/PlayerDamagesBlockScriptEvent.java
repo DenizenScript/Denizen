@@ -54,7 +54,10 @@ public class PlayerDamagesBlockScriptEvent extends ScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return s.toLowerCase().startsWith("player damages");
+        String lower = CoreUtilities.toLowerCase(s);
+        String mat = CoreUtilities.getXthArg(3, lower);
+        return lower.startsWith("player damages")
+                && (mat.equals("block") || dMaterial.matches(mat));
     }
 
     @Override
