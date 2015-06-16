@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
@@ -140,6 +142,12 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
             return super.applyDetermination(container, determination);
         }
         return true;
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
     }
 
     @Override

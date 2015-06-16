@@ -1,10 +1,13 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
@@ -13,7 +16,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
 
@@ -24,34 +29,41 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
     //
     // @Cancellable true
     //
-    // @Triggers when an entity combusts.
+    // @Triggers when an entity catches fire.
     //
     // @Context
-    // <context.duration> returns how long the entity takes to combust.
-    // <context.entity> returns the dEntity that combusted.
+    // <context.entity> returns the entity that caught fire.
+    // <context.duration> returns the length of the burn.
+    //
+    // @Determine
+    // Element(Number) set the length of duration.
     //
     // -->
 
     public EntityCombustsScriptEvent() {
         instance = this;
     }
-
     public static EntityCombustsScriptEvent instance;
-
     public dEntity entity;
-    public Element duration;
+    public Duration duration;
+    private Integer burntime;
     public EntityCombustEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("combusts");
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String entOne = CoreUtilities.getXthArg(0, lower);
+        List<String> types = Arrays.asList("entity", "player", "npc");
+        return (types.contains(entOne) || dEntity.matches(entOne))
+                && cmd.equals("combusts");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String ent = CoreUtilities.getXthArg(0, s);
-        return entity.matchesEntity(ent);
+        String target = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
+        List<String> types = Arrays.asList("entity", "player", "npc");
+        return (types.contains(target) || entity.matchesEntity(target));
     }
 
     @Override
@@ -71,7 +83,18 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (aH.Argument.valueOf(determination)
+                .matchesPrimitive(aH.PrimitiveType.Integer)) {
+            burntime = aH.getIntegerFrom(determination);
+            return true;
+        }
         return super.applyDetermination(container, determination);
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
     }
 
     @Override
@@ -83,13 +106,13 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
     }
 
     @EventHandler
-    public void onEntityCombust(EntityCombustEvent event) {
+    public void onEntityCombusts(EntityCombustEvent event) {
         entity = new dEntity(event.getEntity());
-        duration = new Element(event.getDuration());
+        duration = new Duration(event.getDuration());
         cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
+        event.setDuration(burntime);
     }
-
 }

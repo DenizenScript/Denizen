@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -7,6 +8,7 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
@@ -104,11 +106,9 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
             }
         }
         if (target.length() > 0) {
-            if (dEntity.matches(target)) {
                 if (!entity.matchesEntity(target)) {
                     return false;
                 }
-            }
         }
 
 
@@ -137,6 +137,12 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
             return true;
         }
         return super.applyDetermination(container, determination);
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): dEntity.getPlayerFrom(damager.getBukkitEntity()),
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): dEntity.getNPCFrom(damager.getBukkitEntity()));
     }
 
     @Override
