@@ -27,7 +27,6 @@ import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.enchantment.*;
 import org.bukkit.event.player.*;
-import org.bukkit.event.hanging.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.vehicle.*;
 import org.bukkit.event.weather.*;
@@ -132,73 +131,6 @@ public class BukkitWorldScriptHelper implements Listener {
                         null, null, context, true);
 
                 current_time.put(currentWorld.identifySimple(), hour);
-            }
-        }
-    }
-
-    /////////////////////
-    //   ENTITY EVENTS
-    /////////////////
-
-    // <--[event]
-    // @Events
-    // entity explodes
-    // <entity> explodes
-    //
-    // @Triggers when an entity explodes.
-    // @Context
-    // <context.blocks> returns a dList of blocks that the entity blew up.
-    // <context.entity> returns the dEntity that exploded.
-    // <context.location> returns the dLocation the entity blew up at.
-    // <contect.strength> returns an Element(Decimal) of the strength of the explosion.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from exploding.
-    // dList(dLocation) to set a new lists of blocks that are to be affected by the explosion.
-    // Element(Decimal) to change the strength of the explosion.
-    //
-    // -->
-    @EventHandler
-    public void entityExplode(EntityExplodeEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        if (event.getEntity() == null) {
-            return; // Fix for other plugins doing weird stuff.
-        }
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("entity", entity.getDenizenObject());
-        context.put("location", new dLocation(event.getLocation()));
-        context.put("strength", new Element(event.getYield()));
-
-        String blocks = "";
-        for (Block block : event.blockList()) {
-            blocks = blocks + new dLocation(block.getLocation()) + "|";
-        }
-        context.put("blocks", new dList(blocks));
-
-        String determination = doEvents(Arrays.asList
-                ("entity explodes",
-                        entity.identifyType() + " explodes",
-                        entity.identifySimple() + " explodes"),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-
-        else if (aH.matchesDouble(determination)) {
-            event.setYield(new Element(determination).asFloat());
-        }
-
-        else if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
-            dList list = dList.valueOf(determination);
-            event.blockList().clear();
-            for (String loc: list) {
-                dLocation location = dLocation.valueOf(loc);
-                if (location == null)
-                    dB.echoError("Invalid location '" + loc + "'");
-                else
-                    event.blockList().add(location.getWorld().getBlockAt(location));
             }
         }
     }
