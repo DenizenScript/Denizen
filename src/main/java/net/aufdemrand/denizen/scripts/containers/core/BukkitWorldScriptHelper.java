@@ -140,43 +140,6 @@ public class BukkitWorldScriptHelper implements Listener {
     //   ENTITY EVENTS
     /////////////////
 
-
-    // <--[event]
-    // @Events
-    // creeper powered (because <cause>)
-    //
-    // @Triggers when a creeper is struck by lightning and turned into a powered creeper.
-    // @Context
-    // <context.entity> returns the dEntity of the creeper.
-    // <context.lightning> returns the dEntity of the lightning.
-    // <context.cause> returns an Element of the cause for the creeper being powered.
-    //
-    // @Determine
-    // "CANCELLED" to stop the creeper from being powered.
-    //
-    // -->
-    @EventHandler
-    public void creeperPower(CreeperPowerEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        dEntity lightning = event.getLightning() == null ? null: new dEntity(event.getLightning());
-        String cause = event.getCause().name();
-
-        context.put("entity", entity);
-        if (lightning != null)
-            context.put("lightning", lightning);
-        context.put("cause", new Element(cause));
-
-        String determination = doEvents(Arrays.asList
-                ("creeper powered",
-                        "creeper powered because " + cause),
-                null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
     // <--[event]
     // @Events
     // entity combusts
