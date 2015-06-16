@@ -141,38 +141,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity enters portal
-    // <entity> enters portal
-    //
-    // @Triggers when an entity enters a portal.
-    // @Context
-    // <context.entity> returns the dEntity.
-    // <context.location> returns the dLocation of the portal block touched by the entity.
-    //
-    // -->
-    @EventHandler // TODO: This fires very rapidly. Smart event?
-    public void entityPortalEnter(EntityPortalEnterEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("location", new dLocation(event.getLocation()));
-        context.put("entity", entity.getDenizenObject());
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        doEvents(Arrays.asList
-                ("entity enters portal",
-                        entity.identifyType() + " enters portal"),
-                npc, player, context, true);
-    }
-
-    // <--[event]
-    // @Events
     // entity exits portal
     // <entity> exits portal
     //
