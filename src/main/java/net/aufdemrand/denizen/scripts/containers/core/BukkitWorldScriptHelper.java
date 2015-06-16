@@ -135,55 +135,9 @@ public class BukkitWorldScriptHelper implements Listener {
         }
     }
 
-    // <--[event]
-    // @Events
-    // entity heals (because <cause>)
-    // <entity> heals (because <cause>)
-    //
-    // @Triggers when an entity heals.
-    // @Context
-    // <context.amount> returns the amount the entity healed.
-    // <context.entity> returns the dEntity that healed.
-    // <context.reason> returns the cause of the entity healing. Can be: REGEN, SATIATED, EATING, ENDER_CRYSTAL,
-    // MAGIC, MAGIC_REGEN, WITHER_SPAWN, WITHER, CUSTOM
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from healing.
-    // Element(Decimal) to set the amount of health the entity receives.
-    //
-    // -->
-    @EventHandler
-    public void entityRegainHealth(EntityRegainHealthEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        String reason = event.getRegainReason().name();
-
-        context.put("reason", new Element(event.getRegainReason().name()));
-        context.put("amount", new Element(event.getAmount()));
-        context.put("entity", entity.getDenizenObject());
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        String determination = doEvents(Arrays.asList
-                ("entity heals",
-                        "entity heals because " + reason,
-                        entity.identifyType() + " heals",
-                        entity.identifyType() + " heals because " + reason),
-                npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-
-        else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Double)) {
-            event.setAmount(aH.getDoubleFrom(determination));
-        }
-    }
+    /////////////////////
+    //   Additional EVENTS
+    /////////////////
 
     // <--[event]
     // @Events
