@@ -142,48 +142,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity combusts
-    // <entity> combusts
-    //
-    // @Triggers when an entity catches fire.
-    // @Context
-    // <context.entity> returns the entity that caught fire.
-    // <context.duration> returns the length of the burn.
-    //
-    // @Determine
-    // "CANCELLED" to stop the creeper from being powered.
-    //
-    // -->
-    // TODO: Smarten event
-    @EventHandler
-    public void onCombust(EntityCombustEvent event) {
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        Duration dura = new Duration((long)event.getDuration());
-
-        context.put("entity", entity);
-        context.put("duration", dura);
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        String determination = doEvents(Arrays.asList
-                ("entity combusts",
-                        entity.identifySimple() + " combusts",
-                        entity.identifyType() + " combusts"),
-                npc, player, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Duration.matches(determination))
-            event.setDuration(Duration.valueOf(determination).getTicksAsInt());
-    }
-
-    // <--[event]
-    // @Events
     // entity explodes
     // <entity> explodes
     //
@@ -526,86 +484,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // entity targets (<entity>)
-    // entity targets (<entity>) because <cause>
-    // <entity> targets (<entity>)
-    // <entity> targets (<entity>) because <cause>
-    //
-    // @Triggers when an entity targets a new entity.
-    // @Context
-    // <context.entity> returns the targeting entity.
-    // <context.reason> returns the reason the entity changed targets.
-    // <context.target> returns the targeted entity.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from being targeted.
-    // dEntity to make the entity target a different entity instead.
-    //
-    // -->
-    @EventHandler
-    public void entityTarget(EntityTargetEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        final dEntity entity = new dEntity(event.getEntity());
-
-        String reason = event.getReason().name();
-
-        context.put("entity", entity);
-        context.put("reason", new Element(reason));
-
-        List<String> events = new ArrayList<String>();
-        events.add("entity targets");
-        events.add("entity targets because " + reason);
-        events.add(entity.identifyType() + " targets");
-        events.add(entity.identifyType() + " targets because " + reason);
-
-        if (event.getTarget() != null) {
-
-            dEntity target = new dEntity(event.getTarget());
-            context.put("target", target.getDenizenObject());
-
-            if (target.isCitizensNPC()) { npc = target.getDenizenNPC(); }
-            else if (target.isPlayer()) player = target.getDenizenPlayer();
-
-            events.add("entity targets entity");
-            events.add("entity targets entity because " + reason);
-            events.add("entity targets " + target.identifyType());
-            events.add("entity targets " + target.identifyType() + " because " + reason);
-            events.add(entity.identifyType() + " targets entity");
-            events.add(entity.identifyType() + " targets entity because " + reason);
-            events.add(entity.identifyType() + " targets " + target.identifyType());
-            events.add(entity.identifyType() + " targets " + target.identifyType() + " because " + reason);
-        }
-
-        String determination = doEvents(events, npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-
-            // If the determination matches a dEntity, change the event's target
-            // using a scheduled task (otherwise, the target will not be changed)
-            //
-            // Note: this does not work with all monster types
-        else if (dEntity.matches(determination)) {
-
-            final dEntity newTarget = dEntity.valueOf(determination);
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    if (newTarget.isValid() && newTarget.isLivingEntity()) {
-                        entity.target(newTarget.getLivingEntity());
-                    }
-                }
-            }, 1);
-        }
     }
 
     // <--[event]
