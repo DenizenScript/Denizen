@@ -247,48 +247,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // potion splash
-    // <item> splashes
-    //
-    // @Triggers when a splash potion breaks open
-    // @Context
-    // <context.potion> returns a dItem of the potion that broke open.
-    // <context.entities> returns a dList of effected entities.
-    // <context.location> returns the dLocation the splash potion broke open at.
-    // <context.entity> returns a dEntity of the splash potion.
-    //
-    // @Determine
-    // "CANCELLED" to stop the potion effects.
-    //
-    // -->
-    @EventHandler
-    public void potionSplash(PotionSplashEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        dItem potion = new dItem(event.getEntity().getItem());
-
-        context.put("entity", entity);
-        context.put("location", new dLocation(entity.getLocation()));
-        context.put("potion", potion);
-
-        dList entities = new dList();
-        for (Entity e: event.getAffectedEntities()) {
-            entities.add(new dEntity(e).identify());
-        }
-        context.put("entities", entities);
-
-        String determination = doEvents(Arrays.asList
-                ("potion splash",
-                        potion.identifySimple() + " splashes"),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // entity heals (because <cause>)
     // <entity> heals (because <cause>)
     //
