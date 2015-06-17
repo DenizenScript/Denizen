@@ -204,7 +204,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
     public int getId() {
-        return getCitizen().getId();
+        return npcid;
     }
 
     public String getName() {
@@ -258,7 +258,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
     public boolean isSpawned() {
-        return getCitizen().isSpawned();
+        NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
+        return npc != null && npc.isSpawned();
     }
 
     public String getOwner() {
