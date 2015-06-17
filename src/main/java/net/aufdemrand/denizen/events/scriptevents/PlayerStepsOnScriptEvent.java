@@ -124,6 +124,9 @@ public class PlayerStepsOnScriptEvent extends ScriptEvent implements Listener {
 
     @EventHandler
     public void onPlayerStepsOn(PlayerMoveEvent event) {
+        if (event.getTo().getBlock().getLocation().equals(event.getFrom().getBlock().getWorld())) {
+            return;
+        }
         location = new dLocation(event.getTo().clone().subtract(0, 1, 0));
         previous_location = new dLocation(event.getFrom());
         new_location = new dLocation(event.getTo());
