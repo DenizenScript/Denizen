@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
@@ -34,7 +36,6 @@ public class EntityDespawnScriptEvent extends ScriptEvent {
     }
 
     public static EntityDespawnScriptEvent instance;
-
     public dEntity entity;
     public Element cause;
 
@@ -68,6 +69,12 @@ public class EntityDespawnScriptEvent extends ScriptEvent {
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(entity.getBukkitEntity()): null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(entity.getBukkitEntity()): null);
     }
 
     @Override

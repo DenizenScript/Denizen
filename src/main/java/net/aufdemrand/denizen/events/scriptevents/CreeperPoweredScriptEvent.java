@@ -1,65 +1,61 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreeperPowerEvent;
 
 import java.util.HashMap;
 
-public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
+public class CreeperPoweredScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player scrolls their hotbar
-    // player holds item
+    // creeper powered (because <cause>)
     //
     // @Cancellable true
     //
-    // @Triggers when a player scrolls through their hotbar.
+    // @Triggers when a creeper is struck by lightning and turned into a powered creeper.
     //
     // @Context
-    // <context.new_slot> returns the number of the new inventory slot.
-    // <context.previous_slot> returns the number of the old inventory slot.
+    // <context.entity> returns the dEntity of the creeper.
+    // <context.lightning> returns the dEntity of the lightning.
+    // <context.cause> returns an Element of the cause for the creeper being powered.
     //
     // -->
 
-    public ItemScrollScriptEvent() {
+    public CreeperPoweredScriptEvent() {
         instance = this;
     }
-
-    public static ItemScrollScriptEvent instance;
-
-    public Element new_slot;
-    public Element previous_slot;
-    public PlayerItemHeldEvent event;
+    public static CreeperPoweredScriptEvent instance;
+    public dEntity lightning;
+    public dEntity entity;
+    public Element cause;
+    public CreeperPowerEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("player holds item")
-                || lower.equals("player scrolls their hotbar");
+        return lower.startsWith("creeper powered");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return true;
+        String reason = CoreUtilities.getXthArg(3,CoreUtilities.toLowerCase(s));
+        return reason.length() == 0 || reason.equals(cause.toString());
     }
 
     @Override
     public String getName() {
-        return "PlayerScrollsItem";
+        return "CreeperPowered";
     }
 
     @Override
@@ -69,7 +65,7 @@ public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        PlayerItemHeldEvent.getHandlerList().unregister(this);
+        CreeperPowerEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -78,22 +74,21 @@ public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
-    }
-
-    @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("new_slot", new_slot);
-        context.put("previous_slot", previous_slot);
+        if (lightning != null) {
+            context.put("lightning", lightning);
+        }
+        context.put("entity", entity);
+        context.put("cause", cause);
         return context;
     }
 
     @EventHandler
-    public void onPlayerScrollsHotbar(PlayerItemHeldEvent event) {
-        new_slot = new Element(event.getNewSlot() + 1);
-        previous_slot = new Element(event.getPreviousSlot() + 1);
+    public void onCreeperPowered(CreeperPowerEvent event) {
+        lightning = new dEntity(event.getLightning());
+        entity = new dEntity(event.getEntity());
+        cause = new Element(event.getCause().name());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

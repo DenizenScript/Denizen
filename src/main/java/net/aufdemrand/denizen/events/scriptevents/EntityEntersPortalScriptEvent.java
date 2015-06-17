@@ -2,10 +2,9 @@ package net.aufdemrand.denizen.events.scriptevents;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.objects.Duration;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -14,61 +13,57 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityPortalEnterEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
+public class EntityEntersPortalScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity combusts
-    // <entity> combusts
+    // entity enters portal
+    // <entity> enters portal
     //
-    // @Cancellable true
+    // @Cancellable false
     //
-    // @Triggers when an entity catches fire.
+    // @Triggers when an entity enters a portal.
     //
     // @Context
-    // <context.entity> returns the entity that caught fire.
-    // <context.duration> returns the length of the burn.
-    //
-    // @Determine
-    // Element(Number) set the length of duration.
+    // <context.entity> returns the dEntity.
+    // <context.location> returns the dLocation of the portal block touched by the entity.
     //
     // -->
 
-    public EntityCombustsScriptEvent() {
+    public EntityEntersPortalScriptEvent() {
         instance = this;
     }
-    public static EntityCombustsScriptEvent instance;
+    public static EntityEntersPortalScriptEvent instance;
     public dEntity entity;
-    public Duration duration;
-    private Integer burntime;
-    public EntityCombustEvent event;
+    public dLocation location;
+    public EntityPortalEnterEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
         String entOne = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
+        List<String> types = Arrays.asList("entity", "npc");
         return (types.contains(entOne) || dEntity.matches(entOne))
-                && cmd.equals("combusts");
+                && lower.contains("enters portal");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String target = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return (types.contains(target) || entity.matchesEntity(target));
+        String lower = CoreUtilities.toLowerCase(s);
+        String target = CoreUtilities.getXthArg(0,lower);
+        List<String> types = Arrays.asList("entity", "npc");
+        return types.contains(target) || entity.matchesEntity(target);
     }
 
     @Override
     public String getName() {
-        return "EntityCombusts";
+        return "EntityEntersPortal";
     }
 
     @Override
@@ -78,16 +73,11 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        EntityCombustEvent.getHandlerList().unregister(this);
+        EntityPortalEnterEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
-            burntime = aH.getIntegerFrom(determination);
-            return true;
-        }
         return super.applyDetermination(container, determination);
     }
 
@@ -101,18 +91,15 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("entity", entity);
-        context.put("duration", duration);
+        context.put("location", location);
         return context;
     }
 
     @EventHandler
-    public void onEntityCombusts(EntityCombustEvent event) {
+    public void onEntityEntersPortal(EntityPortalEnterEvent event) {
         entity = new dEntity(event.getEntity());
-        duration = new Duration(event.getDuration());
-        cancelled = event.isCancelled();
+        location = new dLocation(event.getLocation());
         this.event = event;
         fire();
-        event.setCancelled(cancelled);
-        event.setDuration(burntime);
     }
 }

@@ -1,9 +1,12 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
@@ -70,6 +73,12 @@ public class PlayerJumpScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        // TODO: Store the player / npc?
+        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override

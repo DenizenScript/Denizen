@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -7,6 +8,7 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
@@ -93,13 +95,6 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        // Check for possibility of death first
-        if (entity.isValid() && entity.isLivingEntity()) {
-            if (final_damage.asDouble() >= entity.getLivingEntity().getHealth()) {
-                return false;
-            }
-        }
-
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(3, lower);
@@ -117,10 +112,8 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
             }
         }
         if (target.length() > 0) {
-            if (dEntity.matches(target)) {
-                if (!entity.matchesEntity(target)) {
-                    return false;
-                }
+            if (!entity.matchesEntity(target)) {
+                return false;
             }
         }
 
@@ -149,6 +142,12 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
             return true;
         }
         return super.applyDetermination(container, determination);
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
     }
 
     @Override
