@@ -32,7 +32,7 @@ public class PlayerPlacesHangingScriptEvent extends ScriptEvent implements Liste
     // @Context
     // <context.hanging> returns the dEntity of the hanging.
     // <context.location> returns the dLocation of the block the hanging was placed on.
-    // <context.cuboids> returns a dList of the cuboids the hanging is in.
+    // <context.cuboids> returns a dList of the cuboids the hanging is in. DEPRECATED.
     //
     // -->
 

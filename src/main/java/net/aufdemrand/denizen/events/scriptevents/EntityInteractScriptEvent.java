@@ -32,7 +32,7 @@ public class EntityInteractScriptEvent extends ScriptEvent implements Listener {
     //
     // @Context
     // <context.location> returns a dLocation of the block being interacted with.
-    // <context.cuboids> returns a dList of all cuboids the block is inside.
+    // <context.cuboids> returns a dList of all cuboids the block is inside. DEPRECATED.
     // <context.entity> returns a dEntity of the entity doing the interaction.
     //
     // -->

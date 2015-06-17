@@ -40,7 +40,7 @@ public class EntityTargetsScriptEvent extends ScriptEvent implements Listener {
     // <context.entity> returns the targeting entity.
     // <context.reason> returns the reason the entity changed targets.
     // <context.target> returns the targeted entity.
-    // <context.cuboids> returns dList of cuboids event happened in.
+    // <context.cuboids> returns dList of cuboids event happened in. DEPRECATED.
     //
     // @Determine
     // dEntity to make the entity target a different entity instead.

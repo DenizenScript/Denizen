@@ -40,7 +40,7 @@ public class PlayerBreaksBlockScriptEvent extends ScriptEvent implements Listene
     // @Context
     // <context.location> returns the dLocation the block was broken at.
     // <context.material> returns the dMaterial of the block that was broken.
-    // <context.cuboids> returns a dList of notable cuboids surrounding the block broken.
+    // <context.cuboids> returns a dList of notable cuboids surrounding the block broken. DEPRECATED.
     // <context.xp> returns how much XP will be dropped.
     //
     // @Determine

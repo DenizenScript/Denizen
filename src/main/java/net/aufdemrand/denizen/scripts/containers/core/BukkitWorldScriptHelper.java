@@ -1712,7 +1712,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Context
     // <context.item> returns the dItem the player is clicking with.
     // <context.location> returns the dLocation the player is clicking on.
-    // <context.cuboids> returns a dList of the notable cuboids that contain the clicked block.
+    // <context.cuboids> returns a dList of the notable cuboids that contain the clicked block. DEPRECATED.
     // <context.click_type> returns an Element of the click type.
     // <context.relative> returns a dLocation of the air block in front of the clicked block.
     //
@@ -1833,7 +1833,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity the player is clicking on.
     // <context.item> returns the dItem the player is clicking with.
-    // <context.cuboids> returns a dList of cuboids that contain the interacted entity.
+    // <context.cuboids> returns a dList of cuboids that contain the interacted entity. DEPRECATED.
     // <context.location> returns a dLocation of the clicked entity.
     //
     // @Determine
@@ -1904,7 +1904,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Context
     // <context.entity> returns the dEntity the player is clicking on.
     // <context.item> returns the dItem the player is clicking with.
-    // <context.cuboids> returns a dList of cuboids that contain the interacted entity.
+    // <context.cuboids> returns a dList of cuboids that contain the interacted entity. DEPRECATED.
     // <context.location> returns a dLocation of the clicked entity.
     //
     // @Determine

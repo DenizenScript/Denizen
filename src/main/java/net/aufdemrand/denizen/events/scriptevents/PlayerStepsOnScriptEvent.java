@@ -34,7 +34,7 @@ public class PlayerStepsOnScriptEvent extends ScriptEvent implements Listener {
     //
     // @Context
     // <context.location> returns a dLocation of the block the player is stepping on.
-    // <context.cuboids> returns a dList of all cuboids the player is inside.
+    // <context.cuboids> returns a dList of all cuboids the player is inside. DEPRECATED.
     // <context.previous_location> returns a dLocation of where the player was before stepping onto the block.
     // <context.new_location> returns a dLocation of where the player is now.
     //

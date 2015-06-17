@@ -40,7 +40,7 @@ public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
     // @Context
     // <context.entity> returns the dEntity that spawned.
     // <context.location> returns the location the entity will spawn at.
-    // <context.cuboids> returns a list of cuboids that the entity spawned inside.
+    // <context.cuboids> returns a list of cuboids that the entity spawned inside. DEPRECATED.
     // <context.reason> returns the reason the entity spawned.
     // Reasons: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
     //

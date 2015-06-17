@@ -34,7 +34,7 @@ public class PlayerDamagesBlockScriptEvent extends ScriptEvent implements Listen
     // @Context
     // <context.location> returns the dLocation the block that was damaged.
     // <context.material> returns the dMaterial of the block that was damaged.
-    // <context.cuboids> returns a dList of notable cuboids which the damaged block is contained.
+    // <context.cuboids> returns a dList of notable cuboids which the damaged block is contained. DEPRECATED.
     //
     // @Determine
     // "INSTABREAK" to make the block get broken instantly.

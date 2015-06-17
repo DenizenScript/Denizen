@@ -37,7 +37,7 @@ public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
     // <context.cause> returns the cause of the entity breaking.
     // <context.entity> returns the dEntity that broke the hanging entity, if any.
     // <context.hanging> returns the dEntity of the hanging.
-    // <context.cuboids> returns a dList of the cuboids the hanging is in.
+    // <context.cuboids> returns a dList of the cuboids the hanging is in. DEPRECATED.
     // <context.location> returns a dLocation of the hanging.
     // Causes list: <@link url http://bit.ly/1BeqxPX>
     //
