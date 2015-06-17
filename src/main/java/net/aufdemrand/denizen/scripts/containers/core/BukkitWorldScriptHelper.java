@@ -141,38 +141,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity exits portal
-    // <entity> exits portal
-    //
-    // @Triggers when an entity exits a portal.
-    // @Context
-    // <context.entity> returns the dEntity.
-    // <context.location> returns the dLocation of the portal block touched by the entity.
-    //
-    // -->
-    @EventHandler
-    public void entityPortalExit(EntityPortalExitEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("location", new dLocation(event.getTo()));
-        context.put("entity", entity.getDenizenObject());
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        doEvents(Arrays.asList
-                        ("entity exits portal",
-                                entity.identifyType() + " exits portal"),
-                npc, player, context, true);
-    }
-
-    // <--[event]
-    // @Events
     // player uses portal
     //
     // @Triggers when a player enters a portal.

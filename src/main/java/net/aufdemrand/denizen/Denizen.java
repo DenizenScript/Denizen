@@ -600,6 +600,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new EntityDeathScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityEntersPortalScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityExitsPortalScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityExplodesScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityFormsBlock());
             ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
