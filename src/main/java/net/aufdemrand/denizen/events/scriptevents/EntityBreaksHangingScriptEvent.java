@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEllipsoid;
 import net.aufdemrand.denizen.objects.dEntity;
@@ -10,14 +11,18 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class EntityBreaksHangingScriptEvent extends ScriptEvent implements Listener {
 
@@ -57,8 +62,9 @@ public class EntityBreaksHangingScriptEvent extends ScriptEvent implements Liste
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
+        List<String> types = Arrays.asList("entity", "player", "npc");
         return lower.contains("breaks hanging")
-                && (entName.equals("entity") || dEntity.matches(entName));
+                && (types.contains(entName) || dEntity.matches(entName));
     }
 
     @Override
@@ -121,6 +127,12 @@ public class EntityBreaksHangingScriptEvent extends ScriptEvent implements Liste
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getRemover()): null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getRemover()): null);
     }
 
     @Override

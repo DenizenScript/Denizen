@@ -5,49 +5,51 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
+public class EntityHealsScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity combusts
-    // <entity> combusts
+    // entity heals (because <cause>)
+    // <entity> heals (because <cause>)
     //
     // @Cancellable true
     //
-    // @Triggers when an entity catches fire.
+    // @Triggers when an entity heals.
     //
     // @Context
-    // <context.entity> returns the entity that caught fire.
-    // <context.duration> returns the length of the burn.
+    // <context.amount> returns the amount the entity healed.
+    // <context.entity> returns the dEntity that healed.
+    // <context.reason> returns the cause of the entity healing. Can be: REGEN, SATIATED, EATING, ENDER_CRYSTAL,
+    // MAGIC, MAGIC_REGEN, WITHER_SPAWN, WITHER, CUSTOM
     //
     // @Determine
-    // Element(Number) set the length of duration.
+    // Element(Decimal) to set the amount of health the entity receives.
     //
     // -->
 
-    public EntityCombustsScriptEvent() {
+    public EntityHealsScriptEvent() {
         instance = this;
     }
-    public static EntityCombustsScriptEvent instance;
+    public static EntityHealsScriptEvent instance;
     public dEntity entity;
-    public Duration duration;
-    private Integer burntime;
-    public EntityCombustEvent event;
+    public Element amount;
+    public Element reason;
+    public EntityRegainHealthEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -56,19 +58,27 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
         String entOne = CoreUtilities.getXthArg(0, lower);
         List<String> types = Arrays.asList("entity", "player", "npc");
         return (types.contains(entOne) || dEntity.matches(entOne))
-                && cmd.equals("combusts");
+                && cmd.equals("heals");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String target = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
+        String lower = CoreUtilities.toLowerCase(s);
+        String target = CoreUtilities.getXthArg(0,lower);
         List<String> types = Arrays.asList("entity", "player", "npc");
-        return (types.contains(target) || entity.matchesEntity(target));
+        if (!types.contains(target) && !entity.matchesEntity(target)) {
+            return false;
+        }
+        String cause = CoreUtilities.getXthArg(3, lower);
+        if (cause.length() > 0 && !cause.equals(CoreUtilities.toLowerCase(reason.toString()))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String getName() {
-        return "EntityCombusts";
+        return "EntityHeals";
     }
 
     @Override
@@ -78,14 +88,14 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        EntityCombustEvent.getHandlerList().unregister(this);
+        EntityRegainHealthEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.Argument.valueOf(determination)
                 .matchesPrimitive(aH.PrimitiveType.Integer)) {
-            burntime = aH.getIntegerFrom(determination);
+            amount = new Element(aH.getDoubleFrom(determination));
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -101,18 +111,20 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("entity", entity);
-        context.put("duration", duration);
+        context.put("reason", reason);
+        context.put("amount", amount);
         return context;
     }
 
     @EventHandler
-    public void onEntityCombusts(EntityCombustEvent event) {
+    public void onEntityHeals(EntityRegainHealthEvent event) {
         entity = new dEntity(event.getEntity());
-        duration = new Duration(event.getDuration());
+        amount = new Element(event.getAmount());
+        reason = new Element(event.getRegainReason().toString());
         cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
-        event.setDuration(burntime);
+        event.setAmount(amount.asDouble());
     }
 }
