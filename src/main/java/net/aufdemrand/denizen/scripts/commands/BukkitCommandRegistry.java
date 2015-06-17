@@ -2868,7 +2868,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Required 2
         // @Stable stable
         // @Short Edits a YAML configuration file.
-        // @Author aufdemrand
+        // @Author aufdemrand, mcmonkey
         // @Group core
         // @Description
         // Edits a YAML configuration file.

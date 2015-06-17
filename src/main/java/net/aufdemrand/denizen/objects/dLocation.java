@@ -139,7 +139,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                         Double.valueOf(split[0]),
                         Double.valueOf(split[1]));
             } catch (Exception e) {
-                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                if (context == null || context.debug) {
+                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                }
                 return null;
             }
         if (split.length == 3)
@@ -157,7 +159,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                         Double.valueOf(split[1]),
                         Double.valueOf(split[2]));
             } catch(Exception e) {
-                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                if (context == null || context.debug) {
+                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                }
                 return null;
             }
 
@@ -170,7 +174,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                         Double.valueOf(split[1]),
                         Double.valueOf(split[2]));
             } catch(Exception e) {
-                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                if (context == null || context.debug) {
+                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                }
                 return null;
             }
 
@@ -188,11 +194,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     Float.valueOf(split[4]));
 
             } catch(Exception e) {
-                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                if (context == null || context.debug) {
+                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                }
                 return null;
             }
 
-        dB.log("valueOf dLocation returning null: " + string);
+        if (context == null || context.debug) {
+            dB.log("valueOf dLocation returning null: " + string);
+        }
 
         return null;
     }
