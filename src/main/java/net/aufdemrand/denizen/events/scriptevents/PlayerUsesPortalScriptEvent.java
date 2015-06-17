@@ -2,54 +2,52 @@ package net.aufdemrand.denizen.events.scriptevents;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerPortalEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
-public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
+public class PlayerUsesPortalScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player scrolls their hotbar
-    // player holds item
+    // player uses portal
     //
-    // @Cancellable true
+    // @Cancellable false
     //
-    // @Triggers when a player scrolls through their hotbar.
+    // @Triggers when a player enters a portal.
     //
     // @Context
-    // <context.new_slot> returns the number of the new inventory slot.
-    // <context.previous_slot> returns the number of the old inventory slot.
+    // <context.from> returns the location teleported from.
+    // <context.to> returns the location teleported to.
     //
+    // @Determine
+    // dLocation to change the destination.
     // -->
 
-    public ItemScrollScriptEvent() {
+    public PlayerUsesPortalScriptEvent() {
         instance = this;
     }
-
-    public static ItemScrollScriptEvent instance;
-
-    public Element new_slot;
-    public Element previous_slot;
-    public PlayerItemHeldEvent event;
+    public static PlayerUsesPortalScriptEvent instance;
+    public dEntity entity;
+    public dLocation to;
+    public dLocation from;
+    public PlayerPortalEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("player holds item")
-                || lower.equals("player scrolls their hotbar");
+        return CoreUtilities.toLowerCase(s).contains("player uses portal");
     }
 
     @Override
@@ -59,7 +57,7 @@ public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public String getName() {
-        return "PlayerScrollsItem";
+        return "PlayerUsesPortal";
     }
 
     @Override
@@ -69,34 +67,41 @@ public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        PlayerItemHeldEvent.getHandlerList().unregister(this);
+        PlayerPortalEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (dLocation.matches(determination)) {
+            to = dLocation.valueOf(determination);
+            return true;
+        }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getPlayer()): null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("new_slot", new_slot);
-        context.put("previous_slot", previous_slot);
+        context.put("entity", entity);
+        context.put("to", to);
+        context.put("from", from);
         return context;
     }
 
     @EventHandler
-    public void onPlayerScrollsHotbar(PlayerItemHeldEvent event) {
-        new_slot = new Element(event.getNewSlot() + 1);
-        previous_slot = new Element(event.getPreviousSlot() + 1);
+    public void onEntityEntersPortal(PlayerPortalEvent event) {
+        entity = new dEntity(event.getPlayer());
+        to = new dLocation(event.getTo());
+        from = new dLocation(event.getFrom());
         cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
+        event.setTo(to);
     }
 }

@@ -267,25 +267,30 @@ public class dEntity implements dObject, Adjustable {
         // Accept anything that starts with a valid entity object identifier.
         Matcher m;
         m = entity_by_id.matcher(arg);
-        if (m.matches()) return true;
+        if (m.matches()) {
+            return true;
+        }
 
         // No longer picky about e@.. let's remove it from the arg
         arg = arg.replace("e@", "").toUpperCase();
 
         // Allow 'random'
-        if (arg.equals("RANDOM"))
+        if (arg.equals("RANDOM")) {
             return true;
+        }
 
         // Allow any entity script
-        if (ScriptRegistry.containsScript(arg, EntityScriptContainer.class))
+        if (ScriptRegistry.containsScript(arg, EntityScriptContainer.class)) {
             return true;
+        }
 
         // Use regex to make some matcher groups
         m = entity_with_data.matcher(arg);
         if (m.matches()) {
             // Check first word with a valid entity_type (other groups are datas used in constructors)
-            if (DenizenEntityType.isRegistered(m.group(1)))
+            if (DenizenEntityType.isRegistered(m.group(1))) {
                 return true;
+            }
         }
 
         // No luck otherwise!
@@ -1223,6 +1228,9 @@ public class dEntity implements dObject, Adjustable {
         }
         if (ent.equalsIgnoreCase(entity_type.getLowercaseName())) {
             return true;
+        }
+        if (entity != null && getEntityScript() != null) {
+            return ent.equalsIgnoreCase(getEntityScript());
         }
         dEntity e = dEntity.valueOf(ent, new BukkitTagContext(null, null, false, null, false, null));
         if (e == null) {

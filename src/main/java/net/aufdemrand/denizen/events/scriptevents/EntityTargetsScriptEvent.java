@@ -15,77 +15,84 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
-public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
+public class EntityTargetsScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // hanging breaks (in <notable cuboid>)
-    // hanging breaks because <cause> (in <notable cuboid>)
-    // <hanging> breaks (in <notable cuboid>)
-    // <hanging> breaks because <cause> (in <notable cuboid>)
+    // entity targets (<entity>) (in <notable cuboid>)
+    // entity targets (<entity>) because <cause> (in <notable cuboid>)
+    // <entity> targets (<entity>) (in <notable cuboid>)
+    // <entity> targets (<entity>) because <cause> (in <notable cuboid>)
     //
     // @Cancellable true
     //
-    // @Triggers when a hanging entity (painting or itemframe) is broken.
+    // @Triggers when an entity interacts with a block (EG an arrow hits a button)
+    //
+    // @Triggers when an entity targets a new entity.
     //
     // @Context
-    // <context.cause> returns the cause of the entity breaking.
-    // <context.entity> returns the dEntity that broke the hanging entity, if any.
-    // <context.hanging> returns the dEntity of the hanging.
-    // <context.cuboids> returns a dList of the cuboids the hanging is in.
-    // <context.location> returns a dLocation of the hanging.
-    // Causes list: <@link url http://bit.ly/1BeqxPX>
+    // <context.entity> returns the targeting entity.
+    // <context.reason> returns the reason the entity changed targets.
+    // <context.target> returns the targeted entity.
+    // <context.cuboids> returns dList of cuboids event happened in.
+    //
+    // @Determine
+    // dEntity to make the entity target a different entity instead.
     //
     // -->
 
-    public HangingBreaksScriptEvent() {
+    public EntityTargetsScriptEvent() {
         instance = this;
     }
-    public static HangingBreaksScriptEvent instance;
-    public Element cause;
+    public static EntityTargetsScriptEvent instance;
     public dEntity entity;
-    public dEntity hanging;
+    public Element reason;
+    public dEntity target;
     public dList cuboids;
-    public dLocation location;
-    public HangingBreakEvent event;
+    private dLocation location;
+    public EntityTargetEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return CoreUtilities.getXthArg(1, lower).equals("breaks")
-                && (mat.equals("hanging") || mat.equals("painting") || mat.equals("item_frame"));
+        String attacker = CoreUtilities.getXthArg(0, lower);
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        List<String> types = Arrays.asList("entity", "player", "npc");
+        return cmd.equals("targets")
+                && (types.contains(attacker) || dEntity.matches(attacker));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String hangCheck = CoreUtilities.getXthArg(0, lower);
-        if (!hangCheck.equals("hanging")
-                && hanging.matchesEntity(hangCheck)){
+
+        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
-        String notable = null;
-        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
-            notable = CoreUtilities.getXthArg(4, lower);
+        String victim = CoreUtilities.getXthArg(2, lower);
+        if (!victim.equals("in") && !victim.equals("because") && target != null && victim.length() > 0) {
+            if (!target.matchesEntity(victim)) {
+                return false;
+            }
         }
-        else if (CoreUtilities.xthArgEquals(5, lower, "in")) {
-            notable = CoreUtilities.getXthArg(6, lower);
-        }
-        if (notable != null) {
-            if (dCuboid.matches(notable)) {
-                dCuboid cuboid = dCuboid.valueOf(notable);
+        Integer pos = lower.indexOf(" in ") + 4;
+        if (pos > 4) {
+            Integer end = lower.indexOf(" ", pos) < 0 ? lower.length(): lower.indexOf(" ", pos);
+            String it = lower.substring(pos, end);
+            if (dCuboid.matches(it)) {
+                dCuboid cuboid = dCuboid.valueOf(it);
                 if (!cuboid.isInsideCuboid(location)) {
                     return false;
                 }
             }
-            else if (dEllipsoid.matches(notable)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(notable);
+            else if (dEllipsoid.matches(it)) {
+                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
                 if (!ellipsoid.contains(location)) {
                     return false;
                 }
@@ -95,9 +102,11 @@ public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
                 return false;
             }
         }
-
-        if (CoreUtilities.xthArgEquals(2, lower, "because")){
-            if (!CoreUtilities.getXthArg(3, lower).equals(CoreUtilities.toLowerCase(cause.asString()))) {
+        pos = lower.indexOf(" because ") + 9;
+        if (pos > 9) {
+            Integer end = lower.indexOf(" ", pos) < 0 ? lower.length(): lower.indexOf(" ", pos);
+            String it = lower.substring(pos, end);
+            if (!it.equals(reason.toString().toLowerCase())) {
                 return false;
             }
         }
@@ -106,7 +115,7 @@ public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public String getName() {
-        return "HangingBreaks";
+        return "EntityTargets";
     }
 
     @Override
@@ -116,11 +125,14 @@ public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        HangingBreakEvent.getHandlerList().unregister(this);
+        EntityTargetEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (dEntity.matches(determination)) {
+            target = dEntity.valueOf(determination);
+        }
         return super.applyDetermination(container, determination);
     }
 
@@ -133,22 +145,21 @@ public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("cause", cause);
         context.put("entity", entity);
-        context.put("hanging", hanging);
+        context.put("reason", reason);
+        if (target != null) {
+            context.put("target", target);
+        }
         context.put("cuboids", cuboids);
-        context.put("location", location);
         return context;
     }
 
     @EventHandler
-    public void onHangingBreaks(HangingBreakEvent event) {
-        hanging = new dEntity(event.getEntity());
-        cause =  new Element(event.getCause().name());
-        location = new dLocation(hanging.getLocation());
-        if (event instanceof HangingBreakByEntityEvent) {
-            entity = new dEntity(((HangingBreakByEntityEvent) event).getRemover());
-        }
+    public void onEntityTargets(EntityTargetEvent event) {
+        entity = new dEntity(event.getEntity());
+        reason = new Element(event.getReason().toString());
+        target = event.getTarget() != null ? new dEntity(event.getTarget()): null;
+        location = new dLocation(event.getEntity().getLocation());
         cuboids = new dList();
         for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
@@ -158,4 +169,5 @@ public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
         fire();
         event.setCancelled(cancelled);
     }
+
 }

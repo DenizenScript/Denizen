@@ -1,11 +1,13 @@
 package net.aufdemrand.denizen.events.scriptevents;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
@@ -25,8 +27,6 @@ public class PlayerPlacesBlockScriptEvent extends ScriptEvent implements Listene
     // player places <material> in notable cuboid
     // player places block in <notable cuboid>
     // player places <material> in <notable cuboid>
-    // NOTE: This event does not catch "hanging", "painting", or "item_frame" blocks.
-    //       See "on player places hanging"
     //
     // @Cancellable true
     //
@@ -63,7 +63,9 @@ public class PlayerPlacesBlockScriptEvent extends ScriptEvent implements Listene
         String lower = CoreUtilities.toLowerCase(s);
 
         String mat = CoreUtilities.getXthArg(2, lower);
-        if (!mat.equals("block") && !mat.equals(material.identifyNoIdentifier())) {
+
+        if (!mat.equals("block")
+                && !mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier())) {
             return false;
         }
         if (CoreUtilities.xthArgEquals(3, lower, "in")) {
@@ -81,7 +83,7 @@ public class PlayerPlacesBlockScriptEvent extends ScriptEvent implements Listene
                 }
             }
             else {
-                dB.echoError("Invalid event 'IN ...' check [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
+                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
                 return false;
             }
         }
@@ -107,6 +109,11 @@ public class PlayerPlacesBlockScriptEvent extends ScriptEvent implements Listene
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
     }
 
     @Override
