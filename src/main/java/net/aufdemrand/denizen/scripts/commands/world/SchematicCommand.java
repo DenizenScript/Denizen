@@ -136,7 +136,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                     String directory = URLDecoder.decode(System.getProperty("user.dir"));
                     File f = new File(directory + "/plugins/Denizen/schematics/" + name.asString() + ".schematic");
                     if (!f.exists()) {
-                        dB.echoError("Schematic file " + name.asString() + " does not exist.");
+                        dB.echoError("Schematic file " + name.asString() + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
                         return;
                     }
                     InputStream fs = new FileInputStream(f);
