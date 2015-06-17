@@ -141,47 +141,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player uses portal
-    //
-    // @Triggers when a player enters a portal.
-    // @Context
-    // <context.from> returns the location teleported from.
-    // <context.to> returns the location teleported to.
-    // @Determine
-    // "CANCELLED" to stop the teleport.
-    // dLocation to change the destination.
-    // -->
-    @EventHandler
-    public void playerPortalEnter(PlayerPortalEvent event) {
-
-        if (event.getPlayer() == null || event.getFrom() == null ||
-                event.getTo() == null) {
-            // If some other plugin is messing with this event... just back off.
-            return;
-        }
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        dPlayer player = dEntity.getPlayerFrom(event.getPlayer());
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("from", new dLocation(event.getFrom()));
-        context.put("to", new dLocation(event.getTo()));
-
-        String determination = doEvents(Arrays.asList
-                ("player uses portal"), null, player, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED")) {
-            event.setCancelled(true);
-        }
-        else if (dLocation.matches(determination)) {
-            event.setTo(dLocation.valueOf(determination));
-        }
-    }
-
-    // <--[event]
-    // @Events
     // entity shoots bow
     // <entity> shoots bow
     // entity shoots <item>

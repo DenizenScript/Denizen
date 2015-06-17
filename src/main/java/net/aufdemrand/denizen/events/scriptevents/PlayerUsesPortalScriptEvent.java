@@ -9,61 +9,55 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityPortalEnterEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityEntersPortalScriptEvent extends ScriptEvent implements Listener {
+public class PlayerUsesPortalScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity enters portal
-    // <entity> enters portal
+    // player uses portal
     //
     // @Cancellable false
     //
-    // @Triggers when an entity enters a portal.
+    // @Triggers when a player enters a portal.
     //
     // @Context
-    // <context.entity> returns the dEntity.
-    // <context.location> returns the dLocation of the portal block touched by the entity.
+    // <context.from> returns the location teleported from.
+    // <context.to> returns the location teleported to.
     //
+    // @Determine
+    // dLocation to change the destination.
     // -->
 
-    public EntityEntersPortalScriptEvent() {
+    public PlayerUsesPortalScriptEvent() {
         instance = this;
     }
-    public static EntityEntersPortalScriptEvent instance;
+    public static PlayerUsesPortalScriptEvent instance;
     public dEntity entity;
-    public dLocation location;
-    public EntityPortalEnterEvent event;
+    public dLocation to;
+    public dLocation from;
+    public PlayerPortalEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String entOne = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "npc");
-        return (types.contains(entOne) || dEntity.matches(entOne))
-                && lower.contains("enters portal");
+        return CoreUtilities.toLowerCase(s).contains("player uses portal");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String target = CoreUtilities.getXthArg(0,lower);
-        List<String> types = Arrays.asList("entity", "npc");
-        return types.contains(target) || entity.matchesEntity(target);
+        return true;
     }
 
     @Override
     public String getName() {
-        return "EntityEntersPortal";
+        return "PlayerUsesPortal";
     }
 
     @Override
@@ -73,33 +67,41 @@ public class EntityEntersPortalScriptEvent extends ScriptEvent implements Listen
 
     @Override
     public void destroy() {
-        EntityPortalEnterEvent.getHandlerList().unregister(this);
+        PlayerPortalEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (dLocation.matches(determination)) {
+            to = dLocation.valueOf(determination);
+            return true;
+        }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getPlayer()): null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("entity", entity);
-        context.put("location", location);
+        context.put("to", to);
+        context.put("from", from);
         return context;
     }
 
     @EventHandler
-    public void onEntityEntersPortal(EntityPortalEnterEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getLocation());
+    public void onEntityEntersPortal(PlayerPortalEvent event) {
+        entity = new dEntity(event.getPlayer());
+        to = new dLocation(event.getTo());
+        from = new dLocation(event.getFrom());
+        cancelled = event.isCancelled();
         this.event = event;
         fire();
+        event.setCancelled(cancelled);
+        event.setTo(to);
     }
 }

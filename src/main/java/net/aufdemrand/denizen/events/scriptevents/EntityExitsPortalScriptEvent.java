@@ -47,7 +47,7 @@ public class EntityExitsPortalScriptEvent extends ScriptEvent implements Listene
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entOne = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
+        List<String> types = Arrays.asList("entity", "npc");
         return (types.contains(entOne) || dEntity.matches(entOne))
                 && lower.contains("exits portal");
     }
@@ -56,7 +56,7 @@ public class EntityExitsPortalScriptEvent extends ScriptEvent implements Listene
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String target = CoreUtilities.getXthArg(0,lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
+        List<String> types = Arrays.asList("entity", "npc");
         return types.contains(target) || entity.matchesEntity(target);
     }
 
