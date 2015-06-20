@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -71,7 +72,8 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
         String mat = CoreUtilities.getXthArg(2, lower);
         if (!mat.equals("sign")
-                && (!mat.equals(material.identifyNoIdentifier()) && !(event.getBlock().getState() instanceof Sign))) {
+                && (!(event.getBlock().getState() instanceof Sign)
+                    && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifyFullNoIdentifier())))) {
             return false;
         }
 

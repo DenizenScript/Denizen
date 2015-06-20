@@ -63,7 +63,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
         String lower = CoreUtilities.toLowerCase(s);
 
         String mat = CoreUtilities.getXthArg(2, lower);
-        if (!mat.equals("block") && !mat.equals(material.identifyNoIdentifier())) {
+        if (!mat.equals("block")
+                && !mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier())) {
             return false;
         }
 
