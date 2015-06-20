@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -17,7 +17,7 @@ import org.bukkit.event.entity.EntityInteractEvent;
 
 import java.util.HashMap;
 
-public class EntityInteractScriptEvent extends ScriptEvent implements Listener {
+public class EntityInteractScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -60,35 +60,17 @@ public class EntityInteractScriptEvent extends ScriptEvent implements Listener {
             return false;
         }
 
-        if (!CoreUtilities.getXthArg(3, lower).matches("block")) {
-            dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(3, lower));
-            if (mat == null) {
-                dB.echoError("Invalid event material [\" + getName() + \"]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
-            if (!dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData()).matchesMaterialData(mat.getMaterialData())) {
-                return false;
-            }
+        String mat = CoreUtilities.getXthArg(2, lower);
+        if (mat.length() == 0) {
+            dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
+            return false;
+        }
+        else if (!mat.equals("block") && !mat.equals(dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData()).identifySimpleNoIdentifier())) {
+            return false;
         }
 
-        if (CoreUtilities.xthArgEquals(2, lower, "in")) {
-            String it = CoreUtilities.getXthArg(3, lower);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
 
         return true;
