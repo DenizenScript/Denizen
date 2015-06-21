@@ -139,46 +139,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity tamed
-    // <entity> tamed
-    // player tames entity
-    // player tames <entity>
-    //
-    // @Triggers when an entity is tamed.
-    // @Context
-    // <context.entity> returns a dEntity of the tamed entity.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from being tamed.
-    //
-    // -->
-    @EventHandler
-    public void entityTame(EntityTameEvent event) {
-
-        dPlayer player = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        context.put("entity", entity);
-
-        List<String> events = new ArrayList<String>();
-        events.add("entity tamed");
-        events.add(entity.identifyType() + " tamed");
-
-        if (event.getOwner() instanceof Player) {
-            player = dEntity.getPlayerFrom((Player) event.getOwner());
-            events.add("player tames entity");
-            events.add("player tames " + entity.identifyType());
-        }
-
-        String determination = doEvents(events, null, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // entity unleashed (because <reason>)
     // <entity> unleashed (because <reason>)
     //
