@@ -12,11 +12,9 @@ import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizencore.objects.aH.Argument;
 
 import org.bukkit.*;
@@ -138,94 +136,6 @@ public class BukkitWorldScriptHelper implements Listener {
     /////////////////////
     //   Additional EVENTS
     /////////////////
-
-    // <--[event]
-    // @Events
-    // entity shoots bow
-    // <entity> shoots bow
-    // entity shoots <item>
-    // <entity> shoots <item>
-    //
-    // @Triggers when an entity shoots something out of a bow.
-    // @Context
-    // <context.entity> returns the dEntity that shot the bow.
-    // <context.projectile> returns a dEntity of the projectile.
-    // <context.bow> returns the bow item used to shoot.
-    // <context.force> returns the force of the shot.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from shooting the bow.
-    // dList(dEntity) to change the projectile(s) being shot.
-    //
-    // -->
-    @EventHandler
-    public void entityShootBow(EntityShootBowEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dPlayer player = null;
-        dNPC npc = null;
-
-        dItem bow = new dItem(event.getBow());
-        dEntity projectile = new dEntity(event.getProjectile());
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("bow", bow);
-        context.put("projectile", projectile);
-        context.put("entity", entity.getDenizenObject());
-        context.put("force", new Element(event.getForce() * 3));
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        String determination = doEvents(Arrays.asList
-                ("entity shoots bow",
-                        "entity shoots " + bow.identifySimple(),
-                        entity.identifyType() + " shoots bow",
-                        entity.identifyType() + " shoots " + bow.identifySimple()),
-                npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED")) {
-            event.setCancelled(true);
-        }
-
-        // Don't use event.setProjectile() because it doesn't work
-        else if (Argument.valueOf(determination).matchesArgumentList(dEntity.class)) {
-
-            event.setCancelled(true);
-
-            // Get the list of entities
-            Object list = dList.valueOf(determination).filter(dEntity.class);
-
-            @SuppressWarnings("unchecked")
-            List<dEntity> newProjectiles = (List<dEntity>) list;
-
-            // Go through all the entities, spawning/teleporting them
-            for (dEntity newProjectile : newProjectiles) {
-                newProjectile.spawnAt(entity.getEyeLocation()
-                        .add(entity.getEyeLocation().getDirection()));
-
-                // Set the entity as the shooter of the projectile,
-                // where applicable
-                if (newProjectile.isProjectile()) {
-                    newProjectile.setShooter(entity);
-                }
-            }
-
-            // Mount the projectiles on top of each other
-            Position.mount(Conversion.convertEntities(newProjectiles));
-
-            // Get the last entity on the list, i.e. the one at the bottom
-            // if there are many mounted on top of each other
-            Entity lastProjectile = newProjectiles.get
-                    (newProjectiles.size() - 1).getBukkitEntity();
-
-            // Give it the same velocity as the arrow that would
-            // have been shot by the bow
-            // Note: No, I can't explain why this has to be multiplied by three, it just does.
-            lastProjectile.setVelocity(event.getEntity().getLocation()
-                    .getDirection().multiply(event.getForce() * 3));
-        }
-    }
 
     // <--[event]
     // @Events
