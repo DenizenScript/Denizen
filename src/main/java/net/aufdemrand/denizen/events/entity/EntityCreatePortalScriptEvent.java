@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -45,6 +44,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     public dEntity entity;
     public Element entity_type;
     public Element portal_type;
+//    public dList blocks;
     public EntityCreatePortalEvent event;
 
     @Override
@@ -103,6 +103,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
         context.put("entity", entity);
         context.put("entity_type", entity_type);
         context.put("portal_type", portal_type);
+//        context.put("blocks", blocks);
         return context;
     }
 
@@ -111,6 +112,13 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
         entity = new dEntity(event.getEntity());
         entity_type = new Element(event.getEntityType().toString());
         portal_type = new Element(event.getPortalType().toString());
+/*
+        blocks = new dList();
+        for (int i=0; i < event.getBlocks().size(); i++) {
+            dLocation tempLoc = new dLocation(event.getBlocks().get(i).getBlock().getLocation());
+            blocks.add(tempLoc.identifySimple());
+        }
+*/
         cancelled = event.isCancelled();
         this.event = event;
         fire();
