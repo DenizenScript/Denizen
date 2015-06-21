@@ -334,39 +334,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // pig zapped
-    //
-    // @Triggers when a pig is zapped by lightning and turned into a pig zombie.
-    // @Context
-    // <context.pig> returns the dEntity of the pig.
-    // <context.pig_zombie> returns the dEntity of the pig zombie.
-    // <context.lightning> returns the dEntity of the lightning.
-    //
-    // @Determine
-    // "CANCELLED" to stop the pig from being zapped.
-    //
-    // -->
-    @EventHandler
-    public void pigZap(PigZapEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity pig = new dEntity(event.getEntity());
-        dEntity pigZombie = new dEntity(event.getPigZombie());
-        dEntity lightning = new dEntity(event.getLightning());
-
-        context.put("pig", pig);
-        context.put("pig_zombie", pigZombie);
-        context.put("lightning", lightning);
-
-        String determination = doEvents(Arrays.asList
-                ("pig zapped"), null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // projectile hits block
     // projectile hits <material>
     // <projectile> hits block
