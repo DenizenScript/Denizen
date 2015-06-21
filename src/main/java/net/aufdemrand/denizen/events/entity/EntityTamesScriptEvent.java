@@ -1,10 +1,9 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -17,7 +16,7 @@ import org.bukkit.event.entity.EntityTameEvent;
 
 import java.util.HashMap;
 
-public class EntityTamesScriptEvent extends ScriptEvent implements Listener {
+public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events

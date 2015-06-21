@@ -139,37 +139,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity unleashed (because <reason>)
-    // <entity> unleashed (because <reason>)
-    //
-    // @Triggers when an entity is unleashed.
-    // @Context
-    // <context.entity> returns the dEntity.
-    // <context.reason> returns an Element of the reason for the unleashing.
-    // @Note
-    // Reasons include DISTANCE, HOLDER_GONE, PLAYER_UNLEASH, and UNKNOWN
-    //
-    // -->
-    @EventHandler
-    public void entityUnleash(EntityUnleashEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        String reason = event.getReason().name();
-
-        context.put("entity", entity.getDenizenObject());
-        context.put("reason", new Element(reason));
-
-        doEvents(Arrays.asList
-                ("entity unleashed",
-                        "entity unleashed because " + reason,
-                        entity.identifyType() + " unleashed",
-                        entity.identifyType() + " unleashed because " + reason),
-                null, null, context, true);
-    }
-
-    // <--[event]
-    // @Events
     // entity explosion primes
     // <entity> explosion primes
     //
