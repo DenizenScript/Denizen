@@ -145,8 +145,8 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(damager.isPlayer() ? damager.getDenizenPlayer(): entity.isPlayer() ? entity.getDenizenPlayer(): null,
+                damager.isCitizensNPC() ? damager.getDenizenNPC(): entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
     }
 
     @Override
