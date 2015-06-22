@@ -139,51 +139,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // horse jumps
-    // (<color>) (<type>) jumps
-    //
-    // @Triggers when a horse jumps.
-    // @Context
-    // <context.entity> returns the dEntity of the horse.
-    // <context.color> returns an Element of the horse's color.
-    // <context.variant> returns an Element of the horse's variant.
-    // <context.power> returns an Element(Decimal) of the jump's power.
-    //
-    // @Determine
-    // "CANCELLED" to stop the horse from jumping.
-    // Element(Decimal) to set the power of the jump.
-    //
-    // -->
-    @EventHandler
-    public void horseJump(HorseJumpEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        String variant = event.getEntity().getVariant().name();
-        String color = event.getEntity().getColor().name();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("variant", new Element(variant));
-        context.put("color", new Element(color));
-        context.put("power", new Element(event.getPower()));
-        context.put("entity", entity);
-
-        String determination = doEvents(Arrays.asList
-                ("horse jumps",
-                        variant + " jumps",
-                        color + " jumps",
-                        color + " " + variant + " jumps"),
-                null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Float)) {
-            event.setPower(aH.getFloatFrom(determination));
-        }
-    }
-
-    // <--[event]
-    // @Events
     // item despawns
     // <item> despawns
     // <material> despawns
