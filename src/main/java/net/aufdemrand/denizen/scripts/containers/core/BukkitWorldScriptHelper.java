@@ -139,41 +139,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity explosion primes
-    // <entity> explosion primes
-    //
-    // @Triggers when an entity decides to explode.
-    // @Context
-    // <context.entity> returns the dEntity.
-    // <context.radius> returns an Element of the explosion's radius.
-    // <context.fire> returns an Element with a value of "true" if the explosion will create fire and "false" otherwise.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from deciding to explode.
-    // TODO: Set radius, set fire-state (mulitple-determinations)
-    //
-    // -->
-    @EventHandler
-    public void explosionPrimeEvent(ExplosionPrimeEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        Entity entity = event.getEntity();
-
-        context.put("entity", new dEntity(entity));
-        context.put("radius", new Element(event.getRadius()));
-        context.put("fire", new Element(event.getFire()));
-
-        String determination = doEvents(Arrays.asList
-                ("entity explosion primes",
-                        entity.getType().name() + " explosion primes"),
-                null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // entity changes food level
     // <entity> changes food level
     //
