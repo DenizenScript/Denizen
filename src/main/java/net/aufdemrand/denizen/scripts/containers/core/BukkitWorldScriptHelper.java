@@ -459,49 +459,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player dyes sheep (<color>)
-    // sheep dyed (<color>)
-    //
-    // @Triggers when a sheep is dyed by a player.
-    // @Context
-    // <context.entity> returns the dEntity of the sheep.
-    // <context.color> returns an Element of the color the sheep is being dyed.
-    //
-    // @Determine
-    // "CANCELLED" to stop it from being dyed.
-    // Element(String) that matches DyeColor to dye it a different color.
-    //
-    // -->
-    @EventHandler
-    public void sheepDyeWool(SheepDyeWoolEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        String color = event.getColor().name();
-
-        context.put("entity", entity);
-        context.put("color", new Element(color));
-
-        String determination = doEvents(Arrays.asList
-                ("player dyes sheep",
-                        "player dyes sheep " + color,
-                        "sheep dyed",
-                        "sheep dyed " + color), null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (determination.equals(determination.toUpperCase())) {
-            try {
-                event.setColor(DyeColor.valueOf(determination));
-            }
-            catch (IllegalArgumentException e) {
-                dB.echoError("Unknown dye color " + determination);
-            }
-        }
-    }
-
-    // <--[event]
-    // @Events
     // sheep regrows wool
     //
     // @Triggers when a sheep regrows wool.
