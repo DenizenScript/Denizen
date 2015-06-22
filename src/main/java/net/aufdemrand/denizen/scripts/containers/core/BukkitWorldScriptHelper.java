@@ -139,49 +139,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // entity changes food level
-    // <entity> changes food level
-    //
-    // @Triggers when an entity's food level changes.
-    // @Context
-    // <context.entity> returns the dEntity.
-    // <context.food> returns an Element(Number) of the entity's new food level.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity's food level from changing.
-    // Element(Decimal) to set the entity's new food level.
-    //
-    // -->
-    @EventHandler
-    public void foodLevelChange(FoodLevelChangeEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("food", new Element(event.getFoodLevel()));
-        context.put("entity", entity.getDenizenObject());
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        String determination = doEvents(Arrays.asList
-                ("entity changes food level",
-                        entity.identifyType() + " changes food level"),
-                npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
-            event.setFoodLevel(aH.getIntegerFrom(determination));
-        }
-    }
-
-    // <--[event]
-    // @Events
     // horse jumps
     // (<color>) (<type>) jumps
     //
