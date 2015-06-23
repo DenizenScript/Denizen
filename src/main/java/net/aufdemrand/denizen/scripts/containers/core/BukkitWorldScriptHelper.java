@@ -657,40 +657,6 @@ public class BukkitWorldScriptHelper implements Listener {
         }
     }
 
-    // <--[event]
-    // @Events
-    // player opens inventory
-    // player opens <inventory type>
-    //
-    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
-    // @Context
-    // <context.inventory> returns the dInventory.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from opening the inventory.
-    //
-    // -->
-    @EventHandler
-    public void inventoryOpenEvent(InventoryOpenEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        String type = event.getInventory().getType().name();
-
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
-
-        String determination = doEvents(Arrays.asList
-                ("player opens inventory",
-                        "player opens " + type),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
     /////////////////////
     //   PLAYER EVENTS
     /////////////////
