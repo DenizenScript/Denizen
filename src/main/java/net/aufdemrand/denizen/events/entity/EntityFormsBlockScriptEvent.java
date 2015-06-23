@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -17,7 +16,7 @@ import org.bukkit.event.block.EntityBlockFormEvent;
 
 import java.util.HashMap;
 
-public class EntityFormsBlock extends BukkitScriptEvent implements Listener {
+public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -38,10 +37,10 @@ public class EntityFormsBlock extends BukkitScriptEvent implements Listener {
     //
     // -->
 
-    public EntityFormsBlock() {
+    public EntityFormsBlockScriptEvent() {
         instance = this;
     }
-    public static EntityFormsBlock instance;
+    public static EntityFormsBlockScriptEvent instance;
     public dMaterial material;
     public dLocation location;
     public dEntity entity;
