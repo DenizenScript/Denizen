@@ -237,33 +237,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // projectile launched
-    // <entity> launched
-    //
-    // @Triggers when a projectile is launched.
-    // @Context
-    // <context.entity> returns the projectile.
-    //
-    // @Determine
-    // "CANCELLED" to stop it from being launched.
-    //
-    // -->
-    @EventHandler
-    public void projectileLaunch(ProjectileLaunchEvent event) {
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        List<String> events = new ArrayList<String>();
-        dEntity projectile = new dEntity(event.getEntity());
-        context.put("entity", projectile);
-        events.add("projectile launched");
-        events.add(projectile.identifySimple() + " launched");
-        events.add(projectile.identifyType() + " launched");
-        String Determination = doEvents(events, null, null, context, true);
-        if (Determination.equalsIgnoreCase("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // sheep regrows wool
     //
     // @Triggers when a sheep regrows wool.
