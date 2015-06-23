@@ -96,6 +96,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         if (aH.Argument.valueOf(determination)
                 .matchesPrimitive(aH.PrimitiveType.Float)) {
             power = aH.getFloatFrom(determination);
+            return true;
         }
         return super.applyDetermination(container, determination);
     }
