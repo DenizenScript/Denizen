@@ -139,41 +139,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // item despawns
-    // <item> despawns
-    // <material> despawns
-    //
-    // @Triggers when an item entity despawns.
-    // @Context
-    // <context.item> returns the dItem of the entity.
-    // <context.entity> returns the dEntity.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item entity from despawning.
-    //
-    // -->
-    @EventHandler
-    public void itemDespawn(ItemDespawnEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = new dItem(event.getEntity().getItemStack());
-
-        context.put("item", item);
-        context.put("entity", new dEntity(event.getEntity()));
-
-        List<String> events = new ArrayList<String>();
-        events.add("item despawns");
-        events.add(item.identifySimple() + " despawns");
-        events.add(item.identifyMaterial() + " despawns");
-
-        String determination = doEvents(events, null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // projectile hits block
     // projectile hits <material>
     // <projectile> hits block
