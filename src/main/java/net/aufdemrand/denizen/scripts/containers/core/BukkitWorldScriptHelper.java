@@ -237,33 +237,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // sheep regrows wool
-    //
-    // @Triggers when a sheep regrows wool.
-    // @Context
-    // <context.entity> returns the dEntity of the sheep.
-    //
-    // @Determine
-    // "CANCELLED" to stop it from regrowing wool.
-    //
-    // -->
-    @EventHandler
-    public void sheepRegrowWool(SheepRegrowWoolEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("entity", entity);
-
-        String determination = doEvents(Arrays.asList
-                ("sheep regrows wool"), null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // slime splits (into <#>)
     //
     // @Triggers when a slime splits into smaller slimes.

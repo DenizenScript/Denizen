@@ -646,6 +646,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
             ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
             ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
+            ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
