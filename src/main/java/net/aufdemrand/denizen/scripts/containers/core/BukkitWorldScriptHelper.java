@@ -691,51 +691,6 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-    // <--[event]
-    // @Events
-    // inventory picks up item
-    // inventory picks up <item>
-    // <inventory type> picks up item
-    // <inventory type> picks up <item>
-    //
-    // @Triggers when a hopper or hopper minecart picks up an item.
-    // @Context
-    // <context.inventory> returns the dInventory that picked up the item.
-    // <context.item> returns the dItem.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item from being moved.
-    //
-    // -->
-    @EventHandler
-    public void inventoryPickupItemEvent(InventoryPickupItemEvent event) {
-
-        // Too laggy! TODO: Evaluate further.
-        if (event.getInventory().getType() == InventoryType.HOPPER)
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        String type = event.getInventory().getType().name();
-        dItem item = new dItem(event.getItem());
-
-        List<String> events = Arrays.asList("inventory picks up item",
-                "inventory picks up " + item.identifySimple(),
-                type + " picks up item",
-                type + " picks up " + item.identifySimple());
-
-        dInventory inventory = dInventory.mirrorBukkitInventory(event.getInventory());
-        context.put("inventory", inventory);
-        context.put("item", item);
-
-        String determination = doEvents(events,
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-
     /////////////////////
     //   PLAYER EVENTS
     /////////////////
