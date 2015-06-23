@@ -235,44 +235,6 @@ public class BukkitWorldScriptHelper implements Listener {
         doEvents(events, npc, player, context, true);
     }
 
-    // <--[event]
-    // @Events
-    // slime splits (into <#>)
-    //
-    // @Triggers when a slime splits into smaller slimes.
-    // @Context
-    // <context.entity> returns the dEntity of the slime.
-    // <context.count> returns an Element(Number) of the number of smaller slimes it will split into.
-    //
-    // @Determine
-    // "CANCELLED" to stop it from splitting.
-    // Element(Number) to set the number of smaller slimes it will split into.
-    //
-    // -->
-    @EventHandler
-    public void slimeSplit(SlimeSplitEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        int count = event.getCount();
-
-        context.put("entity", entity);
-        context.put("count", new Element(count));
-
-        String determination = doEvents(Arrays.asList
-                ("slime splits",
-                        "slime splits into " + count),
-                null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
-            event.setCount(aH.getIntegerFrom(determination));
-        }
-    }
-
-
     /////////////////////
     //   INVENTORY EVENTS
     /////////////////
