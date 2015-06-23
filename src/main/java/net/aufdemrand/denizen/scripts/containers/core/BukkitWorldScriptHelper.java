@@ -543,44 +543,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player closes inventory
-    // player closes <inventory type>
-    // npc closes inventory
-    // npc closes <inventory type>
-    //
-    // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
-    // @Context
-    // <context.inventory> returns the dInventory.
-    //
-    // -->
-    @EventHandler
-    public void inventoryCloseEvent(InventoryCloseEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dEntity entity = new dEntity(event.getPlayer());
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        String type = event.getInventory().getType().name();
-
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
-
-        doEvents(Arrays.asList
-                ((player != null ? "player": "npc") + " closes inventory",
-                        (player != null ? "player": "npc") + " closes " + type),
-                npc, player, context);
-    }
-
-    // <--[event]
-    // @Events
     // player drags in inventory
     // player drags (<item>) (in <inventory type>)
     //
