@@ -1,10 +1,9 @@
-package net.aufdemrand.denizen.events.block;
+package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -12,59 +11,49 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 import java.util.HashMap;
 
-public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listener {
+public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block physics (in <notable cuboid>)
-    // <material> physics (in <notable cuboid>)
-    //
-    // @Warning This event may fire very rapidly.
+    // projectile launched (in <notable area>)
+    // <entity> launched (in <notable area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a block's physics update.
+    // @Triggers when a projectile is launched.
     //
     // @Context
-    // <context.location> returns a dLocation of the block the physics is affecting.
-    // <context.new_material> returns a dMaterial of what the block is becoming.
+    // <context.entity> returns the projectile.
     //
     // -->
 
-    public BlockPhysicsScriptEvent() {
+    public ProjectileLaunchedScriptEvent() {
         instance = this;
     }
-
-    public static BlockPhysicsScriptEvent instance;
-
-    public dLocation location;
-    public dMaterial new_material;
-    public dMaterial old_material;
-    public BlockPhysicsEvent event;
+    public static ProjectileLaunchedScriptEvent instance;
+    public dEntity entity;
+    private dLocation location;
+    public ProjectileLaunchEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("physics");
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String entTest = CoreUtilities.getXthArg(0, lower);
+        return cmd.equals("launched")
+                && (entTest.equals("projectile") || dEntity.matches(entTest));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-
-        if (lower.equals("block physics")) {
-            return true;
-        }
-
-        if (!lower.startsWith("block")) {
-            dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(0, lower));
-            if (!old_material.matchesMaterialData(mat.getMaterialData())) {
-                return false;
-            }
+        String projTest = CoreUtilities.getXthArg(0, lower);
+        if (!projTest.equals("projectile") && !entity.matchesEntity(projTest)) {
+            return false;
         }
 
         if (!runInCheck(scriptContainer, s, lower, location)) {
@@ -76,7 +65,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public String getName() {
-        return "BlockPhysics";
+        return "ProjectileLaunched";
     }
 
     @Override
@@ -86,7 +75,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public void destroy() {
-        BlockPhysicsEvent.getHandlerList().unregister(this);
+        ProjectileLaunchEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -97,16 +86,14 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("new_material", new_material);
+        context.put("entity", entity);
         return context;
     }
 
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        new_material =  dMaterial.getMaterialFrom(event.getChangedType());
-        old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+    public void onProjectileLaunched(ProjectileLaunchEvent event) {
+        entity = new dEntity(event.getEntity());
+        location = new dLocation(event.getEntity().getLocation());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

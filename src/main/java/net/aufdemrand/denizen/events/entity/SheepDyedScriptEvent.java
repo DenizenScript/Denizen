@@ -2,75 +2,72 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.entity.SheepDyeWoolEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
-public class EntityInteractScriptEvent extends BukkitScriptEvent implements Listener {
+public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // <entity> interacts with <material> (in <notable cuboid>)
-    // entity interacts with <material> (in <notable cuboid>)
-    // <entity> interacts with block (in <notable cuboid>)
-    // entity interacts with block (in <notable cuboid>)
+    // sheep dyed (<color>)
+    // player dyes sheep (<color>)
     //
     // @Cancellable true
     //
-    // @Triggers when an entity interacts with a block (EG an arrow hits a button)
+    // @Warning Determine color will not update the clientside, use - wait 1t and adjust <context.entity> color:YOUR_COLOR to force-update.
+    //
+    // @Triggers when a sheep is dyed by a player.
     //
     // @Context
-    // <context.location> returns a dLocation of the block being interacted with.
-    // <context.cuboids> returns a dList of all cuboids the block is inside. DEPRECATED.
-    // <context.entity> returns a dEntity of the entity doing the interaction.
+    // <context.entity> returns the dEntity of the sheep.
+    // <context.color> returns an Element of the color the sheep is being dyed.
+    //
+    // @Determine
+    // Element(String) that matches DyeColor to dye it a different color.
     //
     // -->
 
-    public EntityInteractScriptEvent() {
+    public SheepDyedScriptEvent() {
         instance = this;
     }
-    public static EntityInteractScriptEvent instance;
+    public static SheepDyedScriptEvent instance;
     public dEntity entity;
-    public dLocation location;
-    public dList cuboids;
-    public EntityInteractEvent event;
+    public DyeColor color;
+    public SheepDyeWoolEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("interacts with");
+        String entTest = CoreUtilities.getXthArg(0, lower);
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        List<String> types = Arrays.asList("sheep", "player", "npc");
+        return (cmd.equals("dyed") || cmd.equals("dyes"))
+                && types.contains(entTest);
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
-            return false;
-        }
-
-        String mat = CoreUtilities.getXthArg(2, lower);
-        if (mat.length() == 0) {
-            dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-            return false;
-        }
-        else if (!mat.equals("block") && !mat.equals(dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData()).identifySimpleNoIdentifier())) {
-            return false;
-        }
-
-        if (!runInCheck(scriptContainer, s, lower, location)) {
-            return false;
+        String new_color = CoreUtilities.getXthArg(1, lower).equals("dyes") ? CoreUtilities.getXthArg(3, lower): CoreUtilities.getXthArg(2, lower);
+        if (new_color.length() > 0){
+            if (!new_color.equals(CoreUtilities.toLowerCase(color.toString()))){
+                return false;
+            }
         }
 
         return true;
@@ -78,7 +75,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public String getName() {
-        return "EntityInteracts";
+        return "SheepDyed";
     }
 
     @Override
@@ -88,11 +85,18 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public void destroy() {
-        EntityInteractEvent.getHandlerList().unregister(this);
+        SheepDyeWoolEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (!CoreUtilities.toLowerCase(determination).equals("cancelled")) {
+            try {
+                color = DyeColor.valueOf(determination.toUpperCase());
+                return true;
+            } catch (IllegalArgumentException e) {
+            }
+        }
         return super.applyDetermination(container, determination);
     }
 
@@ -105,23 +109,19 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
+        context.put("color", new Element(color.toString()));
         context.put("entity", entity);
-        context.put("location", location);
-        context.put("cuboids", cuboids);
         return context;
     }
 
     @EventHandler
-    public void onEntityInteract(EntityInteractEvent event) {
+    public void onSheepDyed(SheepDyeWoolEvent event) {
         entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getBlock().getLocation());
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        color = DyeColor.valueOf(event.getColor().toString());
         cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
+        event.setColor(color);
     }
-
 }

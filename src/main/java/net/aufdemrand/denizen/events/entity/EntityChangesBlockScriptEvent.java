@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityChangesBlockScriptEvent extends ScriptEvent implements Listener {
+public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -71,38 +71,27 @@ public class EntityChangesBlockScriptEvent extends ScriptEvent implements Listen
             return false;
         }
 
-        String notable = null;
-        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
-            notable = CoreUtilities.getXthArg(4, lower);
+        String mat = CoreUtilities.getXthArg(1, lower);
+        if (!mat.equals("block")
+                && !mat.equals(old_material.identifySimpleNoIdentifier()) && !mat.equals(old_material.identifyFullNoIdentifier())) {
+            return false;
         }
-        else if (CoreUtilities.xthArgEquals(5, lower, "in")) {
-            notable = CoreUtilities.getXthArg(6, lower);
-        }
-        if (notable != null) {
-            if (dCuboid.matches(notable)) {
-                dCuboid cuboid = dCuboid.valueOf(notable);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
+
+        if (CoreUtilities.xthArgEquals(3, lower, "into")) {
+            mat = CoreUtilities.getXthArg(4, lower);
+            if (mat.length() == 0) {
+                dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
+                return false;
             }
-            else if (dEllipsoid.matches(notable)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(notable);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
+            else if (!mat.equals("block") && !mat.equals(new_material.identifySimpleNoIdentifier())) {
                 return false;
             }
         }
 
-        if (CoreUtilities.xthArgEquals(3, lower, "into")) {
-            String mat = CoreUtilities.getXthArg(4, lower);
-            if (!mat.equals("block") && !mat.equals(new_material.identifyFullNoIdentifier())) {
-                return false;
-            }
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
+
         return true;
     }
 
