@@ -99,7 +99,6 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("entity", entity);
-        context.put("entity_type", entity_type);
         context.put("portal_type", portal_type);
 //        context.put("blocks", blocks);
         return context;
