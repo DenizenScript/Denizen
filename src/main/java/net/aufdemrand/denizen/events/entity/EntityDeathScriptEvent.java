@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -55,7 +56,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
     public static EntityDeathScriptEvent instance;
 
     public dEntity entity;
-    public dEntity damager;
+    public dObject damager;
     public Element message;
     public dInventory inventory;
     public Element cause;
@@ -182,12 +183,17 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
 
         // If this entity has a stored killer, get it and then
         // remove it from the entityKillers map
+        damager = null;
         EntityDamageEvent lastDamage = entity.getBukkitEntity().getLastDamageCause();
-        if (lastDamage != null && lastDamage instanceof EntityDamageByEntityEvent) {
-            damager = new dEntity(((EntityDamageByEntityEvent) lastDamage).getDamager());
+        if (lastDamage != null) {
+            if (lastDamage instanceof EntityDamageByEntityEvent) {
+                damager = new dEntity(((EntityDamageByEntityEvent) lastDamage).getDamager()).getDenizenObject();
+            }
+
         }
 
         message = null;
+        inventory = null;
         PlayerDeathEvent subEvent = null;
         if (event instanceof PlayerDeathEvent) {
             subEvent = (PlayerDeathEvent) event;
@@ -198,7 +204,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
                 inventory = player.getInventory();
             }
         }
-
+        cause = null;
         if (event.getEntity().getLastDamageCause() != null) {
             cause = new Element(event.getEntity().getLastDamageCause().getCause().toString());
         }
@@ -219,6 +225,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
 
         event.setDroppedExp(xp);
         if (changed_drops) {
+            event.getDrops().clear();
             for (String drop : drops) {
                 dItem item = dItem.valueOf(drop);
                 if (item != null) {

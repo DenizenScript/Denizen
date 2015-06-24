@@ -1,70 +1,66 @@
-package net.aufdemrand.denizen.events.block;
+package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
 
 import java.util.HashMap;
 
-public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listener {
+public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block physics (in <area>)
-    // <material> physics (in <area>)
-    //
-    // @Warning This event may fire very rapidly.
+    // item despawns (in <notable area>)
+    // <item> despawns (in <notable area>)
+    // <material> despawns (in <notable area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a block's physics update.
+    // @Triggers when an item entity spawns.
     //
     // @Context
-    // <context.location> returns a dLocation of the block the physics is affecting.
-    // <context.new_material> returns a dMaterial of what the block is becoming.
+    // <context.item> returns the dItem of the entity.
+    // <context.entity> returns the dEntity.
+    // <context.location> returns the location of the entity to be despawned.
     //
     // -->
 
-    public BlockPhysicsScriptEvent() {
+    public ItemDespawnsScriptEvent() {
         instance = this;
     }
-
-    public static BlockPhysicsScriptEvent instance;
-
+    public static ItemDespawnsScriptEvent instance;
+    public dItem item;
     public dLocation location;
-    public dMaterial new_material;
-    public dMaterial old_material;
-    public BlockPhysicsEvent event;
+    public dEntity entity;
+    public ItemDespawnEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("physics");
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String entTest = CoreUtilities.getXthArg(0, lower);
+        return cmd.equals("despawns")
+                && (entTest.equals("item") || dMaterial.matches(entTest) || dItem.matches(entTest));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
+        String item_test = CoreUtilities.getXthArg(0, lower);
 
-        if (lower.equals("block physics")) {
-            return true;
-        }
-
-        if (!lower.startsWith("block")) {
-            dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(0, lower));
-            if (!old_material.matchesMaterialData(mat.getMaterialData())) {
-                return false;
-            }
+        if (!item_test.equals("item")
+                && !item_test.equals(item.identifyNoIdentifier()) && !item_test.equals(item.identifySimpleNoIdentifier())) {
+            return false;
         }
 
         if (!runInCheck(scriptContainer, s, lower, location)) {
@@ -76,7 +72,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public String getName() {
-        return "BlockPhysics";
+        return "ItemDespawns";
     }
 
     @Override
@@ -86,7 +82,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public void destroy() {
-        BlockPhysicsEvent.getHandlerList().unregister(this);
+        ItemDespawnEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -98,15 +94,16 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("location", location);
-        context.put("new_material", new_material);
+        context.put("item", item);
+        context.put("entity", entity);
         return context;
     }
 
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        new_material =  dMaterial.getMaterialFrom(event.getChangedType());
-        old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+    public void onItemDespawns(ItemDespawnEvent event) {
+        location = new dLocation(event.getLocation());
+        item = new dItem(event.getEntity().getItemStack());
+        entity = new dEntity(event.getEntity());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

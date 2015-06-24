@@ -2,12 +2,10 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -16,71 +14,52 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 import java.util.HashMap;
 
-public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listener {
+public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity spawns
-    // entity spawns (in <area>) (because <cause>)
-    // <entity> spawns
-    // <entity> spawns (in <area>) (because <cause>)
+    // entity changes food level
+    // <entity> changes food level
     //
     // @Cancellable true
     //
-    // @Warning This event may fire very rapidly.
-    //
-    // @Triggers when an entity spawns.
+    // @Triggers when an entity's food level changes.
     //
     // @Context
-    // <context.entity> returns the dEntity that spawned.
-    // <context.location> returns the location the entity will spawn at.
-    // <context.cuboids> returns a list of cuboids that the entity spawned inside. DEPRECATED.
-    // <context.reason> returns the reason the entity spawned.
-    // Reasons: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
+    // <context.entity> returns the dEntity.
+    // <context.food> returns an Element(Number) of the entity's new food level.
+    //
+    // @Determine
+    // Element(Decimal) to set the entity's new food level.
     //
     // -->
 
-    public EntitySpawnScriptEvent() {
+    public EntityFoodLevelChangeScriptEvent() {
         instance = this;
     }
-    public static EntitySpawnScriptEvent instance;
+    public static EntityFoodLevelChangeScriptEvent instance;
     public dEntity entity;
-    public dLocation location;
-    public dList cuboids;
-    public Element reason;
-    public CreatureSpawnEvent event;
+    public Integer food;
+    public FoodLevelChangeEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains(" spawns");
+        return (lower.endsWith("changes food level"));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
-            return false;
-        }
-
-        if (!runInCheck(scriptContainer, s, lower, location)) {
-            return false;
-        }
-
-        if (CoreUtilities.xthArgEquals(4, lower, "because")) {
-            return CoreUtilities.getXthArg(5, lower).equals(reason.toString());
-        }
         return true;
     }
 
     @Override
     public String getName() {
-        return "EntitySpawn";
+        return "FoodLevelChanged";
     }
 
     @Override
@@ -90,11 +69,15 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public void destroy() {
-        CreatureSpawnEvent.getHandlerList().unregister(this);
+        FoodLevelChangeEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (aH.Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Integer)) {
+            food = aH.getIntegerFrom(determination);
+            return true;
+        }
         return super.applyDetermination(container, determination);
     }
 
@@ -108,25 +91,18 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("entity", entity);
-        context.put("location", location);
-        context.put("cuboids", cuboids);
-        context.put("reason", reason);
+        context.put("food", new Element(food));
         return context;
     }
 
     @EventHandler
-    public void onEntityInteract(CreatureSpawnEvent event) {
+    public void onEntityFoodLevelChanged(FoodLevelChangeEvent event) {
         entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getLocation());
-        cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
-        reason = new Element(event.getSpawnReason().name());
+        food = event.getFoodLevel();
         cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
+        event.setFoodLevel(food);
     }
-
 }

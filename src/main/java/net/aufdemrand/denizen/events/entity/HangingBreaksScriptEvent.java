@@ -1,10 +1,9 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -20,14 +19,14 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 
 import java.util.HashMap;
 
-public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
+public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // hanging breaks (in <notable cuboid>)
-    // hanging breaks because <cause> (in <notable cuboid>)
-    // <hanging> breaks (in <notable cuboid>)
-    // <hanging> breaks because <cause> (in <notable cuboid>)
+    // hanging breaks (in <area>)
+    // hanging breaks because <cause> (in <area>)
+    // <hanging> breaks (in <area>)
+    // <hanging> breaks because <cause> (in <area>)
     //
     // @Cancellable true
     //
@@ -70,37 +69,17 @@ public class HangingBreaksScriptEvent extends ScriptEvent implements Listener {
                 && hanging.matchesEntity(hangCheck)){
             return false;
         }
-        String notable = null;
-        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
-            notable = CoreUtilities.getXthArg(4, lower);
-        }
-        else if (CoreUtilities.xthArgEquals(5, lower, "in")) {
-            notable = CoreUtilities.getXthArg(6, lower);
-        }
-        if (notable != null) {
-            if (dCuboid.matches(notable)) {
-                dCuboid cuboid = dCuboid.valueOf(notable);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(notable)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(notable);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
-        }
 
         if (CoreUtilities.xthArgEquals(2, lower, "because")){
             if (!CoreUtilities.getXthArg(3, lower).equals(CoreUtilities.toLowerCase(cause.asString()))) {
                 return false;
             }
         }
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
         return true;
     }
 
