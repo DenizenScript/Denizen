@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.entity;
 
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import org.bukkit.Location;
@@ -36,7 +37,7 @@ public class DenizenEntityType {
         this.createMethod = null;
     }
 
-    private DenizenEntityType(String name, Class<? extends DenizenCustomEntity>   entityType) {
+    private DenizenEntityType(String name, Class<? extends DenizenCustomEntity> entityType) {
         this(name, entityType, 0.115);
     }
 
@@ -69,12 +70,22 @@ public class DenizenEntityType {
 
     public Entity spawnNewEntity(Location location, ArrayList<Mechanism> mechanisms) {
         try {
-            if (name.equals("DROPPED_ITEM"))
-                return location.getWorld().dropItem(location, new ItemStack(Material.STONE));
-            else if (!isCustom())
+            if (name.equals("DROPPED_ITEM")) {
+                ItemStack itemStack = new ItemStack(Material.STONE);
+                for (Mechanism mechanism : mechanisms) {
+                    if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
+                        itemStack = mechanism.getValue().asType(dItem.class).getItemStack();
+                        break;
+                    }
+                }
+                return location.getWorld().dropItem(location, itemStack);
+            }
+            else if (!isCustom()) {
                 return location.getWorld().spawnEntity(location, bukkitEntityType);
-            else
+            }
+            else {
                 return (Entity) createMethod.invoke(null, location, mechanisms);
+            }
         } catch (Exception e) {
             dB.echoError(e);
         }

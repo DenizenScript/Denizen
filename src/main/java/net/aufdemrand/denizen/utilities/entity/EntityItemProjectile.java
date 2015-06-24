@@ -6,6 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.inventory.*;
 
 import java.util.List;
 
@@ -15,11 +17,12 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
     public String shooterName;
     private int age;
 
-    public EntityItemProjectile(CraftWorld craftWorld, Location location) {
+    public EntityItemProjectile(CraftWorld craftWorld, Location location, org.bukkit.inventory.ItemStack itemStack) {
         super(craftWorld.getHandle());
         this.pickupDelay = Integer.MAX_VALUE;
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-        //this.a(0.25F, 0.25F); // TODO: 1.8.3 update
+        this.setSize(0.25F, 0.25F);
+        this.setItemStack(CraftItemStack.asNMSCopy(itemStack));
         world.addEntity(this);
         bukkitEntity = new CraftItemProjectile((CraftServer) Bukkit.getServer(), this);
     }
