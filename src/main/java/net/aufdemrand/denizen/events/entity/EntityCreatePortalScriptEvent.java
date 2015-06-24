@@ -31,8 +31,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when an entity creates a portal.
     //
     // @Context
-    // <context.entity> returns the dEntity that changed the block.
-    // <context.entity_type> returns the type of entity that created the portal.
+    // <context.entity> returns the dEntity that created the portal.
     // <context.portal_type> returns the type of portal: CUSTOM, ENDER, NETHER.
     //
     // -->
@@ -42,7 +41,6 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     }
     public static EntityCreatePortalScriptEvent instance;
     public dEntity entity;
-    public Element entity_type;
     public Element portal_type;
 //    public dList blocks;
     public EntityCreatePortalEvent event;
@@ -110,7 +108,6 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     @EventHandler
     public void onEntityCreatesPortal(EntityCreatePortalEvent event) {
         entity = new dEntity(event.getEntity());
-        entity_type = new Element(event.getEntityType().toString());
         portal_type = new Element(event.getPortalType().toString());
 /*
         blocks = new dList();
