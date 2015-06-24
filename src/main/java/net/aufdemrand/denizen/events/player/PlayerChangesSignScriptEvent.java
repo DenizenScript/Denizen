@@ -25,9 +25,9 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     // <--[event]
     // @Events
     // player changes sign
-    // player changes sign in <notable cuboid>
+    // player changes sign in <area>
     // player changes <material>
-    // player changes <material> in <notable cuboid>
+    // player changes <material> in <area>
     //
     // @Cancellable true
     //

@@ -23,8 +23,8 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // entity creates portal (in <notable cuboid>)
-    // <entity> creates portal (in <notable cuboid>)
+    // entity creates portal (in <area>)
+    // <entity> creates portal (in <area>)
     //
     // @Cancellable true
     //

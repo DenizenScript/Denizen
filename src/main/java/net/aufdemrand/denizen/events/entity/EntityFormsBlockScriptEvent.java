@@ -20,10 +20,10 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // entity forms block (in <notable cuboid>)
-    // entity forms <block> (in <notable cuboid>)
-    // <entity> forms block (in <notable cuboid>)
-    // <entity> forms <block> (in <notable cuboid>)
+    // entity forms block (in <area>)
+    // entity forms <block> (in <area>)
+    // <entity> forms block (in <area>)
+    // <entity> forms <block> (in <area>)
     //
     // @Cancellable true
     //

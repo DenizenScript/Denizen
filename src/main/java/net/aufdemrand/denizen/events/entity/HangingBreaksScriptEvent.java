@@ -23,10 +23,10 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // hanging breaks (in <notable cuboid>)
-    // hanging breaks because <cause> (in <notable cuboid>)
-    // <hanging> breaks (in <notable cuboid>)
-    // <hanging> breaks because <cause> (in <notable cuboid>)
+    // hanging breaks (in <area>)
+    // hanging breaks because <cause> (in <area>)
+    // <hanging> breaks (in <area>)
+    // <hanging> breaks because <cause> (in <area>)
     //
     // @Cancellable true
     //

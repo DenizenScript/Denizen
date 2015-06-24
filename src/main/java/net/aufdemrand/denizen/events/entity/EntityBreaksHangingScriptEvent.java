@@ -25,10 +25,10 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     // <--[event]
     // @Events
-    // entity breaks hanging (in <notable cuboid>)
-    // entity breaks hanging because <cause> (in <notable cuboid>)
-    // <entity> breaks hanging (in <notable cuboid>)
-    // <entity> breaks hanging because <cause> (in <notable cuboid>)
+    // entity breaks hanging (in <area>)
+    // entity breaks hanging because <cause> (in <area>)
+    // <entity> breaks hanging (in <area>)
+    // <entity> breaks hanging because <cause> (in <area>)
     //
     // @Cancellable true
     //

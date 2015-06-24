@@ -24,10 +24,10 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // entity targets (<entity>) (in <notable cuboid>)
-    // entity targets (<entity>) because <cause> (in <notable cuboid>)
-    // <entity> targets (<entity>) (in <notable cuboid>)
-    // <entity> targets (<entity>) because <cause> (in <notable cuboid>)
+    // entity targets (<entity>) (in <area>)
+    // entity targets (<entity>) because <cause> (in <area>)
+    // <entity> targets (<entity>) (in <area>)
+    // <entity> targets (<entity>) because <cause> (in <area>)
     //
     // @Cancellable true
     //

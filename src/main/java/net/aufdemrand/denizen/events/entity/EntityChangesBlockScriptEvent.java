@@ -24,10 +24,10 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     // <--[event]
     // @Events
     // entity changes block
-    // entity changes block (into <material>) (in <notable cuboid>)
-    // entity changes <material> (into <material>) (in <notable cuboid>)
-    // <entity> changes block (into <material>) (in <notable cuboid>)
-    // <entity> changes <material> (into <material>) (in <notable cuboid>)
+    // entity changes block (into <material>) (in <area>)
+    // entity changes <material> (into <material>) (in <area>)
+    // <entity> changes block (into <material>) (in <area>)
+    // <entity> changes <material> (into <material>) (in <area>)
     //
     // @Cancellable true
     //

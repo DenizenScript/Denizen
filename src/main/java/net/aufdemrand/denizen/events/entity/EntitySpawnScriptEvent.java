@@ -25,9 +25,9 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // <--[event]
     // @Events
     // entity spawns
-    // entity spawns (in <notable cuboid>) (because <cause>)
+    // entity spawns (in <area>) (because <cause>)
     // <entity> spawns
-    // <entity> spawns (in <notable cuboid>) (because <cause>)
+    // <entity> spawns (in <area>) (because <cause>)
     //
     // @Cancellable true
     //

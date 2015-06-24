@@ -20,8 +20,8 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // block physics (in <notable cuboid>)
-    // <material> physics (in <notable cuboid>)
+    // block physics (in <area>)
+    // <material> physics (in <area>)
     //
     // @Warning This event may fire very rapidly.
     //

@@ -1020,7 +1020,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player clicks block
-    // player (<click type>) clicks (<material>) (with <item>) (in <notable cuboid>)
+    // player (<click type>) clicks (<material>) (with <item>) (in <area>)
     // player (<click type>) clicks block (with <item>)
     // player stands on <pressure plate>
     //
@@ -1139,10 +1139,10 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player right clicks at entity (with <item>)
-    // player right clicks at entity in <notable cuboid>
+    // player right clicks at entity in <area>
     // player right clicks at entity in notable cuboid
     // player right clicks at <entity> (with <item>)
-    // player right clicks at <entity> in <notable cuboid>
+    // player right clicks at <entity> in <area>
     // player right clicks at <entity> in notable cuboid
 
     // @Triggers when a player right clicks at an entity (Similar to right clicks entity, but for armor stands).
@@ -1210,10 +1210,10 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player right clicks entity (with <item>)
-    // player right clicks entity in <notable cuboid>
+    // player right clicks entity in <area>
     // player right clicks entity in notable cuboid
     // player right clicks <entity> (with <item>)
-    // player right clicks <entity> in <notable cuboid>
+    // player right clicks <entity> in <area>
     // player right clicks <entity> in notable cuboid
 
     // @Triggers when a player right clicks on an entity.

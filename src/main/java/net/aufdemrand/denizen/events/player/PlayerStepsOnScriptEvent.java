@@ -22,8 +22,8 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // player steps on block (in <notable cuboid>)
-    // player steps on <material> (in <notable cuboid>)
+    // player steps on block (in <area>)
+    // player steps on <material> (in <area>)
     //
     // @Warning This event may fire very rapidly.
     //

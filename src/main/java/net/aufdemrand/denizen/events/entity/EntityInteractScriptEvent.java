@@ -21,10 +21,10 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // <entity> interacts with <material> (in <notable cuboid>)
-    // entity interacts with <material> (in <notable cuboid>)
-    // <entity> interacts with block (in <notable cuboid>)
-    // entity interacts with block (in <notable cuboid>)
+    // <entity> interacts with <material> (in <area>)
+    // entity interacts with <material> (in <area>)
+    // <entity> interacts with block (in <area>)
+    // entity interacts with block (in <area>)
     //
     // @Cancellable true
     //

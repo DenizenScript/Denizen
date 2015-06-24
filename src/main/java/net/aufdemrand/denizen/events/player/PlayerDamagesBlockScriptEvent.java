@@ -23,8 +23,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     // @Events
     // player damages block
     // player damages <material>
-    // player damages block in <notable cuboid>
-    // player damages <material> in <notable cuboid>
+    // player damages block in <area>
+    // player damages <material> in <area>
     //
     // @Cancellable true
     //

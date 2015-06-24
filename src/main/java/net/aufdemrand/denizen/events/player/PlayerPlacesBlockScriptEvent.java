@@ -24,8 +24,8 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // player places <material>
     // player places block in notable cuboid
     // player places <material> in notable cuboid
-    // player places block in <notable cuboid>
-    // player places <material> in <notable cuboid>
+    // player places block in <area>
+    // player places <material> in <area>
     //
     // @Cancellable true
     //
