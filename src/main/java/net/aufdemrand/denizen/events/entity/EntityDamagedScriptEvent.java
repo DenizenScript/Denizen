@@ -176,6 +176,7 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         final_damage = new Element(event.getFinalDamage());
         cause = new Element(event.getCause().name().toLowerCase());
         damager = null;
+        projectile = null;
         if (event instanceof EntityDamageByEntityEvent) {
             damager = new dEntity(((EntityDamageByEntityEvent) event).getDamager());
             if (damager.isProjectile()) {
