@@ -17,7 +17,7 @@ import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 
-public class BreakCommand extends AbstractCommand implements Holdable {
+public class BreakCommand extends AbstractCommand implements Holdable { // TODO: Should this be a NPC command?
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

@@ -2436,7 +2436,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // @Tags
         // <e@entity.is_spawned>
-        // <util.entity_is_spawned[<entity>]>
+        // <server.entity_is_spawned[<entity>]>
         // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
         // @Usage
         // TODO: Document Command Details
