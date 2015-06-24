@@ -296,49 +296,6 @@ public class BukkitWorldScriptHelper implements Listener {
         }
     }
 
-    // <--[event]
-    // @Events
-    // item enchanted
-    // <item> enchanted
-    //
-    // @Triggers when an item is enchanted.
-    // @Context
-    // <context.location> returns the dLocation of the enchanting table.
-    // <context.inventory> returns the dInventory of the enchanting table.
-    // <context.item> returns the dItem to be enchanted.
-    // <context.button> returns which button was pressed to initiate the enchanting.
-    // <context.cost> returns the experience level cost of the enchantment.
-    //
-    // @Determine
-    // Element(Number) to set the experience level cost of the enchantment.
-    // "CANCELLED" to stop the item from being enchanted.
-    //
-    // -->
-    @EventHandler
-    public void enchantItemEvent(EnchantItemEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dPlayer player = dEntity.getPlayerFrom(event.getEnchanter());
-        dItem item = new dItem(event.getItem());
-
-        context.put("location", new dLocation(event.getEnchantBlock().getLocation()));
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
-        context.put("item", item);
-        context.put("button", new Element(event.whichButton()));
-        context.put("cost", new Element(event.getExpLevelCost()));
-
-        String determination = doEvents(Arrays.asList
-                ("item enchanted",
-                        item.identifySimple() + " enchanted"),
-                null, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Integer))
-            event.setExpLevelCost(Integer.valueOf(determination));
-    }
-
     // <--[language]
     // @Name Inventory Actions
     // @Group Useful Lists
