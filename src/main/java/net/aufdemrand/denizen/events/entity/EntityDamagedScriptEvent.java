@@ -100,7 +100,11 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         String target = cmd.equals("damages") ? CoreUtilities.getXthArg(2, lower): CoreUtilities.getXthArg(0, lower);
         if (attacker.length() > 0) {
             if (damager != null) {
-                if( !damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
+                boolean projectileMatched = false;
+                if (projectile != null) {
+                    projectileMatched = projectile.matchesEntity(attacker);
+                }
+                if (!projectileMatched && !damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
                     return false;
                 }
             }
