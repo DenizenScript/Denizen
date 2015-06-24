@@ -134,11 +134,14 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
 
     @EventHandler
     public void inventoryClick(InventoryClickEvent event) {
+        dPlayer pl = dEntity.getPlayerFrom(event.getWhoClicked());
+        if (pl == null)
+            return;
+        final Player player = pl.getPlayerEntity();
         Inventory inventory = event.getInventory();
-        if (!didPlayerClickOwnInventory((Player) event.getWhoClicked(), inventory))
+        if (!didPlayerClickOwnInventory(player, inventory))
             return;
         ItemStack item = event.getCurrentItem();
-        Player player = (Player) inventory.getHolder();
         ItemStack cursor = event.getCursor();
         if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
             if (item != null && item.getType() != Material.AIR
@@ -151,7 +154,6 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
             if (cursor != null && cursor.getType() != Material.AIR && isArmor(cursor)) {
                 if (playerEquipsArmorEvent(player, cursor, "INVENTORY")) {
                     event.setCancelled(true);
-                    return;
                 }
             }
         }
@@ -160,7 +162,6 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
             if (currentItem == null || currentItem.getType() == Material.AIR) {
                 if (playerEquipsArmorEvent(player, item, "INVENTORY")) {
                     event.setCancelled(true);
-                    return;
                 }
             }
         }
@@ -168,11 +169,14 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
 
     @EventHandler
     public void inventoryDrag(InventoryDragEvent event) {
+        dPlayer pl = dEntity.getPlayerFrom(event.getWhoClicked());
+        if (pl == null)
+            return;
+        final Player player = pl.getPlayerEntity();
         Inventory inventory = event.getInventory();
-        if (!didPlayerClickOwnInventory((Player) event.getWhoClicked(), inventory))
+        if (!didPlayerClickOwnInventory(player, inventory))
             return;
         ItemStack item = event.getOldCursor();
-        Player player = (Player) inventory.getHolder();
         if (!isArmor(item)) return;
         int[] armor_slots = new int[]{5,6,7,8};
         Set<Integer> slots = event.getRawSlots();
@@ -191,6 +195,10 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
 
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
+        dPlayer pl = dEntity.getPlayerFrom(event.getPlayer());
+        if (pl == null)
+            return;
+        final Player player = pl.getPlayerEntity();
         if (event.hasItem()) {
             ItemStack item = event.getItem();
             Action action = event.getAction();
@@ -200,10 +208,8 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
                 return;
             ItemStack currentItem = event.getPlayer().getInventory().getArmorContents()[3-getArmorTypeNumber(item)];
             if (currentItem == null || currentItem.getType() == Material.AIR) {
-                Player player = event.getPlayer();
                 if (playerEquipsArmorEvent(player, item, "INTERACT")) {
                     event.setCancelled(true);
-                    return;
                 }
             }
         }
@@ -212,13 +218,16 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     @EventHandler
     public void entityDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
-        if (!(entity instanceof Player))
+        dPlayer pl = dEntity.getPlayerFrom(entity);
+        if (pl == null)
             return;
-        final Player player = (Player) entity;
+        final Player player = pl.getPlayerEntity();
         final ItemStack[] oldArmor = player.getInventory().getArmorContents();
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (!player.isValid() || player.isDead())
+                    return;
                 ItemStack[] newArmor = player.getInventory().getArmorContents();
                 for (int i = 0; i < 4; i++) {
                     ItemStack o = oldArmor[i];

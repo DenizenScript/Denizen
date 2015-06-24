@@ -7,8 +7,11 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.aufdemrand.denizen.events.block.*;
 import net.aufdemrand.denizen.events.core.*;
-import net.aufdemrand.denizen.events.scriptevents.*;
+import net.aufdemrand.denizen.events.entity.*;
+import net.aufdemrand.denizen.events.player.*;
+import net.aufdemrand.denizen.events.world.*;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitElementProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitListProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitQueueProperties;
@@ -77,7 +80,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-import sun.security.jgss.krb5.Krb5Util;
 
 // <--[language]
 // @name dObjects

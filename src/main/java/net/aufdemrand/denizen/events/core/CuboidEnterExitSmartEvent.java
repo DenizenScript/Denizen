@@ -103,7 +103,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     // @Context
     // <context.from> returns the block location moved from.
     // <context.to> returns the block location moved to.
-    // <context.cuboids> returns a list of cuboids entered/exited (when no cuboid is specified in the event name)
+    // <context.cuboids> returns a list of cuboids entered/exited (when no cuboid is specified in the event name).
     //
     // @Determine
     // "CANCELLED" to stop the player from moving.

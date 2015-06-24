@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.*;
@@ -102,6 +103,18 @@ public class ServerTags implements Listener {
         Attribute attribute = event.getAttributes().fulfill(1);
 
         // <--[tag]
+        // @attribute <server.object_is_valid[<object>]>
+        // @returns Element(boolean)
+        // @description
+        // returns whether the object is a valid object (non-null), as well as not an Element.
+        // -->
+        if (attribute.startsWith("object_is_valid")) {
+            dObject o = ObjectFetcher.pickObjectFor(attribute.getContext(1), new BukkitTagContext(null, null, false, null, false, null));
+            event.setReplaced(new Element(!(o == null || o instanceof Element)).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.has_flag[<flag_name>]>
         // @returns Element(boolean)
         // @description
@@ -115,6 +128,7 @@ public class ServerTags implements Listener {
                 return;
             }
             event.setReplaced(new Element(FlagManager.serverHasFlag(flag_name)).getAttribute(attribute.fulfill(1)));
+            return;
         }
 
         // <--[tag]

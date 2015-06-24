@@ -53,13 +53,15 @@ public class ItemScriptContainer extends ScriptContainer {
     //   - item
     //   - ...
     //
+    //   # If you want an item to be damaged on creation, you can change its durability.
+    //   durability: 12
+    //
     //   # Each line must specify a valid Bukkit enchantment. See 'enchantments' for more information.
     //   enchantments:
     //   - enchantment_name:level
     //   - ...
     //
-    //   # You can specify the items required to craft your item. For an empty slot, use i@air. Currently, Denizen only
-    //   # supports shaped recipes.
+    //   # You can specify the items required to craft your item. For an empty slot, use i@air.
     //   recipe:
     //   - i@item|i@item|i@item
     //   - i@item|i@item|i@item
@@ -217,6 +219,12 @@ public class ItemScriptContainer extends ScriptContainer {
 
             meta.setLore(lore);
             stack.getItemStack().setItemMeta(meta);
+
+            // Set Durability
+            if (contains("DURABILITY")) {
+                short durability = Short.valueOf(getString("DURABILITY"));
+                stack.setDurability(durability);
+            }
 
             // Set Enchantments
             if (contains("ENCHANTMENTS")) {

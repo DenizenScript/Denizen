@@ -139,7 +139,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                         Double.valueOf(split[0]),
                         Double.valueOf(split[1]));
             } catch (Exception e) {
-                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                if (context == null || context.debug) {
+                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                }
                 return null;
             }
         if (split.length == 3)
@@ -157,7 +159,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                         Double.valueOf(split[1]),
                         Double.valueOf(split[2]));
             } catch(Exception e) {
-                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                if (context == null || context.debug) {
+                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                }
                 return null;
             }
 
@@ -170,7 +174,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                         Double.valueOf(split[1]),
                         Double.valueOf(split[2]));
             } catch(Exception e) {
-                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                if (context == null || context.debug) {
+                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                }
                 return null;
             }
 
@@ -188,11 +194,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     Float.valueOf(split[4]));
 
             } catch(Exception e) {
-                dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                if (context == null || context.debug) {
+                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                }
                 return null;
             }
 
-        dB.log("valueOf dLocation returning null: " + string);
+        if (context == null || context.debug) {
+            dB.log("valueOf dLocation returning null: " + string);
+        }
 
         return null;
     }
@@ -502,7 +512,28 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // To change this, see <@link command Switch>
         // -->
         if (attribute.startsWith("switched")) {
-            return new Element((getBlock().getData() & 0x8) > 0).getAttribute(attribute.fulfill(1));
+            Material type = getBlock().getType();
+            if (type == Material.IRON_DOOR_BLOCK
+                    || type == Material.WOODEN_DOOR
+                    || type == Material.DARK_OAK_DOOR
+                    || type == Material.BIRCH_DOOR
+                    || type == Material.ACACIA_DOOR
+                    || type == Material.JUNGLE_DOOR
+                    || type == Material.SPRUCE_DOOR) {
+                Location location = this;
+                int data = getBlock().getData();
+                if (data >= 8) {
+                    location = clone().add(0, -1, 0);
+                }
+                return new Element((location.getBlock().getData() & 0x4) > 0).getAttribute(attribute.fulfill(1));
+            }
+            else if (type == Material.TRAP_DOOR
+                    || type == Material.IRON_TRAPDOOR) {
+                return new Element((getBlock().getData() & 0x4) > 0).getAttribute(attribute.fulfill(1));
+            }
+            else {
+                return new Element((getBlock().getData() & 0x8) > 0).getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]

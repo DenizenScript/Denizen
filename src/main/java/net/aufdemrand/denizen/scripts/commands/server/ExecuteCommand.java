@@ -105,12 +105,14 @@ public class ExecuteCommand extends AbstractCommand {
                 if (!pcpe.isCancelled()) {
                     boolean silentBool = silent.asBoolean();
                     Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
-                    if (silentBool)
+                    if (silentBool) {
                         silencedPlayers.add(player.getUniqueId());
+                    }
                     player.performCommand(pcpe.getMessage().startsWith("/") ?
                             pcpe.getMessage().substring(1) : pcpe.getMessage());
-                    if (silentBool)
+                    if (silentBool) {
                         silencedPlayers.remove(player.getUniqueId());
+                    }
                 }
             }
             catch (Throwable e) {
@@ -125,9 +127,18 @@ public class ExecuteCommand extends AbstractCommand {
             try {
                 PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), "/" + command);
                 Bukkit.getPluginManager().callEvent(pcpe);
-                if (!pcpe.isCancelled())
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().performCommand(
-                            pcpe.getMessage().startsWith("/") ? pcpe.getMessage().substring(1): pcpe.getMessage());
+                if (!pcpe.isCancelled()) {
+                    boolean silentBool = silent.asBoolean();
+                    Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+                    if (silentBool) {
+                        silencedPlayers.add(player.getUniqueId());
+                    }
+                    player.performCommand(pcpe.getMessage().startsWith("/") ?
+                            pcpe.getMessage().substring(1) : pcpe.getMessage());
+                    if (silentBool) {
+                        silencedPlayers.remove(player.getUniqueId());
+                    }
+                }
             }
             catch (Throwable e) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as OP.");

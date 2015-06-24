@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities.world;
 
-import net.aufdemrand.denizen.events.scriptevents.EntityDespawnScriptEvent;
+import net.aufdemrand.denizen.events.entity.EntityDespawnScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;

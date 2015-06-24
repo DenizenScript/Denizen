@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities.packets.intercept;
 
-import net.aufdemrand.denizen.events.scriptevents.ResourcePackStatusScriptEvent;
+import net.aufdemrand.denizen.events.player.ResourcePackStatusScriptEvent;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;

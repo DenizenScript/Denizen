@@ -166,7 +166,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // <context.raw_args> returns any args used as an Element.
     // <context.args> returns a dList of the arguments.
     // <context.server> returns true if the command was run from the console.
-    // <context.cuboids> returns a list of cuboids the player is in when using the command.
+    // <context.cuboids> returns a list of cuboids the player is in when using the command. DEPRECATED.
     //
     // @Determine
     // "FULFILLED" to tell Bukkit the command was handled.
