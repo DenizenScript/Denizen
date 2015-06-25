@@ -216,8 +216,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // TODO: Document Command Details
         // @Usage
-        // Use to open a chest at 15,89,-45 in world: world
+        // Use to animate a chest to open at 15,89,-45 in world: world
         // - animatechest 15,89,-45,world
+        // To then close that chest
+        // - animatechest 15,89,-45,world close
+
+        // @Usage
+        // Use to animate a chest to open with no sound at 12,12,-64 in world: peter
+        // - animatechest 12,12,-64,peter sound:false
+        // If only a player by the name of Morphan1 should see the chest open
+        // - animatechest 12,12,-64,peter sound:false p@Morphan1
+        // The command also accepts a list of players
+        // - animatechest 12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
+        // Use to
         // -->
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
@@ -354,11 +365,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Usage
         // Use to make a npc with the id 12 break a block at 17,64,-87
-        // - break 17,64,-87 entity:<n@12>
+        // - break 17,64,-87 entity:n@12
 
         // @Usage
         // Use to make a npc with the name bob break a block at 17,64,-87 and start digging from 5 blocks away
-        // - break 17,64,-87 entity<n@bob> radius:5
+        // - break 17,64,-87 entity:n@bob radius:5
 
         // -->
         if (Depends.citizens != null)
