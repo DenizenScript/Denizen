@@ -354,7 +354,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to make a npc with the name bob break a block at 17,64,-87 and start digging from 5 blocks away
         // - break 17,64,-87 entity<n@bob> radius:5
-        
+
         // -->
         if (Depends.citizens != null)
             registerCoreMember(BreakCommand.class,
@@ -406,6 +406,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
         // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
+        // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration
+        // of 1639s (1639 seconds) or greater. While it may display as infinite, it will still wear off.
 
         // @Tags
         // <e@entity.has_effect[<effect>]>
