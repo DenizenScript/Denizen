@@ -1821,16 +1821,35 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the entity has a specified effect.
         // If no effect is specified, returns whether the entity has any effect.
         // -->
-        // TODO: add list_effects ?
         if (attribute.startsWith("has_effect")) {
-            Boolean returnElement = false;
+            boolean returnElement = false;
             if (attribute.hasContext(1)) {
-                for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
-                    if (effect.getType().equals(PotionEffectType.getByName(attribute.getContext(1))))
+                PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
+                for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects()) {
+                    if (effect.getType().equals(effectType)) {
                         returnElement = true;
+                    }
+                }
             }
-            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
+            else if (!getLivingEntity().getActivePotionEffects().isEmpty()){
+                returnElement = true;
+            }
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.list_effects>
+        // @returns dList
+        // @group attribute
+        // Returns the list of active potion effects on the entity, in the format
+        // li@TYPE,AMPLIFIER,DURATION|...
+        // -->
+        if (attribute.startsWith("list_effects")) {
+            dList effects = new dList();
+            for (PotionEffect effect : getLivingEntity().getActivePotionEffects()) {
+                effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration() + "t");
+            }
+            return effects.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
