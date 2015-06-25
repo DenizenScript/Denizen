@@ -333,11 +333,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // By itself, the 'break' command will act as a NPC command in the sense that an attached
+        // NPC will navigate to and break the block at the attached location. It can also accept a specified npc,
+        // to fulfill the command, just specify a 'fetchable' npc object. It can also accept a radius to start
+        // breaking the block from within. To specify the npc, prefix the npc with 'entity:'. To specify the
+        // radius, prefix the radius with 'radius:'.
+
         // @Tags
-        // TODO: Document Command Details
+        // <n@npc.navigator.is_navigating>
+        // <n@npc.navigator.target_location>
+
         // @Usage
-        // TODO: Document Command Details
+        // Use to make a npc break a block in an interact script.
+        // - break <location>
+
+        // @Usage
+        // Use to make a npc with the id 12 break a block at 17,64,-87
+        // - break 17,64,-87 entity:<n@12>
+
+        // @Usage
+        // Use to make a npc with the name bob break a block at 17,64,-87 and start digging from 5 blocks away
+        // - break 17,64,-87 entity<n@bob> radius:5
+        
         // -->
         if (Depends.citizens != null)
             registerCoreMember(BreakCommand.class,
