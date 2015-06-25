@@ -1750,6 +1750,17 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <e@entity.on_fire>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns if the entity is currently ablaze or not.
+        // -->
+        if (attribute.startsWith("on_fire")) {
+            return new Element(entity.getFireTicks() > 0).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.get_leash_holder>
         // @returns dEntity
         // @group attributes
