@@ -208,11 +208,32 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author Jeebiss, mcmonkey
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // This command animates a chest in the world to open or close at a specified location.
+        // The command by default will open the chest. It accepts a sound argument which specifies whether
+        // the open or close sound will play aswell as the animation. The sound plays by default and
+        // can be disabled with 'sound:false' It also accepts a player or list of players to animate the chest to,
+        // allowing only selected players to see the chest animate as opened or closed.
         // @Tags
         // TODO: Document Command Details
         // @Usage
-        // TODO: Document Command Details
+        // Use to animate a chest to open at 15,89,-45 in world: world
+        // - animatechest 15,89,-45,world
+
+        // @Usage
+        // To then close the chest at 15,89,-45 in world: world
+        // - animatechest 15,89,-45,world close
+
+        // @Usage
+        // Use to animate a chest to open with no sound at 12,12,-64 in world: peter
+        // - animatechest 12,12,-64,peter sound:false
+
+        // @Usage
+        // If only a player by the name of Morphan1 should see the chest open
+        // - animatechest 12,12,-64,peter sound:false p@Morphan1
+
+        // @Usage
+        // The command also accepts a list of players to view the animation
+        // - animatechest 12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
         // -->
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
@@ -333,11 +354,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // By itself, the 'break' command will act as a NPC command in the sense that an attached
+        // NPC will navigate to and break the block at the attached location. It can also accept a specified npc,
+        // to fulfill the command, just specify a 'fetchable' npc object. It can also accept a radius to start
+        // breaking the block from within. To specify the npc, prefix the npc with 'entity:'. To specify the
+        // radius, prefix the radius with 'radius:'.
+
         // @Tags
-        // TODO: Document Command Details
+        // <n@npc.navigator.is_navigating>
+        // <n@npc.navigator.target_location>
+
         // @Usage
-        // TODO: Document Command Details
+        // Use to make a npc break a block in an interact script.
+        // - break <location>
+
+        // @Usage
+        // Use to make a npc with the id 12 break a block at 17,64,-87
+        // - break 17,64,-87 entity:n@12
+
+        // @Usage
+        // Use to make a npc with the name bob break a block at 17,64,-87 and start digging from 5 blocks away
+        // - break 17,64,-87 entity:n@bob radius:5
+
         // -->
         if (Depends.citizens != null)
             registerCoreMember(BreakCommand.class,
@@ -389,6 +427,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
         // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
+        // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration
+        // of 1639s (1639 seconds) or greater. While it may display as infinite, it will still wear off.
 
         // @Tags
         // <e@entity.has_effect[<effect>]>
@@ -470,9 +510,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author spaceemotion, mcmonkey
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // This command forces a chunk to load and keeps the chunk loaded until it is removed,
+        // the server shuts down or the duration expires. All normal events such as redstone,
+        // NPC actions, mob spawning and weather effects will continue to take place while
+        // the chunk is loaded.
         // @Tags
-        // TODO: Document Command Details
+        // <w@world.loaded_chunks>
+        // <ch@chunk.is_loaded>
         // @Usage
         // Use to load a chunk.
         // - chunkload ch@0,0,world
@@ -492,7 +536,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Compass
-        // @Syntax compass [<location>]
+        // @Syntax compass [<location>/reset]
         // @Required 1
         // @Stable stable
         // @Short Redirects the player's compass to target the given location.
@@ -506,7 +550,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(CompassCommand.class,
-                "COMPASS", "compass [<location>]", 1);
+                "COMPASS", "compass [<location>/reset]", 1);
 
 
         // <--[command]

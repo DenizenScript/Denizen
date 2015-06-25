@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 public class FormatScriptContainer extends ScriptContainer {
@@ -81,7 +82,7 @@ public class FormatScriptContainer extends ScriptContainer {
     }
 
     public String getFormattedText(String textToReplace, dNPC npc, dPlayer player) {
-        String text = getFormat().replace("<text>", TagManager.escapeOutput(textToReplace));
+        String text = getFormat().replace("<text", "<el@val[" + EscapeTags.Escape(textToReplace) + "].unescaped");
         return TagManager.tag(text, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
     }
 
