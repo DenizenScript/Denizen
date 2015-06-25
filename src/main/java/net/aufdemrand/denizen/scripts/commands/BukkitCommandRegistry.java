@@ -228,7 +228,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - animatechest 12,12,-64,peter sound:false p@Morphan1
         // The command also accepts a list of players
         // - animatechest 12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
-        // Use to
         // -->
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
