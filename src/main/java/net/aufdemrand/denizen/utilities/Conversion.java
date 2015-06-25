@@ -81,7 +81,7 @@ public class Conversion {
         if (dInventory.matches(string)) {
             BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.getData();
             if (data != null)
-                return dInventory.valueOf(string, ((BukkitScriptEntryData) scriptEntry.getData()).getTagContext());
+                return dInventory.valueOf(string, data.getTagContext());
             else
                 return dInventory.valueOf(string);
         }

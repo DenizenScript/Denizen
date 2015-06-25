@@ -1,10 +1,9 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -21,14 +20,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityTargetsScriptEvent extends ScriptEvent implements Listener {
+public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity targets (<entity>) (in <notable cuboid>)
-    // entity targets (<entity>) because <cause> (in <notable cuboid>)
-    // <entity> targets (<entity>) (in <notable cuboid>)
-    // <entity> targets (<entity>) because <cause> (in <notable cuboid>)
+    // entity targets (<entity>) (in <area>)
+    // entity targets (<entity>) because <cause> (in <area>)
+    // <entity> targets (<entity>) (in <area>)
+    // <entity> targets (<entity>) because <cause> (in <area>)
     //
     // @Cancellable true
     //
@@ -81,32 +80,15 @@ public class EntityTargetsScriptEvent extends ScriptEvent implements Listener {
                 return false;
             }
         }
-        Integer pos = lower.indexOf(" in ") + 4;
-        if (pos > 4) {
-            Integer end = lower.indexOf(" ", pos) < 0 ? lower.length(): lower.indexOf(" ", pos);
-            String it = lower.substring(pos, end);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
-        pos = lower.indexOf(" because ") + 9;
+
+        Integer pos = lower.indexOf(" because ") + 9;
         if (pos > 9) {
             Integer end = lower.indexOf(" ", pos) < 0 ? lower.length(): lower.indexOf(" ", pos);
-            String it = lower.substring(pos, end);
-            if (!it.equals(reason.toString().toLowerCase())) {
+            if (!lower.substring(pos, end).equals(reason.toString().toLowerCase())) {
                 return false;
             }
         }

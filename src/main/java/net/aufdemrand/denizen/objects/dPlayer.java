@@ -31,6 +31,7 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.BlockIterator;
 
 import java.util.*;
@@ -809,6 +810,15 @@ public class dPlayer implements dObject, Adjustable {
                 }
             }
             return null;
+        }
+
+        // workaround for <e@entity.list_effects>
+        if (attribute.startsWith("list_effects")) {
+            dList effects = new dList();
+            for (PotionEffect effect : getPlayerEntity().getActivePotionEffects()) {
+                effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration() + "t");
+            }
+            return effects.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

@@ -102,9 +102,11 @@ public class BlockIgnitesScriptEvent extends ScriptEvent implements Listener {
     public void onBlockIgnites(BlockIgniteEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        entity = null;
         if (event.getIgnitingEntity() != null) {
             entity = new dEntity(event.getIgnitingEntity());
         }
+        origin_location = null;
         if (event.getIgnitingBlock() != null) {
             origin_location = new dLocation(event.getIgnitingBlock().getLocation());
         }
