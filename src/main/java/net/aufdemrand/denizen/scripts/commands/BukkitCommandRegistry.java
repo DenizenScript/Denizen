@@ -492,7 +492,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Compass
-        // @Syntax compass [<location>]
+        // @Syntax compass [<location>/reset]
         // @Required 1
         // @Stable stable
         // @Short Redirects the player's compass to target the given location.
@@ -506,7 +506,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(CompassCommand.class,
-                "COMPASS", "compass [<location>]", 1);
+                "COMPASS", "compass [<location>/reset]", 1);
 
 
         // <--[command]
