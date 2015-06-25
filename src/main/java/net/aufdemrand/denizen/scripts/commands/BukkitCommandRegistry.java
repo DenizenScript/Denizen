@@ -208,11 +208,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author Jeebiss, mcmonkey
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // This command animates a chest in the world to open or close at a specified location.
+        // The command by default will open the chest. It accepts a sound argument which specifies whether
+        // the open or close sound will play aswell as the animation. The sound plays by default and
+        // can be disabled with 'sound:false' It also accepts a player or list of players to animate the chest to,
+        // allowing only selected players to see the chest animate as opened or closed.
         // @Tags
         // TODO: Document Command Details
         // @Usage
-        // TODO: Document Command Details
+        // Use to open a chest at 15,89,-45 in world: world
+        // - animatechest 15,89,-45,world
         // -->
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
