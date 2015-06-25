@@ -230,7 +230,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // If only a player by the name of Morphan1 should see the chest open
         // - animatechest 12,12,-64,peter sound:false p@Morphan1
-        
+
         // @Usage
         // The command also accepts a list of players to view the animation
         // - animatechest 12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
@@ -510,9 +510,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author spaceemotion, mcmonkey
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // This command forces a chunk to load and keeps the chunk loaded until it is removed,
+        // the server shuts down or the duration expires. All normal events such as redstone,
+        // NPC actions, mob spawning and weather effects will continue to take place while
+        // the chunk is loaded.
         // @Tags
-        // TODO: Document Command Details
+        // <w@world.loaded_chunks>
+        // <ch@chunk.is_loaded>
         // @Usage
         // Use to load a chunk.
         // - chunkload ch@0,0,world
