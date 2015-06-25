@@ -218,15 +218,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to animate a chest to open at 15,89,-45 in world: world
         // - animatechest 15,89,-45,world
-        // To then close that chest
+
+        // @Usage
+        // To then close the chest at 15,89,-45 in world: world
         // - animatechest 15,89,-45,world close
 
         // @Usage
         // Use to animate a chest to open with no sound at 12,12,-64 in world: peter
         // - animatechest 12,12,-64,peter sound:false
+
+        // @Usage
         // If only a player by the name of Morphan1 should see the chest open
         // - animatechest 12,12,-64,peter sound:false p@Morphan1
-        // The command also accepts a list of players
+        
+        // @Usage
+        // The command also accepts a list of players to view the animation
         // - animatechest 12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
         // -->
         registerCoreMember(AnimateChestCommand.class,
