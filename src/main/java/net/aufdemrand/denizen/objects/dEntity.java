@@ -630,16 +630,18 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public String getName() {
-        if (isCitizensNPC())
+        if (isCitizensNPC()) {
             return getDenizenNPC().getCitizen().getName();
-        if (entity instanceof CraftFakePlayer)
+        }
+        if (entity instanceof CraftFakePlayer) {
             return ((CraftFakePlayer) entity).getFullName();
-        if (entity instanceof Player)
+        }
+        if (entity instanceof Player) {
             return ((Player) entity).getName();
-        if (isLivingEntity()) {
-            String customName = getLivingEntity().getCustomName();
-            if (customName != null)
-                return customName;
+        }
+        String customName = entity.getCustomName();
+        if (customName != null) {
+            return customName;
         }
         return entity_type.getName();
     }
@@ -1207,7 +1209,8 @@ public class dEntity implements dObject, Adjustable {
 
     @Override
     public boolean isUnique() {
-        return (isPlayer() || isCitizensNPC() || isSpawned());  // || isSaved()
+        return isPlayer() || isCitizensNPC() || isSpawned()
+                || (entity != null && rememberedEntities.containsKey(entity.getUniqueId()));  // || isSaved()
     }
 
     public boolean matchesEntity(String ent) {
@@ -1488,9 +1491,7 @@ public class dEntity implements dObject, Adjustable {
         // Otherwise, returns null.
         // -->
         if (attribute.startsWith("custom_name")) {
-            if (!isLivingEntity() || getLivingEntity().getCustomName() == null)
-                return null;
-            return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(1));
+            return new Element(entity.getCustomName()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1501,9 +1502,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns true if the entity's custom name is visible.
         // -->
         if (attribute.startsWith("custom_name.visible")) {
-            if (!isLivingEntity())
-                return null;
-            return new Element(getLivingEntity().isCustomNameVisible())
+            return new Element(entity.isCustomNameVisible())
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -2157,6 +2156,9 @@ public class dEntity implements dObject, Adjustable {
         if (isGeneric()) {
             mechanisms.add(mechanism);
         }
+        else if (rememberedEntities.containsKey(entity.getUniqueId())) {
+            adjust(mechanism);
+        }
         else {
             dB.echoError("Cannot apply properties to an already-spawned entity!");
         }
@@ -2191,12 +2193,11 @@ public class dEntity implements dObject, Adjustable {
         // @input Element
         // @description
         // Sets the custom name of the entity.
-        // The entity must be living.
         // @tags
         // <e@entity.custom_name>
         // -->
         if (mechanism.matches("custom_name"))
-            getLivingEntity().setCustomName(value.asString());
+            entity.setCustomName(value.asString());
 
         // <--[mechanism]
         // @object dEntity
@@ -2204,12 +2205,11 @@ public class dEntity implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Sets whether the custom name is visible.
-        // The entity must be living.
         // @tags
         // <e@entity.custom_name.visible>
         // -->
         if (mechanism.matches("custom_name_visibility") && mechanism.requireBoolean())
-            getLivingEntity().setCustomNameVisible(value.asBoolean());
+            entity.setCustomNameVisible(value.asBoolean());
 
         // <--[mechanism]
         // @object dEntity

@@ -14,6 +14,7 @@ import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -116,7 +117,8 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     @EventHandler
     public void onEntityInteract(CreatureSpawnEvent event) {
-        entity = new dEntity(event.getEntity());
+        Entity entity = event.getEntity();
+        this.entity = new dEntity(entity);
         location = new dLocation(event.getLocation());
         cuboids = new dList();
         for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
@@ -125,7 +127,9 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         reason = new Element(event.getSpawnReason().name());
         cancelled = event.isCancelled();
         this.event = event;
+        dEntity.rememberEntity(entity);
         fire();
+        dEntity.forgetEntity(entity);
         event.setCancelled(cancelled);
     }
 
