@@ -1024,7 +1024,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <n@npc.flag[<flag>]>
         // <server.flag[<flag>]>
         // @Usage
-        // @Usage
         // Use to create or set a flag on a player.
         // - flag player playstyle:agressive
         // @Usage
@@ -1037,7 +1036,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to add an item to a server flag as a new value without removing existing values.
         // - flag server cool_people:->:p@TheBlackCoyote
         // @Usage
-        // Use to add both multiple items as individual new values to a server flag.
+        // Use to add both multiple items as individual new values to a server flag.mor
         // - flag server cool_people:|:p@mcmonkey4eva|p@morphan1
         // @Usage
         // Use to remove an entry from a server flag.

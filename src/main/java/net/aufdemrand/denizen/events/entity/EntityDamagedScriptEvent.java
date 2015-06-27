@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -21,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
+public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[language]
     // @name Damage Cause
@@ -35,18 +37,18 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity damaged
-    // entity damaged by <cause>
-    // <entity> damaged
-    // <entity> damaged by <cause>
-    // entity damages entity
-    // entity damages <entity>
-    // entity damaged by entity
-    // entity damaged by <entity>
-    // <entity> damages entity
-    // <entity> damaged by entity
-    // <entity> damaged by <entity>
-    // <entity> damages <entity>
+    // entity damaged (in <area>) (with:<item>)
+    // entity damaged by <cause> (in <area>) (with:<item>)
+    // <entity> damaged (in <area>) (with:<item>)
+    // <entity> damaged by <cause> (in <area>) (with:<item>)
+    // entity damages entity (in <area>) (with:<item>)
+    // entity damages <entity> (in <area>) (with:<item>)
+    // entity damaged by entity (in <area>) (with:<item>)
+    // entity damaged by <entity> (in <area>) (with:<item>)
+    // <entity> damages entity (in <area>) (with:<item>)
+    // <entity> damaged by entity (in <area>) (with:<item>)
+    // <entity> damaged by <entity> (in <area>) (with:<item>)
+    // <entity> damages <entity> (in <area>) (with:<item>)
     //
     // @Cancellable true
     //
@@ -78,6 +80,7 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
     public Element final_damage;
     public dEntity damager;
     public dEntity projectile;
+    public dItem held;
     public EntityDamageEvent event;
 
     @Override
@@ -112,6 +115,22 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         }
         if (target.length() > 0) {
             if (!entity.matchesEntity(target)) {
+                return false;
+            }
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        String with = getSwitch(s, "with");
+        if (with != null) {
+            dItem it = dItem.valueOf(with);
+            if (it == null) {
+                dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
+                return false;
+            }
+            if (!it.identify().equalsIgnoreCase(held.identify())) {
                 return false;
             }
         }
@@ -177,6 +196,7 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         cause = new Element(event.getCause().name().toLowerCase());
         damager = null;
         projectile = null;
+        held = null;
         if (event instanceof EntityDamageByEntityEvent) {
             damager = new dEntity(((EntityDamageByEntityEvent) event).getDamager());
             if (damager.isProjectile()) {
@@ -184,6 +204,10 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
                 if (damager.hasShooter()) {
                     damager = damager.getShooter();
                 }
+            }
+            if (damager != null) {
+                held = damager.getItemInHand();
+                held.setAmount(1);
             }
         }
         cancelled = event.isCancelled();

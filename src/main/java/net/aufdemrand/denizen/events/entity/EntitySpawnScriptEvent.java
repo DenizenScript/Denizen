@@ -57,7 +57,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains(" spawns");
+        return CoreUtilities.xthArgEquals(1, lower, "spawns") && !lower.startsWith("item");
     }
 
     @Override

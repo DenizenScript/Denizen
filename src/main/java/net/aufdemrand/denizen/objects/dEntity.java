@@ -90,6 +90,13 @@ public class dEntity implements dObject, Adjustable {
             return null;
     }
 
+    public dItem getItemInHand() {
+        if (isLivingEntity()) {
+            return new dItem(getLivingEntity().getEquipment().getItemInHand().clone());
+        }
+        return null;
+    }
+
 
     //////////////////
     //    OBJECT FETCHER
