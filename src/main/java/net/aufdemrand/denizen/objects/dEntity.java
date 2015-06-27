@@ -637,16 +637,18 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public String getName() {
-        if (isCitizensNPC())
+        if (isCitizensNPC()) {
             return getDenizenNPC().getCitizen().getName();
-        if (entity instanceof CraftFakePlayer)
+        }
+        if (entity instanceof CraftFakePlayer) {
             return ((CraftFakePlayer) entity).getFullName();
-        if (entity instanceof Player)
+        }
+        if (entity instanceof Player) {
             return ((Player) entity).getName();
-        if (isLivingEntity()) {
-            String customName = getLivingEntity().getCustomName();
-            if (customName != null)
-                return customName;
+        }
+        String customName = entity.getCustomName();
+        if (customName != null) {
+            return customName;
         }
         return entity_type.getName();
     }
@@ -1214,7 +1216,8 @@ public class dEntity implements dObject, Adjustable {
 
     @Override
     public boolean isUnique() {
-        return (isPlayer() || isCitizensNPC() || isSpawned());  // || isSaved()
+        return isPlayer() || isCitizensNPC() || isSpawned()
+                || (entity != null && rememberedEntities.containsKey(entity.getUniqueId()));  // || isSaved()
     }
 
     public boolean matchesEntity(String ent) {
@@ -1495,9 +1498,7 @@ public class dEntity implements dObject, Adjustable {
         // Otherwise, returns null.
         // -->
         if (attribute.startsWith("custom_name")) {
-            if (!isLivingEntity() || getLivingEntity().getCustomName() == null)
-                return null;
-            return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(1));
+            return new Element(entity.getCustomName()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1508,9 +1509,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns true if the entity's custom name is visible.
         // -->
         if (attribute.startsWith("custom_name.visible")) {
-            if (!isLivingEntity())
-                return null;
-            return new Element(getLivingEntity().isCustomNameVisible())
+            return new Element(entity.isCustomNameVisible())
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -1758,6 +1757,17 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <e@entity.on_fire>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns if the entity is currently ablaze or not.
+        // -->
+        if (attribute.startsWith("on_fire")) {
+            return new Element(entity.getFireTicks() > 0).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.get_leash_holder>
         // @returns dEntity
         // @group attributes
@@ -1829,16 +1839,35 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the entity has a specified effect.
         // If no effect is specified, returns whether the entity has any effect.
         // -->
-        // TODO: add list_effects ?
         if (attribute.startsWith("has_effect")) {
-            Boolean returnElement = false;
+            boolean returnElement = false;
             if (attribute.hasContext(1)) {
-                for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
-                    if (effect.getType().equals(PotionEffectType.getByName(attribute.getContext(1))))
+                PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
+                for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects()) {
+                    if (effect.getType().equals(effectType)) {
                         returnElement = true;
+                    }
+                }
             }
-            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
+            else if (!getLivingEntity().getActivePotionEffects().isEmpty()){
+                returnElement = true;
+            }
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.list_effects>
+        // @returns dList
+        // @group attribute
+        // Returns the list of active potion effects on the entity, in the format
+        // li@TYPE,AMPLIFIER,DURATION|...
+        // -->
+        if (attribute.startsWith("list_effects")) {
+            dList effects = new dList();
+            for (PotionEffect effect : getLivingEntity().getActivePotionEffects()) {
+                effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration() + "t");
+            }
+            return effects.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2164,6 +2193,9 @@ public class dEntity implements dObject, Adjustable {
         if (isGeneric()) {
             mechanisms.add(mechanism);
         }
+        else if (rememberedEntities.containsKey(entity.getUniqueId())) {
+            adjust(mechanism);
+        }
         else {
             dB.echoError("Cannot apply properties to an already-spawned entity!");
         }
@@ -2198,12 +2230,11 @@ public class dEntity implements dObject, Adjustable {
         // @input Element
         // @description
         // Sets the custom name of the entity.
-        // The entity must be living.
         // @tags
         // <e@entity.custom_name>
         // -->
         if (mechanism.matches("custom_name"))
-            getLivingEntity().setCustomName(value.asString());
+            entity.setCustomName(value.asString());
 
         // <--[mechanism]
         // @object dEntity
@@ -2211,12 +2242,11 @@ public class dEntity implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Sets whether the custom name is visible.
-        // The entity must be living.
         // @tags
         // <e@entity.custom_name.visible>
         // -->
         if (mechanism.matches("custom_name_visibility") && mechanism.requireBoolean())
-            getLivingEntity().setCustomNameVisible(value.asBoolean());
+            entity.setCustomNameVisible(value.asBoolean());
 
         // <--[mechanism]
         // @object dEntity

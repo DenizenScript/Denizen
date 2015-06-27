@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
@@ -102,12 +103,15 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onItemSpawns(ItemSpawnEvent event) {
+        Item entity = event.getEntity();
         location = new dLocation(event.getLocation());
-        item = new dItem(event.getEntity().getItemStack());
-        entity = new dEntity(event.getEntity());
+        item = new dItem(entity.getItemStack());
+        this.entity = new dEntity(entity);
         cancelled = event.isCancelled();
         this.event = event;
+        dEntity.rememberEntity(entity);
         fire();
+        dEntity.forgetEntity(entity);
         event.setCancelled(cancelled);
     }
 }
