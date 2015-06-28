@@ -1,20 +1,20 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 
 public class TraitCommand extends AbstractCommand {
 
-    private enum Toggle { TOGGLE, TRUE, FALSE, ON, OFF }
+    private enum Toggle {TOGGLE, TRUE, FALSE, ON, OFF}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -34,7 +34,7 @@ public class TraitCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("trait"))
             throw new InvalidArgumentsException("Missing trait argument!");
 
-        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
             throw new InvalidArgumentsException("This command requires a linked NPC!");
 
         scriptEntry.defaultObject("state", new Element("TOGGLE"));
@@ -46,12 +46,12 @@ public class TraitCommand extends AbstractCommand {
 
         Element toggle = scriptEntry.getElement("state");
         Element traitName = scriptEntry.getElement("trait");
-        NPC npc = ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen();
+        NPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen();
 
         dB.report(scriptEntry, getName(),
-                    traitName.debug() +
-                    toggle.debug() +
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().debug());
+                traitName.debug() +
+                        toggle.debug() +
+                        ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().debug());
 
         Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());
 

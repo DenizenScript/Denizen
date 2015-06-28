@@ -11,7 +11,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,12 +24,12 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player breaks block (in <notable cuboid>)
-    // player breaks <material> (in <notable cuboid>)
-    // player breaks block with <item> (in <notable cuboid>)
-    // player breaks <material> with <item> (in <notable cuboid>)
-    // player breaks block with <material> (in <notable cuboid>)
-    // player breaks <material> with <material> (in <notable cuboid>)
+    // player breaks block (in <area>)
+    // player breaks <material> (in <area>)
+    // player breaks block with <item> (in <area>)
+    // player breaks <material> with <item> (in <area>)
+    // player breaks block with <material> (in <area>)
+    // player breaks <material> with <material> (in <area>)
     //
     // @Cancellable true
     //
@@ -52,6 +51,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     public PlayerBreaksBlockScriptEvent() {
         instance = this;
     }
+
     public static PlayerBreaksBlockScriptEvent instance;
     public dLocation location;
     public dMaterial material;
@@ -149,7 +149,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

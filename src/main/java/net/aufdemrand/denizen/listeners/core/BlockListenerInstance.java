@@ -1,18 +1,13 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.objects.dMaterial;
-import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -22,9 +17,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class BlockListenerInstance extends AbstractListener implements Listener {
 
-    public static enum BlockType { BUILD, COLLECT, BREAK }
+    public static enum BlockType {BUILD, COLLECT, BREAK}
 
     //
     //The type of action
@@ -114,7 +113,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     @Override
     public String report() {
         return player.getName() + " currently has quest listener '" + id
-                + "' active and must " + type.name()+ " " + Arrays.toString(blocks.toArray())
+                + "' active and must " + type.name() + " " + Arrays.toString(blocks.toArray())
                 + "'(s). Current progress '" + blocks_so_far + "/" + required + "'.";
     }
 
@@ -171,7 +170,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 dMaterial mat = dMaterial.valueOf(item_value);
 
                 if (event.getBlock().getState().getType() == mat.getMaterial() &&
-                        event.getBlock().getState().getData().equals(mat.getMaterialData())){
+                        event.getBlock().getState().getData().equals(mat.getMaterialData())) {
                     blocks_so_far++;
                     dB.log(ChatColor.YELLOW + "// " + player.getName()
                             + " broke a(n) " + event.getBlock().getType().toString()
@@ -184,6 +183,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
 
     List<Integer> itemsCollected = new ArrayList<Integer>();
+
     @EventHandler
     public void listenCollect(PlayerPickupItemEvent event) {
         //Check if event references proper player.
@@ -216,7 +216,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 dMaterial mat = dMaterial.valueOf(item_value);
 
                 if (event.getItem().getItemStack().getType() == mat.getMaterial() &&
-                        event.getItem().getItemStack().getData().equals(mat.getMaterialData())){
+                        event.getItem().getItemStack().getData().equals(mat.getMaterialData())) {
                     //If the specific item has been collected before, dont count it
                     if (itemsCollected.contains(event.getItem().getEntityId()))
                         return;
@@ -262,7 +262,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
             for (String item_value : blocks) {
                 dMaterial mat = dMaterial.valueOf(item_value);
 
-                if (event.getBucket() == mat.getMaterial()){
+                if (event.getBucket() == mat.getMaterial()) {
                     blocks_so_far++;
                     dB.log(ChatColor.YELLOW + "// "
                             + player.getName() + " collected a "
@@ -275,6 +275,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     }
 
     List<Location> blocksPlaced = new ArrayList<Location>();
+
     @EventHandler
     public void listenPlace(BlockPlaceEvent event) {
         //Check if event references proper player.
@@ -307,7 +308,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 dMaterial mat = dMaterial.valueOf(item_value);
 
                 if (event.getBlock().getState().getType() == mat.getMaterial() &&
-                        event.getBlock().getState().getData().equals(mat.getMaterialData())){
+                        event.getBlock().getState().getData().equals(mat.getMaterialData())) {
                     blocks_so_far++;
                     dB.log(ChatColor.YELLOW + "// " + player.getName()
                             + " placed a(n) " + event.getBlock().getType().toString()
@@ -338,7 +339,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
         else if (event.getValue().equalsIgnoreCase("blocks")) {
             String blockList = "";
-            for (String curTar : blocks){
+            for (String curTar : blocks) {
                 blockList = blockList + curTar + ", ";
                 blockList = blockList.substring(0, blockList.length() - 1);
             }

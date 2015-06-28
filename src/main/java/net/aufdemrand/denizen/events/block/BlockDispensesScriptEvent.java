@@ -8,12 +8,11 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.util.Vector;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 
@@ -43,6 +42,7 @@ public class BlockDispensesScriptEvent extends ScriptEvent implements Listener {
     public BlockDispensesScriptEvent() {
         instance = this;
     }
+
     public static BlockDispensesScriptEvent instance;
     public dLocation location;
     public dItem item;

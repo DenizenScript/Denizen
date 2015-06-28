@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
-
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -102,7 +101,6 @@ public class SleepingTrait extends Trait {
     /**
      * If someone tries to break the poor
      * NPC's bed, we need to stop them!
-     *
      */
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {

@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -30,7 +30,7 @@ public class ItemPlantgrowth implements Property {
 
     public static ItemPlantgrowth getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemPlantgrowth((dItem)_item);
+        else return new ItemPlantgrowth((dItem) _item);
     }
 
 
@@ -59,13 +59,13 @@ public class ItemPlantgrowth implements Property {
         // -->
         if (attribute.startsWith("plant_growth")) {
             if (item.getItemStack().getData() instanceof Crops)
-                return new Element(((Crops)item.getItemStack().getData()).getState().name())
+                return new Element(((Crops) item.getItemStack().getData()).getState().name())
                         .getAttribute(attribute.fulfill(1));
             else if (item.getItemStack().getData() instanceof NetherWarts)
-                return new Element(((NetherWarts)item.getItemStack().getData()).getState().name())
+                return new Element(((NetherWarts) item.getItemStack().getData()).getState().name())
                         .getAttribute(attribute.fulfill(1));
             else if (item.getItemStack().getData() instanceof CocoaPlant)
-                return new Element(((CocoaPlant)item.getItemStack().getData()).getSize().name())
+                return new Element(((CocoaPlant) item.getItemStack().getData()).getSize().name())
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(item.getItemStack().getData().getData())
@@ -80,11 +80,11 @@ public class ItemPlantgrowth implements Property {
     public String getPropertyString() {
         String state;
         if (item.getItemStack().getData() instanceof Crops)
-            state = ((Crops)item.getItemStack().getData()).getState().name();
+            state = ((Crops) item.getItemStack().getData()).getState().name();
         else if (item.getItemStack().getData() instanceof NetherWarts)
-            state = ((NetherWarts)item.getItemStack().getData()).getState().name();
+            state = ((NetherWarts) item.getItemStack().getData()).getState().name();
         else if (item.getItemStack().getData() instanceof CocoaPlant)
-            state = ((CocoaPlant)item.getItemStack().getData()).getSize().name();
+            state = ((CocoaPlant) item.getItemStack().getData()).getSize().name();
         else
             state = String.valueOf(item.getItemStack().getData().getData());
 
@@ -117,11 +117,11 @@ public class ItemPlantgrowth implements Property {
         if (mechanism.matches("plant_growth")) {
             Element inputValue = new Element(mechanism.getValue().asString().toUpperCase());
             if (item.getItemStack().getData() instanceof Crops && inputValue.matchesEnum(CropState.values()))
-                ((Crops)item.getItemStack().getData()).setState(CropState.valueOf(mechanism.getValue().asString().toUpperCase()));
+                ((Crops) item.getItemStack().getData()).setState(CropState.valueOf(mechanism.getValue().asString().toUpperCase()));
             else if (item.getItemStack().getData() instanceof NetherWarts && inputValue.matchesEnum(NetherWartsState.values()))
-                ((NetherWarts)item.getItemStack().getData()).setState(NetherWartsState.valueOf(mechanism.getValue().asString().toUpperCase()));
+                ((NetherWarts) item.getItemStack().getData()).setState(NetherWartsState.valueOf(mechanism.getValue().asString().toUpperCase()));
             else if (item.getItemStack().getData() instanceof CocoaPlant && inputValue.matchesEnum(CocoaPlant.CocoaPlantSize.values()))
-                ((CocoaPlant)item.getItemStack().getData()).setSize(CocoaPlant.CocoaPlantSize.valueOf(mechanism.getValue().asString().toUpperCase()));
+                ((CocoaPlant) item.getItemStack().getData()).setSize(CocoaPlant.CocoaPlantSize.valueOf(mechanism.getValue().asString().toUpperCase()));
             else if (mechanism.requireInteger())
                 item.getItemStack().getData().setData((byte) mechanism.getValue().asInt());
         }

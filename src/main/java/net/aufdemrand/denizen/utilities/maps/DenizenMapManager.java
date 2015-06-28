@@ -124,7 +124,8 @@ public class DenizenMapManager {
             mapsConfig.set("DOWNLOADED." + entry.getValue().replace(".", "DOT"), entry.getKey());
         try {
             mapsConfig.save(mapsFile);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }
@@ -171,7 +172,8 @@ public class DenizenMapManager {
         else
             try {
                 return downloadImage(new URL(file));
-            } catch (MalformedURLException e) {
+            }
+            catch (MalformedURLException e) {
                 dB.echoError("URL is malformed: " + file);
                 return null;
             }
@@ -190,7 +192,7 @@ public class DenizenMapManager {
             URLConnection connection = url.openConnection();
             BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
             int lastDot = urlString.lastIndexOf('.');
-            String fileName = String.format("%0" + (6-String.valueOf(downloadCount).length()) + "d", downloadCount)
+            String fileName = String.format("%0" + (6 - String.valueOf(downloadCount).length()) + "d", downloadCount)
                     + (lastDot > 0 ? urlString.substring(lastDot) : "");
             File output = new File(imageDownloads, fileName);
             FileImageOutputStream out = new FileImageOutputStream(output);
@@ -204,7 +206,8 @@ public class DenizenMapManager {
             downloadedByUrl.put(urlString, fileName);
             downloadCount++;
             return output.getPath();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             dB.echoError(e);
         }
         return null;

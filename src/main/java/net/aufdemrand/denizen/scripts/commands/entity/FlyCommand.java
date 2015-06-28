@@ -1,30 +1,29 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.entity.Position;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.Conversion;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.Position;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FlyCommand extends AbstractCommand {
 
@@ -36,33 +35,33 @@ public class FlyCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cancel")
-                && arg.matches("cancel")) {
+                    && arg.matches("cancel")) {
 
                 scriptEntry.addObject("cancel", "");
             }
 
             else if (!scriptEntry.hasObject("destinations")
-                     && arg.matchesPrefix("destination", "destinations", "d")) {
+                    && arg.matchesPrefix("destination", "destinations", "d")) {
 
                 scriptEntry.addObject("destinations", arg.asType(dList.class).filter(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("controller")
-                     && arg.matchesArgumentType(dPlayer.class)
-                     && arg.matchesPrefix("controller", "c")) {
+                    && arg.matchesArgumentType(dPlayer.class)
+                    && arg.matchesPrefix("controller", "c")) {
 
-               // Check if it matches a dPlayer, but save it as a dEntity
-               scriptEntry.addObject("controller", (arg.asType(dEntity.class)));
+                // Check if it matches a dPlayer, but save it as a dEntity
+                scriptEntry.addObject("controller", (arg.asType(dEntity.class)));
             }
 
             else if (!scriptEntry.hasObject("origin")
-                     && arg.matchesArgumentType(dLocation.class)) {
+                    && arg.matchesArgumentType(dLocation.class)) {
 
                 scriptEntry.addObject("origin", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("entities")
-                     && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(dEntity.class)) {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
@@ -71,11 +70,11 @@ public class FlyCommand extends AbstractCommand {
                     && arg.matchesPrefix("rotationthreshold", "rotation", "r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
 
-               scriptEntry.addObject("rotationThreshold", arg.asElement());
-           }
+                scriptEntry.addObject("rotationThreshold", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("speed")
-                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }
@@ -85,8 +84,8 @@ public class FlyCommand extends AbstractCommand {
 
         // Use the NPC or player's locations as the location if one is not specified
         scriptEntry.defaultObject("origin",
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation() : null,
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getLocation() : null);
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation() : null,
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getLocation() : null);
 
         // Use a default speed and rotation threshold if they are not specified
         scriptEntry.defaultObject("speed", new Element(1.2));
@@ -107,8 +106,8 @@ public class FlyCommand extends AbstractCommand {
         dLocation origin = (dLocation) scriptEntry.getObject("origin");
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final List<dLocation> destinations = scriptEntry.hasObject("destinations") ?
-                                (List<dLocation>) scriptEntry.getObject("destinations") :
-                                new ArrayList<dLocation>();
+                (List<dLocation>) scriptEntry.getObject("destinations") :
+                new ArrayList<dLocation>();
 
         // Set freeflight to true only if there are no destinations
         final boolean freeflight = destinations.size() < 1;
@@ -167,12 +166,12 @@ public class FlyCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                             aH.debugObj("origin", origin) +
-                             aH.debugObj("entities", entities.toString()) +
-                             aH.debugObj("speed", speed) +
-                             aH.debugObj("rotation threshold degrees", rotationThreshold) +
-                             (freeflight ? aH.debugObj("controller", controller)
-                                         : aH.debugObj("destinations", destinations.toString())));
+                aH.debugObj("origin", origin) +
+                aH.debugObj("entities", entities.toString()) +
+                aH.debugObj("speed", speed) +
+                aH.debugObj("rotation threshold degrees", rotationThreshold) +
+                (freeflight ? aH.debugObj("controller", controller)
+                        : aH.debugObj("destinations", destinations.toString())));
 
         // Mount or dismount all of the entities
         if (!cancel) {
@@ -210,8 +209,8 @@ public class FlyCommand extends AbstractCommand {
 
                     if (!entity.isEmpty() && finalController.isInsideVehicle()) {
                         location = finalController.getEyeLocation()
-                                     .add(finalController.getEyeLocation().getDirection()
-                                     .multiply(30));
+                                .add(finalController.getEyeLocation().getDirection()
+                                        .multiply(30));
                     }
                     else {
                         flying = false;
@@ -252,7 +251,7 @@ public class FlyCommand extends AbstractCommand {
                     if (!freeflight) {
 
                         if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
-                            && Math.abs(v2.getZ() - v1.getZ()) < 2) {
+                                && Math.abs(v2.getZ() - v1.getZ()) < 2) {
 
                             destinations.remove(0);
                         }
@@ -266,6 +265,6 @@ public class FlyCommand extends AbstractCommand {
             }
         };
 
-           task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 3);
+        task.runTaskTimer(DenizenAPI.getCurrentInstance(), 0, 3);
     }
 }

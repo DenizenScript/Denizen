@@ -9,7 +9,6 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -40,6 +39,7 @@ public class PotionSplashScriptEvent extends ScriptEvent implements Listener {
     public PotionSplashScriptEvent() {
         instance = this;
     }
+
     public static PotionSplashScriptEvent instance;
     public dItem potion;
     public dList entities;
@@ -98,7 +98,7 @@ public class PotionSplashScriptEvent extends ScriptEvent implements Listener {
         potion = new dItem(event.getPotion().getItem());
         location = new dLocation(entity.getLocation());
         entities = new dList();
-        for (Entity e: event.getAffectedEntities()) {
+        for (Entity e : event.getAffectedEntities()) {
             entities.add(new dEntity(e).identify());
         }
         cancelled = event.isCancelled();

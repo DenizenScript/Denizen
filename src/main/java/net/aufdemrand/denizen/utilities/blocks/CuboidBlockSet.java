@@ -1,20 +1,21 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
 import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizen.utilities.jnbt.*;
-import org.bukkit.Bukkit;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.*;
+import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -73,17 +74,17 @@ public class CuboidBlockSet implements BlockSet {
     @Override
     public void setBlocksDelayed(final Location loc, final Runnable runme) {
         final IntHolder index = new IntHolder();
-        final long goal = (long)(x_width * y_length * z_height);
+        final long goal = (long) (x_width * y_length * z_height);
 
         new BukkitRunnable() {
             @Override
             public void run() {
                 long start = System.currentTimeMillis();
                 while (index.theInt < goal) {
-                    long z = index.theInt % ((long)(z_height));
-                    long y = ((index.theInt - z) % ((long)(y_length * z_height))) / ((long)z_height);
-                    long x = (index.theInt - y - z) / ((long)(y_length * z_height));
-                    blocks.get((int)index.theInt).setBlock(loc.clone().add(x, y, z).getBlock());
+                    long z = index.theInt % ((long) (z_height));
+                    long y = ((index.theInt - z) % ((long) (y_length * z_height))) / ((long) z_height);
+                    long x = (index.theInt - y - z) / ((long) (y_length * z_height));
+                    blocks.get((int) index.theInt).setBlock(loc.clone().add(x, y, z).getBlock());
                     index.theInt++;
                     if (System.currentTimeMillis() - start > 50) {
                         return;
@@ -120,7 +121,7 @@ public class CuboidBlockSet implements BlockSet {
         sb.append("cuboid:");
         sb.append(x_width).append(':').append(y_length).append(':').append(z_height).append(':');
         sb.append(center_x).append(':').append(center_y).append(':').append(center_z).append('\n');
-        for (BlockData block: blocks) {
+        for (BlockData block : blocks) {
             sb.append(block.toCompressedFormat()).append('\n');
         }
         return sb.toString();
@@ -153,7 +154,7 @@ public class CuboidBlockSet implements BlockSet {
         cbs.center_y = Double.parseDouble(details.get(5));
         cbs.center_z = Double.parseDouble(details.get(6));
         split.remove(0);
-        for (String read: split) {
+        for (String read : split) {
             if (read.length() > 0) {
                 cbs.blocks.add(BlockData.fromCompressedString(read));
             }
@@ -206,11 +207,11 @@ public class CuboidBlockSet implements BlockSet {
             }
             for (int index = 0; index < blockId.length; index++) {
                 if ((index >> 1) >= addId.length) {
-                    blocks[index] = (short)(blockId[index] & 0xFF);
+                    blocks[index] = (short) (blockId[index] & 0xFF);
                 }
                 else {
                     if ((index & 1) == 0) {
-                        blocks[index] = (short)(((addId[index >> 1] & 0x0F) << 8) + (blockId[index] & 0xFF));
+                        blocks[index] = (short) (((addId[index >> 1] & 0x0F) << 8) + (blockId[index] & 0xFF));
                     }
                     else {
                         blocks[index] = (short) (((addId[index >> 1] & 0xF0) << 4) + (blockId[index] & 0xFF));
@@ -219,7 +220,7 @@ public class CuboidBlockSet implements BlockSet {
             }
             List<Tag> tileEntities = getChildTag(schematic, "TileEntities", ListTag.class).getValue();
             Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<BlockVector, Map<String, Tag>>();
-            for (Tag tag: tileEntities) {
+            for (Tag tag : tileEntities) {
                 if (!(tag instanceof CompoundTag)) {
                     continue;
                 }

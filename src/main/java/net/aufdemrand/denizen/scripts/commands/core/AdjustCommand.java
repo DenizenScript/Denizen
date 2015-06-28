@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.tags.core.ServerTags;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
 public class AdjustCommand extends AbstractCommand {
@@ -51,14 +51,14 @@ public class AdjustCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(),
                 scriptEntry.getElement("object").debug()
-                    + mechanism.debug()
-                    + value.debug());
+                        + mechanism.debug()
+                        + value.debug());
 
         dList objects = dList.valueOf(scriptEntry.getElement("object").asString());
 
         dList result = new dList();
 
-        for (String object: objects) {
+        for (String object : objects) {
             if (object.equalsIgnoreCase("server")) {
                 ServerTags.adjustServer(new Mechanism(mechanism, value));
                 continue;
@@ -73,7 +73,7 @@ public class AdjustCommand extends AbstractCommand {
 
             dObject fetched;
 
-        // Check to make sure this is a valid constructor by checking the 'matches' static method
+            // Check to make sure this is a valid constructor by checking the 'matches' static method
             if (!ObjectFetcher.checkMatch(object_class, object))
                 throw new CommandExecutionException('\'' + object + "' is returning null.");
 

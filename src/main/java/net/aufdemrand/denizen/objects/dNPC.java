@@ -4,17 +4,17 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.examiners.PathBlockExaminer;
 import net.aufdemrand.denizen.npc.traits.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.NPCTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
@@ -153,7 +153,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     public Entity getEntity() {
         try {
             return getCitizen().getEntity();
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC entity. " +
                     "Has this NPC been removed?");
             return null;
@@ -168,7 +169,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                 dB.log("Uh oh! Tried to get the living entity of a non-living NPC!");
                 return null;
             }
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC livingEntity. " +
                     "Has this NPC been removed?");
             return null;
@@ -179,7 +181,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     public dEntity getDenizenEntity() {
         try {
             return new dEntity(getCitizen().getEntity());
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC dEntity. " +
                     "Has this NPC been removed?");
             return null;
@@ -325,17 +328,16 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
     public String action(String actionName, dPlayer player, Map<String, dObject> context) {
-        if (getCitizen() != null)
-        {
+        if (getCitizen() != null) {
             if (getCitizen().hasTrait(AssignmentTrait.class))
                 // Return the result from the ActionHandler
                 return DenizenAPI.getCurrentInstance().getNPCRegistry()
                         .getActionHandler().doAction(
-                        actionName,
-                        this,
-                        player,
-                        getAssignmentTrait().getAssignment(),
-                        context);
+                                actionName,
+                                this,
+                                player,
+                                getAssignmentTrait().getAssignment(),
+                                context);
         }
 
         return "none";
@@ -548,7 +550,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @description
         // returns the specified flag from the NPC.
         // -->
-         if (attribute.startsWith("flag")) {
+        if (attribute.startsWith("flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
             else return null;
@@ -561,10 +563,10 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             if (FlagManager.npcHasFlag(this, flag_name)) {
                 FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
                         .getNPCFlag(getId(), flag_name);
-                return new dList(flag.toString(),true, flag.values())
-                .getAttribute(attribute.fulfill(1));
+                return new dList(flag.toString(), true, flag.values())
+                        .getAttribute(attribute.fulfill(1));
             }
-             return new Element(identify()).getAttribute(attribute);
+            return new Element(identify()).getAttribute(attribute);
         }
 
         // <--[tag]
@@ -586,7 +588,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                         for (String flag : allFlags)
                             if (pattern.matcher(flag).matches())
                                 searchFlags.add(flag);
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         dB.echoError(e);
                     }
                 }
@@ -610,9 +613,9 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (attribute.startsWith("constant")) {
             if (attribute.hasContext(1)) {
                 if (getCitizen().hasTrait(ConstantsTrait.class)
-                    && getCitizen().getTrait(ConstantsTrait.class).getConstant(attribute.getContext(1)) != null) {
+                        && getCitizen().getTrait(ConstantsTrait.class).getConstant(attribute.getContext(1)) != null) {
                     return new Element(getCitizen().getTrait(ConstantsTrait.class)
-                    .getConstant(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
+                            .getConstant(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
                 }
                 else {
                     return null;
@@ -644,7 +647,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (attribute.startsWith("get_pose")) {
             if (attribute.hasContext(1)) {
                 Pose pose = getCitizen().getTrait(Poses.class).getPose(attribute.getContext(1));
-                return new dLocation(org.bukkit.Bukkit.getWorlds().get(0), 0, 0 ,0, pose.getYaw(), pose.getPitch())
+                return new dLocation(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch())
                         .getAttribute(attribute.fulfill(1));
             }
             else
@@ -811,7 +814,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             }
             else {
                 return new dScript(citizen.getTrait(AssignmentTrait.class).getAssignment().getName())
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -841,8 +844,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // returns the maximum pathfinding range.
         // -->
         if (attribute.startsWith("navigator.range"))
-        return new Element(getNavigator().getLocalParameters().range())
-                .getAttribute(attribute.fulfill(2));
+            return new Element(getNavigator().getLocalParameters().range())
+                    .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
         // @attribute <n@npc.navigator.attack_range>
@@ -1047,7 +1050,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // <n@npc.name>
         // -->
         if (mechanism.matches("set_name")) {
-            getCitizen().setName(value.asString().length() > 16 ? value.asString().substring(0, 16): value.asString());
+            getCitizen().setName(value.asString().length() > 16 ? value.asString().substring(0, 16) : value.asString());
         }
 
         // <--[mechanism]
@@ -1096,7 +1099,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (mechanism.matches("item_type") && mechanism.requireObject(dItem.class)) {
             dItem item = mechanism.getValue().asType(dItem.class);
             Material mat = item.getMaterial().getMaterial();
-            int data = item.getMaterial().getData((byte)0);
+            int data = item.getMaterial().getData((byte) 0);
             switch (getEntity().getType()) {
                 case DROPPED_ITEM:
                     ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
@@ -1225,11 +1228,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                 getNavigator().getLocalParameters().clearExaminers();
                 getNavigator().getLocalParameters().examiner(new MinecraftBlockExaminer());
 
-            } else if (mechanism.getValue().toString().equalsIgnoreCase("fly")) {
+            }
+            else if (mechanism.getValue().toString().equalsIgnoreCase("fly")) {
                 getNavigator().getLocalParameters().clearExaminers();
                 getNavigator().getLocalParameters().examiner(new FlyingBlockExaminer());
 
-            } else if (mechanism.getValue().toString().equalsIgnoreCase("path")) {
+            }
+            else if (mechanism.getValue().toString().equalsIgnoreCase("path")) {
                 getNavigator().getLocalParameters().clearExaminers();
                 getNavigator().getLocalParameters().examiner(new PathBlockExaminer(this, null));
             }

@@ -13,11 +13,12 @@ public class LeatherColorer {
 
         if (dColor.matches(colorArg)) {
 
-            try{
+            try {
                 LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemStack().getItemMeta();
                 meta.setColor(dColor.valueOf(colorArg).getColor());
                 item.getItemStack().setItemMeta(meta);
-            } catch(Exception e) {
+            }
+            catch (Exception e) {
                 dB.echoError("Unable to color '" + item.identify() + "'.");
             }
         }

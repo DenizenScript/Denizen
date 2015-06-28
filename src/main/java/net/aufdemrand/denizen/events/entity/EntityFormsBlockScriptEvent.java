@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,14 +17,14 @@ import org.bukkit.event.block.EntityBlockFormEvent;
 
 import java.util.HashMap;
 
-public class EntityFormsBlock extends ScriptEvent implements Listener {
+public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity forms block (in <notable cuboid>)
-    // entity forms <block> (in <notable cuboid>)
-    // <entity> forms block (in <notable cuboid>)
-    // <entity> forms <block> (in <notable cuboid>)
+    // entity forms block (in <area>)
+    // entity forms <block> (in <area>)
+    // <entity> forms block (in <area>)
+    // <entity> forms <block> (in <area>)
     //
     // @Cancellable true
     //
@@ -38,10 +38,11 @@ public class EntityFormsBlock extends ScriptEvent implements Listener {
     //
     // -->
 
-    public EntityFormsBlock() {
+    public EntityFormsBlockScriptEvent() {
         instance = this;
     }
-    public static EntityFormsBlock instance;
+
+    public static EntityFormsBlockScriptEvent instance;
     public dMaterial material;
     public dLocation location;
     public dEntity entity;
@@ -64,29 +65,15 @@ public class EntityFormsBlock extends ScriptEvent implements Listener {
         if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
+
         String mat = CoreUtilities.getXthArg(2, lower);
         if (!mat.equals("block")
                 && !mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier())) {
             return false;
         }
-        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
-            String it = CoreUtilities.getXthArg(4, lower);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
 
         return true;
@@ -114,8 +101,8 @@ public class EntityFormsBlock extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override

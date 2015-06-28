@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * ReflectionUtil v1.1
- *
+ * <p/>
  * You are welcome to use it, modify it and redistribute it under the condition to not claim this class as your own
  *
  * @author DarkBlade12

@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -23,7 +23,7 @@ public class EntityInfected implements Property {
 
     public static EntityInfected getFrom(dObject entity) {
         if (!describes(entity)) return null;
-        else return new EntityInfected((dEntity)entity);
+        else return new EntityInfected((dEntity) entity);
     }
 
 

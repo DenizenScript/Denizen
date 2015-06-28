@@ -1,12 +1,15 @@
 package net.aufdemrand.denizen.objects.properties.bukkit;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 
 public class BukkitScriptProperties implements Property {
@@ -17,7 +20,7 @@ public class BukkitScriptProperties implements Property {
 
     public static BukkitScriptProperties getFrom(dObject script) {
         if (!describes(script)) return null;
-        else return new BukkitScriptProperties((dScript)script);
+        else return new BukkitScriptProperties((dScript) script);
     }
 
 
@@ -42,7 +45,7 @@ public class BukkitScriptProperties implements Property {
         // -->
         if (attribute.startsWith("cooled_down")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer());
+                    : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (player != null && player.isValid())
                 return new Element(CooldownCommand.checkCooldown(player, script.getContainer().getName()))
                         .getAttribute(attribute.fulfill(1));
@@ -58,10 +61,10 @@ public class BukkitScriptProperties implements Property {
         // -->
         if (attribute.startsWith("requirements.check")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer());
+                    : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             if (attribute.hasContext(2))
-                return new Element(((InteractScriptContainer)script.getContainer()).checkRequirements(player,
-                        ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC(),
+                return new Element(((InteractScriptContainer) script.getContainer()).checkRequirements(player,
+                        ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC(),
                         attribute.getContext(2)))
                         .getAttribute(attribute.fulfill(2));
         }
@@ -74,7 +77,7 @@ public class BukkitScriptProperties implements Property {
         // -->
         if (attribute.startsWith("cooldown")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer());
+                    : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
             return CooldownCommand.getCooldownDuration(player, script.getName())
                     .getAttribute(attribute.fulfill(1));
 
@@ -90,7 +93,7 @@ public class BukkitScriptProperties implements Property {
         // -->
         if (attribute.startsWith("step")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer());
+                    : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
 
             if (player != null && player.isValid())
                 return new Element(InteractScriptHelper.getCurrentStep(player, script.getContainer().getName()))

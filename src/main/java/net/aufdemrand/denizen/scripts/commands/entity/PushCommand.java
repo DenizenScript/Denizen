@@ -1,12 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
@@ -15,7 +11,12 @@ import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -30,7 +31,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("origin")
-                && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
+                    && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
 
                 if (arg.matchesArgumentType(dEntity.class))
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
@@ -41,34 +42,34 @@ public class PushCommand extends AbstractCommand implements Holdable {
             }
 
             else if (!scriptEntry.hasObject("destination")
-                     && arg.matchesArgumentType(dLocation.class)
-                     && arg.matchesPrefix("destination", "d")) {
+                    && arg.matchesArgumentType(dLocation.class)
+                    && arg.matchesPrefix("destination", "d")) {
 
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("duration")
-                     && arg.matchesArgumentType(Duration.class)
-                     && arg.matchesPrefix("duration", "d")) {
+                    && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesPrefix("duration", "d")) {
 
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
             else if (!scriptEntry.hasObject("speed")
-                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                     && arg.matchesPrefix("speed", "s")) {
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("speed", "s")) {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("script")
-                     && arg.matchesArgumentType(dScript.class)) {
+                    && arg.matchesArgumentType(dScript.class)) {
 
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
 
             else if (!scriptEntry.hasObject("entities")
-                     && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(dEntity.class)) {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
@@ -84,12 +85,12 @@ public class PushCommand extends AbstractCommand implements Holdable {
             }
 
             else if (!scriptEntry.hasObject("precision")
-                && arg.matchesPrefix("precision")) {
+                    && arg.matchesPrefix("precision")) {
                 scriptEntry.addObject("precision", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("no_damage")
-                && arg.matches("no_damage")) {
+                    && arg.matches("no_damage")) {
                 scriptEntry.addObject("no_damage", new Element(true));
             }
 
@@ -101,8 +102,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
         if (!scriptEntry.hasObject("originLocation")) {
 
             scriptEntry.defaultObject("originEntity",
-                    ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity() : null,
-                    ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
+                    ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity() : null,
+                    ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
         }
 
         scriptEntry.defaultObject("speed", new Element(1.5));
@@ -125,21 +126,21 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         dEntity originEntity = (dEntity) scriptEntry.getObject("originEntity");
         dLocation originLocation = scriptEntry.hasObject("originLocation") ?
-                                   (dLocation) scriptEntry.getObject("originLocation") :
-                                   new dLocation(originEntity.getEyeLocation()
-                                               .add(originEntity.getEyeLocation().getDirection())
-                                               .subtract(0, 0.4, 0));
+                (dLocation) scriptEntry.getObject("originLocation") :
+                new dLocation(originEntity.getEyeLocation()
+                        .add(originEntity.getEyeLocation().getDirection())
+                        .subtract(0, 0.4, 0));
         boolean no_rotate = scriptEntry.hasObject("no_rotate") && scriptEntry.getElement("no_rotate").asBoolean();
         final boolean no_damage = scriptEntry.hasObject("no_damage") && scriptEntry.getElement("no_damage").asBoolean();
 
         // If there is no destination set, but there is a shooter, get a point
         // in front of the shooter and set it as the destination
         final dLocation destination = scriptEntry.hasObject("destination") ?
-                                      (dLocation) scriptEntry.getObject("destination") :
-                                      (originEntity != null ? new dLocation(originEntity.getEyeLocation()
-                                                               .add(originEntity.getEyeLocation().getDirection()
-                                                               .multiply(30)))
-                                                            : null);
+                (dLocation) scriptEntry.getObject("destination") :
+                (originEntity != null ? new dLocation(originEntity.getEyeLocation()
+                        .add(originEntity.getEyeLocation().getDirection()
+                                .multiply(30)))
+                        : null);
 
         // TODO: Should this be checked in argument parsing?
         if (destination == null) {
@@ -160,15 +161,15 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         // Report to dB
         dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
-                             aH.debugObj("entities", entities.toString()) +
-                             aH.debugObj("destination", destination) +
-                             aH.debugObj("speed", speed) +
-                             aH.debugObj("max ticks", maxTicks) +
-                             (script != null ? script.debug() : "") +
-                             force_along.debug() +
-                             precision.debug() +
-                             (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
-                             (no_damage ? aH.debugObj("no_damage", "true") : ""));
+                aH.debugObj("entities", entities.toString()) +
+                aH.debugObj("destination", destination) +
+                aH.debugObj("speed", speed) +
+                aH.debugObj("max ticks", maxTicks) +
+                (script != null ? script.debug() : "") +
+                force_along.debug() +
+                precision.debug() +
+                (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
+                (no_damage ? aH.debugObj("no_damage", "true") : ""));
 
         final boolean forceAlong = force_along.asBoolean();
 
@@ -214,6 +215,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
         BukkitRunnable task = new BukkitRunnable() {
             int runs = 0;
             dLocation lastLocation;
+
             @Override
             public void run() {
 
@@ -236,7 +238,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
                     // Check if the entity is close to its destination
                     if (Math.abs(v2.getX() - v1.getX()) < 1.5f && Math.abs(v2.getY() - v1.getY()) < 1.5f
-                        && Math.abs(v2.getZ() - v1.getZ()) < 1.5f) {
+                            && Math.abs(v2.getZ() - v1.getZ()) < 1.5f) {
                         runs = maxTicks;
                     }
 

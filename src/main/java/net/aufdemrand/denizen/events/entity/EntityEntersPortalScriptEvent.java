@@ -9,7 +9,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,6 +38,7 @@ public class EntityEntersPortalScriptEvent extends ScriptEvent implements Listen
     public EntityEntersPortalScriptEvent() {
         instance = this;
     }
+
     public static EntityEntersPortalScriptEvent instance;
     public dEntity entity;
     public dLocation location;
@@ -56,7 +56,7 @@ public class EntityEntersPortalScriptEvent extends ScriptEvent implements Listen
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String target = CoreUtilities.getXthArg(0,lower);
+        String target = CoreUtilities.getXthArg(0, lower);
         List<String> types = Arrays.asList("entity", "npc");
         return types.contains(target) || entity.matchesEntity(target);
     }
@@ -83,8 +83,8 @@ public class EntityEntersPortalScriptEvent extends ScriptEvent implements Listen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override

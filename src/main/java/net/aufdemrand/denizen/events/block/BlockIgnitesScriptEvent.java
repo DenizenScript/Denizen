@@ -9,7 +9,6 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,6 +39,7 @@ public class BlockIgnitesScriptEvent extends ScriptEvent implements Listener {
     public BlockIgnitesScriptEvent() {
         instance = this;
     }
+
     public static BlockIgnitesScriptEvent instance;
     public dLocation location;
     public dMaterial material;
@@ -60,7 +60,7 @@ public class BlockIgnitesScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         return lower.equals("block ignites")
-                || CoreUtilities.getXthArg(0,lower).equals(material.identifySimpleNoIdentifier());
+                || CoreUtilities.getXthArg(0, lower).equals(material.identifySimpleNoIdentifier());
     }
 
     @Override
@@ -102,9 +102,11 @@ public class BlockIgnitesScriptEvent extends ScriptEvent implements Listener {
     public void onBlockIgnites(BlockIgniteEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        entity = null;
         if (event.getIgnitingEntity() != null) {
             entity = new dEntity(event.getIgnitingEntity());
         }
+        origin_location = null;
         if (event.getIgnitingBlock() != null) {
             origin_location = new dLocation(event.getIgnitingBlock().getLocation());
         }

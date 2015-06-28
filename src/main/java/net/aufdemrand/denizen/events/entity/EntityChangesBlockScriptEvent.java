@@ -1,10 +1,13 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -19,15 +22,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityChangesBlockScriptEvent extends ScriptEvent implements Listener {
+public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // entity changes block
-    // entity changes block (into <material>) (in <notable cuboid>)
-    // entity changes <material> (into <material>) (in <notable cuboid>)
-    // <entity> changes block (into <material>) (in <notable cuboid>)
-    // <entity> changes <material> (into <material>) (in <notable cuboid>)
+    // entity changes block (into <material>) (in <area>)
+    // entity changes <material> (into <material>) (in <area>)
+    // <entity> changes block (into <material>) (in <area>)
+    // <entity> changes <material> (into <material>) (in <area>)
     //
     // @Cancellable true
     //
@@ -44,6 +47,7 @@ public class EntityChangesBlockScriptEvent extends ScriptEvent implements Listen
     public EntityChangesBlockScriptEvent() {
         instance = this;
     }
+
     public static EntityChangesBlockScriptEvent instance;
     public dEntity entity;
     public dLocation location;
@@ -67,42 +71,31 @@ public class EntityChangesBlockScriptEvent extends ScriptEvent implements Listen
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
-        if (!entity.matchesEntity(entName)){
+        if (!entity.matchesEntity(entName)) {
             return false;
         }
 
-        String notable = null;
-        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
-            notable = CoreUtilities.getXthArg(4, lower);
+        String mat = CoreUtilities.getXthArg(1, lower);
+        if (!mat.equals("block")
+                && !mat.equals(old_material.identifySimpleNoIdentifier()) && !mat.equals(old_material.identifyFullNoIdentifier())) {
+            return false;
         }
-        else if (CoreUtilities.xthArgEquals(5, lower, "in")) {
-            notable = CoreUtilities.getXthArg(6, lower);
-        }
-        if (notable != null) {
-            if (dCuboid.matches(notable)) {
-                dCuboid cuboid = dCuboid.valueOf(notable);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
+
+        if (CoreUtilities.xthArgEquals(3, lower, "into")) {
+            mat = CoreUtilities.getXthArg(4, lower);
+            if (mat.length() == 0) {
+                dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
+                return false;
             }
-            else if (dEllipsoid.matches(notable)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(notable);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
+            else if (!mat.equals("block") && !mat.equals(new_material.identifySimpleNoIdentifier())) {
                 return false;
             }
         }
 
-        if (CoreUtilities.xthArgEquals(3, lower, "into")) {
-            String mat = CoreUtilities.getXthArg(4, lower);
-            if (!mat.equals("block") && !mat.equals(new_material.identifyFullNoIdentifier())) {
-                return false;
-            }
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
+
         return true;
     }
 
@@ -128,8 +121,8 @@ public class EntityChangesBlockScriptEvent extends ScriptEvent implements Listen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -150,7 +143,7 @@ public class EntityChangesBlockScriptEvent extends ScriptEvent implements Listen
         old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
         new_material = dMaterial.getMaterialFrom(event.getTo());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

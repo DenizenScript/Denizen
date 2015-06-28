@@ -5,15 +5,9 @@ import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import net.aufdemrand.denizen.scripts.containers.core.VersionScriptContainer;
-import net.aufdemrand.denizen.utilities.ScriptVersionChecker;
-import net.aufdemrand.denizencore.DenizenCore;
-import net.aufdemrand.denizencore.events.core.ReloadScriptsScriptEvent;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.ScriptVersionChecker;
 import net.aufdemrand.denizen.utilities.command.Command;
 import net.aufdemrand.denizen.utilities.command.CommandContext;
 import net.aufdemrand.denizen.utilities.command.Paginator;
@@ -21,6 +15,9 @@ import net.aufdemrand.denizen.utilities.command.exceptions.CommandException;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.DebugSubmit;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.DenizenCore;
+import net.aufdemrand.denizencore.events.core.ReloadScriptsScriptEvent;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import org.bukkit.ChatColor;
@@ -28,7 +25,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 
 public class DenizenCommandHandler {
@@ -86,8 +85,8 @@ public class DenizenCommandHandler {
     //
     // -->
     @Command(
-            aliases = { "denizen" }, usage = "submit",
-            desc = "Submits recorded logs triggered by /denizen debug -r", modifiers = { "submit" },
+            aliases = {"denizen"}, usage = "submit",
+            desc = "Submits recorded logs triggered by /denizen debug -r", modifiers = {"submit"},
             min = 1, max = 3, permission = "denizen.submit")
     public void submit(CommandContext args, final CommandSender sender) throws CommandException {
         if (!dB.record) {
@@ -158,8 +157,8 @@ public class DenizenCommandHandler {
      * DENIZEN DEBUG
      */
     @Command(
-            aliases = { "denizen" }, usage = "debug",
-            desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db", "dbug" },
+            aliases = {"denizen"}, usage = "debug",
+            desc = "Toggles debug mode for Denizen.", modifiers = {"debug", "de", "db", "dbug"},
             min = 1, max = 5, permission = "denizen.debug", flags = "scebrxov")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
@@ -203,7 +202,7 @@ public class DenizenCommandHandler {
             if (!dB.showDebug) dB.toggle();
             net.aufdemrand.denizencore.utilities.debugging.dB.verbose =
                     !net.aufdemrand.denizencore.utilities.debugging.dB.verbose;
-            Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.verbose ? "Denizen dBugger is now verbose.":
+            Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.verbose ? "Denizen dBugger is now verbose." :
                     "Denizen dBugger verbosity disabled."));
         }
         if (args.hasFlag('x')) {
@@ -222,7 +221,8 @@ public class DenizenCommandHandler {
                 dB.filter.add(filter);
             Messaging.sendInfo(sender, "Denizen dBugger filter now: " + dB.filter.toString());
 
-        } else if (args.getFlags().isEmpty()) {
+        }
+        else if (args.getFlags().isEmpty()) {
             dB.toggle();
             Messaging.sendInfo(sender, "Denizen dBugger is now: "
                     + (dB.showDebug ? "<a>ENABLED" : "<c>DISABLED"));
@@ -234,8 +234,8 @@ public class DenizenCommandHandler {
      * DENIZEN DO_NOTHING
      */
     @Command(
-            aliases = { "denizen" }, usage = "do_nothing",
-            desc = "Does nothing, for better server command handling", modifiers = { "do_nothing" },
+            aliases = {"denizen"}, usage = "do_nothing",
+            desc = "Does nothing, for better server command handling", modifiers = {"do_nothing"},
             min = 1, max = 3, permission = "denizen.basic")
     public void do_nothing(CommandContext args, CommandSender sender) throws CommandException {
         // Do nothing
@@ -245,14 +245,14 @@ public class DenizenCommandHandler {
      * DENIZEN VERSION
      */
     @Command(
-            aliases = { "denizen" }, usage = "version",
-            desc = "Shows the currently loaded version of Denizen.", modifiers = { "version"},
+            aliases = {"denizen"}, usage = "version",
+            desc = "Shows the currently loaded version of Denizen.", modifiers = {"version"},
             min = 1, max = 3, permission = "denizen.basic")
     public void version(CommandContext args, CommandSender sender) throws CommandException {
         Messaging.sendInfo(sender, "<2>DENIZEN<7>: scriptable Minecraft!"); // TODO: "It's Scriptable!"?
         Messaging.send(sender, "");
         Messaging.send(sender, "<7>by: <f>aufdemrand and mcmonkey, with help from many skilled contributors!");
-        Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag + "<7>, core version: <f>" + DenizenCore.VERSION );
+        Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag + "<7>, core version: <f>" + DenizenCore.VERSION);
     }
 
 
@@ -260,12 +260,12 @@ public class DenizenCommandHandler {
      * DENIZEN SCRIPTCHECK
      */
     @Command(
-            aliases = { "denizen" }, usage = "scriptversions",
-            desc = "Shows the currently loaded version of your scripts and checks them against the script repo.", modifiers = { "scriptversions"},
+            aliases = {"denizen"}, usage = "scriptversions",
+            desc = "Shows the currently loaded version of your scripts and checks them against the script repo.", modifiers = {"scriptversions"},
             min = 1, max = 3, permission = "denizen.basic")
     public void scriptcheck(CommandContext args, CommandSender sender) throws CommandException {
         sender.sendMessage(ChatColor.GREEN + "Checking " + VersionScriptContainer.scripts.size() + " script(s)!");
-        for (VersionScriptContainer cont: VersionScriptContainer.scripts) {
+        for (VersionScriptContainer cont : VersionScriptContainer.scripts) {
             ScriptVersionChecker svc = new ScriptVersionChecker(cont);
             svc.runme(sender);
         }
@@ -276,8 +276,8 @@ public class DenizenCommandHandler {
      * DENIZEN SAVE
      */
     @Command(
-            aliases = { "denizen" }, usage = "save",
-            desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "save" },
+            aliases = {"denizen"}, usage = "save",
+            desc = "Saves the current state of Denizen/saves.yml.", modifiers = {"save"},
             min = 1, max = 3, permission = "denizen.basic", flags = "s")
     public void save(CommandContext args, CommandSender sender) throws CommandException {
 
@@ -292,8 +292,8 @@ public class DenizenCommandHandler {
      * DENIZEN LISTENER
      */
     @Command(
-            aliases = { "denizen" }, usage = "listener (--player) --id listener_id --report|cancel|finish",
-            desc = "Checks/cancels/finishes listeners in progress.", modifiers = { "listener" },
+            aliases = {"denizen"}, usage = "listener (--player) --id listener_id --report|cancel|finish",
+            desc = "Checks/cancels/finishes listeners in progress.", modifiers = {"listener"},
             min = 1, max = 3, permission = "denizen.basic", flags = "s")
     public void listener(CommandContext args, CommandSender sender) throws CommandException {
 
@@ -305,7 +305,7 @@ public class DenizenCommandHandler {
 
         if (player == null) throw new CommandException("Specified player not online or not found!");
 
-        Map<String,AbstractListener> listeners = denizen.getListenerRegistry().getListenersFor(player);
+        Map<String, AbstractListener> listeners = denizen.getListenerRegistry().getListenersFor(player);
 
         if (listeners == null || listeners.isEmpty()) {
             Messaging.send(sender, player.getName() + " has no active listeners.");
@@ -318,7 +318,8 @@ public class DenizenCommandHandler {
                     Messaging.send(sender, quest.report());
             return;
 
-        } else if (args.hasValueFlag("cancel")) {
+        }
+        else if (args.hasValueFlag("cancel")) {
             for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
                 if (quest.getListenerId().equalsIgnoreCase(args.getFlag("cancel"))) {
 
@@ -327,7 +328,8 @@ public class DenizenCommandHandler {
                 }
             return;
 
-        } else if (args.hasValueFlag("finish")) {
+        }
+        else if (args.hasValueFlag("finish")) {
             for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
                 if (quest.getListenerId().equalsIgnoreCase(args.getFlag("finish"))) {
                     Messaging.send(sender, "Force-finishing '" + quest.getListenerId() + "' for " + player.getName() + ".");
@@ -335,7 +337,8 @@ public class DenizenCommandHandler {
                 }
             return;
 
-        } else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
+        }
+        else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
             Messaging.send(sender, "");
             Messaging.send(sender, "<f>Use '--report|cancel|finish id' to modify/view a specific quest listener.");
             Messaging.send(sender, "<b>Example: /denizen listener --report \"Journey 1\"");
@@ -360,9 +363,9 @@ public class DenizenCommandHandler {
     /*
      * DENIZEN RELOAD
      */
-    @Command ( aliases = { "denizen" }, usage = "reload (saves|notables|config|scripts|externals) (-a)",
-            desc = "Reloads various Denizen files from disk to memory.", modifiers = { "reload" },
-            min = 1, max = 3, permission = "denizen.basic", flags = "a" )
+    @Command(aliases = {"denizen"}, usage = "reload (saves|notables|config|scripts|externals) (-a)",
+            desc = "Reloads various Denizen files from disk to memory.", modifiers = {"reload"},
+            min = 1, max = 3, permission = "denizen.basic", flags = "a")
     public void reload(CommandContext args, CommandSender sender) throws CommandException {
 
         // Get reload type
@@ -381,25 +384,28 @@ public class DenizenCommandHandler {
             ReloadScriptsScriptEvent.instance.all = true;
             ReloadScriptsScriptEvent.instance.hadError = ScriptHelper.hadError();
             ReloadScriptsScriptEvent.instance.sender = sender.getName();
-            ReloadScriptsScriptEvent.instance.data = new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender): null, null);
+            ReloadScriptsScriptEvent.instance.data = new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender) : null, null);
             ReloadScriptsScriptEvent.instance.fire();
             return;
         }
         // Reload a specific item
         if (args.length() > 2) {
-            if  (args.getString(1).equalsIgnoreCase("saves")) {
+            if (args.getString(1).equalsIgnoreCase("saves")) {
                 denizen.reloadSaves();
                 Messaging.send(sender, "Denizen/saves.yml reloaded from disk to memory.");
                 return;
-            } else if (args.getString(1).equalsIgnoreCase("notables")) {
+            }
+            else if (args.getString(1).equalsIgnoreCase("notables")) {
                 denizen.notableManager().reloadNotables();
                 Messaging.send(sender, "Denizen/notables.yml reloaded from disk to memory.");
                 return;
-            } else if(args.getString(1).equalsIgnoreCase("config")) {
+            }
+            else if (args.getString(1).equalsIgnoreCase("config")) {
                 denizen.reloadConfig();
                 Messaging.send(sender, "Denizen/config.yml reloaded from disk to memory.");
                 return;
-            } else if (args.getString(1).equalsIgnoreCase("scripts")) {
+            }
+            else if (args.getString(1).equalsIgnoreCase("scripts")) {
                 DenizenCore.reloadScripts();
                 Messaging.send(sender, "Denizen/scripts/... reloaded from disk to memory.");
                 if (ScriptHelper.hadError()) {
@@ -410,7 +416,7 @@ public class DenizenCommandHandler {
                 ReloadScriptsScriptEvent.instance.all = false;
                 ReloadScriptsScriptEvent.instance.hadError = ScriptHelper.hadError();
                 ReloadScriptsScriptEvent.instance.sender = sender.getName();
-                ReloadScriptsScriptEvent.instance.data = new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender): null, null);
+                ReloadScriptsScriptEvent.instance.data = new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender) : null, null);
                 ReloadScriptsScriptEvent.instance.fire();
                 return;
             }
@@ -434,13 +440,15 @@ public class DenizenCommandHandler {
      * DENIZEN SCRIPTS
      */
     @Command(
-            aliases = { "denizen" }, usage = "scripts (--type assignment|task|...) (--filter string)",
-            desc = "Lists currently loaded dScripts.", modifiers = { "scripts" },
+            aliases = {"denizen"}, usage = "scripts (--type assignment|task|...) (--filter string)",
+            desc = "Lists currently loaded dScripts.", modifiers = {"scripts"},
             min = 1, max = 4, permission = "denizen.basic")
     public void scripts(CommandContext args, CommandSender sender) throws CommandException {
         // Fill arguments
-        String type = null;   if (args.hasValueFlag("type"))   type = args.getFlag("type");
-        String filter = null; if (args.hasValueFlag("filter")) filter = args.getFlag("filter");
+        String type = null;
+        if (args.hasValueFlag("type")) type = args.getFlag("type");
+        String filter = null;
+        if (args.hasValueFlag("filter")) filter = args.getFlag("filter");
         // Get script names from the scripts.yml in memory
         Set<String> scripts = ScriptRegistry._getScriptNames();
         // New Paginator to display script names
@@ -456,12 +464,15 @@ public class DenizenCommandHandler {
                         if (script.contains(filter.toUpperCase()))
                             paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
                     }
-                    else paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
+                    else
+                        paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
                 // If a --filter has been specified...
-            } else if (filter != null) {
+            }
+            else if (filter != null) {
                 if (script.contains(filter.toUpperCase()))
                     paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
-            } else paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
+            }
+            else paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
         }
         // Send the contents of the Paginator to the Player (or Console)
         if (!paginator.sendPage(sender, args.getInteger(1, 1)))
@@ -469,8 +480,8 @@ public class DenizenCommandHandler {
     }
 
     @Command(
-            aliases = { "notable" }, usage = "add",
-            desc = "Adds a new notable to your current location", modifiers = { "add", "save" },
+            aliases = {"notable"}, usage = "add",
+            desc = "Adds a new notable to your current location", modifiers = {"add", "save"},
             // Even though different arguments will be combined into one
             // if they are delimited by quotes, their max number is checked
             // before that, so it needs to be high
@@ -482,8 +493,8 @@ public class DenizenCommandHandler {
     }
 
     @Command(
-            aliases = { "notable" }, usage = "list",
-            desc = "Lists all notable locations", modifiers = { "list" },
+            aliases = {"notable"}, usage = "list",
+            desc = "Lists all notable locations", modifiers = {"list"},
             min = 1, max = 1, permission = "denizen.notable.basic")
     public void listnotable(CommandContext args, CommandSender sender) throws CommandException {
 

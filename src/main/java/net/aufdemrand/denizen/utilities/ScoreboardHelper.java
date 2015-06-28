@@ -1,10 +1,7 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.util.*;
-
 import com.google.common.base.Splitter;
 import net.aufdemrand.denizen.objects.dPlayer;
-
 import net.aufdemrand.denizen.scripts.commands.server.ScoreboardCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.aH;
@@ -12,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scoreboard.*;
+
+import java.util.*;
 
 /**
  * Creates, saves and loads scoreboards
@@ -128,69 +127,69 @@ public class ScoreboardHelper {
     public static void _saveScoreboards() {
 
         try {
-        // Clear scoreboards.yml
-        DenizenAPI.getCurrentInstance().getScoreboards()
-            .set("Scoreboards", null);
-
-        // Iterate through scoreboards map
-        for (Map.Entry<String, Scoreboard> scoreboardEntry : scoreboardMap.entrySet()) {
-
-            String id = scoreboardEntry.getKey();
-            List<String> viewerList = new ArrayList<String>();
-
-            // Find all of the viewers that are viewing this scoreboard
-            // and put them on a list
-            for (Map.Entry<String, String> viewerEntry : viewerMap.entrySet()) {
-                if (id.equalsIgnoreCase(viewerEntry.getValue())) {
-                    viewerList.add(viewerEntry.getKey());
-                }
-            }
-
-            // Save viewer list
+            // Clear scoreboards.yml
             DenizenAPI.getCurrentInstance().getScoreboards()
-                .set("Scoreboards." + id + ".Viewers", viewerList);
+                    .set("Scoreboards", null);
 
-            // Iterate through objectives
-            for (Objective obj : scoreboardEntry.getValue().getObjectives()) {
-                String objPath = "Scoreboards." + id + ".Objectives."
-                                 + obj.getName();
+            // Iterate through scoreboards map
+            for (Map.Entry<String, Scoreboard> scoreboardEntry : scoreboardMap.entrySet()) {
 
-                // Save criteria for this objective
+                String id = scoreboardEntry.getKey();
+                List<String> viewerList = new ArrayList<String>();
+
+                // Find all of the viewers that are viewing this scoreboard
+                // and put them on a list
+                for (Map.Entry<String, String> viewerEntry : viewerMap.entrySet()) {
+                    if (id.equalsIgnoreCase(viewerEntry.getValue())) {
+                        viewerList.add(viewerEntry.getKey());
+                    }
+                }
+
+                // Save viewer list
                 DenizenAPI.getCurrentInstance().getScoreboards()
-                    .set(objPath + ".Criteria", obj.getCriteria());
+                        .set("Scoreboards." + id + ".Viewers", viewerList);
 
-                String displaySlot;
-                // If the display slot is null, save it as "NONE";
-                // otherwise, save it with its regular name
-                if (obj.getDisplaySlot() != null)
-                    displaySlot = obj.getDisplaySlot().name();
-                else
-                    displaySlot = "NONE";
+                // Iterate through objectives
+                for (Objective obj : scoreboardEntry.getValue().getObjectives()) {
+                    String objPath = "Scoreboards." + id + ".Objectives."
+                            + obj.getName();
 
-                DenizenAPI.getCurrentInstance().getScoreboards()
-                    .set(objPath + ".Display slot", displaySlot);
+                    // Save criteria for this objective
+                    DenizenAPI.getCurrentInstance().getScoreboards()
+                            .set(objPath + ".Criteria", obj.getCriteria());
 
-                // There is no method for getting an objective's
-                // scores, so iterate through all of the scoreboard's
-                // players, check if they have a score for this
-                // objective, and save it if they do
-                for (String player : scoreboardEntry.getValue().getEntries()) {
+                    String displaySlot;
+                    // If the display slot is null, save it as "NONE";
+                    // otherwise, save it with its regular name
+                    if (obj.getDisplaySlot() != null)
+                        displaySlot = obj.getDisplaySlot().name();
+                    else
+                        displaySlot = "NONE";
 
-                    int score = obj.getScore(player).getScore();
-                    Team team = scoreboardEntry.getValue().getTeam(player);
-                    // TODO: Properly save and load teams
-                    player = (team != null && team.getPrefix() != null ? team.getPrefix(): "") + player + (team != null && team.getSuffix() != null ? team.getSuffix(): "");
+                    DenizenAPI.getCurrentInstance().getScoreboards()
+                            .set(objPath + ".Display slot", displaySlot);
 
-                    // If a player has no score for this objective,
-                    // getScore() will return 0, so ignore scores
-                    // of 0
-                    if (score != 0) {
-                        DenizenAPI.getCurrentInstance().getScoreboards()
-                            .set(objPath + ".Scores." + player, score);
+                    // There is no method for getting an objective's
+                    // scores, so iterate through all of the scoreboard's
+                    // players, check if they have a score for this
+                    // objective, and save it if they do
+                    for (String player : scoreboardEntry.getValue().getEntries()) {
+
+                        int score = obj.getScore(player).getScore();
+                        Team team = scoreboardEntry.getValue().getTeam(player);
+                        // TODO: Properly save and load teams
+                        player = (team != null && team.getPrefix() != null ? team.getPrefix() : "") + player + (team != null && team.getSuffix() != null ? team.getSuffix() : "");
+
+                        // If a player has no score for this objective,
+                        // getScore() will return 0, so ignore scores
+                        // of 0
+                        if (score != 0) {
+                            DenizenAPI.getCurrentInstance().getScoreboards()
+                                    .set(objPath + ".Scores." + player, score);
+                        }
                     }
                 }
             }
-        }
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -205,10 +204,9 @@ public class ScoreboardHelper {
     /**
      * Add a score to an Objective for an OfflinePlayer.
      *
-     * @param o  the Objective to add the score to
-     * @param player  the OfflinePlayer to set the score for
+     * @param o      the Objective to add the score to
+     * @param player the OfflinePlayer to set the score for
      * @param score  the score
-     *
      */
     public static void addScore(Objective o, OfflinePlayer player, int score) {
         Score sc;
@@ -224,7 +222,8 @@ public class ScoreboardHelper {
         // If the score is 0, it won't normally be displayed at first,
         // so force it to be displayed by using setScore() like below on it
         if (score == 0) {
-            sc.setScore(1); sc.setScore(0);
+            sc.setScore(1);
+            sc.setScore(0);
         }
         else sc.setScore(score);
     }
@@ -232,9 +231,8 @@ public class ScoreboardHelper {
     /**
      * Remove a score from an Objective for an OfflinePlayer.
      *
-     * @param o  the Objective to remove the score from
-     * @param player  the OfflinePlayer to remove the score for
-     *
+     * @param o      the Objective to remove the score from
+     * @param player the OfflinePlayer to remove the score for
      */
     public static void removeScore(Objective o, OfflinePlayer player) {
 
@@ -264,7 +262,7 @@ public class ScoreboardHelper {
         // for this (real or fake) player
         for (Map.Entry<String, Integer> entry : scoreMap.entrySet()) {
             board.getObjective(entry.getKey())
-                 .getScore(player.getName()).setScore(entry.getValue());
+                    .getScore(player.getName()).setScore(entry.getValue());
         }
     }
 
@@ -294,8 +292,7 @@ public class ScoreboardHelper {
      * Clears all the objectives from a Scoreboard, making
      * it empty.
      *
-     * @param board  the Scoreboard to clear
-     *
+     * @param board the Scoreboard to clear
      */
     public static void clearScoreboard(Scoreboard board) {
         for (Objective o : board.getObjectives()) {
@@ -307,8 +304,7 @@ public class ScoreboardHelper {
      * Creates an anonymous new Scoreboard that isn't
      * saved anywhere.
      *
-     * @return  the new Scoreboard
-     *
+     * @return the new Scoreboard
      */
     public static Scoreboard createScoreboard() {
         return manager.getNewScoreboard();
@@ -318,9 +314,8 @@ public class ScoreboardHelper {
      * Creates a new Scoreboard with a certain id and
      * stories it in the scoreboards map.
      *
-     * @param id  the id of the new Scoreboard
-     * @return  the new Scoreboard
-     *
+     * @param id the id of the new Scoreboard
+     * @return the new Scoreboard
      */
     public static Scoreboard createScoreboard(String id) {
         Scoreboard board = manager.getNewScoreboard();
@@ -333,8 +328,7 @@ public class ScoreboardHelper {
      * the scoreboards map, unless it is the server's main
      * scoreboard, in which case it is just cleared.
      *
-     * @param id  the id of the Scoreboard
-     *
+     * @param id the id of the Scoreboard
      */
     public static void deleteScoreboard(String id) {
         if (id.equalsIgnoreCase("main"))
@@ -350,8 +344,7 @@ public class ScoreboardHelper {
      * in the scoreboards map because Bukkit already saves it
      * by itself.
      *
-     * @return  the main Scoreboard
-     *
+     * @return the main Scoreboard
      */
     public static Scoreboard getMain() {
         return manager.getMainScoreboard();
@@ -360,9 +353,8 @@ public class ScoreboardHelper {
     /**
      * Returns a Scoreboard from the scoreboards map.
      *
-     * @param id  the id of the Scoreboard
-     * @return  the Scoreboard returned
-     *
+     * @param id the id of the Scoreboard
+     * @return the Scoreboard returned
      */
     public static Scoreboard getScoreboard(String id) {
         return scoreboardMap.get(id.toUpperCase());
@@ -372,9 +364,8 @@ public class ScoreboardHelper {
      * Returns true if the scoreboards map contains a certain
      * scoreboard id.
      *
-     * @param id  the id of the Scoreboard
-     * @return  true or false
-     *
+     * @param id the id of the Scoreboard
+     * @return true or false
      */
     public static boolean hasScoreboard(String id) {
         return scoreboardMap.containsKey(id.toUpperCase());
@@ -384,9 +375,8 @@ public class ScoreboardHelper {
      * Removes all the scores of an OfflinePlayer from a
      * Scoreboard.
      *
-     * @param id  the id of the Scoreboard
-     * @param player  the OfflinePlayer
-     *
+     * @param id     the id of the Scoreboard
+     * @param player the OfflinePlayer
      */
     public static void removePlayer(String id, OfflinePlayer player) {
         scoreboardMap.get(id.toUpperCase()).resetScores(player.getName());

@@ -2,16 +2,18 @@ package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechContext;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechController;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Entity;
 
 public class ChatCommand extends AbstractCommand {
@@ -54,12 +56,12 @@ public class ChatCommand extends AbstractCommand {
         }
 
         // Add default recipient as the attached Player if no recipients set otherwise
-        if (!scriptEntry.hasObject("targets") && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() && !specified_targets)
-            scriptEntry.defaultObject("targets", new dList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().identify()));
+        if (!scriptEntry.hasObject("targets") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && !specified_targets)
+            scriptEntry.defaultObject("targets", new dList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify()));
 
         // Add default talker as the attached NPC if no recipients set otherwise
-        if (!scriptEntry.hasObject("talkers") && ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() && !specified_talker)
-            scriptEntry.defaultObject("talkers", new dList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().identify()));
+        if (!scriptEntry.hasObject("talkers") && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() && !specified_talker)
+            scriptEntry.defaultObject("talkers", new dList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().identify()));
 
         // Verify essential fields are set
         if (!scriptEntry.hasObject("targets"))

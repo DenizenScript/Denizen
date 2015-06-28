@@ -44,8 +44,8 @@ public class BukkitScriptEntryData extends ScriptEntryData {
         if (scriptEntryData == null) {
             return;
         }
-        player = ((BukkitScriptEntryData)scriptEntryData).getPlayer();
-        npc = ((BukkitScriptEntryData)scriptEntryData).getNPC();
+        player = ((BukkitScriptEntryData) scriptEntryData).getPlayer();
+        npc = ((BukkitScriptEntryData) scriptEntryData).getNPC();
 
     }
 

@@ -26,7 +26,8 @@ public class DisplayTitle {
         try {
             title_action.set(titlePacket, PacketPlayOutTitle.EnumTitleAction.TITLE);
             chat_component.set(titlePacket, new ChatComponentText(title));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return titlePacket;
@@ -37,7 +38,8 @@ public class DisplayTitle {
         try {
             title_action.set(titlePacket, PacketPlayOutTitle.EnumTitleAction.SUBTITLE);
             chat_component.set(titlePacket, new ChatComponentText(subtitle));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return titlePacket;
@@ -50,7 +52,8 @@ public class DisplayTitle {
             fade_in_ticks.set(titlePacket, fade_in);
             stay_ticks.set(titlePacket, stay);
             fade_out_ticks.set(titlePacket, fade_out);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return titlePacket;

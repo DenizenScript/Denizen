@@ -1,18 +1,21 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.npc.ai.BlockBreaker;
-
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -46,7 +49,7 @@ public class BreakCommand extends AbstractCommand implements Holdable { // TODO:
 
         // Use the NPC or the Player as the default entity
         scriptEntry.defaultObject("entity",
-                (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity() : null));
+                (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity() : null));
 
         if (!scriptEntry.hasObject("entity"))
             throw new InvalidArgumentsException("Must specify an entity!");
@@ -54,6 +57,7 @@ public class BreakCommand extends AbstractCommand implements Holdable { // TODO:
         scriptEntry.defaultObject("radius", new Element(2));
 
     }
+
     // <--[action]
     // @Actions
     // dig

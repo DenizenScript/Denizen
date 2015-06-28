@@ -13,7 +13,6 @@ import java.util.Collection;
  * Provides some static methods for working with Denizen and Denizen-enabled NPCs
  *
  * @author aufdemrand
- *
  */
 public class DenizenAPI {
 
@@ -24,9 +23,7 @@ public class DenizenAPI {
      * specific to Denizen functionality as well as easy access to the attached NPC and LivingEntity.
      *
      * @param npc the Citizens NPC
-     *
      * @return a dNPC
-     *
      */
     public static dNPC getDenizenNPC(NPC npc) {
         return dNPCRegistry.getDenizen(npc);
@@ -37,7 +34,6 @@ public class DenizenAPI {
      * unspawned NPCs
      *
      * @return map of NPC, dNPC of all spawned NPCs
-     *
      */
     public static Collection<dNPC> getSpawnedNPCs() {
         return dNPCRegistry.getSpawnedNPCs();

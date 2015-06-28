@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.events.core;
 
-import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
 import org.bukkit.event.Listener;
 
 import java.util.Set;
@@ -54,6 +54,7 @@ public class NPCNavigationSmartEvent implements OldSmartEvent, Listener {
     ///////////
 
     static boolean active = false;
+
     public static boolean IsActive() {
         return active;
     }

@@ -1,17 +1,17 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
 
 public class VulnerableCommand extends AbstractCommand {
 
-    enum Toggle { TRUE, FALSE, TOGGLE }
+    enum Toggle {TRUE, FALSE, TOGGLE}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -23,7 +23,7 @@ public class VulnerableCommand extends AbstractCommand {
             if (aH.matchesState(arg))
                 vulnerable = Toggle.valueOf(aH.getStringFrom(arg).toUpperCase());
 
-        if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() == null)
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null)
             throw new InvalidArgumentsException("This command requires a linked NPC!");
 
         // Add objects that need to be passed to execute() to the scriptEntry
@@ -37,10 +37,10 @@ public class VulnerableCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(),
-                aH.debugObj("NPC", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().toString()) +
+                aH.debugObj("NPC", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().toString()) +
                         aH.debugObj("Toggle", toggle.toString()));
 
-        NPC npc = ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen();
+        NPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen();
 
         boolean vulnerable;
 

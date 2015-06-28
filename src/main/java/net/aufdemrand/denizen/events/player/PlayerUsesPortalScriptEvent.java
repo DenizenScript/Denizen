@@ -37,6 +37,7 @@ public class PlayerUsesPortalScriptEvent extends ScriptEvent implements Listener
     public PlayerUsesPortalScriptEvent() {
         instance = this;
     }
+
     public static PlayerUsesPortalScriptEvent instance;
     public dEntity entity;
     public dLocation to;
@@ -79,7 +80,7 @@ public class PlayerUsesPortalScriptEvent extends ScriptEvent implements Listener
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getPlayer()): null, null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override

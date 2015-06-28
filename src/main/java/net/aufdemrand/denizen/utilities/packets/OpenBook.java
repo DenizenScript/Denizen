@@ -24,7 +24,8 @@ public class OpenBook {
         try {
             channel.set(customPayloadPacket, "MC|BOpen");
             packet_data.set(customPayloadPacket, new PacketDataSerializer(Unpooled.buffer()));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return customPayloadPacket;

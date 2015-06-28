@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -15,7 +14,7 @@ import org.bukkit.entity.Wolf;
 
 public class ParticlesTrait extends Trait {
 
-    public enum EffectType { NONE, SMOKE, FLAME, ENDER, POTBREAK, HEART, POTION, EXPLOSION }
+    public enum EffectType {NONE, SMOKE, FLAME, ENDER, POTBREAK, HEART, POTION, EXPLOSION}
 
     //DataWatcher dw;
     //EntityLiving el;
@@ -52,56 +51,56 @@ public class ParticlesTrait extends Trait {
         counter++;
 
         switch (effectType) {
-        case NONE:
-            break;
-        case FLAME:
-            if (counter > wait) {
-                playFlameEffect();
-                //dB.log("playing flame");
-                counter = 0;
-            }
-            break;
-        case ENDER:
-            if (counter > wait) {
-                playEnderEffect();
-                //dB.log("playing ender");
-                counter = 0;
-            }
-        case SMOKE:
-            if (counter > wait) {
-                playSmokeEffect();
-                //dB.log("playing smoke");
-                counter = 0;
-            }
-        case POTBREAK:
-            if (counter > wait) {
-                playPotionBreakEffect();
-                //dB.log("playing potion break");
-                counter = 0;
-            }
-            break;
-        case POTION:
+            case NONE:
+                break;
+            case FLAME:
+                if (counter > wait) {
+                    playFlameEffect();
+                    //dB.log("playing flame");
+                    counter = 0;
+                }
+                break;
+            case ENDER:
+                if (counter > wait) {
+                    playEnderEffect();
+                    //dB.log("playing ender");
+                    counter = 0;
+                }
+            case SMOKE:
+                if (counter > wait) {
+                    playSmokeEffect();
+                    //dB.log("playing smoke");
+                    counter = 0;
+                }
+            case POTBREAK:
+                if (counter > wait) {
+                    playPotionBreakEffect();
+                    //dB.log("playing potion break");
+                    counter = 0;
+                }
+                break;
+            case POTION:
             /*
             if (!el.effects.isEmpty()) {
                 c = net.minecraft.server.v1_6_R2.PotionBrewer.a(el.effects.values());
             }
             dw.watch(8, Integer.valueOf(c));
             */
-            break;
-        case HEART:
-            if (counter > wait) {
-                //dB.log("...playing heart effect");
-                playHeartEffect();
-                counter = 0;
-            }
-            break;
-        case EXPLOSION:
-            if (counter > wait) {
-                //dB.log("...playing explosion effect");
-                playExplosionEffect();
-                counter = 0;
-            }
-            break;
+                break;
+            case HEART:
+                if (counter > wait) {
+                    //dB.log("...playing heart effect");
+                    playHeartEffect();
+                    counter = 0;
+                }
+                break;
+            case EXPLOSION:
+                if (counter > wait) {
+                    //dB.log("...playing explosion effect");
+                    playExplosionEffect();
+                    counter = 0;
+                }
+                break;
         }
 
 
@@ -186,7 +185,7 @@ public class ParticlesTrait extends Trait {
         super("particles");
     }
 
-    public void setDense (Boolean dense) {
+    public void setDense(Boolean dense) {
         this.dense = dense;
     }
 }

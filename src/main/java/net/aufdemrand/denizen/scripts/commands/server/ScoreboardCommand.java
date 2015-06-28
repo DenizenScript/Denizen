@@ -1,24 +1,23 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
-import java.util.List;
-
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.FakeOfflinePlayer;
+import net.aufdemrand.denizen.utilities.ScoreboardHelper;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.ScoreboardHelper;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import java.util.List;
 
 // <--[example]
 // @Title Smooth Scoreboard Updates
@@ -93,7 +92,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ScoreboardCommand extends AbstractCommand {
 
-    private enum Action { ADD, REMOVE }
+    private enum Action {ADD, REMOVE}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -102,43 +101,43 @@ public class ScoreboardCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("action")
-                && arg.matchesEnum(Action.values())) {
-               scriptEntry.addObject("action", arg.asElement());
+                    && arg.matchesEnum(Action.values())) {
+                scriptEntry.addObject("action", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("lines")
-                     && arg.matchesPrefix("lines", "l")) {
+                    && arg.matchesPrefix("lines", "l")) {
                 scriptEntry.addObject("lines", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("id")
-                     && arg.matchesPrefix("id")) {
+                    && arg.matchesPrefix("id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("objective")
-                     && arg.matchesPrefix("objective", "obj", "o")) {
+                    && arg.matchesPrefix("objective", "obj", "o")) {
                 scriptEntry.addObject("objective", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("criteria")
-                     && arg.matchesPrefix("criteria", "c")) {
+                    && arg.matchesPrefix("criteria", "c")) {
                 scriptEntry.addObject("criteria", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("score")
-                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("score", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("displayslot")
-                     && (arg.matchesEnum(DisplaySlot.values()) ||
-                         arg.matches("none"))) {
+                    && (arg.matchesEnum(DisplaySlot.values()) ||
+                    arg.matches("none"))) {
                 scriptEntry.addObject("displayslot", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("viewers")
-                     && arg.matchesArgumentList(dPlayer.class)) {
+                    && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("viewers", arg.asType(dList.class).filter(dPlayer.class));
             }
 
@@ -166,8 +165,8 @@ public class ScoreboardCommand extends AbstractCommand {
 
         List<dPlayer> viewers = (List<dPlayer>) scriptEntry.getObject("viewers");
         dList lines = scriptEntry.hasObject("lines") ?
-                        dList.valueOf(scriptEntry.getElement("lines").asString()) :
-                        new dList();
+                dList.valueOf(scriptEntry.getElement("lines").asString()) :
+                new dList();
 
         Element action = scriptEntry.getElement("action");
         Element id = scriptEntry.getElement("id");
@@ -179,19 +178,19 @@ public class ScoreboardCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), action.debug() +
-                             id.debug() +
-                             (viewers != null ? aH.debugObj("viewers", viewers.toString()) : "") +
-                             (objective != null ? objective.debug() : "") +
-                             (act.equals(Action.ADD) && objective!= null
-                                 ? criteria.debug()
-                                 : "") +
-                             (!lines.isEmpty() ? lines.debug() : "") +
-                             (act.equals(Action.ADD) && score != null
-                                 ? score.debug()
-                                 : "") +
-                             (act.equals(Action.ADD) && objective != null
-                                 ? displaySlot.debug()
-                                 : ""));
+                id.debug() +
+                (viewers != null ? aH.debugObj("viewers", viewers.toString()) : "") +
+                (objective != null ? objective.debug() : "") +
+                (act.equals(Action.ADD) && objective != null
+                        ? criteria.debug()
+                        : "") +
+                (!lines.isEmpty() ? lines.debug() : "") +
+                (act.equals(Action.ADD) && score != null
+                        ? score.debug()
+                        : "") +
+                (act.equals(Action.ADD) && objective != null
+                        ? displaySlot.debug()
+                        : ""));
 
         Scoreboard board = null;
 
@@ -288,7 +287,7 @@ public class ScoreboardCommand extends AbstractCommand {
                 }
                 else {
                     dB.echoError(scriptEntry.getResidingQueue(), "Objective " + objective.asString() +
-                                 " does not exist in scoreboard " + id.asString());
+                            " does not exist in scoreboard " + id.asString());
                 }
             }
             // If lines were specified, but an objective was not, remove the

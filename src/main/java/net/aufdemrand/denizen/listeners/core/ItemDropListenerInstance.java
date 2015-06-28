@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import java.util.List;
-
+import net.aufdemrand.denizen.listeners.AbstractListener;
+import net.aufdemrand.denizen.listeners.core.ItemDropListenerType.ItemDropType;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,10 +15,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.listeners.core.ItemDropListenerType.ItemDropType;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import java.util.List;
 
 public class ItemDropListenerInstance extends AbstractListener implements Listener {
 
@@ -158,7 +157,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
     public void onSave() {
         store("type", type);
         store("item", item);
-        store("lcoation",location );
+        store("lcoation", location);
         store("block", block);
         store("mob", mob);
         store("dropper", dropper);
@@ -173,14 +172,14 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
     @Override
     public String report() {
         switch (type) {
-        case BLOCKBREAK:
-            break;
-        case BLOCKPLACE:
-            break;
-        case MOBKILL:
-            break;
-        default:
-            break;
+            case BLOCKBREAK:
+                break;
+            case BLOCKPLACE:
+                break;
+            case MOBKILL:
+                break;
+            default:
+                break;
         }
         return null;
     }
@@ -194,7 +193,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         if (event.getEntity().getType() != mob) return;
         dB.log("...proper mob");
         if (location != null) {
-            if (location.distance(player.getPlayerEntity().getLocation()) > radius ) return;
+            if (location.distance(player.getPlayerEntity().getLocation()) > radius) return;
         }
         dB.log("...within range");
         if (region != null) {
@@ -221,7 +220,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         if (event.getBlock().getType() != block) return;
         dB.log("...proper block mined");
         if (location != null) {
-            if (location.distance(player.getPlayerEntity().getLocation()) > radius ) return;
+            if (location.distance(player.getPlayerEntity().getLocation()) > radius) return;
         }
         dB.log("...within range");
         if (region != null) {
@@ -246,7 +245,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         if (event.getBlock().getType() != block) return;
         dB.log("...proper block placed");
         if (location != null) {
-            if (location.distance(player.getPlayerEntity().getLocation()) > radius ) return;
+            if (location.distance(player.getPlayerEntity().getLocation()) > radius) return;
         }
         dB.log("...within range");
         if (region != null) {

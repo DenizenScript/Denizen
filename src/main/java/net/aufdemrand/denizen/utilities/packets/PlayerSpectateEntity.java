@@ -21,7 +21,8 @@ public class PlayerSpectateEntity {
         PacketPlayOutCamera cameraPacket = new PacketPlayOutCamera();
         try {
             entity_id.set(cameraPacket, entity.getEntityId());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return cameraPacket;

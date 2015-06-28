@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
  * Triggers when a Player Listener is cancelled.
  *
  * @author Jeremy Schroeder
- *
  */
 
 public class ListenerCancelEvent extends ListenerEvent {

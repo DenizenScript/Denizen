@@ -20,7 +20,8 @@ public class FakeNetworkManager extends NetworkManager {
             chan.setAccessible(true);
             addr = NetworkManager.class.getDeclaredField("l");
             addr.setAccessible(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         networkChannelField = chan;
@@ -31,8 +32,10 @@ public class FakeNetworkManager extends NetworkManager {
         super(enumprotocoldirection);
         try {
             networkChannelField.set(this, new FakeChannel(null));
-            networkAddressField.set(this, new SocketAddress(){});
-        } catch (Exception e) {
+            networkAddressField.set(this, new SocketAddress() {
+            });
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }

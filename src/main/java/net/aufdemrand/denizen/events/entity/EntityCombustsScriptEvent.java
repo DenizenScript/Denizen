@@ -10,7 +10,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,6 +42,7 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
     public EntityCombustsScriptEvent() {
         instance = this;
     }
+
     public static EntityCombustsScriptEvent instance;
     public dEntity entity;
     public Duration duration;
@@ -61,7 +61,7 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String target = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
+        String target = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
         List<String> types = Arrays.asList("entity", "player", "npc");
         return (types.contains(target) || entity.matchesEntity(target));
     }
@@ -93,8 +93,8 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override

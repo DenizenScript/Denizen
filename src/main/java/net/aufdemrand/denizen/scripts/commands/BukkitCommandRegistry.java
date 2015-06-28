@@ -492,7 +492,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Compass
-        // @Syntax compass [<location>]
+        // @Syntax compass [<location>/reset]
         // @Required 1
         // @Stable stable
         // @Short Redirects the player's compass to target the given location.
@@ -506,7 +506,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(CompassCommand.class,
-                "COMPASS", "compass [<location>]", 1);
+                "COMPASS", "compass [<location>/reset]", 1);
 
 
         // <--[command]
@@ -1023,7 +1023,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <p@player.flag[<flag>]>
         // <n@npc.flag[<flag>]>
         // <server.flag[<flag>]>
-        // @Usage
         // @Usage
         // Use to create or set a flag on a player.
         // - flag player playstyle:agressive
@@ -2634,7 +2633,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Time
-        // @Syntax time [{global}/player] [<time duration>] (<world>)
+        // @Syntax time ({global}/player) [<time duration>] (<world>)
         // @Required 1
         // @Stable TODO: Document Command Details
         // @Short Changes the current time in the minecraft world.
@@ -2661,7 +2660,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(TimeCommand.class,
-                "TIME", "time [{global}/player] [<time duration>] (<world>)", 1);
+                "TIME", "time ({global}/player) [<time duration>] (<world>)", 1);
 
         // <--[command]
         // @Name Title

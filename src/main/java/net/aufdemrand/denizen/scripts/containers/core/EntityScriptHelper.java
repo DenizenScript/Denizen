@@ -40,7 +40,8 @@ public class EntityScriptHelper implements Listener {
         try {
             field = net.minecraft.server.v1_8_R3.World.class.getDeclaredField("u");
             field.setAccessible(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         iWorldAccessList = field;
@@ -70,7 +71,8 @@ public class EntityScriptHelper implements Listener {
         try {
             ((List) iWorldAccessList.get(((CraftWorld) world).getHandle())).remove(worlds.get(world));
             worlds.remove(world);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }
@@ -90,8 +92,8 @@ public class EntityScriptHelper implements Listener {
         // TODO: This doesn't work. Awaiting Entity Despawn Event PR's for Bukkit:
         // Bukkit: https://github.com/Bukkit/Bukkit/pull/1070
         // CraftBukkit: https://github.com/Bukkit/CraftBukkit/pull/1386
-        for (Entity ent: event.getChunk().getEntities()) {
-            if (!(ent instanceof LivingEntity) || ((LivingEntity)ent).getRemoveWhenFarAway()) {
+        for (Entity ent : event.getChunk().getEntities()) {
+            if (!(ent instanceof LivingEntity) || ((LivingEntity) ent).getRemoveWhenFarAway()) {
                 EntityDespawnScriptEvent.instance.entity = new dEntity(ent);
                 EntityDespawnScriptEvent.instance.cause = new Element("CHUNK_UNLOAD");
                 EntityDespawnScriptEvent.instance.cancelled = false;
@@ -107,7 +109,7 @@ public class EntityScriptHelper implements Listener {
                 .getEntities().getConfigurationSection("entities.scripts");
         if (entity_scripts == null)
             return;
-        for (String Path: entity_scripts.getKeys(false)) {
+        for (String Path : entity_scripts.getKeys(false)) {
             UUID id = UUID.fromString(Path);
             String scriptname = entity_scripts.getString(Path + ".scriptname");
             entities.put(id, scriptname);
@@ -117,7 +119,7 @@ public class EntityScriptHelper implements Listener {
     public static void saveEntities() {
         FileConfiguration entityScripts = DenizenAPI.getCurrentInstance().getEntities();
         entityScripts.set("entities.scripts", null);
-        for (Map.Entry<UUID, String> entry: entities.entrySet()) {
+        for (Map.Entry<UUID, String> entry : entities.entrySet()) {
             entityScripts.set("entities.scripts." + entry.getKey() + ".scriptname", entry.getValue());
         }
     }

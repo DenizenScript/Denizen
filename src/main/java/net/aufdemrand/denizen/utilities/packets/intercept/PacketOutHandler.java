@@ -68,13 +68,14 @@ public class PacketOutHandler {
             else if (packet instanceof PacketPlayOutPlayerInfo) {
                 PlayerProfileEditor.updatePlayerProfiles((PacketPlayOutPlayerInfo) packet);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return false;
     }
 
-    private static ItemStack removeItemScriptLore(ItemStack itemStack) throws Exception{
+    private static ItemStack removeItemScriptLore(ItemStack itemStack) throws Exception {
         if (itemStack != null && itemStack.hasTag() && !itemStack.getTag().isEmpty()) {
             NBTTagCompound tag = itemStack.getTag();
             NBTTagCompound display = tag.getCompound("display");

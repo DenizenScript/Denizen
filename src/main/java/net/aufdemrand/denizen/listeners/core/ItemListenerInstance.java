@@ -1,16 +1,12 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dInventory;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -19,9 +15,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ItemListenerInstance extends AbstractListener implements Listener {
 
-    public enum ItemType { CRAFT, SMELT, FISH }
+    public enum ItemType {CRAFT, SMELT, FISH}
 
     ItemType type = null;
 
@@ -68,7 +67,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     public void increment(String object, int amount) {
         items_so_far = items_so_far + amount;
         dB.log(ChatColor.YELLOW + "// " + player.getName() + " " +
-        type.toString().toLowerCase() + "ed " + amount + " " + object + ".");
+                type.toString().toLowerCase() + "ed " + amount + " " + object + ".");
         check();
     }
 
@@ -77,7 +76,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
         // Proceed if the slot clicked is a RESULT slot and the player is the right one
         if (event.getSlotType().toString().equals("RESULT")
-            && event.getWhoClicked() == player.getPlayerEntity()) {
+                && event.getWhoClicked() == player.getPlayerEntity()) {
 
             // If REGION argument specified, check. If not in region, don't count kill!
             if (region != null) {
@@ -99,7 +98,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
                 //if item isn't a required item, then return
                 if (!items.contains(item.getType().name().toLowerCase())
-                    && !items.contains(String.valueOf(item.getTypeId())) && !items.contains("*"))
+                        && !items.contains(String.valueOf(item.getTypeId())) && !items.contains("*"))
                     return;
 
                 if (event.isShiftClick()) {
@@ -111,22 +110,23 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                     // see how many items of this type the player has then in the
                     // inventory
                     Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            int newQty = new dInventory(player.getPlayerEntity().getInventory()).count(item, false);
-                            int difference = newQty - initialQty;
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    int newQty = new dInventory(player.getPlayerEntity().getInventory()).count(item, false);
+                                    int difference = newQty - initialQty;
 
-                            // If any items were obtained (i.e. if shift click was
-                            // used with the player's inventory not being full),
-                            // increase the number of current items
-                            if (difference > 0) {
-                                increment(item.getType().toString(), difference);
-                            }
+                                    // If any items were obtained (i.e. if shift click was
+                                    // used with the player's inventory not being full),
+                                    // increase the number of current items
+                                    if (difference > 0) {
+                                        increment(item.getType().toString(), difference);
+                                    }
 
-                        }
-                    }, 1);
-                } else {
+                                }
+                            }, 1);
+                }
+                else {
                     // If shift click was not used, simply increase the current items
                     // by the quantity of the item in the result slot
                     increment(item.getType().toString(), item.getAmount());
@@ -143,7 +143,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
         // If REGION argument specified, check. If not in region, don't count kill!
         if (region != null) {
-           //if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
+            //if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
         }
 
         // Same with the CUBOID argument...
@@ -163,7 +163,8 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             store("Quantity Done", this.items_so_far);
             store("Region", region);
             if (cuboid != null) store("Cuboid", cuboid.identify());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError("Unable to save ITEM listener for '" + player.getName() + "'!");
         }
     }
@@ -178,7 +179,8 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             items_so_far = (Integer) get("Quantity Done");
             region = (String) get("Region");
             cuboid = dCuboid.valueOf((String) get("Cuboid"));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError("Unable to load ITEM listener for '" + player.getName() + "'!");
             cancel();
         }

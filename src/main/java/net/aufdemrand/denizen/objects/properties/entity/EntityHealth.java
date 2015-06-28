@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.objects.properties.entity;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -168,7 +167,8 @@ public class EntityHealth implements Property {
         if (mechanism.matches("health") && mechanism.requireDouble()) {
             if (entity.isLivingEntity()) {
                 entity.getLivingEntity().setHealth(mechanism.getValue().asDouble());
-            } else {
+            }
+            else {
                 dB.echoError("Entity is not alive!");
             }
         }
@@ -189,7 +189,8 @@ public class EntityHealth implements Property {
                 List<String> values = CoreUtilities.split(mechanism.getValue().asString(), '/');
                 entity.getLivingEntity().setMaxHealth(Double.valueOf(values.get(1)));
                 entity.getLivingEntity().setHealth(Double.valueOf(values.get(0)));
-            } else {
+            }
+            else {
                 dB.echoError("Entity is not alive!");
             }
         }

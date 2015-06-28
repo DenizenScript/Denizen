@@ -2,13 +2,12 @@ package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizencore.events.OldEventManager;
-import net.aufdemrand.denizencore.events.OldSmartEvent;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
+import net.aufdemrand.denizencore.objects.dObject;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -86,7 +85,7 @@ public class _TemplateSmartEvent implements OldSmartEvent, Listener {
         List<String> determinations = OldEventManager.doEvents(Arrays.asList("x or y or z"),
                 new BukkitScriptEntryData(dEntity.getPlayerFrom(event.getPlayer()), null), context);
         // Parse the determination and edit the event accordingly here
-        for (String determination: determinations) {
+        for (String determination : determinations) {
             if (determination.equalsIgnoreCase("CANCELLED"))
                 event.setCancelled(true);
         }

@@ -1,18 +1,17 @@
 package net.aufdemrand.denizen.listeners;
 
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dScript;
+import org.bukkit.Bukkit;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.objects.dScript;
-import org.bukkit.Bukkit;
-
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public abstract class AbstractListener {
 
@@ -66,10 +65,8 @@ public abstract class AbstractListener {
     /**
      * Gets an Object that was store()d away.
      *
-     * @param key
-     *         the name (key) of the Object requested
+     * @param key the name (key) of the Object requested
      * @return the Object associated with the key
-     *
      */
     public Object get(String key) {
         return denizen.getSaves().get("Listeners." + player.getSaveName() + "." + id + "." + key);
@@ -89,7 +86,12 @@ public abstract class AbstractListener {
         this.type = listenerType;
         this.scriptName = dScript.valueOf((String) get("Finish Script"));
         this.npc = npc;
-        try { onLoad(); } catch (Exception e) {    dB.echoError("Problem loading saved listener '" + id + "' for " + player.getName() + "!"); }
+        try {
+            onLoad();
+        }
+        catch (Exception e) {
+            dB.echoError("Problem loading saved listener '" + id + "' for " + player.getName() + "!");
+        }
         constructed();
     }
 
@@ -98,9 +100,7 @@ public abstract class AbstractListener {
      * Most likely called from a LISTEN dScript command. The player and id fields
      * are non-null at this point.
      *
-     * @param args
-     *             a list of dScript arguments
-     *
+     * @param args a list of dScript arguments
      */
     public abstract void onBuild(List<aH.Argument> args);
 
@@ -112,7 +112,6 @@ public abstract class AbstractListener {
      * Called when a Player logs on if an instance of this quest listener was saved
      * with progress. Any variables that were saved with the store(stringKey, object) method
      * should be called and restored.
-     *
      */
     public abstract void onLoad();
 
@@ -121,34 +120,32 @@ public abstract class AbstractListener {
      * This method should use the store(stringKey, object) method to save the fields needed to
      * successfully reload the current state of this quest listener when the onLoad()
      * method is called. The fields for player, type, and id are done automatically.
-     *
      */
     public abstract void onSave();
 
     /**
      * Sums up the current status of a this AbstractListenerInstance in a way that would be
      * useful by itself to a Player or Console administrator.
-     *
+     * <p/>
      * Called by the '/denizen listener --report id' bukkit command.
-     *
+     * <p/>
      * This should include all applicable variables when reporting. Suggested format would
      * follow suit with core Listeners. For example:
-     *
+     * <p/>
      * return player.getName() + " currently has quest listener '" + id
-     *        + "' active and must kill " + Arrays.toString(targets.toArray())
-     *        + " '" + type.name() + "'(s). Current progress '" + currentKills
-     *        + "/" + quantity + "'.";
-     *
+     * + "' active and must kill " + Arrays.toString(targets.toArray())
+     * + " '" + type.name() + "'(s). Current progress '" + currentKills
+     * + "/" + quantity + "'.";
+     * <p/>
      * Output:
      * aufdemrand currently has quest listener 'example_quest' active and must kill
-     *  '[ZOMBIE, SKELETON] ENTITY'(s). Current progress '10/15'.
-     *
+     * '[ZOMBIE, SKELETON] ENTITY'(s). Current progress '10/15'.
+     * <p/>
      * Note: This is not intended to be a 'Quest Log' for a Player, rather is used when
      * administrators/server operators are checking up on this Listener. Ideally,
      * that kind of information should be handled with the use of replaceable tags.
      *
      * @return a 'formatted' String that contains current progress
-     *
      */
     public abstract String report();
 
@@ -166,7 +163,8 @@ public abstract class AbstractListener {
             if (!savable.isEmpty())
                 for (Entry<String, Object> entry : savable.entrySet())
                     denizen.getSaves().set("Listeners." + player.getSaveName() + "." + id + "." + entry.getKey(), entry.getValue());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError("Problem saving listener '" + id + "' for " + player.getSaveName() + "!");
         }
 
@@ -175,7 +173,6 @@ public abstract class AbstractListener {
 
     /**
      * Stores a field away for retrieving later. Should be used in the onSave() method.
-     *
      */
     public void store(String key, Object object) {
         savable.put(key, object);

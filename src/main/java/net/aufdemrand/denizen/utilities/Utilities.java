@@ -1,17 +1,10 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.tags.TagManager;
@@ -27,6 +20,12 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * This class has utility methods for various tasks.
  */
@@ -37,7 +36,7 @@ public class Utilities {
      * Gets a Location within a range that an entity can walk in.
      *
      * @param location the Location to check with
-     * @param range the range around the Location
+     * @param range    the range around the Location
      * @return a random Location within range, or null if no Location within range is safe
      */
     public static Location getWalkableLocationNear(Location location, int range) {
@@ -75,7 +74,6 @@ public class Utilities {
     }
 
 
-
     // TODO: Javadocs, comments
     //
     public static String[] wrapWords(String text, int width) {
@@ -91,15 +89,12 @@ public class Utilities {
 
 
     /**
-     *
-     *
-     * @param player  the player doing the talking
-     * @param npc  the npc being talked to
+     * @param player the player doing the talking
+     * @param npc    the npc being talked to
      * @param range  the range, in blocks, that 'bystanders' will hear he chat
-     *
      */
     public static void talkToNPC(String message, dPlayer player, dNPC npc, double range) {
-        String replacer = String.valueOf((char)0x04);
+        String replacer = String.valueOf((char) 0x04);
         // Get formats from Settings, and fill in <TEXT>
         String talkFormat = Settings.chatToNpcFormat()
                 .replaceAll("(?i)<TEXT>", replacer);
@@ -124,8 +119,8 @@ public class Utilities {
 
 
     public static int lastIndexOfUCL(String str) {
-        for(int i=str.length()-1; i>=0; i--) {
-            if(Character.isUpperCase(str.charAt(i))) {
+        for (int i = str.length() - 1; i >= 0; i--) {
+            if (Character.isUpperCase(str.charAt(i))) {
                 return i;
             }
         }
@@ -139,22 +134,22 @@ public class Utilities {
      * @param a first number
      * @param b second number
      * @param c number to check if between
-     * @return  true if c is in between.
+     * @return true if c is in between.
      */
     public static boolean isBetween(double a, double b, double c) {
-        return b > a ? (c >= a && c < b): (c >= b && c < a); // Cuboid's have to be compensated for weirdly
+        return b > a ? (c >= a && c < b) : (c >= b && c < a); // Cuboid's have to be compensated for weirdly
     }
 
 
     /**
      * Finds the closest NPC to a particular location.
      *
-     * @param location    The location to find the closest NPC to.
+     * @param location The location to find the closest NPC to.
      * @param range    The maximum range to look for the NPC.
-     * @return    The closest NPC to the location, or null if no NPC was found
-     *                     within the range specified.
+     * @return The closest NPC to the location, or null if no NPC was found
+     * within the range specified.
      */
-    public static dNPC getClosestNPC_ChatTrigger (Location location, int range) {
+    public static dNPC getClosestNPC_ChatTrigger(Location location, int range) {
         dNPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
         // TODO: Why is this manually iterating?
@@ -176,7 +171,7 @@ public class Utilities {
     /**
      * Checks entity's location against a Location (with leeway). Should be faster than
      * bukkit's built in Location.distance(Location) since there's no sqrt math.
-     *
+     * <p/>
      * Thanks chainsol :)
      *
      * @return true if within the specified location, false otherwise.
@@ -216,7 +211,7 @@ public class Utilities {
      * Set the lines on a sign to the strings in a string array
      *
      * @param sign  The sign
-     * @param lines  The string array
+     * @param lines The string array
      */
     public static void setSignLines(Sign sign, String[] lines) {
 
@@ -231,7 +226,7 @@ public class Utilities {
     /**
      * Make a wall sign attach itself to an available surface
      *
-     * @param signState  The sign's blockState
+     * @param signState The sign's blockState
      */
     public static void setSignRotation(BlockState signState) {
 
@@ -269,7 +264,8 @@ public class Utilities {
 
     /**
      * Check if a block location equals another location.
-     * @param block The block location to check for.
+     *
+     * @param block    The block location to check for.
      * @param location The location to check against.
      * @return Whether or not the block location equals the location.
      */
@@ -291,9 +287,10 @@ public class Utilities {
 
     /**
      * Extract a file from a zip or jar.
-     * @param jarFile The zip/jar file to use
+     *
+     * @param jarFile  The zip/jar file to use
      * @param fileName Which file to extract
-     * @param destDir Where to extract it to
+     * @param destDir  Where to extract it to
      */
     public static void extractFile(File jarFile, String fileName, String destDir) {
         java.util.jar.JarFile jar = null;
@@ -319,14 +316,17 @@ public class Utilities {
             }
             dB.echoError(fileName + " not found in the jar!");
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             dB.echoError(e);
 
-        } finally {
+        }
+        finally {
             if (jar != null) {
                 try {
                     jar.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     dB.echoError(e);
                 }
             }

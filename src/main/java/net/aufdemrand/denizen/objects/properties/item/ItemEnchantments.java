@@ -1,10 +1,13 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -20,7 +23,7 @@ public class ItemEnchantments implements Property {
 
     public static ItemEnchantments getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemEnchantments((dItem)_item);
+        else return new ItemEnchantments((dItem) _item);
     }
 
 
@@ -173,13 +176,13 @@ public class ItemEnchantments implements Property {
         // -->
 
         if (mechanism.matches("enchantments")) {
-            for (String enchant: mechanism.getValue().asType(dList.class)) {
+            for (String enchant : mechanism.getValue().asType(dList.class)) {
                 if (!enchant.contains(","))
                     dB.echoError("Invalid enchantment format, use name,level|...");
                 else {
                     String[] data = enchant.split(",", 2);
                     if (Integer.valueOf(data[1]) == null)
-                        dB.echoError("Cannot apply enchantment '" + data[0] +"': '" + data[1] + "' is not a valid integer!");
+                        dB.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
                     else {
                         try {
                             Enchantment ench = Enchantment.getByName(data[0].toUpperCase());

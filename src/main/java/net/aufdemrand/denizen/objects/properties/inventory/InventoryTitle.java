@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
+import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -35,7 +35,7 @@ public class InventoryTitle implements Property {
             String title = inventory.getInventory().getTitle();
             if (title != null) {
                 if (inventory.isUnique())
-                    return title.substring(0, title.length()-6);
+                    return title.substring(0, title.length() - 6);
                 else if (!title.startsWith("container."))
                     return title;
             }

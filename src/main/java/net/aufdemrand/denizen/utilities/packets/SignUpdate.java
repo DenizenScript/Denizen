@@ -29,7 +29,7 @@ public class SignUpdate {
             sign_world.set(signUpdatePacket, ((CraftWorld) location.getWorld()).getHandle());
             sign_location.set(signUpdatePacket, new BlockPosition(location.getBlockX(),
                     location.getBlockY(), location.getBlockZ()));
-            sign_lines.set(signUpdatePacket, new IChatBaseComponent[] {
+            sign_lines.set(signUpdatePacket, new IChatBaseComponent[]{
                     lines[0] != null ? new ChatComponentText(lines[0]) : null,
                     lines[1] != null ? new ChatComponentText(lines[1]) : null,
                     lines[2] != null ? new ChatComponentText(lines[2]) : null,

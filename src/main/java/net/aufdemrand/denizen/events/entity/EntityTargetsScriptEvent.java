@@ -1,17 +1,17 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,14 +21,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityTargetsScriptEvent extends ScriptEvent implements Listener {
+public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity targets (<entity>) (in <notable cuboid>)
-    // entity targets (<entity>) because <cause> (in <notable cuboid>)
-    // <entity> targets (<entity>) (in <notable cuboid>)
-    // <entity> targets (<entity>) because <cause> (in <notable cuboid>)
+    // entity targets (<entity>) (in <area>)
+    // entity targets (<entity>) because <cause> (in <area>)
+    // <entity> targets (<entity>) (in <area>)
+    // <entity> targets (<entity>) because <cause> (in <area>)
     //
     // @Cancellable true
     //
@@ -50,6 +50,7 @@ public class EntityTargetsScriptEvent extends ScriptEvent implements Listener {
     public EntityTargetsScriptEvent() {
         instance = this;
     }
+
     public static EntityTargetsScriptEvent instance;
     public dEntity entity;
     public Element reason;
@@ -81,32 +82,15 @@ public class EntityTargetsScriptEvent extends ScriptEvent implements Listener {
                 return false;
             }
         }
-        Integer pos = lower.indexOf(" in ") + 4;
-        if (pos > 4) {
-            Integer end = lower.indexOf(" ", pos) < 0 ? lower.length(): lower.indexOf(" ", pos);
-            String it = lower.substring(pos, end);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
-        pos = lower.indexOf(" because ") + 9;
+
+        Integer pos = lower.indexOf(" because ") + 9;
         if (pos > 9) {
-            Integer end = lower.indexOf(" ", pos) < 0 ? lower.length(): lower.indexOf(" ", pos);
-            String it = lower.substring(pos, end);
-            if (!it.equals(reason.toString().toLowerCase())) {
+            Integer end = lower.indexOf(" ", pos) < 0 ? lower.length() : lower.indexOf(" ", pos);
+            if (!lower.substring(pos, end).equals(reason.toString().toLowerCase())) {
                 return false;
             }
         }
@@ -138,8 +122,8 @@ public class EntityTargetsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -158,10 +142,10 @@ public class EntityTargetsScriptEvent extends ScriptEvent implements Listener {
     public void onEntityTargets(EntityTargetEvent event) {
         entity = new dEntity(event.getEntity());
         reason = new Element(event.getReason().toString());
-        target = event.getTarget() != null ? new dEntity(event.getTarget()): null;
+        target = event.getTarget() != null ? new dEntity(event.getTarget()) : null;
         location = new dLocation(event.getEntity().getLocation());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

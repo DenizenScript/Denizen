@@ -1,16 +1,15 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -18,7 +17,7 @@ import org.bukkit.block.Sign;
 
 public class SignCommand extends AbstractCommand {
 
-    private enum Type { AUTOMATIC, SIGN_POST, WALL_SIGN }
+    private enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -68,15 +67,15 @@ public class SignCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), typeElement.debug()
-                                          + location.debug()
-                                          + text.debug());
+                + location.debug()
+                + text.debug());
 
         Type type = Type.valueOf(typeElement.asString().toUpperCase());
         Block sign = location.getBlock();
         if (type != Type.AUTOMATIC
                 || (sign.getType() != Material.WALL_SIGN
                 && sign.getType() != Material.SIGN_POST))
-            sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN: Material.SIGN_POST);
+            sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN : Material.SIGN_POST);
         BlockState signState = sign.getState();
 
         Utilities.setSignLines((Sign) signState, text.toArray(4));

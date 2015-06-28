@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -11,11 +11,8 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.BracedCommand;
 import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class WhileCommand extends BracedCommand {
@@ -147,7 +144,7 @@ public class WhileCommand extends BracedCommand {
             if (scriptEntry.getOwner() != null && (scriptEntry.getOwner().getCommandName().equalsIgnoreCase("while") ||
                     scriptEntry.getOwner().getBracedSet() == null || scriptEntry.getOwner().getBracedSet().size() == 0 ||
                     scriptEntry.getBracedSet().get(0).value.get(scriptEntry.getBracedSet().get(0).value.size() - 1) != scriptEntry)) {
-                WhileData data = (WhileData)scriptEntry.getOwner().getData();
+                WhileData data = (WhileData) scriptEntry.getOwner().getData();
                 data.index++;
                 if (System.currentTimeMillis() - data.LastChecked < 50) {
                     data.instaTicks++;
@@ -165,8 +162,8 @@ public class WhileCommand extends BracedCommand {
                     List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
                     ScriptEntry callbackEntry = null;
                     try {
-                        callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
-                                (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                        callbackEntry = new ScriptEntry("WHILE", new String[]{"\0CALLBACK"},
+                                (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
                         callbackEntry.copyFrom(scriptEntry);
                     }
                     catch (ScriptEntryCreationException e) {
@@ -214,8 +211,8 @@ public class WhileCommand extends BracedCommand {
             scriptEntry.setData(datum);
             ScriptEntry callbackEntry = null;
             try {
-                callbackEntry = new ScriptEntry("WHILE", new String[] { "\0CALLBACK" },
-                        (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer(): null));
+                callbackEntry = new ScriptEntry("WHILE", new String[]{"\0CALLBACK"},
+                        (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
                 callbackEntry.copyFrom(scriptEntry);
             }
             catch (ScriptEntryCreationException e) {

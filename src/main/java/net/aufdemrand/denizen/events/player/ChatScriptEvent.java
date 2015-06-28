@@ -127,7 +127,7 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
             dList recs = dList.valueOf(rec_new);
             List<dPlayer> players = recs.filter(dPlayer.class);
             recipients.clear();
-            for (dPlayer player: players) {
+            for (dPlayer player : players) {
                 recipients.add(player.getPlayerEntity());
             }
         }
@@ -152,7 +152,7 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
         context.put("message", message);
         context.put("format", format);
         dList list = new dList();
-        for (Player tplayer: recipients) {
+        for (Player tplayer : recipients) {
             list.add(dPlayer.mirrorBukkitPlayer(tplayer).identify());
         }
         context.put("recipients", list);

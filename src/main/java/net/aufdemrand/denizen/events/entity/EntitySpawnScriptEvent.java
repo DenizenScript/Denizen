@@ -1,35 +1,33 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dEllipsoid;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.util.HashMap;
 
-public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
+public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // entity spawns
-    // entity spawns (in <notable cuboid>) (because <cause>)
+    // entity spawns (in <area>) (because <cause>)
     // <entity> spawns
-    // <entity> spawns (in <notable cuboid>) (because <cause>)
+    // <entity> spawns (in <area>) (because <cause>)
     //
     // @Cancellable true
     //
@@ -49,6 +47,7 @@ public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
     public EntitySpawnScriptEvent() {
         instance = this;
     }
+
     public static EntitySpawnScriptEvent instance;
     public dEntity entity;
     public dLocation location;
@@ -59,7 +58,7 @@ public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains(" spawns");
+        return CoreUtilities.xthArgEquals(1, lower, "spawns") && !lower.startsWith("item");
     }
 
     @Override
@@ -70,24 +69,8 @@ public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(2, lower, "in")) {
-            String it = CoreUtilities.getXthArg(3, lower);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
 
         if (CoreUtilities.xthArgEquals(4, lower, "because")) {
@@ -118,8 +101,8 @@ public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -134,16 +117,19 @@ public class EntitySpawnScriptEvent extends ScriptEvent implements Listener {
 
     @EventHandler
     public void onEntityInteract(CreatureSpawnEvent event) {
-        entity = new dEntity(event.getEntity());
+        Entity entity = event.getEntity();
+        this.entity = new dEntity(entity);
         location = new dLocation(event.getLocation());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         reason = new Element(event.getSpawnReason().name());
         cancelled = event.isCancelled();
         this.event = event;
+        dEntity.rememberEntity(entity);
         fire();
+        dEntity.forgetEntity(entity);
         event.setCancelled(cancelled);
     }
 

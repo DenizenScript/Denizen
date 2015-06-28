@@ -1,22 +1,22 @@
 package net.aufdemrand.denizen.npc.traits;
 
+import net.aufdemrand.denizen.flags.FlagManager.Flag;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.citizensnpcs.api.event.NPCTraitCommandAttachEvent;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.EventHandler;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import net.aufdemrand.denizen.flags.FlagManager.Flag;
+import org.bukkit.event.EventHandler;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // TODO: Documenting language/tutorial files
 
@@ -33,6 +33,7 @@ public class MobproxTrait extends Trait {
     Flag facceptnpc;
     Flag ftimer;
     List<Entity> inrange = new ArrayList<Entity>();
+
     @Override
     public void run() {
         checkTimer++;
@@ -50,7 +51,7 @@ public class MobproxTrait extends Trait {
                     List<Entity> nearby = liveEnt.getNearbyEntities(range, range, range);
                     List<Entity> removeme = new ArrayList<Entity>();
                     removeme.addAll(inrange);
-                    for (Entity ent: nearby) {
+                    for (Entity ent : nearby) {
                         if (ent instanceof LivingEntity && !(ent instanceof Player) && (acceptnpc || (!dEntity.isCitizensNPC(ent)))) {
                             if (removeme.contains(ent)) {
                                 removeme.remove(ent);
@@ -64,7 +65,7 @@ public class MobproxTrait extends Trait {
                             }
                         }
                     }
-                    for (Entity ent: removeme) {
+                    for (Entity ent : removeme) {
                         inrange.remove(ent);
                         callAction("exit", ent);
                     }
@@ -72,6 +73,7 @@ public class MobproxTrait extends Trait {
             }
         }
     }
+
     // <--[action]
     // @Actions
     // mob enter proximity
@@ -112,6 +114,7 @@ public class MobproxTrait extends Trait {
         dnpc.action("mob " + act + " proximity", null, context);
         dnpc.action(ent.getType().name() + " " + act + " proximity", null, context);
     }
+
     @EventHandler
     public void onTraitAttachEvent(NPCTraitCommandAttachEvent event) {
         if (!event.getTraitClass().equals(MobproxTrait.class)) {
@@ -126,6 +129,7 @@ public class MobproxTrait extends Trait {
             event.getCommandSender().sendMessage(ChatColor.RED + "Warning: This NPC doesn't have a script assigned! Mobprox only works with scripted Denizen NPCs!");
         }
     }
+
     @Override
     public void onSpawn() {
         liveEnt = (LivingEntity) getNPC().getEntity();

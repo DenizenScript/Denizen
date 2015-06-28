@@ -1,8 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dScript;
 import org.bukkit.ChatColor;
 
 public class Comparable {
@@ -69,12 +72,12 @@ public class Comparable {
         REGULAR, NEGATIVE
     }
 
-    Logic         logic = Logic.REGULAR;
-    Bridge       bridge = Bridge.FIRST;
-    Object   comparable = null;
-    Operator   operator = Operator.EQUALS;
-    Object   comparedto = "true";
-    Boolean     outcome = null;
+    Logic logic = Logic.REGULAR;
+    Bridge bridge = Bridge.FIRST;
+    Object comparable = null;
+    Operator operator = Operator.EQUALS;
+    Object comparedto = "true";
+    Boolean outcome = null;
 
 
     public void setNegativeLogic() {
@@ -125,9 +128,9 @@ public class Comparable {
             else {
                 if (!arg.equalsIgnoreCase("null"))
                     // TODO: echoDebug instead of log
-                 //   dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
-                 //           + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
-                comparedto = Double.NaN;
+                    //   dB.log(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
+                    //           + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
+                    comparedto = Double.NaN;
             }
         }
 
@@ -201,7 +204,7 @@ public class Comparable {
         else
             comparedto = ((Long) this.comparedto).doubleValue();
 
-        switch(operator) {
+        switch (operator) {
 
             case EQUALS:
                 if (comparable.doubleValue() == comparedto.doubleValue()) outcome = true;
@@ -231,13 +234,13 @@ public class Comparable {
 
         dList comparable = (dList) this.comparable;
 
-        switch(operator) {
+        switch (operator) {
 
             case CONTAINS:
                 dMaterial compared_mat = null;
                 if (comparable.containsObjectsFrom(dLocation.class) &&
-                        comparedto instanceof String && dMaterial.matches((String)comparedto)) {
-                    compared_mat = dMaterial.valueOf((String)comparedto);
+                        comparedto instanceof String && dMaterial.matches((String) comparedto)) {
+                    compared_mat = dMaterial.valueOf((String) comparedto);
                 }
                 for (String string : comparable) {
                     if (comparedto instanceof Long) {
@@ -308,7 +311,7 @@ public class Comparable {
 
         if (comparable == null || comparedto == null) return;
 
-        switch(operator) {
+        switch (operator) {
             // For checking if a FLAG is empty.
             case IS_EMPTY:
                 outcome = comparable.length() == 0;
@@ -369,8 +372,8 @@ public class Comparable {
                     outcome = (dEntity.matches(comparable) && dEntity.valueOf(comparable).isSpawned());
 
                 /** TODO: FIX
-                else if (comparedto.equalsIgnoreCase("entitytype"))
-                    outcome = aH.matchesEntityType(comparable);
+                 else if (comparedto.equalsIgnoreCase("entitytype"))
+                 outcome = aH.matchesEntityType(comparable);
                  */
 
                 else if (comparedto.equalsIgnoreCase("npc"))
@@ -388,8 +391,8 @@ public class Comparable {
                 else if (comparedto.equalsIgnoreCase("item"))
                     outcome = dItem.matches(comparable);
 
-                //else if (comparedto.equalsIgnoreCase("pose"))
-                //    outcome = true; // TODO: outcome = aH.matchesPose(comparable);
+                    //else if (comparedto.equalsIgnoreCase("pose"))
+                    //    outcome = true; // TODO: outcome = aH.matchesPose(comparable);
 
                 else if (comparedto.equalsIgnoreCase("duration"))
                     outcome = Duration.matches(comparable);
@@ -429,13 +432,13 @@ public class Comparable {
 
     @Override
     public String toString() {
-        return  (logic != Logic.REGULAR ? "Logic='" + logic.toString() + "', " : "")
-                + "Comparable='" + (comparable == null ? "null'" : (comparable instanceof Double ? "Decimal":
-                comparable instanceof String ? "Element": (comparable instanceof Long ? "Number": (comparable instanceof dList ? "dList" :log(comparable.getClass().getSimpleName()))))
+        return (logic != Logic.REGULAR ? "Logic='" + logic.toString() + "', " : "")
+                + "Comparable='" + (comparable == null ? "null'" : (comparable instanceof Double ? "Decimal" :
+                comparable instanceof String ? "Element" : (comparable instanceof Long ? "Number" : (comparable instanceof dList ? "dList" : log(comparable.getClass().getSimpleName()))))
                 + "(" + ChatColor.AQUA + comparable + ChatColor.WHITE + ")'")
                 + ", Operator='" + operator.toString()
-                + "', ComparedTo='" + (comparedto == null ? "null'" : (comparedto instanceof Double ? "Decimal":
-                comparedto instanceof String ? "Element": (comparedto instanceof Long ? "Number": (comparedto instanceof dList ? "dList" :log(comparedto.getClass().getSimpleName()))))
+                + "', ComparedTo='" + (comparedto == null ? "null'" : (comparedto instanceof Double ? "Decimal" :
+                comparedto instanceof String ? "Element" : (comparedto instanceof Long ? "Number" : (comparedto instanceof dList ? "dList" : log(comparedto.getClass().getSimpleName()))))
                 + "(" + ChatColor.AQUA + comparedto + ChatColor.WHITE + ")' ")
                 + ChatColor.YELLOW + "--> OUTCOME='" + outcome + "'";
     }

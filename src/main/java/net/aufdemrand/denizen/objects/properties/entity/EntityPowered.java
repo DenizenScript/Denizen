@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityPowered implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.CREEPER;
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.CREEPER;
     }
 
     public static EntityPowered getFrom(dObject entity) {
@@ -32,13 +32,13 @@ public class EntityPowered implements Property {
     dEntity powered;
 
     private boolean getPowered() {
-        return ((Creeper)(powered.getBukkitEntity())).isPowered();
+        return ((Creeper) (powered.getBukkitEntity())).isPowered();
     }
 
     private void setPowered(boolean power) {
         if (powered == null) return;
 
-        ((Creeper)(powered.getBukkitEntity())).setPowered(power);
+        ((Creeper) (powered.getBukkitEntity())).setPowered(power);
     }
 
     /////////

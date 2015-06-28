@@ -2,14 +2,14 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
-import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>The Proximity Trigger is used to execute a script when a player moves
  * within a certain radius of a location.  If the radius are not specified,
  * then the default for entry, exit, and move is 5 blocks.</p>
- *
+ * <p/>
  * Example Interact Script Usage:<br/>
  * This script will execute a script when the player walks within 5 blocks of
  * the NPC that this trigger is assigned to and they were not previously within
@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Stop pacing <PLAYER.NAME>!"<br/>
  * </tt>
  * </ol>
- *
+ * <p/>
  * Example Action Usage:<br/>
  * Entering and exiting NPC proximities will also trigger a couple of Actions that can be utilized. If no
  * Actions are present in the NPC Assignment Script, no action will be taken. Normal cooldown and radius
@@ -64,7 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * &nbsp;&nbsp;- ...<br/>
  * </tt>
  * </ol>
-
+ *
  * @author dbixler, aufdemrand
  */
 public class ProximityTrigger extends AbstractTrigger implements Listener {
@@ -148,6 +148,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     //
     // -->
     int taskID = -1;
+
     @Override
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
@@ -161,9 +162,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 //
                 // Iterate over all of the NPCs
                 //
-                Iterator<dNPC>    it = dNPCRegistry.getSpawnedNPCs().iterator();
-                while (it.hasNext ()) {
-                    dNPC npc = it.next ();
+                Iterator<dNPC> it = dNPCRegistry.getSpawnedNPCs().iterator();
+                while (it.hasNext()) {
+                    dNPC npc = it.next();
                     if (npc == null)
                         continue;
                     if (npc.getCitizen() == null)
@@ -180,7 +181,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     if (!npc.isSpawned()) continue;
 
                     // Loop through all players
-                    for (Player BukkitPlayer: Bukkit.getOnlinePlayers()) {
+                    for (Player BukkitPlayer : Bukkit.getOnlinePlayers()) {
 
                         //
                         // If this NPC is not spawned or in a different world, no need to check,
@@ -221,19 +222,22 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                             try {
                                 if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS"))
                                     entryRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS"));
-                            } catch (NumberFormatException nfe) {
+                            }
+                            catch (NumberFormatException nfe) {
                                 dB.echoDebug(script, "Entry Radius was not an integer.  Assuming " + entryRadius + " as the radius.");
                             }
                             try {
                                 if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS"))
                                     exitRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS"));
-                            } catch (NumberFormatException nfe) {
+                            }
+                            catch (NumberFormatException nfe) {
                                 dB.echoDebug(script, "Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
                             }
                             try {
                                 if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS"))
                                     moveRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS"));
-                            } catch (NumberFormatException nfe) {
+                            }
+                            catch (NumberFormatException nfe) {
                                 dB.echoDebug(script, "Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
                             }
                         }
@@ -300,7 +304,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     }
                 }
             }
-    }, 5, 5);
+        }, 5, 5);
     }
 
     @Override
@@ -312,9 +316,8 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * Checks if the Player in Proximity is close enough to be calculated.
      *
      * @param player the Player
-     * @param npc the NPC
+     * @param npc    the NPC
      * @return true if within maxProximityDistance in all directions
-     *
      */
     private boolean isCloseEnough(Player player, dNPC npc) {
         Location pLoc = player.getLocation();
@@ -330,7 +333,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * calculate distances that exceed the largest number.
      *
      * @param event dScriptReloadEvent, fired upon server startup or '/denizen reload scripts'
-     *
      */
     @EventHandler // TODO: Does this have any point?
     public void checkMaxProximities(ScriptReloadEvent event) {
@@ -364,7 +366,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * proximity will be called.
      *
      * @param player the Player
-     * @param npc the NPC
+     * @param npc    the NPC
      */
     private void enterProximityOf(Player player, dNPC npc) {
         Set<Integer> npcs = proximityTracker.get(player.getUniqueId());
@@ -380,7 +382,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * a Player can enter proximity again.
      *
      * @param player the Player
-     * @param npc the NPC
+     * @param npc    the NPC
      */
     private void exitProximityOf(Player player, dNPC npc) {
         Set<Integer> npcs = proximityTracker.get(player.getUniqueId());

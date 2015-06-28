@@ -1,16 +1,15 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.event.Listener;
 
 
 /**
  * Location tag is a starting point for getting attributes for a
- *
  */
 
 public class CuboidTags implements Listener {

@@ -1,14 +1,19 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -55,7 +60,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
     public static EntityDeathScriptEvent instance;
 
     public dEntity entity;
-    public dEntity damager;
+    public dObject damager;
     public Element message;
     public dInventory inventory;
     public Element cause;
@@ -146,8 +151,8 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -161,7 +166,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
             context.put("message", message);
         }
         if (inventory != null) {
-                context.put("inventory", inventory);
+            context.put("inventory", inventory);
         }
         context.put("cause", cause);
         if (drops != null) {
@@ -182,12 +187,17 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
 
         // If this entity has a stored killer, get it and then
         // remove it from the entityKillers map
+        damager = null;
         EntityDamageEvent lastDamage = entity.getBukkitEntity().getLastDamageCause();
-        if (lastDamage != null && lastDamage instanceof EntityDamageByEntityEvent) {
-            damager = new dEntity(((EntityDamageByEntityEvent) lastDamage).getDamager());
+        if (lastDamage != null) {
+            if (lastDamage instanceof EntityDamageByEntityEvent) {
+                damager = new dEntity(((EntityDamageByEntityEvent) lastDamage).getDamager()).getDenizenObject();
+            }
+
         }
 
         message = null;
+        inventory = null;
         PlayerDeathEvent subEvent = null;
         if (event instanceof PlayerDeathEvent) {
             subEvent = (PlayerDeathEvent) event;
@@ -198,13 +208,13 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
                 inventory = player.getInventory();
             }
         }
-
+        cause = null;
         if (event.getEntity().getLastDamageCause() != null) {
             cause = new Element(event.getEntity().getLastDamageCause().getCause().toString());
         }
 
         drops = new dList();
-        for (ItemStack stack: event.getDrops()) {
+        for (ItemStack stack : event.getDrops()) {
             if (stack == null) {
                 drops.add("i@air");
             }
@@ -219,6 +229,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
 
         event.setDroppedExp(xp);
         if (changed_drops) {
+            event.getDrops().clear();
             for (String drop : drops) {
                 dItem item = dItem.valueOf(drop);
                 if (item != null) {

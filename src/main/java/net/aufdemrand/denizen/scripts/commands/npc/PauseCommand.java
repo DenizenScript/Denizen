@@ -1,14 +1,14 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 import org.bukkit.entity.Player;
 
@@ -18,7 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PauseCommand extends AbstractCommand {
 
     private Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
-    enum PauseType { ACTIVITY, WAYPOINTS, NAVIGATION }
+
+    enum PauseType {ACTIVITY, WAYPOINTS, NAVIGATION}
 
     int duration;
     PauseType pauseType;
@@ -33,8 +34,10 @@ public class PauseCommand extends AbstractCommand {
         pauseType = null;
         dNPC = null;
         player = null;
-        if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() != null) dNPC = ((BukkitScriptEntryData)scriptEntry.entryData).getNPC();
-        if (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null) player = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity();
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null)
+            dNPC = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null)
+            player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
 
         // Parse arguments
         // TODO: UPDATE COMMAND PARSING
@@ -63,7 +66,9 @@ public class PauseCommand extends AbstractCommand {
         // If duration...
         if (duration > 0) {
             if (durations.containsKey(dNPC.getCitizen().getId() + pauseType.name())) {
-                try { DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name())); }
+                try {
+                    DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name()));
+                }
                 catch (Exception e) {
                     dB.echoError(scriptEntry.getResidingQueue(), "There was an error pausing that!");
                     dB.echoError(scriptEntry.getResidingQueue(), e);
@@ -75,30 +80,31 @@ public class PauseCommand extends AbstractCommand {
             final ScriptEntry se = scriptEntry;
             durations.put(dNPC.getId() + pauseType.name(), DenizenAPI.getCurrentInstance()
                     .getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-                    new Runnable() {
-                @Override public void run() {
-                    dB.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());
-                    pause(dNPC, pauseType, false);
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    dB.echoDebug(se, "Running delayed task: Pausing " + pauseType.toString());
+                                    pause(dNPC, pauseType, false);
 
-                }
-            }, duration * 20));
+                                }
+                            }, duration * 20));
         }
     }
 
     public void pause(dNPC denizen, PauseType pauseType, boolean pause) {
         switch (pauseType) {
 
-        case WAYPOINTS:
-            denizen.getCitizen().getTrait(Waypoints.class).getCurrentProvider().setPaused(pause);
-            if (pause) denizen.getNavigator().cancelNavigation();
-            return;
+            case WAYPOINTS:
+                denizen.getCitizen().getTrait(Waypoints.class).getCurrentProvider().setPaused(pause);
+                if (pause) denizen.getNavigator().cancelNavigation();
+                return;
 
-        case ACTIVITY:
-            denizen.getCitizen().getDefaultGoalController().setPaused(pause);
-            return;
+            case ACTIVITY:
+                denizen.getCitizen().getDefaultGoalController().setPaused(pause);
+                return;
 
-        case NAVIGATION:
-            // TODO: Finish this
+            case NAVIGATION:
+                // TODO: Finish this
         }
 
     }

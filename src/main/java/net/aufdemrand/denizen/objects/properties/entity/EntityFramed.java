@@ -1,13 +1,18 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.Rotation;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 
 public class EntityFramed implements Property {
 
@@ -34,7 +39,7 @@ public class EntityFramed implements Property {
 
     public boolean hasItem() {
         return getItemFrameEntity().getItem() != null
-            && getItemFrameEntity().getItem().getType() != Material.AIR;
+                && getItemFrameEntity().getItem().getType() != Material.AIR;
     }
 
     public ItemFrame getItemFrameEntity() {
@@ -58,8 +63,8 @@ public class EntityFramed implements Property {
     public String getPropertyString() {
         if (hasItem())
             return getItem().identify()
-                + (getItemFrameEntity().getRotation() == Rotation.NONE ? ""
-                : '|' + getItemFrameEntity().getRotation().name().toLowerCase());
+                    + (getItemFrameEntity().getRotation() == Rotation.NONE ? ""
+                    : '|' + getItemFrameEntity().getRotation().name().toLowerCase());
         else
             return null;
     }

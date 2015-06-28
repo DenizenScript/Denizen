@@ -10,9 +10,8 @@ import java.util.List;
  * Basic requirement for checking if player is an OP.
  *
  * @author aufdemrand
- *
  */
-public class OpRequirement extends AbstractRequirement{
+public class OpRequirement extends AbstractRequirement {
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {

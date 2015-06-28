@@ -1,13 +1,11 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dEllipsoid;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -23,14 +21,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityBreaksHangingScriptEvent extends ScriptEvent implements Listener {
+public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity breaks hanging (in <notable cuboid>)
-    // entity breaks hanging because <cause> (in <notable cuboid>)
-    // <entity> breaks hanging (in <notable cuboid>)
-    // <entity> breaks hanging because <cause> (in <notable cuboid>)
+    // entity breaks hanging (in <area>)
+    // entity breaks hanging because <cause> (in <area>)
+    // <entity> breaks hanging (in <area>)
+    // <entity> breaks hanging because <cause> (in <area>)
     //
     // @Cancellable true
     //
@@ -49,6 +47,7 @@ public class EntityBreaksHangingScriptEvent extends ScriptEvent implements Liste
     public EntityBreaksHangingScriptEvent() {
         instance = this;
     }
+
     public static EntityBreaksHangingScriptEvent instance;
     public Element cause;
     public dEntity entity;
@@ -70,37 +69,15 @@ public class EntityBreaksHangingScriptEvent extends ScriptEvent implements Liste
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
-        if (!entity.matchesEntity(entName)){
+        if (!entity.matchesEntity(entName)) {
             return false;
         }
 
-        String notable = null;
-        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
-            notable = CoreUtilities.getXthArg(4, lower);
-        }
-        else if (CoreUtilities.xthArgEquals(5, lower, "in")) {
-            notable = CoreUtilities.getXthArg(6, lower);
-        }
-        if (notable != null) {
-            if (dCuboid.matches(notable)) {
-                dCuboid cuboid = dCuboid.valueOf(notable);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(notable)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(notable);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
 
-        if (CoreUtilities.xthArgEquals(3, lower, "because")){
+        if (CoreUtilities.xthArgEquals(3, lower, "because")) {
             if (!CoreUtilities.getXthArg(4, lower).equals(CoreUtilities.toLowerCase(cause.asString()))) {
                 return false;
             }
@@ -130,8 +107,8 @@ public class EntityBreaksHangingScriptEvent extends ScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getRemover()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getRemover()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getRemover()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getRemover()) : null);
     }
 
     @Override
@@ -148,11 +125,11 @@ public class EntityBreaksHangingScriptEvent extends ScriptEvent implements Liste
     @EventHandler
     public void onHangingBreaks(HangingBreakByEntityEvent event) {
         hanging = new dEntity(event.getEntity());
-        cause =  new Element(event.getCause().name());
+        cause = new Element(event.getCause().name());
         location = new dLocation(hanging.getLocation());
         entity = new dEntity(event.getRemover());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

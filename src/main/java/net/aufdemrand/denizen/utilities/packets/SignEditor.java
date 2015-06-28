@@ -26,7 +26,8 @@ public class SignEditor {
         PacketPlayOutOpenSignEditor signEditorPacket = new PacketPlayOutOpenSignEditor();
         try {
             sign_location.set(signEditorPacket, new BlockPosition(location.getX(), location.getY(), location.getZ()));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return signEditorPacket;

@@ -21,7 +21,6 @@ package net.aufdemrand.denizen.utilities.jnbt;
 
 /**
  * The {@code TAG_Double} tag.
- *
  */
 public final class DoubleTag extends Tag {
 

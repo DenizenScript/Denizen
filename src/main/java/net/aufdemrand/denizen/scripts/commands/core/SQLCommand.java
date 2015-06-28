@@ -24,7 +24,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void onDisable() {
-        for (Map.Entry<String, Connection> entry: connections.entrySet()) {
+        for (Map.Entry<String, Connection> entry : connections.entrySet()) {
             try {
                 entry.getValue().close();
             }
@@ -94,18 +94,18 @@ public class SQLCommand extends AbstractCommand implements Holdable {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Element action = scriptEntry.getElement("action");
-        final  Element server = scriptEntry.getElement("server");
+        final Element server = scriptEntry.getElement("server");
         final Element username = scriptEntry.getElement("username");
         final Element password = scriptEntry.getElement("password");
         final Element sqlID = scriptEntry.getElement("sqlid");
         final Element query = scriptEntry.getElement("query");
 
         dB.report(scriptEntry, getName(), sqlID.debug()
-                                        + action.debug()
-                                        + (server != null ? server.debug(): "")
-                                        + (username != null ? username.debug(): "")
-                                        + (password != null ? aH.debugObj("password", "NotLogged"): "")
-                                        + (query != null ? query.debug(): ""));
+                + action.debug()
+                + (server != null ? server.debug() : "")
+                + (username != null ? username.debug() : "")
+                + (password != null ? aH.debugObj("password", "NotLogged") : "")
+                + (query != null ? query.debug() : ""));
 
         if (!action.asString().equalsIgnoreCase("connect") &&
                 (!action.asString().equalsIgnoreCase("query") || !scriptEntry.shouldWaitFor()))
@@ -226,7 +226,8 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                                         scriptEntry.setFinished(true);
                                     }
                                 }, 1);
-                            } catch (final Exception e) {
+                            }
+                            catch (final Exception e) {
                                 Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
                                     @Override
                                     public void run() {

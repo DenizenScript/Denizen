@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
  * after scripts are reloaded.
  *
  * @author Jeremy Schroeder
- *
  */
 public class ScriptReloadEvent extends Event {
 

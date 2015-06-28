@@ -39,7 +39,7 @@ public class DenizenCommandSender extends ColouredConsoleSender {
 
     @Override
     public void sendMessage(String[] strings) {
-        for (String string: strings) {
+        for (String string : strings) {
             sendMessage(string);
         }
     }

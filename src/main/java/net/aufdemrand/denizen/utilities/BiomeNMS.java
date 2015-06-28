@@ -106,7 +106,7 @@ public class BiomeNMS {
 
     public void changeBlockBiome(Location location) {
         int x = location.getBlockX();
-        int z  = location.getBlockZ();
+        int z = location.getBlockZ();
         World world = ((CraftWorld) location.getWorld()).getHandle();
         if (world.isLoaded(new BlockPosition(x, 0, z))) {
             Chunk chunk = world.getChunkAtWorldCoords(new BlockPosition(x, 0, z));
@@ -125,7 +125,8 @@ public class BiomeNMS {
     private boolean getDoesRain() {
         try {
             return DOES_RAIN.getBoolean(biomeBase);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
             return false;
         }
@@ -134,7 +135,8 @@ public class BiomeNMS {
     private boolean getDoesSnow() {
         try {
             return DOES_SNOW.getBoolean(biomeBase);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
             return false;
         }
@@ -143,7 +145,8 @@ public class BiomeNMS {
     private void setDoesRain(boolean doesRain) {
         try {
             DOES_RAIN.set(biomeBase, doesRain);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }
@@ -151,7 +154,8 @@ public class BiomeNMS {
     private void setDoesSnow(boolean doesSnow) {
         try {
             DOES_SNOW.set(biomeBase, doesSnow);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }
@@ -159,6 +163,7 @@ public class BiomeNMS {
     private static final Map<Class<? extends Entity>, Integer> ENTITY_CLASS_ID_MAP;
     private static final Field DOES_RAIN;
     private static final Field DOES_SNOW;
+
     static {
         Map<Class<? extends Entity>, Integer> map = null;
         Field rains = null;
@@ -167,19 +172,22 @@ public class BiomeNMS {
             Field field = EntityTypes.class.getDeclaredField("f");
             field.setAccessible(true);
             map = (Map<Class<? extends Entity>, Integer>) field.get(null);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         try {
             rains = BiomeBase.class.getDeclaredField("ay");
             rains.setAccessible(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         try {
             snows = BiomeBase.class.getDeclaredField("ax");
             snows.setAccessible(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         ENTITY_CLASS_ID_MAP = map;

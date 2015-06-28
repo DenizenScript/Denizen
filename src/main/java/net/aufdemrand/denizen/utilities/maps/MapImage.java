@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -102,7 +101,8 @@ public class MapImage extends MapObject {
             Field field = MapPalette.class.getDeclaredField("colors");
             field.setAccessible(true);
             colors = (Color[]) field.get(null);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         bukkitColors = colors;

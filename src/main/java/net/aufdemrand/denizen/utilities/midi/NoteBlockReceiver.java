@@ -1,24 +1,21 @@
 package net.aufdemrand.denizen.utilities.midi;
 
+import com.google.common.collect.Maps;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import org.bukkit.Sound;
+
 import javax.sound.midi.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dLocation;
-
-import org.bukkit.Sound;
-
-import com.google.common.collect.Maps;
 
 /**
  * Midi Receiver for processing note events.
  *
  * @author authorblues
  */
-public class NoteBlockReceiver implements Receiver
-{
+public class NoteBlockReceiver implements Receiver {
     private static final float VOLUME_RANGE = 10.0f;
 
     private List<dEntity> entities;
@@ -27,16 +24,14 @@ public class NoteBlockReceiver implements Receiver
     public String key = null;
     public Sequencer sequencer;
 
-    public NoteBlockReceiver(List<dEntity> entities, String _Key) throws InvalidMidiDataException, IOException
-    {
+    public NoteBlockReceiver(List<dEntity> entities, String _Key) throws InvalidMidiDataException, IOException {
         this.entities = entities;
         this.location = null;
         this.channelPatches = Maps.newHashMap();
         this.key = _Key;
     }
 
-    public NoteBlockReceiver(dLocation location, String _Key) throws InvalidMidiDataException, IOException
-    {
+    public NoteBlockReceiver(dLocation location, String _Key) throws InvalidMidiDataException, IOException {
         this.entities = null;
         this.location = location;
         this.channelPatches = Maps.newHashMap();
@@ -48,15 +43,12 @@ public class NoteBlockReceiver implements Receiver
     }
 
     @Override
-    public void send(MidiMessage m, long time)
-    {
-        if (m instanceof ShortMessage)
-        {
+    public void send(MidiMessage m, long time) {
+        if (m instanceof ShortMessage) {
             ShortMessage smessage = (ShortMessage) m;
             int chan = smessage.getChannel();
 
-            switch (smessage.getCommand())
-            {
+            switch (smessage.getCommand()) {
                 case ShortMessage.PROGRAM_CHANGE:
                     int patch = smessage.getData1();
                     channelPatches.put(chan, patch);
@@ -76,8 +68,7 @@ public class NoteBlockReceiver implements Receiver
         }
     }
 
-    public void playNote(ShortMessage message)
-    {
+    public void playNote(ShortMessage message) {
         // if this isn't a NOTE_ON message, we can't play it
         if (ShortMessage.NOTE_ON != message.getCommand()) return;
 
@@ -121,8 +112,7 @@ public class NoteBlockReceiver implements Receiver
     }
 
     @Override
-    public void close()
-    {
+    public void close() {
         entities = null;
         location = null;
         channelPatches.clear();

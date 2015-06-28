@@ -9,7 +9,6 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -43,6 +42,7 @@ public class PistonRetractsScriptEvent extends ScriptEvent implements Listener {
     public PistonRetractsScriptEvent() {
         instance = this;
     }
+
     public static PistonRetractsScriptEvent instance;
     public dLocation location;
     public dMaterial material;
@@ -104,10 +104,10 @@ public class PistonRetractsScriptEvent extends ScriptEvent implements Listener {
     public void onPistonRetracts(BlockPistonRetractEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        sticky = new Element(event.isSticky() ? "true": "false");
+        sticky = new Element(event.isSticky() ? "true" : "false");
         relative = new dLocation(event.getBlock().getRelative(event.getDirection()).getLocation());
         blocks = new dList();
-        for (Block block: event.getBlocks()) {
+        for (Block block : event.getBlocks()) {
             blocks.add(new dLocation(block.getLocation()).identify());
         }
         retract_location = new dLocation(event.getBlock().getRelative(event.getDirection(), 2).getLocation());

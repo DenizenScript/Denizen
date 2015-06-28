@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.events.bukkit;
 
 import net.aufdemrand.denizen.objects.dPlayer;
-
 import org.bukkit.event.HandlerList;
 
 
@@ -9,7 +8,6 @@ import org.bukkit.event.HandlerList;
  * An event that fires on a Player finishing a ' Player Listener'.
  *
  * @author Jeremy Schroeder
- *
  */
 
 public class ListenerFinishEvent extends ListenerEvent {

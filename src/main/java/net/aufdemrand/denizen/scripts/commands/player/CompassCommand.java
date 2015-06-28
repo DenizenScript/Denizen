@@ -1,13 +1,15 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class CompassCommand extends AbstractCommand {
@@ -20,17 +22,23 @@ public class CompassCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-             if (!scriptEntry.hasObject("location")
-                 && arg.matchesArgumentType(dLocation.class))
-                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class))
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-             else
-                 arg.reportUnhandled();
+            else if (!scriptEntry.hasObject("reset")
+                    && arg.matches("reset"))
+                scriptEntry.addObject("reset", new Element(true));
+
+            else
+                arg.reportUnhandled();
         }
 
         // Check for required information
-         if (!scriptEntry.hasObject("location"))
-              throw new InvalidArgumentsException("Missing location argument!");
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("reset"))
+            throw new InvalidArgumentsException("Missing location argument!");
+
+        scriptEntry.defaultObject("reset", new Element(false));
     }
 
 
@@ -39,16 +47,22 @@ public class CompassCommand extends AbstractCommand {
 
         // Fetch required objects
 
-        dLocation location = (dLocation) scriptEntry.getObject("location");
-        Player player = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity();
+        dLocation location = scriptEntry.getdObject("location");
+        Element reset = scriptEntry.getElement("reset");
+        Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
 
 
         // Debug the execution
 
-        dB.report(scriptEntry, getName(), location.debug());
+        dB.report(scriptEntry, getName(), location.debug() + reset.debug());
 
-
-        player.setCompassTarget(location);
+        if (reset.asBoolean()) {
+            Location bed = player.getBedSpawnLocation();
+            player.setCompassTarget(bed != null ? bed : player.getWorld().getSpawnLocation());
+        }
+        else {
+            player.setCompassTarget(location);
+        }
 
 
     }

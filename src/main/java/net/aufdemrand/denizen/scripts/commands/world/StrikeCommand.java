@@ -1,13 +1,13 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
 public class StrikeCommand extends AbstractCommand {
@@ -47,7 +47,7 @@ public class StrikeCommand extends AbstractCommand {
         // Debugger
         dB.report(scriptEntry, getName(),
                 location.debug()
-                + aH.debugObj("Damageable", String.valueOf(damage)));
+                        + aH.debugObj("Damageable", String.valueOf(damage)));
 
         // Play the sound
         if (damage)

@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.Material;
@@ -13,8 +15,8 @@ public class EntityItem implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity &&
-                ( ((dEntity)entity).getBukkitEntityType() == EntityType.DROPPED_ITEM
-                || ((dEntity)entity).getBukkitEntityType() == EntityType.ENDERMAN);
+                (((dEntity) entity).getBukkitEntityType() == EntityType.DROPPED_ITEM
+                        || ((dEntity) entity).getBukkitEntityType() == EntityType.ENDERMAN);
     }
 
     public static EntityItem getFrom(dObject entity) {
@@ -35,9 +37,9 @@ public class EntityItem implements Property {
 
     public dItem getItem() {
         if (item.getBukkitEntity() instanceof Item)
-            return new dItem(((Item)item.getBukkitEntity()).getItemStack());
+            return new dItem(((Item) item.getBukkitEntity()).getItemStack());
         else
-            return new dItem(((Enderman)item.getBukkitEntity())
+            return new dItem(((Enderman) item.getBukkitEntity())
                     .getCarriedMaterial().toItemStack());
     }
 
@@ -97,10 +99,10 @@ public class EntityItem implements Property {
 
         if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
             if (item.getBukkitEntity() instanceof Item)
-                ((Item)item.getBukkitEntity()).setItemStack(mechanism.getValue()
+                ((Item) item.getBukkitEntity()).setItemStack(mechanism.getValue()
                         .asType(dItem.class).getItemStack());
             else
-                ((Enderman)item.getBukkitEntity()).setCarriedMaterial(
+                ((Enderman) item.getBukkitEntity()).setCarriedMaterial(
                         mechanism.getValue().asType(dItem.class).getItemStack().getData());
         }
     }

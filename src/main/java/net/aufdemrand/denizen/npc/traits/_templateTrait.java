@@ -28,8 +28,7 @@ public class _templateTrait extends Trait {
     }
 
     @EventHandler
-    public void leftClick(NPCLeftClickEvent event)
-    {
+    public void leftClick(NPCLeftClickEvent event) {
         // if (event.getNPC() == this.getNPC()) {
 
         // }

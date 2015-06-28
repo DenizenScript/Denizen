@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
 
 import java.util.List;
 
-public class HoldingRequirement extends AbstractRequirement{
+public class HoldingRequirement extends AbstractRequirement {
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
@@ -23,7 +23,7 @@ public class HoldingRequirement extends AbstractRequirement{
             if (aH.matchesQuantity(thisArg))
                 quantity = aH.getIntegerFrom(thisArg);
 
-            else if(aH.matchesArg("EXACT, EXACTLY, EQUALS", thisArg)) {
+            else if (aH.matchesArg("EXACT, EXACTLY, EQUALS", thisArg)) {
                 exact = true;
             }
 

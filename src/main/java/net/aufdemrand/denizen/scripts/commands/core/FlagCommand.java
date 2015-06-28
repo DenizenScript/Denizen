@@ -1,16 +1,21 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.flags.FlagManager.Flag;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.Listener;
 
 /**
@@ -19,7 +24,6 @@ import org.bukkit.event.Listener;
  *
  * @author Jeremy Schroeder
  * @version 1.0
- *
  */
 
 public class FlagCommand extends AbstractCommand implements Listener {
@@ -43,17 +47,19 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("npc", "denizen")) {
                 specified_target = true;
-                scriptEntry.addObject("flag_target", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
+                scriptEntry.addObject("flag_target", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
 
-            } else if (!scriptEntry.hasObject("flag_target")
+            }
+            else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("global", "server")) {
                 specified_target = true;
                 scriptEntry.addObject("flag_target", Element.SERVER);
 
-            } else if (!scriptEntry.hasObject("flag_target")
+            }
+            else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("player")) {
                 specified_target = true;
-                scriptEntry.addObject("flag_target", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+                scriptEntry.addObject("flag_target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
             }
 
             // Allow a p@player or n@npc entity to specify the target to be flagged.
@@ -94,7 +100,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
             // Check for flag_name:value/action
             else if (!scriptEntry.hasObject("flag_name") &&
-                        arg.raw_value.split(":", 3).length == 2) {
+                    arg.raw_value.split(":", 3).length == 2) {
 
                 String[] flagArgs = arg.raw_value.split(":", 2);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
@@ -163,7 +169,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         // Set defaults
         if (!specified_target)
-            scriptEntry.defaultObject("flag_target", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+            scriptEntry.defaultObject("flag_target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
 
         // Check required arguments
         if (!scriptEntry.hasObject("action"))
@@ -190,7 +196,10 @@ public class FlagCommand extends AbstractCommand implements Listener {
         if (name.asString().contains("[")) {
             try {
                 index = Integer.valueOf(name.asString().split("\\[")[1].replace("]", ""));
-            } catch (Exception e) { index = -1; }
+            }
+            catch (Exception e) {
+                index = -1;
+            }
             name = Element.valueOf(name.asString().split("\\[")[0]);
         }
 

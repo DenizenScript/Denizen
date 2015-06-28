@@ -1,13 +1,15 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.tags.Attribute;
 
 public class InventoryContents implements Property {
 
@@ -165,10 +167,10 @@ public class InventoryContents implements Property {
                 // -->
                 if (attribute.startsWith("simple"))
                     return getContentsWithLore(lore, true)
-                                .getAttribute(attribute.fulfill(1));
+                            .getAttribute(attribute.fulfill(1));
 
                 return getContentsWithLore(lore, false)
-                            .getAttribute(attribute);
+                        .getAttribute(attribute);
             }
 
             return getContents(0).getAttribute(attribute);

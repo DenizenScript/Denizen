@@ -1,11 +1,15 @@
 package net.aufdemrand.denizen.events.core;
 
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
-import net.aufdemrand.denizencore.events.OldSmartEvent;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -21,6 +25,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     class CommandHandlerData {
         public final String name;
         public final String event;
+
         public CommandHandlerData(String name, String event) {
             this.name = name;
             this.event = event;
@@ -87,7 +92,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     private List<String> getAll(String cmd) {
         List<String> newEvents = new ArrayList<String>();
         cmd = cmd.toLowerCase();
-        for (CommandHandlerData chd: cmds) {
+        for (CommandHandlerData chd : cmds) {
             if (chd.name.equalsIgnoreCase(cmd)) {
                 newEvents.add(chd.event + " command");
             }
@@ -155,7 +160,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // <--[event]
     // @Events
     // command
-    // <command_name>|... command (in <notable cuboid>)
+    // <command_name>|... command (in <area>)
     //
     // @Regex on [^\s]+ command(in \w+)?
     //
@@ -191,7 +196,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         dList cuboid_context = new dList();
         List<String> cuboidEvents = new ArrayList<String>();
         for (dCuboid cuboid : cuboids) {
-            for (String str: events) {
+            for (String str : events) {
                 cuboidEvents.add(str + " in " + cuboid.identifySimple());
             }
             cuboid_context.add(cuboid.identifySimple());

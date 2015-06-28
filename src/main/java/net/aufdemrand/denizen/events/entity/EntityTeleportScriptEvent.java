@@ -119,7 +119,7 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
         return new BukkitScriptEntryData(pEvent != null ? dEntity.getPlayerFrom(pEvent.getPlayer()) : null,
-                entity.isCitizensNPC() ? entity.getDenizenNPC(): null);
+                entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
     }
 
     @Override

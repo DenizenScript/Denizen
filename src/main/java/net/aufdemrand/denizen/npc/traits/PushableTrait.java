@@ -140,12 +140,12 @@ public class PushableTrait extends Trait implements Listener {
     // None
     //
     // -->
+
     /**
      * Fires an 'On Push:' action upon being pushed.
-     *
      */
     @EventHandler
-    public void NPCPush (NPCPushEvent event) {
+    public void NPCPush(NPCPushEvent event) {
         if (event.getNPC() == npc && pushable) {
             event.setCancelled(false);
             // On Push action / Push Trigger
@@ -164,7 +164,11 @@ public class PushableTrait extends Trait implements Listener {
                 returnLocation = npc.getEntity().getLocation().clone();
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
                         DenizenAPI.getCurrentInstance(), new Runnable() {
-                            @Override public void run() { navigateBack(); } }, delay * 20);
+                            @Override
+                            public void run() {
+                                navigateBack();
+                            }
+                        }, delay * 20);
             }
         }
     }
@@ -179,12 +183,12 @@ public class PushableTrait extends Trait implements Listener {
     // None
     //
     // -->
+
     /**
      * Fires a 'On Push Return:' action upon return after being pushed.
-     *
      */
     @EventHandler
-    public void NPCCompleteDestination (NavigationCompleteEvent event) {
+    public void NPCCompleteDestination(NavigationCompleteEvent event) {
         if (event.getNPC() == npc && pushed) {
             EntityLiving handle = ((CraftLivingEntity) npc.getEntity()).getHandle();
             handle.yaw = returnLocation.getYaw();
@@ -201,7 +205,8 @@ public class PushableTrait extends Trait implements Listener {
     protected void navigateBack() {
         if (npc.getNavigator().isNavigating()) {
             pushed = false;
-        } else if (pushed) {
+        }
+        else if (pushed) {
             pushed = false; // Avoids NPCCompleteDestination from triggering
             npc.getNavigator().setTarget(returnLocation);
             pushed = true;

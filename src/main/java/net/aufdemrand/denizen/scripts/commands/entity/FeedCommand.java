@@ -1,17 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizen.npc.traits.HungerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.traits.HungerTrait;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class FeedCommand extends AbstractCommand {
 
@@ -33,18 +32,18 @@ public class FeedCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("targetnpc"))
                 scriptEntry.addObject("targetnpc", arg.asType(dNPC.class));
 
-            // Backwards compatibility
+                // Backwards compatibility
             else if (arg.matches("NPC")
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")
-                    && ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
-                scriptEntry.addObject("targetnpc", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
+                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+                scriptEntry.addObject("targetnpc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
 
             else if (arg.matches("PLAYER")
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")
-                    && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
-                scriptEntry.addObject("targetplayer", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("targetplayer", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
 
             else arg.reportUnhandled();
 
@@ -52,10 +51,10 @@ public class FeedCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("targetplayer") &&
                 !scriptEntry.hasObject("targetnpc")) {
-            if (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
-                scriptEntry.addObject("targetplayer", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
-            else if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
-                scriptEntry.addObject("targetnpc", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("targetplayer", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
+            else if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+                scriptEntry.addObject("targetnpc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
             else
                 throw new InvalidArgumentsException("Must specify a player!");
         }
@@ -72,9 +71,9 @@ public class FeedCommand extends AbstractCommand {
         Element amount = scriptEntry.getElement("amount");
 
         dB.report(scriptEntry, getName(),
-                (player == null?"": player.debug())
-                +(npc == null?"":npc.debug())
-                +amount.debug());
+                (player == null ? "" : player.debug())
+                        + (npc == null ? "" : npc.debug())
+                        + amount.debug());
 
         if (npc != null) {
             if (!npc.getCitizen().hasTrait(HungerTrait.class)) {

@@ -1,16 +1,17 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
+public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[language]
     // @name Damage Cause
@@ -35,18 +36,18 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity damaged
-    // entity damaged by <cause>
-    // <entity> damaged
-    // <entity> damaged by <cause>
-    // entity damages entity
-    // entity damages <entity>
-    // entity damaged by entity
-    // entity damaged by <entity>
-    // <entity> damages entity
-    // <entity> damaged by entity
-    // <entity> damaged by <entity>
-    // <entity> damages <entity>
+    // entity damaged (in <area>) (with:<item>)
+    // entity damaged by <cause> (in <area>) (with:<item>)
+    // <entity> damaged (in <area>) (with:<item>)
+    // <entity> damaged by <cause> (in <area>) (with:<item>)
+    // entity damages entity (in <area>) (with:<item>)
+    // entity damages <entity> (in <area>) (with:<item>)
+    // entity damaged by entity (in <area>) (with:<item>)
+    // entity damaged by <entity> (in <area>) (with:<item>)
+    // <entity> damages entity (in <area>) (with:<item>)
+    // <entity> damaged by entity (in <area>) (with:<item>)
+    // <entity> damaged by <entity> (in <area>) (with:<item>)
+    // <entity> damages <entity> (in <area>) (with:<item>)
     //
     // @Cancellable true
     //
@@ -78,6 +79,7 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
     public Element final_damage;
     public dEntity damager;
     public dEntity projectile;
+    public dItem held;
     public EntityDamageEvent event;
 
     @Override
@@ -85,7 +87,7 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String entOne = CoreUtilities.getXthArg(0, lower);
-        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower): CoreUtilities.getXthArg(2, lower);
+        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
         List<String> types = Arrays.asList("entity", "player", "npc");
         return ((types.contains(entOne) || dEntity.matches(entOne))
                 && (cmd.equals("damaged") || cmd.equals("damages"))
@@ -96,11 +98,15 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(3, lower);
-        String target = cmd.equals("damages") ? CoreUtilities.getXthArg(2, lower): CoreUtilities.getXthArg(0, lower);
+        String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(3, lower);
+        String target = cmd.equals("damages") ? CoreUtilities.getXthArg(2, lower) : CoreUtilities.getXthArg(0, lower);
         if (attacker.length() > 0) {
             if (damager != null) {
-                if( !damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
+                boolean projectileMatched = false;
+                if (projectile != null) {
+                    projectileMatched = projectile.matchesEntity(attacker);
+                }
+                if (!projectileMatched && !damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
                     return false;
                 }
             }
@@ -112,6 +118,22 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         }
         if (target.length() > 0) {
             if (!entity.matchesEntity(target)) {
+                return false;
+            }
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        String with = getSwitch(s, "with");
+        if (with != null) {
+            dItem it = dItem.valueOf(with);
+            if (it == null) {
+                dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
+                return false;
+            }
+            if (!it.identify().equalsIgnoreCase(held.identify())) {
                 return false;
             }
         }
@@ -145,8 +167,8 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(damager.isPlayer() ? damager.getDenizenPlayer() : entity.isPlayer() ? entity.getDenizenPlayer() : null,
+                damager.isCitizensNPC() ? damager.getDenizenNPC() : entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -162,8 +184,8 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         if (projectile != null) {
             context.put("projectile", projectile);
         }
-        for (EntityDamageEvent.DamageModifier dm: EntityDamageEvent.DamageModifier.values()) {
-            context.put("damage_" +  dm.name(), new Element(event.getDamage(dm)));
+        for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
+            context.put("damage_" + dm.name(), new Element(event.getDamage(dm)));
         }
 
         return context;
@@ -176,6 +198,8 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
         final_damage = new Element(event.getFinalDamage());
         cause = new Element(event.getCause().name().toLowerCase());
         damager = null;
+        projectile = null;
+        held = null;
         if (event instanceof EntityDamageByEntityEvent) {
             damager = new dEntity(((EntityDamageByEntityEvent) event).getDamager());
             if (damager.isProjectile()) {
@@ -183,6 +207,10 @@ public class EntityDamagedScriptEvent extends ScriptEvent implements Listener {
                 if (damager.hasShooter()) {
                     damager = damager.getShooter();
                 }
+            }
+            if (damager != null) {
+                held = damager.getItemInHand();
+                held.setAmount(1);
             }
         }
         cancelled = event.isCancelled();

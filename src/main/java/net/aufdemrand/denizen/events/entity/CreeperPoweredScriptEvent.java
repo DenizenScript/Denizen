@@ -7,7 +7,6 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,6 +34,7 @@ public class CreeperPoweredScriptEvent extends ScriptEvent implements Listener {
     public CreeperPoweredScriptEvent() {
         instance = this;
     }
+
     public static CreeperPoweredScriptEvent instance;
     public dEntity lightning;
     public dEntity entity;
@@ -49,7 +49,7 @@ public class CreeperPoweredScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String reason = CoreUtilities.getXthArg(3,CoreUtilities.toLowerCase(s));
+        String reason = CoreUtilities.getXthArg(3, CoreUtilities.toLowerCase(s));
         return reason.length() == 0 || reason.equals(cause.toString());
     }
 

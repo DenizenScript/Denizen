@@ -1,13 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -52,8 +51,8 @@ public class CreateWorldCommand extends AbstractCommand {
         Element worldType = scriptEntry.getElement("worldtype");
 
         dB.report(scriptEntry, getName(), World_Name.debug() +
-                                          (Generator != null ? Generator.debug(): "") +
-                                          worldType.debug());
+                (Generator != null ? Generator.debug() : "") +
+                worldType.debug());
 
         World world;
 

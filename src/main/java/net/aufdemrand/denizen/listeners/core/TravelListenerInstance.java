@@ -1,24 +1,23 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import java.util.List;
-
+import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import java.util.List;
 
 
 /**
  * This is a listener that listens for a player to travel.  There are different
  * types of "traveling" this can entail:
- *
+ * <p/>
  * <ol>
  * <li>
  * Distance
@@ -36,14 +35,14 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
  *
  * @author Jeebiss, Jeremy Schroeder
  */
-public class TravelListenerInstance extends AbstractListener implements Listener{
+public class TravelListenerInstance extends AbstractListener implements Listener {
 
-    enum TravelType { DISTANCE, TOLOCATION, TONPC, TOCUBOID }
+    enum TravelType {DISTANCE, TOLOCATION, TONPC, TOCUBOID}
 
     //
     // The type of Travel
     //
-    private    TravelType type;
+    private TravelType type;
 
     //
     // End point criteria
@@ -88,8 +87,8 @@ public class TravelListenerInstance extends AbstractListener implements Listener
             if (type == null && arg.matchesEnum(TravelType.values()))
                 type = TravelType.valueOf(arg.getValue().toUpperCase());
 
-            // Distance/radius should be first, that way they aren't accidently
-            // intrepreted as NPCs.
+                // Distance/radius should be first, that way they aren't accidently
+                // intrepreted as NPCs.
             else if (arg.matchesPrefix("d, distance")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 distance_required = aH.getIntegerFrom(arg.getValue());
@@ -173,11 +172,13 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 
     @Override
     public String report() {
-        if (type == TravelType.DISTANCE){
+        if (type == TravelType.DISTANCE) {
             return player.getName() + "has traveled " + blocks_walked + " blocks out of " + distance_required;
-        } else if (type == TravelType.TOLOCATION) {
+        }
+        else if (type == TravelType.TOLOCATION) {
             return player.getName() + " is traveling to " + end_point;
-        } else if (type == TravelType.TONPC) {
+        }
+        else if (type == TravelType.TONPC) {
             return player.getName() + " is traveling to NPC " + target.getId();
         }
         return "Failed to create detailed report";
@@ -187,7 +188,7 @@ public class TravelListenerInstance extends AbstractListener implements Listener
      * This method will be called every time a player moves in the game.  It's
      * used to determine if a player has satisfied a certain travel goal.
      *
-     * @param event    The player movement event.
+     * @param event The player movement event.
      */
     @EventHandler
     public void walking(PlayerMoveEvent event) {
@@ -199,9 +200,9 @@ public class TravelListenerInstance extends AbstractListener implements Listener
         ////////////
         // DISTANCE type Location Listener
         ///////
-        if (type == TravelType.DISTANCE){
-                blocks_walked++;
-                check();
+        if (type == TravelType.DISTANCE) {
+            blocks_walked++;
+            check();
         }
 
         ////////////

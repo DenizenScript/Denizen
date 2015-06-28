@@ -20,7 +20,8 @@ public class Messaging {
                 if (test == null) {
                     message = messageColor + message;
                 }
-            } else
+            }
+            else
                 message = messageColor + message;
         }
         return message;

@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.objects.notable;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.ObjectFetcher;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,7 +38,7 @@ public class NotableManager {
     public static Map<String, Notable>
             notableObjects = new ConcurrentHashMap<String, Notable>();
     public static Map<String, Class>
-            typeTracker    = new ConcurrentHashMap<String, Class>();
+            typeTracker = new ConcurrentHashMap<String, Class>();
     public static Map<Notable, String>
             reverseObjects = new ConcurrentHashMap<Notable, String>();
 
@@ -144,7 +145,7 @@ public class NotableManager {
     private static void _saveNotables() {
 
         FileConfiguration notables = DenizenAPI.getCurrentInstance().notableManager().getNotables();
-        for (String key: notables.getKeys(false)) {
+        for (String key : notables.getKeys(false)) {
             notables.set(key, null);
         }
 
@@ -152,9 +153,9 @@ public class NotableManager {
 
             // If the object is serializable, save that info... fetching the objects back
             // will require this information TODO: make this do something?..
-      //      if (notable.getValue().getSaveObject() instanceof ConfigurationSerializable)
-      //          DenizenAPI.getCurrentInstance().notableManager().getNotables()
-      //                  .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
+            //      if (notable.getValue().getSaveObject() instanceof ConfigurationSerializable)
+            //          DenizenAPI.getCurrentInstance().notableManager().getNotables()
+            //                  .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
 
             notables.set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase().replace(".", "DOT"),
                     notable.getValue().getSaveObject());
@@ -199,7 +200,8 @@ public class NotableManager {
             // Save notables to notables.yml
             _saveNotables();
             notablesSave.save(notablesFile);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + notablesFile, ex);
         }
     }

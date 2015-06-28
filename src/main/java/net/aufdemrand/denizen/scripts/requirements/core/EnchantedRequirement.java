@@ -3,15 +3,15 @@ package net.aufdemrand.denizen.scripts.requirements.core;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.aH.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.List;
 
-public class EnchantedRequirement extends AbstractRequirement{
+public class EnchantedRequirement extends AbstractRequirement {
 
-    private enum CheckType { ITEMINHAND }
+    private enum CheckType {ITEMINHAND}
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
@@ -19,7 +19,7 @@ public class EnchantedRequirement extends AbstractRequirement{
         boolean outcome = false;
         CheckType checkType = null;
 
-        if(args.size() < 1)
+        if (args.size() < 1)
             throw new RequirementCheckException("Must provide arguments!");
 
         /* Get arguments */
@@ -37,9 +37,10 @@ public class EnchantedRequirement extends AbstractRequirement{
         if (checkType != null) {
             switch (checkType) {
 
-            case ITEMINHAND:
-                if (!context.getPlayer().getPlayerEntity().getItemInHand().getEnchantments().isEmpty()) outcome = true;
-                break;
+                case ITEMINHAND:
+                    if (!context.getPlayer().getPlayerEntity().getItemInHand().getEnchantments().isEmpty())
+                        outcome = true;
+                    break;
 
             }
         }

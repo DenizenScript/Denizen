@@ -7,7 +7,7 @@
     <groupId>net.aufdemrand</groupId>
     <artifactId>denizen</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.6-SNAPSHOT</version>
+    <version>0.9.7-SNAPSHOT</version>
     <name>Denizen</name>
     <description>Scriptable Minecraft and Citizens2</description>
 

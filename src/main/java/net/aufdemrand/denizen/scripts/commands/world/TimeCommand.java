@@ -1,19 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.objects.Duration;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class TimeCommand extends AbstractCommand {
 
-    private enum Type { GLOBAL, PLAYER }
+    private enum Type {GLOBAL, PLAYER}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -21,17 +21,17 @@ public class TimeCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
-                && arg.matchesEnum(Type.values())) {
+                    && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("value")
-                     && arg.matchesArgumentType(Duration.class)) {
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("value", arg.asType(Duration.class));
             }
 
             else if (!scriptEntry.hasObject("world")
-                     && arg.matchesArgumentType(dWorld.class)) {
+                    && arg.matchesArgumentType(dWorld.class)) {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
 
@@ -48,9 +48,9 @@ public class TimeCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("world")) {
             scriptEntry.addObject("world",
                     ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ?
-                    new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getWorld()) :
-                    (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ?
-                    new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getWorld()) : null));
+                            new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getWorld()) :
+                            (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ?
+                                    new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getWorld()) : null));
         }
 
         scriptEntry.defaultObject("type", new Element("GLOBAL"));
@@ -69,17 +69,17 @@ public class TimeCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), type_element.debug()
-                                          + value.debug()
-                                          + world.debug());
+                + value.debug()
+                + world.debug());
 
         if (type.equals(Type.GLOBAL)) {
             world.getWorld().setTime(value.getTicks());
         }
         else {
-            if (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
+            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
                 dB.echoError("Must have a valid player link!");
             else
-                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()
+                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()
                         .getPlayerEntity().setPlayerTime(value.getTicks(), true);
         }
     }

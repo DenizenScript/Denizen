@@ -1,14 +1,15 @@
 package net.aufdemrand.denizen.utilities.inventory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import net.aufdemrand.denizen.utilities.Utilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class InventoryMenuItem {
     protected InventoryMenu menu;
@@ -40,7 +41,7 @@ public abstract class InventoryMenuItem {
     /**
      * Called when a player clicks on a button in a menu
      *
-     * @param player The player clicking the button
+     * @param player       The player clicking the button
      * @param isRightClick True if the right mouse button has been pressed
      * @param isShiftClick True if the shift key has been pressed
      */

@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dWorld;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
@@ -43,7 +43,7 @@ public class PermissionCommand extends AbstractCommand {
 
         }
 
-        if (!scriptEntry.hasObject("group") && (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isValid()))
+        if (!scriptEntry.hasObject("group") && (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid()))
             throw new InvalidArgumentsException("Must have player context or a valid group!");
 
         if (!scriptEntry.hasObject("action"))
@@ -64,13 +64,13 @@ public class PermissionCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), action.debug() + permission.debug()
-                + (group != null ? group.debug() : "") + (world != null ? world.debug(): ""));
+                + (group != null ? group.debug() : "") + (world != null ? world.debug() : ""));
 
         World bukkitWorld = null;
         if (world != null)
             bukkitWorld = world.getWorld();
 
-        OfflinePlayer player = ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getOfflinePlayer() : null;
+        OfflinePlayer player = ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer() : null;
 
         switch (Action.valueOf(action.asString().toUpperCase())) {
             case ADD:
@@ -79,24 +79,26 @@ public class PermissionCommand extends AbstractCommand {
                         dB.echoDebug(scriptEntry, "Group " + group + " already has permission " + permission);
                     else
                         Depends.permissions.groupAdd(bukkitWorld, group.asString(), permission.asString());
-                } else {
-                    if(Depends.permissions.playerHas(bukkitWorld == null ? null: bukkitWorld.getName(), player, permission.asString()))
+                }
+                else {
+                    if (Depends.permissions.playerHas(bukkitWorld == null ? null : bukkitWorld.getName(), player, permission.asString()))
                         dB.echoDebug(scriptEntry, "Player " + player.getName() + " already has permission " + permission);
                     else
-                        Depends.permissions.playerAdd(bukkitWorld == null ? null: bukkitWorld.getName(), player, permission.asString());
+                        Depends.permissions.playerAdd(bukkitWorld == null ? null : bukkitWorld.getName(), player, permission.asString());
                 }
                 return;
             case REMOVE:
                 if (group != null) {
-                    if(!Depends.permissions.groupHas(bukkitWorld, group.asString(), permission.asString()))
+                    if (!Depends.permissions.groupHas(bukkitWorld, group.asString(), permission.asString()))
                         dB.echoDebug(scriptEntry, "Group " + group + " does not have access to permission " + permission);
                     else
                         Depends.permissions.groupRemove(bukkitWorld, group.asString(), permission.asString());
-                } else {
-                    if(!Depends.permissions.playerHas(bukkitWorld == null ? null: bukkitWorld.getName(), player, permission.asString()))
+                }
+                else {
+                    if (!Depends.permissions.playerHas(bukkitWorld == null ? null : bukkitWorld.getName(), player, permission.asString()))
                         dB.echoDebug(scriptEntry, "Player " + player.getName() + " does not have access to permission " + permission);
                     else
-                        Depends.permissions.playerRemove(bukkitWorld == null ? null: bukkitWorld.getName(), player, permission.asString());
+                        Depends.permissions.playerRemove(bukkitWorld == null ? null : bukkitWorld.getName(), player, permission.asString());
                 }
                 return;
         }

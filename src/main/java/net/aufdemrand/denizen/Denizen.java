@@ -1,17 +1,19 @@
 package net.aufdemrand.denizen;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.aufdemrand.denizen.events.block.*;
+import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
+import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.events.entity.*;
 import net.aufdemrand.denizen.events.player.*;
 import net.aufdemrand.denizen.events.world.*;
+import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.listeners.ListenerRegistry;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
+import net.aufdemrand.denizen.npc.speech.DenizenChat;
+import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitElementProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitListProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitQueueProperties;
@@ -22,52 +24,42 @@ import net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder;
 import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
 import net.aufdemrand.denizen.objects.properties.inventory.InventoryTitle;
 import net.aufdemrand.denizen.objects.properties.item.*;
+import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.*;
+import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
+import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
+import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.core.*;
+import net.aufdemrand.denizen.utilities.*;
+import net.aufdemrand.denizen.utilities.command.CommandManager;
+import net.aufdemrand.denizen.utilities.command.Injector;
+import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
+import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
 import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.CraftItemProjectile;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
-import net.aufdemrand.denizen.utilities.packets.intercept.DenizenPacketListener;
-import net.aufdemrand.denizencore.events.OldEventManager;
-import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
-import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
-import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
-import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.*;
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
-import net.aufdemrand.denizen.utilities.*;
-import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
-import net.aufdemrand.denizencore.interfaces.dExternal;
-import net.aufdemrand.denizen.listeners.ListenerRegistry;
-import net.aufdemrand.denizen.npc.dNPCRegistry;
-import net.aufdemrand.denizen.npc.speech.DenizenChat;
-import net.aufdemrand.denizen.npc.traits.*;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.scripts.containers.core.*;
-import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
-import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
-import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
-import net.aufdemrand.denizencore.tags.TagContext;
-import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizen.utilities.command.CommandManager;
-import net.aufdemrand.denizen.utilities.command.Injector;
-import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.packets.intercept.DenizenPacketListener;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.DenizenImplementation;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.interfaces.dExternal;
+import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.scripts.*;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -80,6 +72,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // <--[language]
 // @name dObjects
@@ -258,7 +257,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     }
 
 
-
     /*
      * Denizen Registries
      */
@@ -336,8 +334,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     /**
      * Gets the currently loaded instance of the RequirementChecker
      *
-     * @return  ScriptHelper
-     *
+     * @return ScriptHelper
      */
     public RequirementChecker getRequirementChecker() {
         return requirementChecker;
@@ -369,7 +366,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Activate dependencies
             depends.initialize();
 
-            if(Depends.citizens == null || !Depends.citizens.isEnabled()) {
+            if (Depends.citizens == null || !Depends.citizens.isEnabled()) {
                 getLogger().warning("Citizens does not seem to be activated! Denizen will have greatly reduced functionality!");
                 //getServer().getPluginManager().disablePlugin(this);
                 //return;
@@ -384,7 +381,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.log(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable minecraft");
             dB.log("");
             dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
-            dB.log(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
+            dB.log(ChatColor.GRAY + "version: " + ChatColor.WHITE + versionTag);
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
         }
         catch (Exception e) {
@@ -419,7 +416,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             DenizenEntityType.registerEntityType("FAKE_PLAYER", CraftFakePlayer.class);
 
             // Track all player names for quick dPlayer matching
-            for (OfflinePlayer player: Bukkit.getOfflinePlayers()) {
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 dPlayer.notePlayer(player);
             }
         }
@@ -597,6 +594,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityBreaksHangingScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityChangesBlockScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityCreatePortalScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityCombustsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDamagedScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDeathScriptEvent());
@@ -604,36 +602,53 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new EntityEntersPortalScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityExitsPortalScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityExplodesScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityFormsBlock());
+            ScriptEvent.registerScriptEvent(new EntityExplosionPrimesScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityFoodLevelChangeScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityFormsBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
             ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityTamesScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTargetsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityUnleashedScriptEvent());
             ScriptEvent.registerScriptEvent(new FurnaceBurnsItemScriptEvent());
             ScriptEvent.registerScriptEvent(new FurnaceSmeltsItemScriptEvent());
             ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
+            ScriptEvent.registerScriptEvent(new HorseJumpsScriptEvent());
+            ScriptEvent.registerScriptEvent(new InvPicksUpItemScriptEvent());
+            ScriptEvent.registerScriptEvent(new ItemDespawnsScriptEvent());
+            ScriptEvent.registerScriptEvent(new ItemEnchantedScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemScrollScriptEvent());
+            ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
             ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
             ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
+            ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
             ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
             ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerBreaksBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerChangesSignScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerClosesInvScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerJumpScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerStepsOnScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerUsesPortalScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerWalkScriptEvent());
+            ScriptEvent.registerScriptEvent(new ProjectileLaunchedScriptEvent());
             ScriptEvent.registerScriptEvent(new PotionSplashScriptEvent());
             ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
             ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
+            ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
+            ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
+            ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
@@ -732,7 +747,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
-            for (World world: getServer().getWorlds()) {
+            for (World world : getServer().getWorlds()) {
                 EntityScriptHelper.linkWorld(world);
             }
         }
@@ -781,7 +796,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
      */
     @Override
     public void onDisable() {
-        if(!startedSuccessful) return;
+        if (!startedSuccessful) return;
 
         // <--[event]
         // @Events
@@ -819,8 +834,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         for (OfflinePlayer player : this.getServer().getOfflinePlayers()) {
             try {
-                getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player)); } catch (Exception e) {
-                if (player == null) dB.echoError("Tell the Denizen team ASAP about this error! ERR: OPN: " + e.toString());
+                getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player));
+            }
+            catch (Exception e) {
+                if (player == null)
+                    dB.echoError("Tell the Denizen team ASAP about this error! ERR: OPN: " + e.toString());
                 else dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
                         "You might have a corrupt player file!");
             }
@@ -940,7 +958,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             }
             section = savesConfig.getConfigurationSection("Listeners");
             if (section != null) {
-                for (String key: section.getKeys(false)) {
+                for (String key : section.getKeys(false)) {
                     try {
                         dPlayer player = dPlayer.valueOf(key);
                         if (player == null)
@@ -994,17 +1012,20 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         DenizenMapManager.saveMaps();
         try {
             savesConfig.save(savesConfigFile);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + savesConfigFile, ex);
         }
         try {
             scoreboardsConfig.save(scoreboardsConfigFile);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + scoreboardsConfigFile, ex);
         }
         try {
             entityConfig.save(entityConfigFile);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + entityConfigFile, ex);
         }
     }
@@ -1058,7 +1079,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null)
                 npc = new dNPC(Depends.citizens.getNPCSelector().getSelected(sender));
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                    new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player)sender): null, npc));
+                    new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender) : null, npc));
 
             queue.addEntries(scriptEntries);
             queue.start();
@@ -1072,7 +1093,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             return suggestClosestModifier(sender, cmd.getName(), modifier);
         }
 
-        Object[] methodArgs = { sender };
+        Object[] methodArgs = {sender};
         return commandManager.executeSafe(cmd, args, sender, methodArgs);
 
     }
@@ -1191,9 +1212,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public void handleCommandSpecialCases(ScriptEntry scriptEntry) {
-        if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC()
-                && ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen() == null)
-            ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(null);
+        if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()
+                && ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen() == null)
+            ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(null);
     }
 
     @Override
@@ -1214,11 +1235,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public TagContext getTagContextFor(ScriptEntry scriptEntry, boolean b) {
-        dPlayer player = scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(): null;
-        dNPC npc = scriptEntry != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC(): null;
+        dPlayer player = scriptEntry != null ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() : null;
+        dNPC npc = scriptEntry != null ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC() : null;
         return new BukkitTagContext(player, npc, b, scriptEntry,
-                scriptEntry != null ? scriptEntry.shouldDebug(): true,
-                scriptEntry != null ? scriptEntry.getScript(): null);
+                scriptEntry != null ? scriptEntry.shouldDebug() : true,
+                scriptEntry != null ? scriptEntry.getScript() : null);
     }
 
     @Override
@@ -1231,7 +1252,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             if (player == null || !player.isValid()) {
                 dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid player!");
             }
-            ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(player);
+            ((BukkitScriptEntryData) scriptEntry.entryData).setPlayer(player);
             return true;
         }
 
@@ -1244,7 +1265,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 dB.echoError(scriptEntry.getResidingQueue(), value + " is an invalid NPC!");
                 return false;
             }
-            ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(npc);
+            ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(npc);
             return true;
         }
         return false;

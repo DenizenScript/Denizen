@@ -1,42 +1,42 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.Position;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.aH.Argument;
-
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
-import org.bukkit.event.*;
-import org.bukkit.event.block.*;
-import org.bukkit.event.enchantment.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.event.inventory.*;
 import org.bukkit.event.vehicle.*;
-import org.bukkit.event.weather.*;
+import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.*;
-import org.bukkit.event.entity.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockIterator;
+
+import java.util.*;
 
 public class BukkitWorldScriptHelper implements Listener {
 
@@ -57,7 +57,7 @@ public class BukkitWorldScriptHelper implements Listener {
         else {
             determ = OldEventManager.doEvents(events, new BukkitScriptEntryData(player, npc), context);
         }
-        return determ.size() > 0 ? determ.get(0): "none";
+        return determ.size() > 0 ? determ.get(0) : "none";
     }
 
     /////////////////////
@@ -109,7 +109,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     public void timeEvent() {
         for (World world : Bukkit.getWorlds()) {
-            int hour = Double.valueOf(world.getTime() / 1000).intValue();
+            int hour = Double.valueOf(world.getTime() / 1000).intValue(); // TODO: WTF is this conversion math
             hour = hour + 6;
             // Get the hour
             if (hour >= 24) hour = hour - 24;
@@ -124,10 +124,10 @@ public class BukkitWorldScriptHelper implements Listener {
                 context.put("world", currentWorld);
 
                 doEvents(Arrays.asList
-                        ("time changes",
-                                "time changes in " + currentWorld.identifySimple(),
-                                String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(),
-                                "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
+                                ("time changes",
+                                        "time changes in " + currentWorld.identifySimple(),
+                                        String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(),
+                                        "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
                         null, null, context, true);
 
                 current_time.put(currentWorld.identifySimple(), hour);
@@ -138,393 +138,6 @@ public class BukkitWorldScriptHelper implements Listener {
     /////////////////////
     //   Additional EVENTS
     /////////////////
-
-    // <--[event]
-    // @Events
-    // entity shoots bow
-    // <entity> shoots bow
-    // entity shoots <item>
-    // <entity> shoots <item>
-    //
-    // @Triggers when an entity shoots something out of a bow.
-    // @Context
-    // <context.entity> returns the dEntity that shot the bow.
-    // <context.projectile> returns a dEntity of the projectile.
-    // <context.bow> returns the bow item used to shoot.
-    // <context.force> returns the force of the shot.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from shooting the bow.
-    // dList(dEntity) to change the projectile(s) being shot.
-    //
-    // -->
-    @EventHandler
-    public void entityShootBow(EntityShootBowEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dPlayer player = null;
-        dNPC npc = null;
-
-        dItem bow = new dItem(event.getBow());
-        dEntity projectile = new dEntity(event.getProjectile());
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("bow", bow);
-        context.put("projectile", projectile);
-        context.put("entity", entity.getDenizenObject());
-        context.put("force", new Element(event.getForce() * 3));
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        String determination = doEvents(Arrays.asList
-                ("entity shoots bow",
-                        "entity shoots " + bow.identifySimple(),
-                        entity.identifyType() + " shoots bow",
-                        entity.identifyType() + " shoots " + bow.identifySimple()),
-                npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED")) {
-            event.setCancelled(true);
-        }
-
-        // Don't use event.setProjectile() because it doesn't work
-        else if (Argument.valueOf(determination).matchesArgumentList(dEntity.class)) {
-
-            event.setCancelled(true);
-
-            // Get the list of entities
-            Object list = dList.valueOf(determination).filter(dEntity.class);
-
-            @SuppressWarnings("unchecked")
-            List<dEntity> newProjectiles = (List<dEntity>) list;
-
-            // Go through all the entities, spawning/teleporting them
-            for (dEntity newProjectile : newProjectiles) {
-                newProjectile.spawnAt(entity.getEyeLocation()
-                        .add(entity.getEyeLocation().getDirection()));
-
-                // Set the entity as the shooter of the projectile,
-                // where applicable
-                if (newProjectile.isProjectile()) {
-                    newProjectile.setShooter(entity);
-                }
-            }
-
-            // Mount the projectiles on top of each other
-            Position.mount(Conversion.convertEntities(newProjectiles));
-
-            // Get the last entity on the list, i.e. the one at the bottom
-            // if there are many mounted on top of each other
-            Entity lastProjectile = newProjectiles.get
-                    (newProjectiles.size() - 1).getBukkitEntity();
-
-            // Give it the same velocity as the arrow that would
-            // have been shot by the bow
-            // Note: No, I can't explain why this has to be multiplied by three, it just does.
-            lastProjectile.setVelocity(event.getEntity().getLocation()
-                    .getDirection().multiply(event.getForce() * 3));
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // entity tamed
-    // <entity> tamed
-    // player tames entity
-    // player tames <entity>
-    //
-    // @Triggers when an entity is tamed.
-    // @Context
-    // <context.entity> returns a dEntity of the tamed entity.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from being tamed.
-    //
-    // -->
-    @EventHandler
-    public void entityTame(EntityTameEvent event) {
-
-        dPlayer player = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        context.put("entity", entity);
-
-        List<String> events = new ArrayList<String>();
-        events.add("entity tamed");
-        events.add(entity.identifyType() + " tamed");
-
-        if (event.getOwner() instanceof Player) {
-            player = dEntity.getPlayerFrom((Player) event.getOwner());
-            events.add("player tames entity");
-            events.add("player tames " + entity.identifyType());
-        }
-
-        String determination = doEvents(events, null, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // entity unleashed (because <reason>)
-    // <entity> unleashed (because <reason>)
-    //
-    // @Triggers when an entity is unleashed.
-    // @Context
-    // <context.entity> returns the dEntity.
-    // <context.reason> returns an Element of the reason for the unleashing.
-    // @Note
-    // Reasons include DISTANCE, HOLDER_GONE, PLAYER_UNLEASH, and UNKNOWN
-    //
-    // -->
-    @EventHandler
-    public void entityUnleash(EntityUnleashEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        String reason = event.getReason().name();
-
-        context.put("entity", entity.getDenizenObject());
-        context.put("reason", new Element(reason));
-
-        doEvents(Arrays.asList
-                ("entity unleashed",
-                        "entity unleashed because " + reason,
-                        entity.identifyType() + " unleashed",
-                        entity.identifyType() + " unleashed because " + reason),
-                null, null, context, true);
-    }
-
-    // <--[event]
-    // @Events
-    // entity explosion primes
-    // <entity> explosion primes
-    //
-    // @Triggers when an entity decides to explode.
-    // @Context
-    // <context.entity> returns the dEntity.
-    // <context.radius> returns an Element of the explosion's radius.
-    // <context.fire> returns an Element with a value of "true" if the explosion will create fire and "false" otherwise.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from deciding to explode.
-    // TODO: Set radius, set fire-state (mulitple-determinations)
-    //
-    // -->
-    @EventHandler
-    public void explosionPrimeEvent(ExplosionPrimeEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        Entity entity = event.getEntity();
-
-        context.put("entity", new dEntity(entity));
-        context.put("radius", new Element(event.getRadius()));
-        context.put("fire", new Element(event.getFire()));
-
-        String determination = doEvents(Arrays.asList
-                ("entity explosion primes",
-                        entity.getType().name() + " explosion primes"),
-                null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // entity changes food level
-    // <entity> changes food level
-    //
-    // @Triggers when an entity's food level changes.
-    // @Context
-    // <context.entity> returns the dEntity.
-    // <context.food> returns an Element(Number) of the entity's new food level.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity's food level from changing.
-    // Element(Decimal) to set the entity's new food level.
-    //
-    // -->
-    @EventHandler
-    public void foodLevelChange(FoodLevelChangeEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("food", new Element(event.getFoodLevel()));
-        context.put("entity", entity.getDenizenObject());
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        String determination = doEvents(Arrays.asList
-                ("entity changes food level",
-                        entity.identifyType() + " changes food level"),
-                npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
-            event.setFoodLevel(aH.getIntegerFrom(determination));
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // horse jumps
-    // (<color>) (<type>) jumps
-    //
-    // @Triggers when a horse jumps.
-    // @Context
-    // <context.entity> returns the dEntity of the horse.
-    // <context.color> returns an Element of the horse's color.
-    // <context.variant> returns an Element of the horse's variant.
-    // <context.power> returns an Element(Decimal) of the jump's power.
-    //
-    // @Determine
-    // "CANCELLED" to stop the horse from jumping.
-    // Element(Decimal) to set the power of the jump.
-    //
-    // -->
-    @EventHandler
-    public void horseJump(HorseJumpEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        String variant = event.getEntity().getVariant().name();
-        String color = event.getEntity().getColor().name();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("variant", new Element(variant));
-        context.put("color", new Element(color));
-        context.put("power", new Element(event.getPower()));
-        context.put("entity", entity);
-
-        String determination = doEvents(Arrays.asList
-                ("horse jumps",
-                        variant + " jumps",
-                        color + " jumps",
-                        color + " " + variant + " jumps"),
-                null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Float)) {
-            event.setPower(aH.getFloatFrom(determination));
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // item despawns
-    // <item> despawns
-    // <material> despawns
-    //
-    // @Triggers when an item entity despawns.
-    // @Context
-    // <context.item> returns the dItem of the entity.
-    // <context.entity> returns the dEntity.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item entity from despawning.
-    //
-    // -->
-    @EventHandler
-    public void itemDespawn(ItemDespawnEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = new dItem(event.getEntity().getItemStack());
-
-        context.put("item", item);
-        context.put("entity", new dEntity(event.getEntity()));
-
-        List<String> events = new ArrayList<String>();
-        events.add("item despawns");
-        events.add(item.identifySimple() + " despawns");
-        events.add(item.identifyMaterial() + " despawns");
-
-        String determination = doEvents(events, null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // item spawns
-    // <item> spawns
-    // <material> spawns
-    //
-    // @Triggers when an item entity spawns.
-    // @Context
-    // <context.item> returns the dItem of the entity.
-    // <context.entity> returns the dEntity.
-    // <context.location> returns the location of the entity to be spawned.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item entity from spawning.
-    //
-    // -->
-    @EventHandler
-    public void itemSpawn(ItemSpawnEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = new dItem(event.getEntity().getItemStack());
-
-        context.put("item", item);
-        context.put("entity", new dEntity(event.getEntity()));
-        context.put("location", new dLocation(event.getLocation()));
-
-        List<String> events = new ArrayList<String>();
-        events.add("item spawns");
-        events.add(item.identifySimple() + " spawns");
-        events.add(item.identifyMaterial() + " spawns");
-
-        String determination = doEvents(events, null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // pig zapped
-    //
-    // @Triggers when a pig is zapped by lightning and turned into a pig zombie.
-    // @Context
-    // <context.pig> returns the dEntity of the pig.
-    // <context.pig_zombie> returns the dEntity of the pig zombie.
-    // <context.lightning> returns the dEntity of the lightning.
-    //
-    // @Determine
-    // "CANCELLED" to stop the pig from being zapped.
-    //
-    // -->
-    @EventHandler
-    public void pigZap(PigZapEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity pig = new dEntity(event.getEntity());
-        dEntity pigZombie = new dEntity(event.getPigZombie());
-        dEntity lightning = new dEntity(event.getLightning());
-
-        context.put("pig", pig);
-        context.put("pig_zombie", pigZombie);
-        context.put("lightning", lightning);
-
-        String determination = doEvents(Arrays.asList
-                ("pig zapped"), null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
 
     // <--[event]
     // @Events
@@ -561,9 +174,9 @@ public class BukkitWorldScriptHelper implements Listener {
         try {
             BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(),
                     projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
-            while(bi.hasNext()) {
+            while (bi.hasNext()) {
                 block = bi.next();
-                if(block.getTypeId() != 0) {
+                if (block.getTypeId() != 0) {
                     break;
                 }
             }
@@ -608,8 +221,12 @@ public class BukkitWorldScriptHelper implements Listener {
             //
             // -->
 
-            if (shooter.isCitizensNPC()) { npc = shooter.getDenizenNPC(); }
-            else if (shooter.isPlayer()) { player = shooter.getDenizenPlayer(); }
+            if (shooter.isCitizensNPC()) {
+                npc = shooter.getDenizenNPC();
+            }
+            else if (shooter.isPlayer()) {
+                player = shooter.getDenizenPlayer();
+            }
 
             events.add("entity shoots block");
             events.add("entity shoots block with " + projectile.identifyType());
@@ -623,141 +240,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
         doEvents(events, npc, player, context, true);
     }
-
-    // <--[event]
-    // @Events
-    // projectile launched
-    // <entity> launched
-    //
-    // @Triggers when a projectile is launched.
-    // @Context
-    // <context.entity> returns the projectile.
-    //
-    // @Determine
-    // "CANCELLED" to stop it from being launched.
-    //
-    // -->
-    @EventHandler
-    public void projectileLaunch(ProjectileLaunchEvent event) {
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        List<String> events = new ArrayList<String>();
-        dEntity projectile = new dEntity(event.getEntity());
-        context.put("entity", projectile);
-        events.add("projectile launched");
-        events.add(projectile.identifySimple() + " launched");
-        events.add(projectile.identifyType() + " launched");
-        String Determination = doEvents(events, null, null, context, true);
-        if (Determination.equalsIgnoreCase("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // player dyes sheep (<color>)
-    // sheep dyed (<color>)
-    //
-    // @Triggers when a sheep is dyed by a player.
-    // @Context
-    // <context.entity> returns the dEntity of the sheep.
-    // <context.color> returns an Element of the color the sheep is being dyed.
-    //
-    // @Determine
-    // "CANCELLED" to stop it from being dyed.
-    // Element(String) that matches DyeColor to dye it a different color.
-    //
-    // -->
-    @EventHandler
-    public void sheepDyeWool(SheepDyeWoolEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        String color = event.getColor().name();
-
-        context.put("entity", entity);
-        context.put("color", new Element(color));
-
-        String determination = doEvents(Arrays.asList
-                ("player dyes sheep",
-                        "player dyes sheep " + color,
-                        "sheep dyed",
-                        "sheep dyed " + color), null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (determination.equals(determination.toUpperCase())) {
-            try {
-                event.setColor(DyeColor.valueOf(determination));
-            }
-            catch (IllegalArgumentException e) {
-                dB.echoError("Unknown dye color " + determination);
-            }
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // sheep regrows wool
-    //
-    // @Triggers when a sheep regrows wool.
-    // @Context
-    // <context.entity> returns the dEntity of the sheep.
-    //
-    // @Determine
-    // "CANCELLED" to stop it from regrowing wool.
-    //
-    // -->
-    @EventHandler
-    public void sheepRegrowWool(SheepRegrowWoolEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("entity", entity);
-
-        String determination = doEvents(Arrays.asList
-                ("sheep regrows wool"), null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // slime splits (into <#>)
-    //
-    // @Triggers when a slime splits into smaller slimes.
-    // @Context
-    // <context.entity> returns the dEntity of the slime.
-    // <context.count> returns an Element(Number) of the number of smaller slimes it will split into.
-    //
-    // @Determine
-    // "CANCELLED" to stop it from splitting.
-    // Element(Number) to set the number of smaller slimes it will split into.
-    //
-    // -->
-    @EventHandler
-    public void slimeSplit(SlimeSplitEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        int count = event.getCount();
-
-        context.put("entity", entity);
-        context.put("count", new Element(count));
-
-        String determination = doEvents(Arrays.asList
-                ("slime splits",
-                        "slime splits into " + count),
-                null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
-            event.setCount(aH.getIntegerFrom(determination));
-        }
-    }
-
 
     /////////////////////
     //   INVENTORY EVENTS
@@ -818,49 +300,6 @@ public class BukkitWorldScriptHelper implements Listener {
             inventory.setResult(dItem.valueOf(determination).getItemStack());
             player.updateInventory();
         }
-    }
-
-    // <--[event]
-    // @Events
-    // item enchanted
-    // <item> enchanted
-    //
-    // @Triggers when an item is enchanted.
-    // @Context
-    // <context.location> returns the dLocation of the enchanting table.
-    // <context.inventory> returns the dInventory of the enchanting table.
-    // <context.item> returns the dItem to be enchanted.
-    // <context.button> returns which button was pressed to initiate the enchanting.
-    // <context.cost> returns the experience level cost of the enchantment.
-    //
-    // @Determine
-    // Element(Number) to set the experience level cost of the enchantment.
-    // "CANCELLED" to stop the item from being enchanted.
-    //
-    // -->
-    @EventHandler
-    public void enchantItemEvent(EnchantItemEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dPlayer player = dEntity.getPlayerFrom(event.getEnchanter());
-        dItem item = new dItem(event.getItem());
-
-        context.put("location", new dLocation(event.getEnchantBlock().getLocation()));
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
-        context.put("item", item);
-        context.put("button", new Element(event.whichButton()));
-        context.put("cost", new Element(event.getExpLevelCost()));
-
-        String determination = doEvents(Arrays.asList
-                ("item enchanted",
-                        item.identifySimple() + " enchanted"),
-                null, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        else if (Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Integer))
-            event.setExpLevelCost(Integer.valueOf(determination));
     }
 
     // <--[language]
@@ -1013,16 +452,16 @@ public class BukkitWorldScriptHelper implements Listener {
             if (event.getCursor() != null) {
                 holding = new dItem(event.getCursor());
 
-                final String[] itemStrings = new String[] {
+                final String[] itemStrings = new String[]{
                         item.identifySimple(),
                         item.identifyMaterial()
                 };
-                final String[] inventoryStrings = new String[] {
+                final String[] inventoryStrings = new String[]{
                         "inventory",
                         type,
                         inventory.identifySimple()
                 };
-                final String[] holdingStrings = new String[] {
+                final String[] holdingStrings = new String[]{
                         holding.identifySimple(),
                         holding.identifyMaterial()
                 };
@@ -1063,44 +502,6 @@ public class BukkitWorldScriptHelper implements Listener {
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
-    }
-
-    // <--[event]
-    // @Events
-    // player closes inventory
-    // player closes <inventory type>
-    // npc closes inventory
-    // npc closes <inventory type>
-    //
-    // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
-    // @Context
-    // <context.inventory> returns the dInventory.
-    //
-    // -->
-    @EventHandler
-    public void inventoryCloseEvent(InventoryCloseEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dEntity entity = new dEntity(event.getPlayer());
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        String type = event.getInventory().getType().name();
-
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
-
-        doEvents(Arrays.asList
-                ((player != null ? "player": "npc") + " closes inventory",
-                        (player != null ? "player": "npc") + " closes " + type),
-                npc, player, context);
     }
 
     // <--[event]
@@ -1181,85 +582,6 @@ public class BukkitWorldScriptHelper implements Listener {
         }
     }
 
-    // <--[event]
-    // @Events
-    // player opens inventory
-    // player opens <inventory type>
-    //
-    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
-    // @Context
-    // <context.inventory> returns the dInventory.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from opening the inventory.
-    //
-    // -->
-    @EventHandler
-    public void inventoryOpenEvent(InventoryOpenEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        String type = event.getInventory().getType().name();
-
-        context.put("inventory", dInventory.mirrorBukkitInventory(event.getInventory()));
-
-        String determination = doEvents(Arrays.asList
-                ("player opens inventory",
-                        "player opens " + type),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // inventory picks up item
-    // inventory picks up <item>
-    // <inventory type> picks up item
-    // <inventory type> picks up <item>
-    //
-    // @Triggers when a hopper or hopper minecart picks up an item.
-    // @Context
-    // <context.inventory> returns the dInventory that picked up the item.
-    // <context.item> returns the dItem.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item from being moved.
-    //
-    // -->
-    @EventHandler
-    public void inventoryPickupItemEvent(InventoryPickupItemEvent event) {
-
-        // Too laggy! TODO: Evaluate further.
-        if (event.getInventory().getType() == InventoryType.HOPPER)
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        String type = event.getInventory().getType().name();
-        dItem item = new dItem(event.getItem());
-
-        List<String> events = Arrays.asList("inventory picks up item",
-                "inventory picks up " + item.identifySimple(),
-                type + " picks up item",
-                type + " picks up " + item.identifySimple());
-
-        dInventory inventory = dInventory.mirrorBukkitInventory(event.getInventory());
-        context.put("inventory", inventory);
-        context.put("item", item);
-
-        String determination = doEvents(events,
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-
     /////////////////////
     //   PLAYER EVENTS
     /////////////////
@@ -1327,13 +649,13 @@ public class BukkitWorldScriptHelper implements Listener {
         else if (dScript.matches(determination)) {
             dScript script = dScript.valueOf(determination);
             if (script.getContainer() instanceof BookScriptContainer) {
-                dItem book = ((BookScriptContainer)script.getContainer()).getBookFrom(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+                dItem book = ((BookScriptContainer) script.getContainer()).getBookFrom(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
                 event.setNewBookMeta((BookMeta) book.getItemStack().getItemMeta());
                 if (book.getItemStack().getType() == Material.BOOK_AND_QUILL)
                     event.setSigning(false);
             }
             else {
-                dB.echoError("Script '"  + determination + "' is valid, but not of type 'book'!");
+                dB.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
             }
         }
     }
@@ -1362,15 +684,15 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("item", item);
 
         String determination = doEvents(Arrays.asList
-                ("player breaks item",
-                        "player breaks " + item.identifySimple(),
-                        "player breaks " + item.identifyMaterial()),
+                        ("player breaks item",
+                                "player breaks " + item.identifySimple(),
+                                "player breaks " + item.identifyMaterial()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context).toUpperCase();
 
         if (determination.startsWith("CANCELLED")) {
             // The ItemStack isn't really gone yet, only set to stack size 0.
             // So just add 1 more item to the stack.
-            itemstack.setAmount(itemstack.getAmount()+1);
+            itemstack.setAmount(itemstack.getAmount() + 1);
             // The event automatically resets durability to 0... instead,
             // let's delay a tick and set it back to what it was before.
             final Player player = event.getPlayer();
@@ -1408,8 +730,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("animation", new Element(animation));
 
         String determination = doEvents(Arrays.asList
-                ("player animates",
-                        "player animates " + animation),
+                        ("player animates",
+                                "player animates " + animation),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1464,7 +786,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getBed().getLocation()));
 
         doEvents(Arrays.asList
-                ("player leaves bed"),
+                        ("player leaves bed"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
     }
 
@@ -1494,11 +816,11 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("destination_world", destinationWorld);
 
         doEvents(Arrays.asList
-                ("player changes world",
-                        "player changes world from " + originWorld.identifySimple(),
-                        "player changes world to " + destinationWorld.identifySimple(),
-                        "player changes world from " + originWorld.identifySimple() +
-                                " to " + destinationWorld.identifySimple()),
+                        ("player changes world",
+                                "player changes world from " + originWorld.identifySimple(),
+                                "player changes world to " + destinationWorld.identifySimple(),
+                                "player changes world from " + originWorld.identifySimple() +
+                                        " to " + destinationWorld.identifySimple()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
     }
 
@@ -1569,7 +891,7 @@ public class BukkitWorldScriptHelper implements Listener {
         events.add("player throws egg");
 
         if (event.isHatching()) events.add("player throws hatching egg");
-        else                    events.add("player throws non-hatching egg");
+        else events.add("player throws non-hatching egg");
 
         String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
@@ -1605,7 +927,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("amount", new Element(event.getAmount()));
 
         String determination = doEvents(Arrays.asList
-                ("player changes xp"),
+                        ("player changes xp"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context).toUpperCase();
 
         if (determination.equals("CANCELLED")) {
@@ -1692,8 +1014,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("gamemode", new Element(event.getNewGameMode().name()));
 
         String determination = doEvents(Arrays.asList
-                ("player changes gamemode",
-                        "player changes gamemode to " + event.getNewGameMode().name()),
+                        ("player changes gamemode",
+                                "player changes gamemode to " + event.getNewGameMode().name()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         // Handle message
@@ -1704,7 +1026,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player clicks block
-    // player (<click type>) clicks (<material>) (with <item>) (in <notable cuboid>)
+    // player (<click type>) clicks (<material>) (with <item>) (in <area>)
     // player (<click type>) clicks block (with <item>)
     // player stands on <pressure plate>
     //
@@ -1823,10 +1145,10 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player right clicks at entity (with <item>)
-    // player right clicks at entity in <notable cuboid>
+    // player right clicks at entity in <area>
     // player right clicks at entity in notable cuboid
     // player right clicks at <entity> (with <item>)
-    // player right clicks at <entity> in <notable cuboid>
+    // player right clicks at <entity> in <area>
     // player right clicks at <entity> in notable cuboid
 
     // @Triggers when a player right clicks at an entity (Similar to right clicks entity, but for armor stands).
@@ -1884,7 +1206,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("cuboids", cuboid_context);
         List<String> determinations = OldEventManager.doEvents(events,
                 new BukkitScriptEntryData(dEntity.getPlayerFrom(event.getPlayer()), npc), context, true);
-        for (String determination: determinations) {
+        for (String determination : determinations) {
             if (determination.equalsIgnoreCase("CANCELLED")) {
                 event.setCancelled(true);
             }
@@ -1894,10 +1216,10 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player right clicks entity (with <item>)
-    // player right clicks entity in <notable cuboid>
+    // player right clicks entity in <area>
     // player right clicks entity in notable cuboid
     // player right clicks <entity> (with <item>)
-    // player right clicks <entity> in <notable cuboid>
+    // player right clicks <entity> in <area>
     // player right clicks <entity> in notable cuboid
 
     // @Triggers when a player right clicks on an entity.
@@ -2041,8 +1363,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("message", new Element(event.getJoinMessage()));
 
         String determination = doEvents(Arrays.asList
-                ("player joins",
-                        "player join"),
+                        ("player joins",
+                                "player join"),
                 null, dEntity.getPlayerFrom(player), context);
 
         // Handle message
@@ -2081,7 +1403,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("message", new Element(event.getLeaveMessage()));
 
         String determination = doEvents(Arrays.asList
-                ("player kicked"),
+                        ("player kicked"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (!determination.equals("none")) {
@@ -2116,8 +1438,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("holder", new dEntity(event.getLeashHolder()));
 
         String determination = doEvents(Arrays.asList
-                ("player leashes entity",
-                        "player leashes " + entity.identifyType()),
+                        ("player leashes entity",
+                                "player leashes " + entity.identifyType()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
 
         if (determination.equalsIgnoreCase("CANCELLED"))
@@ -2143,9 +1465,9 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("level", new Element(event.getNewLevel()));
 
         doEvents(Arrays.asList
-                ("player levels up",
-                        "player levels up to " + event.getNewLevel(),
-                        "player levels up from " + event.getOldLevel()),
+                        ("player levels up",
+                                "player levels up to " + event.getNewLevel(),
+                                "player levels up from " + event.getOldLevel()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
     }
 
@@ -2186,7 +1508,7 @@ public class BukkitWorldScriptHelper implements Listener {
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("KICKED"))
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination.length() > 7 ? determination.substring(7): determination);
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination.length() > 7 ? determination.substring(7) : determination);
     }
 
     // <--[event]
@@ -2213,10 +1535,10 @@ public class BukkitWorldScriptHelper implements Listener {
             context.put("notable", new Element(name));
 
             String determination = doEvents(Arrays.asList
-                    ("player walks over notable",
-                            "player walks over " + name,
-                            "walked over notable",
-                            "walked over " + name),
+                            ("player walks over notable",
+                                    "player walks over " + name,
+                                    "walked over notable",
+                                    "walked over " + name),
                     null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
 
             if (determination.toUpperCase().startsWith("CANCELLED") ||
@@ -2292,8 +1614,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("message", new Element(event.getQuitMessage()));
 
         String determination = doEvents(Arrays.asList
-                ("player quits",
-                        "player quit"),
+                        ("player quits",
+                                "player quit"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (!determination.equals("none")) {
@@ -2326,7 +1648,7 @@ public class BukkitWorldScriptHelper implements Listener {
         events.add("player respawns");
 
         if (event.isBedSpawn()) events.add("player respawns at bed");
-        else                    events.add("player respawns elsewhere");
+        else events.add("player respawns elsewhere");
 
         String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
@@ -2401,8 +1723,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("state", new Element(event.isFlying()));
 
         String determination = doEvents(Arrays.asList
-                ("player toggles flight",
-                        "player " + (event.isFlying() ? "starts" : "stops") + " flying"),
+                        ("player toggles flight",
+                                "player " + (event.isFlying() ? "starts" : "stops") + " flying"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2433,8 +1755,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("state", new Element(event.isSneaking()));
 
         String determination = doEvents(Arrays.asList
-                ("player toggles sneak",
-                        "player " + (event.isSneaking() ? "starts" : "stops") + " sneaking"),
+                        ("player toggles sneak",
+                                "player " + (event.isSneaking() ? "starts" : "stops") + " sneaking"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2465,8 +1787,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("state", new Element(event.isSprinting()));
 
         String determination = doEvents(Arrays.asList
-                ("player toggles sprint",
-                        "player " + (event.isSprinting() ? "starts" : "stops") + " sprinting"),
+                        ("player toggles sprint",
+                                "player " + (event.isSprinting() ? "starts" : "stops") + " sprinting"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2499,9 +1821,9 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("vehicle", vehicle);
 
         doEvents(Arrays.asList
-                ("vehicle created",
-                        vehicle.identifyType() + " created",
-                        vehicle.identifySimple() + " created"),
+                        ("vehicle created",
+                                vehicle.identifyType() + " created",
+                                vehicle.identifySimple() + " created"),
                 null, null, context, true);
     }
 
@@ -2664,15 +1986,15 @@ public class BukkitWorldScriptHelper implements Listener {
         else if (entity.isPlayer()) player = entity.getDenizenPlayer();
 
         String determination = doEvents(Arrays.asList
-                ("entity enters vehicle",
-                        entity.identifyType() + " enters vehicle",
-                        entity.identifySimple() + " enters vehicle",
-                        "entity enters " + vehicle.identifyType(),
-                        "entity enters " + vehicle.identifySimple(),
-                        entity.identifyType() + " enters " + vehicle.identifyType(),
-                        entity.identifySimple() + " enters " + vehicle.identifyType(),
-                        entity.identifyType() + " enters " + vehicle.identifySimple(),
-                        entity.identifySimple() + " enters " + vehicle.identifySimple()),
+                        ("entity enters vehicle",
+                                entity.identifyType() + " enters vehicle",
+                                entity.identifySimple() + " enters vehicle",
+                                "entity enters " + vehicle.identifyType(),
+                                "entity enters " + vehicle.identifySimple(),
+                                entity.identifyType() + " enters " + vehicle.identifyType(),
+                                entity.identifySimple() + " enters " + vehicle.identifyType(),
+                                entity.identifyType() + " enters " + vehicle.identifySimple(),
+                                entity.identifySimple() + " enters " + vehicle.identifySimple()),
                 npc, player, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2713,14 +2035,14 @@ public class BukkitWorldScriptHelper implements Listener {
         else if (entity.isPlayer()) player = entity.getDenizenPlayer();
 
         String determination = doEvents(Arrays.asList
-                ("entity exits vehicle",
-                        "entity exits " + vehicle.identifyType(),
-                        "entity exits " + vehicle.identifySimple(),
-                        entity.identifyType() + " exits vehicle",
-                        entity.identifyType() + " exits " + vehicle.identifyType(),
-                        entity.identifyType() + " exits " + vehicle.identifySimple(),
-                        entity.identifySimple() + " exits " + vehicle.identifyType(),
-                        entity.identifySimple() + " exits " + vehicle.identifySimple()),
+                        ("entity exits vehicle",
+                                "entity exits " + vehicle.identifyType(),
+                                "entity exits " + vehicle.identifySimple(),
+                                entity.identifyType() + " exits vehicle",
+                                entity.identifyType() + " exits " + vehicle.identifyType(),
+                                entity.identifyType() + " exits " + vehicle.identifySimple(),
+                                entity.identifySimple() + " exits " + vehicle.identifyType(),
+                                entity.identifySimple() + " exits " + vehicle.identifySimple()),
                 npc, player, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2754,8 +2076,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getLightning().getLocation()));
 
         String determination = doEvents(Arrays.asList
-                ("lightning strikes",
-                        "lightning strikes in " + world.identifySimple()),
+                        ("lightning strikes",
+                                "lightning strikes in " + world.identifySimple()),
                 null, null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2833,16 +2155,16 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("reason", new Element(reason));
 
         dList list = new dList();
-        for (Block block: event.getBlocks()) {
+        for (Block block : event.getBlocks()) {
             list.add(new dLocation(block.getLocation()).identify());
         }
         context.put("blocks", list);
 
         String determination = doEvents(Arrays.asList
-                ("portal created",
-                        "portal created because " + reason,
-                        "portal created in " + world.identifySimple(),
-                        "portal created in " + world.identifySimple() + " because " + reason),
+                        ("portal created",
+                                "portal created because " + reason,
+                                "portal created in " + world.identifySimple(),
+                                "portal created in " + world.identifySimple() + " because " + reason),
                 null, null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2871,8 +2193,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("new_location", new dLocation(world.getWorld().getSpawnLocation()));
 
         doEvents(Arrays.asList
-                ("spawn changes",
-                        "spawn changes in " + world.identifySimple()),
+                        ("spawn changes",
+                                "spawn changes in " + world.identifySimple()),
                 null, null, context, true);
     }
 
@@ -2906,7 +2228,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
         dList structure = new dList();
         dList mats = new dList();
-        for (BlockState state: event.getBlocks()) {
+        for (BlockState state : event.getBlocks()) {
             structure.add(new dLocation(state.getLocation()).identify());
             mats.add(dMaterial.getMaterialFrom(state.getType(), state.getRawData()).identify());
         }
@@ -2957,8 +2279,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("world", world);
 
         doEvents(Arrays.asList
-                ("world initializes",
-                        world.identifySimple() + " initializes"),
+                        ("world initializes",
+                                world.identifySimple() + " initializes"),
                 null, null, context, true);
     }
 
@@ -2981,8 +2303,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("world", world);
 
         doEvents(Arrays.asList
-                ("world loads",
-                        world.identifySimple() + " loads"),
+                        ("world loads",
+                                world.identifySimple() + " loads"),
                 null, null, context, true);
     }
 
@@ -3005,8 +2327,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("world", world);
 
         doEvents(Arrays.asList
-                ("world saves",
-                        world.identifySimple() + " saves"),
+                        ("world saves",
+                                world.identifySimple() + " saves"),
                 null, null, context, true);
     }
 
@@ -3029,8 +2351,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("world", world);
 
         doEvents(Arrays.asList
-                ("world unloads",
-                        world.identifySimple() + " unloads"),
+                        ("world unloads",
+                                world.identifySimple() + " unloads"),
                 null, null, context, true);
     }
 }

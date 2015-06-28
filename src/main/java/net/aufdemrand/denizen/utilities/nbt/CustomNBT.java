@@ -80,7 +80,7 @@ public class CustomNBT {
         tag.setString(key, value);
 
         // Write tag back
-        ((EntityLiving)nmsEntity).a(tag);
+        ((EntityLiving) nmsEntity).a(tag);
         return entity;
     }
 
@@ -97,7 +97,7 @@ public class CustomNBT {
         tag.remove(key);
 
         // Write tag back
-        ((EntityLiving)nmsEntity).a(tag);
+        ((EntityLiving) nmsEntity).a(tag);
         return entity;
     }
 

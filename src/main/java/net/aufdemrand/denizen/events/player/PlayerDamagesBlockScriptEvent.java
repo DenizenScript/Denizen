@@ -1,16 +1,17 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,14 +19,14 @@ import org.bukkit.event.block.BlockDamageEvent;
 
 import java.util.HashMap;
 
-public class PlayerDamagesBlockScriptEvent extends ScriptEvent implements Listener {
+public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // player damages block
     // player damages <material>
-    // player damages block in <notable cuboid>
-    // player damages <material> in <notable cuboid>
+    // player damages block in <area>
+    // player damages <material> in <area>
     //
     // @Cancellable true
     //
@@ -44,6 +45,7 @@ public class PlayerDamagesBlockScriptEvent extends ScriptEvent implements Listen
     public PlayerDamagesBlockScriptEvent() {
         instance = this;
     }
+
     public static PlayerDamagesBlockScriptEvent instance;
     public dLocation location;
     public dMaterial material;
@@ -64,27 +66,13 @@ public class PlayerDamagesBlockScriptEvent extends ScriptEvent implements Listen
         String lower = CoreUtilities.toLowerCase(s);
 
         String mat = CoreUtilities.getXthArg(2, lower);
-        if (!mat.equals("block") && !mat.equals(material.identifyNoIdentifier())) {
+        if (!mat.equals("block")
+                && !mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier())) {
             return false;
         }
-        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
-            String it = CoreUtilities.getXthArg(4, lower);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
 
         return true;
@@ -132,7 +120,7 @@ public class PlayerDamagesBlockScriptEvent extends ScriptEvent implements Listen
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

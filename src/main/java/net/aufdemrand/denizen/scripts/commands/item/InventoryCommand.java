@@ -1,16 +1,21 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+
+import java.util.List;
 
 public class InventoryCommand extends AbstractCommand {
 
@@ -46,7 +51,7 @@ public class InventoryCommand extends AbstractCommand {
     //
     // -->
 
-    private enum Action { OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE }
+    private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE}
 
     @SuppressWarnings("unchecked")
     @Override
@@ -62,17 +67,17 @@ public class InventoryCommand extends AbstractCommand {
             // Check for an origin, which can be a dInventory, dEntity, dLocation
             // or a dList of dItems
             else if (!scriptEntry.hasObject("origin")
-                     && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
-                     && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
-                         || arg.matchesArgumentList(dItem.class))) {
+                    && arg.matchesPrefix("origin", "o", "source", "items", "item", "i", "from", "f")
+                    && (arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)
+                    || arg.matchesArgumentList(dItem.class))) {
                 scriptEntry.addObject("origin", Conversion.getInventory(arg, scriptEntry));
             }
 
             // Check for a destination, which can be a dInventory, dEntity
             // or dLocation
             else if (!scriptEntry.hasObject("destination")
-                     && arg.matchesPrefix("destination", "dest", "d", "target", "to", "t")
-                     && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
+                    && arg.matchesPrefix("destination", "dest", "d", "target", "to", "t")
+                    && arg.matchesArgumentTypes(dInventory.class, dEntity.class, dLocation.class)) {
                 scriptEntry.addObject("destination", Conversion.getInventory(arg, scriptEntry));
             }
 
@@ -91,7 +96,7 @@ public class InventoryCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an Inventory action!");
 
         scriptEntry.defaultObject("slot", new Element(1)).defaultObject("destination",
-                        ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity().getInventory() : null);
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity().getInventory() : null);
     }
 
     @SuppressWarnings("unchecked")
@@ -106,9 +111,9 @@ public class InventoryCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("actions", actions.toString())
-                + destination.debug()
-                + (origin != null ? origin.debug() : "")
-                + slot.debug());
+                        + destination.debug()
+                        + (origin != null ? origin.debug() : "")
+                        + slot.debug());
 
         for (String action : actions) {
             switch (Action.valueOf(action.toUpperCase())) {
@@ -118,16 +123,17 @@ public class InventoryCommand extends AbstractCommand {
                     // Use special method to make opening workbenches work properly
                     if (destination.getIdType().equals("workbench")
                             || destination.getIdHolder().equalsIgnoreCase("workbench")) {
-                        ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity()
-                            .openWorkbench(null, true);
+                        ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity()
+                                .openWorkbench(null, true);
                     }
                     // Otherwise, open inventory as usual
-                    else ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+                    else
+                        ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().openInventory(destination.getInventory());
                     break;
 
                 // Make the attached player close any open inventory
                 case CLOSE:
-                    ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().closeInventory();
+                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().closeInventory();
                     break;
 
                 // Turn destination's contents into a copy of origin's
@@ -166,7 +172,7 @@ public class InventoryCommand extends AbstractCommand {
                         dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    destination.add(slot.asInt()-1, origin.getContents());
+                    destination.add(slot.asInt() - 1, origin.getContents());
                     break;
 
                 // Remove origin's contents from destination
@@ -184,7 +190,7 @@ public class InventoryCommand extends AbstractCommand {
                         dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    destination.setSlots(slot.asInt()-1, origin.getContents());
+                    destination.setSlots(slot.asInt() - 1, origin.getContents());
                     break;
 
                 // Keep only items from the origin's contents in the

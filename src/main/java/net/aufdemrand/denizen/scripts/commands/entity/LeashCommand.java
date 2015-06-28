@@ -1,20 +1,20 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LeashHitch;
+
+import java.util.List;
 
 public class LeashCommand extends AbstractCommand {
 
@@ -24,17 +24,17 @@ public class LeashCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cancel")
-                && arg.matches("cancel", "stop")) {
+                    && arg.matches("cancel", "stop")) {
                 scriptEntry.addObject("cancel", "");
             }
 
             else if (!scriptEntry.hasObject("entities")
-                     && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
             else if (!scriptEntry.hasObject("holder")
-                     && arg.matchesPrefix("holder", "h")) {
+                    && arg.matchesPrefix("holder", "h")) {
 
                 if (arg.matchesArgumentType(dEntity.class))
                     scriptEntry.addObject("holder", arg.asType(dEntity.class));
@@ -52,8 +52,8 @@ public class LeashCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("cancel")) {
 
             scriptEntry.defaultObject("holder",
-                    ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity() : null,
-                    ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
+                    ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity() : null,
+                    ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
         }
     }
 
@@ -72,7 +72,7 @@ public class LeashCommand extends AbstractCommand {
             Holder = holder.getBukkitEntity();
         }
         else if (holderObject instanceof dLocation) {
-            holderLoc = ((dLocation)scriptEntry.getObject("holder"));
+            holderLoc = ((dLocation) scriptEntry.getObject("holder"));
             if (holderLoc.getBlock().getType() == Material.FENCE || holderLoc.getBlock().getType() == Material.NETHER_FENCE)
                 Holder = holderLoc.getWorld().spawn(holderLoc, LeashHitch.class);
             else {
@@ -84,8 +84,8 @@ public class LeashCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                             aH.debugObj("entities", entities.toString()) +
-                             (holder != null ? aH.debugObj("holder", holder) : aH.debugObj("holder", holderLoc)));
+                aH.debugObj("entities", entities.toString()) +
+                (holder != null ? aH.debugObj("holder", holder) : aH.debugObj("holder", holderLoc)));
 
         // Go through all the entities and leash/unleash them
         for (dEntity entity : entities) {

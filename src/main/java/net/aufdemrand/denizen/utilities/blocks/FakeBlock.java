@@ -1,11 +1,10 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
-import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import org.bukkit.Chunk;
+import net.aufdemrand.denizencore.objects.Duration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -16,7 +15,6 @@ import java.util.*;
 
 /**
  * Creates a temporary fake block and shows it to a dPlayer.
- *
  */
 public class FakeBlock {
 

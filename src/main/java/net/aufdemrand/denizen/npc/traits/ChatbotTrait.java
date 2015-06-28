@@ -1,16 +1,16 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import java.io.File;
-
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-
-import org.alicebot.ab.*;
+import org.alicebot.ab.Bot;
+import org.alicebot.ab.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+
+import java.io.File;
 
 public class ChatbotTrait extends Trait {
 

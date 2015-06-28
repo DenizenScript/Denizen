@@ -1,25 +1,25 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.listeners.AbstractListener;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.dScript;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-
 public class ListenCommand extends AbstractCommand {
 
 
-    private enum Action { NEW, CANCEL, FINISH }
+    private enum Action {NEW, CANCEL, FINISH}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -61,7 +61,7 @@ public class ListenCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a listener type!");
 
         // Player listeners require a player!
-        if (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() == null)
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() == null)
             throw new InvalidArgumentsException("Must specify a player!");
 
         // Add arguments
@@ -90,8 +90,8 @@ public class ListenCommand extends AbstractCommand {
             case NEW:
                 // First make sure there isn't already a 'player listener' for this player with the specified ID.
                 if (DenizenAPI.getCurrentInstance().getListenerRegistry()
-                        .getListenersFor(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()) != null
-                        && DenizenAPI.getCurrentInstance().getListenerRegistry().getListenersFor(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer())
+                        .getListenersFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()) != null
+                        && DenizenAPI.getCurrentInstance().getListenerRegistry().getListenersFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer())
                         .containsKey(id.asString().toLowerCase())) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Cancelled creation of NEW listener! Listener ID '" + id.asString() + "' already exists!");
                     break;
@@ -105,56 +105,58 @@ public class ListenCommand extends AbstractCommand {
 
                 try {
                     DenizenAPI.getCurrentInstance().getListenerRegistry().get(type.asString())
-                            .createInstance(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), id.asString())
-                            .build(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                            .createInstance(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString())
+                            .build(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(),
                                     id.asString(),
                                     type.asString(),
                                     arguments,
                                     finish_script,
-                                    ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
+                                    ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
 
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     dB.echoDebug(scriptEntry, "Cancelled creation of NEW listener!");
 
                     // Why? Maybe a wrong listener type...
                     if (DenizenAPI.getCurrentInstance().getListenerRegistry().get(type.asString()) == null)
                         dB.echoError(scriptEntry.getResidingQueue(), "Invalid listener type!");
 
-                    // Just print the stacktrace if anything else, so we can debug other possible
-                    // problems.
+                        // Just print the stacktrace if anything else, so we can debug other possible
+                        // problems.
                     else
                         dB.echoError(scriptEntry.getResidingQueue(), e);
 
                     // Deconstruct the listener in case it was partially created while erroring out.
                     try {
                         DenizenAPI.getCurrentInstance().getListenerRegistry().getListenerFor
-                                (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), id.asString()).cancel();
+                                (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()).cancel();
                     }
-                    catch (Exception ex) { }
+                    catch (Exception ex) {
+                    }
                 }
                 break;
 
             case FINISH:
                 if (DenizenAPI.getCurrentInstance().getListenerRegistry()
-                        .getListenerFor(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), id.asString()) != null)
+                        .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()) != null)
                     DenizenAPI.getCurrentInstance().getListenerRegistry()
-                            .getListenerFor(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), id.asString()).finish();
+                            .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()).finish();
                 break;
 
             case CANCEL:
-                if (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null) {
+                if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
                     if (id != null)
                         if (DenizenAPI.getCurrentInstance().getListenerRegistry()
-                                .getListenerFor(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), id.asString()) != null)
+                                .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()) != null)
                             DenizenAPI.getCurrentInstance().getListenerRegistry()
-                                    .getListenerFor(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), id.asString()).cancel();
-                    else
-                        for (AbstractListener listener :
-                                DenizenAPI.getCurrentInstance().getListenerRegistry().getListenersFor(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()).values())
-                            listener.cancel();
+                                    .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()).cancel();
+                        else
+                            for (AbstractListener listener :
+                                    DenizenAPI.getCurrentInstance().getListenerRegistry().getListenersFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()).values())
+                                listener.cancel();
                 }
                 else
-                    DenizenAPI.getCurrentInstance().getSaves().set("Listeners." + ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getName() + "." + id, null);
+                    DenizenAPI.getCurrentInstance().getSaves().set("Listeners." + ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName() + "." + id, null);
                 break;
         }
     }

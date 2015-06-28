@@ -1,20 +1,22 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class LookCommand extends AbstractCommand {
 
@@ -35,7 +37,7 @@ public class LookCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
 
             else if (!scriptEntry.hasObject("entities")
-                     && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
@@ -46,8 +48,8 @@ public class LookCommand extends AbstractCommand {
         // Use the NPC or player as the entity if no entities are specified
 
         scriptEntry.defaultObject("entities",
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()) : null,
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()) : null);
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null,
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null);
 
         if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException("Must specify a location and entity!");
@@ -72,6 +74,7 @@ public class LookCommand extends AbstractCommand {
         if (duration != null && duration.getTicks() > 2) {
             BukkitRunnable task = new BukkitRunnable() {
                 long bounces = 0;
+
                 public void run() {
                     bounces += 2;
                     if (bounces > duration.getTicks()) {

@@ -1,12 +1,11 @@
 package net.aufdemrand.denizen.utilities.depends;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
-
 import net.citizensnpcs.Citizens;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 
 public class Depends {
@@ -31,8 +30,12 @@ public class Depends {
     // Language 2.0, is included as a dependency at Denizen/lib/Ab.jar
     private boolean checkProgramAB() {
 
-        try { Class.forName("org.alicebot.ab.Bot"); }
-        catch( ClassNotFoundException e ) { return false; }
+        try {
+            Class.forName("org.alicebot.ab.Bot");
+        }
+        catch (ClassNotFoundException e) {
+            return false;
+        }
 
         return true;
     }
@@ -42,12 +45,14 @@ public class Depends {
             return false;
         }
         try {
-        RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
+            RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
+            if (rsp == null) {
+                return false;
+            }
+            economy = rsp.getProvider();
         }
-        economy = rsp.getProvider();
-        } catch (Exception e) { }
+        catch (Exception e) {
+        }
         return economy != null;
     }
 
@@ -55,9 +60,12 @@ public class Depends {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-        try { RegisteredServiceProvider<Chat> rsp = Bukkit.getServer().getServicesManager().getRegistration(Chat.class);
-        chat = rsp.getProvider();
-        } catch (Exception e) { }
+        try {
+            RegisteredServiceProvider<Chat> rsp = Bukkit.getServer().getServicesManager().getRegistration(Chat.class);
+            chat = rsp.getProvider();
+        }
+        catch (Exception e) {
+        }
         return chat != null;
     }
 
@@ -66,9 +74,11 @@ public class Depends {
             return false;
         }
         try {
-        RegisteredServiceProvider<Permission> rsp = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
-        permissions = rsp.getProvider();
-        } catch (Exception e) { }
+            RegisteredServiceProvider<Permission> rsp = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
+            permissions = rsp.getProvider();
+        }
+        catch (Exception e) {
+        }
         return permissions != null;
     }
 
@@ -77,8 +87,10 @@ public class Depends {
             return false;
         }
         try {
-        citizens = (Citizens) Bukkit.getServer().getPluginManager().getPlugin("Citizens");
-        } catch (Exception e) { }
+            citizens = (Citizens) Bukkit.getServer().getPluginManager().getPlugin("Citizens");
+        }
+        catch (Exception e) {
+        }
         return citizens != null;
     }
 }

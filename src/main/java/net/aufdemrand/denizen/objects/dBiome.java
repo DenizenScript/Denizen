@@ -24,8 +24,7 @@ public class dBiome implements dObject, Adjustable {
     /**
      * Gets a Biome Object from a string form.
      *
-     * @param string  the string
-     *
+     * @param string the string
      */
     @Fetchable("b")
     public static dBiome valueOf(String string, TagContext context) {
@@ -45,9 +44,8 @@ public class dBiome implements dObject, Adjustable {
     /**
      * Determines whether a string is a valid biome.
      *
-     * @param arg  the string
-     * @return  true if matched, otherwise false
-     *
+     * @param arg the string
+     * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
 
@@ -137,30 +135,30 @@ public class dBiome implements dObject, Adjustable {
             return new Element(CoreUtilities.toLowerCase(biome.getDownfallType().name()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <b@biome.humidity>
-        // @returns Element(Decimal)
-        // @description
-        // Returns the humidity of this biome.
-        // -->
+            // <--[tag]
+            // @attribute <b@biome.humidity>
+            // @returns Element(Decimal)
+            // @description
+            // Returns the humidity of this biome.
+            // -->
         else if (attribute.startsWith("humidity"))
             return new Element(biome.getHumidity()).getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <b@biome.temperature>
-        // @returns Element(Decimal)
-        // @description
-        // Returns the temperature of this biome.
-        // -->
+            // <--[tag]
+            // @attribute <b@biome.temperature>
+            // @returns Element(Decimal)
+            // @description
+            // Returns the temperature of this biome.
+            // -->
         else if (attribute.startsWith("temperature"))
             return new Element(biome.getTemperature()).getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <b@biome.spawnable_entities>
-        // @returns dList(dEntity)
-        // @description
-        // Returns all entities that spawn naturally in this biome.
-        // -->
+            // <--[tag]
+            // @attribute <b@biome.spawnable_entities>
+            // @returns dList(dEntity)
+            // @description
+            // Returns all entities that spawn naturally in this biome.
+            // -->
         else if (attribute.startsWith("spawnable_entities")) {
             attribute = attribute.fulfill(1);
 
@@ -177,33 +175,33 @@ public class dBiome implements dObject, Adjustable {
             if (attribute.startsWith("ambient"))
                 entityTypes = biome.getAmbientEntities();
 
-            // <--[tag]
-            // @attribute <b@biome.spawnable_entities.creatures>
-            // @returns dList(dEntity)
-            // @description
-            // Returns the entities that spawn naturally in creature locations.
-            // Default examples: PIG, COW, CHICKEN...
-            // -->
+                // <--[tag]
+                // @attribute <b@biome.spawnable_entities.creatures>
+                // @returns dList(dEntity)
+                // @description
+                // Returns the entities that spawn naturally in creature locations.
+                // Default examples: PIG, COW, CHICKEN...
+                // -->
             else if (attribute.startsWith("creatures"))
                 entityTypes = biome.getCreatureEntities();
 
-            // <--[tag]
-            // @attribute <b@biome.spawnable_entities.monsters>
-            // @returns dList(dEntity)
-            // @description
-            // Returns the entities that spawn naturally in monster locations.
-            // Default examples: CREEPER, ZOMBIE, SKELETON...
-            // -->
+                // <--[tag]
+                // @attribute <b@biome.spawnable_entities.monsters>
+                // @returns dList(dEntity)
+                // @description
+                // Returns the entities that spawn naturally in monster locations.
+                // Default examples: CREEPER, ZOMBIE, SKELETON...
+                // -->
             else if (attribute.startsWith("monsters"))
                 entityTypes = biome.getMonsterEntities();
 
-            // <--[tag]
-            // @attribute <b@biome.spawnable_entities.water>
-            // @returns dList(dEntity)
-            // @description
-            // Returns the entities that spawn naturally in underwater locations.
-            // Default examples: SQUID
-            // -->
+                // <--[tag]
+                // @attribute <b@biome.spawnable_entities.water>
+                // @returns dList(dEntity)
+                // @description
+                // Returns the entities that spawn naturally in underwater locations.
+                // Default examples: SQUID
+                // -->
             else if (attribute.startsWith("water"))
                 entityTypes = biome.getWaterEntities();
 

@@ -7,7 +7,6 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -52,7 +51,7 @@ public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         return lower.equals("block falls")
-                || CoreUtilities.getXthArg(0,lower).equals(event.getBlock().getType().name().toLowerCase());
+                || CoreUtilities.getXthArg(0, lower).equals(event.getBlock().getType().name().toLowerCase());
     }
 
     @Override

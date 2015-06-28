@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 public class EntityFirework implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.FIREWORK;
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.FIREWORK;
     }
 
     public static EntityFirework getFrom(dObject entity) {
@@ -92,7 +92,7 @@ public class EntityFirework implements Property {
         if (mechanism.matches("firework_item") && mechanism.requireObject(dItem.class)) {
             dItem item = mechanism.getValue().asType(dItem.class);
             if (item != null && item.getItemStack().getItemMeta() instanceof FireworkMeta) {
-                ((Firework)firework.getBukkitEntity()).setFireworkMeta((FireworkMeta)item.getItemStack().getItemMeta());
+                ((Firework) firework.getBukkitEntity()).setFireworkMeta((FireworkMeta) item.getItemStack().getItemMeta());
             }
             else {
                 dB.echoError("'" + mechanism.getValue().asString() + "' is not a valid firework item.");
@@ -109,7 +109,7 @@ public class EntityFirework implements Property {
         // <e@entity.firework_item>
         // -->
         if (mechanism.matches("detonate")) {
-            ((Firework)firework.getBukkitEntity()).detonate();
+            ((Firework) firework.getBukkitEntity()).detonate();
         }
     }
 }

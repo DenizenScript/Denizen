@@ -9,7 +9,6 @@ import org.bukkit.event.HandlerList;
  * An event that pertains to a Denizen 'Player Listener'.
  *
  * @author Jeremy Schroeder
- *
  */
 
 public class ListenerEvent extends Event {

@@ -1,12 +1,14 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptBuilder;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.List;
 
@@ -15,7 +17,6 @@ import java.util.List;
  * This replaces the now-deprecated runtask command without the queue argument.
  *
  * @author Jeremy Schroeder
- *
  */
 public class InjectCommand extends AbstractCommand {
 
@@ -154,12 +155,12 @@ public class InjectCommand extends AbstractCommand {
             entries = scriptEntry.getScript().getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
 
-        // If it has a path
+            // If it has a path
         else if (scriptEntry.hasObject("path"))
             entries = script.getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
 
-        // Else, assume standard path
+            // Else, assume standard path
         else entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
 
         // For determine

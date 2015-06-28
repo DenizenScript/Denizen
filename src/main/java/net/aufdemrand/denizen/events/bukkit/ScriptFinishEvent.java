@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
  * Bukkit event for when a dScript FINISH command is executed.
  *
  * @author Jeremy Schroeder
- *
  */
 public class ScriptFinishEvent extends Event {
     private static final HandlerList handlers = new HandlerList();

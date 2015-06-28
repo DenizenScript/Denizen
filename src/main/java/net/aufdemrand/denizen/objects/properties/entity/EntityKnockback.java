@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityKnockback implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.ARROW;
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ARROW;
     }
 
     public static EntityKnockback getFrom(dObject entity) {
@@ -37,7 +37,7 @@ public class EntityKnockback implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(((Arrow)arrow.getBukkitEntity()).getKnockbackStrength());
+        return String.valueOf(((Arrow) arrow.getBukkitEntity()).getKnockbackStrength());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class EntityKnockback implements Property {
         // If the entity is an arrow, returns the knockback strength of the arrow.
         // -->
         if (attribute.startsWith("knockback"))
-            return new Element(((Arrow)arrow.getBukkitEntity()).getKnockbackStrength())
+            return new Element(((Arrow) arrow.getBukkitEntity()).getKnockbackStrength())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
@@ -83,7 +83,7 @@ public class EntityKnockback implements Property {
         // -->
 
         if (mechanism.matches("knockback") && mechanism.requireInteger()) {
-            ((Arrow)arrow.getBukkitEntity()).setKnockbackStrength(mechanism.getValue().asInt());
+            ((Arrow) arrow.getBukkitEntity()).setKnockbackStrength(mechanism.getValue().asInt());
         }
     }
 }

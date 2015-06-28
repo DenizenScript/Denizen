@@ -29,7 +29,8 @@ public class CommandContext {
             if (args[i].length() == 0) {
                 // Ignore this
                 continue;
-            } else if (args[i].charAt(0) == '\'' || args[i].charAt(0) == '"') {
+            }
+            else if (args[i].charAt(0) == '\'' || args[i].charAt(0) == '"') {
                 char quote = args[i].charAt(0);
                 String quoted = args[i].substring(1); // remove initial quote
                 if (quoted.length() > 0 && quoted.charAt(quoted.length() - 1) == quote) {
@@ -72,7 +73,8 @@ public class CommandContext {
                     args[i] = "";
                     args[inner] = "";
                 }
-            } else if (FLAG.matcher(args[i]).matches()) {
+            }
+            else if (FLAG.matcher(args[i]).matches()) {
                 for (int k = 1; k < args[i].length(); k++)
                     flags.add(args[i].charAt(k));
                 args[i] = "";
@@ -159,7 +161,8 @@ public class CommandContext {
         if (index + 1 < args.length) {
             try {
                 return Integer.parseInt(args[index + 1]);
-            } catch (NumberFormatException ex) {
+            }
+            catch (NumberFormatException ex) {
             }
         }
         return def;
@@ -241,17 +244,20 @@ public class CommandContext {
                 case 6:
                     if (denizen) {
                         worldName = parts[5].replaceFirst("w@", "");
-                    } else
+                    }
+                    else
                         pitch = Float.parseFloat(parts[5]);
                 case 5:
                     if (denizen) {
                         pitch = Float.parseFloat(parts[4]);
-                    } else
+                    }
+                    else
                         yaw = Float.parseFloat(parts[4]);
                 case 4:
                     if (denizen && parts.length > 4) {
                         yaw = Float.parseFloat(parts[3]);
-                    } else
+                    }
+                    else
                         worldName = parts[3].replaceFirst("w@", "");
                 case 3:
                     x = Double.parseDouble(parts[0]);
@@ -265,7 +271,8 @@ public class CommandContext {
             if (world == null)
                 throw new CommandException("Location could not be parsed or was not found.");
             return new Location(world, x, y, z, yaw, pitch);
-        } else {
+        }
+        else {
             Player search = Bukkit.getPlayerExact(flag);
             if (search == null)
                 throw new CommandException("No player could be found by that name.");

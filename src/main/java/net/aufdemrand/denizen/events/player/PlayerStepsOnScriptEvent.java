@@ -1,16 +1,14 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,12 +17,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
 
-public class PlayerStepsOnScriptEvent extends ScriptEvent implements Listener {
+public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player steps on block (in <notable cuboid>)
-    // player steps on <material> (in <notable cuboid>)
+    // player steps on block (in <area>)
+    // player steps on <material> (in <area>)
     //
     // @Warning This event may fire very rapidly.
     //
@@ -43,6 +41,7 @@ public class PlayerStepsOnScriptEvent extends ScriptEvent implements Listener {
     public PlayerStepsOnScriptEvent() {
         instance = this;
     }
+
     public static PlayerStepsOnScriptEvent instance;
     public dLocation location;
     public dLocation previous_location;
@@ -64,24 +63,9 @@ public class PlayerStepsOnScriptEvent extends ScriptEvent implements Listener {
         if (!mat.equals("block") && !mat.equals(material.identifyNoIdentifier())) {
             return false;
         }
-        if (CoreUtilities.xthArgEquals(4, lower, "in")) {
-            String it = CoreUtilities.getXthArg(5, lower);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
 
         return true;
@@ -131,7 +115,7 @@ public class PlayerStepsOnScriptEvent extends ScriptEvent implements Listener {
         previous_location = new dLocation(event.getFrom());
         new_location = new dLocation(event.getTo());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

@@ -1,16 +1,12 @@
 package net.aufdemrand.denizen.events.block;
 
-import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dEllipsoid;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,12 +14,12 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 
 import java.util.HashMap;
 
-public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
+public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block physics (in <notable cuboid>)
-    // <material> physics (in <notable cuboid>)
+    // block physics (in <area>)
+    // <material> physics (in <area>)
     //
     // @Warning This event may fire very rapidly.
     //
@@ -64,33 +60,13 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
 
         if (!lower.startsWith("block")) {
             dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(0, lower));
-            if (mat == null) {
-                dB.echoError("Invalid event material [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
             if (!old_material.matchesMaterialData(mat.getMaterialData())) {
                 return false;
             }
         }
 
-        if (CoreUtilities.xthArgEquals(2, lower, "in")) {
-            String it = CoreUtilities.getXthArg(3, lower);
-            if (dCuboid.matches(it)) {
-                dCuboid cuboid = dCuboid.valueOf(it);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(it)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(it);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [BlockPhysics]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
 
         return true;
@@ -127,7 +103,7 @@ public class BlockPhysicsScriptEvent extends ScriptEvent implements Listener {
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        new_material =  dMaterial.getMaterialFrom(event.getChangedType());
+        new_material = dMaterial.getMaterialFrom(event.getChangedType());
         old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
         cancelled = event.isCancelled();
         this.event = event;

@@ -2,17 +2,17 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
 import org.bukkit.command.CommandSender;
@@ -25,13 +25,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TriggerTrait extends Trait implements Listener {
 
-    @Persist(value="enabled", collectionType=ConcurrentHashMap.class)
+    @Persist(value = "enabled", collectionType = ConcurrentHashMap.class)
     private Map<String, Boolean> enabled = new ConcurrentHashMap<String, Boolean>(8, 0.9f, 1);
-    @Persist(value="duration", collectionType=ConcurrentHashMap.class)
+    @Persist(value = "duration", collectionType = ConcurrentHashMap.class)
     private Map<String, Double> duration = new ConcurrentHashMap<String, Double>(8, 0.9f, 1);
-    @Persist(value="cooldowntype", collectionType=ConcurrentHashMap.class)
+    @Persist(value = "cooldowntype", collectionType = ConcurrentHashMap.class)
     private Map<String, CooldownType> type = new ConcurrentHashMap<String, CooldownType>(8, 0.9f, 1);
-    @Persist(value="radius", collectionType=ConcurrentHashMap.class)
+    @Persist(value = "radius", collectionType = ConcurrentHashMap.class)
     private Map<String, Integer> radius = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
 
 
@@ -62,7 +62,7 @@ public class TriggerTrait extends Trait implements Listener {
      * Toggles a trigger on or off for this NPC.
      *
      * @param triggerName name of the Trigger, as specified by the Trigger. Case in-sensitive.
-     * @param toggle new state of the trigger
+     * @param toggle      new state of the trigger
      * @return output debug information.
      */
     public String toggleTrigger(String triggerName, boolean toggle) {
@@ -79,7 +79,8 @@ public class TriggerTrait extends Trait implements Listener {
             if (enabled.get(triggerName.toUpperCase())) {
                 enabled.put(triggerName.toUpperCase(), false);
                 return triggerName + " trigger is now disabled.";
-            } else {
+            }
+            else {
                 enabled.put(triggerName.toUpperCase(), true);
                 return triggerName + " trigger is now enabled.";
             }
@@ -120,7 +121,10 @@ public class TriggerTrait extends Trait implements Listener {
             if (type.containsKey(triggerName.toUpperCase()))
                 return type.get(triggerName.toUpperCase());
             else return CooldownType.valueOf(Settings.triggerDefaultCooldownType(triggerName).toUpperCase());
-        } catch (Exception e) { return CooldownType.PLAYER; }
+        }
+        catch (Exception e) {
+            return CooldownType.PLAYER;
+        }
     }
 
 
@@ -205,7 +209,8 @@ public class TriggerTrait extends Trait implements Listener {
             if (dNPCRegistry.getDenizen(npc).action("unavailable", player, context).equalsIgnoreCase("available")) {
                 // If determined available, continue on...
                 // else, return a 'non-triggered' state.
-            } else
+            }
+            else
                 return new TriggerContext(false);
         }
 
@@ -223,7 +228,6 @@ public class TriggerTrait extends Trait implements Listener {
     /**
      * Contains whether the trigger successfully 'triggered' and any context that was
      * available while triggering or attempting to trigger.
-     *
      */
     public class TriggerContext {
 
@@ -236,7 +240,8 @@ public class TriggerTrait extends Trait implements Listener {
             this.triggered = triggered;
         }
 
-        String determination; boolean triggered;
+        String determination;
+        boolean triggered;
 
         public boolean hasDetermination() {
             return determination != null && !determination.equalsIgnoreCase("none");

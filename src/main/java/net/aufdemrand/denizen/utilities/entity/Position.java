@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import java.util.List;
-
 import org.bukkit.entity.Entity;
+
+import java.util.List;
 
 public class Position {
 

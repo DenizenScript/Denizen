@@ -1,13 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
 
@@ -54,12 +57,12 @@ public class DisplayItemCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(),
                 item.debug()
-                + duration.debug()
-                + location.debug());
+                        + duration.debug()
+                        + location.debug());
 
         // Drop the item
         final Item dropped = location.getWorld()
-                .dropItem(location.getBlock().getLocation().clone().add(0.5,1.5,0.5), item.getItemStack());
+                .dropItem(location.getBlock().getLocation().clone().add(0.5, 1.5, 0.5), item.getItemStack());
         dropped.setVelocity(dropped.getVelocity().multiply(0));
         dropped.setPickupDelay(duration.getTicksAsInt() + 1000);
         dropped.setTicksLived(duration.getTicksAsInt() + 1000);

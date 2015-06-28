@@ -2,26 +2,25 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
+import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
+import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
-import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
-import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizencore.scripts.containers.core.WorldScriptContainer;
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
@@ -38,8 +37,10 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class ServerTags implements Listener {
@@ -174,7 +175,7 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_materials")) {
             dList allMats = new dList();
-            for (Material mat: Material.values())
+            for (Material mat : Material.values())
                 allMats.add(mat.name());
             event.setReplaced(allMats.getAttribute(attribute.fulfill(1)));
         }
@@ -198,7 +199,8 @@ public class ServerTags implements Listener {
                         for (String flag : allFlags)
                             if (pattern.matcher(flag).matches())
                                 searchFlags.add(flag);
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         dB.echoError(e);
                     }
                 }
@@ -225,7 +227,8 @@ public class ServerTags implements Listener {
             dList allNotables = new dList();
             if (attribute.hasContext(1)) {
                 String type = CoreUtilities.toLowerCase(attribute.getContext(1));
-                types: for (Map.Entry<String, Class> typeClass : NotableManager.getReverseClassIdMap().entrySet()) {
+                types:
+                for (Map.Entry<String, Class> typeClass : NotableManager.getReverseClassIdMap().entrySet()) {
                     if (type.equals(CoreUtilities.toLowerCase(typeClass.getKey()))) {
                         for (Object notable : NotableManager.getAllType(typeClass.getValue())) {
                             allNotables.add(((dObject) notable).identify());
@@ -342,12 +345,12 @@ public class ServerTags implements Listener {
             else {
                 dList list = new dList();
                 if (EventsOne != null) {
-                    for (WorldScriptContainer script: EventsOne) {
+                    for (WorldScriptContainer script : EventsOne) {
                         list.add("s@" + script.getName());
                     }
                 }
                 if (EventsTwo != null) {
-                    for (WorldScriptContainer script: EventsTwo) {
+                    for (WorldScriptContainer script : EventsTwo) {
                         if (!list.contains("s@" + script.getName()))
                             list.add("s@" + script.getName());
                     }
@@ -493,7 +496,7 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_sql_connections")) {
             dList list = new dList();
-            for (Map.Entry<String, Connection> entry: SQLCommand.connections.entrySet()) {
+            for (Map.Entry<String, Connection> entry : SQLCommand.connections.entrySet()) {
                 try {
                     if (!entry.getValue().isClosed()) {
                         list.add(entry.getKey());
@@ -564,7 +567,7 @@ public class ServerTags implements Listener {
         if (attribute.startsWith("match_player") && attribute.hasContext(1)) {
             Player matchPlayer = null;
             String matchInput = attribute.getContext(1).toLowerCase();
-            for (Player player: Bukkit.getOnlinePlayers()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.getName().toLowerCase().equals(matchInput)) {
                     matchPlayer = player;
                     break;
@@ -592,7 +595,7 @@ public class ServerTags implements Listener {
         if (attribute.startsWith("match_offline_player") && attribute.hasContext(1)) {
             UUID matchPlayer = null;
             String matchInput = attribute.getContext(1).toLowerCase();
-            for (Map.Entry<String, UUID> entry: dPlayer.getAllPlayers().entrySet()) {
+            for (Map.Entry<String, UUID> entry : dPlayer.getAllPlayers().entrySet()) {
                 if (entry.getKey().toLowerCase().equals(matchInput)) {
                     matchPlayer = entry.getValue();
                     break;
@@ -643,7 +646,7 @@ public class ServerTags implements Listener {
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             dList players = new dList();
-            for (Player player: Bukkit.getOnlinePlayers()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
                 if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new dPlayer(player), flag).size() > 0)
                     players.add(new dPlayer(player).identify());
             }
@@ -758,7 +761,7 @@ public class ServerTags implements Listener {
         if (attribute.startsWith("list_players")) {
             dList players = new dList();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                    players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                players.add(dPlayer.mirrorBukkitPlayer(player).identify());
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -967,7 +970,7 @@ public class ServerTags implements Listener {
         // <queue.stats>
         // -->
         if (mechanism.matches("reset_event_stats")) {
-            for (ScriptEvent se: ScriptEvent.events) {
+            for (ScriptEvent se : ScriptEvent.events) {
                 se.fires = 0;
                 se.scriptFires = 0;
                 se.nanoTimes = 0;

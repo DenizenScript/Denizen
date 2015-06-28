@@ -1,13 +1,13 @@
 package net.aufdemrand.denizen.scripts.triggers;
 
-import net.aufdemrand.denizencore.interfaces.dRegistry;
-import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.triggers.core.ChatTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.ClickTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.DamageTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.ProximityTrigger;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizencore.interfaces.dRegistry;
 import net.citizensnpcs.api.npc.NPC;
 
 import java.util.HashMap;
@@ -28,7 +28,8 @@ public class TriggerRegistry implements dRegistry {
         for (RegistrationableInstance member : instances.values())
             try {
                 member.onDisable();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
                 dB.echoError(e);
             }
@@ -45,6 +46,7 @@ public class TriggerRegistry implements dRegistry {
         if (instances.containsKey(triggerName.toUpperCase())) return instances.get(triggerName.toUpperCase());
         else return null;
     }
+
     @Override
     public Map<String, AbstractTrigger> list() {
         return instances;
@@ -62,7 +64,7 @@ public class TriggerRegistry implements dRegistry {
         new ClickTrigger().activate().as("Click");
         new ChatTrigger().activate().as("Chat");
         new DamageTrigger().activate().as("Damage");
-        new ProximityTrigger().activate ().as("Proximity");
+        new ProximityTrigger().activate().as("Proximity");
         dB.echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 
@@ -71,10 +73,10 @@ public class TriggerRegistry implements dRegistry {
     // Trigger Cooldowns
     ///////
 
-    Map<Integer, Map<String, Long>> npcCooldown    = new ConcurrentHashMap<Integer, Map<String,Long>>(8, 0.9f, 1);
-    Map <String, Map<String, Long>> playerCooldown = new ConcurrentHashMap <String, Map<String,Long>>(8, 0.9f, 1);
+    Map<Integer, Map<String, Long>> npcCooldown = new ConcurrentHashMap<Integer, Map<String, Long>>(8, 0.9f, 1);
+    Map<String, Map<String, Long>> playerCooldown = new ConcurrentHashMap<String, Map<String, Long>>(8, 0.9f, 1);
 
-    public enum CooldownType { NPC, PLAYER }
+    public enum CooldownType {NPC, PLAYER}
 
     /*
      * Trigger cool-downs are used by Denizen internally in intervals specified by the config.
@@ -93,8 +95,10 @@ public class TriggerRegistry implements dRegistry {
             case PLAYER:
                 // Check playerCooldown
                 if (!playerCooldown.containsKey(player.getName() + "/" + npc.getId())) return true;
-                else if (!playerCooldown.get(player.getName() + "/" + npc.getId()).containsKey(triggerClass.name)) return true;
-                else if (System.currentTimeMillis() > playerCooldown.get(player.getName() + "/" + npc.getId()).get(triggerClass.name)) return true;
+                else if (!playerCooldown.get(player.getName() + "/" + npc.getId()).containsKey(triggerClass.name))
+                    return true;
+                else if (System.currentTimeMillis() > playerCooldown.get(player.getName() + "/" + npc.getId()).get(triggerClass.name))
+                    return true;
                 break;
         }
 

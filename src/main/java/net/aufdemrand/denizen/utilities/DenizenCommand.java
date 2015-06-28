@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.utilities;
 
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.CommandScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -13,7 +15,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DenizenCommand extends Command {
 
@@ -59,7 +64,8 @@ public class DenizenCommand extends Command {
         if (permissionMessage == null) {
             target.sendMessage(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. "
                     + "Please contact the server administrators if you believe that this is in error.");
-        } else if (permissionMessage.length() != 0) {
+        }
+        else if (permissionMessage.length() != 0) {
             dPlayer player = null;
             dNPC npc = null;
             if (target instanceof Player) {

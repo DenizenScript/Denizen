@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.maps.*;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.NaturalOrderComparator;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.maps.*;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import org.bukkit.map.MapView;
@@ -30,7 +30,7 @@ public class MapScriptContainer extends ScriptContainer {
             YamlConfiguration objectsSection = getConfigurationSection("OBJECTS");
             List<StringHolder> objectKeys1 = new ArrayList<StringHolder>(objectsSection.getKeys(false));
             List<String> objectKeys = new ArrayList<String>(objectKeys1.size());
-            for (StringHolder sh: objectKeys1) {
+            for (StringHolder sh : objectKeys1) {
                 objectKeys.add(sh.str);
             }
             Collections.sort(objectKeys, new NaturalOrderComparator());

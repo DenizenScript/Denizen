@@ -1,17 +1,17 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dWorld;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
@@ -51,8 +51,8 @@ public class RemoveCommand extends AbstractCommand {
         // world, or default to the specified world in the server properties if necessary
 
         scriptEntry.defaultObject("world",
-                (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() && ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isSpawned()) ? new dWorld(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getWorld()) : null,
-                (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() && ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isOnline()) ? new dWorld(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getWorld()) : null,
+                (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() && ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned()) ? new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getWorld()) : null,
+                (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isOnline()) ? new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getWorld()) : null,
                 new dWorld(Bukkit.getWorlds().get(0)));
     }
 
@@ -67,7 +67,7 @@ public class RemoveCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), aH.debugList("entities", entities) +
-                             (region != null ? aH.debugObj("region", region) : ""));
+                (region != null ? aH.debugObj("region", region) : ""));
 
         boolean conditionsMet;
 

@@ -34,6 +34,7 @@ public class LeafDecaysScriptEvent extends ScriptEvent implements Listener {
     public LeafDecaysScriptEvent() {
         instance = this;
     }
+
     public static LeafDecaysScriptEvent instance;
     public dLocation location;
     public dMaterial material;

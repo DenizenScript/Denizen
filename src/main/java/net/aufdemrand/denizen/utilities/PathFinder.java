@@ -23,9 +23,11 @@ public class PathFinder {
 
     static class MinHeap {
         public Node head;
+
         public boolean hasNext() {
             return head != null;
         }
+
         public void add(Node node) {
             if (head == null) {
                 head = node;
@@ -36,23 +38,22 @@ public class PathFinder {
             }
             else {
                 Node cur = head;
-                while (cur.nextListElement != null && cur.nextListElement.cost < node.cost)
-                {
+                while (cur.nextListElement != null && cur.nextListElement.cost < node.cost) {
                     cur = cur.nextListElement;
                 }
                 node.nextListElement = cur.nextListElement;
                 cur.nextListElement = node;
             }
         }
-        public Node extractFirst()
-        {
+
+        public Node extractFirst() {
             Node res = head;
             head = head.nextListElement;
             return res;
         }
     }
 
-    public static dLocation[] surroundings = new dLocation[] {
+    public static dLocation[] surroundings = new dLocation[]{
             new dLocation(null, 1, 0, 0),
             new dLocation(null, -1, 0, 0),
             new dLocation(null, 0, 0, 1),
@@ -104,7 +105,7 @@ public class PathFinder {
             }
         }
         Node fnode = null;
-        for (Node node: fNodes) {
+        for (Node node : fNodes) {
             if (fnode == null || node.pathCost < fnode.pathCost) {
                 fnode = node;
             }

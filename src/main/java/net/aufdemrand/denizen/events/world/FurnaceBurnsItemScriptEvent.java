@@ -38,6 +38,7 @@ public class FurnaceBurnsItemScriptEvent extends ScriptEvent implements Listener
     public FurnaceBurnsItemScriptEvent() {
         instance = this;
     }
+
     public static FurnaceBurnsItemScriptEvent instance;
     public dItem item;
     public dLocation location;
@@ -51,7 +52,7 @@ public class FurnaceBurnsItemScriptEvent extends ScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String itemName = CoreUtilities.getXthArg(2,s.toLowerCase());
+        String itemName = CoreUtilities.getXthArg(2, s.toLowerCase());
         return itemName.equals("item") || itemName.equals(item.identifyNoIdentifier());
     }
 
