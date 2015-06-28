@@ -1036,7 +1036,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to add an item to a server flag as a new value without removing existing values.
         // - flag server cool_people:->:p@TheBlackCoyote
         // @Usage
-        // Use to add both multiple items as individual new values to a server flag.mor
+        // Use to add both multiple items as individual new values to a server flag.
         // - flag server cool_people:|:p@mcmonkey4eva|p@morphan1
         // @Usage
         // Use to remove an entry from a server flag.

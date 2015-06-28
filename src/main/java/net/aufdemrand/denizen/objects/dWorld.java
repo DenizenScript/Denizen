@@ -507,6 +507,17 @@ public class dWorld implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <w@world.time.duration>
+        // @returns Durations
+        // @description
+        // Returns the relative in-game time of this world as a duration.
+        // -->
+        if (attribute.startsWith("time.duration")) {
+            return new Duration(getWorld().getTime())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <w@world.time>
         // @returns Element(Number)
         // @description
